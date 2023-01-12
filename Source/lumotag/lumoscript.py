@@ -375,7 +375,7 @@ def use_process_loop(lumostate : lumogun_state):
                 array=cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 times.append((time.perf_counter()-times[-1][0],"resize once"))
                 #array = text_on_image(array, str(trigs))
-                array = text_on_image(array, perf_strings)#f"{output.shape}")
+                array = text_on_image(array, f"{output.shape}")
                 array = cv2.cvtColor(array, cv2.COLOR_BGR2GRAY)
                 array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
                 array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)

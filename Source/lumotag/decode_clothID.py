@@ -60,19 +60,21 @@ class WorkingData():
         DefaultBlobParams.minInertiaRatio = 0.4
         return DefaultBlobParams
 
-    def img_view_or_save_if_debug(self, img, description):
+    def img_view_or_save_if_debug(self, img, description, resize = True):
         
         if self.debug is True:
-            resize_x =  int(img.shape[1]*(1000/img.shape[1]))
-            resize_y =  int(img.shape[0]*(1000/img.shape[1]))
-            resized = cv2.resize(img, (resize_x,resize_y), interpolation = cv2.INTER_AREA)
+            out_img = img.copy()
+            if resize is True:
+                resize_x =  int(img.shape[1]*(1000/img.shape[1]))
+                resize_y =  int(img.shape[0]*(1000/img.shape[1]))
+                out_img = cv2.resize(out_img, (resize_x,resize_y), interpolation = cv2.INTER_AREA)
             if self.debug_subfldr is None:
                 filename = f"{self.debugimgs}\\0{self.debug_img_cnt}_{description}.jpg"
             else:
                 if not os.path.exists(f"{self.debugimgs}\\{self.debug_subfldr}"):
                     os.mkdir(f"{self.debugimgs}\\{self.debug_subfldr}")
                 filename = f"{self.debugimgs}\\{self.debug_subfldr}\\0{self.debug_img_cnt}_{description}.jpg"
-            cv2.imwrite(filename,resized)
+            cv2.imwrite(filename,out_img)
             print(f"DEBUG = TRUE: saving debug file to {filename}")
             self.debug_img_cnt += 1
 
@@ -549,7 +551,8 @@ for img_filepath in input_imgs:
     img_grayscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
     #set a debug image subfolder - if this is NONE then will just save all images sequentially in same level
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
-    workingdata.img_view_or_save_if_debug(img, Debug_Images.original_input.value)
+    workingdata.img_view_or_save_if_debug(img, Debug_Images.original_input.value, resize=False)
+    #copy original image into folder
     #orig_img = img.copy()
     orig_img=clahe_equalisation(img.copy())
     workingdata.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
