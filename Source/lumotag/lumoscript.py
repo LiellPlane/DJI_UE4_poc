@@ -17,7 +17,7 @@ import socket
 import cv2
 import numpy as np
 import enum
-
+import RPi.GPIO as GPIO
 import time
 import decode_clothID
 
@@ -27,6 +27,16 @@ class lumogun_state():
     def __init__(self) -> None:
         self.long_cam_vidmodes = [e.value for e in HQ_Cam_vidmodes]
         self.long_cam_mode = 0
+        self.chn1_debounce = Trigger()
+        self.chn2_debounce = Trigger()
+        self.chn3_debounce = Trigger()
+        self.relay_chn1 = 29
+        self.relay_chn2 = 31
+        self.relay_chn3 = 16
+        self.trigger_rear = 15
+        self.trigger_front = 13
+
+
 
     def next_long_vid_mode(self):
         self.long_cam_mode += 1
@@ -359,7 +369,7 @@ def take_image(lumostate : lumogun_state):
         time.sleep(0.1)
         output = None
         while True:
-            trigs = [None,False,False]#test_inputs()
+            trigs = test_inputs()
             times = []
             perf_strings = ""
             if trigs[2] is True:
@@ -472,11 +482,11 @@ def unknown_loop():
         #array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
         ImageViewer_Quick_no_resize(array,0,False,False)
 
-def test_inputs():
+def test_inputs(lumostate : lumogun_state):
     
     outputs = [None,False,False]
 
-    if GPIO.input(trigger_rear) == GPIO.LOW:
+    if GPIO.input(lumostate.trigger_rear) == GPIO.LOW:
 
         #chn1_debounce.trigger(GPIO.output, relay_chn1, GPIO.HIGH)
 
@@ -484,9 +494,9 @@ def test_inputs():
 
         #trig1 = chn3_debounce.trigger(GPIO.output, relay_chn3, GPIO.HIGH)
 
-        res1 = chn1_debounce.trigger(GPIO.output, relay_chn1, GPIO.HIGH)
+        res1 = lumostate.chn1_debounce.trigger(GPIO.output, lumostate.relay_chn1, GPIO.HIGH)
 
-        res2 = chn3_debounce.trigger(GPIO.output, relay_chn3, GPIO.HIGH)
+        res2 = lumostate.chn3_debounce.trigger(GPIO.output, lumostate.relay_chn3, GPIO.HIGH)
 
         outputs[1] = all([res1, res2])
 
@@ -494,18 +504,18 @@ def test_inputs():
 
         #chn1_debounce.trigger(GPIO.output, relay_chn1, GPIO.LOW)
 
-        chn1_debounce.trigger(GPIO.output, relay_chn1, GPIO.LOW)
+        lumostate.chn1_debounce.trigger(GPIO.output, lumostate.relay_chn1, GPIO.LOW)
 
-        chn3_debounce.trigger(GPIO.output, relay_chn3, GPIO.LOW)
+        lumostate.chn3_debounce.trigger(GPIO.output, lumostate.relay_chn3, GPIO.LOW)
 
         #chn3_debounce.trigger(GPIO.output, relay_chn3, GPIO.LOW)
-    if GPIO.input(trigger_front) == GPIO.LOW:
+    if GPIO.input(lumostate.trigger_front) == GPIO.LOW:
 
-       outputs[2] = chn2_debounce.trigger(GPIO.output, relay_chn2, GPIO.HIGH)
+       outputs[2] = lumostate.chn2_debounce.trigger(GPIO.output, lumostate.relay_chn2, GPIO.HIGH)
 
     else:
 
-       chn2_debounce.trigger(GPIO.output, relay_chn2, GPIO.LOW)
+       lumostate.chn2_debounce.trigger(GPIO.output, lumostate.relay_chn2, GPIO.LOW)
     return outputs
 
 #use_process_loop(lumostate)
@@ -518,52 +528,42 @@ def startlumoing():
     # Seems that all 3 on at same time exceeds
     # some kind of current draw limit and the
     # relay channels don't activate properly
-    chn1_debounce = Trigger()
-    chn2_debounce = Trigger()
-    chn3_debounce = Trigger()
-    import RPi.GPIO as GPIO
-    import time
-    relay_chn1 = 29
-    relay_chn2 = 31
-    relay_chn3 = 16
-    trigger_rear = 15
-    trigger_front = 13
     GPIO.setmode(GPIO.BOARD) # pin out corresponds to board id, not BCM id
-    GPIO.setup(relay_chn1, GPIO.OUT)
-    GPIO.setup(relay_chn2, GPIO.OUT)
-    GPIO.setup(relay_chn3, GPIO.OUT)
-    GPIO.setup(trigger_rear, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
-    GPIO.setup(trigger_front, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
+    GPIO.setup(lumostate.relay_chn1, GPIO.OUT)
+    GPIO.setup(lumostate.relay_chn2, GPIO.OUT)
+    GPIO.setup(lumostate.relay_chn3, GPIO.OUT)
+    GPIO.setup(lumostate.trigger_rear, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
+    GPIO.setup(lumostate.trigger_front, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
 
 
     for n in range(0,2):
-        GPIO.output(relay_chn1, GPIO.HIGH)
-        GPIO.output(relay_chn2, GPIO.LOW)
-        GPIO.output(relay_chn3, GPIO.HIGH)
+        GPIO.output(lumostate.relay_chn1, GPIO.HIGH)
+        GPIO.output(lumostate.relay_chn2, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn3, GPIO.HIGH)
         time.sleep(0.05)
-        GPIO.output(relay_chn1, GPIO.LOW)
-        GPIO.output(relay_chn2, GPIO.HIGH)
-        GPIO.output(relay_chn3, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn1, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn2, GPIO.HIGH)
+        GPIO.output(lumostate.relay_chn3, GPIO.LOW)
         time.sleep(0.05)
-        GPIO.output(relay_chn1, GPIO.HIGH)
-        GPIO.output(relay_chn2, GPIO.LOW)
-        GPIO.output(relay_chn3, GPIO.HIGH)
+        GPIO.output(lumostate.relay_chn1, GPIO.HIGH)
+        GPIO.output(lumostate.relay_chn2, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn3, GPIO.HIGH)
         time.sleep(0.05)
-        GPIO.output(relay_chn1, GPIO.LOW)
-        GPIO.output(relay_chn2, GPIO.LOW)
-        GPIO.output(relay_chn3, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn1, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn2, GPIO.LOW)
+        GPIO.output(lumostate.relay_chn3, GPIO.LOW)
         time.sleep(0.2)
 
     def rapidfire():
         for n in range(0,5):
-            GPIO.output(relay_chn2, GPIO.HIGH)
-            GPIO.output(relay_chn3, GPIO.LOW)
+            GPIO.output(lumostate.relay_chn2, GPIO.HIGH)
+            GPIO.output(lumostate.relay_chn3, GPIO.LOW)
             time.sleep(0.01)
-            GPIO.output(relay_chn2, GPIO.LOW)
-            GPIO.output(relay_chn3, GPIO.HIGH)
+            GPIO.output(lumostate.relay_chn2, GPIO.LOW)
+            GPIO.output(lumostate.relay_chn3, GPIO.HIGH)
             time.sleep(0.01)
-            GPIO.output(relay_chn2, GPIO.LOW)
-            GPIO.output(relay_chn3, GPIO.LOW)
+            GPIO.output(lumostate.relay_chn2, GPIO.LOW)
+            GPIO.output(lumostate.relay_chn3, GPIO.LOW)
             time.sleep(0.01)
 
 
