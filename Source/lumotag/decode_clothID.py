@@ -744,4 +744,4 @@ def old_testing():
         quilt_image=cv2.resize(quilt_image, (int(quilt_image.shape[1]/2),int(quilt_image.shape[0]/2)), interpolation = cv2.INTER_AREA)  
         _3DVisLabLib.ImageViewer_Quick_no_resize(quilt_image,0,True,False)
 
-test_live()
+

@@ -420,7 +420,6 @@ def decode_pattern(lumostate : lumogun_state):
     workingdata.debug= False
     
     from picamera2 import Picamera2, Preview
-    import time
     picam2 = Picamera2()
 
     #https://stackoverflow.com/questions/74075544/how-to-capture-raspberry-pi-hq-camera-data-in-yuv-format-using-picamera2
@@ -434,12 +433,13 @@ def decode_pattern(lumostate : lumogun_state):
         time.sleep(0.1)
         output = None
         while True:
-            trigs = test_inputs()
+            trigs = test_inputs(lumostate)
             times = []
             perf_strings = ""
             if trigs[2] is True:
                 if output is not None:
                     now_ns = time.time_ns()
+                    
                     cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",output)
             try:
                 print("trying to get image")
