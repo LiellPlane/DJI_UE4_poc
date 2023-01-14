@@ -33,6 +33,7 @@ class Debug_Images(AutoStrEnum):
     macro_candidates = auto()
     all_contours = auto()
     fitered_contours = auto()
+    ID_BADGE = auto()
 
 class WorkingData():
     def __init__(self) -> None:
@@ -510,12 +511,13 @@ def analyse_candidate_contours(original_img,
         # draw ROIs back on image for illustration
         # this is in rectangles - so could cut off parts of IDs if very
         # deformed cloth
-        #if decoded_ID is not None:
-        #    img_with_contours[y:y + h, x:x + w] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
+        if decoded_ID is not None:
+            original_img[y:y + h, x:x + w] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
+            dataobject.img_view_or_save_if_debug(original_img, Debug_Images.ID_BADGE.value)
 
 
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img_with_contours,0,True,False)
-    return img
+    return
 
 def cumulative_dist_histogram():
     plop
@@ -529,140 +531,187 @@ def dilate(InputImage):
 def median_blur(inputimage, kernalsize):
     return  cv2.medianBlur(inputimage, kernalsize)
 
-workingdata = WorkingData()
 
-input_imgs = _3DVisLabLib.GetAllFilesInFolder_Recursive(workingdata.input_imgs)
-
-print(f"{len(input_imgs)} images found")
 # Set up the blob detector.
-blob_detector = cv2.SimpleBlobDetector_create(workingdata.get_blob_params())
+#blob_detector = cv2.SimpleBlobDetector_create(workingdata.get_blob_params())
 
 
-img_proc_chain=[]
-img_proc_chain.append(cut_square)
-#img_proc_chain.append(mono_img)
-#img_proc_chain.append(equalise_img)
-#img_proc_chain.append(blur_img)
-#img_proc_chain.append(threshold_img)
+# img_proc_chain=[]
+# img_proc_chain.append(cut_square)
+# #img_proc_chain.append(mono_img)
+# #img_proc_chain.append(equalise_img)
+# #img_proc_chain.append(blur_img)
+# #img_proc_chain.append(threshold_img)
 
-
-for img_filepath in input_imgs:
-    img = read_img(img_filepath)
-    img_grayscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    #set a debug image subfolder - if this is NONE then will just save all images sequentially in same level
-    workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
-    workingdata.img_view_or_save_if_debug(img, Debug_Images.original_input.value, resize=False)
+def find_lumotag(inputimg, dataobject : WorkingData):
+    """analyse input image for specific lumotag pattern"""
+    img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+    dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
     #copy original image into folder
     #orig_img = img.copy()
-    orig_img=clahe_equalisation(img.copy())
-    workingdata.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
-    #square cut area
-    #squr_img=orig_img.copy()#cut_square(orig_img)
-    #squr_img=mono_img(orig_img)
-
-
+    orig_img=clahe_equalisation(inputimg.copy())
+    dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
     ''''test area'''
     gray_orig = mono_img(orig_img)
-    
-    #dilated = dilate (gray_orig)
-    #blurred = blur_img(gray_orig,filtersize= 7)
-    #blurred = blur_average(blurred,filtersize= 5)
     blurred = median_blur(gray_orig,7)
-    workingdata.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
+    dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
     #edge_im = edge_img(blurred)
     squr_img=threshold_img(blurred,low=127)
     
     squr_img=invert_img(squr_img)
-    workingdata.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
-    squr_img, contours=get_ID_bodies(squr_img, workingdata)
-    workingdata.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
+    dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
+    squr_img, contours=get_ID_bodies(squr_img, dataobject)
+    dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
     squr_img_gray = cv2.cvtColor(squr_img,cv2.COLOR_BGR2GRAY)
     squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
-    analyse_IDs = analyse_candidate_contours(original_img=img.copy(),
+    analyse_IDs = analyse_candidate_contours(original_img=inputimg.copy(),
                                             original_img_grayscale = img_grayscale,
                                             masked_img = squr_img_mask,
                                             thresholded_img= squr_img_gray,
                                             contours = contours,
-                                            dataobject = workingdata)
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-    continue
-    ''''fin test'''
-    #hist = get_hist(squr_img)
-    #tempimg="d:\plop.jpg"
-    #PlotAndSave("plop",tempimg,hist,hist.max())
-    #histogram_img=cv2.imread(tempimg)
-    squr_img=threshold_img(squr_img,low=127)
-    squr_img=invert_img(squr_img)
-    threshold_original = squr_img.copy()
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-    #continue
-    squr_img, contours=get_ID_bodies(squr_img)
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-    squr_img_mask= np.clip(squr_img,0,1)
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-    #continue
-
-    analyse_IDs = analyse_candidate_contours(original_img = orig_img,
-                                            masked_img = squr_img_mask,
-                                            thresholded_img= threshold_original,
-                                            contours = contours)
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-    continue
-    #clip to 0 and 1 for masking
-    squr_img_mask= np.clip(squr_img,0,1)
-    # use mask on input colour image
-    sample_area_masked=sample_area.copy()
-    squr_img= sample_area_masked*squr_img_mask
-
-    #masked_input_sqr=
-    #
-    #squr_img=edge_img(squr_img)
-    #squr_img=blur_img(squr_img)
-    thresh_low = squr_img.min()
-    thresh_high= squr_img.max()
+                                            dataobject = dataobject)
 
 
+def test_live():
+
+    workingdata = WorkingData()
+
+    input_imgs = _3DVisLabLib.GetAllFilesInFolder_Recursive(workingdata.input_imgs)
+
+    print(f"{len(input_imgs)} images found")
+
+    for img_filepath in input_imgs:
+        img = read_img(img_filepath)
+        workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
+        find_lumotag(img, workingdata)
+
+def old_testing():
+
+    workingdata = WorkingData()
+
+    input_imgs = _3DVisLabLib.GetAllFilesInFolder_Recursive(workingdata.input_imgs)
+
+    print(f"{len(input_imgs)} images found")
+
+    for img_filepath in input_imgs:
+        img = read_img(img_filepath)
+        img_grayscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+        #set a debug image subfolder - if this is NONE then will just save all images sequentially in same level
+        workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
+        workingdata.img_view_or_save_if_debug(img, Debug_Images.original_input.value, resize=False)
+        #copy original image into folder
+        #orig_img = img.copy()
+        orig_img=clahe_equalisation(img.copy())
+        workingdata.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
+        #square cut area
+        #squr_img=orig_img.copy()#cut_square(orig_img)
+        #squr_img=mono_img(orig_img)
 
 
-    orig_img_edge=img.copy()
-    orig_img_edge=mono_img(orig_img_edge)
-    #orig_img_edge=blur_img(orig_img_edge)
-    orig_img_edge=edge_img(orig_img_edge)
-    
+        ''''test area'''
+        gray_orig = mono_img(orig_img)
+        
+        #dilated = dilate (gray_orig)
+        #blurred = blur_img(gray_orig,filtersize= 7)
+        #blurred = blur_average(blurred,filtersize= 5)
+        blurred = median_blur(gray_orig,7)
+        workingdata.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
+        #edge_im = edge_img(blurred)
+        squr_img=threshold_img(blurred,low=127)
+        
+        squr_img=invert_img(squr_img)
+        workingdata.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
+        squr_img, contours=get_ID_bodies(squr_img, workingdata)
+        workingdata.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
+        squr_img_gray = cv2.cvtColor(squr_img,cv2.COLOR_BGR2GRAY)
+        squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
+        analyse_IDs = analyse_candidate_contours(original_img=img.copy(),
+                                                original_img_grayscale = img_grayscale,
+                                                masked_img = squr_img_mask,
+                                                thresholded_img= squr_img_gray,
+                                                contours = contours,
+                                                dataobject = workingdata)
+        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
+        continue
+        ''''fin test'''
+        #hist = get_hist(squr_img)
+        #tempimg="d:\plop.jpg"
+        #PlotAndSave("plop",tempimg,hist,hist.max())
+        #histogram_img=cv2.imread(tempimg)
+        squr_img=threshold_img(squr_img,low=127)
+        squr_img=invert_img(squr_img)
+        threshold_original = squr_img.copy()
+        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
+        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
+        #continue
+        squr_img, contours=get_ID_bodies(squr_img)
+        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
+        squr_img_mask= np.clip(squr_img,0,1)
+        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
+        #continue
 
-    #original area threshold
-    #img=blur_img(img)
-    #img=threshold_img(img,low=thresh_low,high=thresh_high)
+        analyse_IDs = analyse_candidate_contours(original_img = orig_img,
+                                                masked_img = squr_img_mask,
+                                                thresholded_img= threshold_original,
+                                                contours = contours)
+        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
+        continue
+        #clip to 0 and 1 for masking
+        squr_img_mask= np.clip(squr_img,0,1)
+        # use mask on input colour image
+        sample_area_masked=sample_area.copy()
+        squr_img= sample_area_masked*squr_img_mask
 
-    #for img_proc in img_proc_chain:
-    #    img = img_proc(img)
-    # Detect blobs from the image.
-    #keypoints = blob_detector.detect(original_img_bw)
-    #contours, hierarchy = cv2.findContours(image=img, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
-    #cv2.drawContours(image=orig_img, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
-    # Draw detected blobs as red circles.
-    # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS - This method draws detected blobs as red circles and ensures that the size of the circle corresponds to the size of the blob.
-    #blobs = cv2.drawKeypoints(original_img_bw, keypoints, original_img_bw, (0,255,255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
-    quilt_image: np.ndarray = np.ndarray((
-            orig_img.shape[0],
-            orig_img.shape[1]*3,
-            orig_img.shape[2],),
-            dtype=('uint8'))
-    quilt_image[0:orig_img.shape[0],0:orig_img.shape[1],:] = orig_img
-    resized=cv2.resize(squr_img, tuple(reversed(orig_img.shape[0:2])), interpolation = cv2.INTER_AREA)  
-    resized_histogram=cv2.resize(histogram_img, tuple(reversed(orig_img.shape[0:2])), interpolation = cv2.INTER_AREA) 
-    try:
-        quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,0] = resized
-        quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,1] = resized
-        quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,2] = resized
-    except:
-        quilt_image[0:orig_img.shape[0],orig_img.shape[1]:orig_img.shape[1]*2,:] = resized
+        #masked_input_sqr=
+        #
+        #squr_img=edge_img(squr_img)
+        #squr_img=blur_img(squr_img)
+        thresh_low = squr_img.min()
+        thresh_high= squr_img.max()
 
-    quilt_image[0:orig_img.shape[0],orig_img.shape[1]*2:orig_img.shape[1]*3,:] = resized_histogram
 
-    quilt_image[0:sample_area.shape[0],0:sample_area.shape[1],:] = sample_area
-    
 
-    quilt_image=cv2.resize(quilt_image, (int(quilt_image.shape[1]/2),int(quilt_image.shape[0]/2)), interpolation = cv2.INTER_AREA)  
-    _3DVisLabLib.ImageViewer_Quick_no_resize(quilt_image,0,True,False)
+
+        orig_img_edge=img.copy()
+        orig_img_edge=mono_img(orig_img_edge)
+        #orig_img_edge=blur_img(orig_img_edge)
+        orig_img_edge=edge_img(orig_img_edge)
+        
+
+        #original area threshold
+        #img=blur_img(img)
+        #img=threshold_img(img,low=thresh_low,high=thresh_high)
+
+        #for img_proc in img_proc_chain:
+        #    img = img_proc(img)
+        # Detect blobs from the image.
+        #keypoints = blob_detector.detect(original_img_bw)
+        #contours, hierarchy = cv2.findContours(image=img, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
+        #cv2.drawContours(image=orig_img, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
+        # Draw detected blobs as red circles.
+        # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS - This method draws detected blobs as red circles and ensures that the size of the circle corresponds to the size of the blob.
+        #blobs = cv2.drawKeypoints(original_img_bw, keypoints, original_img_bw, (0,255,255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
+        quilt_image: np.ndarray = np.ndarray((
+                orig_img.shape[0],
+                orig_img.shape[1]*3,
+                orig_img.shape[2],),
+                dtype=('uint8'))
+        quilt_image[0:orig_img.shape[0],0:orig_img.shape[1],:] = orig_img
+        resized=cv2.resize(squr_img, tuple(reversed(orig_img.shape[0:2])), interpolation = cv2.INTER_AREA)  
+        resized_histogram=cv2.resize(histogram_img, tuple(reversed(orig_img.shape[0:2])), interpolation = cv2.INTER_AREA) 
+        try:
+            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,0] = resized
+            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,1] = resized
+            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,2] = resized
+        except:
+            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:orig_img.shape[1]*2,:] = resized
+
+        quilt_image[0:orig_img.shape[0],orig_img.shape[1]*2:orig_img.shape[1]*3,:] = resized_histogram
+
+        quilt_image[0:sample_area.shape[0],0:sample_area.shape[1],:] = sample_area
+        
+
+        quilt_image=cv2.resize(quilt_image, (int(quilt_image.shape[1]/2),int(quilt_image.shape[0]/2)), interpolation = cv2.INTER_AREA)  
+        _3DVisLabLib.ImageViewer_Quick_no_resize(quilt_image,0,True,False)
+
+test_live()
