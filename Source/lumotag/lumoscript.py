@@ -439,10 +439,15 @@ def decode_pattern(lumostate : lumogun_state):
             if trigs[2] is True:
                 if output is not None:
                     now_ns = time.time_ns()
-                    lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
-                    if lumotags_found is not None:
-                        ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
-                    cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+                    try:
+                        lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                        if lumotags_found is not None:
+                            lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                            ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
+                            cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+                    except:
+                        pass #BAD
+
 
             try:
                 print("trying to get image")
