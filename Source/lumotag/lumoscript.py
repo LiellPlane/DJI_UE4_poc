@@ -416,8 +416,8 @@ def decode_pattern(lumostate : lumogun_state):
     #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version=" fuk picam2")
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
 
-    workingdata =decode_clothID.WorkingData()
-    workingdata.debug= False
+    workingdata_decodetag =decode_clothID.WorkingData()
+    workingdata_decodetag.debug= False
     
     from picamera2 import Picamera2, Preview
     picam2 = Picamera2()
@@ -439,8 +439,11 @@ def decode_pattern(lumostate : lumogun_state):
             if trigs[2] is True:
                 if output is not None:
                     now_ns = time.time_ns()
-                    
-                    cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",output)
+                    lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                    if lumotags_found is not None:
+                        ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
+                    cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+
             try:
                 print("trying to get image")
                 times.append((time.perf_counter(),"start"))
