@@ -110,7 +110,6 @@ def start_subprocess(command):
 
     return p
 
-
 def rectangle_animate_step(imgshape, version = "", stepsize = 10):
     _step = stepsize
     
@@ -130,10 +129,6 @@ def rectangle_animate_step(imgshape, version = "", stepsize = 10):
         _step += stepsize
         yield empty_frame.copy()
 
-
-
-
-
 def exceptionwindow(exceptiontext, imgshape):
     today = datetime.now()
     dt_string = today.strftime("%d/%m/%Y %H:%M:%S")
@@ -150,7 +145,6 @@ def exceptionwindow(exceptiontext, imgshape):
     cv2.putText(empty_frame, f"INFO: {dt_string} {exceptiontext}" , (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 0, 255), 2)
     return empty_frame
 
-
 class TimeDiffObject:
     """stopwatch function"""
 
@@ -166,7 +160,6 @@ class TimeDiffObject:
 
     def reset(self):
         self._start_time = time.perf_counter()
-
 
 class Trigger:
     def __init__(self) -> None:
@@ -197,63 +190,6 @@ def clean_up_processes(cmds, rec_depth=0):
             time.sleep(1)
             clean_up_processes(cmds, rec_depth)
             break
-
-clean_up_processes(cmds=r'ffmpeg|libcamera')
-
-
-lumostate = lumogun_state()
-
-# Seems that all 3 on at same time exceeds
-# some kind of current draw limit and the
-# relay channels don't activate properly
-chn1_debounce = Trigger()
-chn2_debounce = Trigger()
-chn3_debounce = Trigger()
-import RPi.GPIO as GPIO
-import time
-relay_chn1 = 29
-relay_chn2 = 31
-relay_chn3 = 16
-trigger_rear = 15
-trigger_front = 13
-GPIO.setmode(GPIO.BOARD) # pin out corresponds to board id, not BCM id
-GPIO.setup(relay_chn1, GPIO.OUT)
-GPIO.setup(relay_chn2, GPIO.OUT)
-GPIO.setup(relay_chn3, GPIO.OUT)
-GPIO.setup(trigger_rear, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
-GPIO.setup(trigger_front, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
-
-
-for n in range(0,2):
-    GPIO.output(relay_chn1, GPIO.HIGH)
-    GPIO.output(relay_chn2, GPIO.LOW)
-    GPIO.output(relay_chn3, GPIO.HIGH)
-    time.sleep(0.05)
-    GPIO.output(relay_chn1, GPIO.LOW)
-    GPIO.output(relay_chn2, GPIO.HIGH)
-    GPIO.output(relay_chn3, GPIO.LOW)
-    time.sleep(0.05)
-    GPIO.output(relay_chn1, GPIO.HIGH)
-    GPIO.output(relay_chn2, GPIO.LOW)
-    GPIO.output(relay_chn3, GPIO.HIGH)
-    time.sleep(0.05)
-    GPIO.output(relay_chn1, GPIO.LOW)
-    GPIO.output(relay_chn2, GPIO.LOW)
-    GPIO.output(relay_chn3, GPIO.LOW)
-    time.sleep(0.2)
-
-def rapidfire():
-    for n in range(0,5):
-        GPIO.output(relay_chn2, GPIO.HIGH)
-        GPIO.output(relay_chn3, GPIO.LOW)
-        time.sleep(0.01)
-        GPIO.output(relay_chn2, GPIO.LOW)
-        GPIO.output(relay_chn3, GPIO.HIGH)
-        time.sleep(0.01)
-        GPIO.output(relay_chn2, GPIO.LOW)
-        GPIO.output(relay_chn3, GPIO.LOW)
-        time.sleep(0.01)
-
 
 
 #if False:
@@ -407,7 +343,7 @@ def take_image(lumostate : lumogun_state):
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
     #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version=" fuk picam2")
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
-
+    print("entering loop")
     from picamera2 import Picamera2, Preview
     import time
     picam2 = Picamera2()
@@ -423,7 +359,7 @@ def take_image(lumostate : lumogun_state):
         time.sleep(0.1)
         output = None
         while True:
-            trigs = test_inputs()
+            trigs = [None,False,False]#test_inputs()
             times = []
             perf_strings = ""
             if trigs[2] is True:
@@ -573,7 +509,67 @@ def test_inputs():
     return outputs
 
 #use_process_loop(lumostate)
-if __name__ == "__main__":
+def startlumoing():
+        
+    clean_up_processes(cmds=r'ffmpeg|libcamera')
+
+    lumostate = lumogun_state()
+
+    # Seems that all 3 on at same time exceeds
+    # some kind of current draw limit and the
+    # relay channels don't activate properly
+    chn1_debounce = Trigger()
+    chn2_debounce = Trigger()
+    chn3_debounce = Trigger()
+    import RPi.GPIO as GPIO
+    import time
+    relay_chn1 = 29
+    relay_chn2 = 31
+    relay_chn3 = 16
+    trigger_rear = 15
+    trigger_front = 13
+    GPIO.setmode(GPIO.BOARD) # pin out corresponds to board id, not BCM id
+    GPIO.setup(relay_chn1, GPIO.OUT)
+    GPIO.setup(relay_chn2, GPIO.OUT)
+    GPIO.setup(relay_chn3, GPIO.OUT)
+    GPIO.setup(trigger_rear, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
+    GPIO.setup(trigger_front, GPIO.IN, pull_up_down=GPIO.PUD_UP)    # Set BtnPin's mode is input, and pull up to high level(3.3V)
+
+
+    for n in range(0,2):
+        GPIO.output(relay_chn1, GPIO.HIGH)
+        GPIO.output(relay_chn2, GPIO.LOW)
+        GPIO.output(relay_chn3, GPIO.HIGH)
+        time.sleep(0.05)
+        GPIO.output(relay_chn1, GPIO.LOW)
+        GPIO.output(relay_chn2, GPIO.HIGH)
+        GPIO.output(relay_chn3, GPIO.LOW)
+        time.sleep(0.05)
+        GPIO.output(relay_chn1, GPIO.HIGH)
+        GPIO.output(relay_chn2, GPIO.LOW)
+        GPIO.output(relay_chn3, GPIO.HIGH)
+        time.sleep(0.05)
+        GPIO.output(relay_chn1, GPIO.LOW)
+        GPIO.output(relay_chn2, GPIO.LOW)
+        GPIO.output(relay_chn3, GPIO.LOW)
+        time.sleep(0.2)
+
+    def rapidfire():
+        for n in range(0,5):
+            GPIO.output(relay_chn2, GPIO.HIGH)
+            GPIO.output(relay_chn3, GPIO.LOW)
+            time.sleep(0.01)
+            GPIO.output(relay_chn2, GPIO.LOW)
+            GPIO.output(relay_chn3, GPIO.HIGH)
+            time.sleep(0.01)
+            GPIO.output(relay_chn2, GPIO.LOW)
+            GPIO.output(relay_chn3, GPIO.LOW)
+            time.sleep(0.01)
+
+
+
+
+
     take_image(lumostate)
-#use_preview_output_loop()
-#test_yuv()
+    #use_preview_output_loop()
+    #test_yuv()
