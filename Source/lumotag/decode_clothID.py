@@ -4,11 +4,37 @@ from enum import Enum, auto
 import os
 import numpy as np
 sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
-import _3DVisLabLib
 from matplotlib import pyplot as plt
 import math
 import statistics
 import random
+
+def GetAllFilesInFolder_Recursive(root):
+    ListOfFiles=[]
+    for path, subdirs, files in os.walk(root):
+        for name in files:
+            FullpathOfFile=(os.path.join(path, name))
+            ListOfFiles.append(FullpathOfFile)
+    return ListOfFiles
+
+def DeleteFiles_RecreateFolder(FolderPath):
+    Deltree(FolderPath)
+    os.mkdir(FolderPath)
+
+def Deltree(Folderpath):
+      # check if folder exists
+    if len(Folderpath)<6:
+        raise("Input:" + str(Folderpath),"too short - danger")
+        raise ValueError("Deltree error - path too short warning might be root!")
+        return
+    if os.path.exists(Folderpath):
+         # remove if exists
+         shutil.rmtree(Folderpath)
+    else:
+         # throw your exception to handle this special scenario
+         #raise Exception("Unknown Error trying to Deltree: " + Folderpath)
+         pass
+    return
 
 class AutoStrEnum(str, Enum):
     """
@@ -45,7 +71,7 @@ class WorkingData():
         self.debug_img_cnt = 0
         self.debug_subfldr = None
         if self.debug is True:
-            _3DVisLabLib.DeleteFiles_RecreateFolder(self.debugimgs)
+            DeleteFiles_RecreateFolder(self.debugimgs)
 
     @staticmethod
     def get_blob_params():
@@ -579,7 +605,7 @@ def test_live():
 
     workingdata.debug= False
 
-    input_imgs = _3DVisLabLib.GetAllFilesInFolder_Recursive(workingdata.input_imgs)
+    input_imgs = GetAllFilesInFolder_Recursive(workingdata.input_imgs)
 
     print(f"{len(input_imgs)} images found")
 
@@ -592,7 +618,7 @@ def old_testing():
 
     workingdata = WorkingData()
 
-    input_imgs = _3DVisLabLib.GetAllFilesInFolder_Recursive(workingdata.input_imgs)
+    input_imgs = GetAllFilesInFolder_Recursive(workingdata.input_imgs)
 
     print(f"{len(input_imgs)} images found")
 
