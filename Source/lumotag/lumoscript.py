@@ -375,7 +375,7 @@ def take_image(lumostate : lumogun_state):
             if trigs[2] is True:
                 if output is not None:
                     now_ns = time.time_ns()
-                    cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",output)
+                    cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",output.copy())
             try:
                 print("trying to get image")
                 times.append((time.perf_counter(),"start"))
