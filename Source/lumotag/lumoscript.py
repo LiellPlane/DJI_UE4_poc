@@ -19,7 +19,7 @@ import numpy as np
 import enum
 
 import time
-#import decode_clothID
+import decode_clothID
 
 #from tomlkit import datetime
 
@@ -520,6 +520,7 @@ def test_inputs():
     return outputs
 
 #use_process_loop(lumostate)
-take_image(lumostate)
+if __name__ == "__main__":
+    take_image(lumostate)
 #use_preview_output_loop()
 #test_yuv()
