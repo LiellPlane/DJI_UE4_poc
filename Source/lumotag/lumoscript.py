@@ -369,7 +369,7 @@ def take_image(lumostate : lumogun_state):
         time.sleep(0.1)
         output = None
         while True:
-            trigs = [None,False,False]#test_inputs()
+            trigs = test_inputs(lumostate)
             times = []
             perf_strings = ""
             if trigs[2] is True:
