@@ -464,6 +464,59 @@ def take_image(lumostate : lumogun_state):
 
         picam2.stop()
            
+def decode_pattern(lumostate : lumogun_state):
+         #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version="2")
+    #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
+    #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version=" fuk picam2")
+    #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
+
+    workingdata =decode_clothID.WorkingData()
+    workingdata.debug= False
+    
+    from picamera2 import Picamera2, Preview
+    import time
+    picam2 = Picamera2()
+
+    #https://stackoverflow.com/questions/74075544/how-to-capture-raspberry-pi-hq-camera-data-in-yuv-format-using-picamera2
+    while True:
+        #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
+        #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
+        #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
+        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+        picam2.configure(config)
+        picam2.start()
+        time.sleep(0.1)
+        output = None
+        while True:
+            trigs = test_inputs()
+            times = []
+            perf_strings = ""
+            if trigs[2] is True:
+                if output is not None:
+                    now_ns = time.time_ns()
+                    cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",output)
+            try:
+                print("trying to get image")
+                times.append((time.perf_counter(),"start"))
+                output = picam2.capture_array("main")
+                times.append((time.perf_counter()-times[-1][0],"get output"))
+                array=cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                times.append((time.perf_counter()-times[-1][0],"resize once"))
+                #array = text_on_image(array, str(trigs))
+                array = text_on_image(array, perf_strings)#f"{output.shape}")
+                array = cv2.cvtColor(array, cv2.COLOR_BGR2GRAY)
+                array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
+                array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
+                array = cv2.resize(array,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                times.append((time.perf_counter()-times[-1][0],"various functions"))
+                #array = cv2.cvtColor(array, cv2.COLORMAP_RAINBOW)
+                ImageViewer_Quick_no_resize(array,0,False,False)
+                times.append((time.perf_counter()-times[-1][0],"image viewer"))
+
+            except Exception as e:
+                print(e)
+                except_img = exceptionwindow(e, imgshape=tuple(reversed(screensizes.desktop_os_opencv.value)))
+                ImageViewer_Quick_no_resize(except_img,0,False,False)
 
 def unknown_loop():
     picam2.start_preview(Preview.QTGL)
