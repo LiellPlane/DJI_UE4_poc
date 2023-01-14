@@ -445,8 +445,8 @@ def analyse_candidate_contours(original_img,
         raise ValueError("masked image input to analyse_candidate_contours not binary value")
     #if original_img.shape[2]!=3:
     #    raise ValueError("input image not colour")
-    kernel = np.ones((5, 5), np.uint8)
-    img_with_contours = original_img_grayscale.copy()
+    #kernel = np.ones((5, 5), np.uint8)
+    #img_with_contours = original_img_grayscale.copy()
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         # can collect the images here and get a nice animation
@@ -461,7 +461,7 @@ def analyse_candidate_contours(original_img,
         #get original image and reprocess
         original_samp = original_img_grayscale[y:y + h, x:x + w].copy()
         #dataobject.img_view_or_save_if_debug(original_samp,"original_sample")
-        imgsize = original_samp.shape[0]*original_samp.shape[1]
+        #imgsize = original_samp.shape[0]*original_samp.shape[1]
         # if imgsize < 10000:
         #     original_samp = blur_img(original_samp,filtersize= 3)
         #     original_samp = cv2.bilateralFilter(original_samp,9,75,75)
@@ -517,7 +517,7 @@ def analyse_candidate_contours(original_img,
 
 
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img_with_contours,0,True,False)
-    return
+    return original_img
 
 def cumulative_dist_histogram():
     plop
@@ -557,7 +557,6 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
     #edge_im = edge_img(blurred)
     squr_img=threshold_img(blurred,low=127)
-    
     squr_img=invert_img(squr_img)
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
     squr_img, contours=get_ID_bodies(squr_img, dataobject)
@@ -570,11 +569,15 @@ def find_lumotag(inputimg, dataobject : WorkingData):
                                             thresholded_img= squr_img_gray,
                                             contours = contours,
                                             dataobject = dataobject)
-
-
+    if analyse_IDs is not None:
+        dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
+    return analyse_IDs
+    
 def test_live():
 
     workingdata = WorkingData()
+
+    workingdata.debug= False
 
     input_imgs = _3DVisLabLib.GetAllFilesInFolder_Recursive(workingdata.input_imgs)
 
