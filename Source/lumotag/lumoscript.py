@@ -442,9 +442,15 @@ def decode_pattern(lumostate : lumogun_state):
                     try:
                         lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
                         if lumotags_found is not None:
+                            lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
                             lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
                             cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
                             ImageViewer_Quick_no_resize(lumotags_found,0.3,False,False)
+                        else:
+                            out = np.zeros_like(cv2.cvtColor(output, cv2.COLOR_GRAY2RGB))
+                            out = cv2.rotate(out, cv2.ROTATE_90_CLOCKWISE)
+                            out = cv2.resize(out,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                            ImageViewer_Quick_no_resize(out,0.3,False,False)
                             
                     except:
                         pass #BAD
