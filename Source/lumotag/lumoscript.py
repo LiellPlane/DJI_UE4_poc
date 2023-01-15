@@ -424,6 +424,7 @@ def decode_pattern(lumostate : lumogun_state):
 
     #https://stackoverflow.com/questions/74075544/how-to-capture-raspberry-pi-hq-camera-data-in-yuv-format-using-picamera2
     while True:
+        ImageViewer_Quick_no_resize(exceptionwindow("start lumotag YO",screensizes.desktop_os_opencv.value),2,False,True)
         #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
@@ -440,7 +441,11 @@ def decode_pattern(lumostate : lumogun_state):
                 output = picam2.capture_array("main")
                 output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
                 output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
+                try:
+                    lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
+                except Exception as e:
+                    ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
+
                 ImageViewer_Quick_no_resize(output,0,False,False)
                 continue
                 if output is not None:
