@@ -433,6 +433,7 @@ def decode_pattern(lumostate : lumogun_state):
         picam2.start()
         time.sleep(0.1)
         output = None
+        lumotags_found = None
         while True:
             trigs = test_inputs(lumostate)
             times = []
@@ -444,9 +445,12 @@ def decode_pattern(lumostate : lumogun_state):
                 try:
                     lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
                 except Exception as e:
+                    lumotags_found = None
                     ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
-
-                ImageViewer_Quick_no_resize(output,0,False,False)
+                if lumotags_found is not None:
+                    ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
+                else:
+                    ImageViewer_Quick_no_resize(output,0,False,False)
                 continue
                 if output is not None:
                     now_ns = time.time_ns()
