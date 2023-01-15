@@ -437,6 +437,7 @@ def decode_pattern(lumostate : lumogun_state):
             times = []
             perf_strings = ""
             if trigs[2] is True:
+                output = picam2.capture_array("main")
                 if output is not None:
                     now_ns = time.time_ns()
                     try:
@@ -456,7 +457,7 @@ def decode_pattern(lumostate : lumogun_state):
                         pass #BAD
 
             continue
-        
+
             try:
                 print("trying to get image")
                 times.append((time.perf_counter(),"start"))
