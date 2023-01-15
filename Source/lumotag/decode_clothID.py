@@ -538,8 +538,9 @@ def analyse_candidate_contours(original_img,
         # draw ROIs back on image for illustration
         # this is in rectangles - so could cut off parts of IDs if very
         # deformed cloth
-        if decoded_ID is not None:
-            original_img[y:y + h, x:x + w] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
+        if decoded_ID is not None:#
+            #TODO why is the image from HQ camera 4 channels? 
+            original_img[y:y + h, x:x + w,0:3] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
             dataobject.img_view_or_save_if_debug(original_img, Debug_Images.ID_BADGE.value)
 
 
