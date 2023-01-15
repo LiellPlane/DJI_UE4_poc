@@ -9,6 +9,18 @@ sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 import math
 import statistics
 import random
+import time
+from contextlib import contextmanager
+from typing import Iterator
+
+@contextmanager
+def time_it() -> Iterator[None]:
+    tic: float = time.perf_counter()
+    try:
+        yield
+    finally:
+        toc: float = time.perf_counter()
+        print(f"Computation time = {1000*(toc - tic):.3f}ms")
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -73,7 +85,7 @@ class WorkingData():
         self.debug_subfldr = None
         if self.debug is True:
             DeleteFiles_RecreateFolder(self.debugimgs)
-
+        self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
     @staticmethod
     def get_blob_params():
         DefaultBlobParams= cv2.SimpleBlobDetector_Params()
@@ -122,14 +134,15 @@ def PlotAndSave(Title,Filepath,Data,maximumvalue):
 
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
-def clahe_equalisation(img):
+def clahe_equalisation(img, claheprocessor):
     #luminosity
     lab_image=cv2.cvtColor(img,cv2.COLOR_BGR2LAB)
     l,a,b = cv2.split(lab_image)
     #equ = cv2.equalizeHist(l)
     #updated_lab_img1=cv2.merge((equ,a,b))
-    clahe = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
-    clahe_img= clahe.apply(l)
+    if claheprocessor is None:
+        claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
+    clahe_img= claheprocessor.apply(l)
     updated_lab_img1=cv2.merge((clahe_img,a,b))
     CLAHE_img = cv2.cvtColor(updated_lab_img1,cv2.COLOR_LAB2BGR)
     return CLAHE_img
@@ -207,7 +220,7 @@ def contours_img(img):
     return out
 
 def check_ID_contours_match_spec(hierarchy, circularities):
-    print(hierarchy)
+    #print(hierarchy)
     temp_hier=[]
     min_circularity = 0.75
     min_no_circles = 1
@@ -293,9 +306,9 @@ def decode_ID_image(img,dataobject : WorkingData):
 
 
     #np.diff(np.where(has_children == -1))
-    print("checking check id input")
+    #print("checking check id input")
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img,0,True,False)
-    print("cnts before anything filters", len(contours))
+    #print("cnts before anything filters", len(contours))
     # calculate area and filter into new array
     for con, hier in zip(contours,hierarchy[0]):
         area = cv2.contourArea(con)
@@ -303,7 +316,7 @@ def decode_ID_image(img,dataobject : WorkingData):
             contours_area.append((con, hier))
     
     contours_cirles = []
-    print("cnts after area filter", len(contours_area))
+    #print("cnts after area filter", len(contours_area))
     # check if contour is of circular shape
     circularities = []
     for con, hier in contours_area:
@@ -315,7 +328,7 @@ def decode_ID_image(img,dataobject : WorkingData):
         if -9999 < circularity < 9999:
             contours_cirles.append((con, hier))
             circularities.append(circularity)
-    print("cnts after circle filter", len(contours_cirles))
+    #print("cnts after circle filter", len(contours_cirles))
     img_check_contours = img.copy()
     #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
     img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
@@ -342,7 +355,7 @@ def decode_ID_image(img,dataobject : WorkingData):
 
     out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
     id_badge = cv2.resize(id_badge,(out.shape[1],out.shape[0]))
-    print(len(contours_cirles))
+    #print(len(contours_cirles))
 
     cv2.drawContours(image=out, contours=[i[0] for i in contours_cirles], contourIdx=-1, color=(0, 0, 255), thickness=1, lineType=cv2.LINE_AA)
     #_3DVisLabLib.ImageViewer_Quick_no_resize(out,0,True,False)
@@ -572,29 +585,38 @@ def median_blur(inputimage, kernalsize):
 # #img_proc_chain.append(threshold_img)
 
 def find_lumotag(inputimg, dataobject : WorkingData):
+
     """analyse input image for specific lumotag pattern"""
+    #~2ms
     img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
     dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
     #copy original image into folder
     #orig_img = img.copy()
-    orig_img=clahe_equalisation(inputimg.copy())
+    
+    #~20ms
+    orig_img=clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
     dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
     ''''test area'''
+   
+   #this section about 80ms
     gray_orig = mono_img(orig_img)
     blurred = median_blur(gray_orig,7)
     dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
     #edge_im = edge_img(blurred)
     squr_img=threshold_img(blurred,low=127)
     squr_img=invert_img(squr_img)
+
+
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
-    squr_img, contours=get_ID_bodies(squr_img, dataobject)
+    with time_it():
+        squr_img, contours=get_ID_bodies(squr_img, dataobject)
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
-    squr_img_gray = cv2.cvtColor(squr_img,cv2.COLOR_BGR2GRAY)
+    #squr_img_gray = cv2.cvtColor(squr_img,cv2.COLOR_BGR2GRAY)
     squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
     analyse_IDs = analyse_candidate_contours(original_img=inputimg.copy(),
                                             original_img_grayscale = img_grayscale,
                                             masked_img = squr_img_mask,
-                                            thresholded_img= squr_img_gray,
+                                            thresholded_img= None,
                                             contours = contours,
                                             dataobject = dataobject)
     if analyse_IDs is not None:
