@@ -455,7 +455,8 @@ def decode_pattern(lumostate : lumogun_state):
                     except:
                         pass #BAD
 
-
+            continue
+        
             try:
                 print("trying to get image")
                 times.append((time.perf_counter(),"start"))
