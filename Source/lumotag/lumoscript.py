@@ -440,6 +440,7 @@ def decode_pattern(lumostate : lumogun_state):
                 output = picam2.capture_array("main")
                 output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
                 output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
                 ImageViewer_Quick_no_resize(output,0,False,False)
                 continue
                 if output is not None:
