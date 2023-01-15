@@ -282,6 +282,7 @@ def decode_ID_image(img,dataobject : WorkingData):
     # create ID badge
     id_badge = np.zeros((50,50,3), np.uint8)
     id_badge = cv2.putText(id_badge, "4", (15,35), cv2.FONT_HERSHEY_SIMPLEX,fontScale=1,color=(0,0,255),thickness=2)
+    id_badge = cv2.rotate(id_badge, cv2.ROTATE_90_CLOCKWISE)
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
     contours, hierarchy = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)#RETR_EXTERNAL #RETR_TREE
      
