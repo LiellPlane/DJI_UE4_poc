@@ -444,8 +444,8 @@ def decode_pattern(lumostate : lumogun_state):
                     continue
                 try:
                     output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                    output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                     lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                    output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 except Exception as e:
                     lumotags_found = None
                     ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
@@ -475,7 +475,7 @@ def decode_pattern(lumostate : lumogun_state):
             #             pass #BAD
 
             # continue
-
+            continue
             try:
                 #print("trying to get image")
                 times.append((time.perf_counter(),"start"))

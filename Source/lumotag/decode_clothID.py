@@ -295,15 +295,11 @@ def decode_ID_image(img,dataobject : WorkingData):
     contours_area = []
 
 
-    img_check_contours = img.copy()
-    #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
-    img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
+    #img_check_contours = img.copy()
+    #img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
     
-    for i, cnt in enumerate(contours):
-        cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(255,int(255/(i+1)),int(255/(i+1))), thickness=1, lineType=cv2.LINE_AA)
-    #_3DVisLabLib.ImageViewer_Quick_no_resize(img_check_contours,0,True,False)
-    #dataobject.img_view_or_save_if_debug(img_check_contours,f"Debug_Images.all_contours.value{len(contours)}")
-
+    #for i, cnt in enumerate(contours):
+    #    cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(255,int(255/(i+1)),int(255/(i+1))), thickness=1, lineType=cv2.LINE_AA)
 
     #np.diff(np.where(has_children == -1))
     #print("checking check id input")
@@ -329,15 +325,19 @@ def decode_ID_image(img,dataobject : WorkingData):
             contours_cirles.append((con, hier))
             circularities.append(circularity)
     #print("cnts after circle filter", len(contours_cirles))
-    img_check_contours = img.copy()
-    #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
-    img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
+
     filtered_hierarchy = np.expand_dims(np.array([i[1] for i in contours_cirles]), axis=0)
-    #cv2.drawContours(image=img_check_contours, contours=[i[0] for i in contours_cirles], contourIdx=-1, color=(0, 0, 255), thickness=1, lineType=cv2.LINE_AA)
-    
-    for i, cnt in enumerate([i[0] for i in contours_cirles]):
-        cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(50,255),random.randint(50,255),int(255/(i+1))), thickness=1, lineType=cv2.LINE_AA)
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(img_check_contours,0,True,False)
+    img_check_contours = None #LAZY CODE do this properly 
+    if dataobject.debug is True:
+        img_check_contours = img.copy()
+        #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
+        img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
+        
+        #cv2.drawContours(image=img_check_contours, contours=[i[0] for i in contours_cirles], contourIdx=-1, color=(0, 0, 255), thickness=1, lineType=cv2.LINE_AA)
+        
+        for i, cnt in enumerate([i[0] for i in contours_cirles]):
+            cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(50,255),random.randint(50,255),int(255/(i+1))), thickness=1, lineType=cv2.LINE_AA)
+            #_3DVisLabLib.ImageViewer_Quick_no_resize(img_check_contours,0,True,False)
     #dataobject.img_view_or_save_if_debug(img_check_contours,f"Debug_Images.fitered_contours.value{len(contours_cirles)}")
 
     if len(contours_cirles) > 4 : # ID body and 4 internal markers:
@@ -372,14 +372,15 @@ def get_ID_bodies(img, dataobject : WorkingData):
     # chk_cnts = img.copy()
     # chk_cnts = cv2.cvtColor(chk_cnts, cv2.COLOR_GRAY2RGB)
     # chk_cnts = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
-    img_check_contours = img.copy()
-    #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
-    img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
-    for i, cnt in enumerate([i for i in contours]):
-        cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)), thickness=1, lineType=cv2.LINE_AA)
-    #cv2.drawContours(image=shw_cnts, contours=contours, contourIdx=-1, color=(255, 255, 255), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
-    # _3DVisLabLib.ImageViewer_Quick_no_resize(chk_cnts,0,True,False)
-    dataobject.img_view_or_save_if_debug(img_check_contours, Debug_Images.unfiltered_contours.value)
+    if dataobject.debug is True:
+        img_check_contours = img.copy()
+        #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
+        img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
+        for i, cnt in enumerate([i for i in contours]):
+            cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)), thickness=1, lineType=cv2.LINE_AA)
+        #cv2.drawContours(image=shw_cnts, contours=contours, contourIdx=-1, color=(255, 255, 255), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
+        # _3DVisLabLib.ImageViewer_Quick_no_resize(chk_cnts,0,True,False)
+        dataobject.img_view_or_save_if_debug(img_check_contours, Debug_Images.unfiltered_contours.value)
 
     contours_area = []
     # calculate area and filter into new array
@@ -388,15 +389,15 @@ def get_ID_bodies(img, dataobject : WorkingData):
         if 400 < area < 1000000:
             contours_area.append(con)
 
-
-    img_check_contours = img.copy()
-    #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
-    img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
-    for i, cnt in enumerate([i for i in contours_area]):
-        cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)), thickness=1, lineType=cv2.LINE_AA)
-    #cv2.drawContours(image=shw_cnts, contours=contours, contourIdx=-1, color=(255, 255, 255), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
-    # _3DVisLabLib.ImageViewer_Quick_no_resize(chk_cnts,0,True,False)
-    dataobject.img_view_or_save_if_debug(img_check_contours, Debug_Images.Filtered_area_contours.value)
+    if dataobject.debug is True:
+        img_check_contours = img.copy()
+        #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
+        img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
+        for i, cnt in enumerate([i for i in contours_area]):
+            cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)), thickness=1, lineType=cv2.LINE_AA)
+        #cv2.drawContours(image=shw_cnts, contours=contours, contourIdx=-1, color=(255, 255, 255), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
+        # _3DVisLabLib.ImageViewer_Quick_no_resize(chk_cnts,0,True,False)
+        dataobject.img_view_or_save_if_debug(img_check_contours, Debug_Images.Filtered_area_contours.value)
 
 
     # print("contours filtered by area")
@@ -419,18 +420,19 @@ def get_ID_bodies(img, dataobject : WorkingData):
         if 0.3 < circularity < 3.2:
             contours_cirles.append(con)
     
-    img_check_contours = img.copy()
-    #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
-    img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
-    for i, cnt in enumerate([i for i in contours_cirles]):
-        cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)), thickness=1, lineType=cv2.LINE_AA)
-    #cv2.drawContours(image=shw_cnts, contours=contours, contourIdx=-1, color=(255, 255, 255), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
-    # _3DVisLabLib.ImageViewer_Quick_no_resize(chk_cnts,0,True,False)
-    dataobject.img_view_or_save_if_debug(img_check_contours, Debug_Images.filtered_circularity_contours.value)
+    if dataobject.debug is True:
+        img_check_contours = img.copy()
+        #img_check_contours = cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB)
+        img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
+        for i, cnt in enumerate([i for i in contours_cirles]):
+            cv2.drawContours(image=img_check_contours, contours=[cnt], contourIdx=-1, color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)), thickness=1, lineType=cv2.LINE_AA)
+        #cv2.drawContours(image=shw_cnts, contours=contours, contourIdx=-1, color=(255, 255, 255), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
+        # _3DVisLabLib.ImageViewer_Quick_no_resize(chk_cnts,0,True,False)
+        dataobject.img_view_or_save_if_debug(img_check_contours, Debug_Images.filtered_circularity_contours.value)
 
     out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
     cv2.drawContours(image=out, contours=contours_cirles, contourIdx=-1, color=(0, 255, 0), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
-    #cv2.drawContours(out, contours_cirles, , 255,1)
+        #cv2.drawContours(out, contours_cirles, , 255,1)
 
     #print("contours filtered by circularity")
     #chk_cnts = img.copy()
