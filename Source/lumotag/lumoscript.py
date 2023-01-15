@@ -441,6 +441,7 @@ def decode_pattern(lumostate : lumogun_state):
                 if output is not None:
                     now_ns = time.time_ns()
                     try:
+                        cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
                         lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
                         if lumotags_found is not None:
                             lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
@@ -453,7 +454,8 @@ def decode_pattern(lumostate : lumogun_state):
                             out = cv2.resize(out,tuple(reversed(screensizes.desktop_os_opencv.value)))
                             ImageViewer_Quick_no_resize(out,0.3,False,False)
                             
-                    except:
+                    except Exception as e:
+                        ImageViewer_Quick_no_resize(exceptionwindow(str(e),screensizes.desktop_os_opencv.value),2,False,True)
                         pass #BAD
 
             continue
