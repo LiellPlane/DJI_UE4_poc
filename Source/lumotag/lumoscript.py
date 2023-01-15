@@ -440,16 +440,19 @@ def decode_pattern(lumostate : lumogun_state):
             perf_strings = ""
             if trigs[2] is True:
                 output = picam2.capture_array("main")
-                output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                
                 try:
-                    lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
+                    lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                    lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
+                    lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 except Exception as e:
                     lumotags_found = None
                     ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
                 if lumotags_found is not None:
                     ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
                 else:
+                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                    output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                     ImageViewer_Quick_no_resize(output,0,False,False)
                 continue
                 if output is not None:
