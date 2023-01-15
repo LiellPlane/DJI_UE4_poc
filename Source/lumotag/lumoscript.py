@@ -438,6 +438,8 @@ def decode_pattern(lumostate : lumogun_state):
             perf_strings = ""
             if trigs[2] is True:
                 output = picam2.capture_array("main")
+                ImageViewer_Quick_no_resize(output,0,False,False)
+                continue
                 if output is not None:
                     now_ns = time.time_ns()
                     try:

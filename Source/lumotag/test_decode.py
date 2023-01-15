@@ -19,7 +19,7 @@ def read_img(img_filepath):
     return cv2.imread(img_filepath)
 workingdata = decode_clothID.WorkingData()
 
-workingdata.debug= True
+workingdata.debug= False
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"C:\Working\nonwork\lumotag\live_tests")
 
