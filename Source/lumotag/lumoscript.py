@@ -439,46 +439,45 @@ def decode_pattern(lumostate : lumogun_state):
             times = []
             perf_strings = ""
             if trigs[2] is True:
-                output = picam2.capture_array("main")
-                
+                #output = picam2.capture_array("main")
+                if output is None:
+                    continue
                 try:
+                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                    output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                     lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
-                    lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
-                    lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 except Exception as e:
                     lumotags_found = None
                     ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
                 if lumotags_found is not None:
                     ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
                 else:
-                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                    output = cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                     ImageViewer_Quick_no_resize(output,0,False,False)
-                continue
-                if output is not None:
-                    now_ns = time.time_ns()
-                    try:
-                        cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
-                        lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
-                        if lumotags_found is not None:
-                            lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
-                            lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                            cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
-                            ImageViewer_Quick_no_resize(lumotags_found,0.3,False,False)
-                        else:
-                            out = np.zeros_like(cv2.cvtColor(output, cv2.COLOR_GRAY2RGB))
-                            out = cv2.rotate(out, cv2.ROTATE_90_CLOCKWISE)
-                            out = cv2.resize(out,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                            ImageViewer_Quick_no_resize(out,0.3,False,False)
+            #     continue
+            #     if output is not None:
+            #         now_ns = time.time_ns()
+            #         try:
+            #             cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+            #             lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
+            #             if lumotags_found is not None:
+            #                 lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
+            #                 lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
+            #                 cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+            #                 ImageViewer_Quick_no_resize(lumotags_found,0.3,False,False)
+            #             else:
+            #                 out = np.zeros_like(cv2.cvtColor(output, cv2.COLOR_GRAY2RGB))
+            #                 out = cv2.rotate(out, cv2.ROTATE_90_CLOCKWISE)
+            #                 out = cv2.resize(out,tuple(reversed(screensizes.desktop_os_opencv.value)))
+            #                 ImageViewer_Quick_no_resize(out,0.3,False,False)
                             
-                    except Exception as e:
-                        ImageViewer_Quick_no_resize(exceptionwindow(str(e),screensizes.desktop_os_opencv.value),2,False,True)
-                        pass #BAD
+            #         except Exception as e:
+            #             ImageViewer_Quick_no_resize(exceptionwindow(str(e),screensizes.desktop_os_opencv.value),2,False,True)
+            #             pass #BAD
 
-            continue
+            # continue
 
             try:
-                print("trying to get image")
+                #print("trying to get image")
                 times.append((time.perf_counter(),"start"))
                 output = picam2.capture_array("main")
                 times.append((time.perf_counter()-times[-1][0],"get output"))
