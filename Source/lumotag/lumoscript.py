@@ -454,6 +454,8 @@ def decode_pattern(lumostate : lumogun_state):
                     ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
                 else:
                     ImageViewer_Quick_no_resize(output,0,False,False)
+
+                    continue
             #     continue
             #     if output is not None:
             #         now_ns = time.time_ns()
@@ -478,17 +480,14 @@ def decode_pattern(lumostate : lumogun_state):
             
             try:
                 #print("trying to get image")
-                times.append((time.perf_counter(),"start"))
                 output = picam2.capture_array("main")
-                times.append((time.perf_counter()-times[-1][0],"get output"))
+                output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
                 array=cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                times.append((time.perf_counter()-times[-1][0],"resize once"))
-                #array = text_on_image(array, str(trigs))
-                #array = text_on_image(array, perf_strings)#f"{output.shape}")
-                array = cv2.cvtColor(array, cv2.COLOR_BGR2GRAY)
                 array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
                 array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
-                array = cv2.resize(array,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                if lumotags_found is not None:
+                    mini_latch = cv2.resize(lumotags_found,(70,70))
+                    array[0:70,0:70] = mini_latch
                 times.append((time.perf_counter()-times[-1][0],"various functions"))
                 #array = cv2.cvtColor(array, cv2.COLORMAP_RAINBOW)
                 ImageViewer_Quick_no_resize(array,0,False,False)
