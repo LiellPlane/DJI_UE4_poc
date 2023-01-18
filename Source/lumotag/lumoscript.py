@@ -482,7 +482,7 @@ def decode_pattern(lumostate : lumogun_state):
                 #print("trying to get image")
                 output = picam2.capture_array("main")
                 output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-                array=cv2.resize(output,tuple(screensizes.desktop_os_opencv.value))
+                array=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
                 array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
                 #array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
                 #honestly whjat the fuk
