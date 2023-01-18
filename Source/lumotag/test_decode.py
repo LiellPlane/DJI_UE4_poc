@@ -29,5 +29,5 @@ for img_filepath in input_imgs:
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     arse = decode_clothID.find_lumotag(img, workingdata)
-    sss
+    
     ImageViewer_Quickv2(arse,0,False,True)
