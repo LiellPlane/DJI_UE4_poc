@@ -488,14 +488,12 @@ def decode_pattern(lumostate : lumogun_state):
                 if lumotags_found is not None:
                     mini_latch = cv2.resize(lumotags_found,(70,70))
                     array[0:70,0:70] = mini_latch
-                times.append((time.perf_counter()-times[-1][0],"various functions"))
-                #array = cv2.cvtColor(array, cv2.COLORMAP_RAINBOW)
                 ImageViewer_Quick_no_resize(array,0,False,False)
-                times.append((time.perf_counter()-times[-1][0],"image viewer"))
 
             except Exception as e:
                 print(e)
                 except_img = exceptionwindow(e, imgshape=tuple(reversed(screensizes.desktop_os_opencv.value)))
+                except_img = cv2.rotate(except_img, cv2.ROTATE_90_CLOCKWISE)
                 ImageViewer_Quick_no_resize(except_img,0,False,False)
 
 def unknown_loop():
