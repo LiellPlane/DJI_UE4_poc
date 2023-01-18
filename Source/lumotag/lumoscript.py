@@ -485,9 +485,10 @@ def decode_pattern(lumostate : lumogun_state):
                 array=cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
                 array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
+                array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
                 if lumotags_found is not None:
                     mini_latch = cv2.resize(lumotags_found,(70,70))
-                    array[0:70,0:70] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
+                    array[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
                 ImageViewer_Quick_no_resize(array,0,False,False)
 
             except Exception as e:
