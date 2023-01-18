@@ -429,6 +429,7 @@ def decode_pattern(lumostate : lumogun_state):
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
         config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+        picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
         picam2.configure(config)
         picam2.start()
         time.sleep(0.1)
@@ -443,19 +444,19 @@ def decode_pattern(lumostate : lumogun_state):
                 output = picam2.capture_array("main")
                 if output is None:
                     continue
-                try:
-                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                    lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
-                    lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                except Exception as e:
-                    lumotags_found = None
-                    ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
-                if lumotags_found is not None:
-                    ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
-                else:
-                    ImageViewer_Quick_no_resize(output,0,False,False)
+                #try:
+                output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                lumotags_found = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                #     lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                # except Exception as e:
+                #     lumotags_found = None
+                #     ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
+                # if lumotags_found is not None:
+                #     ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
+                # else:
+                #     ImageViewer_Quick_no_resize(output,0,False,False)
 
-                    continue
+                #     continue
             #     continue
             #     if output is not None:
             #         now_ns = time.time_ns()
