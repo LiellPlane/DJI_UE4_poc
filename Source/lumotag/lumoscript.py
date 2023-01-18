@@ -69,7 +69,7 @@ class HQ_Cam_vidmodes(enum.Enum):
     _2 = ["2028 × 1080p50,",(2020, 1080)] # this is not losing res -  turn camera 90 degrees
     _3 = ["1332 × 990p120",(1332, 990)]
     _1 = ["2028 × 1520p40",(2020, 1520)]
-    _4 = ["640 × 480",(640, 480)]
+    #_4 = ["640 × 480",(640, 480)]
 
 def ImageViewer_Quick_no_resize(inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
     try:
