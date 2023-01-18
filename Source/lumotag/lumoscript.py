@@ -482,11 +482,13 @@ def decode_pattern(lumostate : lumogun_state):
                 #print("trying to get image")
                 output = picam2.capture_array("main")
                 output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-                array=cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                array=cv2.resize(output,tuple(screensizes.desktop_os_opencv.value))
                 array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
-                array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
+                #array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
                 #honestly whjat the fuk
+                #array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
                 array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
                 if lumotags_found is not None:
                     mini_latch = cv2.resize(lumotags_found,(300,300))
                     array[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
