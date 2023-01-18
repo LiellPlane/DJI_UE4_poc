@@ -613,7 +613,8 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     gray_orig = mono_img(orig_img)
     with time_it():
         print("median_blur")
-        blurred = median_blur(gray_orig,7)
+        #blurred = median_blur(gray_orig,7)
+        blurred = cv2.blur(gray_orig,(7,7)) # fastest filter
         dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
         #edge_im = edge_img(blurred)
     with time_it():

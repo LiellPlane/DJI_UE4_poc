@@ -438,7 +438,7 @@ def decode_pattern(lumostate : lumogun_state):
             trigs = test_inputs(lumostate)
             times = []
             perf_strings = ""
-            if True: #if trigs[2] is True:
+            if trigs[2] is True:
                 #do we want to take the image before or after?
                 output = picam2.capture_array("main")
                 if output is None:
@@ -475,17 +475,16 @@ def decode_pattern(lumostate : lumogun_state):
             #             ImageViewer_Quick_no_resize(exceptionwindow(str(e),screensizes.desktop_os_opencv.value),2,False,True)
             #             pass #BAD
 
-            continue
+            
             try:
                 #print("trying to get image")
                 times.append((time.perf_counter(),"start"))
                 output = picam2.capture_array("main")
-                continue
                 times.append((time.perf_counter()-times[-1][0],"get output"))
                 array=cv2.resize(output,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 times.append((time.perf_counter()-times[-1][0],"resize once"))
                 #array = text_on_image(array, str(trigs))
-                array = text_on_image(array, perf_strings)#f"{output.shape}")
+                #array = text_on_image(array, perf_strings)#f"{output.shape}")
                 array = cv2.cvtColor(array, cv2.COLOR_BGR2GRAY)
                 array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
                 array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
