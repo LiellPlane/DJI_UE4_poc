@@ -65,9 +65,9 @@ class libcam_commands(enum.Enum):
 
 
 class HQ_Cam_vidmodes(enum.Enum):
+    _2 = ["2028 × 1080p50,",(2020, 1080)] # this is not losing res -  turn camera 90 degrees
     _3 = ["1332 × 990p120",(1332, 990)]
     _1 = ["2028 × 1520p40",(2020, 1520)]
-    _2 = ["2028 × 1080p50,",(2020, 1080)] # this is not losing res -  turn camera 90 degrees
     _4 = ["640 × 480",(640, 480)]
 
 def ImageViewer_Quick_no_resize(inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
@@ -438,8 +438,9 @@ def decode_pattern(lumostate : lumogun_state):
             trigs = test_inputs(lumostate)
             times = []
             perf_strings = ""
-            if trigs[2] is True:
-                #output = picam2.capture_array("main")
+            if True: #if trigs[2] is True:
+                #do we want to take the image before or after?
+                output = picam2.capture_array("main")
                 if output is None:
                     continue
                 try:
@@ -474,7 +475,7 @@ def decode_pattern(lumostate : lumogun_state):
             #             ImageViewer_Quick_no_resize(exceptionwindow(str(e),screensizes.desktop_os_opencv.value),2,False,True)
             #             pass #BAD
 
-            # continue
+            continue
             try:
                 #print("trying to get image")
                 times.append((time.perf_counter(),"start"))

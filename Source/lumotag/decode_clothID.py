@@ -367,7 +367,9 @@ def get_ID_bodies(img, dataobject : WorkingData):
     """provide thresholded image (might have to inverted to avoid segments
     on edge of image being classed as external), will filter contours for circularity"""
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
-    contours, _ = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+    with time_it():
+        print("get_ID_bodies:: contours")
+        contours, _ = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
 
     # print("unflitered contours")
     # chk_cnts = img.copy()
@@ -484,8 +486,8 @@ def analyse_candidate_contours(original_img,
     original_image = np array n/n/3 (colour image)
     masked_img = binary image
     contour"""
-    if masked_img.max()>1:
-        raise ValueError("masked image input to analyse_candidate_contours not binary value")
+    #if masked_img.max()>1:
+    #    raise ValueError("masked image input to analyse_candidate_contours not binary value")
     #if original_img.shape[2]!=3:
     #    raise ValueError("input image not colour")
     #kernel = np.ones((5, 5), np.uint8)
@@ -591,37 +593,55 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
     #~2ms
+    with time_it():
+        print("grayscale")
     img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
     dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
     #copy original image into folder
     #orig_img = img.copy()
     
     #~20ms
-    orig_img=clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
-    dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
-    ''''test area'''
+    with time_it():
+        print("equalisation")
+        orig_img=clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
+        dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
+        ''''test area'''
    
    #this section about 80ms
+    with time_it():
+        print("mono_img")
     gray_orig = mono_img(orig_img)
-    blurred = median_blur(gray_orig,7)
-    dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
-    #edge_im = edge_img(blurred)
-    squr_img=threshold_img(blurred,low=127)
-    squr_img=invert_img(squr_img)
+    with time_it():
+        print("median_blur")
+        blurred = median_blur(gray_orig,7)
+        dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
+        #edge_im = edge_img(blurred)
+    with time_it():
+        print("threshold_img")
+        squr_img=threshold_img(blurred,low=127)
+    with time_it():
+        print("invert_img")
+        squr_img=invert_img(squr_img)
 
 
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
     with time_it():
+        
         squr_img, contours=get_ID_bodies(squr_img, dataobject)
+        print("get_ID_bodies total")
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
     #squr_img_gray = cv2.cvtColor(squr_img,cv2.COLOR_BGR2GRAY)
-    squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
-    analyse_IDs = analyse_candidate_contours(original_img=inputimg.copy(),
-                                            original_img_grayscale = img_grayscale,
-                                            masked_img = squr_img_mask,
-                                            thresholded_img= None,
-                                            contours = contours,
-                                            dataobject = dataobject)
+    #with time_it():
+    #    print("squr_img_mask")
+    #squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
+    with time_it():
+        print("analyse_candidate_contours")
+        analyse_IDs = analyse_candidate_contours(original_img=inputimg.copy(),
+                                                original_img_grayscale = img_grayscale,
+                                                masked_img = None,
+                                                thresholded_img= None,
+                                                contours = contours,
+                                                dataobject = dataobject)
     if analyse_IDs is not None:
         dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
         return analyse_IDs
@@ -684,8 +704,8 @@ def old_testing():
         squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
         analyse_IDs = analyse_candidate_contours(original_img=img.copy(),
                                                 original_img_grayscale = img_grayscale,
-                                                masked_img = squr_img_mask,
-                                                thresholded_img= squr_img_gray,
+                                                masked_img = None,
+                                                thresholded_img= None,
                                                 contours = contours,
                                                 dataobject = workingdata)
         #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
