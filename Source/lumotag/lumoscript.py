@@ -487,7 +487,7 @@ def decode_pattern(lumostate : lumogun_state):
                 #array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
                 #honestly whjat the fuk
                 #array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
-                output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
 
                 if lumotags_found is not None:
                     mini_latch = cv2.resize(lumotags_found,(300,300))
