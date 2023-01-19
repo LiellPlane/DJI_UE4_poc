@@ -281,7 +281,8 @@ def decode_ID_image(img,dataobject : WorkingData):
     
     # create ID badge
     id_badge = np.zeros((50,50,3), np.uint8)
-    id_badge = cv2.putText(id_badge, "4", (15,35), cv2.FONT_HERSHEY_SIMPLEX,fontScale=1,color=(0,0,255),thickness=2)
+    id_badge[:,:,1] = 255
+    id_badge = cv2.putText(id_badge, "P3", (4,40), cv2.FONT_HERSHEY_SIMPLEX,fontScale=1,color=(0,0,0),thickness=2)
     id_badge = cv2.rotate(id_badge, cv2.ROTATE_90_CLOCKWISE)
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
     contours, hierarchy = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)#RETR_EXTERNAL #RETR_TREE
@@ -289,7 +290,7 @@ def decode_ID_image(img,dataobject : WorkingData):
     if contours is None or len(contours) == 0:
         
         #dataobject.img_view_or_save_if_debug(img,f"{Debug_Images.ERROR_no_contours.value}")
-        return None, None
+        return None, False
     #img_check_contours = img.copy()
     #img_check_contours = cv2.cvtColor(img_check_contours,cv2.COLOR_GRAY2BGR)
     #cv2.drawContours(image=img_check_contours, contours=contours, contourIdx=-1, color=(0, 0, 255), thickness=1, lineType=cv2.LINE_AA)
@@ -345,11 +346,11 @@ def decode_ID_image(img,dataobject : WorkingData):
         pass
         #dataobject.img_view_or_save_if_debug(img_check_contours,f"Debug_Images.GOOD_CANDIDATE_ContourCount.value{len(contours_cirles)}")
     else:
-        return None, None
+        return None, False
 
     if not check_ID_contours_match_spec(filtered_hierarchy, circularities):
         #_3DVisLabLib.ImageViewer_Quick_no_resize(img_check_contours,0,True,False)
-        return None, None
+        return None, False
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img_check_contours,0,True,False)
     dataobject.img_view_or_save_if_debug(img_check_contours,f"POSITIVE_ID_ContourCount{len(contours_cirles)}")
 
@@ -361,7 +362,7 @@ def decode_ID_image(img,dataobject : WorkingData):
     cv2.drawContours(image=out, contours=[i[0] for i in contours_cirles], contourIdx=-1, color=(0, 0, 255), thickness=1, lineType=cv2.LINE_AA)
     #_3DVisLabLib.ImageViewer_Quick_no_resize(out,0,True,False)
     #cv2.drawContours(out, contours_cirles, , 255,1)
-    return id_badge, contours_cirles
+    return id_badge, True
 
 def get_ID_bodies(img, dataobject : WorkingData):
     """provide thresholded image (might have to inverted to avoid segments
@@ -548,7 +549,7 @@ def analyse_candidate_contours(original_img,
         #_3DVisLabLib.ImageViewer_Quick_no_resize(masked_ID,0,True,False)
         #continue
 
-        decoded_ID,_= decode_ID_image(original_samp, dataobject)
+        decoded_ID, playerfound= decode_ID_image(original_samp, dataobject)
         #if decoded_ID is not None:
         #    img_with_contours = cv2.rectangle(original_img, (x,y), (x+w,y+h), (0,0,255), 2)
         #_3DVisLabLib.ImageViewer_Quick_no_resize(decoded_ID,0,True,False)
@@ -563,7 +564,7 @@ def analyse_candidate_contours(original_img,
 
 
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img_with_contours,0,True,False)
-    return original_img
+    return original_img, playerfound
 
 def cumulative_dist_histogram():
     plop
@@ -637,7 +638,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
     with time_it():
         print("analyse_candidate_contours")
-        analyse_IDs = analyse_candidate_contours(original_img=inputimg.copy(),
+        analyse_IDs, playerfound = analyse_candidate_contours(original_img=inputimg.copy(),
                                                 original_img_grayscale = img_grayscale,
                                                 masked_img = None,
                                                 thresholded_img= None,
@@ -645,8 +646,8 @@ def find_lumotag(inputimg, dataobject : WorkingData):
                                                 dataobject = dataobject)
     if analyse_IDs is not None:
         dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
-        return analyse_IDs
-    return inputimg
+        return analyse_IDs,playerfound
+    return inputimg, False
     
 def test_live():
 
