@@ -490,19 +490,26 @@ def decode_pattern(lumostate : lumogun_state):
             
             try:
                 #print("trying to get image")
-                output = picam2.capture_array("main")
-                output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-                output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
-                output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-                #array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
-                #honestly whjat the fuk
-                #array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
-                output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                with decode_clothID.time_it():
+                    output = picam2.capture_array("main")
+                    print("image capture time")
+                with decode_clothID.time_it():
+                    output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+                    output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
+                    output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+                    #array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
+                    #honestly whjat the fuk
+                    #array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                    print("image prepare time time")
 
-                if lumotags_found is not None:
-                    mini_latch = cv2.resize(lumotags_found,(300,300))
-                    output[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
-                ImageViewer_Quick_no_resize(output,0,False,False)
+                    if lumotags_found is not None:
+                        mini_latch = cv2.resize(lumotags_found,(300,300))
+                        output[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
+                with decode_clothID.time_it():
+                    ImageViewer_Quick_no_resize(output,0,False,False)
+                    print("image display time")
+                    
 
             except Exception as e:
                 print(e)
