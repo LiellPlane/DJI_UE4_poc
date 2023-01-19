@@ -449,12 +449,12 @@ def decode_pattern(lumostate : lumogun_state):
                 #try:
                 output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
                 lumotags_found, playerfound = decode_clothID.find_lumotag(output, workingdata_decodetag)
-                # if playerfound is True:
-                #     trigger_res = cv2.resize(good_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                #     ImageViewer_Quick_no_resize(trigger_res,0,False,False)
-                # else:
-                #     trigger_res = cv2.resize(no_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
-                #     ImageViewer_Quick_no_resize(trigger_res,0,False,False)
+                if playerfound is True:
+                    trigger_res = cv2.resize(good_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                    ImageViewer_Quick_no_resize(trigger_res,0,False,False)
+                else:
+                    trigger_res = cv2.resize(no_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                    ImageViewer_Quick_no_resize(trigger_res,0,False,False)
 
                 #     lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
                 # except Exception as e:

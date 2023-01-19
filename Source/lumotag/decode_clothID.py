@@ -487,6 +487,7 @@ def analyse_candidate_contours(original_img,
     original_image = np array n/n/3 (colour image)
     masked_img = binary image
     contour"""
+    playerfound = False
     #if masked_img.max()>1:
     #    raise ValueError("masked image input to analyse_candidate_contours not binary value")
     #if original_img.shape[2]!=3:
