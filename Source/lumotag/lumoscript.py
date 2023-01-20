@@ -417,7 +417,7 @@ def decode_pattern(lumostate : lumogun_state):
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
     #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version=" fuk picam2")
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
-
+    from picamera2.encoders import Encoder
     workingdata_decodetag =decode_clothID.WorkingData()
     workingdata_decodetag.debug= False
     no_res = np.zeros((50,50,3), np.uint8)
@@ -433,7 +433,9 @@ def decode_pattern(lumostate : lumogun_state):
         #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
-        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+        #config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+           
+        config = picam2.create_video_configuration(raw={}, encode="raw",main={"size": lumostate.long_vid_res})#
         picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
         picam2.configure(config)
         picam2.start()
@@ -496,7 +498,7 @@ def decode_pattern(lumostate : lumogun_state):
             try:
                 #print("trying to get image")
                 with decode_clothID.time_it():
-                    output = picam2.capture_array("main")
+                    output = picam2.capture_array("main") # 90 ms on pi max res!
                     print("image capture time")
                 with decode_clothID.time_it():
                     output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
@@ -506,7 +508,7 @@ def decode_pattern(lumostate : lumogun_state):
                     #honestly whjat the fuk
                     #array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
                     output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                    print("image prepare time time")
+                    print("image prepare time time") # 17 ms max res
 
                     if lumotags_found is not None:
                         mini_latch = cv2.resize(lumotags_found,(300,300))
