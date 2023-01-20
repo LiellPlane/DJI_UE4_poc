@@ -451,7 +451,9 @@ def decode_pattern(lumostate : lumogun_state):
                     continue
                 #try:
                 output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                lumotags_found, playerfound = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                with decode_clothID.time_it():
+                    lumotags_found, playerfound = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                    print("decode pattern time")
                 if playerfound is True:
                     trigger_res = cv2.resize(good_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
                     ImageViewer_Quick_no_resize(trigger_res,0,False,False)
