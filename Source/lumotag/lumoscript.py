@@ -441,7 +441,9 @@ def decode_pattern(lumostate : lumogun_state):
         output = None
         lumotags_found = None
         while True:
-            trigs = test_inputs(lumostate)
+            with decode_clothID.time_it():
+                trigs = test_inputs(lumostate)
+                print("input test time")
             if trigs[2] is True:
                 #do we want to take the image before or after?
                 output = picam2.capture_array("main")
