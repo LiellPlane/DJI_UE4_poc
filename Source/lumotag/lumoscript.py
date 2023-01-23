@@ -609,6 +609,7 @@ def decode_pattern_speedup(lumostate : lumogun_state):
                 with decode_clothID.time_it():
                     request = picam2.capture_request()
                     #request.save("main", "image.jpg")
+                    output = request.make_array("main")
                     request.release()
                     print("borrow buffer time")
                 with decode_clothID.time_it():
