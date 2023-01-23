@@ -613,7 +613,7 @@ def decode_pattern_speedup(lumostate : lumogun_state):
                     request.release()
                     print("borrow buffer time")
                 with decode_clothID.time_it():
-                    output = picam2.capture_array("main") # 90 ms on pi max res!
+                    output = picam2.capture_array("main")[10:100,10:100,:] # 90 ms on pi max res!
                     print("image capture time")
                 with decode_clothID.time_it():
                     output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
