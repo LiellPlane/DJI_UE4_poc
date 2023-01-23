@@ -1,4 +1,5 @@
 
+ss
 from dataclasses import dataclass, asdict
 from logging import exception
 from multiprocessing import ProcessError
@@ -505,9 +506,6 @@ def decode_pattern(lumostate : lumogun_state):
                     output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
                     output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
                     output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-                    #array = cv2.rotate(array, cv2.ROTATE_180)#_COUNTERCLOCKWISE)
-                    #honestly whjat the fuk
-                    #array = cv2.rotate(array, cv2.ROTATE_90_COUNTERCLOCKWISE)
                     output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
                     print("image prepare time time") # 17 ms max res
 
