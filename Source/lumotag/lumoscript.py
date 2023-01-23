@@ -521,6 +521,119 @@ def decode_pattern(lumostate : lumogun_state):
                 except_img = exceptionwindow(e, imgshape=tuple(reversed(screensizes.desktop_os_opencv.value)))
                 except_img = cv2.rotate(except_img, cv2.ROTATE_90_CLOCKWISE)
                 ImageViewer_Quick_no_resize(except_img,0,False,False)
+def decode_pattern_speedup(lumostate : lumogun_state):
+         #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version="2")
+    #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
+    #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version=" fuk picam2")
+    #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
+    from picamera2.encoders import Encoder
+    workingdata_decodetag =decode_clothID.WorkingData()
+    workingdata_decodetag.debug= False
+    no_res = np.zeros((50,50,3), np.uint8)
+    no_res[:,:,2] = 255
+    good_res = np.zeros((50,50,3), np.uint8)
+    good_res[:,:,1] = 255
+    from picamera2 import Picamera2, Preview
+    picam2 = Picamera2()
+
+    #https://stackoverflow.com/questions/74075544/how-to-capture-raspberry-pi-hq-camera-data-in-yuv-format-using-picamera2
+    while True:
+        ImageViewer_Quick_no_resize(exceptionwindow("start lumotag YO",screensizes.desktop_os_opencv.value),2,False,True)
+        #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
+        #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
+        #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
+        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+           
+        #config = picam2.create_video_configuration(raw={}, encode="raw")#
+        picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
+        picam2.configure(config)
+        picam2.start()
+        time.sleep(0.1)
+        output = None
+        lumotags_found = None
+        while True:
+            with decode_clothID.time_it():
+                trigs = test_inputs(lumostate)
+                print("input test time")
+            if trigs[2] is True:
+                #do we want to take the image before or after?
+                output = picam2.capture_array("main")
+                if output is None:
+                    continue
+                #try:
+                output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                with decode_clothID.time_it():
+                    lumotags_found, playerfound = decode_clothID.find_lumotag(output, workingdata_decodetag)
+                    print("decode pattern time")
+                if playerfound is True:
+                    trigger_res = cv2.resize(good_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                    ImageViewer_Quick_no_resize(trigger_res,0,False,False)
+                else:
+                    trigger_res = cv2.resize(no_res,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                    ImageViewer_Quick_no_resize(trigger_res,0,False,False)
+
+                #     lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
+                # except Exception as e:
+                #     lumotags_found = None
+                #     ImageViewer_Quick_no_resize(exceptionwindow(e,screensizes.desktop_os_opencv.value),2,False,True)
+                # if lumotags_found is not None:
+                #     ImageViewer_Quick_no_resize(lumotags_found,0,False,False)
+                # else:
+                #     ImageViewer_Quick_no_resize(output,0,False,False)
+
+                #     continue
+            #     continue
+            #     if output is not None:
+            #         now_ns = time.time_ns()
+            #         try:
+            #             cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+            #             lumotags_found = decode_clothID.find_lumotag(output.copy(), workingdata_decodetag)
+            #             if lumotags_found is not None:
+            #                 lumotags_found = cv2.rotate(lumotags_found, cv2.ROTATE_90_CLOCKWISE)
+            #                 lumotags_found = cv2.resize(lumotags_found,tuple(reversed(screensizes.desktop_os_opencv.value)))
+            #                 cv2.imwrite(f"/home/lumotag/{now_ns}.jpg",lumotags_found)
+            #                 ImageViewer_Quick_no_resize(lumotags_found,0.3,False,False)
+            #             else:
+            #                 out = np.zeros_like(cv2.cvtColor(output, cv2.COLOR_GRAY2RGB))
+            #                 out = cv2.rotate(out, cv2.ROTATE_90_CLOCKWISE)
+            #                 out = cv2.resize(out,tuple(reversed(screensizes.desktop_os_opencv.value)))
+            #                 ImageViewer_Quick_no_resize(out,0.3,False,False)
+                            
+            #         except Exception as e:
+            #             ImageViewer_Quick_no_resize(exceptionwindow(str(e),screensizes.desktop_os_opencv.value),2,False,True)
+            #             pass #BAD
+
+            
+            try:
+                #print("trying to get image")
+                with decode_clothID.time_it():
+                    request = picam2.capture_request()
+                    #request.save("main", "image.jpg")
+                    request.release()
+                    print("borrow buffer time")
+                with decode_clothID.time_it():
+                    output = picam2.capture_array("main") # 90 ms on pi max res!
+                    print("image capture time")
+                with decode_clothID.time_it():
+                    output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+                    output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
+                    output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                    print("image prepare time time") # 17 ms max res
+
+                    if lumotags_found is not None:
+                        mini_latch = cv2.resize(lumotags_found,(300,300))
+                        output[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
+                with decode_clothID.time_it():
+                    ImageViewer_Quick_no_resize(output,0,False,False)
+                    print("image display time")
+                    
+
+            except Exception as e:
+                print(e)
+                except_img = exceptionwindow(e, imgshape=tuple(reversed(screensizes.desktop_os_opencv.value)))
+                except_img = cv2.rotate(except_img, cv2.ROTATE_90_CLOCKWISE)
+                ImageViewer_Quick_no_resize(except_img,0,False,False)
 
 def unknown_loop():
     picam2.start_preview(Preview.QTGL)
@@ -628,6 +741,6 @@ def startlumoing():
 
 
     #take_image(lumostate)
-    decode_pattern(lumostate)
+    decode_pattern_speedup(lumostate)
     #use_preview_output_loop()
     #test_yuv()
