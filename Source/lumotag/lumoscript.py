@@ -558,6 +558,7 @@ def decode_pattern_speedup(lumostate : lumogun_state):
                 print("input test time")
             if trigs[2] is True:
                 lumostate.next_long_vid_mode()
+                picam2.stop()
                 break
                 #do we want to take the image before or after?
                 output = picam2.capture_array("main")
