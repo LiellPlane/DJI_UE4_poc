@@ -546,6 +546,7 @@ def decode_pattern_speedup(lumostate : lumogun_state):
           
         #config = picam2.create_video_configuration(raw={}, encode="raw")#
         picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
+        picam2.set_controls({"ScalerCrop": [200,200,200,200]})
         picam2.configure(config)
         picam2.start()
         time.sleep(0.1)
