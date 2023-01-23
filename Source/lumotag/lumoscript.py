@@ -542,8 +542,9 @@ def decode_pattern_speedup(lumostate : lumogun_state):
         #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
-        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res}, raw={"format": "SRGGB12_CSI2P"}, display=None)#, controls={"FrameDurationLimits": (233333, 233333)})
-           
+        #config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res}, raw={"format": "SRGGB12_CSI2P"}, display=None)#, controls={"FrameDurationLimits": (233333, 233333)})
+        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res},display=None)#, controls={"FrameDurationLimits": (233333, 233333)})
+          
         #config = picam2.create_video_configuration(raw={}, encode="raw")#
         picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
         picam2.configure(config)
@@ -606,15 +607,17 @@ def decode_pattern_speedup(lumostate : lumogun_state):
             
             try:
                 #print("trying to get image")
+                # with decode_clothID.time_it():
+                #     request = picam2.capture_request()
+                #     #request.save("main", "image.jpg")
+                #     output = request.make_array("main")
+                #     request.release()
+                #     print("borrow buffer time")
                 with decode_clothID.time_it():
-                    request = picam2.capture_request()
-                    #request.save("main", "image.jpg")
-                    output = request.make_array("main")
-                    request.release()
-                    print("borrow buffer time")
-                with decode_clothID.time_it():
-                    output = picam2.capture_array("main")[10:100,10:100,:] # 90 ms on pi max res!
+                    output = picam2.capture_array("main") # 90 ms on pi max res!
                     print("image capture time")
+                crop_in = 300
+                output = output[crop_in:output.shape[1]-crop_in, crop_in:output.shape[0]-crop_in,:]
                 with decode_clothID.time_it():
                     output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
                     output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
