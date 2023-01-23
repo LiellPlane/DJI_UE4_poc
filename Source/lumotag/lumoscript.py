@@ -1,4 +1,3 @@
-
 from dataclasses import dataclass, asdict
 from logging import exception
 from multiprocessing import ProcessError
