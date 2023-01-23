@@ -542,7 +542,7 @@ def decode_pattern_speedup(lumostate : lumogun_state):
         #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
-        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res}, raw=picam2.sensor_modes[2])#, controls={"FrameDurationLimits": (233333, 233333)})
            
         #config = picam2.create_video_configuration(raw={}, encode="raw")#
         picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
