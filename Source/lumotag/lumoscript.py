@@ -65,6 +65,7 @@ class libcam_commands(enum.Enum):
 
 
 class HQ_Cam_vidmodes(enum.Enum):
+    _4 = ["640 × 480",(640, 480)]
     _1 = ["2028 × 1520p40",(2020, 1520)]
     _2 = ["2028 × 1080p50,",(2020, 1080)] # this is not losing res -  turn camera 90 degrees
     _3 = ["1332 × 990p120",(1332, 990)]
@@ -617,7 +618,7 @@ def decode_pattern_speedup(lumostate : lumogun_state):
                 with decode_clothID.time_it():
                     output = picam2.capture_array("main") # 90 ms on pi max res!
                     print("image capture time")
-                crop_in = 300
+                crop_in = 200
                 output = output[crop_in:output.shape[1]-crop_in, crop_in:output.shape[0]-crop_in,:]
                 with decode_clothID.time_it():
                     output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
