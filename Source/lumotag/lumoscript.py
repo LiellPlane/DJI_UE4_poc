@@ -664,7 +664,7 @@ def test_inputs(lumostate : lumogun_state):
     
     outputs = [None,False,False]
 
-    if GPIO.input(lumostate.trigger_rear) == GPIO.LOW:
+    if GPIO.input(lumostate.trigger_rear) == GPIO.LOW or True:
 
         #chn1_debounce.trigger(GPIO.output, relay_chn1, GPIO.HIGH)
 
