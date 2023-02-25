@@ -750,5 +750,5 @@ def startlumoing():
     #take_image(lumostate)
     #decode_pattern(lumostate)
     #use_preview_output_loop()
-    use_preview_output_loop()
+    #use_preview_output_loop()
     #test_yuv()
