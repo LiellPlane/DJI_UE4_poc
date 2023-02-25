@@ -21,7 +21,7 @@ workingdata = decode_clothID.WorkingData()
 
 workingdata.debug= False
 
-input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"C:\Working\nonwork\lumotag\live_tests")
+input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"G:\My Drive\lumotag\2022_12_31_testimages_outside")
 
 print(f"{len(input_imgs)} images found")
 
@@ -30,4 +30,4 @@ for img_filepath in input_imgs:
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     arse, playerfound = decode_clothID.find_lumotag(img, workingdata)
     print(playerfound)
-    ImageViewer_Quickv2(arse,0,False,True)
+    ImageViewer_Quickv2(arse,0,True,True)

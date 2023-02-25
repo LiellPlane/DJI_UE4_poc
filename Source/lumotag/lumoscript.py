@@ -250,7 +250,7 @@ def clean_up_processes(cmds, rec_depth=0):
 
 
 def use_preview_output_loop():
-    start_subprocess(libcam_commands.basic_HD_vid.value)
+    start_subprocess(libcam_commands.stream_locally_udp.value)
     while True:
         test_inputs()
 
@@ -748,6 +748,7 @@ def startlumoing():
 
 
     #take_image(lumostate)
-    decode_pattern(lumostate)
+    #decode_pattern(lumostate)
     #use_preview_output_loop()
+    use_preview_output_loop()
     #test_yuv()

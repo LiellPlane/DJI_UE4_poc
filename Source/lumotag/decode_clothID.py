@@ -560,7 +560,14 @@ def analyse_candidate_contours(original_img,
         # deformed cloth
         if decoded_ID is not None:#
             #TODO why is the image from HQ camera 4 channels? 
-            original_img[y:y + h, x:x + w,0:3] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
+            #original_img[y:y + h, x:x + w,0:3] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
+            original_img = cv2.rectangle(
+                    original_img,
+                    (x, y),
+                    (x + w, y + h),
+                    (0,255, 255),
+                    5
+                    )
             dataobject.img_view_or_save_if_debug(original_img, Debug_Images.ID_BADGE.value)
 
 
