@@ -501,10 +501,11 @@ def decode_pattern(lumostate : lumogun_state):
                 #print("trying to get image")
                 with decode_clothID.time_it():
                     output = picam2.capture_array("main") # 90 ms on pi max res!
+                    (x, y) = lumostate.long_vid_res
                     output = output[0:y, 0:x]
                     print("image capture time")
                 with decode_clothID.time_it():
-                    (x, y) = lumostate.long_vid_res
+                    
                     #  have to chop out luminance part of YUV format image
                     
                     output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
