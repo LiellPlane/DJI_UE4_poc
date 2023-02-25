@@ -604,7 +604,10 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #~2ms
     with time_it():
         print("grayscale")
-    img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+    if len(inputimg.shape)>2:
+        img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+    else:
+        img_grayscale = inputimg
     dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
     #copy original image into folder
     #orig_img = img.copy()

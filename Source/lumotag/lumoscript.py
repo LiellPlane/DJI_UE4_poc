@@ -67,9 +67,10 @@ class libcam_commands(enum.Enum):
 
 
 class HQ_Cam_vidmodes(enum.Enum):
+    _2 = ["2028 × 1080p50,",(2020, 1080)] # this is not losing res -  turn camera 90 degrees
     _4 = ["640 × 480",(640, 480)]
     _1 = ["2028 × 1520p40",(2020, 1520)]
-    _2 = ["2028 × 1080p50,",(2020, 1080)] # this is not losing res -  turn camera 90 degrees
+
     _3 = ["1332 × 990p120",(1332, 990)]
 
     #_4 = ["640 × 480",(640, 480)]
@@ -436,7 +437,7 @@ def decode_pattern(lumostate : lumogun_state):
         config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
            
         #config = picam2.create_video_configuration(raw={}, encode="raw")#
-        picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
+        #picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
         picam2.configure(config)
         picam2.start()
         time.sleep(0.1)
@@ -752,4 +753,4 @@ def startlumoing():
 
 
     #decode_pattern(lumostate)
-    test_yuv(lumostate)
+    decode_pattern(lumostate)
