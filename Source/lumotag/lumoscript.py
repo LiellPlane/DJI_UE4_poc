@@ -282,7 +282,6 @@ def test_yuv(lumostate : lumogun_state):
     while True:
         trigs = test_inputs(lumostate)
         output = picam2.capture_array("main")
-        output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
         output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
         output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
