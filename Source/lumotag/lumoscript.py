@@ -433,7 +433,7 @@ def decode_pattern(lumostate : lumogun_state):
         #2028 × 1080p50, 2028 × 1520p40 and 1332 × 990p120
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
-        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res})#, controls={"FrameDurationLimits": (233333, 233333)})
+        config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
            
         #config = picam2.create_video_configuration(raw={}, encode="raw")#
         picam2.set_controls({"ExposureTime": 10000})#,"size": (4056, 3040)
@@ -449,6 +449,7 @@ def decode_pattern(lumostate : lumogun_state):
             if trigs[2] is True:
                 #do we want to take the image before or after?
                 output = picam2.capture_array("main")
+                output = output[0:y, 0:x]
                 if output is None:
                     continue
                 #try:
@@ -499,9 +500,12 @@ def decode_pattern(lumostate : lumogun_state):
                 #print("trying to get image")
                 with decode_clothID.time_it():
                     output = picam2.capture_array("main") # 90 ms on pi max res!
+                    output = output[0:y, 0:x]
                     print("image capture time")
                 with decode_clothID.time_it():
-                    output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+                    (x, y) = lumostate.long_vid_res
+                    #  have to chop out luminance part of YUV format image
+                    
                     output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
                     output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
                     output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
