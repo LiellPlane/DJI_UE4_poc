@@ -269,26 +269,24 @@ def text_on_image(inputimage, text):
     return inputimage
 
 
-def test_yuv():
+def test_yuv(lumostate : lumogun_state):
     from picamera2 import Picamera2, Preview
     import time
     # Configure camera
     picam2 = Picamera2()
     ### Take IR image in YUV format
-    capture_config = picam2.create_still_configuration(main = {"size": (4056, 3040), "format": "YUV420"})
+    capture_config = picam2.create_video_configuration(main = {"size": (2028, 1080), "format": "YUV420"}) #2028 × 1080
     #capture_config = picam2.create_still_configuration()
     picam2.configure(capture_config)
+    picam2.start()
     while True:
-        picam2.start()
-        arr_ir = picam2.capture_array("main")
-        array = cv2.resize(arr_ir,tuple(reversed(screensizes.desktop_os_opencv.value)))
-        array = cv2.cvtColor(array, cv2.COLOR_BGR2GRAY)
-        array = cv2.normalize(array, array,0, 255, cv2.NORM_MINMAX)
-        array = cv2.rotate(array, cv2.ROTATE_90_CLOCKWISE)
-        array = cv2.resize(array,tuple(reversed(screensizes.desktop_os_opencv.value)))
-        array = cv2.cvtColor(array, cv2.COLORMAP_RAINBOW)
-        ImageViewer_Quick_no_resize(array,0,False,False)
-        picam2.stop()
+        trigs = test_inputs(lumostate)
+        output = picam2.capture_array("main")
+        output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
+        output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
+        output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        ImageViewer_Quick_no_resize(output,0,False,False)
 
 
 def use_process_loop(lumostate : lumogun_state):
@@ -749,8 +747,5 @@ def startlumoing():
 
 
 
-    #take_image(lumostate)
-    decode_pattern(lumostate)
-    #use_preview_output_loop()
-    #use_preview_output_loop()
-    #test_yuv()
+    #decode_pattern(lumostate)
+    test_yuv(lumostate)
