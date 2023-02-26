@@ -450,6 +450,7 @@ def decode_pattern(lumostate : lumogun_state):
             if trigs[2] is True:
                 #do we want to take the image before or after?
                 output = picam2.capture_array("main")
+                (x, y) = lumostate.long_vid_res
                 output = output[0:y, 0:x]
                 if output is None:
                     continue
