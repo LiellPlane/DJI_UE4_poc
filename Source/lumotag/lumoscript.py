@@ -498,36 +498,36 @@ def decode_pattern(lumostate : lumogun_state):
             #             pass #BAD
 
             
-            try:
+            #try:
                 #print("trying to get image")
-                with decode_clothID.time_it():
-                    output = picam2.capture_array("main") # 
-                    (x, y) = lumostate.long_vid_res
-                    output = output[0:y, 0:x]
-                    print("image capture time")
-                with decode_clothID.time_it():
-                    
-                    #  have to chop out luminance part of YUV format image
-                    
-                    output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
-                    output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-                    output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-                    output = cv2.cvtColor(output,cv2.COLOR_BGR2GRAY)
-                    print("image prepare time time") # 17 ms max res
+            with decode_clothID.time_it():
+                output = picam2.capture_array("main") # 
+                (x, y) = lumostate.long_vid_res
+                output = output[0:y, 0:x]
+                print("image capture time")
+            with decode_clothID.time_it():
+                
+                #  have to chop out luminance part of YUV format image
+                
+                output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
+                output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+                output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                output = cv2.cvtColor(output,cv2.COLOR_BGR2GRAY)
+                print("image prepare time time") # 17 ms max res
 
-                    if lumotags_found is not None:
-                        mini_latch = cv2.resize(lumotags_found,(300,300))
-                        output[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
-                with decode_clothID.time_it():
-                    ImageViewer_Quick_no_resize(output,0,False,False)
-                    print("image display time")
-                    
+                if lumotags_found is not None:
+                    mini_latch = cv2.resize(lumotags_found,(300,300))
+                    output[0:300,0:300] = cv2.cvtColor(mini_latch,cv2.COLOR_BGR2GRAY)
+            with decode_clothID.time_it():
+                ImageViewer_Quick_no_resize(output,0,False,False)
+                print("image display time")
+                
 
-            except Exception as e:
-                print(e)
-                except_img = exceptionwindow(e, imgshape=tuple(reversed(screensizes.desktop_os_opencv.value)))
-                except_img = cv2.rotate(except_img, cv2.ROTATE_90_CLOCKWISE)
-                ImageViewer_Quick_no_resize(except_img,0,False,False)
+            # except Exception as e:
+            #     print(e)
+            #     except_img = exceptionwindow(e, imgshape=tuple(reversed(screensizes.desktop_os_opencv.value)))
+            #     except_img = cv2.rotate(except_img, cv2.ROTATE_90_CLOCKWISE)
+            #     ImageViewer_Quick_no_resize(except_img,0,False,False)
 def decode_pattern_speedup(lumostate : lumogun_state):
          #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version="2")
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]
