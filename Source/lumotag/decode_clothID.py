@@ -499,7 +499,7 @@ def analyse_candidate_contours(original_img,
     original_image = np array n/n/3 (colour image)
     masked_img = binary image
     contour"""
-    playerfound = False
+    playerfound = [False]
     #if masked_img.max()>1:
     #    raise ValueError("masked image input to analyse_candidate_contours not binary value")
     #if original_img.shape[2]!=3:
@@ -564,7 +564,9 @@ def analyse_candidate_contours(original_img,
         #_3DVisLabLib.ImageViewer_Quick_no_resize(masked_ID,0,True,False)
         #continue
 
-        decoded_ID, playerfound= decode_ID_image(original_samp, dataobject)
+        decoded_ID, good_result= decode_ID_image(original_samp, dataobject)
+
+        playerfound.append(good_result)
         #if decoded_ID is not None:
         #    img_with_contours = cv2.rectangle(original_img, (x,y), (x+w,y+h), (0,0,255), 2)
         #_3DVisLabLib.ImageViewer_Quick_no_resize(decoded_ID,0,True,False)
@@ -589,7 +591,8 @@ def analyse_candidate_contours(original_img,
 
 
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img_with_contours,0,True,False)
-    return original_img, playerfound
+    print(playerfound)
+    return original_img, any(playerfound)
 
 def cumulative_dist_histogram():
     plop
