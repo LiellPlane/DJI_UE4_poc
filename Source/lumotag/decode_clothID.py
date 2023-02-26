@@ -135,18 +135,30 @@ def PlotAndSave(Title,Filepath,Data,maximumvalue):
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
 def clahe_equalisation(img, claheprocessor):
-    #luminosity
-    lab_image=cv2.cvtColor(img,cv2.COLOR_BGR2LAB)
-    l,a,b = cv2.split(lab_image)
-    #equ = cv2.equalizeHist(l)
-    #updated_lab_img1=cv2.merge((equ,a,b))
     if claheprocessor is None:
         claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
-    clahe_img= claheprocessor.apply(l)
-    updated_lab_img1=cv2.merge((clahe_img,a,b))
-    CLAHE_img = cv2.cvtColor(updated_lab_img1,cv2.COLOR_LAB2BGR)
+
+    # colour
+    if len(img.shape) >2:
+        #luminosity
+        lab_image=cv2.cvtColor(img,cv2.COLOR_BGR2LAB)
+        l,a,b = cv2.split(lab_image)
+        #equ = cv2.equalizeHist(l)
+        #updated_lab_img1=cv2.merge((equ,a,b))
+        clahe_img= claheprocessor.apply(l)
+        updated_lab_img1=cv2.merge((clahe_img,a,b))
+        CLAHE_img = cv2.cvtColor(updated_lab_img1,cv2.COLOR_LAB2BGR)
+        
+    # grayscale
+    else:
+        CLAHE_img = claheprocessor.apply(img)
+    
     return CLAHE_img
+
+    
 def mono_img(img):
+    if len(img.shape) < 3:
+        return img
     return cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 def invert_img(img):
     return np.invert(img)
@@ -560,12 +572,14 @@ def analyse_candidate_contours(original_img,
         # deformed cloth
         if decoded_ID is not None:#
             #TODO why is the image from HQ camera 4 channels? 
+            if len(original_img.shape) == 2:
+                original_img=cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
             #original_img[y:y + h, x:x + w,0:3] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
             original_img = cv2.rectangle(
                     original_img,
                     (x, y),
                     (x + w, y + h),
-                    (0,255, 255),
+                    (0,0, 255),
                     5
                     )
             dataobject.img_view_or_save_if_debug(original_img, Debug_Images.ID_BADGE.value)
@@ -604,25 +618,25 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #~2ms
     with time_it():
         print("grayscale")
-    if len(inputimg.shape)>2:
-        img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
-    else:
-        img_grayscale = inputimg
+        if len(inputimg.shape)>2:
+            img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+        else:
+            img_grayscale = inputimg
     dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
     #copy original image into folder
     #orig_img = img.copy()
     
-    #~20ms
+    #~3ms for grayscale
     with time_it():
         print("equalisation")
         orig_img=clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
         dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
         ''''test area'''
    
-   #this section about 80ms
+   #this section about 25ms
     with time_it():
         print("mono_img")
-    gray_orig = mono_img(orig_img)
+        gray_orig = mono_img(orig_img)
     with time_it():
         print("median_blur")
         #blurred = median_blur(gray_orig,7)
@@ -657,7 +671,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
                                                 dataobject = dataobject)
     if analyse_IDs is not None:
         dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
-        return analyse_IDs,playerfound
+        return analyse_IDs, playerfound
     return inputimg, False
     
 def test_live():

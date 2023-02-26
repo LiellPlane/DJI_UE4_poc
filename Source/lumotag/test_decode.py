@@ -2,6 +2,7 @@ import decode_clothID
 import os
 import sys
 import cv2
+import time
 def ImageViewer_Quickv2(inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
     ###handy quick function to view images with keypress escape andmore options
     CopyOfImage=cv2.resize(inputimage.copy(),(800,800))
