@@ -506,6 +506,8 @@ def analyse_candidate_contours(original_img,
     #    raise ValueError("input image not colour")
     #kernel = np.ones((5, 5), np.uint8)
     #img_with_contours = original_img_grayscale.copy()
+    if len(original_img.shape) == 2:
+        original_img=cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         # can collect the images here and get a nice animation
@@ -570,10 +572,11 @@ def analyse_candidate_contours(original_img,
         # draw ROIs back on image for illustration
         # this is in rectangles - so could cut off parts of IDs if very
         # deformed cloth
-        if decoded_ID is not None:#
+        
             #TODO why is the image from HQ camera 4 channels? 
-            if len(original_img.shape) == 2:
-                original_img=cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+        
+
+        if decoded_ID is not None:#
             #original_img[y:y + h, x:x + w,0:3] = decoded_ID#cv2.cvtColor(decoded_ID,cv2.COLOR_BGR2GRAY)
             original_img = cv2.rectangle(
                     original_img,
@@ -663,7 +666,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
     with time_it():
         print("analyse_candidate_contours")
-        analyse_IDs, playerfound = analyse_candidate_contours(original_img=inputimg.copy(),
+        analyse_IDs, playerfound = analyse_candidate_contours(original_img=inputimg,
                                                 original_img_grayscale = img_grayscale,
                                                 masked_img = None,
                                                 thresholded_img= None,
@@ -672,7 +675,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     if analyse_IDs is not None:
         dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
         return analyse_IDs, playerfound
-    return inputimg, False
+    return analyse_IDs, False
     
 def test_live():
 

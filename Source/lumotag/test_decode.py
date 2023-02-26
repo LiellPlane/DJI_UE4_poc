@@ -31,5 +31,5 @@ for img_filepath in input_imgs:
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
     arse, playerfound = decode_clothID.find_lumotag(img, workingdata)
-    print(playerfound)
+    print("shape", arse.shape)
     ImageViewer_Quickv2(arse,0,True,True)

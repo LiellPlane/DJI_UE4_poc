@@ -501,7 +501,7 @@ def decode_pattern(lumostate : lumogun_state):
             try:
                 #print("trying to get image")
                 with decode_clothID.time_it():
-                    output = picam2.capture_array("main") # 90 ms on pi max res!
+                    output = picam2.capture_array("main") # 
                     (x, y) = lumostate.long_vid_res
                     output = output[0:y, 0:x]
                     print("image capture time")
@@ -512,6 +512,7 @@ def decode_pattern(lumostate : lumogun_state):
                     output=cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
                     output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
                     output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+                    output = cv2.cvtColor(output,cv2.COLOR_BGR2GRAY)
                     print("image prepare time time") # 17 ms max res
 
                     if lumotags_found is not None:
