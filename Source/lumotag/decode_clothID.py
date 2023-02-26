@@ -73,7 +73,8 @@ class Debug_Images(AutoStrEnum):
     all_contours = auto()
     fitered_contours = auto()
     ID_BADGE = auto()
-
+    Triangle = auto()
+    Square = auto()
 class WorkingData():
     def __init__(self) -> None:
         #self.input_imgs = r"C:\Working\nonwork\lumotag\Patterns\_001\Render2"
@@ -376,8 +377,48 @@ def decode_ID_image(img,dataobject : WorkingData):
     #cv2.drawContours(out, contours_cirles, , 255,1)
     return id_badge, True
 
+
+def check_triangle(contour, dataobject : WorkingData, img):
+    img[:,:] = 0
+    # cv2.arcLength() is used to calculate the perimeter of the contour.
+    # If the second argument is True then it considers the contour to be closed.
+    # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
+    # function with a precision factor for approximating a shape
+    approx = cv2.approxPolyDP(contour, 0.5*cv2.arcLength(contour, True), True)
+    if len(approx) == 3:
+        img = cv2.drawContours(img, [contour], -1, (255,255,255), 3)
+        # M = cv2.moments(contour)
+        # if M['m00'] != 0.0:
+        #     x = int(M['m10']/M['m00'])
+        #     y = int(M['m01']/M['m00'])
+        dataobject.img_view_or_save_if_debug(img, Debug_Images.Triangle.value)
+        return contour.size
+    return None
+
+
+def check_square(contour, dataobject : WorkingData, img):
+    img[:,:] = 0
+    # cv2.arcLength() is used to calculate the perimeter of the contour.
+    # If the second argument is True then it considers the contour to be closed.
+    # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
+    # function with a precision factor for approximating a shape
+    approx = cv2.approxPolyDP(contour, 0.5*cv2.arcLength(contour, True), True)
+    if len(approx) == 4:
+        img = cv2.drawContours(img, [contour], -1, (255,255,255), 3)
+        # M = cv2.moments(contour)
+        # if M['m00'] != 0.0:
+        #     x = int(M['m10']/M['m00'])
+        #     y = int(M['m01']/M['m00'])
+        dataobject.img_view_or_save_if_debug(img, Debug_Images.Square.value)
+        return contour.size
+    return None
+
+
 def get_ID_bodies(img, dataobject : WorkingData):
-    """provide thresholded image (might have to inverted to avoid segments
+    """get all contours of image, and filter by circularity to remove
+    noise
+    
+    provide thresholded image (might have to inverted to avoid segments
     on edge of image being classed as external), will filter contours for circularity"""
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
     with time_it():
@@ -426,6 +467,8 @@ def get_ID_bodies(img, dataobject : WorkingData):
     contours_cirles = []
     # check if contour is of circular shape
     for con in contours_area:
+        #check_triangle(con, dataobject, img)
+        #check_square(con, dataobject, img)
         perimeter = cv2.arcLength(con, True)
         area = cv2.contourArea(con)
         if perimeter == 0:
@@ -489,8 +532,6 @@ def get_dist(sample: list[int]):
     
 def analyse_candidate_contours(original_img,
                                 original_img_grayscale,
-                                masked_img,
-                                thresholded_img,
                                 contours : tuple [np.ndarray],
                                 dataobject : WorkingData):
     """supply monitoring image and image which has masked area of the irregular contours found
@@ -587,7 +628,7 @@ def analyse_candidate_contours(original_img,
                     (0,0, 255),
                     5
                     )
-            dataobject.img_view_or_save_if_debug(original_img, Debug_Images.ID_BADGE.value)
+            dataobject.img_view_or_save_if_debug(original_samp, Debug_Images.ID_BADGE.value)
 
 
     #_3DVisLabLib.ImageViewer_Quick_no_resize(img_with_contours,0,True,False)
@@ -659,7 +700,6 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
     with time_it():
-        
         squr_img, contours=get_ID_bodies(squr_img, dataobject)
         print("get_ID_bodies total")
     dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
@@ -671,8 +711,6 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         print("analyse_candidate_contours")
         analyse_IDs, playerfound = analyse_candidate_contours(original_img=inputimg,
                                                 original_img_grayscale = img_grayscale,
-                                                masked_img = None,
-                                                thresholded_img= None,
                                                 contours = contours,
                                                 dataobject = dataobject)
     if analyse_IDs is not None:
@@ -684,7 +722,7 @@ def test_live():
 
     workingdata = WorkingData()
 
-    workingdata.debug= False
+    workingdata.debug= True
 
     input_imgs = GetAllFilesInFolder_Recursive(workingdata.input_imgs)
 
@@ -694,134 +732,3 @@ def test_live():
         img = read_img(img_filepath)
         workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
         find_lumotag(img, workingdata)
-
-def old_testing():
-
-    workingdata = WorkingData()
-
-    input_imgs = GetAllFilesInFolder_Recursive(workingdata.input_imgs)
-
-    print(f"{len(input_imgs)} images found")
-
-    for img_filepath in input_imgs:
-        img = read_img(img_filepath)
-        img_grayscale = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        #set a debug image subfolder - if this is NONE then will just save all images sequentially in same level
-        workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
-        workingdata.img_view_or_save_if_debug(img, Debug_Images.original_input.value, resize=False)
-        #copy original image into folder
-        #orig_img = img.copy()
-        orig_img=clahe_equalisation(img.copy())
-        workingdata.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
-        #square cut area
-        #squr_img=orig_img.copy()#cut_square(orig_img)
-        #squr_img=mono_img(orig_img)
-
-
-        ''''test area'''
-        gray_orig = mono_img(orig_img)
-        
-        #dilated = dilate (gray_orig)
-        #blurred = blur_img(gray_orig,filtersize= 7)
-        #blurred = blur_average(blurred,filtersize= 5)
-        blurred = median_blur(gray_orig,7)
-        workingdata.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
-        #edge_im = edge_img(blurred)
-        squr_img=threshold_img(blurred,low=127)
-        
-        squr_img=invert_img(squr_img)
-        workingdata.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
-        squr_img, contours=get_ID_bodies(squr_img, workingdata)
-        workingdata.img_view_or_save_if_debug(squr_img, Debug_Images.macro_candidates.value)
-        squr_img_gray = cv2.cvtColor(squr_img,cv2.COLOR_BGR2GRAY)
-        squr_img_mask= cv2.cvtColor(np.clip(squr_img,0,1),cv2.COLOR_BGR2GRAY)
-        analyse_IDs = analyse_candidate_contours(original_img=img.copy(),
-                                                original_img_grayscale = img_grayscale,
-                                                masked_img = None,
-                                                thresholded_img= None,
-                                                contours = contours,
-                                                dataobject = workingdata)
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-        continue
-        ''''fin test'''
-        #hist = get_hist(squr_img)
-        #tempimg="d:\plop.jpg"
-        #PlotAndSave("plop",tempimg,hist,hist.max())
-        #histogram_img=cv2.imread(tempimg)
-        squr_img=threshold_img(squr_img,low=127)
-        squr_img=invert_img(squr_img)
-        threshold_original = squr_img.copy()
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-        #continue
-        squr_img, contours=get_ID_bodies(squr_img)
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-        squr_img_mask= np.clip(squr_img,0,1)
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-        #continue
-
-        analyse_IDs = analyse_candidate_contours(original_img = orig_img,
-                                                masked_img = squr_img_mask,
-                                                thresholded_img= threshold_original,
-                                                contours = contours)
-        #_3DVisLabLib.ImageViewer_Quick_no_resize(squr_img,0,True,False)
-        continue
-        #clip to 0 and 1 for masking
-        squr_img_mask= np.clip(squr_img,0,1)
-        # use mask on input colour image
-        sample_area_masked=sample_area.copy()
-        squr_img= sample_area_masked*squr_img_mask
-
-        #masked_input_sqr=
-        #
-        #squr_img=edge_img(squr_img)
-        #squr_img=blur_img(squr_img)
-        thresh_low = squr_img.min()
-        thresh_high= squr_img.max()
-
-
-
-
-        orig_img_edge=img.copy()
-        orig_img_edge=mono_img(orig_img_edge)
-        #orig_img_edge=blur_img(orig_img_edge)
-        orig_img_edge=edge_img(orig_img_edge)
-        
-
-        #original area threshold
-        #img=blur_img(img)
-        #img=threshold_img(img,low=thresh_low,high=thresh_high)
-
-        #for img_proc in img_proc_chain:
-        #    img = img_proc(img)
-        # Detect blobs from the image.
-        #keypoints = blob_detector.detect(original_img_bw)
-        #contours, hierarchy = cv2.findContours(image=img, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_NONE)
-        #cv2.drawContours(image=orig_img, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
-        # Draw detected blobs as red circles.
-        # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS - This method draws detected blobs as red circles and ensures that the size of the circle corresponds to the size of the blob.
-        #blobs = cv2.drawKeypoints(original_img_bw, keypoints, original_img_bw, (0,255,255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
-        quilt_image: np.ndarray = np.ndarray((
-                orig_img.shape[0],
-                orig_img.shape[1]*3,
-                orig_img.shape[2],),
-                dtype=('uint8'))
-        quilt_image[0:orig_img.shape[0],0:orig_img.shape[1],:] = orig_img
-        resized=cv2.resize(squr_img, tuple(reversed(orig_img.shape[0:2])), interpolation = cv2.INTER_AREA)  
-        resized_histogram=cv2.resize(histogram_img, tuple(reversed(orig_img.shape[0:2])), interpolation = cv2.INTER_AREA) 
-        try:
-            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,0] = resized
-            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,1] = resized
-            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:,2] = resized
-        except:
-            quilt_image[0:orig_img.shape[0],orig_img.shape[1]:orig_img.shape[1]*2,:] = resized
-
-        quilt_image[0:orig_img.shape[0],orig_img.shape[1]*2:orig_img.shape[1]*3,:] = resized_histogram
-
-        quilt_image[0:sample_area.shape[0],0:sample_area.shape[1],:] = sample_area
-        
-
-        quilt_image=cv2.resize(quilt_image, (int(quilt_image.shape[1]/2),int(quilt_image.shape[0]/2)), interpolation = cv2.INTER_AREA)  
-        _3DVisLabLib.ImageViewer_Quick_no_resize(quilt_image,0,True,False)
-
-

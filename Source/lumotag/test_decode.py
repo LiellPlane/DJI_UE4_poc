@@ -20,9 +20,9 @@ def read_img(img_filepath):
     return cv2.imread(img_filepath)
 workingdata = decode_clothID.WorkingData()
 
-workingdata.debug= False
+workingdata.debug= True
 
-input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"G:\My Drive\lumotag\2022_12_31_testimages_outside")
+input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
 
 print(f"{len(input_imgs)} images found")
 
