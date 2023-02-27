@@ -453,7 +453,7 @@ def decode_pattern(lumostate : lumogun_state):
                 
                 (x, y) = lumostate.long_vid_res#  need to do this for YUV!
                 output = output[0:y, 0:x]#  need to do this for YUV!
-                output = cv2.resize(output,(640, 480))
+                output = cv2.resize(output,(480, 640))
                 if output is None:
                     continue
                 #try:
@@ -507,7 +507,7 @@ def decode_pattern(lumostate : lumogun_state):
                 
                 (x, y) = lumostate.long_vid_res#  Need to do this for YUV!
                 output = output[0:y, 0:x]#  Need to do this for YUV!
-                output = cv2.resize(output,(640, 480))
+                output = cv2.resize(output,(480, 640))
                 print("image capture time")
             with decode_clothID.time_it():
                 
