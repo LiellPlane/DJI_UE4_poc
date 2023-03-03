@@ -289,7 +289,6 @@ def test_yuv(lumostate : lumogun_state):
         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         ImageViewer_Quick_no_resize(output,0,False,False)
 
-
 def use_process_loop(lumostate : lumogun_state):
     #anim_rectangle = rectangle_animate_step(imgshape=screensizes.desktop_os_opencv.value,version="2")
     #[ImageViewer_Quick_no_resize(_,0.2,False,False) for _ in anim_rectangle]

@@ -73,8 +73,9 @@ class Debug_Images(AutoStrEnum):
     all_contours = auto()
     fitered_contours = auto()
     ID_BADGE = auto()
-    Triangle = auto()
-    Square = auto()
+    find_shape = auto()
+
+
 class WorkingData():
     def __init__(self) -> None:
         #self.input_imgs = r"C:\Working\nonwork\lumotag\Patterns\_001\Render2"
@@ -377,42 +378,30 @@ def decode_ID_image(img,dataobject : WorkingData):
     #cv2.drawContours(out, contours_cirles, , 255,1)
     return id_badge, True
 
-
-def check_triangle(contour, dataobject : WorkingData, img):
+#
+def check_shape(
+        contour,
+        dataobject : WorkingData,
+        img,
+        sides):
+    return
     img[:,:] = 0
+    img= cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     # cv2.arcLength() is used to calculate the perimeter of the contour.
     # If the second argument is True then it considers the contour to be closed.
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
-    approx = cv2.approxPolyDP(contour, 0.5*cv2.arcLength(contour, True), True)
-    if len(approx) == 3:
+    approx = cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour, True), True)
+    if len(approx)>0:#== sides:
         img = cv2.drawContours(img, [contour], -1, (255,255,255), 3)
+        img = cv2.drawContours(img, [approx], -1, (255,0,255), 3)
         # M = cv2.moments(contour)
         # if M['m00'] != 0.0:
         #     x = int(M['m10']/M['m00'])
         #     y = int(M['m01']/M['m00'])
-        dataobject.img_view_or_save_if_debug(img, Debug_Images.Triangle.value)
+        dataobject.img_view_or_save_if_debug(img, Debug_Images.find_shape.value)
         return contour.size
     return None
-
-
-def check_square(contour, dataobject : WorkingData, img):
-    img[:,:] = 0
-    # cv2.arcLength() is used to calculate the perimeter of the contour.
-    # If the second argument is True then it considers the contour to be closed.
-    # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
-    # function with a precision factor for approximating a shape
-    approx = cv2.approxPolyDP(contour, 0.5*cv2.arcLength(contour, True), True)
-    if len(approx) == 4:
-        img = cv2.drawContours(img, [contour], -1, (255,255,255), 3)
-        # M = cv2.moments(contour)
-        # if M['m00'] != 0.0:
-        #     x = int(M['m10']/M['m00'])
-        #     y = int(M['m01']/M['m00'])
-        dataobject.img_view_or_save_if_debug(img, Debug_Images.Square.value)
-        return contour.size
-    return None
-
 
 def get_ID_bodies(img, dataobject : WorkingData):
     """get all contours of image, and filter by circularity to remove
@@ -423,7 +412,7 @@ def get_ID_bodies(img, dataobject : WorkingData):
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
     with time_it():
         print("get_ID_bodies:: contours")
-        contours, _ = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
+        contours, _ = cv2.findContours(img, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
 
     # print("unflitered contours")
     # chk_cnts = img.copy()
@@ -467,8 +456,8 @@ def get_ID_bodies(img, dataobject : WorkingData):
     contours_cirles = []
     # check if contour is of circular shape
     for con in contours_area:
-        #check_triangle(con, dataobject, img)
-        #check_square(con, dataobject, img)
+        check_shape(con, dataobject, img, sides=3)
+        check_shape(con, dataobject, img, sides=4)
         perimeter = cv2.arcLength(con, True)
         area = cv2.contourArea(con)
         if perimeter == 0:
