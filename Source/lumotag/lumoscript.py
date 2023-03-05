@@ -19,7 +19,7 @@ import numpy as np
 import enum
 import RPi.GPIO as GPIO
 import time
-import decode_clothID
+import decode_clothID_v1
 
 #from tomlkit import datetime
 
@@ -64,7 +64,7 @@ class libcam_commands(enum.Enum):
     stream_locally_mobile = "libcamera-vid -t 0 --width 640 --height 480 --framerate 30 --codec h264 --inline -o - | ffmpeg -i pipe:0 -an -c:v copy -f flv rtmp://liell-VirtualBox.local/streams/cam" #playback rtmp://liell-VirtualBox.local/streams/cam (this is bouncing off nginx with rtmp module), thjis works on phone but need way of turning off buffer using -fflags nobuffer, not possible with standard vlc app
     stream_locally_udp_low_latency = "libcamera-vid -t 0 --width 1920 --height 1080 --framerate 30 --codec h264 --inline -o - | ffmpeg -i pipe:0 -fflags nobuffer -an -c:v copy -f mpegs -f mpegts udp://LiellOMEN.local:1234" # playback ffplay -fflags nobuffer -flags low_delay -framedrop -strict experimental -probesize 32 -analyzeduration 0 udp://127.0.0.1:1234
     legacy_camera_1 = "raspividyuv --output - --timeout 0 --framerate 30 --luma --nopreview "
-
+    #stream_locally_raw = " libcamera-vid -t 0 --width 640 --height 480 --framerate 30 --codec yuv420 --codec h264 --inline -o - | ffmpeg -i pipe:0 -an -c:v copy -f mpegs -f mpegts udp://LiellOMEN.local:1234"
 
 class HQ_Cam_vidmodes(enum.Enum):
     _4 = ["640 × 480",(640, 480)] #0.3MP

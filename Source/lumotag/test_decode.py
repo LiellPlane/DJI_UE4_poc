@@ -23,13 +23,28 @@ workingdata = decode_clothID.WorkingData()
 workingdata.debug= True
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
+input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\OutputImages")
 
 
 print(f"{len(input_imgs)} images found")
+
+
+def crop_in(img, pc_x, pc_y):
+     height, width = img.shape
+     new_height = (pc_y /100) * height
+     new_width = (pc_x /100) * width
+     crop_in_y = (height - new_height)/2
+     crop_in_x = (width - new_width)/2
+     #img is [width, height]
+     return img[
+          int(crop_in_y):int(new_height),
+          int(crop_in_x):int(new_width)]
+
 
 for img_filepath in input_imgs: 
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    img = crop_in(img, pc_x=50, pc_y=50)
     arse, playerfound = decode_clothID.find_lumotag(img, workingdata)
     ImageViewer_Quickv2(arse,0,False,True)

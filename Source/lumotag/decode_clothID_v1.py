@@ -453,7 +453,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
         if perimeter == 0:
             break
         circularity = 4*math.pi*(area/(perimeter*perimeter))
-        if circularity > 0.3:
+        if circularity > 0.2:
             contours_cirles.append(con)    
     debug_save_images(img, contours_cirles, Debug_Images.filtered_circularity_contours.value, dataobject)
 
@@ -499,7 +499,8 @@ def analyse_candidates_shapematch(
         dataobject : WorkingData):
     """ For each input contour, try and match to a primary shape"""
     for cnt in contours:
-        
+        pass
+
 def analyse_candidates(
         original_img,
         original_img_grayscale,
