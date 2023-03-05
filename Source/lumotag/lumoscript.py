@@ -19,7 +19,7 @@ import numpy as np
 import enum
 import RPi.GPIO as GPIO
 import time
-import decode_clothID_v1
+import decode_clothID_v1 as decode_clothID
 
 #from tomlkit import datetime
 
