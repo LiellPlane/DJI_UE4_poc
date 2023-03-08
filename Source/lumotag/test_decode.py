@@ -1,4 +1,4 @@
-import decode_clothID
+import decode_clothID_v2 as decode_clothID
 import os
 import sys
 import cv2
@@ -23,7 +23,7 @@ workingdata = decode_clothID.WorkingData()
 workingdata.debug= True
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
-input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\OutputImages")
+#input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\OutputImages")
 
 
 print(f"{len(input_imgs)} images found")
@@ -45,6 +45,7 @@ for img_filepath in input_imgs:
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    img = crop_in(img, pc_x=50, pc_y=50)
+    #img = crop_in(img, pc_x=50, pc_y=50)
     arse, playerfound = decode_clothID.find_lumotag(img, workingdata)
-    ImageViewer_Quickv2(arse,0,False,True)
+    if arse is not None: 
+        ImageViewer_Quickv2(arse,0,False,True)
