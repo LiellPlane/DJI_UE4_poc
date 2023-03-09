@@ -12,15 +12,15 @@ import random
 import time
 from contextlib import contextmanager
 from typing import Iterator
-
+from dataclasses import dataclass
 @contextmanager
-def time_it() -> Iterator[None]:
+def time_it(comment) -> Iterator[None]:
     tic: float = time.perf_counter()
     try:
         yield
     finally:
         toc: float = time.perf_counter()
-        print(f"Computation time = {1000*(toc - tic):.3f}ms")
+        print(f"{comment}:Computation time = {1000*(toc - tic):.3f}ms")
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -154,7 +154,6 @@ def clahe_equalisation(img, claheprocessor):
     # grayscale
     else:
         CLAHE_img = claheprocessor.apply(img)
-    
     return CLAHE_img
 
     
@@ -195,7 +194,7 @@ def edge_img(gray):
     gray_filtered = cv2.bilateralFilter(gray, 5, 25, 25)
 
     # Applying the canny filter
-    edges = cv2.Canny(gray, 60, 120)
+    #edges = cv2.Canny(gray, 60, 120)
     edges_filtered = cv2.Canny(gray_filtered, 0, 60)
 
     # Stacking the images to print them together for comparison
@@ -378,19 +377,42 @@ def decode_ID_image(img,dataobject : WorkingData):
     #cv2.drawContours(out, contours_cirles, , 255,1)
     return id_badge, True
 
-#
+
+@dataclass
+class ShapeItem:
+    id: str
+    approx_contour: np.array
+    default_contour: np.array
+    boundingbox: np.array
+    img_cut: np.array
+
+
+def get_approx_shape_and_bbox(
+        contour,
+        dataobject : WorkingData):
+    # cv2.arcLength() is used to calculate the perimeter of the contour.
+    # If the second argument is True then it considers the contour to be closed.
+    # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
+    # function with a precision factor for approximating a shape
+    approx = cv2.approxPolyDP(contour, 0.05*cv2.arcLength(contour, True), True)
+    minRect = cv2.minAreaRect(approx)
+    box = cv2.boxPoints(minRect)
+    box = np.intp(box)
+
+    return approx, box
+
 def check_shape(
         contour,
         dataobject : WorkingData,
         img,
         sides):
-    img[:,:] = 0
-    img= cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+    #img[:,:] = 0
+    #img= cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     # cv2.arcLength() is used to calculate the perimeter of the contour.
     # If the second argument is True then it considers the contour to be closed.
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
-    approx = cv2.approxPolyDP(contour, 0.01*cv2.arcLength(contour, True), True)
+    approx = cv2.approxPolyDP(contour, 0.05*cv2.arcLength(contour, True), True)
     if len(approx)>0:#== sides:
         # get rotated bounding box
 
@@ -406,9 +428,9 @@ def check_shape(
         # if M['m00'] != 0.0:
         #     x = int(M['m10']/M['m00'])
         #     y = int(M['m01']/M['m00'])
-        dataobject.img_view_or_save_if_debug(img, Debug_Images.find_shape.value)
-        return contour.size
-    return None
+        
+        return contour, img
+    return None, img
 
 
 def debug_save_images(img, contours, text : str, dataobject: WorkingData):
@@ -432,7 +454,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
     on edge of image being classed as external), will filter contours for circularity"""
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
 
-
+    dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
     contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
@@ -520,17 +542,49 @@ def analyse_candidates_shapematch(
         dataobject : WorkingData,
         contour_hierarchy : tuple [np.ndarray]):
     """ For each input contour, try and match to a primary shape"""
-    debug_save_images(original_img, contours, "before_child_filtering", dataobject)
-    contours_nochild = []
-    hierarchy_nochild = []
-    for cnt, hier in zip(contours, contour_hierarchy):
-        if has_child_contour(hier) is False:
-            contours_nochild.append(cnt)
-            hierarchy_nochild.append(hier)
+    debug_save_images(original_img, contours, "input_to_shape_matcher", dataobject)
+    # FILTER OUT SHAPES WITH CHILDREN
+    # MIND THAT SMALL NOISE MIGHT BE PRESENT AS CHILDREN
+    # IN REMANING HIERARCHY! Need to improve filtering complexity
+    # contours_nochild = []
+    # hierarchy_nochild = []
+    # for cnt, hier in zip(contours, contour_hierarchy):
+    #     if has_child_contour(hier) is False:
+    #         contours_nochild.append(cnt)
+    #         hierarchy_nochild.append(hier)
 
-    debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
+    # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
+
+    for i, c in enumerate(contours):
+        approx_cont, rotatd_bbox = get_approx_shape_and_bbox(c,dataobject)
+        shape = ShapeItem(
+            id=i,
+            approx_contour=approx_cont,
+            default_contour=c,
+            boundingbox=rotatd_bbox,
+            img_cut=None)
     
+    #draw bounding box around contour
+    # Find the rotated rectangles and ellipses for each contour
+    img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+    minRect = [None]*len(contours)
+    for i, c in enumerate(contours):
+        minRect[i] = cv2.minAreaRect(c)
+    for i, c in enumerate(contours):
+        color = (0,0,255)
+        box = cv2.boxPoints(minRect[i])
+        box = np.intp(box) #np.intp: Integer used for indexing (same as C ssize_t; normally either int32 or int64)
+        cv2.drawContours(img_bbxoes, [box], 0, color)
+    dataobject.img_view_or_save_if_debug(img_bbxoes, Debug_Images.ID_BADGE.value)
+
+    for i, c in enumerate(contours):
+        _, img_bbxoes = check_shape(c, dataobject, img_bbxoes, 0)
+        
+    dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
+
+
+
 def analyse_candidates(
         original_img,
         original_img_grayscale,
@@ -592,8 +646,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
     #~2ms
-    with time_it():
-        print("grayscale")
+    with time_it("grayscale"):
         if len(inputimg.shape)>2:
             img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
         else:
@@ -603,36 +656,42 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #orig_img = img.copy()
     
     #~3ms for grayscale
-    with time_it():
-        print("equalisation")
+    with time_it("pre-processing/filtering"):
+        #print("equalisation")
         orig_img=clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
         dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
         ''''test area'''
    
    #this section about 25ms
-    with time_it():
-        print("mono_img")
+    #with time_it():
+        
         gray_orig = mono_img(orig_img)
-    with time_it():
-        print("median_blur")
+    #with time_it():
+        #print("median_blur")
+        ##blurred = median_blur(gray_orig,7)
+        squr_img = cv2.blur(gray_orig,(7,7)) # fastest filter
+        dataobject.img_view_or_save_if_debug(squr_img, "median_blur")
+        #edge_im = edge_img(blurred)edge_img
+    #with time_it():
+        #print("canny_filter")
         #blurred = median_blur(gray_orig,7)
-        blurred = cv2.blur(gray_orig,(7,7)) # fastest filter
-        dataobject.img_view_or_save_if_debug(blurred, Debug_Images.initial_thresh.value)
-        #edge_im = edge_img(blurred)
-    with time_it():
-        print("threshold_img")
-        squr_img=threshold_img(blurred,low=127)
-    with time_it():
-        print("invert_img")
+        #plop = edge_img(squr_img)
+        #dataobject.img_view_or_save_if_debug(plop, "canny_filter")
+        #edge_im = edge_img(blurred)edge_img
+    #with time_it():
+        #print("threshold_img")
+        squr_img=threshold_img(squr_img,low=127)
+        dataobject.img_view_or_save_if_debug(squr_img, "thresholdimg")
+    #with time_it():
+        #print("invert_img")
         squr_img=invert_img(squr_img)
+        dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
 
-
-    dataobject.img_view_or_save_if_debug(squr_img, Debug_Images.input_to_contours.value)
-    with time_it():
+    
+    with time_it("get_possible_candidates total"):
         contours, hierarchy=get_possible_candidates(squr_img, dataobject)
-        print("get_possible_candidates total")
-    with time_it():
-        print("analyse_candidates")
+
+    with time_it("analyse_candidates"):
         analyse_candidates_shapematch(original_img=inputimg,
                                                 original_img_grayscale = img_grayscale,
                                                 contours = contours,
