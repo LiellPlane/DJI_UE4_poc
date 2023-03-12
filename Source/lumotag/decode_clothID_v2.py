@@ -7,7 +7,7 @@ import numpy as np
 sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 #from matplotlib import pyplot as plt
 import math
-import statistics
+import math_utils
 import random
 import time
 from contextlib import contextmanager
@@ -88,6 +88,7 @@ class WorkingData():
         if self.debug is True:
             DeleteFiles_RecreateFolder(self.debugimgs)
         self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
+        self.approx_epsilon = 0.05
     @staticmethod
     def get_blob_params():
         DefaultBlobParams= cv2.SimpleBlobDetector_Params()
@@ -156,7 +157,18 @@ def clahe_equalisation(img, claheprocessor):
         CLAHE_img = claheprocessor.apply(img)
     return CLAHE_img
 
-    
+def _3_chan_equ(img):
+    # convert from RGB color-space to YCrCb
+    ycrcb_img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
+
+    # equalize the histogram of the Y channel
+    ycrcb_img[:, :, 0] = cv2.equalizeHist(ycrcb_img[:, :, 0])
+
+    # convert back to RGB color-space from YCrCb
+    equalized_img = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2BGR)
+
+    return equalized_img
+
 def mono_img(img):
     if len(img.shape) < 3:
         return img
@@ -383,23 +395,33 @@ class ShapeItem:
     id: str
     approx_contour: np.array
     default_contour: np.array
-    boundingbox: np.array
+    boundingbox_sqr: np.array
+    boundingbox_ellipse: np.array
     img_cut: np.array
 
 
 def get_approx_shape_and_bbox(
         contour,
-        dataobject : WorkingData):
+        dataobject : WorkingData) -> ShapeItem:
     # cv2.arcLength() is used to calculate the perimeter of the contour.
     # If the second argument is True then it considers the contour to be closed.
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
-    approx = cv2.approxPolyDP(contour, 0.05*cv2.arcLength(contour, True), True)
+    approx = cv2.approxPolyDP(contour, dataobject.approx_epsilon*cv2.arcLength(contour, True), True)
     minRect = cv2.minAreaRect(approx)
     box = cv2.boxPoints(minRect)
     box = np.intp(box)
+    ellipse = cv2.fitEllipse(contour)
+    sum_angles = math_utils.get_internal_angles_of_shape(contour)
+    output = ShapeItem(
+        id="ID TBD",
+        approx_contour=approx,
+        default_contour=contour,
+        boundingbox_sqr=box,
+        boundingbox_ellipse=ellipse,
+        img_cut=None)
 
-    return approx, box
+    return output
 
 def check_shape(
         contour,
@@ -555,33 +577,26 @@ def analyse_candidates_shapematch(
 
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
-
-    for i, c in enumerate(contours):
-        approx_cont, rotatd_bbox = get_approx_shape_and_bbox(c,dataobject)
-        shape = ShapeItem(
-            id=i,
-            approx_contour=approx_cont,
-            default_contour=c,
-            boundingbox=rotatd_bbox,
-            img_cut=None)
+    contour_stats = []
+    for c in contours:
+        contour_stats.append(get_approx_shape_and_bbox(c, dataobject))
     
-    #draw bounding box around contour
-    # Find the rotated rectangles and ellipses for each contour
-    img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
-    minRect = [None]*len(contours)
-    for i, c in enumerate(contours):
-        minRect[i] = cv2.minAreaRect(c)
-    for i, c in enumerate(contours):
-        color = (0,0,255)
-        box = cv2.boxPoints(minRect[i])
-        box = np.intp(box) #np.intp: Integer used for indexing (same as C ssize_t; normally either int32 or int64)
-        cv2.drawContours(img_bbxoes, [box], 0, color)
-    dataobject.img_view_or_save_if_debug(img_bbxoes, Debug_Images.ID_BADGE.value)
+    if dataobject.debug == True:
+        img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+        img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+        img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+        for c in contour_stats:
+            cv2.drawContours(img_bbxoes, [c.boundingbox_sqr], 0, (0,0,255))
+            cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
+            cv2.drawContours(img_bbxoes_3, [c.approx_contour], 0, (255,0,255))
+        dataobject.img_view_or_save_if_debug(img_bbxoes, "bounding_boxes")
+        dataobject.img_view_or_save_if_debug(img_bbxoes_2, "fit_ellipse")
+        dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
 
-    for i, c in enumerate(contours):
-        _, img_bbxoes = check_shape(c, dataobject, img_bbxoes, 0)
+    #for i, c in enumerate(contours):
+    #    _, img_bbxoes = check_shape(c, dataobject, img_bbxoes, 0)
         
-    dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
+    #dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
 
 
 
