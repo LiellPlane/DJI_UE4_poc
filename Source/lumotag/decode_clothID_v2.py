@@ -4,7 +4,7 @@ import shutil
 from enum import Enum, auto
 import os
 import numpy as np
-sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
+#sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 #from matplotlib import pyplot as plt
 import math
 import math_utils
@@ -398,6 +398,7 @@ class ShapeItem:
     boundingbox_sqr: np.array
     boundingbox_ellipse: np.array
     img_cut: np.array
+    sum_int_angles: float
 
 
 def get_approx_shape_and_bbox(
@@ -419,7 +420,8 @@ def get_approx_shape_and_bbox(
         default_contour=contour,
         boundingbox_sqr=box,
         boundingbox_ellipse=ellipse,
-        img_cut=None)
+        img_cut=None,
+        sum_int_angles=sum_angles)
 
     return output
 

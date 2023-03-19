@@ -42,31 +42,33 @@ def angle_between_points(p1, p2):
 def get_internal_angles_of_shape(contour):
     triangle=[]
     ## have to go around angle
-    but need 3 points for each angle
-    so need to add last point at start 
-    and add first point at end 
-maybe use reduce here
-# triangle.append((-2,1))
-# triangle.append((1,5))
-# triangle.append((3,2))
+    # but need 3 points for each angle
+    # so need to add last point at start 
+    # and add first point at end 
+    # maybe use reduce here
+triangle=[]
+triangle.append((-2,1))
+triangle.append((1,5))
+triangle.append((3,2))
 
-# extended = [triangle[-1]] + triangle + [triangle[0]]
-# import numpy as np
-# import math_utils
-# import math
-# angles = []
-# for i in range (len(extended)-2): 
-#     start = np.asarray(extended[i])
-#     mid = np.asarray(extended[i+1])
-#     end = np.asarray(extended[i+2])
+extended = [triangle[-1]] + triangle + [triangle[0]]
+import numpy as np
+import math_utils
+import math
+angles = []
+for i in range (len(extended)-2): 
+    start = np.asarray(extended[i])
+    mid = np.asarray(extended[i+1])
+    end = np.asarray(extended[i+2])
 
-#     start = start - mid
-#     end = end -mid
-#     dot_prod = np.dot(end, start)
-#     mag_start = np.linalg.norm(start)
-#     mag_end = np.linalg.norm(end)
-#     res = math.degrees(
-#          math.acos(dot_prod / (mag_start*mag_end)))
-#     print(res)
-
+    start = start - mid
+    end = end -mid
+    dot_prod = np.dot(end, start)
+    mag_start = np.linalg.norm(start)
+    mag_end = np.linalg.norm(end)
+    res = math.degrees(
+         math.acos(dot_prod / (mag_start*mag_end)))
+    angles.append(res)
+    
+print(sum(angles))
 # sss
