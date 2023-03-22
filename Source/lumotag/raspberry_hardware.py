@@ -26,10 +26,10 @@ import decode_clothID_v1 as decode_clothID
 import factory
 from picamera2 import Picamera2, Preview
 #accelerometer
-import board
-import digitalio
-import busio
-import adafruit_lis3dh
+# import board
+# import digitalio
+# import busio
+# import adafruit_lis3dh
 
 GPI_MODE_SET = False
 
