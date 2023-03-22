@@ -31,6 +31,7 @@ import digitalio
 import busio
 import adafruit_lis3dh
 
+GPI_MODE_SET = False
 
 class screensizes(enum.Enum):
     desktop_os_opencv = (740,480)
@@ -45,8 +46,10 @@ class HQ_Cam_vidmodes(enum.Enum):
 
 def set_GPIO_mode():
     try:
-        GPIO.setmode(GPIO.BOARD)
-        print("setting GPIO MODE", "GPIO.setmode(GPIO.BOARD)")
+        if GPI_MODE_SET:
+            GPIO.setmode(GPIO.BOARD)
+            print("setting GPIO MODE", "GPIO.setmode(GPIO.BOARD)")
+            GPI_MODE_SET = True
     except Exception as e:
         print(e)
         print("attempting to continue - accelerometer may have taken precedence")
@@ -102,8 +105,8 @@ class Triggers(factory.Triggers):
 
     def __init__(self) -> None:
         super().__init__()
+        set_GPIO_mode()
         for trig, gpio in factory.TRIGGER_IO.items():
-            set_GPIO_mode()
             GPIO.setup(gpio, GPIO.OUT)
             print(f"GPIO {gpio} set for trig {trig}")
 
@@ -120,7 +123,7 @@ class Relay(factory.Relay):
     def __init__(self) -> None:
         super().__init__()
         for relay, gpio in factory.RELAY_IO.items():
-            set_GPIO_mode()
+            
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
