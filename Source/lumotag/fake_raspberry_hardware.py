@@ -45,13 +45,12 @@ class Triggers(factory.Triggers):
     def __init__(self) -> None:
         super().__init__()
         self.blink_timer = factory.TimeDiffObject()
-
+        self.flipflop = False
     def test_states(self):
-        if self.blink_timer.get_dt() > 1:
-            outputs = [True] * len(TRIGGER_IO)
+        if self.blink_timer.get_dt() > 0.2:
+            self.flipflop = not self.flipflop
             self.blink_timer.reset()
-        else:
-            outputs = [False] * len(TRIGGER_IO)
+        outputs = [self.flipflop] * len(TRIGGER_IO)
         return outputs
 
 

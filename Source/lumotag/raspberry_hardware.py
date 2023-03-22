@@ -18,6 +18,9 @@ import cv2
 import numpy as np
 import enum
 import RPi.GPIO as GPIO
+# adafruit board library forces BCM mode
+#GPIO.setmode(GPIO.BOARD)
+#GPIO.setmode(GPIO.BCM) 
 import time
 import decode_clothID_v1 as decode_clothID
 import factory
@@ -90,7 +93,6 @@ class Triggers(factory.Triggers):
 
     def __init__(self) -> None:
         super().__init__()
-        GPIO.setmode(GPIO.BOARD)
         for trig, gpio in factory.TRIGGER_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             print(f"GPIO {gpio} set for trig {trig}")
@@ -107,7 +109,6 @@ class Relay(factory.Relay):
 
     def __init__(self) -> None:
         super().__init__()
-        GPIO.setmode(GPIO.BOARD)
         for relay, gpio in factory.RELAY_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
@@ -148,7 +149,10 @@ class GetImage(factory.GetImage):
         return output
 
     def __iter__(self):
-            return self
+        return self
+    
+    def __del__(self):
+        self.picam2.stop()
 
 
 class KillProcess(factory.KillProcess):

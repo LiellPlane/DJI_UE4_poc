@@ -22,9 +22,9 @@ def main():
     image_device = lumogun.GetImage()
     while True:
         print(triggers.test_states())
-        print(accelerometer.get_vel())
-        relay.set_relay(factory.RelayFunction.torch.value, True)
-        print(next(image_device)[1,2,:])
+        #print(accelerometer.get_vel())
+        #relay.set_relay(factory.RelayFunction.torch.value, True)
+        #print(next(image_device)[1,2,:])
 
 if __name__ == '__main__':
     main()
