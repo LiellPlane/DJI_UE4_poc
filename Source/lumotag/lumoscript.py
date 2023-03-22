@@ -111,18 +111,11 @@ class TimeDiffObject:
 
 def start_subprocess(command):
 
-    
-
     if command is None or command == "":
-
         pipeline = 'no command'
-
     else:
-
         pipeline=command
-
     p = subprocess.Popen(pipeline, shell=True)
-
     return p
 
 def rectangle_animate_step(imgshape, version = "", stepsize = 10):
@@ -434,7 +427,7 @@ def decode_pattern(lumostate : lumogun_state):
         #camera_config = picam2.create_still_configuration(main={"size": (1920, 1080)}, lores={"size": (640, 480)}, display="lores")
         #picam2.create_video_configuration()["controls"]{'NoiseReductionMode': <NoiseReductionMode.Fast: 1>, 'FrameDurationLimits': (33333, 33333)}
         config = picam2.create_video_configuration(main={"size": lumostate.long_vid_res,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
-           
+    
         #config = picam2.create_video_configuration(raw={}, encode="raw")#
         picam2.set_controls({"ExposureTime": 10000}) # for blurring - but can get over exposed at night
         picam2.configure(config)

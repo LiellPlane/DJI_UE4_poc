@@ -22,9 +22,15 @@ import time
 import decode_clothID_v1 as decode_clothID
 import factory
 from picamera2 import Picamera2, Preview
+#accelerometer
+import board
+import digitalio
+import busio
+import adafruit_lis3dh
 
-RELAY_IO = {1:29, 2:31, 3:16}
-TRIGGER_IO = {1:15, 2:13}
+
+class screensizes(enum.Enum):
+    desktop_os_opencv = (740,480)
 
 
 class HQ_Cam_vidmodes(enum.Enum):
@@ -34,17 +40,67 @@ class HQ_Cam_vidmodes(enum.Enum):
     _1 = ["2028 × 1520p40",(2020, 1520)]
 
 
+def lumo_viewer(
+        inputimage,
+        pausetime_Secs=0,
+        presskey=False,
+        destroyWindow=True):
+    try:
+        cv2.imshow("img", inputimage.copy()); 
+        cv2.moveWindow("img", 0, 0)
+        if presskey==True:
+            cv2.waitKey(0); #any key
+    
+        if presskey==False:
+            if cv2.waitKey(20) & 0xFF == 27:
+                    pass
+        if pausetime_Secs>0:
+            time.sleep(pausetime_Secs)
+        if destroyWindow==True: cv2.destroyAllWindows()
+
+    except Exception as e:
+        print(e)
+
+
+class Accelerometer(factory.Accelerometer):
+    def __init__(self) -> None:
+        super().__init__()
+        #using l2c not spi!!
+        self.i2c = busio.I2C(board.SCL, board.SDA)
+        self.int1 = digitalio.DigitalInOut(board.D24)
+        self.lis3dh = adafruit_lis3dh.LIS3DH_I2C(
+            self.i2c,
+            int1=self.int1)
+
+    def get_vel(self):
+        x, y, z = self.lis3dh.acceleration
+        return (x, y, z)
+
+
+class display(factory.display):
+    def display_output(self, output):
+        output = cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
+        output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        output = cv2.cvtColor(output,cv2.COLOR_GRAY2BGR)
+        lumo_viewer(output,0,False,False)
+
+
 class Triggers(factory.Triggers):
 
     def __init__(self) -> None:
         super().__init__()
         GPIO.setmode(GPIO.BOARD)
-        for trig, gpio in TRIGGER_IO.items():
+        for trig, gpio in factory.TRIGGER_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             print(f"GPIO {gpio} set for trig {trig}")
 
     def test_states(self):
-        outputs = [None,False,False]
+        outputs = [False] * len(factory.TRIGGER_IO)
+        for index, trig in enumerate(factory.TRIGGER_IO):
+            if GPIO.input(trig) == GPIO.LOW:
+                outputs[index] = True
+        return outputs
 
 
 class Relay(factory.Relay):
@@ -52,9 +108,22 @@ class Relay(factory.Relay):
     def __init__(self) -> None:
         super().__init__()
         GPIO.setmode(GPIO.BOARD)
-        for relay, gpio in RELAY_IO.items():
+        for relay, gpio in factory.RELAY_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
+            self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
+
+    def set_relay(self, relaypos:int, state:bool):
+        if state:
+            self.debouncers[relaypos].trigger(
+                GPIO.output,
+                factory.RELAY_IO[relaypos],
+                GPIO.HIGH)
+        else:
+            self.debouncers[relaypos].trigger(
+                GPIO.output,
+                factory.RELAY_IO[relaypos],
+                GPIO.LOW)
 
 
 class GetImage(factory.GetImage):
@@ -72,8 +141,31 @@ class GetImage(factory.GetImage):
     def get_res(self):
         return [e.value for e in HQ_Cam_vidmodes][self.res_select]
 
-    def get_image(self):
+    def __next__(self):
         output = self.picam2.capture_array("main")
         (x, y) = self.get_res()#  Need to do this for YUV!
         output = output[0:y, 0:x]#  Need to do this for YUV!
-        yield output
+        return output
+
+    def __iter__(self):
+            return self
+
+
+class KillProcess(factory.KillProcess):
+    def clean_up_processes(self, cmds, rec_depth=0):
+        rec_depth += 1
+        if rec_depth > 10:
+            raise RecursionError(
+                "cannot clean up previous session streaming processes")
+        process = Popen(['ps', '-eo', 'pid,args'], stdout=PIPE, stderr=PIPE)
+        stdout, _ = process.communicate()
+        for line in stdout.splitlines():
+            match_list = re.findall(cmds, str(line))
+            if len(match_list) > 0:
+                print(f"PROCESS {str(line)}")
+                pid = int(str(line).split()[1])
+                print(f"PID {pid}")
+                kill(pid, SIGKILL)
+                time.sleep(1)
+                self.clean_up_processes(cmds, rec_depth)
+                break
