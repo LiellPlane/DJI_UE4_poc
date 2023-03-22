@@ -158,7 +158,7 @@ class GetImage(factory.GetImage):
         time.sleep(0.1)
     
     def get_res(self):
-        return [e.value for e in HQ_Cam_vidmodes][self.res_select]
+        return [e.value for e in HQ_Cam_vidmodes][self.res_select][1]
 
     def __next__(self):
         output = self.picam2.capture_array("main")
