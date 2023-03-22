@@ -170,6 +170,7 @@ class GetImage(factory.GetImage):
         return self
     
     def __del__(self):
+        # this doesn't seem to end cleanly
         self.picam2.stop()
 
 

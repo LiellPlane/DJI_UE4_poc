@@ -18,14 +18,18 @@ else:
 def main():
     relay = lumogun.Relay()
     triggers = lumogun.Triggers()
-    #accelerometer = lumogun.Accelerometer()
-    #image_device = lumogun.GetImage()
+    accelerometer = lumogun.Accelerometer()
+    image_device = lumogun.GetImage()
+    torch = 1
+    triggerclick = 2
+
     while True:
         time.sleep(0.1)
-        res = (triggers.test_states())
-        print(res)
-        #print(accelerometer.get_vel())
-        relay.set_relay(1, res[1])
-        relay.set_relay(2, res[2])
+        results_trig_positions = (triggers.test_states())
+        print(accelerometer.get_vel())
+        cap_image = next(image_device)
+        relay.set_relay(1, results_trig_positions[torch])
+        relay.set_relay(2, results_trig_positions[triggerclick])
+
 if __name__ == '__main__':
     main()
