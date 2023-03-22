@@ -46,6 +46,7 @@ class HQ_Cam_vidmodes(enum.Enum):
 def set_GPIO_mode():
     try:
         GPIO.setmode(GPIO.BOARD)
+        print("setting GPIO MODE", "GPIO.setmode(GPIO.BOARD)")
     except Exception as e:
         print(e)
         print("attempting to continue - accelerometer may have taken precedence")

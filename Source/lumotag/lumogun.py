@@ -18,8 +18,8 @@ else:
 def main():
     relay = lumogun.Relay()
     triggers = lumogun.Triggers()
-    accelerometer = lumogun.Accelerometer()
-    image_device = lumogun.GetImage()
+    #accelerometer = lumogun.Accelerometer()
+    #image_device = lumogun.GetImage()
     while True:
         print(triggers.test_states())
         #print(accelerometer.get_vel())
