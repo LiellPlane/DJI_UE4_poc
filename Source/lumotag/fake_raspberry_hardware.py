@@ -50,7 +50,14 @@ class Triggers(factory.Triggers):
         if self.blink_timer.get_dt() > 0.2:
             self.flipflop = not self.flipflop
             self.blink_timer.reset()
-        outputs = [self.flipflop] * len(TRIGGER_IO)
+        outputs = {pos:gpio for pos, gpio
+                   in factory.TRIGGER_IO.items()}
+        for index, (pos, gpio) in enumerate(
+            factory.TRIGGER_IO.items()):
+            if self.flipflop:
+                outputs[pos] = True
+            else:
+                outputs[pos] = False
         return outputs
 
 
@@ -60,18 +67,20 @@ class Relay(factory.Relay):
         super().__init__()
         self.relay_mem = {}
         for relay, gpio in factory.RELAY_IO.items():
-            self.debouncers[relay] = factory.Debounce()
-            self.relay_mem[relay] = False
+            self.debouncers[factory.RELAY_IO[relay]] = factory.Debounce()
+            self.relay_mem[factory.RELAY_IO[relay]] = False
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(self, relaypos:int, state:bool):
-        self.debouncers[relaypos].trigger(
+        self.debouncers[factory.RELAY_IO[relaypos]].trigger(
             self._set_fake_relay,
             factory.RELAY_IO[relaypos],
             state)
             
     def _set_fake_relay(self, relay, state):
-        self.relay_mem[relay] =  state
+        if relay not in self.relay_mem:
+            raise Exception("relay position does not exist!", relay)
+        self.relay_mem[relay] = state
 
 
 class GetImage(factory.GetImage):

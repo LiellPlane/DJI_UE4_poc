@@ -23,13 +23,12 @@ def main():
     flipflop = True
     while True:
         time.sleep(0.1)
-        print(triggers.test_states())
+        res = (triggers.test_states())
+        print(res)
         #print(accelerometer.get_vel())
-        relay.set_relay(1, flipflop)
-        relay.set_relay(2, not flipflop)
-        relay.set_relay(3, flipflop)
-        flipflop = not flipflop
+        relay.set_relay(1, res[1])
+        relay.set_relay(2, res[2])
         #print(next(image_device)[1,2,:])
-
+        print (relay.relay_mem)
 if __name__ == '__main__':
     main()
