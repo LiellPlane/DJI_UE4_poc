@@ -20,7 +20,6 @@ def main():
     triggers = lumogun.Triggers()
     #accelerometer = lumogun.Accelerometer()
     #image_device = lumogun.GetImage()
-    flipflop = True
     while True:
         time.sleep(0.1)
         res = (triggers.test_states())
@@ -28,7 +27,5 @@ def main():
         #print(accelerometer.get_vel())
         relay.set_relay(1, res[1])
         relay.set_relay(2, res[2])
-        #print(next(image_device)[1,2,:])
-        print (relay.relay_mem)
 if __name__ == '__main__':
     main()
