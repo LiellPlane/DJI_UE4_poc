@@ -112,9 +112,9 @@ class Triggers(factory.Triggers):
 
     def test_states(self):
         outputs = [False] * len(factory.TRIGGER_IO)
-        for index, (id, trig) in enumerate(
+        for index, (_, gpio) in enumerate(
             factory.TRIGGER_IO.items()):
-            if GPIO.input(trig) == GPIO.LOW:
+            if GPIO.input(gpio) == GPIO.LOW:
                 outputs[index] = True
         return outputs
 
