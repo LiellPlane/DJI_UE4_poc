@@ -43,6 +43,14 @@ class HQ_Cam_vidmodes(enum.Enum):
     _1 = ["2028 × 1520p40",(2020, 1520)]
 
 
+def set_GPIO_mode():
+    try:
+        GPIO.setmode(GPIO.BOARD)
+    except Exception as e:
+        print(e)
+        print("attempting to continue - accelerometer may have taken precedence")
+
+
 def lumo_viewer(
         inputimage,
         pausetime_Secs=0,
@@ -94,6 +102,7 @@ class Triggers(factory.Triggers):
     def __init__(self) -> None:
         super().__init__()
         for trig, gpio in factory.TRIGGER_IO.items():
+            set_GPIO_mode()
             GPIO.setup(gpio, GPIO.OUT)
             print(f"GPIO {gpio} set for trig {trig}")
 
@@ -110,11 +119,7 @@ class Relay(factory.Relay):
     def __init__(self) -> None:
         super().__init__()
         for relay, gpio in factory.RELAY_IO.items():
-            try:
-                GPIO.setmode(GPIO.BOARD)
-            except Exception as e:
-                print(e)
-                print("attempting to continue - accelerometer may have taken precedence")
+            set_GPIO_mode()
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
