@@ -44,12 +44,12 @@ class HQ_Cam_vidmodes(enum.Enum):
     _1 = ["2028 × 1520p40",(2020, 1520)]
 
 
-def set_GPIO_mode():
+def set_GPIO_mode(is_set):
     try:
-        if GPI_MODE_SET:
+        if is_set:
             GPIO.setmode(GPIO.BOARD)
             print("setting GPIO MODE", "GPIO.setmode(GPIO.BOARD)")
-            GPI_MODE_SET = True
+            is_set = True
     except Exception as e:
         print(e)
         print("attempting to continue - accelerometer may have taken precedence")
@@ -105,7 +105,7 @@ class Triggers(factory.Triggers):
 
     def __init__(self) -> None:
         super().__init__()
-        set_GPIO_mode()
+        set_GPIO_mode(GPI_MODE_SET)
         for trig, gpio in factory.TRIGGER_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             print(f"GPIO {gpio} set for trig {trig}")
@@ -122,8 +122,8 @@ class Relay(factory.Relay):
 
     def __init__(self) -> None:
         super().__init__()
+        set_GPIO_mode(GPI_MODE_SET)
         for relay, gpio in factory.RELAY_IO.items():
-            
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
