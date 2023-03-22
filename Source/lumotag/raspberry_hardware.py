@@ -46,7 +46,7 @@ class HQ_Cam_vidmodes(enum.Enum):
 
 def set_GPIO_mode(is_set):
     try:
-        if is_set:
+        if is_set is False:
             GPIO.setmode(GPIO.BOARD)
             print("setting GPIO MODE", "GPIO.setmode(GPIO.BOARD)")
             is_set = True
