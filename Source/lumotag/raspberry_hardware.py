@@ -110,6 +110,11 @@ class Relay(factory.Relay):
     def __init__(self) -> None:
         super().__init__()
         for relay, gpio in factory.RELAY_IO.items():
+            try:
+                GPIO.setmode(GPIO.BOARD)
+            except Exception as e:
+                print(e)
+                print("attempting to continue - accelerometer may have taken precedence")
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
