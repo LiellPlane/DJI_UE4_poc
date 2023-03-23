@@ -10,10 +10,6 @@ from subprocess import Popen, PIPE
 from os import kill
 from signal import SIGKILL
 import enum
-import json
-from urllib.request import urlopen
-import itertools
-import socket
 import cv2
 import numpy as np
 import enum
@@ -160,15 +156,12 @@ class GetImage(factory.GetImage):
     def get_res(self):
         return [e.value for e in HQ_Cam_vidmodes][self.res_select][1]
 
-    def __next__(self):
+    def gen_image(self):
         output = self.picam2.capture_array("main")
         (x, y) = self.get_res()#  Need to do this for YUV!
         output = output[0:y, 0:x]#  Need to do this for YUV!
         return output
 
-    def __iter__(self):
-        return self
-    
     def __del__(self):
         # this doesn't seem to end cleanly
         self.picam2.stop()

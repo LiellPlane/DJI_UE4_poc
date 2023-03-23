@@ -88,14 +88,11 @@ class GetImage(factory.GetImage):
     def get_res(self):
         pass
 
-    def __next__(self):
+    def gen_image(self):
         blank_image = np.zeros((500, 500, 3), np.uint8)
         blank_image[:,:,:] = random.randint(0,255)
         return blank_image
 
-    def __iter__(self):
-        return self
-    
 
 class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):

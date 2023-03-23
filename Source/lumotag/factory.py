@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import time
 from enum import Enum
+import cv2
 
 RELAY_IO = {1:29, 2:31, 3:16}
 TRIGGER_IO = {1:15, 2:13}
@@ -18,6 +19,7 @@ class display(ABC):
     def display_output(self):
         pass
 
+
 class Accelerometer(ABC):
 
     @abstractmethod
@@ -33,12 +35,23 @@ class Triggers(ABC):
 
 
 class GetImage(ABC):
+
     def __init__(self) -> None:
         super().__init__()
         self.res_select = 0
-    #@abstractmethod
-    #def get_image(self) -> iter:
-    #    pass
+
+    @abstractmethod
+    def gen_image(self):
+       pass
+
+    def __next__(self):
+        img = self.gen_image()
+        if len(img.shape) == 3:
+            return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        return img
+
+    def __iter__(self):
+        return self
 
 
 class Relay(ABC):
@@ -75,7 +88,6 @@ class TimeDiffObject:
 
     def __init__(self) -> None:
         self._start_time = time.perf_counter()
-        self._stop_time = time.perf_counter()
 
     def get_dt(self) -> float:
         """gets time in seconds since last reset/init"""
