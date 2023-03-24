@@ -34,8 +34,8 @@ def main():
         time.sleep(0.1)
         results_trig_positions = (triggers.test_states())
         print(accelerometer.get_vel())
+        print(results_trig_positions)
         cap_image = next(image_device)
-        print(cap_image[0:3, 0:3])
         relay.set_relay(1, results_trig_positions[torch])
         relay.set_relay(2, results_trig_positions[triggerclick])
 

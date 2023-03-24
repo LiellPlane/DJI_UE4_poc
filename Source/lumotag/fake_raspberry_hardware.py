@@ -19,8 +19,6 @@ import time
 import decode_clothID_v1 as decode_clothID
 import factory
 
-RELAY_IO = {1:29, 2:31, 3:16}
-TRIGGER_IO = {1:15, 2:13}
 
 def lumo_viewer(
         inputimage,

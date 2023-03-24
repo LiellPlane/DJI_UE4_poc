@@ -1,33 +1,25 @@
-from dataclasses import dataclass, asdict
-from logging import exception
-from multiprocessing import ProcessError
-import subprocess
-import os
-from datetime import datetime
 import time
 import re
 from subprocess import Popen, PIPE
 from os import kill
 from signal import SIGKILL
-import enum
 import cv2
 import numpy as np
 import enum
+# for finding pinout, type pinout in terminal
 import RPi.GPIO as GPIO
-# adafruit board library forces BCM mode
-#GPIO.setmode(GPIO.BOARD)
-#GPIO.setmode(GPIO.BCM) 
 import time
-import decode_clothID_v1 as decode_clothID
 import factory
-from picamera2 import Picamera2, Preview
+from picamera2 import Picamera2
 #accelerometer
-# import board
-# import digitalio
-# import busio
-# import adafruit_lis3dh
+# adafruit board library forces BCM mode!!
+import board
+import digitalio
+import busio
+import adafruit_lis3dh
 
 GPI_MODE_SET = False
+
 
 class screensizes(enum.Enum):
     desktop_os_opencv = (740,480)
@@ -43,8 +35,8 @@ class HQ_Cam_vidmodes(enum.Enum):
 def set_GPIO_mode(is_set):
     try:
         if is_set is False:
-            GPIO.setmode(GPIO.BOARD)
-            print("setting GPIO MODE", "GPIO.setmode(GPIO.BOARD)")
+            GPIO.setmode(GPIO.BCM)
+            print("setting GPIO MODE", "GPIO.setmode(GPIO.BCM)")
             is_set = True
     except Exception as e:
         print(e)
