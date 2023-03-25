@@ -81,6 +81,10 @@ class Accelerometer(factory.Accelerometer):
             self.round(y),
             self.round(z))
 
+    def get_visual(self):
+        visual = super().get_visual()
+        output = cv2.rotate(visual, cv2.ROTATE_90_CLOCKWISE)
+        return output
 
 class display(factory.display):
     def display_output(self, output):

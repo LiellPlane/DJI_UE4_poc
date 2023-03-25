@@ -126,3 +126,4 @@ class Accelerometer(factory.Accelerometer):
             self.round(math.sin(self._x)*real_accel_range),
             self.round(math.sin(self._y)*real_accel_range),
             self.round(math.sin(self._z)*real_accel_range))
+    
