@@ -42,7 +42,7 @@ class Accelerometer(ABC):
 
     def __init__(self) -> None:
         self._last_xyz = None
-        self._display_size = 20
+        self._display_size = 100
         self._disp_val_lim_max = 20
         self._disp_val_lim_min = -20
 
@@ -87,6 +87,17 @@ class Accelerometer(ABC):
         y = 1
         z = 2
         
+        # Using cv2.putText() method
+        visual = cv2.putText(
+            visual,
+            '^THIS WAY UP^',
+            (10, 10),
+            cv2.FONT_HERSHEY_SIMPLEX, 
+            0.3,
+            (255, 0, 0),
+            1,
+            cv2.LINE_AA)
+
         cv2.line(
             visual,
             (int(lerp_input_vec[y]), half_ds),
