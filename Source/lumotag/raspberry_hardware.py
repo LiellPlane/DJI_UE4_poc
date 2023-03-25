@@ -64,8 +64,8 @@ def lumo_viewer(
 class Accelerometer(factory.Accelerometer):
     def __init__(self) -> None:
         super().__init__()
-        self._disp_val_lim_max = 3
-        self._disp_val_lim_min = -3
+        self._disp_val_lim_max = 9
+        self._disp_val_lim_min = -9
         #using l2c not spi!!
         self.i2c = busio.I2C(board.SCL, board.SDA)
         self.int1 = digitalio.DigitalInOut(board.D24)

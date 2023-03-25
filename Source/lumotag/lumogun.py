@@ -1,8 +1,4 @@
-import numpy as np
-import time
-import factory
 import os
-import random
 
 #  detect what OS we are on - test environment on production (real hardware)
 RASP_PI_4_OS = "armv7l"
@@ -33,11 +29,14 @@ def main():
     cap_image = None
     while True:
         config.loop_wait()
-        results_trig_positions = (triggers.test_states())
+        
         vel = accelerometer.update_vel()
-        display.display_output(accelerometer.get_visual())
-        if results_trig_positions[torch] is True:
-            cap_image = next(image_capture)
+        results_trig_positions = (triggers.test_states())
+        if results_trig_positions[triggerclick] is True:
+            display.display_output(next(image_capture))
+        else:
+            display.display_output(accelerometer.get_visual())
+
         relay.set_relay(relaypos=1, state=results_trig_positions[torch])
         relay.set_relay(relaypos=2, state=results_trig_positions[triggerclick])
         print(f"{vel} {results_trig_positions}")
