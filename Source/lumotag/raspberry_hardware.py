@@ -21,10 +21,6 @@ import adafruit_lis3dh
 GPI_MODE_SET = False
 
 
-class screensizes(enum.Enum):
-    desktop_os_opencv = (740,480)
-
-
 class HQ_Cam_vidmodes(enum.Enum):
     _4 = ["640 × 480",(640, 480)] #0.3MP
     _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
@@ -75,8 +71,9 @@ class Accelerometer(factory.Accelerometer):
             self.i2c,
             int1=self.int1)
 
-    def get_vel(self):
+    def update_vel(self):
         x, y, z = self.lis3dh.acceleration
+        self._last_xyz = (x, y, z)
         return (
             self.round(x),
             self.round(y),
@@ -85,10 +82,8 @@ class Accelerometer(factory.Accelerometer):
 
 class display(factory.display):
     def display_output(self, output):
-        output = cv2.resize(output,tuple((screensizes.desktop_os_opencv.value)))
+        output = cv2.resize(output,factory.screensizes.pi_4.value)
         output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-        output = cv2.cvtColor(output,cv2.COLOR_GRAY2BGR)
         lumo_viewer(output,0,False,False)
 
 

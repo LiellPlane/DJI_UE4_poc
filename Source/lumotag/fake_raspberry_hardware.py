@@ -18,6 +18,7 @@ import enum
 import time
 import decode_clothID_v1 as decode_clothID
 import factory
+import math
 #from math import round
 
 
@@ -93,16 +94,44 @@ class GetImage(factory.GetImage):
         return blank_image
 
 
+class display(factory.display):
+    def display_output(self, output):
+        output = cv2.resize(output,factory.screensizes.windows_laptop.value)
+        #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+        #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        # output = cv2.cvtColor(output,cv2.COLOR_GRAY2BGR)
+        lumo_viewer(output, 0, False, False)
+
+
 class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):
         pass
 
 class Accelerometer(factory.Accelerometer):
-    def get_vel(self):
-        x = 1.298393893839373972
-        y = 2.2982981982982922
-        z = -0.2929929211
+    def __init__(self) -> None:
+        super().__init__()
+        self._x = 1
+        self._y = -1
+        self._z = 0
+        self._callcnt = 0
+
+    def update_vel(self):
+        self._callcnt += 1
+        self._x += 0.1
+        self._y += 0.1
+        self._z += 0.1
+        if self._x > 9999999:
+            self._x = 0
+        if self._y > 9999999:
+            self._y = 0
+        if self._z > 9999999:
+            self._z = 0
+        real_accel_range = 30
+        self._last_xyz = (
+            self.round(math.sin(self._x)*real_accel_range),
+            self.round(math.sin(self._y)*real_accel_range),
+            self.round(math.sin(self._z)*real_accel_range))
         return (
-            self.round(x),
-            self.round(y),
-            self.round(z))
+            self.round(math.sin(self._x)*real_accel_range),
+            self.round(math.sin(self._y)*real_accel_range),
+            self.round(math.sin(self._z)*real_accel_range))

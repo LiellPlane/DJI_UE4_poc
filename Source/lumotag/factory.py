@@ -7,9 +7,15 @@ import cv2
 RELAY_IO_BOARD = {1:29, 3:31, 2:16}
 RELAY_IO_BCM = {1:5, 3:6, 2:23}
 RELAY_IO = RELAY_IO_BCM
+
 TRIGGER_IO_BOARD = {1:15, 2:13}
 TRIGGER_IO_BCM = {1:22, 2:27}
 TRIGGER_IO = TRIGGER_IO_BCM
+
+
+class screensizes(Enum):
+    pi_4 = (740,480)
+    windows_laptop = (1000, 1000)
 
 
 class RelayFunction(Enum):
@@ -26,13 +32,72 @@ class display(ABC):
 
 class Accelerometer(ABC):
 
+    def __init__(self) -> None:
+        self._last_xyz = None
+        self._display_size = 20
+        self._disp_val_lim_max = 20
+        self._disp_val_lim_min = -20
+
     @abstractmethod
-    def get_vel(self) -> tuple:
+    def update_vel(self) -> tuple:
         pass
 
     @staticmethod
     def round(val):
         return round(val, 4)
+
+    def interp_pos_in_img(self, xyz: np.array):
+            output = []
+            for el in xyz:
+                output.append(
+                    np.interp(
+                        el,
+                        [self._disp_val_lim_min, self._disp_val_lim_max],
+                        [0, self._display_size]))
+            output = np.asarray(output)
+            output = np.clip(
+                output,
+                0,
+                self._display_size)
+            return output
+
+    def get_visual(self):
+        ds = self._display_size
+        visual = np.ones((ds,ds,3))
+        if self._last_xyz is None:
+            return visual
+        input_vec = np.asarray(self._last_xyz)
+        half_ds = int(ds/2)
+        # rectify and stretch to size of output
+        input_vec = np.clip(
+            input_vec,
+            self._disp_val_lim_min,
+            self._disp_val_lim_max)
+
+        lerp_input_vec = self.interp_pos_in_img(input_vec)
+        x = 0
+        y = 1
+        z = 2
+        
+        cv2.line(
+            visual,
+            (half_ds, int(lerp_input_vec[x])),
+            (half_ds, half_ds),
+            (255 ,0, 0),
+            1)
+        cv2.line(
+            visual,
+            (int(lerp_input_vec[y]), half_ds),
+            (half_ds, half_ds),
+            (0 ,255, 0),
+            1)
+        cv2.line(
+            visual,
+            (int(lerp_input_vec[y]), int(lerp_input_vec[y])),
+            (half_ds, half_ds),
+            (0 ,0, 255),
+            1)
+        return visual
     
 
 class Triggers(ABC):
