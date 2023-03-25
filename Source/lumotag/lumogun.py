@@ -21,6 +21,7 @@ else:
 
 def main():
     # initialise components of lumogun
+    config = lumogun.config()
     relay = lumogun.Relay()
     triggers = lumogun.Triggers()
     accelerometer = lumogun.Accelerometer()
@@ -31,7 +32,7 @@ def main():
     triggerclick = 2
     cap_image = None
     while True:
-        time.sleep(0.1)
+        config.loop_wait()
         results_trig_positions = (triggers.test_states())
         vel = accelerometer.update_vel()
         display.display_output(accelerometer.get_visual())

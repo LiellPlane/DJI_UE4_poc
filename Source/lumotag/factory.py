@@ -14,7 +14,7 @@ TRIGGER_IO = TRIGGER_IO_BCM
 
 
 class screensizes(Enum):
-    pi_4 = (740,480)
+    pi_4 = (480, 740)
     windows_laptop = (1000, 1000)
 
 
@@ -29,6 +29,14 @@ class display(ABC):
     def display_output(self):
         pass
 
+
+class config(ABC):
+    @property
+    def env_name(self):
+        raise NotImplementedError
+    @abstractmethod
+    def loop_wait(self):
+        raise NotImplementedError
 
 class Accelerometer(ABC):
 
