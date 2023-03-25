@@ -30,6 +30,10 @@ class Accelerometer(ABC):
     def get_vel(self) -> tuple:
         pass
 
+    @staticmethod
+    def round(val):
+        return round(val, 4)
+    
 
 class Triggers(ABC):
 

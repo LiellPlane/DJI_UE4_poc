@@ -77,7 +77,10 @@ class Accelerometer(factory.Accelerometer):
 
     def get_vel(self):
         x, y, z = self.lis3dh.acceleration
-        return (x, y, z)
+        return (
+            self.round(x),
+            self.round(y),
+            self.round(z))
 
 
 class display(factory.display):

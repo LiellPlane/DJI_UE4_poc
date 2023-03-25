@@ -29,15 +29,17 @@ def main():
     #variables mapping position of relay to function
     torch = 1
     triggerclick = 2
-
+    cap_image = None
     while True:
         time.sleep(0.1)
         results_trig_positions = (triggers.test_states())
-        print(accelerometer.get_vel())
-        print(results_trig_positions)
-        cap_image = next(image_device)
-        relay.set_relay(1, results_trig_positions[torch])
-        relay.set_relay(2, results_trig_positions[triggerclick])
+        vel = accelerometer.get_vel()
+        if results_trig_positions[torch] is True:
+            print("snap")
+            cap_image = next(image_device)
+        relay.set_relay(relaypos=1, state=results_trig_positions[torch])
+        relay.set_relay(relaypos=2, state=results_trig_positions[triggerclick])
+        print(f"{vel} {results_trig_positions}")
 
 if __name__ == '__main__':
     main()

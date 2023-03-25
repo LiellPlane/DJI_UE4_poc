@@ -18,6 +18,7 @@ import enum
 import time
 import decode_clothID_v1 as decode_clothID
 import factory
+#from math import round
 
 
 def lumo_viewer(
@@ -98,4 +99,10 @@ class KillProcess(factory.KillProcess):
 
 class Accelerometer(factory.Accelerometer):
     def get_vel(self):
-        return (1, 2, 3)
+        x = 1.298393893839373972
+        y = 2.2982981982982922
+        z = -0.2929929211
+        return (
+            self.round(x),
+            self.round(y),
+            self.round(z))
