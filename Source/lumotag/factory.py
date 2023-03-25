@@ -4,8 +4,8 @@ import time
 from enum import Enum
 import cv2
 
-RELAY_IO_BOARD = {1:29, 2:31, 3:16}
-RELAY_IO_BCM = {1:5, 2:6, 3:23}
+RELAY_IO_BOARD = {1:29, 3:31, 2:16}
+RELAY_IO_BCM = {1:5, 3:6, 2:23}
 RELAY_IO = RELAY_IO_BCM
 TRIGGER_IO_BOARD = {1:15, 2:13}
 TRIGGER_IO_BCM = {1:22, 2:27}
