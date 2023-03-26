@@ -76,10 +76,12 @@ class Accelerometer(factory.Accelerometer):
     def update_vel(self):
         x, y, z = self.lis3dh.acceleration
         self._last_xyz = (x, y, z)
+        # reverse polarity is to match with
+        # display - not good place to have it
         return (
-            self.round(x),
-            self.round(y),
-            self.round(z))
+            self.round(x*-1),
+            self.round(y*-1),
+            self.round(z*-1))
 
     def get_visual(self):
         visual = super().get_visual()
