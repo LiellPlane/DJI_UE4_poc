@@ -90,7 +90,7 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
     def display_output(self, output):
         output = cv2.resize(output,factory.screensizes.pi_4.value)
-        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
         lumo_viewer(output,0,False,False)
 
@@ -100,15 +100,15 @@ class Triggers(factory.Triggers):
     def __init__(self) -> None:
         super().__init__()
         set_GPIO_mode(GPI_MODE_SET)
-        for trig, gpio in factory.TRIGGER_IO.items():
+        for trig, gpio in factory.config.TRIGGER_IO.items():
             GPIO.setup(gpio, GPIO.IN)
             print(f"GPIO {gpio} set for trig {trig}")
 
     def test_states(self):
         outputs = {pos:gpio for pos, gpio
-                   in factory.TRIGGER_IO.items()}
-        for index, (pos, gpio) in enumerate(
-            factory.TRIGGER_IO.items()):
+                   in factory.config.TRIGGER_IO.items()}
+        for _, (pos, gpio) in enumerate(
+            factory.config.TRIGGER_IO.items()):
             if GPIO.input(gpio) == GPIO.LOW:
                 outputs[pos] = True
             else:
@@ -128,7 +128,7 @@ class Relay(factory.Relay):
     def __init__(self) -> None:
         super().__init__()
         set_GPIO_mode(GPI_MODE_SET)
-        for relay, gpio in factory.RELAY_IO.items():
+        for relay, gpio in factory.config.RELAY_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
@@ -137,16 +137,16 @@ class Relay(factory.Relay):
         if state:
             self.debouncers[relaypos].trigger(
                 GPIO.output,
-                factory.RELAY_IO[relaypos],
+                factory.config.RELAY_IO[relaypos],
                 GPIO.HIGH)
         else:
             self.debouncers[relaypos].trigger(
                 GPIO.output,
-                factory.RELAY_IO[relaypos],
+                factory.config.RELAY_IO[relaypos],
                 GPIO.LOW)
 
 
-class GetImage(factory.GetImage):
+class CSI_Camera(factory.Camera):
 
     angle_vs_world_up = 90
 

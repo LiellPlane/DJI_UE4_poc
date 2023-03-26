@@ -21,24 +21,23 @@ def main():
     relay = lumogun.Relay()
     triggers = lumogun.Triggers()
     accelerometer = lumogun.Accelerometer()
-    image_capture = lumogun.GetImage()
+    image_capture = lumogun.CSI_Camera()
     display = lumogun.display()
-    #variables mapping position of relay to function
-    torch = 1
-    triggerclick = 2
-    cap_image = None
+
     while True:
         config.loop_wait()
         
         vel = accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())
-        if results_trig_positions[triggerclick] is True:
+        if results_trig_positions[config.triggerclick] is True:
             display.display_output(next(image_capture))
         else:
             display.display_output(accelerometer.get_visual())
 
-        relay.set_relay(relaypos=1, state=results_trig_positions[torch])
-        relay.set_relay(relaypos=2, state=results_trig_positions[triggerclick])
+        torch_on = results_trig_positions[config.torch]
+        trig_on = results_trig_positions[config.triggerclick]
+        relay.set_relay(relaypos=1, state=torch_on)
+        relay.set_relay(relaypos=2, state=trig_on)
         print(f"{vel} {results_trig_positions}")
 
 if __name__ == '__main__':

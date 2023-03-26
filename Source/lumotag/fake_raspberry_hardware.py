@@ -36,9 +36,9 @@ class Triggers(factory.Triggers):
             self.flipflop = not self.flipflop
             self.blink_timer.reset()
         outputs = {pos:gpio for pos, gpio
-                   in factory.TRIGGER_IO.items()}
-        for index, (pos, gpio) in enumerate(
-            factory.TRIGGER_IO.items()):
+                   in factory.config.TRIGGER_IO.items()}
+        for _, (pos, _) in enumerate(
+            factory.config.TRIGGER_IO.items()):
             if self.flipflop:
                 outputs[pos] = True
             else:
@@ -57,15 +57,15 @@ class Relay(factory.Relay):
     def __init__(self) -> None:
         super().__init__()
         self.relay_mem = {}
-        for relay, gpio in factory.RELAY_IO.items():
-            self.debouncers[factory.RELAY_IO[relay]] = factory.Debounce()
-            self.relay_mem[factory.RELAY_IO[relay]] = False
+        for relay, gpio in factory.config.RELAY_IO.items():
+            self.debouncers[factory.config.RELAY_IO[relay]] = factory.Debounce()
+            self.relay_mem[factory.config.RELAY_IO[relay]] = False
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(self, relaypos:int, state:bool):
-        self.debouncers[factory.RELAY_IO[relaypos]].trigger(
+        self.debouncers[factory.config.RELAY_IO[relaypos]].trigger(
             self._set_fake_relay,
-            factory.RELAY_IO[relaypos],
+            factory.config.RELAY_IO[relaypos],
             state)
             
     def _set_fake_relay(self, relay, state):
@@ -74,7 +74,7 @@ class Relay(factory.Relay):
         self.relay_mem[relay] = state
 
 
-class GetImage(factory.GetImage):
+class CSI_Camera(factory.Camera):
 
     angle_vs_world_up = 0
 
@@ -91,7 +91,7 @@ class display(factory.display):
     def display_output(self, output):
         output = cv2.resize(output,factory.screensizes.windows_laptop.value)
         #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-        #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         # output = cv2.cvtColor(output,cv2.COLOR_GRAY2BGR)
         lumo_viewer(output, 0, False, False)
 
