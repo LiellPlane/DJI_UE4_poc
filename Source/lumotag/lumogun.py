@@ -36,7 +36,7 @@ def main():
         relay.set_relay(relaypos=1, state=req_torch)
         relay.set_relay(relaypos=2, state=req_trig)
 
-        if results_trig_positions[req_torch] is True:
+        if req_torch is True:
             display.display_output(next(image_capture))
         else:
             display.display_output(accelerometer.get_visual())
