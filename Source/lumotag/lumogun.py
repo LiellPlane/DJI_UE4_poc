@@ -1,4 +1,5 @@
 import os
+import factory
 
 #  detect what OS we are on - test environment on production (real hardware)
 RASP_PI_4_OS = "armv7l"
@@ -13,10 +14,9 @@ else:
 
 
 
-
-
 def main():
     # initialise components of lumogun
+    test_config = factory.leviathon_config()
     config = lumogun.config()
     relay = lumogun.Relay()
     triggers = lumogun.Triggers()
@@ -29,15 +29,20 @@ def main():
         
         vel = accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())
-        if results_trig_positions[config.triggerclick] is True:
+
+        req_torch = results_trig_positions[config.torch]
+        req_trig = results_trig_positions[config.triggerclick]
+
+        relay.set_relay(relaypos=1, state=req_torch)
+        relay.set_relay(relaypos=2, state=req_trig)
+
+        if results_trig_positions[req_torch] is True:
             display.display_output(next(image_capture))
         else:
             display.display_output(accelerometer.get_visual())
 
-        torch_on = results_trig_positions[config.torch]
-        trig_on = results_trig_positions[config.triggerclick]
-        relay.set_relay(relaypos=1, state=torch_on)
-        relay.set_relay(relaypos=2, state=trig_on)
+        
+
         print(f"{vel} {results_trig_positions}")
 
 if __name__ == '__main__':

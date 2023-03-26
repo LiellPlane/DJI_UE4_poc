@@ -43,6 +43,55 @@ class config(ABC):
     def loop_wait(self):
         raise NotImplementedError
 
+class gun_config(ABC):
+
+    @property
+    @abstractmethod
+    def model_name(self):
+        ...
+    @property
+    @abstractmethod
+    def relay_io(self):
+        ...
+    @property
+    @abstractmethod
+    def trigger_io(self):
+        ...
+    @property
+    @abstractmethod
+    def screen_rotation(self):
+        ...
+    @abstractmethod
+    def loop_wait(self):
+        ...
+
+class leviathon_config(gun_config):
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
+        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
+        self.TRIGGER_IO_BOARD = {1:15, 2:13}
+        self.TRIGGER_IO_BCM = {1:22, 2:27}
+
+    @property
+    def model_name(self):
+        return ("Leviathon")
+
+    @property
+    def relay_io(self):
+        return(self.RELAY_IO_BCM)
+    
+    @property
+    def trigger_io(self):
+        return (self.TRIGGER_IO_BCM)
+    
+    @property
+    def screen_rotation(self):
+        return(90)
+
+    def loop_wait(self):
+        pass
 
 class Accelerometer(ABC):
 
