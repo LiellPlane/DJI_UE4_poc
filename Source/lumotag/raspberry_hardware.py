@@ -161,11 +161,15 @@ class GetImage(factory.GetImage):
     def get_res(self):
         return [e.value for e in HQ_Cam_vidmodes][self.res_select][1]
 
-    def gen_image(self):
+    def _gen_image(self):
         output = self.picam2.capture_array("main")
         (x, y) = self.get_res()#  Need to do this for YUV!
         output = output[0:y, 0:x]#  Need to do this for YUV!
         return output
+
+    def gen_image(self):
+        img = self._gen_image()
+        return cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
 
     def __del__(self):
         # this doesn't seem to end cleanly
