@@ -77,7 +77,7 @@ class Accelerometer(factory.Accelerometer):
         x, y, z = self.lis3dh.acceleration
         self._last_xyz = (x, y, z)
         # reverse polarity is to match with
-        # display - not good place to have it
+        # LT display - not good place to have it
         return (
             self.round(x*-1),
             self.round(y*-1),
