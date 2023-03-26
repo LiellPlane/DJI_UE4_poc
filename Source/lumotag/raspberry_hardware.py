@@ -84,13 +84,13 @@ class Accelerometer(factory.Accelerometer):
             self.round(z*-1))
 
     def get_visual(self):
-        visual = super().get_visual()
-        output = cv2.rotate(visual, cv2.ROTATE_90_CLOCKWISE)
-        return output
+        return super().get_visual()
+
 
 class display(factory.display):
     def display_output(self, output):
         output = cv2.resize(output,factory.screensizes.pi_4.value)
+        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
         lumo_viewer(output,0,False,False)
 
@@ -148,13 +148,15 @@ class Relay(factory.Relay):
 
 class GetImage(factory.GetImage):
 
+    angle_vs_world_up = 90
+
     def __init__(self) -> None:
         super().__init__()
         self.picam2 = Picamera2()
-        config = self.picam2.create_video_configuration(
+        _config = self.picam2.create_video_configuration(
             main={"size": self.get_res(),  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
         self.picam2.set_controls({"ExposureTime": 10000}) # for blurring - but can get over exposed at night
-        self.picam2.configure(config)
+        self.picam2.configure(_config)
         self.picam2.start()
         time.sleep(0.1)
     
@@ -168,8 +170,7 @@ class GetImage(factory.GetImage):
         return output
 
     def gen_image(self):
-        img = self._gen_image()
-        return cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+        return self._gen_image()
 
     def __del__(self):
         # this doesn't seem to end cleanly

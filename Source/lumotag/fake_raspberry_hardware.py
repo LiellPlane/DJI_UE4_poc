@@ -75,7 +75,9 @@ class Relay(factory.Relay):
 
 
 class GetImage(factory.GetImage):
-    
+
+    angle_vs_world_up = 0
+
     def get_res(self):
         pass
 

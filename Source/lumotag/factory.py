@@ -38,6 +38,7 @@ class config(ABC):
     def loop_wait(self):
         raise NotImplementedError
 
+
 class Accelerometer(ABC):
 
     def __init__(self) -> None:
@@ -135,6 +136,10 @@ class Triggers(ABC):
 
 
 class GetImage(ABC):
+
+    @property
+    def angle_vs_world_up(self):
+        raise NotImplementedError
 
     def __init__(self) -> None:
         super().__init__()
