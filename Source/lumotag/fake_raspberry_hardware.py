@@ -90,9 +90,8 @@ class CSI_Camera(factory.Camera):
 class display(factory.display):
     def display_output(self, output):
         output = cv2.resize(output,factory.screensizes.windows_laptop.value)
-        #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-        # output = cv2.cvtColor(output,cv2.COLOR_GRAY2BGR)
+        #  simulate rotation of lumotag 
+        #output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
         lumo_viewer(output, 0, False, False)
 
 
