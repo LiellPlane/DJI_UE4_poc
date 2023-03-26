@@ -34,7 +34,8 @@ def main():
         req_trig = results_trig_positions[config.triggerclick]
 
         relay.set_relay(relaypos=1, state=req_torch)
-        relay.set_relay(relaypos=2, state=req_trig)
+        relay.set_relay(relaypos=2, state=req_torch)
+        relay.set_relay(relaypos=3, state=req_trig)
 
         if req_torch is True:
             display.display_output(next(image_capture))
