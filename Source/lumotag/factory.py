@@ -119,7 +119,7 @@ class Accelerometer(ABC):
         # get 
         cv2.line(
             visual,
-            (int(lerp_input_vec[x]), int(lerp_input_vec[y])),
+            (int(lerp_input_vec[y]), int(lerp_input_vec[x])),
             (half_ds, half_ds),
             (0 ,0, 0),
             2)
