@@ -47,6 +47,15 @@ class gun_config(ABC):
 
     @property
     @abstractmethod
+    def rly_torch(self):
+        ...
+    @property
+    @abstractmethod
+    def rly_triggerclick(self):
+        ...
+    
+    @property
+    @abstractmethod
     def model_name(self):
         ...
     @property
@@ -76,9 +85,17 @@ class TZAR_config(gun_config):
         self.TRIGGER_IO_BCM = {1:22, 2:27}
 
     @property
+    def rly_torch(self):
+        return 1
+
+    @property
+    def rly_triggerclick(self):
+        return 2
+    
+    @property
     def model_name(self):
         return ("TZAR")
-
+    
     @property
     def relay_io(self):
         return(self.RELAY_IO_BCM)
@@ -93,6 +110,7 @@ class TZAR_config(gun_config):
 
     def loop_wait(self):
         pass
+
 
 class Accelerometer(ABC):
 
