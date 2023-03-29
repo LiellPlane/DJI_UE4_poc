@@ -1,6 +1,6 @@
 import os
 import factory
-
+from functools import partial
 #  detect what OS we are on - test environment on production (real hardware)
 RASP_PI_4_OS = "armv7l"
 if hasattr(os, 'uname') is False:
@@ -16,7 +16,7 @@ else:
 
 def main():
     # initialise components of lumogun
-    test_config = factory.leviathon_config()
+    test_config = factory.TZAR_config()
     config = lumogun.config()
     relay = lumogun.Relay()
     triggers = lumogun.Triggers()
@@ -24,20 +24,25 @@ def main():
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display()
 
+    # set partial functions
+    set_torch = partial(relay.set_relay, relaypos=1)
+    set_laser = partial(relay.set_relay, relaypos=2)
+    set_clicker = partial(relay.set_relay, relaypos=3)
+
     while True:
         config.loop_wait()
         
         vel = accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())
 
-        req_torch = results_trig_positions[config.torch]
-        req_trig = results_trig_positions[config.triggerclick]
+        is_torch_reqd = results_trig_positions[config.torch]
+        is_trigger_reqd = results_trig_positions[config.triggerclick]
 
-        relay.set_relay(relaypos=1, state=req_torch)
-        relay.set_relay(relaypos=2, state=req_torch)
-        relay.set_relay(relaypos=3, state=req_trig)
+        set_torch(state=is_torch_reqd)
+        set_laser(state=is_torch_reqd)
+        set_clicker(state=is_trigger_reqd)
 
-        if req_torch is True:
+        if is_torch_reqd is True:
             display.display_output(next(image_capture))
         else:
             display.display_output(accelerometer.get_visual())

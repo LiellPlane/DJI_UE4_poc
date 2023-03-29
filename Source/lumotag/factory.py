@@ -65,10 +65,11 @@ class gun_config(ABC):
     def loop_wait(self):
         ...
 
-class leviathon_config(gun_config):
+class TZAR_config(gun_config):
 
     def __init__(self) -> None:
         super().__init__()
+        #for reference on rasperry pi 4
         self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
         self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
         self.TRIGGER_IO_BOARD = {1:15, 2:13}
@@ -76,7 +77,7 @@ class leviathon_config(gun_config):
 
     @property
     def model_name(self):
-        return ("Leviathon")
+        return ("TZAR")
 
     @property
     def relay_io(self):

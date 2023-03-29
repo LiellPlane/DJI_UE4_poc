@@ -395,7 +395,8 @@ class ShapeItem:
     id: str
     approx_contour: np.array
     default_contour: np.array
-    boundingbox_sqr: np.array
+    boundingbox: np.array
+    boundingbox_min: np.array
     boundingbox_ellipse: np.array
     img_cut: np.array
     sum_int_angles: float
@@ -412,16 +413,15 @@ def get_approx_shape_and_bbox(
     minRect = cv2.minAreaRect(approx)
     box = cv2.boxPoints(minRect)
     box = np.intp(box)
-    ellipse = cv2.fitEllipse(contour)
-    sum_angles = math_utils.get_internal_angles_of_shape(contour)
     output = ShapeItem(
         id="ID TBD",
         approx_contour=approx,
         default_contour=contour,
-        boundingbox_sqr=box,
-        boundingbox_ellipse=ellipse,
+        boundingbox=cv2.boundingRect(contour),
+        boundingbox_min=box,
+        boundingbox_ellipse=cv2.fitEllipse(contour),
         img_cut=None,
-        sum_int_angles=sum_angles)
+        sum_int_angles=math_utils.get_internal_angles_of_shape(approx))
 
     return output
 
@@ -582,13 +582,24 @@ def analyse_candidates_shapematch(
     contour_stats = []
     for c in contours:
         contour_stats.append(get_approx_shape_and_bbox(c, dataobject))
-    
+
+    if dataobject.debug == True:
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in contour_stats:
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 1)
+            x,y,w,h = c.boundingbox
+            ROI = debug_img[y:y+h, x:x+w]
+            dataobject.img_view_or_save_if_debug(
+                ROI,
+                f"check_shape_extract_{c.sum_int_angles}d_")
+
     if dataobject.debug == True:
         img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         for c in contour_stats:
-            cv2.drawContours(img_bbxoes, [c.boundingbox_sqr], 0, (0,0,255))
+            cv2.drawContours(img_bbxoes, [c.boundingbox_min], 0, (0,0,255))
             cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
             cv2.drawContours(img_bbxoes_3, [c.approx_contour], 0, (255,0,255))
         dataobject.img_view_or_save_if_debug(img_bbxoes, "bounding_boxes")
