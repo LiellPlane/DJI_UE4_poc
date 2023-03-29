@@ -17,9 +17,8 @@ else:
 def main():
     # initialise components of lumogun
     test_config = factory.TZAR_config()
-    config = lumogun.config()
-    relay = lumogun.Relay()
-    triggers = lumogun.Triggers()
+    relay = lumogun.Relay(test_config)
+    triggers = lumogun.Triggers(test_config)
     accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display()
@@ -30,13 +29,13 @@ def main():
     set_clicker = partial(relay.set_relay, relaypos=3)
 
     while True:
-        config.loop_wait()
+        test_config.loop_wait()
         
         vel = accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())
 
-        is_torch_reqd = results_trig_positions[config.torch]
-        is_trigger_reqd = results_trig_positions[config.triggerclick]
+        is_torch_reqd = results_trig_positions[test_config.rly_torch]
+        is_trigger_reqd = results_trig_positions[test_config.rly_triggerclick]
 
         set_torch(state=is_torch_reqd)
         set_laser(state=is_torch_reqd)

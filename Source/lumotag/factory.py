@@ -60,11 +60,11 @@ class gun_config(ABC):
         ...
     @property
     @abstractmethod
-    def relay_io(self):
+    def RELAY_IO(self):
         ...
     @property
     @abstractmethod
-    def trigger_io(self):
+    def TRIGGER_IO(self):
         ...
     @property
     @abstractmethod
@@ -97,11 +97,11 @@ class TZAR_config(gun_config):
         return ("TZAR")
     
     @property
-    def relay_io(self):
+    def RELAY_IO(self):
         return(self.RELAY_IO_BCM)
     
     @property
-    def trigger_io(self):
+    def TRIGGER_IO(self):
         return (self.TRIGGER_IO_BCM)
     
     @property
@@ -203,6 +203,8 @@ class Accelerometer(ABC):
 
 class Triggers(ABC):
 
+    def __init__(self, _gun_config) -> None:
+        self.gun_config = _gun_config
     @abstractmethod
     def test_states(self) -> list [bool]:
         pass
@@ -233,8 +235,9 @@ class Camera(ABC):
 
 
 class Relay(ABC):
-    def __init__(self) -> None:
+    def __init__(self, _gun_config) -> None:
         self.debouncers = {}
+        self.gun_config = _gun_config
     @abstractmethod
     def set_relay(self):
         pass

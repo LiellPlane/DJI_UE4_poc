@@ -98,18 +98,18 @@ class display(factory.display):
 
 class Triggers(factory.Triggers):
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, _gun_config) -> None:
+        super().__init__(_gun_config)
         set_GPIO_mode(GPI_MODE_SET)
-        for trig, gpio in factory.config.TRIGGER_IO.items():
+        for trig, gpio in self.gun_config.TRIGGER_IO.items():
             GPIO.setup(gpio, GPIO.IN)
             print(f"GPIO {gpio} set for trig {trig}")
 
     def test_states(self):
         outputs = {pos:gpio for pos, gpio
-                   in factory.config.TRIGGER_IO.items()}
+                   in self.gun_config.TRIGGER_IO.items()}
         for _, (pos, gpio) in enumerate(
-            factory.config.TRIGGER_IO.items()):
+            self.gun_config.TRIGGER_IO.items()):
             if GPIO.input(gpio) == GPIO.LOW:
                 outputs[pos] = True
             else:
@@ -126,10 +126,10 @@ class config(factory.config):
 
 class Relay(factory.Relay):
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, _gun_config) -> None:
+        super().__init__(_gun_config)
         set_GPIO_mode(GPI_MODE_SET)
-        for relay, gpio in factory.config.RELAY_IO.items():
+        for relay, gpio in self.gun_config.RELAY_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
@@ -138,12 +138,12 @@ class Relay(factory.Relay):
         if state:
             self.debouncers[relaypos].trigger(
                 GPIO.output,
-                factory.config.RELAY_IO[relaypos],
+                self.gun_config.RELAY_IO[relaypos],
                 GPIO.HIGH)
         else:
             self.debouncers[relaypos].trigger(
                 GPIO.output,
-                factory.config.RELAY_IO[relaypos],
+                self.gun_config.RELAY_IO[relaypos],
                 GPIO.LOW)
 
 

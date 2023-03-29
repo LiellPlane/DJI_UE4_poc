@@ -27,8 +27,8 @@ def lumo_viewer(
 
 
 class Triggers(factory.Triggers):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, _gun_config) -> None:
+        super().__init__(_gun_config)
         self.blink_timer = factory.TimeDiffObject()
         self.flipflop = False
     def test_states(self):
@@ -36,9 +36,9 @@ class Triggers(factory.Triggers):
             self.flipflop = not self.flipflop
             self.blink_timer.reset()
         outputs = {pos:gpio for pos, gpio
-                   in factory.config.TRIGGER_IO.items()}
+                   in self.gun_config.TRIGGER_IO.items()}
         for _, (pos, _) in enumerate(
-            factory.config.TRIGGER_IO.items()):
+            self.gun_config.TRIGGER_IO.items()):
             if self.flipflop:
                 outputs[pos] = True
             else:
@@ -54,18 +54,18 @@ class config(factory.config):
 
 class Relay(factory.Relay):
     
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, _gun_config) -> None:
+        super().__init__(_gun_config)
         self.relay_mem = {}
-        for relay, gpio in factory.config.RELAY_IO.items():
-            self.debouncers[factory.config.RELAY_IO[relay]] = factory.Debounce()
-            self.relay_mem[factory.config.RELAY_IO[relay]] = False
+        for relay, gpio in self.gun_config.RELAY_IO.items():
+            self.debouncers[self.gun_config.RELAY_IO[relay]] = factory.Debounce()
+            self.relay_mem[self.gun_config.RELAY_IO[relay]] = False
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(self, relaypos:int, state:bool):
-        self.debouncers[factory.config.RELAY_IO[relaypos]].trigger(
+        self.debouncers[self.gun_config.RELAY_IO[relaypos]].trigger(
             self._set_fake_relay,
-            factory.config.RELAY_IO[relaypos],
+            self.gun_config.RELAY_IO[relaypos],
             state)
             
     def _set_fake_relay(self, relay, state):
@@ -106,6 +106,7 @@ class Accelerometer(factory.Accelerometer):
         self._y = -1
         self._z = 0
         self._callcnt = 0
+        self._last_xyz = (0, 0, 0)
 
     def update_vel(self):
         self._callcnt += 1
