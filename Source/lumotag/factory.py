@@ -3,9 +3,17 @@ import numpy as np
 import time
 from enum import Enum
 import cv2
+from contextlib import contextmanager
+from dataclasses import dataclass
 
-
-
+@contextmanager
+def time_it(process):
+    tic: float = time.perf_counter()
+    try:
+        yield
+    finally:
+        toc: float = time.perf_counter()
+        print(f"time for {process} = {1000*(toc - tic):.3f}ms")
 
 class screensizes(Enum):
     pi_4 = (480, 740)
@@ -45,6 +53,12 @@ class config(ABC):
 
 class gun_config(ABC):
 
+    def __init__(self) -> None:
+        self.relay_map = {
+            "laser" : 2,
+            "torch" : 1,
+            "clicker" : 3}
+
     @property
     @abstractmethod
     def rly_torch(self):
@@ -73,6 +87,45 @@ class gun_config(ABC):
     @abstractmethod
     def loop_wait(self):
         ...
+
+
+class stryker_config(gun_config):
+    
+    def __init__(self) -> None:
+        super().__init__()
+        #for reference on rasperry pi 4
+        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
+        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
+        self.TRIGGER_IO_BOARD = {1:15, 2:13}
+        self.TRIGGER_IO_BCM = {1:22, 2:27}
+
+    @property
+    def rly_torch(self):
+        return 1
+
+    @property
+    def rly_triggerclick(self):
+        return 2
+    
+    @property
+    def model_name(self):
+        return ("stiletto")
+    
+    @property
+    def RELAY_IO(self):
+        return(self.RELAY_IO_BCM)
+    
+    @property
+    def TRIGGER_IO(self):
+        return (self.TRIGGER_IO_BCM)
+    
+    @property
+    def screen_rotation(self):
+        return(0)
+
+    def loop_wait(self):
+        pass
+
 
 class TZAR_config(gun_config):
 
@@ -110,6 +163,44 @@ class TZAR_config(gun_config):
 
     def loop_wait(self):
         pass
+
+
+class simitzar_config(gun_config):
+    
+    def __init__(self) -> None:
+        super().__init__()
+        #for reference on rasperry pi 4
+        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
+        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
+        self.TRIGGER_IO_BOARD = {1:15, 2:13}
+        self.TRIGGER_IO_BCM = {1:22, 2:27}
+
+    @property
+    def rly_torch(self):
+        return 1
+
+    @property
+    def rly_triggerclick(self):
+        return 2
+    
+    @property
+    def model_name(self):
+        return ("SIMITZAR")
+    
+    @property
+    def RELAY_IO(self):
+        return(self.RELAY_IO_BCM)
+    
+    @property
+    def TRIGGER_IO(self):
+        return (self.TRIGGER_IO_BCM)
+    
+    @property
+    def screen_rotation(self):
+        return(0)
+
+    def loop_wait(self):
+        time.sleep(0.1)
 
 
 class Accelerometer(ABC):
