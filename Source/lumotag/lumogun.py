@@ -44,7 +44,7 @@ def main():
     # application
     is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
     if is_trigger_reqd:
-        exit()
+        raise Exception("Trigger detected on boot-up - exit app")
 
     while True:
 
