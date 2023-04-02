@@ -42,6 +42,7 @@ def main():
 
     # if user is holding down trigger on boot up, quit
     # application
+    results_trig_positions = (triggers.test_states())
     is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
     if is_trigger_reqd:
         raise Exception("Trigger detected on boot-up - exit app")
