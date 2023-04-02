@@ -40,6 +40,12 @@ def main():
         GUN_CONFIGURATION.relay_map["clicker"])
 
 
+    # if user is holding down trigger on boot up, quit
+    # application
+    is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
+    if is_trigger_reqd:
+        exit()
+
     while True:
 
         GUN_CONFIGURATION.loop_wait()
