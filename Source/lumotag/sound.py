@@ -36,7 +36,7 @@ def speak(in_box):
     and override init and run - but w/e this works for now"""
     engine = pyttsx3.init()
     engine.setProperty('rate', 200)
-    engine.setProperty('volume', 1)
+    engine.setProperty('volume', 10)
     while True:
         message = in_box.get(block=True)
         engine.say(message)
