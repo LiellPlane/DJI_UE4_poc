@@ -15,6 +15,7 @@ def time_it(process):
         toc: float = time.perf_counter()
         print(f"time for {process} = {1000*(toc - tic):.3f}ms")
 
+
 class screensizes(Enum):
     pi_4 = (480, 740)
     windows_laptop = (1000, 1000)
@@ -51,6 +52,7 @@ class config(ABC):
     def loop_wait(self):
         raise NotImplementedError
 
+
 class gun_config(ABC):
 
     def __init__(self) -> None:
@@ -67,7 +69,6 @@ class gun_config(ABC):
     @abstractmethod
     def rly_triggerclick(self):
         ...
-    
     @property
     @abstractmethod
     def model_name(self):
@@ -109,7 +110,7 @@ class stryker_config(gun_config):
     
     @property
     def model_name(self):
-        return ("stiletto")
+        return ("stryker")
     
     @property
     def RELAY_IO(self):
@@ -185,7 +186,7 @@ class simitzar_config(gun_config):
     
     @property
     def model_name(self):
-        return ("SIMITZAR")
+        return ("sim tzaaar")
     
     @property
     def RELAY_IO(self):

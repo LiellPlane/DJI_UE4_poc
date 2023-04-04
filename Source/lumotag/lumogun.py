@@ -1,5 +1,6 @@
 import os
 import factory
+import sound
 from functools import partial
 #  detect what OS we are on - test environment on production (real hardware)
 RASP_PI_4_OS = "armv7l"
@@ -19,12 +20,13 @@ else:
 def main():
 
     # initialise components of lumogun
-    
+    voice = sound.Voice()
     relay = lumogun.Relay(GUN_CONFIGURATION)
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display()
+    voice.speak(f"{GUN_CONFIGURATION.model_name} healthy")
 
     # set partial functions
     set_torch = partial(
