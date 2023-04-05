@@ -9,7 +9,7 @@ class Voice():
     def __init__(self) -> None:
         """Class to provide synthetic
         voice prompts or alerts"""
-        self.in_box = Queue(maxsize = 5)
+        self.in_box = Queue(maxsize = 10)
         self.t = threading.Thread(
             target=speak,args=(self.in_box,))
         self.t.start()

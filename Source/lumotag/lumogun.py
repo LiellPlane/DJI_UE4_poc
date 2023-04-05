@@ -21,12 +21,18 @@ def main():
 
     # initialise components of lumogun
     voice = sound.Voice()
+    voice.speak(f"{GUN_CONFIGURATION.model_name} START")
     relay = lumogun.Relay(GUN_CONFIGURATION)
+    voice.speak("reelaay healthy")
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
+    voice.speak("triggers healthy")
     accelerometer = lumogun.Accelerometer()
+    voice.speak("accelerometer healthy")
     image_capture = lumogun.CSI_Camera()
+    voice.speak("CSI healthy")
     display = lumogun.display()
-    voice.speak(f"{GUN_CONFIGURATION.model_name} healthy")
+    voice.speak("display healthy")
+    voice.speak("all devices healthy")
 
     # set partial functions
     set_torch = partial(
