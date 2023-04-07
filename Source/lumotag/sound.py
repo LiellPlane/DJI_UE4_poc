@@ -11,7 +11,7 @@ class Voice():
         voice prompts or alerts"""
         self.in_box = Queue(maxsize = 10)
         self.t = threading.Thread(
-            target=speak,args=(self.in_box,))
+            target=speaker,args=(self.in_box,))
         self.t.start()
 
     def speak(
@@ -30,7 +30,7 @@ class Voice():
                 block=False)
 
 
-def speak(in_box):
+def speaker(in_box):
     #TODO
     """Ideally this should inherit from threading.thread
     and override init and run - but w/e this works for now"""

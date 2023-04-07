@@ -69,9 +69,10 @@ def get_internal_angles_of_shape(contour):
             mag_end = np.linalg.norm(end)
             res = math.degrees(
                 math.acos(dot_prod / (mag_start*mag_end)))
+            angles.append(res)
         except ValueError as e:
             print("skipping", e)
-        angles.append(res)
+        
         
     return(sum(angles))
 # sss

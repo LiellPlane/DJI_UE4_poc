@@ -52,6 +52,7 @@ class config(factory.config):
     def loop_wait(self):
         time.sleep(0.1)
 
+
 class Relay(factory.Relay):
     
     def __init__(self, _gun_config) -> None:
@@ -99,6 +100,7 @@ class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):
         pass
 
+
 class Accelerometer(factory.Accelerometer):
     def __init__(self) -> None:
         super().__init__()
@@ -129,3 +131,24 @@ class Accelerometer(factory.Accelerometer):
             self.round(math.sin(self._y)*real_accel_range),
             self.round(math.sin(self._z)*real_accel_range))
     
+
+class messenger(factory.messenger):
+
+    def __init__(self) -> None:
+        super().__init__()
+    
+    def _in_box_checker(self, in_box):
+        cnt = 0
+        while True:
+            cnt += 1
+            time.sleep(2)
+            if self.in_box._qsize() >= self.in_box.maxsize - 1:
+                print("Message inbox full!!")
+                continue
+            in_box.put(
+                f"{cnt} test in box msg",
+                block=False)
+
+    def send_message(self, message: str) -> bool:
+        print("sending" , message)
+        return True

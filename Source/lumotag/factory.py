@@ -5,6 +5,10 @@ from enum import Enum
 import cv2
 from contextlib import contextmanager
 from dataclasses import dataclass
+import threading
+from queue import Queue
+
+
 
 @contextmanager
 def time_it(process):
@@ -201,7 +205,7 @@ class simitzar_config(gun_config):
         return(0)
 
     def loop_wait(self):
-        time.sleep(0.1)
+        time.sleep(0.3)
 
 
 class Accelerometer(ABC):
@@ -370,3 +374,30 @@ class TimeDiffObject:
 
     def reset(self):
         self._start_time = time.perf_counter()
+
+
+class messenger(ABC):
+
+    def __init__(self) -> None:
+        self.in_box = Queue(maxsize = 3)
+        self.worker = threading.Thread(
+            target=self._in_box_checker,
+            args=(self.in_box,))
+        self.worker.start()
+
+    @abstractmethod
+    def _in_box_checker():
+        pass
+
+    @abstractmethod
+    def send_message(self, message: str) -> bool:
+        pass
+
+    def check_in_box(self):
+        message = None
+        if self.in_box._qsize()>0:
+            try:
+                message = self.in_box.get(block=False)
+            except Queue.Empty:
+                pass
+        return message

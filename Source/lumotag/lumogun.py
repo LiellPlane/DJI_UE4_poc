@@ -23,15 +23,17 @@ def main():
     voice = sound.Voice()
     voice.speak(f"{GUN_CONFIGURATION.model_name} START")
     relay = lumogun.Relay(GUN_CONFIGURATION)
-    voice.speak("reelaay healthy")
+    voice.speak("reelaay")
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
-    voice.speak("triggers healthy")
+    voice.speak("triggers")
     accelerometer = lumogun.Accelerometer()
-    voice.speak("accelerometer healthy")
+    voice.speak("accelerometer")
     image_capture = lumogun.CSI_Camera()
-    voice.speak("CSI healthy")
+    voice.speak("CSI")
     display = lumogun.display()
-    voice.speak("display healthy")
+    voice.speak("display")
+    messenger = lumogun.messenger()
+    voice.speak("messenger")
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -56,7 +58,7 @@ def main():
         raise Exception("Trigger detected on boot-up - exit app")
 
     while True:
-
+        messenger.check_in_box()
         GUN_CONFIGURATION.loop_wait()
 
         vel = accelerometer.update_vel()

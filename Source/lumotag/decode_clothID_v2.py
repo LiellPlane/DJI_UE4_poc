@@ -88,7 +88,7 @@ class WorkingData():
         if self.debug is True:
             DeleteFiles_RecreateFolder(self.debugimgs)
         self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
-        self.approx_epsilon = 0.05
+        self.approx_epsilon = 0.02
     @staticmethod
     def get_blob_params():
         DefaultBlobParams= cv2.SimpleBlobDetector_Params()
