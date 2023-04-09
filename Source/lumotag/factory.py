@@ -37,24 +37,24 @@ class display(ABC):
         pass
 
 
-class config(ABC):
-    torch = 1
-    triggerclick = 2
+# class config(ABC):
+#     torch = 1
+#     triggerclick = 2
     
-    RELAY_IO_BOARD = {1:29, 3:31, 2:16}
-    RELAY_IO_BCM = {1:5, 3:6, 2:23}
-    RELAY_IO = RELAY_IO_BCM
+#     RELAY_IO_BOARD = {1:29, 3:31, 2:16}
+#     RELAY_IO_BCM = {1:5, 3:6, 2:23}
+#     RELAY_IO = RELAY_IO_BCM
 
-    TRIGGER_IO_BOARD = {1:15, 2:13}
-    TRIGGER_IO_BCM = {1:22, 2:27}
-    TRIGGER_IO = TRIGGER_IO_BCM
+#     TRIGGER_IO_BOARD = {1:15, 2:13}
+#     TRIGGER_IO_BCM = {1:22, 2:27}
+#     TRIGGER_IO = TRIGGER_IO_BCM
 
-    @property
-    def env_name(self):
-        raise NotImplementedError
-    @abstractmethod
-    def loop_wait(self):
-        raise NotImplementedError
+#     @property
+#     def env_name(self):
+#         raise NotImplementedError
+#     @abstractmethod
+#     def loop_wait(self):
+#         raise NotImplementedError
 
 
 class gun_config(ABC):
@@ -64,6 +64,13 @@ class gun_config(ABC):
             "laser" : 2,
             "torch" : 1,
             "clicker" : 3}
+        self.messaging_config = {
+            'username' : 'guest',
+            'password' : 'guest',
+            'host' : 'lumotagHQ.local',
+            'port' : 5672,
+            'virtual_host' : '/'
+        }
 
     @property
     @abstractmethod
