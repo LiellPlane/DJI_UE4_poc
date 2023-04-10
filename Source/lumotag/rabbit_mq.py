@@ -6,6 +6,7 @@ import time
 import messaging
 from dataclasses import asdict
 
+
 class RabbitMQ_Obj():
     def __init__(
             self,
@@ -51,19 +52,28 @@ class RabbitMQ_Obj():
         # function
         self.channel.start_consuming()
     
+    def send_message(self, message):
+        self.channel.basic_publish(
+            exchange='hits',
+            routing_key='',
+            body=message)
+        self.connection.close()
+    
 
 class messenger(factory.messenger):
 
     def __init__(self, config) -> None:
         super().__init__(config=config)
-    
-    def _in_box_checker(self, in_box):
+        self.out__messenger = RabbitMQ_Obj(self._config.messaging_config)
+
+    def _in_box_worker(self, in_box):
         callback_hndl = CallBack_QueueHandler(in_box)
         _messenger = RabbitMQ_Obj(self._config.messaging_config)
         _messenger.start_consuming(callback_hndl.callback_handler)
         
     def send_message(self, message: str) -> bool:
-        pass
+        self.out__messenger.send_message(message)
+
 
 def thread_function(name):
     credentials = pika.PlainCredentials(username='guest', password='guest')
@@ -105,13 +115,14 @@ class CallBack_QueueHandler():
         self._in_box = inbox
 
     def callback_handler(self, ch, method, properties, body):
-        print(f"callback for {body}")
         if self._in_box._qsize() >= self._in_box.maxsize - 1:
             self._in_box.queue.clear()
             self._in_box.put(
-                asdict(messaging.error(error_str="HIT REPORT QUEUE FULL")),
+                asdict(messaging.error(
+                error_str="HIT REPORT INCOMING QUEUE FULL")),
                 block=False)
             return
+
         self._in_box.put(
             str(body),
             block=False)

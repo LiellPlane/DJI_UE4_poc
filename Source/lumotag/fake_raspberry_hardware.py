@@ -137,7 +137,7 @@ class messenger(factory.messenger):
     def __init__(self) -> None:
         super().__init__()
     
-    def _in_box_checker(self, in_box):
+    def _in_box_worker(self, in_box, msg_worker):
         cnt = 0
         while True:
             cnt += 1
