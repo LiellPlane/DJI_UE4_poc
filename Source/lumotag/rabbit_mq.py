@@ -6,11 +6,29 @@ import time
 import messaging
 from dataclasses import asdict
 
+class RabbitMQ_Connection():
+    def __init__(
+            self,
+            messaging_config: dict[str, str]) -> None:
+
+        mc = messaging_config
+        credentials = pika.PlainCredentials(
+            username=mc["username"],
+            password=mc["password"])
+
+        parameters = pika.ConnectionParameters(host=mc["host"],
+                                            port=mc["port"],
+                                            virtual_host=mc["virtual_host"],
+                                            credentials=credentials)
+
+        self.connection = pika.BlockingConnection(parameters)
+
 
 class RabbitMQ_Obj():
     def __init__(
             self,
             messaging_config: dict[str, str]) -> None:
+
         mc = messaging_config
         credentials = pika.PlainCredentials(
             username=mc["username"],
@@ -38,7 +56,7 @@ class RabbitMQ_Obj():
         self.channel.queue_bind(
             exchange='hits',
             queue=self.queue_name)
-
+    print("rabbit MQ initied")
     def start_consuming(
             self,
             call_back_function: callable):
@@ -57,22 +75,24 @@ class RabbitMQ_Obj():
             exchange='hits',
             routing_key='',
             body=message)
-        self.connection.close()
-    
+        return
+
 
 class messenger(factory.messenger):
 
     def __init__(self, config) -> None:
         super().__init__(config=config)
-        self.out__messenger = RabbitMQ_Obj(self._config.messaging_config)
 
     def _in_box_worker(self, in_box):
+        msg_worker = RabbitMQ_Obj(self._config.messaging_config)
         callback_hndl = CallBack_QueueHandler(in_box)
-        _messenger = RabbitMQ_Obj(self._config.messaging_config)
-        _messenger.start_consuming(callback_hndl.callback_handler)
-        
-    def send_message(self, message: str) -> bool:
-        self.out__messenger.send_message(message)
+        msg_worker.start_consuming(callback_hndl.callback_handler)
+
+    def _out_box_worker(self, out_box):
+        msg_worker = RabbitMQ_Obj(self._config.messaging_config)
+        while True:
+            message = out_box.get(block=True)
+            msg_worker.send_message(message)
 
 
 def thread_function(name):

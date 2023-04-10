@@ -385,43 +385,43 @@ class TimeDiffObject:
 class messenger(ABC):
 
     def __init__(self, config: gun_config) -> None:
+        """msg_worker can be None, or a specific messaging
+        implementation such as RabbitMQ"""
         self._in_box = Queue(maxsize = 3)
         self._out_box = Queue(maxsize = 3)
         self._config = config
-        self._msg_worker = None
 
         self.inbox_worker = threading.Thread(
             target=self._in_box_worker,
-            args=(self._in_box, self._msg_worker, ))
+            args=(self._in_box, ))
         self.inbox_worker.start()
 
         self.outbox_worker = threading.Thread(
-            target=self._out_box,
-            args=(self._out_box, self._msg_worker, ))
+            target=self._out_box_worker,
+            args=(self._out_box, ))
         self.outbox_worker.start()
 
     @abstractmethod
-    def _in_box_worker(self, in_box, msg_worker):
+    def _in_box_worker(self, in_box):
         pass
 
     @abstractmethod
-    def _out_box_worker(self, out_box, msg_worker):
-        message = out_box.get(block=False)
+    def _out_box_worker(self, out_box):
+        pass
 
     def send_message(self, message: str) -> bool:
-        if self.out_box._qsize() >= self.out_box.maxsize - 1:
+        if self._out_box._qsize() >= self._out_box.maxsize - 1:
             print("Message outbox full!!")
             return
-        self.out_box.put(
+        self._out_box.put(
             message,
             block=False)
 
-    
-    # def check_in_box(self):
-    #     message = None
-    #     if self.in_box._qsize()>0:
-    #         try:
-    #             message = self.in_box.get(block=False)
-    #         except Queue.Empty:
-    #             pass
-    #     return message
+    def check_in_box(self):
+        message = None
+        if self._in_box._qsize()>0:
+            try:
+                message = self._in_box.get(block=False)
+            except Queue.Empty:
+                pass
+        return message
