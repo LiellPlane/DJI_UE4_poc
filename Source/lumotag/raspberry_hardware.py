@@ -10,6 +10,7 @@ import enum
 import RPi.GPIO as GPIO
 import time
 import factory
+import rabbit_mq
 from picamera2 import Picamera2
 #accelerometer
 # adafruit board library forces BCM mode!!
@@ -196,3 +197,4 @@ class KillProcess(factory.KillProcess):
                 time.sleep(1)
                 self.clean_up_processes(cmds, rec_depth)
                 break
+

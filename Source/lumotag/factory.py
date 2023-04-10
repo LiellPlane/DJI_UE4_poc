@@ -9,7 +9,6 @@ import threading
 from queue import Queue
 
 
-
 @contextmanager
 def time_it(process):
     tic: float = time.perf_counter()
@@ -385,15 +384,16 @@ class TimeDiffObject:
 
 class messenger(ABC):
 
-    def __init__(self) -> None:
+    def __init__(self, config: gun_config) -> None:
         self.in_box = Queue(maxsize = 3)
+        self._config = config
         self.worker = threading.Thread(
             target=self._in_box_checker,
             args=(self.in_box,))
         self.worker.start()
 
     @abstractmethod
-    def _in_box_checker():
+    def _in_box_checker(self, in_box):
         pass
 
     @abstractmethod
