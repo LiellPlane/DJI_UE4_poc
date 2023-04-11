@@ -1,32 +1,10 @@
 import factory
 import pika
-import logging
-import threading
 import time
 import messaging
 from dataclasses import asdict
-from socket import gethostbyname, gaierror
-# class RabbitMQ_Connection():
-#     def __init__(
-#             self,
-#             messaging_config: dict[str, str]) -> None:
+from socket import gaierror
 
-#         mc = messaging_config
-#         credentials = pika.PlainCredentials(
-#             username=mc["username"],
-#             password=mc["password"])
-
-#         parameters = pika.ConnectionParameters(host=mc["host"],
-#                                             port=mc["port"],
-#                                             virtual_host=mc["virtual_host"],
-#                                             credentials=credentials)
-
-#         #try:
-#         self.connection = pika.BlockingConnection(parameters)
-#         #except Exception as e:
-#         #    print(e)
-#         #    print("Is message server active?")
-#         print("init ok")
 
 class RabbitMQ_Obj():
     def __init__(
@@ -48,7 +26,6 @@ class RabbitMQ_Obj():
         except gaierror as e:
            print("rabbitqm Err, Is message server active?")
            raise e
-        print("init ok")
 
         self.channel = self.connection.channel()
 
@@ -76,7 +53,7 @@ class RabbitMQ_Obj():
             auto_ack=True)
         # next command will block here until end of time
         # input messages will be directed to the callback
-        # function
+        # function & subsequent queue back to main thread
         self.channel.start_consuming()
     
     def send_message(self, message):
@@ -93,13 +70,7 @@ class messenger(factory.messenger):
         super().__init__(config=config)
 
     def _in_box_worker(self, in_box, config, scheduler):
-        msg_worker = RabbitMQ_Obj(config.messaging_config)
-        callback_hndl = CallBack_QueueHandler(in_box)
-        scheduler.put("IN BOX READY")
-        msg_worker.start_consuming(callback_hndl.callback_handler)
-
-    def _out_box_worker(self, out_box, config, scheduler):
-        # will block until InBox worker has started its RMQ connection
+        # will block until OutBox worker has started its RMQ connection
         # then in theory should be ready to init another
         scheduler.get(block=True)
         # arbitrary sleep needed even though we have confirmed
@@ -107,39 +78,15 @@ class messenger(factory.messenger):
         # TODO must be some way to avoid this
         time.sleep(3)
         msg_worker = RabbitMQ_Obj(config.messaging_config)
+        callback_hndl = CallBack_QueueHandler(in_box)
+        msg_worker.start_consuming(callback_hndl.callback_handler)
+
+    def _out_box_worker(self, out_box, config, scheduler):
+        msg_worker = RabbitMQ_Obj(config.messaging_config)
+        scheduler.put("OUT BOX READY")
         while True:
            message = out_box.get(block=True)
            msg_worker.send_message(message)
-
-
-def thread_function(name):
-    credentials = pika.PlainCredentials(username='guest', password='guest')
-    parameters = pika.ConnectionParameters(host='lumotagHQ.local',
-                                        port=5672,
-                                        virtual_host='/',
-                                        credentials=credentials)
-    connection = pika.BlockingConnection(parameters)
-
-    channel = connection.channel()
-
-    channel.exchange_declare(
-        exchange='hits',
-        exchange_type='fanout')
-
-    result = channel.queue_declare(queue='', exclusive=True)
-    queue_name = result.method.queue
-
-    channel.queue_bind(exchange='hits', queue=queue_name)
-
-    print(' [*] Waiting for logs. To exit press CTRL+C')
-
-    def callback(ch, method, properties, body):
-        print("received [x] %r" % body)
-
-    channel.basic_consume(
-        queue=queue_name, on_message_callback=callback, auto_ack=True)
-
-    channel.start_consuming()
 
 
 class CallBack_QueueHandler():
@@ -163,39 +110,3 @@ class CallBack_QueueHandler():
         self._in_box.put(
             str(body),
             block=False)
-
-def send_msg():
-
-    # common to producer and receiver
-    credentials = pika.PlainCredentials(username='guest', password='guest')
-    parameters = pika.ConnectionParameters(host='lumotagHQ.local',
-                                        port=5672,
-                                        virtual_host='/',
-                                        credentials=credentials)
-    connection = pika.BlockingConnection(parameters)
-
-    channel = connection.channel()
-
-    channel.exchange_declare(exchange='hits',
-                            exchange_type='fanout')
-
-    #end of common block
-
-    result = channel.queue_declare(queue='', exclusive=True)
-    channel.queue_bind(exchange='hits',
-                    queue=result.method.queue)
-
-    message = "farts 4 uuu"
-    channel.basic_publish(exchange='hits', routing_key='', body=message)
-    print(" [x] Sent %r" % message)
-    connection.close()
-
-
-# if __name__ == "__main__":
-#     x = threading.Thread(target=thread_function, args=(1,))
-#     x.start()
-
-#     while True:
-#         time.sleep(1)
-#         print("plops for tea")
-#         send_msg()
