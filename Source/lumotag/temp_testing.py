@@ -11,7 +11,8 @@ def main():
 
     #then need to flesh out hit reports, images and IDs etc, and how to handle
     #or display any errors
-    mssger = rabbit_mq.messenger(factory.TZAR_config())
+    mssger = rabbit_mq.messenger(
+        factory.TZAR_config())
 
     cnt = 0
     while True:

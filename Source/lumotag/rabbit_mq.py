@@ -5,24 +5,28 @@ import threading
 import time
 import messaging
 from dataclasses import asdict
+from socket import gethostbyname, gaierror
+# class RabbitMQ_Connection():
+#     def __init__(
+#             self,
+#             messaging_config: dict[str, str]) -> None:
 
-class RabbitMQ_Connection():
-    def __init__(
-            self,
-            messaging_config: dict[str, str]) -> None:
+#         mc = messaging_config
+#         credentials = pika.PlainCredentials(
+#             username=mc["username"],
+#             password=mc["password"])
 
-        mc = messaging_config
-        credentials = pika.PlainCredentials(
-            username=mc["username"],
-            password=mc["password"])
+#         parameters = pika.ConnectionParameters(host=mc["host"],
+#                                             port=mc["port"],
+#                                             virtual_host=mc["virtual_host"],
+#                                             credentials=credentials)
 
-        parameters = pika.ConnectionParameters(host=mc["host"],
-                                            port=mc["port"],
-                                            virtual_host=mc["virtual_host"],
-                                            credentials=credentials)
-
-        self.connection = pika.BlockingConnection(parameters)
-
+#         #try:
+#         self.connection = pika.BlockingConnection(parameters)
+#         #except Exception as e:
+#         #    print(e)
+#         #    print("Is message server active?")
+#         print("init ok")
 
 class RabbitMQ_Obj():
     def __init__(
@@ -39,7 +43,12 @@ class RabbitMQ_Obj():
                                             virtual_host=mc["virtual_host"],
                                             credentials=credentials)
 
-        self.connection = pika.BlockingConnection(parameters)
+        try:
+            self.connection = pika.BlockingConnection(parameters)
+        except gaierror as e:
+           print("rabbitqm Err, Is message server active?")
+           raise e
+        print("init ok")
 
         self.channel = self.connection.channel()
 
@@ -56,7 +65,7 @@ class RabbitMQ_Obj():
         self.channel.queue_bind(
             exchange='hits',
             queue=self.queue_name)
-    print("rabbit MQ initied")
+
     def start_consuming(
             self,
             call_back_function: callable):
@@ -83,16 +92,24 @@ class messenger(factory.messenger):
     def __init__(self, config) -> None:
         super().__init__(config=config)
 
-    def _in_box_worker(self, in_box):
-        msg_worker = RabbitMQ_Obj(self._config.messaging_config)
+    def _in_box_worker(self, in_box, config, scheduler):
+        msg_worker = RabbitMQ_Obj(config.messaging_config)
         callback_hndl = CallBack_QueueHandler(in_box)
+        scheduler.put("IN BOX READY")
         msg_worker.start_consuming(callback_hndl.callback_handler)
 
-    def _out_box_worker(self, out_box):
-        msg_worker = RabbitMQ_Obj(self._config.messaging_config)
+    def _out_box_worker(self, out_box, config, scheduler):
+        # will block until InBox worker has started its RMQ connection
+        # then in theory should be ready to init another
+        scheduler.get(block=True)
+        # arbitrary sleep needed even though we have confirmed
+        # first connection has been initialised
+        # TODO must be some way to avoid this
+        time.sleep(3)
+        msg_worker = RabbitMQ_Obj(config.messaging_config)
         while True:
-            message = out_box.get(block=True)
-            msg_worker.send_message(message)
+           message = out_box.get(block=True)
+           msg_worker.send_message(message)
 
 
 def thread_function(name):
@@ -174,11 +191,11 @@ def send_msg():
     connection.close()
 
 
-if __name__ == "__main__":
-    x = threading.Thread(target=thread_function, args=(1,))
-    x.start()
+# if __name__ == "__main__":
+#     x = threading.Thread(target=thread_function, args=(1,))
+#     x.start()
 
-    while True:
-        time.sleep(1)
-        print("plops for tea")
-        send_msg()
+#     while True:
+#         time.sleep(1)
+#         print("plops for tea")
+#         send_msg()

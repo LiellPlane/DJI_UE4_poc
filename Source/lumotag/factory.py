@@ -384,29 +384,29 @@ class TimeDiffObject:
 
 class messenger(ABC):
 
-    def __init__(self, config: gun_config) -> None:
-        """msg_worker can be None, or a specific messaging
-        implementation such as RabbitMQ"""
-        self._in_box = Queue(maxsize = 3)
-        self._out_box = Queue(maxsize = 3)
+    def __init__(self,
+                 config: gun_config) -> None:
+        self._in_box = Queue(maxsize=3)
+        self._out_box = Queue(maxsize=3)
+        self._schedule = Queue(maxsize=1)
         self._config = config
 
         self.inbox_worker = threading.Thread(
             target=self._in_box_worker,
-            args=(self._in_box, ))
+            args=(self._in_box, self._config, self._schedule, ))
         self.inbox_worker.start()
 
         self.outbox_worker = threading.Thread(
             target=self._out_box_worker,
-            args=(self._out_box, ))
+            args=(self._out_box, self._config, self._schedule, ))
         self.outbox_worker.start()
 
     @abstractmethod
-    def _in_box_worker(self, in_box):
+    def _in_box_worker(self, in_box, config, scheduler):
         pass
 
     @abstractmethod
-    def _out_box_worker(self, out_box):
+    def _out_box_worker(self, out_box, config, scheduler):
         pass
 
     def send_message(self, message: str) -> bool:
