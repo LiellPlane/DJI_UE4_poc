@@ -119,11 +119,11 @@ class Triggers(factory.Triggers):
         return outputs
 
 
-class config(factory.config):
-    env_name = "integration"
+# class config(factory.config):
+#     env_name = "integration"
 
-    def loop_wait(self):
-        pass
+#     def loop_wait(self):
+#         pass
 
 
 class Relay(factory.Relay):
