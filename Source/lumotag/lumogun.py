@@ -62,7 +62,7 @@ def main():
     while True:
         cnt += 1
         print(f"In Box: {messenger.check_in_box()}")
-        messenger.send_message(f"{GUN_CONFIGURATION.model_name} says F U x {cnt}")
+        
         GUN_CONFIGURATION.loop_wait()
 
         vel = accelerometer.update_vel()
@@ -80,6 +80,8 @@ def main():
         else:
             display.display_output(accelerometer.get_visual())
 
+        if is_trigger_reqd is True:
+            messenger.send_message(f"{GUN_CONFIGURATION.model_name} says F U x {cnt}")
 
         print(f"{vel} {results_trig_positions}")
 
