@@ -7,7 +7,8 @@ from contextlib import contextmanager
 from dataclasses import dataclass
 import threading
 from queue import Queue
-
+import uuid
+#uuid.uuid4()
 
 @contextmanager
 def time_it(process):
@@ -36,28 +37,20 @@ class display(ABC):
         pass
 
 
-# class config(ABC):
-#     torch = 1
-#     triggerclick = 2
-    
-#     RELAY_IO_BOARD = {1:29, 3:31, 2:16}
-#     RELAY_IO_BCM = {1:5, 3:6, 2:23}
-#     RELAY_IO = RELAY_IO_BCM
+class get_my_info(ABC):
+    def __init__(self) -> None:
+        """class to locate static information
+        of device"""
+        self.my_id = None
+        self.raw_details = None
 
-#     TRIGGER_IO_BOARD = {1:15, 2:13}
-#     TRIGGER_IO_BCM = {1:22, 2:27}
-#     TRIGGER_IO = TRIGGER_IO_BCM
-
-#     @property
-#     def env_name(self):
-#         raise NotImplementedError
-#     @abstractmethod
-#     def loop_wait(self):
-#         raise NotImplementedError
+    def get_my_details_file(self):
+        pass
 
 
 class gun_config(ABC):
 
+    DETAILS_FILE = '/boot/MY_INFO.txt'
     def __init__(self) -> None:
         self.relay_map = {
             "laser" : 2,

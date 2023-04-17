@@ -18,6 +18,7 @@ import board
 import digitalio
 import busio
 import adafruit_lis3dh
+import json
 
 GPI_MODE_SET = False
 
@@ -198,3 +199,10 @@ class KillProcess(factory.KillProcess):
                 self.clean_up_processes(cmds, rec_depth)
                 break
 
+
+class get_my_info(factory.get_my_info):  
+    def get_my_details_file(self):
+        """ID expected to be file location"""
+        with open(factory.gun_config.DETAILS_FILE, 'r') as file:
+            data =  json.load(file)
+        self.raw_details=data

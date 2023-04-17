@@ -32,8 +32,8 @@ def main():
     voice.speak("CSI")
     display = lumogun.display()
     voice.speak("display")
-    messenger = lumogun.messenger()
-    voice.speak("messenger")
+    #messenger = lumogun.messenger(GUN_CONFIGURATION)
+    #voice.speak("messenger")
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -58,7 +58,8 @@ def main():
         raise Exception("Trigger detected on boot-up - exit app")
 
     while True:
-        messenger.check_in_box()
+        #print(messenger.check_in_box())
+        #messenger.send_message("furt")
         GUN_CONFIGURATION.loop_wait()
 
         vel = accelerometer.update_vel()

@@ -15,6 +15,11 @@ class HitReport:
     insult_str: str
     insult_img: npt.NDArray
 
+
+@dataclass
+class EQUIPMENT_ID:
+    my_id: str
+
 def generate_id():
     return f"ID{uuid.uuid4().hex}"
 

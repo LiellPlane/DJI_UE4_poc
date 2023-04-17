@@ -17,7 +17,7 @@ def main():
     cnt = 0
     while True:
         cnt += 1
-        time.sleep(0.5)
+        time.sleep(0.1)
         print("-> checking in box")
         print(mssger.check_in_box())
         print("-> end of check")

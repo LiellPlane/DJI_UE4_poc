@@ -134,21 +134,22 @@ class Accelerometer(factory.Accelerometer):
 
 class messenger(factory.messenger):
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, config) -> None:
+        super().__init__(config=config)
     
-    def _in_box_worker(self, in_box, msg_worker):
+    def _in_box_worker(self, in_box, config, scheduler):
         cnt = 0
         while True:
             cnt += 1
-            time.sleep(2)
-            if self.in_box._qsize() >= self.in_box.maxsize - 1:
+            time.sleep(4)
+            if in_box._qsize() >= in_box.maxsize - 1:
                 print("Message inbox full!!")
                 continue
             in_box.put(
                 f"{cnt} test in box msg",
                 block=False)
 
-    def send_message(self, message: str) -> bool:
-        print("sending" , message)
-        return True
+    def _out_box_worker(self, out_box, config, scheduler):
+        while True:
+            message = out_box.get(block=True)
+            print("sending", message)
