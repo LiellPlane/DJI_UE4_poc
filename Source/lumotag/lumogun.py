@@ -2,6 +2,7 @@ import os
 import factory
 import sound
 from functools import partial
+import rabbit_mq
 #  detect what OS we are on - test environment on production (real hardware)
 RASP_PI_4_OS = "armv7l"
 if hasattr(os, 'uname') is False:
@@ -32,8 +33,8 @@ def main():
     voice.speak("CSI")
     display = lumogun.display()
     voice.speak("display")
-    #messenger = lumogun.messenger(GUN_CONFIGURATION)
-    #voice.speak("messenger")
+    messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
+    voice.speak("messenger")
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -57,9 +58,11 @@ def main():
     if is_trigger_reqd:
         raise Exception("Trigger detected on boot-up - exit app")
 
+    cnt = 0 
     while True:
-        #print(messenger.check_in_box())
-        #messenger.send_message("furt")
+        cnt += 1
+        print(f"In Box: {messenger.check_in_box()}")
+        messenger.send_message(f"{GUN_CONFIGURATION.model_name} says F U x {cnt}")
         GUN_CONFIGURATION.loop_wait()
 
         vel = accelerometer.update_vel()
