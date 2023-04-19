@@ -304,7 +304,7 @@ class Triggers(ABC):
     def __init__(self, _gun_config) -> None:
         self.gun_config = _gun_config
     @abstractmethod
-    def test_states(self) -> list [bool]:
+    def test_states(self):
         pass
 
 
