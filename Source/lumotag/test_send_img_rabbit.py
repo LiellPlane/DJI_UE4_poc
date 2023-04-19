@@ -198,9 +198,12 @@ def main2():
 
             #terrible code
             if "ANALYSED" in result_str:
+                print("Results found")
                 result_dict = json.loads(result_str)
-                result_dict["ClassID"] = coco_labels[int(result_dict["ClassID"])]
-                print(result_dict)
+                for latch in result_dict:
+                    latch["ClassID"] = coco_labels[int(latch["ClassID"])]
+                    print(latch)
+                print("results end")
                 break
 if __name__ == '__main__':
     main2()

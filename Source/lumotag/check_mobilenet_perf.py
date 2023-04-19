@@ -126,6 +126,7 @@ def inference_remote():
                 #print(detections)
                 all_dects = []
                 for deect in detections:
+                    print(deect)
                     dectdeets = {}
                     dectdeets["filename"] = "ANALYSED"
                     dectdeets["ClassID"] = deect.ClassID
@@ -134,6 +135,7 @@ def inference_remote():
                     dectdeets["Right"] = deect.Right
                     dectdeets["Bottom"] = deect.Bottom
                     dectdeets["Confidence"] = deect.Confidence
+                print("--------------")
                 all_dects.append(dectdeets)
                 output = json.dumps(all_dects)
                 output_bytes = msgs.str_to_bytes(output)
