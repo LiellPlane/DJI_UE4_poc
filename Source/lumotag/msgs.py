@@ -6,14 +6,11 @@ from numpy import frombuffer, uint8
 import numpy.typing as npt
 
 @dataclass
-class HitReport:
-
-    sender_id: str
-    
+class Report:
+    my_id: str
+    target: str
     timestamp: float
     img_as_str: str
-    insult_str: str
-    insult_img: npt.NDArray
 
 
 @dataclass

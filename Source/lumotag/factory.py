@@ -32,6 +32,8 @@ class RelayFunction(Enum):
 
 
 class display(ABC):
+    def __init__(self) -> None:
+        self.last_img = None
     @abstractmethod
     def display_output(self):
         pass
@@ -63,6 +65,7 @@ class gun_config(ABC):
             'port' : 5672,
             'virtual_host' : '/'
         }
+        self.my_id = str(uuid.uuid4())
 
     @property
     @abstractmethod
@@ -402,7 +405,7 @@ class messenger(ABC):
     def _out_box_worker(self, out_box, config, scheduler):
         pass
 
-    def send_message(self, message: str) -> bool:
+    def send_message(self, message: bytes) -> bool:
         if self._out_box._qsize() >= self._out_box.maxsize - 1:
             print("Message outbox full!!")
             return
@@ -412,7 +415,7 @@ class messenger(ABC):
 
     def check_in_box(self):
         message = None
-        if self._in_box._qsize()>0:
+        if self._in_box._qsize() > 0:
             try:
                 message = self._in_box.get(block=False)
             except Queue.Empty:

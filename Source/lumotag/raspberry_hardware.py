@@ -93,8 +93,9 @@ class display(factory.display):
     def display_output(self, output):
         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         output = cv2.resize(output,factory.screensizes.pi_4.value)
-        
         output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+        #TODO this might be slow
+        self.last_img = output.copy()
         lumo_viewer(output,0,False,False)
 
 

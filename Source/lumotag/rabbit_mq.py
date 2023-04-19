@@ -84,6 +84,7 @@ class messenger(factory.messenger):
     def _out_box_worker(self, out_box, config, scheduler):
         msg_worker = RabbitMQ_Obj(config.messaging_config)
         scheduler.put("OUT BOX READY")
+        time.sleep(3)
         while True:
            message = out_box.get(block=True)
            msg_worker.send_message(message)
@@ -108,5 +109,5 @@ class CallBack_QueueHandler():
             return
 
         self._in_box.put(
-            str(body),
+            body,
             block=False)

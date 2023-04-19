@@ -93,6 +93,8 @@ class display(factory.display):
         output = cv2.resize(output,factory.screensizes.windows_laptop.value)
         #  simulate rotation of lumotag 
         #output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        #TODO this might be slow
+        self.last_img = output.copy()
         lumo_viewer(output, 0, False, False)
 
 
