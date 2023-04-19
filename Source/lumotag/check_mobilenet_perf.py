@@ -124,16 +124,18 @@ def inference_remote():
                 detections = net.Detect(cuda_mem)
                 print("--------------")
                 #print(detections)
-                dectdeets = {}
-                dectdeets["filename"] = "ANALYSED"
+                all_dects = []
                 for deect in detections:
+                    dectdeets = {}
+                    dectdeets["filename"] = "ANALYSED"
                     dectdeets["ClassID"] = deect.ClassID
                     dectdeets["Left"] = deect.Left
                     dectdeets["Top"] = deect.Top
                     dectdeets["Right"] = deect.Right
                     dectdeets["Bottom"] = deect.Bottom
                     dectdeets["Confidence"] = deect.Confidence
-                output = json.dumps(dectdeets)
+                all_dects.append(dectdeets)
+                output = json.dumps(all_dects)
                 output_bytes = msgs.str_to_bytes(output)
                 mssger.send_message(output_bytes)
                 #print("Object Detectio)n | Network {:.0f} FPS".format(net.GetNetworkFPS()))

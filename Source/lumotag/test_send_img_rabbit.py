@@ -9,6 +9,14 @@ import cv2
 import colorsys
 import numpy as np
 import json
+import os
+from os import listdir
+#cd ~/
+#sudo rm -r DJI_UE4_poc
+#git clone https://github.com/LiellPlane/DJI_UE4_poc.git
+#cd DJI_UE4_poc/Source/lumotag
+
+
 
 coco_labels=[
 "unlabeled",
@@ -141,6 +149,7 @@ def main():
 
     cnt = 0
     img = np.asarray(plasma(1000, 1000), dtype="uint8")
+    
     while True:
         cnt += 1
         time.sleep(0.1)
@@ -169,23 +178,29 @@ def main2():
             break
         time.sleep(0.1)
 
-    img = np.asarray(plasma(1000, 1000), dtype="uint8")
-
-    img_str = msgs.encode_img_to_str(img)
-    str_as_bin = msgs.str_to_bytes(img_str)
-    mssger.send_message(str_as_bin)
-
-    while True:
-        time.sleep(0.1)
-        result = mssger.check_in_box(blocking=True)
-        if result is None:
+    #img = np.asarray(plasma(1000, 1000), dtype="uint8")
+    folder_dir = r"D:\captured_match"
+    
+    for images in os.listdir(folder_dir):
+        if not (images.endswith(".png")):
             continue
-        result_str = msgs.bytes_to_str(result)
+        img = cv2.imread(folder_dir + "\\" + images)
+        img_str = msgs.encode_img_to_str(img)
+        str_as_bin = msgs.str_to_bytes(img_str)
+        mssger.send_message(str_as_bin)
 
-        #terrible code
-        if "ANALYSED" in result_str:
-            result_dict = json.loads(result_str)
-            result_dict["ClassID"] = coco_labels[int(result_dict["ClassID"])]
-            print(result_dict)
+        while True:
+            time.sleep(0.1)
+            result = mssger.check_in_box(blocking=True)
+            if result is None:
+                continue
+            result_str = msgs.bytes_to_str(result)
+
+            #terrible code
+            if "ANALYSED" in result_str:
+                result_dict = json.loads(result_str)
+                result_dict["ClassID"] = coco_labels[int(result_dict["ClassID"])]
+                print(result_dict)
+                break
 if __name__ == '__main__':
     main2()

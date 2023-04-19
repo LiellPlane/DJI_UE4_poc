@@ -26,12 +26,12 @@ def bytes_to_str(bytes_: bytes):
 def str_to_bytes(string_: str):
     return str.encode(string_)
 
-def encode_img_to_str(thumb: npt.NDArray):
-    thumb_string = base64.b64encode(
+def encode_img_to_str(img: npt.NDArray):
+    img_string = base64.b64encode(
             cv2.imencode(
                 ext='.jpg',
-                img=thumb)[1]).decode()
-    return thumb_string
+                img=img)[1]).decode()
+    return img_string
 
 
 def decode_image_from_str(encoded_image: str):
