@@ -413,11 +413,11 @@ class messenger(ABC):
             message,
             block=False)
 
-    def check_in_box(self):
+    def check_in_box(self, blocking = False):
         message = None
         if self._in_box._qsize() > 0:
             try:
-                message = self._in_box.get(block=False)
+                message = self._in_box.get(block=blocking)
             except Queue.Empty:
                 pass
         return message
