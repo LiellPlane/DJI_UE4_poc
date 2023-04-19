@@ -36,6 +36,7 @@ from PIL import Image
 import cv2
 import colorsys
 import numpy as np
+import copy
 
 @contextmanager
 def time_it(comment):
@@ -125,8 +126,8 @@ def inference_remote():
                 print("--------------")
                 #print(detections)
                 all_dects = []
-                for deect in detections:
-                    print(deect)
+                dectdeets = None
+                for index, deect in enumerate(detections):
                     dectdeets = {}
                     dectdeets["filename"] = "ANALYSED"
                     dectdeets["ClassID"] = deect.ClassID
@@ -135,8 +136,9 @@ def inference_remote():
                     dectdeets["Right"] = deect.Right
                     dectdeets["Bottom"] = deect.Bottom
                     dectdeets["Confidence"] = deect.Confidence
+                    dectdeets["index"] = str(index)
                 print("--------------")
-                all_dects.append(dectdeets)
+                all_dects.append(copy.deepcopy(dectdeets))
                 output = json.dumps(all_dects)
                 output_bytes = msgs.str_to_bytes(output)
                 mssger.send_message(output_bytes)
