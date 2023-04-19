@@ -9,7 +9,7 @@ from socket import gaierror
 class RabbitMQ_Obj():
     def __init__(
             self,
-            messaging_config: dict[str, str]) -> None:
+            messaging_config):# dict[str, str]) -> None:
 
         mc = messaging_config
         credentials = pika.PlainCredentials(
