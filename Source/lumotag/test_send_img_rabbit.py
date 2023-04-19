@@ -8,6 +8,101 @@ from PIL import Image
 import cv2
 import colorsys
 import numpy as np
+import json
+
+coco_labels=[
+"unlabeled",
+"person",
+"bicycle",
+"car",
+"motorcycle",
+"airplane",
+"bus",
+"train",
+"truck",
+"boat",
+"traffic light",
+"fire hydrant",
+"street sign",
+"stop sign",
+"parking meter",
+"bench",
+"bird",
+"cat",
+"dog",
+"horse",
+"sheep",
+"cow",
+"elephant",
+"bear",
+"zebra",
+"giraffe",
+"hat",
+"backpack",
+"umbrella",
+"shoe",
+"eye glasses",
+"handbag",
+"tie",
+"suitcase",
+"frisbee",
+"skis",
+"snowboard",
+"sports ball",
+"kite",
+"baseball bat",
+"baseball glove",
+"skateboard",
+"surfboard",
+"tennis racket",
+"bottle",
+"plate",
+"wine glass",
+"cup",
+"fork",
+"knife",
+"spoon",
+"bowl",
+"banana",
+"apple",
+"sandwich",
+"orange",
+"broccoli",
+"carrot",
+"hot dog",
+"pizza",
+"donut",
+"cake",
+"chair",
+"couch",
+"potted plant",
+"bed",
+"mirror",
+"dining table",
+"window",
+"desk",
+"toilet",
+"door",
+"tv",
+"laptop",
+"mouse",
+"remote",
+"keyboard",
+"cell phone",
+"microwave",
+"oven",
+"toaster",
+"sink",
+"refrigerator",
+"blender",
+"book",
+"clock",
+"vase",
+"scissors",
+"teddy bear",
+"hair drier",
+"toothbrush"]
+
 
 def viewer(
         inputimage,
@@ -62,5 +157,35 @@ def main():
         str_as_bin = msgs.str_to_bytes(img_str)
         mssger.send_message(str_as_bin)
 
+def main2():
+    mssger = rabbit_mq.messenger(
+        factory.TZAR_config())
+
+    cnt = 0
+    #purge in box
+    while True:
+        result = mssger.check_in_box(blocking=False)
+        if result is None:
+            break
+        time.sleep(0.1)
+
+    img = np.asarray(plasma(1000, 1000), dtype="uint8")
+
+    img_str = msgs.encode_img_to_str(img)
+    str_as_bin = msgs.str_to_bytes(img_str)
+    mssger.send_message(str_as_bin)
+
+    while True:
+        time.sleep(0.1)
+        result = mssger.check_in_box(blocking=True)
+        if result is None:
+            continue
+        result_str = msgs.bytes_to_str(result)
+
+        #terrible code
+        if "ANALYSED" in result_str:
+            result_dict = json.loads(result_str)
+            result_dict["ClassID"] = coco_labels[int(result_dict["ClassID"])]
+            print(result_dict)
 if __name__ == '__main__':
-    main()
+    main2()

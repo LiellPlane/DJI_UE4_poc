@@ -415,9 +415,10 @@ class messenger(ABC):
 
     def check_in_box(self, blocking = False):
         message = None
-        if self._in_box._qsize() > 0:
-            try:
-                message = self._in_box.get(block=blocking)
-            except Queue.Empty:
-                pass
+        if blocking is False:
+            if self._in_box._qsize() < 1:
+                return message
+        #TODO issues getting queue.Empty exception to
+        # work - is it in multiprocessing or Queue?
+        message = self._in_box.get(block=blocking)
         return message

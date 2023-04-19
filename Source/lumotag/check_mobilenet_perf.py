@@ -1,0 +1,247 @@
+import sys
+try:
+    import cv2
+except Exception as e:
+    print("error importing cv2 - attempting again with path")
+    sys.path.append('/usr/local/lib/python3.8/site-packages')
+    import cv2
+    print("successfully imported cv2")
+import time
+import math
+import vpi
+import random
+import time
+import numpy as np
+import cv2
+from datetime import datetime
+from contextlib import contextmanager
+import math
+import colorsys
+from PIL import Image
+from jetson_inference import imageNet, detectNet
+import jetson_utils
+import torch
+import threading
+from PIL import Image
+import glob
+from dataclasses import asdict
+import json
+import rabbit_mq
+import factory
+import messaging
+import time
+import msgs
+import math
+from PIL import Image
+import cv2
+import colorsys
+import numpy as np
+
+@contextmanager
+def time_it(comment):
+    tic: float = time.perf_counter()
+    try:
+        yield
+    finally:
+        toc: float = time.perf_counter()
+        print(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")
+
+
+def plasma (w, h):
+    """stolen plasma image generator"""
+    out = Image.new("RGB", (w, h))
+    pix = out.load()
+    for x in range (w):
+        for y in range(h):
+            hue = 4.0 + math.sin(x / 19.0) + math.sin(y / 9.0) \
+                + math.sin((x + y) / 25.0) + math.sin(math.sqrt(x**2.0 + y**2.0) / 8.0)
+            hsv = colorsys.hsv_to_rgb(hue/8.0, 1, 1)
+            pix[x, y] = tuple([int(round(c * 255.0)) for c in hsv])
+    return out
+
+def gstreamer_pipeline_out_mod():
+    # leaky downstream throws away old images - default queue is 5
+    # sync = false might be useful 
+    # not tested with real cameras
+
+    #MUX playback ID https://stream.mux.com/vL9SJU61FSv8sSQR01F6ajKI702WeK2pXRuLVtw25zquo.m3u8
+
+    return (
+        "appsrc ! "
+        "videoconvert ! "
+        "video/x-raw, framerate=(fraction)25/1, format=RGBA ! "
+        "nvvidconv ! "
+        "nvv4l2h264enc ! "
+        "h264parse ! "
+        "flvmux ! "
+        "queue leaky=downstream ! "
+        "rtmpsink location=rtmp://global-live.mux.com:5222/app/51bc0427-ad29-2909-4979-11ee335d2b53 sync=false"
+    )
+
+def inference_imagenet():
+    net = imageNet("googlenet")
+
+    img = np.asarray(plasma(1000, 1000), dtype="uint8")
+
+    while True:
+        print("plop")
+        with time_it(" infer upload image"):
+            cuda_mem = jetson_utils.cudaFromNumpy(img)
+
+        with time_it(" infer classify image"):
+            # classify the image
+            class_idx, confidence = net.Classify(cuda_mem)
+
+            # find the object description
+            class_desc = net.GetClassDesc(class_idx)
+
+        # print out the result
+        print("image is recognized as '{:s}' (class #{:d}) with {:f}% confidence".format(class_desc, class_idx, confidence * 100))
+
+def inference_remote():
+    net = detectNet(
+        "ssd-mobilenet-v2",
+        threshold=0.1)
+    mssger = rabbit_mq.messenger(
+        factory.TZAR_config())
+    cnt = 0
+    while True:
+        message = mssger.check_in_box(blocking=True)
+        print(f"checking{cnt}")
+        if message is not None:
+            print("message detected")
+            img_as_str = msgs.bytes_to_str(message)
+            # sorry about this
+            if "ANALYSED" in img_as_str:
+                print("skipping")
+                continue
+            print("probably an image")
+            img = msgs.decode_image_from_str(img_as_str)
+
+            with time_it("cuda from numpy"):
+                cuda_mem = jetson_utils.cudaFromNumpy(img)
+            with time_it("detectnet"):
+                detections = net.Detect(cuda_mem)
+                print("--------------")
+                #print(detections)
+                dectdeets = {}
+                dectdeets["filename"] = "ANALYSED"
+                for deect in detections:
+                    dectdeets["ClassID"] = deect.ClassID
+                    dectdeets["Left"] = deect.Left
+                    dectdeets["Top"] = deect.Top
+                    dectdeets["Right"] = deect.Right
+                    dectdeets["Bottom"] = deect.Bottom
+                    dectdeets["Confidence"] = deect.Confidence
+                output = json.dumps(dectdeets)
+                output_bytes = msgs.str_to_bytes(output)
+                mssger.send_message(output_bytes)
+                #print("Object Detectio)n | Network {:.0f} FPS".format(net.GetNetworkFPS()))
+        else:
+            time.sleep(0.2)
+    
+def inference_detectnet():
+    image_list = []
+    
+    for filename in glob.glob('/home/jetcam/tensorrt_hello/jetson-inference/python/examples/match_media/*.png'): #assuming gif
+        print("loading", filename)
+        im=(cv2.imread(filename),filename)
+        print(im[0].shape)
+        if im[0] is None:
+            raise Exception("empty load for", filename)
+        image_list.append(im)
+    net = detectNet("ssd-mobilenet-v2", threshold=0.1)
+    #img = np.asarray(plasma(1000, 1000), dtype="uint8")
+    for img, filename in image_list:
+        with time_it("cuda from numpy"):
+            cuda_mem = jetson_utils.cudaFromNumpy(img)
+        with time_it("detectnet"):
+            detections = net.Detect(cuda_mem)
+            print("--------------")
+            #print(detections)
+            dectdeets = {}
+            dectdeets["filename"] = filename
+            for deect in detections:
+                dectdeets["ClassID"] = deect.ClassID
+                dectdeets["Left"] = deect.Left
+                dectdeets["Top"] = deect.Top
+                dectdeets["Right"] = deect.Right
+                dectdeets["Bottom"] = deect.Bottom
+                dectdeets["Confidence"] = deect.Confidence
+            print(json.dumps(dectdeets))
+            #print("Object Detectio)n | Network {:.0f} FPS".format(net.GetNetworkFPS()))
+
+
+def main():
+    infer_thread = threading.Thread(
+                target=inference_detectnet,
+                args=())
+    infer_thread.start()
+
+    #time.sleep(10000)
+    plasma_img = np.asarray(plasma(400, 400), dtype="uint8")
+    test_img = cv2.resize(plasma_img, (1920, 1080))
+    test_img2 = cv2.resize(plasma_img, (1920, 1080))
+    # set up parallel process streams
+    streamLeft = vpi.Stream()
+    streamRight = vpi.Stream()
+
+    # using gstreamer instead of FFMPEG, Nvidia doesn't
+    # support FFMPEG 100% for hardware dec/enc
+    out_stream = cv2.VideoWriter(
+        filename=gstreamer_pipeline_out_mod(),
+        apiPreference=cv2.CAP_GSTREAMER,
+        fourcc=0,
+        fps=25.0,
+        frameSize=(1920, 1080))
+
+    cnt = 0
+    while True:
+        cnt +=1
+
+        # time-based moving transform
+        hom = np.array([
+                [1, math.sin(cnt/10), 0],
+                [0, 1, 0],
+                [0, 0, 1]])
+
+        ts = str(datetime.now().strftime("%H:%M:%S"))
+        print(ts)
+        timestamp_img = test_img.copy()
+        cv2.putText(timestamp_img,
+                    ts,
+                    (80, 80),
+                    cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=3,
+                    color=(0, 0, 0),
+                    thickness=4)
+
+        with time_it("vpi processing (2)"):
+            with vpi.Backend.CUDA:
+                # upload image into GPU
+                with streamLeft:
+                    frame1 = vpi.asimage(timestamp_img)
+                with streamRight:
+                    frame2 = vpi.asimage(test_img2)
+
+            with vpi.Backend.CUDA:
+                # VIC processor can be used here - need to convert
+                # image to correct format (NVIDIA VPI doc page)
+                # but not much performance gain was experienced
+                # https://docs.nvidia.com/vpi/algo_persp_warp.html#algo_persp_warp_perf
+                with streamLeft:
+                    frame1 = frame1.perspwarp(hom)
+                with streamRight:
+                    frame2 = frame2.perspwarp(hom)
+
+            # request that streams finish their tasks
+            streamLeft.sync()
+            streamRight.sync()
+
+        with time_it("output from CPU to mux"):
+            # lock GPU memory to pull out buffer
+            with frame1.rlock_cpu() as data:
+                out_stream.write(data.copy())
+
+if __name__ == '__main__':
+    inference_remote()
