@@ -26,7 +26,7 @@ def main():
 
     # initialise components of lumogun
     voice = sound.Voice()
-    voice.speak(f"{GUN_CONFIGURATION.model_name} LOAD DEVICESS")
+    voice.speak(f"{GUN_CONFIGURATION.model_name},  LOAD.")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     accelerometer = lumogun.Accelerometer()
