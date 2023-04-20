@@ -186,6 +186,8 @@ def main2():
     for images in os.listdir(folder_dir):
         if not (images.endswith(".png")):
             continue
+        if not "small" in images:
+            continue
         img = cv2.imread(folder_dir + "\\" + images)
         img_str = msgs.encode_img_to_str(img)
         str_as_bin = msgs.str_to_bytes(img_str)
@@ -203,10 +205,24 @@ def main2():
                 print("Results found")
                 result_dict = json.loads(result_str)
                 annotated_img = img.copy()
-                
+
                 for latch in result_dict.values():
+                    #top left, bottom right
                     latch["ClassID"] = coco_labels[int(latch["ClassID"])]
+                    if any(ext in latch["ClassID"] for ext in ["person", "sports ball"]) is False:
+                        continue
+                    if float(latch["Confidence"]) < 0.3 and ("person" in latch["ClassID"]):
+                        continue
+                    if float(latch["Confidence"]) < 0.0 and ("sports ball" in latch["ClassID"]):
+                        continue
+                    cv2.rectangle(
+                        annotated_img,
+                        (int(latch["Left"]),int(latch["Top"])),
+                        (int(latch["Right"]),int(latch["Bottom"])),
+                        3)
+                    
                     print(latch["ClassID"])
+                viewer(annotated_img,0,True,False)
                 print("results end")
                 break
 if __name__ == '__main__':

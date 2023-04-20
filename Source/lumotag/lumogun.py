@@ -106,7 +106,7 @@ def main():
             msg_dict = json.loads(msgs.bytes_to_str(msg))
             msg_dataclass = msgs.Report(**msg_dict)
             img_decoded = msgs.decode_image_from_str(msg_dataclass.img_as_str)
-            https://amroamroamro.github.io/mexopencv/matlab/cv.imencode.html
+            #https://amroamroamro.github.io/mexopencv/matlab/cv.imencode.html
             display.display_output(img_decoded)
             #messenger.send_message("plop")
 
