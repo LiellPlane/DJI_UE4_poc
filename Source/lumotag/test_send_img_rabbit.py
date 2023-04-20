@@ -15,6 +15,8 @@ from os import listdir
 #sudo rm -r DJI_UE4_poc
 #git clone https://github.com/LiellPlane/DJI_UE4_poc.git
 #cd DJI_UE4_poc/Source/lumotag
+#python3 check_mobilenet_perf.py 
+
 
 
 

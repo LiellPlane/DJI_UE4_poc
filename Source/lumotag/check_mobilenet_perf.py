@@ -121,11 +121,12 @@ def inference_remote():
 
             with time_it("cuda from numpy"):
                 cuda_mem = jetson_utils.cudaFromNumpy(img)
+            all_dects = {}
             with time_it("detectnet"):
                 detections = net.Detect(cuda_mem)
                 print("--------------")
                 #print(detections)
-                all_dects = []
+                
                 dectdeets = None
                 for index, deect in enumerate(detections):
                     dectdeets = {}
@@ -137,11 +138,12 @@ def inference_remote():
                     dectdeets["Bottom"] = deect.Bottom
                     dectdeets["Confidence"] = deect.Confidence
                     dectdeets["index"] = str(index)
-                print("--------------")
-                all_dects.append(copy.deepcopy(dectdeets))
-                output = json.dumps(all_dects)
-                output_bytes = msgs.str_to_bytes(output)
-                mssger.send_message(output_bytes)
+                    print("--------------")
+                    print(dectdeets["ClassID"])
+                    all_dects[index]=copy.deepcopy(dectdeets)
+            output = json.dumps(all_dects)
+            output_bytes = msgs.str_to_bytes(output)
+            mssger.send_message(output_bytes)
                 #print("Object Detectio)n | Network {:.0f} FPS".format(net.GetNetworkFPS()))
         else:
             time.sleep(0.2)
