@@ -26,19 +26,13 @@ def main():
 
     # initialise components of lumogun
     voice = sound.Voice()
-    voice.speak(f"{GUN_CONFIGURATION.model_name} START")
+    voice.speak(f"{GUN_CONFIGURATION.model_name} LOAD DEVICESS")
     relay = lumogun.Relay(GUN_CONFIGURATION)
-    voice.speak("reelaay")
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
-    voice.speak("triggers")
     accelerometer = lumogun.Accelerometer()
-    voice.speak("accelerometer")
     image_capture = lumogun.CSI_Camera()
-    voice.speak("CSI")
     display = lumogun.display()
-    voice.speak("display")
     #messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
-    voice.speak("messenger")
     voice.speak("all devices healthy")
 
     # set partial functions
