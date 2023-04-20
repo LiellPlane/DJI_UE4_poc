@@ -139,7 +139,7 @@ def inference_remote():
                     dectdeets["Confidence"] = deect.Confidence
                     dectdeets["index"] = str(index)
                     print("--------------")
-                    print(dectdeets["ClassID"])
+                    print(deect)
                     all_dects[index]=copy.deepcopy(dectdeets)
             output = json.dumps(all_dects)
             output_bytes = msgs.str_to_bytes(output)

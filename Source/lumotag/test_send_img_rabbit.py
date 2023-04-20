@@ -202,9 +202,11 @@ def main2():
             if "ANALYSED" in result_str:
                 print("Results found")
                 result_dict = json.loads(result_str)
-                for latch in result_dict:
+                annotated_img = img.copy()
+                
+                for latch in result_dict.values():
                     latch["ClassID"] = coco_labels[int(latch["ClassID"])]
-                    print(latch)
+                    print(latch["ClassID"])
                 print("results end")
                 break
 if __name__ == '__main__':
