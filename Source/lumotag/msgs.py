@@ -3,7 +3,7 @@ import uuid
 import cv2
 from dataclasses import dataclass
 from numpy import frombuffer, uint8
-import numpy.typing as npt
+#import numpy.typing as npt
 
 @dataclass
 class Report:
@@ -26,7 +26,7 @@ def bytes_to_str(bytes_: bytes):
 def str_to_bytes(string_: str):
     return str.encode(string_)
 
-def encode_img_to_str(img: npt.NDArray):
+def encode_img_to_str(img):
     img_string = base64.b64encode(
             cv2.imencode(
                 ext='.jpg',
