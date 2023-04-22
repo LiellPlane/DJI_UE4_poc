@@ -382,8 +382,8 @@ class messenger(ABC):
 
     def __init__(self,
                  config: gun_config) -> None:
-        self._in_box = Queue(maxsize=3)
-        self._out_box = Queue(maxsize=3)
+        self._in_box = Queue(maxsize=2)
+        self._out_box = Queue(maxsize=2)
         self._schedule = Queue(maxsize=1)
         self._config = config
 

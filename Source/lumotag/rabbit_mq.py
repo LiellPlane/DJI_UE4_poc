@@ -101,23 +101,25 @@ class CallBack_QueueHandler():
         self._in_box = inbox
         self._gunconfig = config
 
-    def create_qfull_err(self):
+    def create_qfull_err(self, err_msg):
         msg_to_send = msgs.Report(
             my_id=self._gunconfig.my_id,
             target=None,
             timestamp=msgs.get_epoch_ts(),
             img_as_str=None,
             msg_type=msgs.MessageTypes.ERROR.value,
-            msg_string="Outgoing queue full!! Too many reports"
+            msg_string=err_msg
         )
 
         return msgs.package_dataclass_to_bytes(msg_to_send)
 
     def callback_handler(self, ch, method, properties, body):
-        if self._in_box._qsize() >= self._in_box.maxsize - 1:
+        if self._in_box._qsize() >= self._in_box.maxsize:
+            err_msg = "Incoming int queue full! All unhandled msgs cleared. "
+            err_msg += f"qsize of {self._in_box._qsize()}, max of {self._in_box.maxsize}"
             self._in_box.queue.clear()
             self._in_box.put(
-                self.create_qfull_err(),
+                self.create_qfull_err(err_msg),
                 block=False)
             return
 

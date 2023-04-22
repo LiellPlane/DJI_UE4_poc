@@ -68,7 +68,7 @@ def main():
             print("hit report lag", received_ts-in_ts)
 
             if msg.msg_type == msgs.MessageTypes.ERROR.value:
-                print(f"Message ERROR from {msg.my_id}: {msg.msg_string}")
+                print(f"Message ERROR (is me={msg.my_id==GUN_CONFIGURATION.my_id}): {msg.msg_string}")
 
             if msg.my_id != GUN_CONFIGURATION.my_id:
                 if msg.msg_type == msgs.MessageTypes.HIT_REPORT.value:
