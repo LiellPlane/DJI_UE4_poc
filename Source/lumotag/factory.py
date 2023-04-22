@@ -32,8 +32,7 @@ class RelayFunction(Enum):
 
 
 class display(ABC):
-    def __init__(self) -> None:
-        self.last_img = None
+
     @abstractmethod
     def display_output(self):
         pass
@@ -315,8 +314,8 @@ class Camera(ABC):
         raise NotImplementedError
 
     def __init__(self) -> None:
-        super().__init__()
         self.res_select = 0
+        self.last_img = None
 
     @abstractmethod
     def gen_image(self):
@@ -325,7 +324,8 @@ class Camera(ABC):
     def __next__(self):
         img = self.gen_image()
         if len(img.shape) == 3:
-            return cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        self.last_img = img
         return img
 
     def __iter__(self):

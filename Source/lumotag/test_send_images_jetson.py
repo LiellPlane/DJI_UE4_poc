@@ -181,13 +181,14 @@ def main2():
         time.sleep(0.1)
 
     #img = np.asarray(plasma(1000, 1000), dtype="uint8")
-    folder_dir = r"D:\captured_match"
+    folder_dir = r"D:\ball_dataset\test"
     
     for images in os.listdir(folder_dir):
-        if not (images.endswith(".png")):
+        if not (images.endswith(".jpg")):
             continue
-        if not "small" in images:
-            continue
+        #if not "Cam2" in images:
+        #    continue
+        print("image prepared")
         img = cv2.imread(folder_dir + "\\" + images)
         img_str = msgs.encode_img_to_str(img)
         str_as_bin = msgs.str_to_bytes(img_str)
@@ -211,17 +212,22 @@ def main2():
                     latch["ClassID"] = coco_labels[int(latch["ClassID"])]
                     if any(ext in latch["ClassID"] for ext in ["person", "sports ball"]) is False:
                         continue
-                    if float(latch["Confidence"]) < 0.3 and ("person" in latch["ClassID"]):
+                    if float(latch["Confidence"]) < 0.2 and ("person" in latch["ClassID"]):
                         continue
-                    if float(latch["Confidence"]) < 0.0 and ("sports ball" in latch["ClassID"]):
+                    if float(latch["Confidence"]) < 0.1 and ("sports ball" in latch["ClassID"]):
                         continue
+                    if "person" in latch["ClassID"]:
+                        colour = (0,255,0)
+                    if "sports ball" in latch["ClassID"]:
+                        colour = (255,0,0)
                     cv2.rectangle(
-                        annotated_img,
-                        (int(latch["Left"]),int(latch["Top"])),
-                        (int(latch["Right"]),int(latch["Bottom"])),
-                        3)
-                    
-                    print(latch["ClassID"])
+                    annotated_img,
+                    (int(latch["Left"]),int(latch["Top"])),
+                    (int(latch["Right"]),int(latch["Bottom"])),
+                    colour,
+                    3)
+                        
+                    print(latch["ClassID"], latch["Confidence"])
                 viewer(annotated_img,0,True,False)
                 print("results end")
                 break

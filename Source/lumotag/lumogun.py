@@ -32,7 +32,7 @@ def main():
     accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display()
-    #messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
+    messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -59,18 +59,19 @@ def main():
     while True:
         cnt += 1
         
-        # #in_msg = messenger.check_in_box()
-        # if in_msg is not None:
-        #     #print(in_msg)
-        #     break
-        #     msg = json.loads(msgs.bytes_to_str(in_msg))
-        #     msg = msgs.Report(**msg)
-        #     if msg.my_id == GUN_CONFIGURATION.my_id:
-        #         break
-        #     if msg.img_as_str is None:
-        #         pass
-        #     display.display_output(msgs.decode_image_from_str(msg.img_as_str))
-        #     time.sleep(1)
+        in_msg = messenger.check_in_box()
+        if in_msg is not None:
+            msg = json.loads(msgs.bytes_to_str(in_msg))
+            msg = msgs.Report(**msg)
+            in_ts = msg.timestamp
+            received_ts = msgs.get_epoch_ts()
+            print("hit report lag", received_ts-in_ts)
+            if msg.my_id != GUN_CONFIGURATION.my_id:
+                
+                if msg.img_as_str is not None:
+                    display.display_output(
+                        msgs.decode_image_from_str(msg.img_as_str))
+                time.sleep(1)
         GUN_CONFIGURATION.loop_wait()
 
         accelerometer.update_vel()
@@ -84,25 +85,19 @@ def main():
         set_clicker(state=is_trigger_reqd)
 
         if is_torch_reqd is True:
-            display.display_output(next(image_capture))
-        else:
-            display.display_output(accelerometer.get_visual())
+           display.display_output(next(image_capture))
+        #else:
+           #display.display_output(accelerometer.get_visual())
 
         if is_trigger_reqd is True:
-            msg_to_send = msgs.Report(
-                my_id=GUN_CONFIGURATION.my_id,
-                target="UNKNOWN",
-                timestamp="TBD",
-                img_as_str=msgs.encode_img_to_str(display.last_img)
+            msgs.package_send_report(
+                image=image_capture.last_img,
+                gun_config=GUN_CONFIGURATION,
+                messenger=messenger,
+                target="some twat"
             )
-
-            msg = msgs.str_to_bytes(json.dumps(asdict(msg_to_send)))
-            msg_dict = json.loads(msgs.bytes_to_str(msg))
-            msg_dataclass = msgs.Report(**msg_dict)
-            img_decoded = msgs.decode_image_from_str(msg_dataclass.img_as_str)
-            #https://amroamroamro.github.io/mexopencv/matlab/cv.imencode.html
-            display.display_output(img_decoded)
-            #messenger.send_message("plop")
+    
+    raise RuntimeError("something broke out of loop")
 
 if __name__ == '__main__':
     main()

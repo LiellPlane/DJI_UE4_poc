@@ -40,7 +40,7 @@ class Triggers(factory.Triggers):
         for _, (pos, _) in enumerate(
             self.gun_config.TRIGGER_IO.items()):
             if self.flipflop:
-                outputs[pos] = True
+                outputs[pos] = False
             else:
                 outputs[pos] = False
         return outputs
@@ -94,7 +94,6 @@ class display(factory.display):
         #  simulate rotation of lumotag 
         #output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
         #TODO this might be slow
-        self.last_img = output.copy()
         lumo_viewer(output, 0, False, False)
 
 
