@@ -66,13 +66,16 @@ def main():
             in_ts = msg.timestamp
             received_ts = msgs.get_epoch_ts()
             print("hit report lag", received_ts-in_ts)
-            if msg.my_id != GUN_CONFIGURATION.my_id:
+
+            if msg.msg_type == msgs.MessageTypes.ERROR.value:
+                print(f"Message ERROR from {msg.my_id}: {msg.msg_string}")
+            if msg.my_id == GUN_CONFIGURATION.my_id:
                 
                 if msg.img_as_str is not None:
                     display.display_output(
                         msgs.decode_image_from_str(msg.img_as_str))
                 time.sleep(1)
-        GUN_CONFIGURATION.loop_wait()
+        #GUN_CONFIGURATION.loop_wait()
 
         accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())
@@ -91,12 +94,14 @@ def main():
 
         if is_trigger_reqd is True:
             msgs.package_send_report(
+                type_=msgs.MessageTypes.HIT_REPORT.value,
                 image=image_capture.last_img,
                 gun_config=GUN_CONFIGURATION,
                 messenger=messenger,
-                target="some twat"
+                target="some twat",
+                message_str="lol QQ l2p"
             )
-    
+
     raise RuntimeError("something broke out of loop")
 
 if __name__ == '__main__':

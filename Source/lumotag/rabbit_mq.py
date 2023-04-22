@@ -4,7 +4,8 @@ import time
 import messaging
 from dataclasses import asdict
 from socket import gaierror
-
+import msgs
+import json
 
 class RabbitMQ_Obj():
     def __init__(
@@ -78,7 +79,7 @@ class messenger(factory.messenger):
         # TODO must be some way to avoid this
         time.sleep(3)
         msg_worker = RabbitMQ_Obj(config.messaging_config)
-        callback_hndl = CallBack_QueueHandler(in_box)
+        callback_hndl = CallBack_QueueHandler(in_box, config)
         msg_worker.start_consuming(callback_hndl.callback_handler)
 
     def _out_box_worker(self, out_box, config, scheduler):
@@ -94,17 +95,29 @@ class CallBack_QueueHandler():
     # callback is needed with the in box queue,
     # so create it as a class and give the rabbit callback
     # as a method in the class with access to members we need
-    def __init__(self, inbox) -> None:
+    def __init__(self, inbox, config) -> None:
         """Class to handle callbacks from rabbitMQ and placing them in
         a queue for the main thread to handle"""
         self._in_box = inbox
+        self._gunconfig = config
+
+    def create_qfull_err(self):
+        msg_to_send = msgs.Report(
+            my_id=self._gunconfig.my_id,
+            target=None,
+            timestamp=msgs.get_epoch_ts(),
+            img_as_str=None,
+            msg_type=msgs.MessageTypes.ERROR.value,
+            msg_string="Outgoing queue full!! Too many reports"
+        )
+
+        return msgs.package_dataclass_to_bytes(msg_to_send)
 
     def callback_handler(self, ch, method, properties, body):
         if self._in_box._qsize() >= self._in_box.maxsize - 1:
             self._in_box.queue.clear()
             self._in_box.put(
-                asdict(messaging.error(
-                error_str="HIT REPORT INCOMING QUEUE FULL")),
+                self.create_qfull_err(),
                 block=False)
             return
 
