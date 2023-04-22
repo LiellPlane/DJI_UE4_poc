@@ -69,13 +69,15 @@ def main():
 
             if msg.msg_type == msgs.MessageTypes.ERROR.value:
                 print(f"Message ERROR from {msg.my_id}: {msg.msg_string}")
-            if msg.my_id == GUN_CONFIGURATION.my_id:
-                
-                if msg.img_as_str is not None:
-                    display.display_output(
-                        msgs.decode_image_from_str(msg.img_as_str))
-                time.sleep(1)
-        #GUN_CONFIGURATION.loop_wait()
+
+            if msg.my_id != GUN_CONFIGURATION.my_id:
+                if msg.msg_type == msgs.MessageTypes.HIT_REPORT.value:
+                    if msg.img_as_str is not None:
+                        display.display_output(
+                            msgs.decode_image_from_str(msg.img_as_str))
+                    time.sleep(1)
+
+        GUN_CONFIGURATION.loop_wait()
 
         accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())

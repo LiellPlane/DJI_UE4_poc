@@ -39,7 +39,7 @@ class Triggers(factory.Triggers):
                    in self.gun_config.TRIGGER_IO.items()}
         for _, (pos, _) in enumerate(
             self.gun_config.TRIGGER_IO.items()):
-            outputs[pos] = self.flipflop
+            outputs[pos] = False#self.flipflop
         return outputs
 
 
