@@ -39,7 +39,7 @@ class Triggers(factory.Triggers):
                    in self.gun_config.TRIGGER_IO.items()}
         for _, (pos, _) in enumerate(
             self.gun_config.TRIGGER_IO.items()):
-            outputs[pos] = False#self.flipflop
+            outputs[pos] = self.flipflop
         return outputs
 
 
@@ -82,6 +82,12 @@ class CSI_Camera(factory.Camera):
     def gen_image(self):
         blank_image = np.zeros((500, 500, 3), np.uint8)
         blank_image[:,:,:] = random.randint(0,255)
+        blank_image = cv2.circle(
+            blank_image,
+            (250, 250),
+            40,
+            50,
+            5)
         return blank_image
 
 
@@ -140,7 +146,7 @@ class messenger(factory.messenger):
         while True:
             cnt += 1
             time.sleep(4)
-            if in_box._qsize() >= in_box.maxsize - 1:
+            if in_box._qsize() >= in_box.maxsize:
                 print("Message inbox full!!")
                 continue
             in_box.put(

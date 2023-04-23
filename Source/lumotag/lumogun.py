@@ -29,7 +29,7 @@ def main():
     voice.speak(f"{GUN_CONFIGURATION.model_name},  LOAD.")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
-    accelerometer = lumogun.Accelerometer()
+    #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display()
     messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
@@ -79,7 +79,7 @@ def main():
 
         GUN_CONFIGURATION.loop_wait()
 
-        accelerometer.update_vel()
+        #accelerometer.update_vel()
         results_trig_positions = (triggers.test_states())
 
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]

@@ -6,7 +6,8 @@ import cv2
 from contextlib import contextmanager
 from dataclasses import dataclass
 import threading
-from queue import Queue
+#from queue import Queue
+import queue
 import uuid
 #uuid.uuid4()
 
@@ -382,9 +383,9 @@ class messenger(ABC):
 
     def __init__(self,
                  config: gun_config) -> None:
-        self._in_box = Queue(maxsize=2)
-        self._out_box = Queue(maxsize=2)
-        self._schedule = Queue(maxsize=1)
+        self._in_box = queue.Queue(maxsize=2)
+        self._out_box = queue.Queue(maxsize=2)
+        self._schedule = queue.Queue(maxsize=1)
         self._config = config
 
         self.inbox_worker = threading.Thread(
@@ -406,19 +407,18 @@ class messenger(ABC):
         pass
 
     def send_message(self, message: bytes) -> bool:
-        if self._out_box._qsize() >= self._out_box.maxsize - 1:
+        if self._out_box._qsize() >= self._out_box.maxsize:
             print("Message outbox full!!")
             return
         self._out_box.put(
             message,
             block=False)
 
-    def check_in_box(self, blocking = False):
-        message = None
-        if blocking is False:
-            if self._in_box._qsize() < 1:
-                return message
-        #TODO issues getting queue.Empty exception to
-        # work - is it in multiprocessing or Queue?
-        message = self._in_box.get(block=blocking)
+    def check_in_box(self, blocking=False):
+        message= None
+        try:
+            message = self._in_box.get(block=blocking)
+        except queue.Empty:
+            pass
+
         return message
