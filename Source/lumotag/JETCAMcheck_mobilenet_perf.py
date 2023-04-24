@@ -100,9 +100,13 @@ def inference_imagenet():
         print("image is recognized as '{:s}' (class #{:d}) with {:f}% confidence".format(class_desc, class_idx, confidence * 100))
 
 def inference_remote():
+    # net = detectNet(
+    #     "ssd-mobilenet-v2",
+    #     threshold=0.1)
     net = detectNet(
-        "ssd-mobilenet-v2",
+        "/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/pytorch-ssd/models/hardhatjpg/ssd-mobilenet",
         threshold=0.1)
+    
     mssger = rabbit_mq.messenger(
         factory.TZAR_config())
     cnt = 0
@@ -122,6 +126,8 @@ def inference_remote():
             with time_it("cuda from numpy"):
                 cuda_mem = jetson_utils.cudaFromNumpy(img)
             all_dects = {}
+
+
             with time_it("detectnet"):
                 detections = net.Detect(cuda_mem)
                 print("--------------")
