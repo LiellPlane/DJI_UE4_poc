@@ -103,9 +103,9 @@ def inference_remote():
     # net = detectNet(
     #     "ssd-mobilenet-v2",
     #     threshold=0.1)
-    net = detectNet(
-        "/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/pytorch-ssd/models/hardhatjpg/ssd-mobilenet",
-        threshold=0.1)
+    # net = detectNet(
+    #     "/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/pytorch-ssd/models/hardhatjpg/ssd-mobilenet.onnx",
+    #     threshold=0.1)
     
     net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/pytorch-ssd/models/hardhatjpg/ssd-mobilenet.onnx",
                     labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/pytorch-ssd/models/hardhatjpg/labels.txt",
@@ -119,6 +119,8 @@ def inference_remote():
         factory.TZAR_config())
     cnt = 0
     while True:
+        cnt += 1
+        print("waiting for image")
         message = mssger.check_in_box(blocking=True)
         print(f"checking{cnt}")
         if message is not None:
@@ -145,6 +147,7 @@ def inference_remote():
                 for index, deect in enumerate(detections):
                     dectdeets = {}
                     dectdeets["filename"] = "ANALYSED"
+                    dectdeets["img_count"] = cnt
                     dectdeets["ClassID"] = deect.ClassID
                     dectdeets["Left"] = deect.Left
                     dectdeets["Top"] = deect.Top

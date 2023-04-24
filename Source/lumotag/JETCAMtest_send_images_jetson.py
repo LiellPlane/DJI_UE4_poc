@@ -174,14 +174,14 @@ def main2():
 
     cnt = 0
     #purge in box
-    while True:
-        result = mssger.check_in_box(blocking=False)
-        if result is None:
-            break
-        time.sleep(0.1)
+    # while True:
+    #     result = mssger.check_in_box(blocking=False)
+    #     if result is None:
+    #         break
+    #     time.sleep(0.1)
 
     #img = np.asarray(plasma(1000, 1000), dtype="uint8")
-    folder_dir = r"D:\ball_dataset\test"
+    folder_dir = r"D:\test_training_mobilenet\hardhats\JPEGImages"
     
     for images in os.listdir(folder_dir):
         if not (images.endswith(".jpg")):
@@ -193,12 +193,14 @@ def main2():
         img_str = msgs.encode_img_to_str(img)
         str_as_bin = msgs.str_to_bytes(img_str)
         mssger.send_message(str_as_bin)
-
+        print("image sent")
         while True:
             time.sleep(0.1)
+            print("checking in box")
             result = mssger.check_in_box(blocking=True)
             if result is None:
                 continue
+            print("image found")
             result_str = msgs.bytes_to_str(result)
 
             #terrible code
@@ -206,20 +208,20 @@ def main2():
                 print("Results found")
                 result_dict = json.loads(result_str)
                 annotated_img = img.copy()
-
+                colour = (255, 0, 0)
                 for latch in result_dict.values():
                     #top left, bottom right
-                    latch["ClassID"] = coco_labels[int(latch["ClassID"])]
-                    if any(ext in latch["ClassID"] for ext in ["person", "sports ball"]) is False:
-                        continue
-                    if float(latch["Confidence"]) < 0.2 and ("person" in latch["ClassID"]):
-                        continue
-                    if float(latch["Confidence"]) < 0.1 and ("sports ball" in latch["ClassID"]):
-                        continue
-                    if "person" in latch["ClassID"]:
-                        colour = (0,255,0)
-                    if "sports ball" in latch["ClassID"]:
-                        colour = (255,0,0)
+                    # latch["ClassID"] = coco_labels[int(latch["ClassID"])]
+                    # if any(ext in latch["ClassID"] for ext in ["person", "sports ball"]) is False:
+                    #     continue
+                    # if float(latch["Confidence"]) < 0.2 and ("person" in latch["ClassID"]):
+                    #     continue
+                    # if float(latch["Confidence"]) < 0.1 and ("sports ball" in latch["ClassID"]):
+                    #     continue
+                    # if "person" in latch["ClassID"]:
+                    #     colour = (0,255,0)
+                    # if "sports ball" in latch["ClassID"]:
+                    #     colour = (255,0,0)
                     cv2.rectangle(
                     annotated_img,
                     (int(latch["Left"]),int(latch["Top"])),
