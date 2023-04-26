@@ -11,6 +11,7 @@ import numpy as np
 import json
 import os
 from os import listdir
+import random
 #cd ~/
 #sudo rm -r DJI_UE4_poc
 #git clone https://github.com/LiellPlane/DJI_UE4_poc.git
@@ -22,6 +23,9 @@ from os import listdir
 
 coco_labels=[
 "unlabeled",
+"HH: helmet",
+"HH: person",
+"HH: head",
 "person",
 "bicycle",
 "car",
@@ -182,8 +186,9 @@ def main2():
 
     #img = np.asarray(plasma(1000, 1000), dtype="uint8")
     folder_dir = r"D:\test_training_mobilenet\hardhats\JPEGImages"
-    
     for images in os.listdir(folder_dir):
+
+        img_to_load = random.choice(os.listdir(folder_dir))
         if not (images.endswith(".jpg")):
             continue
         #if not "Cam2" in images:
@@ -214,8 +219,8 @@ def main2():
                     # latch["ClassID"] = coco_labels[int(latch["ClassID"])]
                     # if any(ext in latch["ClassID"] for ext in ["person", "sports ball"]) is False:
                     #     continue
-                    # if float(latch["Confidence"]) < 0.2 and ("person" in latch["ClassID"]):
-                    #     continue
+                    if float(latch["Confidence"]) < 0.2:# and ("person" in latch["ClassID"]):
+                        continue
                     # if float(latch["Confidence"]) < 0.1 and ("sports ball" in latch["ClassID"]):
                     #     continue
                     # if "person" in latch["ClassID"]:

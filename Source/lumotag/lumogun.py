@@ -89,8 +89,8 @@ def main():
         set_laser(state=is_torch_reqd)
         set_clicker(state=is_trigger_reqd)
 
-        if is_torch_reqd is True:
-           display.display_output(next(image_capture))
+        #if is_torch_reqd is True:
+        display.display_output(next(image_capture))
         #else:
            #display.display_output(accelerometer.get_visual())
 

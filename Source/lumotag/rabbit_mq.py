@@ -6,11 +6,14 @@ from dataclasses import asdict
 from socket import gaierror
 import msgs
 import json
+import uuid
 
 class RabbitMQ_Obj():
     def __init__(
             self,
-            messaging_config):# dict[str, str]) -> None:
+            messaging_config,
+            name,
+            send_only):# dict[str, str]) -> None:
 
         mc = messaging_config
         credentials = pika.PlainCredentials(
@@ -34,15 +37,16 @@ class RabbitMQ_Obj():
             exchange='hits',
             exchange_type='fanout')
 
-        result = self.channel.queue_declare(
-            queue='',
-            exclusive=True)
+        if not send_only:
+            result = self.channel.queue_declare(
+                queue=name,
+                exclusive=True)
 
-        self.queue_name = result.method.queue
+            self.queue_name = result.method.queue
 
-        self.channel.queue_bind(
-            exchange='hits',
-            queue=self.queue_name)
+            self.channel.queue_bind(
+                exchange='hits',
+                queue=self.queue_name)
 
     def start_consuming(
             self,
@@ -78,12 +82,18 @@ class messenger(factory.messenger):
         # first connection has been initialised
         # TODO must be some way to avoid this
         time.sleep(3)
-        msg_worker = RabbitMQ_Obj(config.messaging_config)
+        msg_worker = RabbitMQ_Obj(
+            config.messaging_config,
+            f"{config.my_id}_consumer",
+            send_only=False)
         callback_hndl = CallBack_QueueHandler(in_box, config)
         msg_worker.start_consuming(callback_hndl.callback_handler)
 
     def _out_box_worker(self, out_box, config, scheduler):
-        msg_worker = RabbitMQ_Obj(config.messaging_config)
+        msg_worker = RabbitMQ_Obj(
+            config.messaging_config,
+            f"{config.my_id}_sender",
+            send_only=True)
         scheduler.put("OUT BOX READY")
         time.sleep(3)
         while True:

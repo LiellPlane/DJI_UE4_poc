@@ -413,8 +413,10 @@ class messenger(ABC):
         self._out_box.put(
             message,
             block=False)
+        print(f"Outbound queue size (pre rabbit): {self._out_box._qsize()}")
 
     def check_in_box(self, blocking=False):
+        print(f"Inbound queue size (post rabbit): {self._in_box._qsize()}")
         message= None
         try:
             message = self._in_box.get(block=blocking)
