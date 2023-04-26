@@ -85,13 +85,12 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        is_torch_reqd = True
         set_torch(state=is_torch_reqd)
         set_laser(state=is_torch_reqd)
         set_clicker(state=is_trigger_reqd)
 
-        if is_torch_reqd is True:
-           display.display_output(next(image_capture))
+        #if is_torch_reqd is True:
+        display.display_output(next(image_capture))
         #else:
            #display.display_output(accelerometer.get_visual())
 
