@@ -139,12 +139,12 @@ class Relay(factory.Relay):
 
     def set_relay(self, relaypos:int, state:bool):
         if state:
-            self.debouncers[relaypos].trigger(
+            return self.debouncers[relaypos].trigger(
                 GPIO.output,
                 self.gun_config.RELAY_IO[relaypos],
                 GPIO.HIGH)
         else:
-            self.debouncers[relaypos].trigger(
+            return self.debouncers[relaypos].trigger(
                 GPIO.output,
                 self.gun_config.RELAY_IO[relaypos],
                 GPIO.LOW)
