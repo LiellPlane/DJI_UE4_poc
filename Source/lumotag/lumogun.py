@@ -65,7 +65,13 @@ def main():
             msg = msgs.Report(**msg)
             in_ts = msg.timestamp
             received_ts = msgs.get_epoch_ts()
-            print("hit report lag", received_ts-in_ts)
+            #print("hit report lag", received_ts-in_ts)
+
+            if msg.msg_type == msgs.MessageTypes.HELLO.value:
+                if msg.my_id == GUN_CONFIGURATION.my_id:
+                    voice.speak("CONNECTED")
+                else:
+                    voice.speak("Player connected, ", msg.msg_string)
 
             if msg.msg_type == msgs.MessageTypes.ERROR.value:
                 print(f"Message ERROR (is me={msg.my_id==GUN_CONFIGURATION.my_id}): {msg.msg_string}")
@@ -91,8 +97,8 @@ def main():
         # trigger has a debounce - so if result is TRUE
         # we can send a hit report
         trigger_ready = set_trigger(state=is_trigger_reqd)
-        if trigger_ready and is_trigger_reqd:
-            voice.speak("BANG")
+        #if trigger_ready and is_trigger_reqd:
+        #    voice.speak("BANG")
         #if is_torch_reqd is True:
         display.display_output(next(image_capture))
         #else:

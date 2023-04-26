@@ -75,7 +75,16 @@ class messenger(factory.messenger):
         super().__init__(config=config)
 
     def _in_box_worker(self, in_box, config, scheduler):
-        # will block until OutBox worker has started its RMQ connection
+        msg_worker = RabbitMQ_Obj(
+            config.messaging_config,
+            f"{config.my_id}_consumer",
+            send_only=False)
+        callback_hndl = CallBack_QueueHandler(in_box, config)
+        scheduler.put("IN BOX READY")
+        msg_worker.start_consuming(callback_hndl.callback_handler)
+
+    def _out_box_worker(self, out_box, config, scheduler):
+        # will block until InBox worker has started its RMQ connection
         # then in theory should be ready to init another
         scheduler.get(block=True)
         # arbitrary sleep needed even though we have confirmed
@@ -84,21 +93,25 @@ class messenger(factory.messenger):
         time.sleep(3)
         msg_worker = RabbitMQ_Obj(
             config.messaging_config,
-            f"{config.my_id}_consumer",
-            send_only=False)
-        callback_hndl = CallBack_QueueHandler(in_box, config)
-        msg_worker.start_consuming(callback_hndl.callback_handler)
-
-    def _out_box_worker(self, out_box, config, scheduler):
-        msg_worker = RabbitMQ_Obj(
-            config.messaging_config,
             f"{config.my_id}_sender",
             send_only=True)
-        scheduler.put("OUT BOX READY")
-        time.sleep(3)
-        while True:
-           message = out_box.get(block=True)
-           msg_worker.send_message(message)
+        time.sleep(1)
+        # we can assume that consumer connection is active
+        # send a message that we are ready
+        hello_msg = msgs.package_dataclass_to_bytes(msgs.Report(
+                my_id=config.my_id,
+                target="",
+                timestamp=msgs.get_epoch_ts(),
+                img_as_str=None,
+                msg_type=msgs.MessageTypes.HELLO.value,
+                msg_string="tee hee"
+            ))
+        
+        msg_worker.send_message(hello_msg)
+
+        #while True:
+        #   message = out_box.get(block=True)
+        #   msg_worker.send_message(message)
 
 
 class CallBack_QueueHandler():
