@@ -91,7 +91,7 @@ def main():
         # trigger has a debounce - so if result is TRUE
         # we can send a hit report
         trigger_ready = set_trigger(state=is_trigger_reqd)
-        if trigger_ready:
+        if trigger_ready and is_trigger_reqd:
             voice.speak("BANG")
         #if is_torch_reqd is True:
         display.display_output(next(image_capture))
