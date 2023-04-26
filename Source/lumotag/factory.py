@@ -32,13 +32,6 @@ class RelayFunction(Enum):
     unused_2 = 3
 
 
-class display(ABC):
-
-    @abstractmethod
-    def display_output(self):
-        pass
-
-
 class get_my_info(ABC):
     def __init__(self) -> None:
         """class to locate static information
@@ -96,6 +89,15 @@ class gun_config(ABC):
         ...
 
 
+class display(ABC):
+    
+    def __init__(self,  _gun_config: gun_config) -> None:
+        self.display_rotate = _gun_config.screen_rotation
+
+    @abstractmethod
+    def display_output(self):
+        pass
+
 class stryker_config(gun_config):
     
     def __init__(self) -> None:
@@ -128,7 +130,7 @@ class stryker_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(0)
+        return(180)
 
     def loop_wait(self):
         pass

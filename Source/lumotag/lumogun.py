@@ -16,7 +16,7 @@ if hasattr(os, 'uname') is False:
 elif os.uname()[-1] == RASP_PI_4_OS:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry_hardware as lumogun
-    GUN_CONFIGURATION = factory.TZAR_config()
+    GUN_CONFIGURATION = factory.stryker_config()
 else:
     raise Exception("Could not detect platform")
 
@@ -31,7 +31,7 @@ def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
-    display = lumogun.display()
+    display = lumogun.display(GUN_CONFIGURATION)
     messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
     voice.speak("all devices healthy")
 

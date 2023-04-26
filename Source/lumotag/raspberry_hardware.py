@@ -91,7 +91,16 @@ class Accelerometer(factory.Accelerometer):
 
 class display(factory.display):
     def display_output(self, output):
-        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        if self.display_rotate == 90:
+            output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        elif self.display_rotate == -90:
+            output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        elif self.display_rotate == 180:
+            output = cv2.rotate(output, cv2.ROTATE_180)
+        elif self.display_rotate == 0:
+            pass
+        else:
+            raise Exception("incorrect display rotate value", self.display_rotate)
         output = cv2.resize(output,factory.screensizes.pi_4.value)
         output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
         lumo_viewer(output,0,False,False)
@@ -116,13 +125,6 @@ class Triggers(factory.Triggers):
             else:
                 outputs[pos] = False
         return outputs
-
-
-# class config(factory.config):
-#     env_name = "integration"
-
-#     def loop_wait(self):
-#         pass
 
 
 class Relay(factory.Relay):

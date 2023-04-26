@@ -74,8 +74,6 @@ class Relay(factory.Relay):
 
 class CSI_Camera(factory.Camera):
 
-    angle_vs_world_up = 0
-
     def get_res(self):
         pass
 
