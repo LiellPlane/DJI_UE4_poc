@@ -71,7 +71,7 @@ def main():
                 if msg.my_id == GUN_CONFIGURATION.my_id:
                     voice.speak("CONNECTED")
                 else:
-                    voice.speak("Player connected, ", msg.msg_string)
+                    voice.speak("Player connected, " + msg.msg_string)
 
             if msg.msg_type == msgs.MessageTypes.ERROR.value:
                 print(f"Message ERROR (is me={msg.my_id==GUN_CONFIGURATION.my_id}): {msg.msg_string}")

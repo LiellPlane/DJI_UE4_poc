@@ -108,10 +108,10 @@ class messenger(factory.messenger):
             ))
         
         msg_worker.send_message(hello_msg)
-
-        #while True:
-        #   message = out_box.get(block=True)
-        #   msg_worker.send_message(message)
+        out_box.queue.clear()
+        while True:
+          message = out_box.get(block=True)
+          msg_worker.send_message(message)
 
 
 class CallBack_QueueHandler():
