@@ -408,10 +408,15 @@ class messenger(ABC):
     def _out_box_worker(self, out_box, config, scheduler):
         pass
 
-    def send_message(self, message: bytes) -> bool:
+    def send_message(
+            self,
+            message: bytes,
+            hit = False) -> bool:
+
         if self._out_box._qsize() >= self._out_box.maxsize:
             print("Message outbox full!!")
             return
+
         self._out_box.put(
             message,
             block=False)

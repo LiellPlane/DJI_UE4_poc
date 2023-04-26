@@ -44,7 +44,7 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["laser"])
 
-    set_clicker = partial(
+    set_trigger= partial(
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
 
@@ -87,8 +87,12 @@ def main():
 
         set_torch(state=is_torch_reqd)
         set_laser(state=is_torch_reqd)
-        set_clicker(state=is_trigger_reqd)
 
+        # trigger has a debounce - so if result is TRUE
+        # we can send a hit report
+        trigger_ready = set_trigger(state=is_trigger_reqd)
+        if trigger_ready:
+            voice.speak("BANG")
         #if is_torch_reqd is True:
         display.display_output(next(image_capture))
         #else:
