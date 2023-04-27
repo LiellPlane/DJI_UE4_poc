@@ -104,7 +104,7 @@ class messenger(factory.messenger):
                 timestamp=msgs.get_epoch_ts(),
                 img_as_str=None,
                 msg_type=msgs.MessageTypes.HELLO.value,
-                msg_string="tee hee"
+                msg_string=""
             ))
         
         msg_worker.send_message(hello_msg)

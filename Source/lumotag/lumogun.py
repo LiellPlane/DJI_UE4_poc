@@ -26,7 +26,7 @@ def main():
 
     # initialise components of lumogun
     voice = sound.Voice()
-    voice.speak(f"{GUN_CONFIGURATION.model_name},  LOAD.")
+    voice.speak(f"{GUN_CONFIGURATION.model_name}")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     #accelerometer = lumogun.Accelerometer()
@@ -91,11 +91,22 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        set_torch(state=is_torch_reqd)
-        set_laser(state=is_torch_reqd)
+        #set_torch(state=is_torch_reqd)
+        #set_laser(state=is_torch_reqd)
 
-        # trigger has a debounce - so if result is TRUE
-        # we can send a hit report
+        if is_trigger_reqd:
+            result=GUN_CONFIGURATION.trigger_debounce.trigger_oneshot(
+                True,
+                msgs.package_send_report,
+                msgs.MessageTypes.HIT_REPORT.value,
+                image_capture.last_img,
+                "some twat",
+                messenger,
+                GUN_CONFIGURATION,
+                "lol QQ l2p"
+            
+            )
+            print(result)
         trigger_ready = set_trigger(state=is_trigger_reqd)
         #if trigger_ready and is_trigger_reqd:
         #    voice.speak("BANG")
@@ -104,15 +115,15 @@ def main():
         #else:
            #display.display_output(accelerometer.get_visual())
 
-        if is_trigger_reqd is True:
-            msgs.package_send_report(
-                type_=msgs.MessageTypes.HIT_REPORT.value,
-                image=image_capture.last_img,
-                gun_config=GUN_CONFIGURATION,
-                messenger=messenger,
-                target="some twat",
-                message_str="lol QQ l2p"
-            )
+        # if is_trigger_reqd is True:
+        #     msgs.package_send_report(
+        #         type_=msgs.MessageTypes.HIT_REPORT.value,
+        #         image=image_capture.last_img,
+        #         gun_config=GUN_CONFIGURATION,
+        #         messenger=messenger,
+        #         target="some twat",
+        #         message_str="lol QQ l2p"
+        #     )
 
     raise RuntimeError("something broke out of loop")
 

@@ -59,6 +59,8 @@ class gun_config(ABC):
             'virtual_host' : '/'
         }
         self.my_id = str(uuid.uuid4())
+        self.trigger_debounce = Debounce(
+            debounce_sec=0.3)
 
     @property
     @abstractmethod
@@ -352,9 +354,10 @@ class KillProcess(ABC):
 
 class Debounce:
 
-    def __init__(self) -> None:
-        self.debouncetime_sec = 0.05
+    def __init__(self, debounce_sec = 0.05) -> None:
+        self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
+        self._statemem = None
 
     def trigger(self, triggerfunc, *args):
         if self.debouncer.get_dt() < self.debouncetime_sec:
@@ -364,6 +367,15 @@ class Debounce:
             self.debouncer.reset()
             return True
 
+    def trigger_oneshot(self, boolstate, triggerfunc, *args):
+        if self.debouncer.get_dt() >= self.debouncetime_sec:
+            if self._statemem != boolstate:
+                triggerfunc(*args)
+                self.debouncer.reset()
+                return True
+        self._statemem = boolstate
+        return False
+        
 
 class TimeDiffObject:
     """stopwatch function"""
@@ -420,10 +432,8 @@ class messenger(ABC):
         self._out_box.put(
             message,
             block=False)
-        print(f"Outbound queue size (pre rabbit): {self._out_box._qsize()}")
 
     def check_in_box(self, blocking=False):
-        print(f"Inbound queue size (post rabbit): {self._in_box._qsize()}")
         message= None
         try:
             message = self._in_box.get(block=blocking)
