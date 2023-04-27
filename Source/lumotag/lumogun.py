@@ -91,8 +91,8 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        #set_torch(state=is_torch_reqd)
-        #set_laser(state=is_torch_reqd)
+        set_torch(state=is_torch_reqd)
+        set_laser(state=is_torch_reqd)
 
         if is_trigger_reqd:
             result=GUN_CONFIGURATION.trigger_debounce.trigger_oneshot(
