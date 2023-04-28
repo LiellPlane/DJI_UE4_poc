@@ -60,7 +60,7 @@ class gun_config(ABC):
         }
         self.my_id = str(uuid.uuid4())
         self.trigger_debounce = Debounce(
-            debounce_sec=0.3)
+            debounce_sec=0.5)
 
     @property
     @abstractmethod
@@ -375,7 +375,14 @@ class Debounce:
                 return True
         self._statemem = boolstate
         return False
-        
+
+    def trigger_oneshot_simple(self, boolstate):
+        if self.debouncer.get_dt() >= self.debouncetime_sec:
+            if self._statemem != boolstate:
+                self.debouncer.reset()
+                return True
+        self._statemem = boolstate
+        return False
 
 class TimeDiffObject:
     """stopwatch function"""

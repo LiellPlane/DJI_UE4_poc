@@ -47,6 +47,8 @@ def main():
     set_trigger= partial(
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
+    
+    trigger_debounce = GUN_CONFIGURATION.trigger_debounce.trigger_oneshot_simple
 
     # if user is holding down trigger on boot up, quit
     # application
@@ -91,41 +93,32 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        set_torch(state=is_torch_reqd)
-        set_laser(state=is_torch_reqd)
+        set_torch(state=True)
+        set_laser(state=True)
 
-        if is_trigger_reqd:
-            result=GUN_CONFIGURATION.trigger_debounce.trigger_oneshot(
-                True,
-                msgs.package_send_report,
-                msgs.MessageTypes.HIT_REPORT.value,
-                image_capture.last_img,
-                "some twat",
-                messenger,
-                GUN_CONFIGURATION,
-                "lol QQ l2p"
-            
-            )
+        # if user presses trigger - use one-shot debounce (so not constantly firing
+        # when active). Relays also have debounces for electrical stability
+        # when user releases trigger - do not need a debounce - deactivate immediately
+        if is_trigger_reqd is True:
+            result=trigger_debounce(True)
             print(result)
-        trigger_ready = set_trigger(state=is_trigger_reqd)
-        #if trigger_ready and is_trigger_reqd:
-        #    voice.speak("BANG")
-        #if is_torch_reqd is True:
-        display.display_output(next(image_capture))
-        #else:
-           #display.display_output(accelerometer.get_visual())
+            if result is True:
+                msgs.package_send_report(
+                    type_=msgs.MessageTypes.HIT_REPORT.value,
+                    image=image_capture.last_img,
+                    gun_config=GUN_CONFIGURATION,
+                    messenger=messenger,
+                    target="some twat",
+                    message_str="lol QQ l2p"
+                )
+                voice.speak("BANG")
+        else:
+            set_trigger(state=False)
 
-        # if is_trigger_reqd is True:
-        #     msgs.package_send_report(
-        #         type_=msgs.MessageTypes.HIT_REPORT.value,
-        #         image=image_capture.last_img,
-        #         gun_config=GUN_CONFIGURATION,
-        #         messenger=messenger,
-        #         target="some twat",
-        #         message_str="lol QQ l2p"
-        #     )
+        display.display_output(next(image_capture))
 
     raise RuntimeError("something broke out of loop")
 
 if __name__ == '__main__':
     main()
+

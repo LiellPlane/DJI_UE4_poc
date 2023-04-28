@@ -43,13 +43,6 @@ class Triggers(factory.Triggers):
         return outputs
 
 
-# class config(factory.config):
-#     env_name = "test"
-
-#     def loop_wait(self):
-#         time.sleep(0.1)
-
-
 class Relay(factory.Relay):
     
     def __init__(self, _gun_config) -> None:
