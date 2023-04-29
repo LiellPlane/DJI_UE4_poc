@@ -94,9 +94,6 @@ def main():
 
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
-        
-        print("is_torch_reqd:", is_torch_reqd)
-        print("is_trigger_reqd:", is_trigger_reqd)
 
         set_torch(state=is_torch_reqd)
         set_laser(state=is_torch_reqd)
@@ -107,6 +104,7 @@ def main():
         result=trigger_debounce(is_trigger_reqd)
         if is_trigger_reqd is True:
             if result is True:
+                set_trigger(state=True) # click noise from relay only
                 msgs.package_send_report(
                     type_=msgs.MessageTypes.HIT_REPORT.value,
                     image=image_capture.last_img,
@@ -117,7 +115,7 @@ def main():
                 )
                 voice.speak("BANG")
         else:
-            set_trigger(state=False)
+            set_trigger(state=False) # click noise from relay only
 
         display.display_output(next(image_capture))
 
