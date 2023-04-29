@@ -102,7 +102,7 @@ class display(factory.display):
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
         output = cv2.resize(output,factory.screensizes.pi_4.value)
-        output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+        #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
         lumo_viewer(output,0,False,False)
 
 
