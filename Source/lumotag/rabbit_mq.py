@@ -25,12 +25,15 @@ class RabbitMQ_Obj():
                                             virtual_host=mc["virtual_host"],
                                             credentials=credentials)
 
-        try:
-            self.connection = pika.BlockingConnection(parameters)
-        except gaierror as e:
-           print("rabbitqm Err, Is message server active?")
-           raise e
+        while True:
+            try:
+                self.connection = pika.BlockingConnection(parameters)
+                break
+            except gaierror as e:
+                print("rabbitqm Err, Is message server active?")
 
+            time.sleep(5)
+            
         self.channel = self.connection.channel()
 
         self.channel.exchange_declare(
