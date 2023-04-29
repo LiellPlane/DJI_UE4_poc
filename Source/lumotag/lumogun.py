@@ -23,7 +23,7 @@ else:
 
 
 def main():
-    
+    ss
     # initialise components of lumogun
     voice = sound.Voice()
     voice.speak(f"{GUN_CONFIGURATION.model_name}")
@@ -69,12 +69,6 @@ def main():
                 print("Input Message Err:", errmsg)
             else:
                 msg_body = in_msg.msg_body
-                if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
-                    if msg_body.my_id == GUN_CONFIGURATION.my_id:
-                        voice.speak("CONNECTED")
-                    else:
-                        voice.speak("Player connected, " + msg_body.msg_string)
-
                 if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
                     if msg_body.my_id == GUN_CONFIGURATION.my_id:
                         voice.speak("CONNECTED")
