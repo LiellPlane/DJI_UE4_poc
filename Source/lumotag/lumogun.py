@@ -23,7 +23,7 @@ else:
 
 
 def main():
-
+    dd
     # initialise components of lumogun
     voice = sound.Voice()
     voice.speak(f"{GUN_CONFIGURATION.model_name}")
