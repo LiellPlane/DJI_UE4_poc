@@ -128,7 +128,7 @@ class Accelerometer(factory.Accelerometer):
             self.round(math.sin(self._z)*real_accel_range))
     
 
-class messenger(factory.messenger):
+class Messenger(factory.Messenger):
 
     def __init__(self, config) -> None:
         super().__init__(config=config)

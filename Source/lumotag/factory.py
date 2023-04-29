@@ -32,7 +32,7 @@ class RelayFunction(Enum):
     unused_2 = 3
 
 
-class get_my_info(ABC):
+class Get_My_Info(ABC):
     def __init__(self) -> None:
         """class to locate static information
         of device"""
@@ -404,7 +404,7 @@ class TimeDiffObject:
         self._start_time = time.perf_counter()
 
 
-class messenger(ABC):
+class Messenger(ABC):
 
     def __init__(self,
                  config: gun_config) -> None:

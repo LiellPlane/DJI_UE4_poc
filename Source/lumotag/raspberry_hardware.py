@@ -201,9 +201,12 @@ class KillProcess(factory.KillProcess):
                 break
 
 
-class get_my_info(factory.get_my_info):  
+class Get_My_Info(factory.Get_My_Info):  
     def get_my_details_file(self):
         """ID expected to be file location"""
         with open(factory.gun_config.DETAILS_FILE, 'r') as file:
             data =  json.load(file)
         self.raw_details=data
+
+
+Messenger = rabbit_mq.Messenger

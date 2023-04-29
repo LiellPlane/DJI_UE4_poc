@@ -69,7 +69,7 @@ class RabbitMQ_Obj():
         return
 
 
-class messenger(factory.messenger):
+class Messenger(factory.Messenger):
 
     def __init__(self, config) -> None:
         super().__init__(config=config)

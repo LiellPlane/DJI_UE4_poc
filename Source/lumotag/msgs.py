@@ -85,7 +85,7 @@ def package_send_report(
         type_,
         image,
         target: str,
-        messenger: factory.messenger,
+        messenger: factory.Messenger,
         gun_config: factory.gun_config,
         message_str: str):
     """Send outgoing report, for example if

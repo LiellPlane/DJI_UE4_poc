@@ -32,8 +32,7 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display(GUN_CONFIGURATION)
-    #messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
-    messenger = lumogun.messenger(GUN_CONFIGURATION)
+    messenger = lumogun.Messenger(GUN_CONFIGURATION)
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -114,7 +113,6 @@ def main():
         # when user releases trigger - do not need a debounce - deactivate immediately
         result=trigger_debounce(is_trigger_reqd)
         if is_trigger_reqd is True:
-            print(result)
             if result is True:
                 msgs.package_send_report(
                     type_=msgs.MessageTypes.HIT_REPORT.value,
