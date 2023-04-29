@@ -42,6 +42,9 @@ class get_my_info(ABC):
     def get_my_details_file(self):
         pass
 
+def create_id():
+    return str(uuid.uuid4())
+
 
 class gun_config(ABC):
 
@@ -58,7 +61,7 @@ class gun_config(ABC):
             'port' : 5672,
             'virtual_host' : '/'
         }
-        self.my_id = str(uuid.uuid4())
+        self.my_id = create_id()
         self.trigger_debounce = Debounce(
             debounce_sec=0.5)
 
@@ -380,6 +383,7 @@ class Debounce:
         if self.debouncer.get_dt() >= self.debouncetime_sec:
             if self._statemem != boolstate:
                 self.debouncer.reset()
+                self._statemem = boolstate
                 return True
         self._statemem = boolstate
         return False

@@ -6,6 +6,7 @@ import time
 import decode_clothID_v1 as decode_clothID
 import factory
 import math
+import msgs
 
 def lumo_viewer(
         inputimage,
@@ -138,13 +139,13 @@ class messenger(factory.messenger):
             cnt += 1
             time.sleep(4)
             if in_box._qsize() >= in_box.maxsize:
-                print("Message inbox full!!")
+                print("can't push on any more test messages")
                 continue
             in_box.put(
-                f"{cnt} test in box msg",
+                msgs.create_test_msg(),
                 block=False)
 
     def _out_box_worker(self, out_box, config, scheduler):
         while True:
             message = out_box.get(block=True)
-            print("sending", message)
+            print("sending into void", message)

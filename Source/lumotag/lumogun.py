@@ -2,7 +2,7 @@ import os
 import factory
 import sound
 from functools import partial
-import rabbit_mq
+from json.decoder import JSONDecodeError
 import msgs
 from dataclasses import asdict
 import json
@@ -32,7 +32,8 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display(GUN_CONFIGURATION)
-    messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
+    #messenger = rabbit_mq.messenger(GUN_CONFIGURATION)
+    messenger = lumogun.messenger(GUN_CONFIGURATION)
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -61,29 +62,38 @@ def main():
     while True:
         cnt += 1
         
-        in_msg = messenger.check_in_box()
-        if in_msg is not None:
-            msg = json.loads(msgs.bytes_to_str(in_msg))
-            msg = msgs.Report(**msg)
-            in_ts = msg.timestamp
-            received_ts = msgs.get_epoch_ts()
-            #print("hit report lag", received_ts-in_ts)
+        msg = messenger.check_in_box()
+        if msg is not None:
+            in_msg = msgs.parse_input_msg(msg)
+            if in_msg.success is False:
+                errmsg = in_msg.error
+                print("Input Message Err:", errmsg)
+            else:
+                msg_body = in_msg.msg_body
+                if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
+                    if msg_body.my_id == GUN_CONFIGURATION.my_id:
+                        voice.speak("CONNECTED")
+                    else:
+                        voice.speak("Player connected, " + msg_body.msg_string)
 
-            if msg.msg_type == msgs.MessageTypes.HELLO.value:
-                if msg.my_id == GUN_CONFIGURATION.my_id:
-                    voice.speak("CONNECTED")
-                else:
-                    voice.speak("Player connected, " + msg.msg_string)
+                if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
+                    if msg_body.my_id == GUN_CONFIGURATION.my_id:
+                        voice.speak("CONNECTED")
+                    else:
+                        voice.speak("Player connected, " + msg_body.msg_string)
 
-            if msg.msg_type == msgs.MessageTypes.ERROR.value:
-                print(f"Message ERROR (is me={msg.my_id==GUN_CONFIGURATION.my_id}): {msg.msg_string}")
+                if msg_body.msg_type == msgs.MessageTypes.TEST.value:
+                    print("test input message OK")
 
-            if msg.my_id != GUN_CONFIGURATION.my_id:
-                if msg.msg_type == msgs.MessageTypes.HIT_REPORT.value:
-                    if msg.img_as_str is not None:
-                        display.display_output(
-                            msgs.decode_image_from_str(msg.img_as_str))
-                    time.sleep(1)
+                if msg_body.msg_type == msgs.MessageTypes.ERROR.value:
+                    print(f"Message ERROR (is me={msg_body.my_id==GUN_CONFIGURATION.my_id}): {msg_body.msg_string}")
+
+                if msg_body.my_id != GUN_CONFIGURATION.my_id:
+                    if msg_body.msg_type == msgs.MessageTypes.HIT_REPORT.value:
+                        if msg_body.img_as_str is not None:
+                            display.display_output(
+                                msgs.decode_image_from_str(msg_body.img_as_str))
+                        time.sleep(1)
 
         GUN_CONFIGURATION.loop_wait()
 
@@ -92,15 +102,18 @@ def main():
 
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
+        
+        print("is_torch_reqd:", is_torch_reqd)
+        print("is_trigger_reqd:", is_trigger_reqd)
 
-        set_torch(state=True)
-        set_laser(state=True)
+        set_torch(state=is_torch_reqd)
+        set_laser(state=is_torch_reqd)
 
         # if user presses trigger - use one-shot debounce (so not constantly firing
         # when active). Relays also have debounces for electrical stability
         # when user releases trigger - do not need a debounce - deactivate immediately
+        result=trigger_debounce(is_trigger_reqd)
         if is_trigger_reqd is True:
-            result=trigger_debounce(True)
             print(result)
             if result is True:
                 msgs.package_send_report(
