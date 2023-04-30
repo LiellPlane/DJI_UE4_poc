@@ -77,6 +77,14 @@ class Messenger(factory.Messenger):
     def __init__(self, config) -> None:
         super().__init__(config=config)
 
+    def _heartbeat(self, out_box, config):
+        while True:
+            time.sleep(config.msg_heartbeat_s)
+            hb = msgs.create_heartbeat_msg(config)
+            out_box.put(
+                hb,
+                block=True)
+
     def _in_box_worker(self, in_box, config, scheduler):
         msg_worker = RabbitMQ_Obj(
             config.messaging_config,

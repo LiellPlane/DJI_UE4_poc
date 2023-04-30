@@ -2,30 +2,31 @@ import os
 import factory
 import sound
 from functools import partial
-from json.decoder import JSONDecodeError
 import msgs
-from dataclasses import asdict
-import json
 import time
-#  detect what OS we are on - test environment on production (real hardware)
+
+#  detect what OS we are on - test environment (Windows) or production (pi hardware)
 RASP_PI_4_OS = "armv7l"
+
 if hasattr(os, 'uname') is False:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
-    GUN_CONFIGURATION = factory.simitzar_config()
 elif os.uname()[-1] == RASP_PI_4_OS:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry_hardware as lumogun
-    GUN_CONFIGURATION = factory.stryker_config()
 else:
     raise Exception("Could not detect platform")
 
+# load config depending on if simulated, or if on hardware,
+# model ID from file on device
+model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
+GUN_CONFIGURATION  = factory.get_config(model)
 
 
 def main():
     # initialise components of lumogun
     voice = sound.Voice()
-    voice.speak(f"{GUN_CONFIGURATION.model_name}")
+    voice.speak(f"{GUN_CONFIGURATION.model}")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     #accelerometer = lumogun.Accelerometer()
@@ -59,26 +60,33 @@ def main():
     cnt = 0 
     while True:
         cnt += 1
-        
-        msg = messenger.check_in_box()
-        if msg is not None:
+
+        for msg in messenger.check_in_box():
             in_msg = msgs.parse_input_msg(msg)
             if in_msg.success is False:
                 errmsg = in_msg.error
                 print("Input Message Err:", errmsg)
             else:
                 msg_body = in_msg.msg_body
+
+                if msg_body.msg_type == msgs.MessageTypes.HEARTBEAT.value:
+                    print(f"heartbeat in from {msg_body.my_id}")
+                    continue
+
                 if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
                     if msg_body.my_id == GUN_CONFIGURATION.my_id:
                         voice.speak("CONNECTED")
                     else:
-                        voice.speak("Player connected, " + msg_body.msg_string)
+                        voice.speak("new player, " + msg_body.msg_string)
+                    continue
 
                 if msg_body.msg_type == msgs.MessageTypes.TEST.value:
                     print("test input message OK")
+                    continue
 
                 if msg_body.msg_type == msgs.MessageTypes.ERROR.value:
                     print(f"Message ERROR (is me={msg_body.my_id==GUN_CONFIGURATION.my_id}): {msg_body.msg_string}")
+                    continue
 
                 if msg_body.my_id != GUN_CONFIGURATION.my_id:
                     if msg_body.msg_type == msgs.MessageTypes.HIT_REPORT.value:
@@ -86,6 +94,7 @@ def main():
                             display.display_output(
                                 msgs.decode_image_from_str(msg_body.img_as_str))
                         time.sleep(1)
+                    continue
 
         GUN_CONFIGURATION.loop_wait()
 

@@ -152,7 +152,7 @@ class Relay(factory.Relay):
 
 class CSI_Camera(factory.Camera):
 
-    angle_vs_world_up = 90
+    #angle_vs_world_up = 90
 
     def __init__(self) -> None:
         super().__init__()
@@ -201,12 +201,12 @@ class KillProcess(factory.KillProcess):
                 break
 
 
-class Get_My_Info(factory.Get_My_Info):  
-    def get_my_details_file(self):
-        """ID expected to be file location"""
-        with open(factory.gun_config.DETAILS_FILE, 'r') as file:
-            data =  json.load(file)
-        self.raw_details=data
-
-
 Messenger = rabbit_mq.Messenger
+
+
+def get_my_info(file):
+    with open(file, 'r') as file:
+        data =  json.load(file)
+        MY_ID = data["MY_ID"]
+
+    return MY_ID

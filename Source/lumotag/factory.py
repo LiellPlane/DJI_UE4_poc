@@ -9,7 +9,16 @@ import threading
 #from queue import Queue
 import queue
 import uuid
-#uuid.uuid4()
+from enum import Enum,auto
+
+class AutoStrEnum(str, Enum):
+    """
+    StrEnum where auto() returns the field name.
+    See https://docs.python.org/3.9/library/enum.html#using-automatic-values
+    """
+    @staticmethod
+    def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
+        return name
 
 @contextmanager
 def time_it(process):
@@ -31,23 +40,12 @@ class RelayFunction(Enum):
     unused_1 = 2
     unused_2 = 3
 
-
-class Get_My_Info(ABC):
-    def __init__(self) -> None:
-        """class to locate static information
-        of device"""
-        self.my_id = None
-        self.raw_details = None
-
-    def get_my_details_file(self):
-        pass
-
 def create_id():
     return str(uuid.uuid4())
 
 
 class gun_config(ABC):
-
+    model = "NOT OVERRIDDEN!"
     DETAILS_FILE = '/boot/MY_INFO.txt'
     def __init__(self) -> None:
         self.relay_map = {
@@ -64,6 +62,7 @@ class gun_config(ABC):
         self.my_id = create_id()
         self.trigger_debounce = Debounce(
             debounce_sec=0.5)
+        self.msg_heartbeat_s = 20
 
     @property
     @abstractmethod
@@ -72,10 +71,6 @@ class gun_config(ABC):
     @property
     @abstractmethod
     def rly_triggerclick(self):
-        ...
-    @property
-    @abstractmethod
-    def model_name(self):
         ...
     @property
     @abstractmethod
@@ -104,7 +99,7 @@ class display(ABC):
         pass
 
 class stryker_config(gun_config):
-    
+    model = "STRYKER"
     def __init__(self) -> None:
         super().__init__()
         #for reference on rasperry pi 4
@@ -120,11 +115,7 @@ class stryker_config(gun_config):
     @property
     def rly_triggerclick(self):
         return 2
-    
-    @property
-    def model_name(self):
-        return ("stryker")
-    
+
     @property
     def RELAY_IO(self):
         return(self.RELAY_IO_BCM)
@@ -142,7 +133,7 @@ class stryker_config(gun_config):
 
 
 class TZAR_config(gun_config):
-
+    model = "TZAR"
     def __init__(self) -> None:
         super().__init__()
         #for reference on rasperry pi 4
@@ -158,15 +149,11 @@ class TZAR_config(gun_config):
     @property
     def rly_triggerclick(self):
         return 2
-    
-    @property
-    def model_name(self):
-        return ("TZAR")
-    
+
     @property
     def RELAY_IO(self):
         return(self.RELAY_IO_BCM)
-    
+
     @property
     def TRIGGER_IO(self):
         return (self.TRIGGER_IO_BCM)
@@ -180,7 +167,7 @@ class TZAR_config(gun_config):
 
 
 class simitzar_config(gun_config):
-    
+    model = "SIMITZAR"
     def __init__(self) -> None:
         super().__init__()
         #for reference on rasperry pi 4
@@ -196,11 +183,7 @@ class simitzar_config(gun_config):
     @property
     def rly_triggerclick(self):
         return 2
-    
-    @property
-    def model_name(self):
-        return ("sim tzaaar")
-    
+        
     @property
     def RELAY_IO(self):
         return(self.RELAY_IO_BCM)
@@ -423,6 +406,17 @@ class Messenger(ABC):
             args=(self._out_box, self._config, self._schedule, ))
         self.outbox_worker.start()
 
+        self.heartbeat = threading.Thread(
+            target=self._heartbeat,
+            args=(self._out_box,  self._config, ))
+        self.heartbeat.start()
+
+    @abstractmethod
+    def _heartbeat(self, out_box, config):
+        """specfically for rabbitMQ but lets keep it here for
+         test implementations to inherit"""
+        pass
+
     @abstractmethod
     def _in_box_worker(self, in_box, config, scheduler):
         pass
@@ -433,8 +427,7 @@ class Messenger(ABC):
 
     def send_message(
             self,
-            message: bytes,
-            hit = False) -> bool:
+            message: bytes) -> bool:
 
         if self._out_box._qsize() >= self._out_box.maxsize:
             print("Message outbox full!!")
@@ -445,10 +438,17 @@ class Messenger(ABC):
             block=False)
 
     def check_in_box(self, blocking=False):
-        message= None
+        messages = []
         try:
-            message = self._in_box.get(block=blocking)
+            # just get one but keep in list structure for convenience
+            messages.append(self._in_box.get(block=blocking))
         except queue.Empty:
             pass
 
-        return message
+        return messages
+    
+def get_config(model) -> gun_config:
+    for subclass_ in gun_config.__subclasses__():
+        if subclass_.model.lower() == model.lower():
+            return subclass_()
+    raise Exception("No config found for model ID ", str(model))

@@ -6,7 +6,9 @@ import time
 import decode_clothID_v1 as decode_clothID
 import factory
 import math
-import msgs
+import rabbit_mq
+import json
+
 
 def lumo_viewer(
         inputimage,
@@ -126,26 +128,41 @@ class Accelerometer(factory.Accelerometer):
             self.round(math.sin(self._x)*real_accel_range),
             self.round(math.sin(self._y)*real_accel_range),
             self.round(math.sin(self._z)*real_accel_range))
+
+Messenger = rabbit_mq.Messenger
+
+# class Messenger(factory.Messenger):
+
+#     def __init__(self, config) -> None:
+#         super().__init__(config=config)
     
+#     def _in_box_worker(self, in_box, config, scheduler):
+#         cnt = 0
+#         while True:
+#             cnt += 1
+#             time.sleep(4)
+#             if in_box._qsize() >= in_box.maxsize:
+#                 print("can't push on any more test messages")
+#                 continue
+#             in_box.put(
+#                 msgs.create_test_msg(),
+#                 block=False)
 
-class Messenger(factory.Messenger):
+#     def _out_box_worker(self, out_box, config, scheduler):
+#         while True:
+#             message = out_box.get(block=True)
+#             print("sending into void", message)
 
-    def __init__(self, config) -> None:
-        super().__init__(config=config)
-    
-    def _in_box_worker(self, in_box, config, scheduler):
-        cnt = 0
-        while True:
-            cnt += 1
-            time.sleep(4)
-            if in_box._qsize() >= in_box.maxsize:
-                print("can't push on any more test messages")
-                continue
-            in_box.put(
-                msgs.create_test_msg(),
-                block=False)
+#     def _heartbeat(self, out_box, config):
+#         while True:
+#             time.sleep(config.msg_heartbeat_s)
+#             hb = msgs.create_heartbeat_msg(config)
+#             out_box.put(
+#                 hb,
+#                 block=True)
 
-    def _out_box_worker(self, out_box, config, scheduler):
-        while True:
-            message = out_box.get(block=True)
-            print("sending into void", message)
+def get_my_info(file):
+    id_text_file = '{"MY_ID" : "SIMITZAR", "HQ" : "http://liell-VirtualBox.local/lumoscript.py"}'
+    data =  json.loads(id_text_file)
+    MY_ID = data["MY_ID"]
+    return MY_ID

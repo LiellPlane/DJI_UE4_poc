@@ -12,21 +12,12 @@ from json.decoder import JSONDecodeError
 #import numpy.typing as npt
 
 
-class AutoStrEnum(str, Enum):
-    """
-    StrEnum where auto() returns the field name.
-    See https://docs.python.org/3.9/library/enum.html#using-automatic-values
-    """
-    @staticmethod
-    def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
-        return name
-
-
-class MessageTypes(AutoStrEnum):
+class MessageTypes(factory.AutoStrEnum):
     ERROR = auto()
     HIT_REPORT = auto()
     HELLO = auto()
     TEST = auto()
+    HEARTBEAT = auto()
 
 
 @dataclass
@@ -160,7 +151,6 @@ def parse_input_msg(in_msg: bytes):
 
     return parsed_msg
 
-
 def create_test_msg() -> bytes:
     msg_to_send = Report(
         my_id=factory.create_id(),
@@ -169,6 +159,18 @@ def create_test_msg() -> bytes:
         img_as_str=None,
         msg_type=MessageTypes.TEST.value,
         msg_string="5 6 7 8"
+    )
+
+    return package_dataclass_to_bytes(msg_to_send)
+
+def create_heartbeat_msg(config: factory.gun_config) -> bytes:
+    msg_to_send = Report(
+        my_id=config.my_id,
+        target=None,
+        timestamp=get_epoch_ts(),
+        img_as_str=None,
+        msg_type=MessageTypes.HEARTBEAT.value,
+        msg_string=""
     )
 
     return package_dataclass_to_bytes(msg_to_send)
