@@ -135,6 +135,7 @@ def inference_remote():
                 img_as_str = msgs.bytes_to_str(message)
             except Exception as e:
                 print(e)
+                continue
             # sorry about this
             if "ANALYSED" in img_as_str:
                 print("skipping")
