@@ -150,7 +150,7 @@ def plasma (w, h):
 
 
 def main():
-    mssger = rabbit_mq.messenger(
+    mssger = rabbit_mq.Messenger(
         factory.TZAR_config())
 
     cnt = 0

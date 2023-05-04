@@ -121,7 +121,7 @@ def inference_remote():
                     output_bbox="boxes", 
                     threshold=0.1)
 
-    mssger = rabbit_mq.messenger(
+    mssger = rabbit_mq.Messenger(
         factory.TZAR_config())
     cnt = 0
     while True:
