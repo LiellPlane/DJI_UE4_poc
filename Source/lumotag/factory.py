@@ -87,7 +87,9 @@ class gun_config(ABC):
     @abstractmethod
     def loop_wait(self):
         ...
-
+    @abstractmethod
+    def cam_processing(self):
+        ...
 
 class display(ABC):
     
@@ -131,6 +133,9 @@ class stryker_config(gun_config):
     def loop_wait(self):
         pass
 
+    def cam_processing(self, inputimg):
+        return inputimg
+
 
 class TZAR_config(gun_config):
     model = "TZAR"
@@ -165,6 +170,9 @@ class TZAR_config(gun_config):
     def loop_wait(self):
         pass
 
+    def cam_processing(self, inputimg):
+        return inputimg
+
 
 class simitzar_config(gun_config):
     model = "SIMITZAR"
@@ -198,6 +206,11 @@ class simitzar_config(gun_config):
 
     def loop_wait(self):
         time.sleep(0.3)
+
+    def cam_processing(self, inputimg):
+        h, w, _ = inputimg.shape
+        output_img = inputimg[0:h, 0:w]
+        return output_img
 
 
 class Accelerometer(ABC):
