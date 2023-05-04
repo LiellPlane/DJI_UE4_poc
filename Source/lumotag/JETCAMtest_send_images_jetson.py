@@ -173,9 +173,9 @@ def main():
         mssger.send_message(str_as_bin)
 
 def main2():
-    mssger = rabbit_mq.messenger(
+    mssger = rabbit_mq.Messenger(
         factory.TZAR_config())
-
+    #time.sleep(10)
     cnt = 0
     #purge in box
     # while True:
@@ -185,7 +185,7 @@ def main2():
     #     time.sleep(0.1)
 
     #img = np.asarray(plasma(1000, 1000), dtype="uint8")
-    folder_dir = r"D:\test_training_mobilenet\hardhats\JPEGImages"
+    folder_dir = r"D:\test_training_mobilenet\300v512"
     for images in os.listdir(folder_dir):
 
         img_to_load = random.choice(os.listdir(folder_dir))
@@ -202,18 +202,24 @@ def main2():
         while True:
             time.sleep(0.1)
             print("checking in box")
-            result = mssger.check_in_box(blocking=True)
-            if result is None:
-                continue
-            print("image found")
-            result_str = msgs.bytes_to_str(result)
+            try:
+                result = mssger.check_in_box(blocking=True)
+                print(result)
+                if result is None:
+                    continue
+                print("image found")
+                result_str = msgs.bytes_to_str(result[0])
 
+            # terrible code sorry
+            except Exception:
+                print("exception bytes to str")
+                continue
             #terrible code
             if "ANALYSED" in result_str:
                 print("Results found")
                 result_dict = json.loads(result_str)
                 annotated_img = img.copy()
-                colour = (255, 0, 0)
+                colour = (255, 0, 0)            
                 for latch in result_dict.values():
                     #top left, bottom right
                     # latch["ClassID"] = coco_labels[int(latch["ClassID"])]

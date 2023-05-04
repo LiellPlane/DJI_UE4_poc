@@ -119,7 +119,7 @@ class Messenger(factory.Messenger):
             ))
         
         msg_worker.send_message(hello_msg)
-        out_box.queue.clear()
+        #out_box.queue.clear()
         while True:
           message = out_box.get(block=True)
           msg_worker.send_message(message)

@@ -38,7 +38,7 @@ def generate_id():
     return f"ID{uuid.uuid4().hex}"
 
 def bytes_to_str(bytes_: bytes):
-    return bytes_.decode()
+        return bytes_.decode()
 
 def str_to_bytes(string_: str):
     return str.encode(string_)

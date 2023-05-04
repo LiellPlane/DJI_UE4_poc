@@ -132,12 +132,16 @@ def inference_remote():
         if message is not None:
             print("message detected")
             try:
-                img_as_str = msgs.bytes_to_str(message)
+                print(message)
+                img_as_str = msgs.bytes_to_str(message[0])
             except Exception as e:
                 print(e)
                 continue
             # sorry about this
             if "ANALYSED" in img_as_str:
+                print("skipping")
+                continue
+            if "my_id" in img_as_str:
                 print("skipping")
                 continue
             print("probably an image")
