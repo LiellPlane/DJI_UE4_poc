@@ -140,7 +140,7 @@ class stryker_config(gun_config):
 
     @property
     def screen_size(self):
-        return(screensizes.tzar.value)
+        return(screensizes.stryker.value)
 
     def loop_wait(self):
         pass
