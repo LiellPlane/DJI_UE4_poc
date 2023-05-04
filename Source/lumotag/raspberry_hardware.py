@@ -90,6 +90,7 @@ class Accelerometer(factory.Accelerometer):
 
 
 class display(factory.display):
+
     def display_output(self, output):
         if self.display_rotate == 90:
             output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
@@ -101,8 +102,11 @@ class display(factory.display):
             pass
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
-        output = cv2.resize(output,factory.screensizes.pi_4.value)
-        #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+
+        output = cv2.resize(output, self.screen_size)
+
+        output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+
         lumo_viewer(output,0,False,False)
 
 

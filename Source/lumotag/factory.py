@@ -31,9 +31,9 @@ def time_it(process):
 
 
 class screensizes(Enum):
-    pi_4 = (480, 740)
+    tzar = (480, 740)
     windows_laptop = (1000, 1000)
-
+    stryker = (800, 480)
 
 class RelayFunction(Enum):
     torch = 1
@@ -84,6 +84,10 @@ class gun_config(ABC):
     @abstractmethod
     def screen_rotation(self):
         ...
+    @property
+    @abstractmethod
+    def screen_size(self):
+        ...
     @abstractmethod
     def loop_wait(self):
         ...
@@ -95,8 +99,12 @@ class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
         self.display_rotate = _gun_config.screen_rotation
+        self.screen_size = _gun_config.screen_size
 
     @abstractmethod
+    def display_output(self):
+        pass
+
     def display_output(self):
         pass
 
@@ -129,6 +137,10 @@ class stryker_config(gun_config):
     @property
     def screen_rotation(self):
         return(180)
+
+    @property
+    def screen_size(self):
+        return(screensizes.tzar.value)
 
     def loop_wait(self):
         pass
@@ -167,6 +179,10 @@ class TZAR_config(gun_config):
     def screen_rotation(self):
         return(90)
 
+    @property
+    def screen_size(self):
+        return(screensizes.tzar.value)
+
     def loop_wait(self):
         pass
 
@@ -203,6 +219,10 @@ class simitzar_config(gun_config):
     @property
     def screen_rotation(self):
         return(0)
+
+    @property
+    def screen_size(self):
+        return(screensizes.windows_laptop.value)
 
     def loop_wait(self):
         time.sleep(0.3)
