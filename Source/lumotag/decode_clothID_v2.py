@@ -13,6 +13,8 @@ import time
 from contextlib import contextmanager
 from typing import Iterator
 from dataclasses import dataclass
+
+import img_processing as img_pro
 @contextmanager
 def time_it(comment) -> Iterator[None]:
     tic: float = time.perf_counter()
@@ -78,9 +80,6 @@ class Debug_Images(AutoStrEnum):
 
 class WorkingData():
     def __init__(self) -> None:
-        #self.input_imgs = r"C:\Working\nonwork\lumotag\Patterns\_001\Render2"
-        self.input_imgs = r"C:\Working\nonwork\lumotag\test_outside_images"
-        #self.input_imgs = r"C:\Working\nonwork\lumotag\temp_imgs_test"
         self.debugimgs = r"D:\lumodebug"
         self.debug = True
         self.debug_img_cnt = 0
@@ -121,128 +120,6 @@ class WorkingData():
             print(f"DEBUG = TRUE: saving debug file to {filename}")
             self.debug_img_cnt += 1
 
-def PlotAndSave(Title,Filepath,Data,maximumvalue):
-    #this causes crashes
-    #save out plot of 1D data
-    try:
-        plt.plot(Data)
-        plt.ylabel(Title)
-        plt.ylim([0, max(Data)])
-        plt.savefig(Filepath)
-        plt.cla()
-        plt.clf()
-        plt.close()
-    except Exception as e:
-        print("Error with matpyplot",e)
-
-def read_img(img_filepath):
-    return cv2.imread(img_filepath)
-def clahe_equalisation(img, claheprocessor):
-    if claheprocessor is None:
-        claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
-
-    # colour
-    if len(img.shape) >2:
-        #luminosity
-        lab_image=cv2.cvtColor(img,cv2.COLOR_BGR2LAB)
-        l,a,b = cv2.split(lab_image)
-        #equ = cv2.equalizeHist(l)
-        #updated_lab_img1=cv2.merge((equ,a,b))
-        clahe_img= claheprocessor.apply(l)
-        updated_lab_img1=cv2.merge((clahe_img,a,b))
-        CLAHE_img = cv2.cvtColor(updated_lab_img1,cv2.COLOR_LAB2BGR)
-        
-    # grayscale
-    else:
-        CLAHE_img = claheprocessor.apply(img)
-    return CLAHE_img
-
-def _3_chan_equ(img):
-    # convert from RGB color-space to YCrCb
-    ycrcb_img = cv2.cvtColor(img, cv2.COLOR_BGR2YCrCb)
-
-    # equalize the histogram of the Y channel
-    ycrcb_img[:, :, 0] = cv2.equalizeHist(ycrcb_img[:, :, 0])
-
-    # convert back to RGB color-space from YCrCb
-    equalized_img = cv2.cvtColor(ycrcb_img, cv2.COLOR_YCrCb2BGR)
-
-    return equalized_img
-
-def mono_img(img):
-    if len(img.shape) < 3:
-        return img
-    return cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-def invert_img(img):
-    return np.invert(img)
-def equalise_img(img):
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-    return clahe.apply(img)
-def blur_img(img, filtersize = 7):
-    return cv2.GaussianBlur(img,(7,7),0)
-def blur_average(img, filtersize = 7):
-    kernel = np.ones((filtersize,filtersize),np.float32)/25
-    dst = cv2.filter2D(img,-1,kernel)
-    return dst
-def normalise(img):
-    image2_Norm = cv2.normalize(img,img, 0, 255, cv2.NORM_MINMAX)
-    return image2_Norm
-def threshold_img(img, low=0, high=255):
-    #_ , th3 = cv2.threshold(img, low, 255,cv2.THRESH_BINARY)
-    th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,21,1)
-    #_,th3 = cv2.threshold(img,low,high,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    #th3 = cv2.adaptiveThreshold(img,high,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
-    return th3
-def threshold_img_static(img, low=0, high=255):
-    #_ , th3 = cv2.threshold(img, low, 255,cv2.THRESH_BINARY)
-    #th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,21,1)
-    _,th3 = cv2.threshold(img,low,high,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
-    #th3 = cv2.adaptiveThreshold(img,high,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
-    return th3
-def edge_img(gray):
-    #edges = cv2.Sobel(src=img, ddepth=cv2.CV_64F, dx=1, dy=1, ksize=3)
-    #edges = cv2.Canny(image=img, threshold1=100, threshold2=200)
-    # Smoothing without removing edges.
-    gray_filtered = cv2.bilateralFilter(gray, 5, 25, 25)
-
-    # Applying the canny filter
-    #edges = cv2.Canny(gray, 60, 120)
-    edges_filtered = cv2.Canny(gray_filtered, 0, 60)
-
-    # Stacking the images to print them together for comparison
-    #images = np.hstack((gray, edges, edges_filtered))
-    return edges_filtered
-def get_hist(img):
-    #fig = plt.figure()
-    hist = cv2.calcHist([img],[0],None,[256],[0,256])
-    #plt.hist(img.ravel(),256,[0,256]); plt.show()
-    # plt.plot(hist)
-    # plt.ylabel("histogram")
-    # plt.ylim([0, max(hist)])
-    # graph_image = np.array(fig.canvas.get_renderer()._renderer)
-    # plt.cla()
-    # plt.clf()
-    # plt.close()
-    
-    # graph_image = np.array(fig.canvas.get_renderer()._renderer)
-    return hist
-def cut_square(img):
-    length = 100 
-    center_x = int(img.shape[0]/2)
-    center_y = int(img.shape[1]/2)
-    top = center_y - length
-    lower = center_y + length
-    left = center_x - length
-    right = center_x + length
-    cut = img[left:right,top:lower,:]
-    return cut
-def contours_img(img):
-    contours, hierarchy = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    #contours, hierarchy = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-    out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
-    cv2.drawContours(out, contours, -1, 255,1)
-    #cv2.drawContours(image=out, contours=contours, contourIdx=-1, color=(0, 255, 0), thickness=2, lineType=cv2.LINE_AA)
-    return out
 
 def check_ID_contours_match_spec(hierarchy, circularities):
     #print(hierarchy)
@@ -413,13 +290,20 @@ def get_approx_shape_and_bbox(
     minRect = cv2.minAreaRect(approx)
     box = cv2.boxPoints(minRect)
     box = np.intp(box)
+
+    # can't make ellipse with <5 points
+    if len(contour) > 4:
+        ellipse = cv2.fitEllipse(contour)
+    else:
+        ellipse = None
+
     output = ShapeItem(
         id="ID TBD",
         approx_contour=approx,
         default_contour=contour,
         boundingbox=cv2.boundingRect(contour),
         boundingbox_min=box,
-        boundingbox_ellipse=cv2.fitEllipse(contour),
+        boundingbox_ellipse=ellipse,
         img_cut=None,
         sum_int_angles=math_utils.get_internal_angles_of_shape(approx))
 
@@ -600,7 +484,8 @@ def analyse_candidates_shapematch(
         img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         for c in contour_stats:
             cv2.drawContours(img_bbxoes, [c.boundingbox_min], 0, (0,0,255))
-            cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
+            if c.boundingbox_ellipse is not None:
+                cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
             cv2.drawContours(img_bbxoes_3, [c.approx_contour], 0, (255,0,255))
         dataobject.img_view_or_save_if_debug(img_bbxoes, "bounding_boxes")
         dataobject.img_view_or_save_if_debug(img_bbxoes_2, "fit_ellipse")
@@ -628,8 +513,8 @@ def analyse_candidates(
     for cnt in contours:
         x, y, w, h = cv2.boundingRect(cnt)
         original_samp = original_img_grayscale[y:y + h, x:x + w].copy()
-        original_samp=normalise(original_samp)
-        original_samp=threshold_img_static(original_samp, low = 127, high = 255)
+        original_samp=img_pro.normalise(original_samp)
+        original_samp=img_pro.threshold_img_static(original_samp, low = 127, high = 255)
         decoded_ID, good_result= decode_ID_image(original_samp, dataobject)
         playerfound.append(good_result)
         if decoded_ID is not None:#
@@ -646,29 +531,8 @@ def analyse_candidates(
 
     return original_img, any(playerfound)
 
-def cumulative_dist_histogram():
-    plop
-
-def dilate(InputImage):
-    kernel = np.ones((3, 3), np.uint8)
-    img_blur = cv2.medianBlur(InputImage, 3)
-    dilated_image = cv2.dilate(img_blur, kernel, iterations = 1)
-    #eroded_image = cv2.erode(dilated_image, kernel, iterations = 5)
-    return dilated_image
-def median_blur(inputimage, kernalsize):
-    return  cv2.medianBlur(inputimage, kernalsize)
 
 
-# Set up the blob detector.
-#blob_detector = cv2.SimpleBlobDetector_create(workingdata.get_blob_params())
-
-
-# img_proc_chain=[]
-# img_proc_chain.append(cut_square)
-# #img_proc_chain.append(mono_img)
-# #img_proc_chain.append(equalise_img)
-# #img_proc_chain.append(blur_img)
-# #img_proc_chain.append(threshold_img)
 
 def find_lumotag(inputimg, dataobject : WorkingData):
 
@@ -686,19 +550,19 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #~3ms for grayscale
     with time_it("pre-processing/filtering"):
         #print("equalisation")
-        orig_img=clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
-        dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value)
+        orig_img=img_pro.clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
+        dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value, resize=False)
         ''''test area'''
    
    #this section about 25ms
     #with time_it():
         
-        gray_orig = mono_img(orig_img)
+        gray_orig = img_pro.mono_img(orig_img)
     #with time_it():
         #print("median_blur")
         ##blurred = median_blur(gray_orig,7)
-        squr_img = cv2.blur(gray_orig,(7,7)) # fastest filter
-        dataobject.img_view_or_save_if_debug(squr_img, "median_blur")
+        squr_img = cv2.blur(gray_orig,(5,5)) # fastest filter
+        #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
         #edge_im = edge_img(blurred)edge_img
     #with time_it():
         #print("canny_filter")
@@ -708,12 +572,17 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         #edge_im = edge_img(blurred)edge_img
     #with time_it():
         #print("threshold_img")
-        squr_img=threshold_img(squr_img,low=127)
+
+
+        #squr_img=edge_img(gray_orig)
+        squr_img=img_pro.threshold_img_static(squr_img,low=40,high=255)
+
+
         dataobject.img_view_or_save_if_debug(squr_img, "thresholdimg")
     #with time_it():
         #print("invert_img")
-        squr_img=invert_img(squr_img)
-        dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
+        #squr_img=invert_img(squr_img)
+        #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
 
     
     with time_it("get_possible_candidates total"):
@@ -730,17 +599,3 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #     return analyse_IDs, playerfound
     return None, None
     
-def test_live():
-
-    workingdata = WorkingData()
-
-    workingdata.debug= True
-
-    input_imgs = GetAllFilesInFolder_Recursive(workingdata.input_imgs)
-
-    print(f"{len(input_imgs)} images found")
-
-    for img_filepath in input_imgs:
-        img = read_img(img_filepath)
-        workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
-        find_lumotag(img, workingdata)

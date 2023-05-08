@@ -3,6 +3,7 @@ import os
 import sys
 import cv2
 import time
+
 def ImageViewer_Quickv2(inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
     ###handy quick function to view images with keypress escape andmore options
     CopyOfImage=cv2.resize(inputimage.copy(),(800,800))
@@ -16,18 +17,17 @@ def ImageViewer_Quickv2(inputimage,pausetime_Secs=0,presskey=False,destroyWindow
     if pausetime_Secs>0:
         time.sleep(pausetime_Secs)
     if destroyWindow==True: cv2.destroyAllWindows()
+
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
+
 workingdata = decode_clothID.WorkingData()
 
-workingdata.debug= True
+workingdata.debug = True
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
-#input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\OutputImages")
-
 
 print(f"{len(input_imgs)} images found")
-
 
 def crop_in(img, pc_x, pc_y):
      height, width = img.shape
@@ -40,7 +40,6 @@ def crop_in(img, pc_x, pc_y):
           int(crop_in_y):int(new_height),
           int(crop_in_x):int(new_width)]
 
-
 for img_filepath in input_imgs: 
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
@@ -49,5 +48,6 @@ for img_filepath in input_imgs:
     print("_________")
     print(f"{img_filepath} {img.shape}")
     arse, playerfound = decode_clothID.find_lumotag(img, workingdata)
-    if arse is not None: 
+    if arse is not None:
         ImageViewer_Quickv2(arse,0,False,True)
+
