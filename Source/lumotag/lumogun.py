@@ -4,7 +4,7 @@ import sound
 from functools import partial
 import msgs
 import time
-
+import decode_clothID_v2 as decode_clothID
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 RASP_PI_4_OS = "armv7l"
 
@@ -33,6 +33,7 @@ def main():
     image_capture = lumogun.CSI_Camera()
     display = lumogun.display(GUN_CONFIGURATION)
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
+    workingdata = decode_clothID.WorkingData()
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -126,7 +127,9 @@ def main():
         else:
             set_trigger(state=False) # click noise from relay only
 
-        display.display_output(next(image_capture))
+        cam_img = next(image_capture)
+        img_with_analysis = decode_clothID.find_lumotag(cam_img, workingdata)
+        display.display_output(img_with_analysis)
 
     raise RuntimeError("something broke out of loop")
 

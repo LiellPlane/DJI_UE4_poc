@@ -81,7 +81,7 @@ class Debug_Images(AutoStrEnum):
 class WorkingData():
     def __init__(self) -> None:
         self.debugimgs = r"D:\lumodebug"
-        self.debug = True
+        self.debug = False
         self.debug_img_cnt = 0
         self.debug_subfldr = None
         if self.debug is True:
