@@ -128,7 +128,7 @@ class MessengerBasic(factory.Messenger):
     
     def __init__(self, config) -> None:
         """Basic version with no heartbeat and
-        connection messages"
+        connection messages"""
         super().__init__(config=config)
 
     def _heartbeat(self, out_box, config):
