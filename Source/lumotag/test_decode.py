@@ -23,7 +23,7 @@ def read_img(img_filepath):
 
 workingdata = decode_clothID.WorkingData()
 
-workingdata.debug = True
+workingdata.debug = False
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
 
@@ -47,7 +47,6 @@ for img_filepath in input_imgs:
     #img = crop_in(img, pc_x=50, pc_y=50)
     print("_________")
     print(f"{img_filepath} {img.shape}")
-    arse, playerfound = decode_clothID.find_lumotag(img, workingdata)
+    arse = decode_clothID.find_lumotag(img, workingdata)
     if arse is not None:
-        ImageViewer_Quickv2(arse,0,False,True)
-
+        ImageViewer_Quickv2(arse,0,True,True)

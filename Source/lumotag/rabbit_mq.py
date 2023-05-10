@@ -124,6 +124,42 @@ class Messenger(factory.Messenger):
           message = out_box.get(block=True)
           msg_worker.send_message(message)
 
+class MessengerBasic(factory.Messenger):
+    
+    def __init__(self, config) -> None:
+        """Basic version with no heartbeat and
+        connection messages"
+        super().__init__(config=config)
+
+    def _heartbeat(self, out_box, config):
+        pass
+
+    def _in_box_worker(self, in_box, config, scheduler):
+        msg_worker = RabbitMQ_Obj(
+            config.messaging_config,
+            f"{config.my_id}_consumer",
+            send_only=False)
+        callback_hndl = CallBack_QueueHandler(in_box, config)
+        scheduler.put("IN BOX READY")
+        msg_worker.start_consuming(callback_hndl.callback_handler)
+
+    def _out_box_worker(self, out_box, config, scheduler):
+        # will block until InBox worker has started its RMQ connection
+        # then in theory should be ready to init another
+        scheduler.get(block=True)
+        # arbitrary sleep needed even though we have confirmed
+        # first connection has been initialised
+        # TODO must be some way to avoid this
+        time.sleep(3)
+        msg_worker = RabbitMQ_Obj(
+            config.messaging_config,
+            f"{config.my_id}_sender",
+            send_only=True)
+        time.sleep(1)
+
+        while True:
+          message = out_box.get(block=True)
+          msg_worker.send_message(message)
 
 class CallBack_QueueHandler():
     # callback is needed with the in box queue,

@@ -277,6 +277,7 @@ class ShapeItem:
     boundingbox_ellipse: np.array
     img_cut: np.array
     sum_int_angles: float
+    size: int
 
 
 def get_approx_shape_and_bbox(
@@ -300,12 +301,13 @@ def get_approx_shape_and_bbox(
     output = ShapeItem(
         id="ID TBD",
         approx_contour=approx,
-        default_contour=contour,
+        default_contour=None,
         boundingbox=cv2.boundingRect(contour),
         boundingbox_min=box,
         boundingbox_ellipse=ellipse,
         img_cut=None,
-        sum_int_angles=math_utils.get_internal_angles_of_shape(approx))
+        sum_int_angles=int(math_utils.get_internal_angles_of_shape(approx)),
+        size=contour.size)
 
     return output
 
@@ -491,10 +493,30 @@ def analyse_candidates_shapematch(
         dataobject.img_view_or_save_if_debug(img_bbxoes_2, "fit_ellipse")
         dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
 
+    # break out triangles and squares
+    squrs_found = [cont for cont in contour_stats if cont.sum_int_angles == 360]
+    tris_found = [cont for cont in contour_stats if cont.sum_int_angles == 180]
+    
+    if dataobject.debug == True:
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in squrs_found:
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 3)
+        for c in tris_found:
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 3)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"shapes_found")
     #for i, c in enumerate(contours):
     #    _, img_bbxoes = check_shape(c, dataobject, img_bbxoes, 0)
         
     #dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
+    output_colour = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
+    for c in squrs_found:
+        cv2.drawContours(output_colour, [c.approx_contour], -1, (0,255,0), 3)
+    for c in tris_found:
+        cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
+    return output_colour
 
 
 
@@ -589,7 +611,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         contours, hierarchy=get_possible_candidates(squr_img, dataobject)
 
     with time_it("analyse_candidates"):
-        analyse_candidates_shapematch(original_img=inputimg,
+        output_img = analyse_candidates_shapematch(original_img=inputimg,
                                                 original_img_grayscale = img_grayscale,
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
@@ -597,5 +619,4 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     # if analyse_IDs is not None:
     #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
     #     return analyse_IDs, playerfound
-    return None, None
-    
+    return output_img
