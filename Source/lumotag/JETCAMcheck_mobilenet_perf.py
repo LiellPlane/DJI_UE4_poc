@@ -37,6 +37,7 @@ import cv2
 import colorsys
 import numpy as np
 import copy
+import JETCAM_support
 
 @contextmanager
 def time_it(comment):
@@ -114,14 +115,14 @@ def inference_remote():
     #                 output_bbox="boxes", 
     #                 threshold=0.1)
 
-    net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/hardhatjpg/ssd-mobilenet.onnx",
-                    labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/hardhatjpg/labels.txt",
+    net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton/ssd-mobilenet.onnx",
+                    labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton/labels.txt",
                     input_blob="input_0",
                     output_cvg="scores",
                     output_bbox="boxes", 
                     threshold=0.1)
 
-    mssger = rabbit_mq.Messenger(
+    mssger = rabbit_mq.MessengerBasic(
         factory.TZAR_config())
     cnt = 0
     while True:

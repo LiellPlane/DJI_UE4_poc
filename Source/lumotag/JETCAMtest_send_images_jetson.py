@@ -12,6 +12,7 @@ import json
 import os
 from os import listdir
 import random
+import JETCAM_support
 #cd ~/
 #sudo rm -r DJI_UE4_poc
 #git clone https://github.com/LiellPlane/DJI_UE4_poc.git
@@ -173,7 +174,7 @@ def main():
         mssger.send_message(str_as_bin)
 
 def main2():
-    mssger = rabbit_mq.Messenger(
+    mssger = rabbit_mq.MessengerBasic(
         factory.TZAR_config())
     #time.sleep(10)
     cnt = 0
@@ -185,7 +186,7 @@ def main2():
     #     time.sleep(0.1)
 
     #img = np.asarray(plasma(1000, 1000), dtype="uint8")
-    folder_dir = r"D:\test_training_mobilenet\300v512"
+    folder_dir = r"C:\Working\ground_truth_website\static\data\input_imgfolders\left_long_000"
     for images in os.listdir(folder_dir):
 
         img_to_load = random.choice(os.listdir(folder_dir))
