@@ -9,6 +9,7 @@ except Exception as e:
 import time
 import math
 import vpi
+import subprocess
 import random
 import time
 import numpy as np
@@ -20,6 +21,7 @@ import colorsys
 from PIL import Image
 from jetson_inference import imageNet, detectNet
 import jetson_utils
+import argparse
 import torch
 import threading
 from PIL import Image
@@ -38,6 +40,7 @@ import colorsys
 import numpy as np
 import copy
 import JETCAM_support
+from time import perf_counter
 
 @contextmanager
 def time_it(comment):
@@ -154,7 +157,11 @@ def inference_remote():
 
 
             with time_it("detectnet"):
+                t1_start = perf_counter()
                 detections = net.Detect(cuda_mem)
+                t1_stop = perf_counter()
+                elapsed_t_secs = t1_stop-t1_start
+                print("elapsed_t_secs", elapsed_t_secs)
                 print("--------------")
                 #print(detections)
                 
@@ -169,7 +176,9 @@ def inference_remote():
                     dectdeets["Right"] = deect.Right
                     dectdeets["Bottom"] = deect.Bottom
                     dectdeets["Confidence"] = deect.Confidence
+                    dectdeets["Center"] = deect.Center
                     dectdeets["index"] = str(index)
+                    dectdeets["inference_time_secs"] = str(elapsed_t_secs)
                     print("--------------")
                     print(deect)
                     all_dects[index]=copy.deepcopy(dectdeets)
@@ -283,5 +292,41 @@ def main():
             with frame1.rlock_cpu() as data:
                 out_stream.write(data.copy())
 
+def xavier_power_settings(sudo_pass):
+    # obviously not secure - for quick and dirty testing
+    sudo_password = sudo_pass
+    commands = ['sudo nvpmodel -m 0', 'sudo jetson_clocks']
+    check_pwr_mode = 'sudo nvpmodel -q'
+
+    for command in commands:
+        command = command.split()
+        print("command" , command)
+        cmd1 = subprocess.Popen(['echo', sudo_password], stdout=subprocess.PIPE)
+        cmd2 = subprocess.Popen(['sudo', '-S'] + command, stdin=cmd1.stdout, stdout=subprocess.PIPE)
+        print(cmd2.stdout.read().decode())
+        time.sleep(2)
+
+    print("checking power mode")
+    cmd1 = subprocess.Popen(['echo', sudo_password], stdout=subprocess.PIPE)
+    cmd2 = subprocess.Popen(['sudo', '-S'] + check_pwr_mode.split(), stdin=cmd1.stdout, stdout=subprocess.PIPE)
+    capture = (cmd2.stdout.read().decode())
+    print(capture)
+    if 'MODE_15W_2CORE' not in capture:
+        raise Exception("XAVIER not in max power mode - try again with correct sudo pass")
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="",
+        formatter_class=argparse.RawTextHelpFormatter,
+        )
+    
+    parser.add_argument(
+        '-sudopassword',
+        help='sudo password to enable power settings',
+        required=True)
+
+    args = parser.parse_args()
+
+    xavier_power_settings(sudo_pass=args.sudopassword)
+
     inference_remote()

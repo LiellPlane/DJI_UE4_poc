@@ -226,14 +226,14 @@ def main2():
                     # latch["ClassID"] = coco_labels[int(latch["ClassID"])]
                     # if any(ext in latch["ClassID"] for ext in ["person", "sports ball"]) is False:
                     #     continue
-                    if float(latch["Confidence"]) < 0.2:# and ("person" in latch["ClassID"]):
+                    if float(latch["Confidence"]) < 0.3:# and ("person" in latch["ClassID"]):
                         continue
                     # if float(latch["Confidence"]) < 0.1 and ("sports ball" in latch["ClassID"]):
                     #     continue
                     # if "person" in latch["ClassID"]:
                     #     colour = (0,255,0)
-                    # if "sports ball" in latch["ClassID"]:
-                    #     colour = (255,0,0)
+                    if latch["ClassID"] != 1:
+                        continue
                     cv2.rectangle(
                     annotated_img,
                     (int(latch["Left"]),int(latch["Top"])),
@@ -242,7 +242,7 @@ def main2():
                     3)
                         
                     print(latch["ClassID"], latch["Confidence"])
-                viewer(annotated_img,0,True,False)
+                viewer(annotated_img,0,False,False)
                 print("results end")
                 break
 if __name__ == '__main__':
