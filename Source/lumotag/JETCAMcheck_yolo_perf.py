@@ -47,7 +47,7 @@ import torch
 import torchvision.transforms as torchtransforms
 import torchvision.transforms.functional as fn
 import tensorrt as trt
-
+from time import perf_counter
 
 from collections import OrderedDict,namedtuple
 def letterbox(im, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleup=True, stride=32):
@@ -393,7 +393,7 @@ def remote_inference_yolo():
                         width=img_to_anlyse.width,
                         height=img_to_anlyse.height,
                         format=img_to_anlyse.format)
-            
+            t1_start = perf_counter()
             jetson_utils.cudaMemcpy(cuda_buff, img_to_anlyse)
             print("converting to tensor")
             torch_tensor = torch.as_tensor(cuda_buff, device= torch.device('cuda'))# might need :0
@@ -413,19 +413,42 @@ def remote_inference_yolo():
             scores = scores[0,:nums[0][0]]
             classes = classes[0,:nums[0][0]]
             print(f"INF RESULTS in {len(boxes)}")
+            all_dects = {}
+            dectdeets = None
+            index = 0
+            t1_stop = perf_counter()
             for box,score,cl in zip(boxes,scores,classes):
+                dectdeets = {}
                 print("->", "ratio", ratio)
-                print("cls", int(cl.cpu()))
-                print("score", float(score.cpu()))
-                tlbr=box.cpu()[:]
-                left = tlbr[0] * (1/ratio)
-                top = (tlbr[1] - dw) * (1/ratio)
-                right = tlbr[2] * (1/ratio)
-                lower = (tlbr[3] - dw) * (1/ratio)
+                print("cls", int(cl.cpu().numpy()))
+                print("score", float(score.cpu().numpy()))
+                tlbr=box.cpu().numpy()[:]
+                left = int(tlbr[0] * (1/ratio))
+                top = int((tlbr[1] - dw) * (1/ratio))
+                right = int(tlbr[2] * (1/ratio))
+                lower = int((tlbr[3] - dw) * (1/ratio))
                 print("ConvertedBox", left, top, right, lower)
                 print("box", box.cpu()[:])
-                print("box_ratio", box.cpu()[:]*(1/ratio))
+                print("box_ratio", box.cpu().numpy()[:]*(1/ratio))
                 print("(dw,dh)", (dw,dh))
+
+                dectdeets["filename"] = "ANALYSED"
+                dectdeets["img_count"] = imgcnt
+                dectdeets["ClassID"] =  int(cl.cpu().numpy())
+                dectdeets["Left"] = left
+                dectdeets["Top"] = top
+                dectdeets["Right"] = right
+                dectdeets["Bottom"] = lower
+                dectdeets["Confidence"] = float(score.cpu().numpy())
+                center = [int((right+left)/2), int((lower+top)/2)]
+                dectdeets["Center"] = center
+                dectdeets["index"] = str(index)
+                dectdeets["inference_time_secs"] = str(t1_stop-t1_start)
+                all_dects[index]=copy.deepcopy(dectdeets)
+                index+=1
+            output = json.dumps(all_dects)
+            output_bytes = msgs.str_to_bytes(output)
+            mssger.send_message(output_bytes)
         else:
             time.sleep(0.2)
 
