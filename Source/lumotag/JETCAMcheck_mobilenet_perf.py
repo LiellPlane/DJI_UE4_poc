@@ -118,21 +118,22 @@ def inference_remote():
     #                 output_bbox="boxes", 
     #                 threshold=0.1)
 
-    # net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/pytorch-ssd/models/trafford_hamilton_small/ssd-mobilenet.onnx",
+    # net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton/ssd-mobilenet.onnx",
     #                 labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton/labels.txt",
     #                 input_blob="input_0",
     #                 output_cvg="scores",
     #                 output_bbox="boxes", 
     #                 threshold=0.1)
 
-    net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton_681/ssd-mobilenet.onnx",
-                    labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/data/trafford_coco_681/labels.txt",
-                    input_blob="input_0",
-                    output_cvg="scores",
-                    output_bbox="boxes", 
-                    threshold=0.1)
+    # net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton_681/ssd-mobilenet.onnx",
+    #                 labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/data/trafford_coco_681/labels.txt",
+    #                 input_blob="input_0",
+    #                 output_cvg="scores",
+    #                 output_bbox="boxes", 
+    #                 threshold=0.1)
 
-
+    net = detectNet("ssd-mobilenet-v2", threshold=0.1)
+    
     mssger = rabbit_mq.MessengerBasic(
         factory.TZAR_config())
     cnt = 0
@@ -162,7 +163,7 @@ def inference_remote():
             with time_it("cuda from numpy"):
                 cuda_mem = jetson_utils.cudaFromNumpy(img)
             all_dects = {}
-
+            all_dects["SYSTEMINFO"] = "ANALYSED: MobileNet"
 
             with time_it("detectnet"):
                 t1_start = perf_counter()
@@ -303,7 +304,7 @@ def main():
 def xavier_power_settings(sudo_pass):
     # obviously not secure - for quick and dirty testing
     sudo_password = sudo_pass
-    commands = ['sudo nvpmodel -m 0', 'sudo jetson_clocks']
+    commands = ['sudo nvpmodel -m 8', 'sudo jetson_clocks']
     check_pwr_mode = 'sudo nvpmodel -q'
 
     for command in commands:
@@ -319,8 +320,8 @@ def xavier_power_settings(sudo_pass):
     cmd2 = subprocess.Popen(['sudo', '-S'] + check_pwr_mode.split(), stdin=cmd1.stdout, stdout=subprocess.PIPE)
     capture = (cmd2.stdout.read().decode())
     print(capture)
-    if 'MODE_15W_2CORE' not in capture:
-        raise Exception("XAVIER not in max power mode - try again with correct sudo pass")
+    #if 'MODE_15W_2CORE' not in capture:
+    #    raise Exception("XAVIER not in max power mode - try again with correct sudo pass")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(

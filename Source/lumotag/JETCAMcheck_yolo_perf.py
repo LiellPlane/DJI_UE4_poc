@@ -337,9 +337,151 @@ def detector_yolo(inbox, outbox, ID):
             print("f{ID}: Waiting for image")
             time.sleep(0.02)
 
-def remote_inference_yolo():
+
+def remote_inference_yolo8_nonTRT_cpu():
+    from ultralytics import YOLO
+    mssger = rabbit_mq.MessengerBasic(
+    factory.TZAR_config())
+    yolo_path = r"/home/jetcam/yolo/from-rav/yolo_weights_269/269_v8m.pt"
+    model = YOLO(yolo_path)
+    imgcnt = 0
+    while True:
+        imgcnt += 1
+        print("waiting for image")
+        message = mssger.check_in_box(blocking=True)
+        print(f"checking{imgcnt}")
+        if message is not None:
+            try:
+                print(message[0][0:100])
+                img_as_str = msgs.bytes_to_str(message[0])
+            except Exception as e:
+                print(e)
+                continue
+            # sorry about this
+            if "ANALYSED" in img_as_str:
+                print("skipping")
+                continue
+            if "my_id" in img_as_str:
+                print("skipping")
+                continue
+            print("probably an image")
+            img = msgs.decode_image_from_str(img_as_str)
+
+            t1_start = perf_counter()
+            results = model.predict(
+                img, # can be a cv image, array, path 
+                imgsz=max(img.shape), # change based on your longest edge, choose 32*n
+                classes=[0, 32], # person and sports ball
+                save=False, # not essential
+                conf=0.1, # ignore lower that this, deafult 0.25
+                device="cpu", # cpu, or 0,1,2,3 for cuda
+                save_txt=False, # not essential
+                name="hamilton_trafford_predict_test", # can be whatever you want
+                )
+            t1_stop = perf_counter()
+
+            all_dects = {}
+            all_dects["SYSTEMINFO"] = "ANALYSED: YOLO8"
+            dectdeets = None
+            index = 0
+            for res in results:
+                dectdeets = {}
+                boxes = res.boxes
+                for cls, conf, xywh in zip(boxes.cls, boxes.conf, boxes.xywh):
+                    dectdeets["filename"] = "ANALYSED"
+                    dectdeets["img_count"] = imgcnt
+                    dectdeets["ClassID"] =  int(cls.numpy())
+                    dectdeets["Left"] = int(xywh.numpy()[0] - (xywh.numpy()[2]/2))
+                    dectdeets["Top"] = int(xywh.numpy()[1] - (xywh.numpy()[3]/2))
+                    dectdeets["Right"] = int(xywh.numpy()[0] + (xywh.numpy()[2]/2))
+                    dectdeets["Bottom"] = int(xywh.numpy()[1] + (xywh.numpy()[3]/2))
+                    dectdeets["Confidence"] = float(conf.numpy())
+                    center = [int(xywh.numpy()[0]),int(xywh.numpy()[1])]
+                    dectdeets["Center"] = center
+                    dectdeets["index"] = str(index)
+                    dectdeets["inference_time_secs"] = str(t1_stop-t1_start)
+                    all_dects[index]=copy.deepcopy(dectdeets)
+                    index+=1
+            output = json.dumps(all_dects)
+            output_bytes = msgs.str_to_bytes(output)
+            mssger.send_message(output_bytes)
+        else:
+            time.sleep(0.2)
+
+def remote_inference_yolo8_nonTRT_gpu():
+    from ultralytics import YOLO
+    mssger = rabbit_mq.MessengerBasic(
+    factory.TZAR_config())
+    yolo_path = r"/home/jetcam/yolo/from-rav/yolo_weights_269/269_v8s.pt"
+    model = YOLO("yolov8n.pt")
+    imgcnt = 0
+    while True:
+        imgcnt += 1
+        print("waiting for image")
+        message = mssger.check_in_box(blocking=True)
+        print(f"checking{imgcnt}")
+        if message is not None:
+            try:
+                print(message[0][0:100])
+                img_as_str = msgs.bytes_to_str(message[0])
+            except Exception as e:
+                print(e)
+                continue
+            # sorry about this
+            if "ANALYSED" in img_as_str:
+                print("skipping")
+                continue
+            if "my_id" in img_as_str:
+                print("skipping")
+                continue
+            print("probably an image")
+            img = msgs.decode_image_from_str(img_as_str)
+
+            t1_start = perf_counter()
+            results = model.predict(
+                img, # can be a cv image, array, path 
+                imgsz=max(img.shape), # change based on your longest edge, choose 32*n
+                classes=[0, 32], # person and sports ball
+                save=False, # not essential
+                conf=0.1, # ignore lower that this, deafult 0.25
+                device="0", # cpu, or 0,1,2,3 for cuda
+                save_txt=False, # not essential
+                name="hamilton_trafford_predict_test", # can be whatever you want
+                )
+            t1_stop = perf_counter()
+
+            all_dects = {}
+            all_dects["SYSTEMINFO"] = "ANALYSED: YOLO8"
+            dectdeets = None
+            index = 0
+            for res in results:
+                dectdeets = {}
+                boxes = res.boxes
+                for cls, conf, xywh in zip(boxes.cls, boxes.conf, boxes.xywh):
+                    dectdeets["filename"] = "ANALYSED"
+                    dectdeets["img_count"] = imgcnt
+                    dectdeets["ClassID"] =  int(cls.cpu().numpy())
+                    dectdeets["Left"] = int(xywh.cpu().numpy()[0] - (xywh.cpu().numpy()[2]/2))
+                    dectdeets["Top"] = int(xywh.cpu().numpy()[1] - (xywh.cpu().numpy()[3]/2))
+                    dectdeets["Right"] = int(xywh.cpu().numpy()[0] + (xywh.cpu().numpy()[2]/2))
+                    dectdeets["Bottom"] = int(xywh.cpu().numpy()[1] + (xywh.cpu().numpy()[3]/2))
+                    dectdeets["Confidence"] = float(conf.cpu().numpy())
+                    center = [int(xywh.cpu().numpy()[0]),int(xywh.cpu().numpy()[1])]
+                    dectdeets["Center"] = center
+                    dectdeets["index"] = str(index)
+                    dectdeets["inference_time_secs"] = str(t1_stop-t1_start)
+                    all_dects[index]=copy.deepcopy(dectdeets)
+                    index+=1
+            output = json.dumps(all_dects)
+            output_bytes = msgs.str_to_bytes(output)
+            mssger.send_message(output_bytes)
+        else:
+            time.sleep(0.2)
+
+def remote_inference_yolo7_trt():
     # #trt engine expecrts torch.tensor object as input image
-    w = '/home/jetcam/yolo/yolov7-tiny-nms.trt'
+    #w = '/home/jetcam/yolo/yolov7-tiny-nms.trt'
+    w = '/home/jetcam/yolo/from-rav/TRT/trafford269/yolov7-tiny-custom-fp16.trt'
     device = torch.device('cuda:0')
     Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
     logger = trt.Logger(trt.Logger.INFO)
@@ -414,6 +556,7 @@ def remote_inference_yolo():
             classes = classes[0,:nums[0][0]]
             print(f"INF RESULTS in {len(boxes)}")
             all_dects = {}
+            all_dects["SYSTEMINFO"] = "ANALYSED: YOLO7"
             dectdeets = None
             index = 0
             t1_stop = perf_counter()
@@ -452,6 +595,123 @@ def remote_inference_yolo():
         else:
             time.sleep(0.2)
 
+def remote_inference_yolo8_trt():
+    # #trt engine expecrts torch.tensor object as input image
+    #w = '/home/jetcam/yolo/yolov7-tiny-nms.trt'
+    #'"C:\Working\ML\yolo\_y8_TRT_Hamilton269\yolov8m-custom.trt"'
+    w = '/home/jetcam/yolo/_y8_TRT_Hamilton269/yolov8m-custom.trt'
+    device = torch.device('cuda:0')
+    Binding = namedtuple('Binding', ('name', 'dtype', 'shape', 'data', 'ptr'))
+    logger = trt.Logger(trt.Logger.INFO)
+    trt.init_libnvinfer_plugins(logger, namespace="")
+    with open(w, 'rb') as f, trt.Runtime(logger) as runtime:
+        model = runtime.deserialize_cuda_engine(f.read())
+    bindings = OrderedDict()
+    for index in range(model.num_bindings):
+        name = model.get_binding_name(index)
+        dtype = trt.nptype(model.get_binding_dtype(index))
+        shape = tuple(model.get_binding_shape(index))
+        data = torch.from_numpy(np.empty(shape, dtype=np.dtype(dtype))).to(device)
+        bindings[name] = Binding(name, dtype, shape, data, int(data.data_ptr()))
+    binding_addrs = OrderedDict((n, d.ptr) for n, d in bindings.items())
+    context = model.create_execution_context()
+
+    mssger = rabbit_mq.MessengerBasic(
+    factory.TZAR_config())
+    imgcnt = 0
+    cuda_buff = None
+    while True:
+        imgcnt += 1
+        print("waiting for image")
+        message = mssger.check_in_box(blocking=True)
+        print(f"checking{imgcnt}")
+        if message is not None:
+            try:
+                print(message)
+                img_as_str = msgs.bytes_to_str(message[0])
+            except Exception as e:
+                print(e)
+                continue
+            # sorry about this
+            if "ANALYSED" in img_as_str:
+                print("skipping")
+                continue
+            if "my_id" in img_as_str:
+                print("skipping")
+                continue
+            print("probably an image")
+            img = msgs.decode_image_from_str(img_as_str)
+
+            #  lazy way to get into expected format
+            file_path = "/home/jetcam/tempimg.jpg"
+            cv2.imwrite(file_path, img)
+            print("creating input object")
+            input = jetson_utils.videoSource(file_path, ["--loop=-1"])
+            img_to_anlyse = input.Capture(format='rgb8')
+            print("copying buffer")
+            cuda_buff = jetson_utils.cudaAllocMapped(
+                        width=img_to_anlyse.width,
+                        height=img_to_anlyse.height,
+                        format=img_to_anlyse.format)
+            t1_start = perf_counter()
+            jetson_utils.cudaMemcpy(cuda_buff, img_to_anlyse)
+            print("converting to tensor")
+            torch_tensor = torch.as_tensor(cuda_buff, device= torch.device('cuda'))# might need :0
+            pt_image, ratio, (dw,dh) = letterbox_pytorch(torch_tensor, auto=False)
+            pt_image = pt_image.unsqueeze(0)
+            pt_image/=255 # not sure if need this
+            binding_addrs['images'] = int(pt_image.data_ptr())
+            print("executing inference")
+            context.execute_v2(list(binding_addrs.values()))
+
+            nums = bindings['num_dets'].data
+            boxes = bindings['det_boxes'].data
+            scores = bindings['det_scores'].data
+            classes = bindings['det_classes'].data
+
+            boxes = boxes[0,:nums[0][0]]
+            scores = scores[0,:nums[0][0]]
+            classes = classes[0,:nums[0][0]]
+            print(f"INF RESULTS in {len(boxes)}")
+            all_dects = {}
+            all_dects["SYSTEMINFO"] = "ANALYSED: YOLO7"
+            dectdeets = None
+            index = 0
+            t1_stop = perf_counter()
+            for box,score,cl in zip(boxes,scores,classes):
+                dectdeets = {}
+                print("->", "ratio", ratio)
+                print("cls", int(cl.cpu().numpy()))
+                print("score", float(score.cpu().numpy()))
+                tlbr=box.cpu().numpy()[:]
+                left = int(tlbr[0] * (1/ratio))
+                top = int((tlbr[1] - dw) * (1/ratio))
+                right = int(tlbr[2] * (1/ratio))
+                lower = int((tlbr[3] - dw) * (1/ratio))
+                print("ConvertedBox", left, top, right, lower)
+                print("box", box.cpu()[:])
+                print("box_ratio", box.cpu().numpy()[:]*(1/ratio))
+                print("(dw,dh)", (dw,dh))
+
+                dectdeets["filename"] = "ANALYSED"
+                dectdeets["img_count"] = imgcnt
+                dectdeets["ClassID"] =  int(cl.cpu().numpy())
+                dectdeets["Left"] = left
+                dectdeets["Top"] = top
+                dectdeets["Right"] = right
+                dectdeets["Bottom"] = lower
+                dectdeets["Confidence"] = float(score.cpu().numpy())
+                center = [int((right+left)/2), int((lower+top)/2)]
+                dectdeets["Center"] = center
+                dectdeets["index"] = str(index)
+                dectdeets["inference_time_secs"] = str(t1_stop-t1_start)
+                all_dects[index]=copy.deepcopy(dectdeets)
+                index+=1
+            output = json.dumps(all_dects)
+            output_bytes = msgs.str_to_bytes(output)
+            mssger.send_message(output_bytes)
+        else:
+            time.sleep(0.2)
 
 def detector_yolo_batch(inbox, outbox, ID):
     # #trt engine expecrts torch.tensor object as input image
@@ -1011,7 +1271,7 @@ def main_videocap_yolo_batch():
 def xavier_power_settings(sudo_pass):
     # obviously not secure - for quick and dirty testing
     sudo_password = sudo_pass
-    commands = ['sudo nvpmodel -m 0', 'sudo jetson_clocks']
+    commands = ['sudo nvpmodel -m 8', 'sudo jetson_clocks']
     check_pwr_mode = 'sudo nvpmodel -q'
 
     for command in commands:
@@ -1027,8 +1287,10 @@ def xavier_power_settings(sudo_pass):
     cmd2 = subprocess.Popen(['sudo', '-S'] + check_pwr_mode.split(), stdin=cmd1.stdout, stdout=subprocess.PIPE)
     capture = (cmd2.stdout.read().decode())
     print(capture)
-    if 'MODE_15W_2CORE' not in capture:
-        raise Exception("XAVIER not in max power mode - try again with correct sudo pass")
+    #if 'MODE_15W_2CORE' not in capture:
+    #    raise Exception("XAVIER not in max power mode - try again with correct sudo pass")
+    if '20W' not in capture:
+       raise Exception("XAVIER not in max power mode - try again with correct sudo pass")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
@@ -1045,4 +1307,4 @@ if __name__ == '__main__':
 
     xavier_power_settings(sudo_pass=args.sudopassword)
 
-    remote_inference_yolo()
+    remote_inference_yolo8_trt()
