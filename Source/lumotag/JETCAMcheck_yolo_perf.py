@@ -595,7 +595,7 @@ def remote_inference_yolo7_trt():
         else:
             time.sleep(0.2)
 
-def remote_inference_yolo8_trt():
+def remote_inference_yolo8_trt_gpu():
     # #trt engine expecrts torch.tensor object as input image
     #w = '/home/jetcam/yolo/yolov7-tiny-nms.trt'
     #'"C:\Working\ML\yolo\_y8_TRT_Hamilton269\yolov8m-custom.trt"'
@@ -627,7 +627,7 @@ def remote_inference_yolo8_trt():
         print(f"checking{imgcnt}")
         if message is not None:
             try:
-                print(message)
+                print(message[0][0:100])
                 img_as_str = msgs.bytes_to_str(message[0])
             except Exception as e:
                 print(e)
@@ -664,11 +664,18 @@ def remote_inference_yolo8_trt():
             print("executing inference")
             context.execute_v2(list(binding_addrs.values()))
 
+            #print([bindings[i] for i in bindings.keys() if i != "images"])
+            #print(bindings.keys())
+            #print(bindings.values())
             nums = bindings['num_dets'].data
-            boxes = bindings['det_boxes'].data
-            scores = bindings['det_scores'].data
-            classes = bindings['det_classes'].data
-
+            boxes = bindings['bboxes'].data
+            scores = bindings['scores'].data
+            classes = bindings['labels'].data
+            print(bindings['num_dets'])
+            no_of_dects = nums[0][0]
+            if no_of_dects > 0:
+                raise Exception("whoohoo")
+            print("no_of_dects",no_of_dects.cpu().numpy())
             boxes = boxes[0,:nums[0][0]]
             scores = scores[0,:nums[0][0]]
             classes = classes[0,:nums[0][0]]
@@ -712,6 +719,8 @@ def remote_inference_yolo8_trt():
             mssger.send_message(output_bytes)
         else:
             time.sleep(0.2)
+
+
 
 def detector_yolo_batch(inbox, outbox, ID):
     # #trt engine expecrts torch.tensor object as input image
@@ -1307,4 +1316,4 @@ if __name__ == '__main__':
 
     xavier_power_settings(sudo_pass=args.sudopassword)
 
-    remote_inference_yolo8_trt()
+    remote_inference_yolo8_trt_gpu()
