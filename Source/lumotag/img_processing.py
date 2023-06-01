@@ -73,7 +73,7 @@ def normalise(img):
 
 def threshold_img(img, low=0, high=255):
     #_ , th3 = cv2.threshold(img, low, 255,cv2.THRESH_BINARY)
-    th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,21,1)
+    th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,1)
     #_,th3 = cv2.threshold(img,low,high,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     #th3 = cv2.adaptiveThreshold(img,high,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
     return th3
@@ -113,6 +113,12 @@ def edge_img(gray):
     #images = np.hstack((gray, edges, edges_filtered))
     
     return edges_filtered
+
+def simple_canny(blurred_img, lower, upper):
+    # wide = cv2.Canny(blurred, 10, 200)
+    # mid = cv2.Canny(blurred, 30, 150)
+    # tight = cv2.Canny(blurred, 240, 250)
+    return cv2.Canny(blurred_img, upper, lower)
 
 def get_hist(img):
     #fig = plt.figure()
