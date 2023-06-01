@@ -128,8 +128,8 @@ def main():
             set_trigger(state=False) # click noise from relay only
 
         cam_img = next(image_capture)
-        img_with_analysis = decode_clothID.find_lumotag(cam_img, workingdata)
-        display.display_output(img_with_analysis)
+        #img_with_analysis = decode_clothID.find_lumotag(cam_img, workingdata)
+        display.display_output(cam_img)
 
     raise RuntimeError("something broke out of loop")
 
