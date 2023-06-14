@@ -91,7 +91,7 @@ class display(factory.display):
     def display_output(self, output):
         if self.display_rotate == 90:
             output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-        elif self.display_rotate == -90:
+        elif self.display_rotate == -90 or self.display_rotate == 270:
             output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
         elif self.display_rotate == 180:
             output = cv2.rotate(output, cv2.ROTATE_180)
