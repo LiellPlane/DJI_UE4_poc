@@ -30,7 +30,7 @@ def main():
     relay = lumogun.Relay(GUN_CONFIGURATION)
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     #accelerometer = lumogun.Accelerometer()
-    image_capture = lumogun.CSI_Camera()
+    image_capture = lumogun.CSI_Camera(factory.HQ_GS_Cam_vidmodes)
     display = lumogun.display(GUN_CONFIGURATION)
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     workingdata = decode_clothID.WorkingData()

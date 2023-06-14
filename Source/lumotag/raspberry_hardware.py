@@ -19,15 +19,12 @@ import digitalio
 import busio
 import adafruit_lis3dh
 import json
+import imutils
 
 GPI_MODE_SET = False
 
 
-class HQ_Cam_vidmodes(enum.Enum):
-    _4 = ["640 × 480",(640, 480)] #0.3MP
-    _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
-    _3 = ["1332 × 990p120",(1332, 990)] 
-    _1 = ["2028 × 1520p40",(2020, 1520)]
+
 
 
 def set_GPIO_mode(is_set):
@@ -156,10 +153,9 @@ class Relay(factory.Relay):
 
 class CSI_Camera(factory.Camera):
 
-    #angle_vs_world_up = 90
-
-    def __init__(self) -> None:
+    def __init__(self, video_modes) -> None:
         super().__init__()
+        self.cam_res = video_modes
         self.picam2 = Picamera2()
         _config = self.picam2.create_video_configuration(
             main={"size": self.get_res(),  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
@@ -169,7 +165,7 @@ class CSI_Camera(factory.Camera):
         time.sleep(0.1)
     
     def get_res(self):
-        return [e.value for e in HQ_Cam_vidmodes][self.res_select][1]
+        return [e.value for e in self.cam_res][self.res_select][1]
 
     def _gen_image(self):
         output = self.picam2.capture_array("main")

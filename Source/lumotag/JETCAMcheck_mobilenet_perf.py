@@ -103,6 +103,7 @@ def inference_imagenet():
         # print out the result
         print("image is recognized as '{:s}' (class #{:d}) with {:f}% confidence".format(class_desc, class_idx, confidence * 100))
 
+
 def inference_remote():
     # net = detectNet(
     #     "ssd-mobilenet-v2",
@@ -125,13 +126,17 @@ def inference_remote():
     #                 output_bbox="boxes", 
     #                 threshold=0.1)
 
-    net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton_269_50000ep/ssd-mobilenet.onnx",
-                    labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/data/trafford_hamilton_269_50000ep/labels.txt",
+    # net = detectNet(model="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/ssd512/pytorch-ssd/models/trafford_hamilton_269_50000ep/ssd-mobilenet.onnx",
+    #                 labels="/home/jetcam/tensorrt_hello/jetson-inference/python/training/detection/ssd/data/trafford_hamilton_269_50000ep/labels.txt",
+    #                 input_blob="input_0",
+    #                 output_cvg="scores",
+    #                 output_bbox="boxes", 
+    #                 threshold=0.1)
+    net = detectNet(model="/home/jetcam/mb1025_voc1501/ssd-mobilenet.onnx",
                     input_blob="input_0",
                     output_cvg="scores",
                     output_bbox="boxes", 
                     threshold=0.1)
-
     #net = detectNet("ssd-mobilenet-v2", threshold=0.1)
     
     mssger = rabbit_mq.MessengerBasic(

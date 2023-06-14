@@ -70,6 +70,9 @@ class Relay(factory.Relay):
 
 class CSI_Camera(factory.Camera):
 
+    def __init__(self, *args) -> None:
+        super().__init__()
+
     def get_res(self):
         pass
 
