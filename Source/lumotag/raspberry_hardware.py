@@ -19,7 +19,7 @@ import digitalio
 import busio
 import adafruit_lis3dh
 import json
-import imutils
+#import imutils
 
 GPI_MODE_SET = False
 
