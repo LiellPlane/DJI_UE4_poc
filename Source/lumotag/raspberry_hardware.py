@@ -102,9 +102,10 @@ class display(factory.display):
 
         output = cv2.resize(output, self.screen_size)
 
-        output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+        #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
 
         output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
+
         lumo_viewer(output,0,False,False)
 
 
