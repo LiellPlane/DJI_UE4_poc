@@ -106,6 +106,7 @@ class gun_config(ABC):
     def cam_processing(self):
         ...
 
+
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
