@@ -31,10 +31,12 @@ def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera(factory.HQ_GS_Cam_vidmodes)
-    voice.speak("test cam")
+    voice.speak("cam")
     img = next(image_capture)
+    voice.speak("ok display")
     display = lumogun.display(GUN_CONFIGURATION)
-
+    display.display_output(cam_img)
+    voice.speak("ok")
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     workingdata = decode_clothID.WorkingData()
     voice.speak("all devices healthy")
@@ -132,7 +134,7 @@ def main():
 
         cam_img = next(image_capture)
         #img_with_analysis = decode_clothID.find_lumotag(cam_img, workingdata)
-        #display.display_output(cam_img)
+        display.display_output(cam_img)
 
     raise RuntimeError("something broke out of loop")
 
