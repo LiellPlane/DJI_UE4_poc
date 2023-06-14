@@ -33,6 +33,8 @@ def main():
     image_capture = lumogun.CSI_Camera(factory.HQ_GS_Cam_vidmodes)
     voice.speak("cam")
     img = next(image_capture)
+    if img is None:
+        raise Exception("Error with camera")
     voice.speak("ok display")
     display = lumogun.display(GUN_CONFIGURATION)
     display.display_output(cam_img)
