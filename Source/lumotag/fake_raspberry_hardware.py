@@ -71,6 +71,7 @@ class Relay(factory.Relay):
 class CSI_Camera(factory.Camera):
 
     def __init__(self, *args) -> None:
+        # fake input needed for interchangeability
         super().__init__()
 
     def get_res(self):
