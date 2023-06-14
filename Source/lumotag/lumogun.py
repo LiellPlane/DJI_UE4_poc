@@ -37,7 +37,7 @@ def main():
         raise Exception("Error with camera")
     voice.speak("ok display")
     display = lumogun.display(GUN_CONFIGURATION)
-    display.display_output(cam_img)
+    display.display_output(img)
     voice.speak("ok")
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     workingdata = decode_clothID.WorkingData()
@@ -112,8 +112,8 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        set_torch(state=is_torch_reqd)
-        set_laser(state=is_torch_reqd)
+        set_torch(state=is_torch_reqd, strobe_cnt=0)
+        set_laser(state=is_torch_reqd, strobe_cnt=0)
 
         # if user presses trigger - use one-shot debounce (so not constantly firing
         # when active). Relays also have debounces for electrical stability
@@ -121,7 +121,7 @@ def main():
         result=trigger_debounce(is_trigger_reqd)
         if is_trigger_reqd is True:
             if result is True:
-                set_trigger(state=True) # click noise from relay only
+                set_trigger(state=True, strobe_cnt=0) # click noise from relay only
                 msgs.package_send_report(
                     type_=msgs.MessageTypes.HIT_REPORT.value,
                     image=image_capture.last_img,
@@ -132,7 +132,7 @@ def main():
                 )
                 voice.speak("BANG")
         else:
-            set_trigger(state=False) # click noise from relay only
+            set_trigger(state=False, strobe_cnt=0) # click noise from relay only
 
         cam_img = next(image_capture)
         #img_with_analysis = decode_clothID.find_lumotag(cam_img, workingdata)

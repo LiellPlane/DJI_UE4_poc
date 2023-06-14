@@ -143,7 +143,9 @@ class Relay(factory.Relay):
     def set_relay(
             self,
             relaypos: int,
-            state: bool):
+            state: bool,
+            strobe_cnt: int):
+
         if state:
             return self.debouncers[relaypos].trigger(
                 GPIO.output,

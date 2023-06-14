@@ -148,7 +148,7 @@ class stryker_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(-90)
+        return(270)
 
     @property
     def screen_size(self):

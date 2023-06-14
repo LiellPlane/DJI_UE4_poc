@@ -56,7 +56,7 @@ class Relay(factory.Relay):
             self.relay_mem[self.gun_config.RELAY_IO[relay]] = False
             print(f"GPIO {gpio} set for relay {relay}")
 
-    def set_relay(self, relaypos:int, state:bool):
+    def set_relay(self, relaypos:int, state:bool, strobe_cnt: int):
         return self.debouncers[self.gun_config.RELAY_IO[relaypos]].trigger(
             self._set_fake_relay,
             self.gun_config.RELAY_IO[relaypos],
