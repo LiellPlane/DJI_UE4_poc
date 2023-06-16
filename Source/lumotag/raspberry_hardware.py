@@ -146,16 +146,22 @@ class Relay(factory.Relay):
             state: bool,
             strobe_cnt: int):
 
-        if state:
-            return self.debouncers[relaypos].trigger(
-                GPIO.output,
-                self.gun_config.RELAY_IO[relaypos],
-                GPIO.HIGH)
-        else:
-            return self.debouncers[relaypos].trigger(
-                GPIO.output,
-                self.gun_config.RELAY_IO[relaypos],
-                GPIO.LOW)
+        # sometimes we need to strobe the relays for special
+        # hardware - for instance IR light that has 3 modes
+        if (strobe_cnt == 0) or (state is False):
+            if state:
+                return self.debouncers[relaypos].trigger(
+                    GPIO.output,
+                    self.gun_config.RELAY_IO[relaypos],
+                    GPIO.HIGH)
+            else:
+                return self.debouncers[relaypos].trigger(
+                    GPIO.output,
+                    self.gun_config.RELAY_IO[relaypos],
+                    GPIO.LOW)
+
+        for strobe in range (0, strobe_cnt) and state:
+            pass
 
 
 class CSI_Camera(factory.Camera):

@@ -57,10 +57,29 @@ class Relay(factory.Relay):
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(self, relaypos:int, state:bool, strobe_cnt: int):
-        return self.debouncers[self.gun_config.RELAY_IO[relaypos]].trigger(
-            self._set_fake_relay,
-            self.gun_config.RELAY_IO[relaypos],
-            state)
+        debouncer = self.debouncers[self.gun_config.RELAY_IO[relaypos]]
+        if (strobe_cnt == 0) or (state is False):
+            return debouncer.trigger(
+                self._set_fake_relay,
+                self.gun_config.RELAY_IO[relaypos],
+                state)
+
+        if strobe_cnt == 0 or state is False:
+            raise Exception("Bad input to relay strobe")
+
+        # different logic for strobing, use the memory of the debounce class
+        strobe_state = True
+
+        for _ in range ((strobe_cnt * 2) - 1):
+            while not debouncer.can_trigger():
+                print("waiting")
+                time.sleep(0.005)
+            print("setting trig to ", strobe_state)
+            debouncer.trigger(
+                self._set_fake_relay,
+                self.gun_config.RELAY_IO[relaypos],
+                strobe_state)
+            strobe_state = not strobe_state
             
     def _set_fake_relay(self, relay, state):
         if relay not in self.relay_mem:

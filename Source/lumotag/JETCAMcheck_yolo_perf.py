@@ -1010,7 +1010,7 @@ def main_videocap():
     workers = []
     for id in range (0,1):  
         workers.append(threading.Thread(
-                    target=detector_yolo,
+                    target=detector_cuda,
                     args=(_in_box, _dects_box, f"IF{id}", )))
         
         workers[-1].start()
@@ -1316,4 +1316,4 @@ if __name__ == '__main__':
 
     xavier_power_settings(sudo_pass=args.sudopassword)
 
-    remote_inference_yolo8_trt_gpu()
+    main_videocap()

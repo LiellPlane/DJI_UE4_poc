@@ -103,6 +103,25 @@ def inference_imagenet():
         # print out the result
         print("image is recognized as '{:s}' (class #{:d}) with {:f}% confidence".format(class_desc, class_idx, confidence * 100))
 
+def for_rav():
+        import jetson_utils
+        net = detectNet(model="/home/jetcam/mb1025_voc1501/ssd-mobilenet.onnx",
+                    input_blob="input_0",
+                    output_cvg="scores",
+                    output_bbox="boxes", 
+                    threshold=0.1)
+        # if from numpy - different if from VPI
+        cuda_mem = jetson_utils.cudaFromNumpy(img)
+        detections = net.Detect(cuda_mem)
+        dectdeets={}
+        for dect in enumerate(detections):
+                            dectdeets["ClassID"] = dect.ClassID
+                            dectdeets["Left"] = dect.Left
+                            dectdeets["Top"] = dect.Top
+                            dectdeets["Right"] = dect.Right
+                            dectdeets["Bottom"] = dect.Bottom
+                            dectdeets["Confidence"] = dect.Confidence
+                            dectdeets["Center"] = dect.Center
 
 def inference_remote():
     # net = detectNet(

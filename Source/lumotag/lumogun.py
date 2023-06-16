@@ -112,8 +112,8 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        set_torch(state=is_torch_reqd, strobe_cnt=0)
-        set_laser(state=is_torch_reqd, strobe_cnt=0)
+        set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
+        set_laser(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
 
         # if user presses trigger - use one-shot debounce (so not constantly firing
         # when active). Relays also have debounces for electrical stability
@@ -140,6 +140,14 @@ def main():
 
     raise RuntimeError("something broke out of loop")
 
+def test_strobe():
+    relay = lumogun.Relay(GUN_CONFIGURATION)
+    triggers = lumogun.Triggers(GUN_CONFIGURATION)
+    set_torch = partial(
+        relay.set_relay,
+        GUN_CONFIGURATION.relay_map["torch"])
+    set_torch(state=True, strobe_cnt=3)
+
 if __name__ == '__main__':
-    main()
+    test_strobe()
 

@@ -105,7 +105,11 @@ class gun_config(ABC):
     @abstractmethod
     def cam_processing(self):
         ...
-
+    # UNIQUEFIRE T65 IR light has 3 modes
+    # need to cycle through them each time
+    @abstractmethod
+    def light_strobe_cnt(self):
+        ...
 
 class display(ABC):
     
@@ -159,6 +163,10 @@ class stryker_config(gun_config):
 
     def cam_processing(self, inputimg):
         return inputimg
+    
+    @property
+    def light_strobe_cnt(self):
+        return(0)
 
 
 class TZAR_config(gun_config):
@@ -201,6 +209,9 @@ class TZAR_config(gun_config):
     def cam_processing(self, inputimg):
         return inputimg
 
+    @property
+    def light_strobe_cnt(self):
+        return(2)
 
 class simitzar_config(gun_config):
     model = "SIMITZAR"
@@ -244,6 +255,9 @@ class simitzar_config(gun_config):
         output_img = inputimg[0:h, 0:w]
         return output_img
 
+    @property
+    def light_strobe_cnt(self):
+        return(0)
 
 class Accelerometer(ABC):
 
@@ -388,10 +402,13 @@ class Debounce:
     def __init__(self, debounce_sec = 0.01) -> None:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
-        self._statemem = None
+        self._statemem: bool
+
+    def can_trigger(self):
+        return self.debouncer.get_dt() >= self.debouncetime_sec
 
     def trigger(self, triggerfunc, *args):
-        if self.debouncer.get_dt() < self.debouncetime_sec:
+        if self.can_trigger() is False:
             return False
         else:
             triggerfunc(*args)
@@ -399,21 +416,21 @@ class Debounce:
             return True
 
     def trigger_oneshot(self, boolstate, triggerfunc, *args):
-        if self.debouncer.get_dt() >= self.debouncetime_sec:
+        if self.can_trigger() is True:
             if self._statemem != boolstate:
                 triggerfunc(*args)
                 self.debouncer.reset()
                 return True
-        self._statemem = boolstate
+            self._statemem = boolstate
         return False
 
     def trigger_oneshot_simple(self, boolstate):
-        if self.debouncer.get_dt() >= self.debouncetime_sec:
+        if self.can_trigger() is True:
             if self._statemem != boolstate:
                 self.debouncer.reset()
                 self._statemem = boolstate
                 return True
-        self._statemem = boolstate
+            self._statemem = boolstate
         return False
 
 class TimeDiffObject:
