@@ -115,7 +115,7 @@ def main():
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
         set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
-        set_laser(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
+        set_laser(state=is_torch_reqd, strobe_cnt=0)
 
         # if user presses trigger - use one-shot debounce (so not constantly firing
         # when active). Relays also have debounces for electrical stability
