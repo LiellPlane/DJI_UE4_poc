@@ -142,12 +142,25 @@ def main():
 
 def test_strobe():
     relay = lumogun.Relay(GUN_CONFIGURATION)
-    triggers = lumogun.Triggers(GUN_CONFIGURATION)
     set_torch = partial(
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["torch"])
+    print("setting first torch state - debounce timers not finished init")
     set_torch(state=True, strobe_cnt=3)
-
+    print("trying again after sleep")
+    time.sleep(0.2)
+    set_torch(state=True, strobe_cnt=3)
+    print("something should have happened - now lets try again immediately")
+    set_torch(state=True, strobe_cnt=3)
+    print("anything happen?")
+    print(set_torch(state=False, strobe_cnt=3))
+    print("wait again")
+    time.sleep(0.1)
+    print("turn off")
+    print(set_torch(state=False, strobe_cnt=3))
+    time.sleep(0.0)
+    print("try again")
+    print(set_torch(state=True, strobe_cnt=3))
 if __name__ == '__main__':
-    test_strobe()
+    main()
 

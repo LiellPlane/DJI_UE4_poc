@@ -385,6 +385,7 @@ class Camera(ABC):
 class Relay(ABC):
     def __init__(self, _gun_config) -> None:
         self.debouncers = {}
+        self.debouncers_1shot = {}
         self.gun_config = _gun_config
     @abstractmethod
     def set_relay(self):
@@ -402,7 +403,7 @@ class Debounce:
     def __init__(self, debounce_sec = 0.01) -> None:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
-        self._statemem: bool
+        self._statemem = False
 
     def can_trigger(self):
         return self.debouncer.get_dt() >= self.debouncetime_sec

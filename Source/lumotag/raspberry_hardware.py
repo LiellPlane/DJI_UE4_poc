@@ -138,6 +138,7 @@ class Relay(factory.Relay):
         for relay, gpio in self.gun_config.RELAY_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
+            self.debouncer_1shot[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(
@@ -148,20 +149,38 @@ class Relay(factory.Relay):
 
         # sometimes we need to strobe the relays for special
         # hardware - for instance IR light that has 3 modes
-        if (strobe_cnt == 0) or (state is False):
-            if state:
-                return self.debouncers[relaypos].trigger(
+        debounce_on = self.debouncers[relaypos].trigger(
                     GPIO.output,
                     self.gun_config.RELAY_IO[relaypos],
                     GPIO.HIGH)
-            else:
-                return self.debouncers[relaypos].trigger(
+        debounce_off = self.debouncers[relaypos].trigger(
                     GPIO.output,
                     self.gun_config.RELAY_IO[relaypos],
                     GPIO.LOW)
 
-        for strobe in range (0, strobe_cnt) and state:
-            pass
+        if (strobe_cnt == 0) or (state is False):
+            if state:
+                return debounce_on
+            else:
+                return debounce_off
+
+        if strobe_cnt == 0 or state is False:
+            raise Exception("Bad input to relay strobe")
+
+        # different logic for strobing, use the memory of the debounce class
+        strobe_state = True
+        if debouncer_1shot.can_trigger() is False:
+            return
+        for _ in range ((strobe_cnt * 2) - 1):
+            while not debouncer.can_trigger():
+                print("waiting")
+                time.sleep(0.005)
+            print("setting trig to ", strobe_state)
+            debouncer.trigger(
+                self._set_fake_relay,
+                self.gun_config.RELAY_IO[relaypos],
+                strobe_state)
+            strobe_state = not strobe_state
 
 
 class CSI_Camera(factory.Camera):

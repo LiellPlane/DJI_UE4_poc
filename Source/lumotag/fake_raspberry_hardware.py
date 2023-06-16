@@ -52,12 +52,26 @@ class Relay(factory.Relay):
         super().__init__(_gun_config)
         self.relay_mem = {}
         for relay, gpio in self.gun_config.RELAY_IO.items():
-            self.debouncers[self.gun_config.RELAY_IO[relay]] = factory.Debounce()
+
+            self.debouncers[
+                self.gun_config.RELAY_IO[relay]] = factory.Debounce()
+            self.debouncers_1shot[
+                self.gun_config.RELAY_IO[relay]] = factory.Debounce()
+    
             self.relay_mem[self.gun_config.RELAY_IO[relay]] = False
+
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(self, relaypos:int, state:bool, strobe_cnt: int):
         debouncer = self.debouncers[self.gun_config.RELAY_IO[relaypos]]
+        debouncer_1shot = self.debouncers_1shot[self.gun_config.RELAY_IO[relaypos]]
+        
+        if not debouncer_1shot.can_trigger():
+            return False
+        if not debouncer_1shot.trigger_oneshot_simple(state):
+            # here the user can still be holding down FIRE
+            return False
+        
         if (strobe_cnt == 0) or (state is False):
             return debouncer.trigger(
                 self._set_fake_relay,
@@ -81,6 +95,8 @@ class Relay(factory.Relay):
                 strobe_state)
             strobe_state = not strobe_state
             
+        return True
+
     def _set_fake_relay(self, relay, state):
         if relay not in self.relay_mem:
             raise Exception("relay position does not exist!", relay)
