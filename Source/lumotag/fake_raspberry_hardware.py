@@ -86,9 +86,7 @@ class Relay(factory.Relay):
 
         for _ in range ((strobe_cnt * 2) - 1):
             while not debouncer.can_trigger():
-                print("waiting")
                 time.sleep(0.005)
-            print("setting trig to ", strobe_state)
             debouncer.trigger(
                 self._set_fake_relay,
                 self.gun_config.RELAY_IO[relaypos],

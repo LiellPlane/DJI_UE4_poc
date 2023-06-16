@@ -6,6 +6,7 @@ from signal import SIGKILL
 import cv2
 import numpy as np
 import enum
+import functools
 # for finding pinout, type pinout in terminal
 import RPi.GPIO as GPIO
 import time
@@ -138,7 +139,7 @@ class Relay(factory.Relay):
         for relay, gpio in self.gun_config.RELAY_IO.items():
             GPIO.setup(gpio, GPIO.OUT)
             self.debouncers[relay] = factory.Debounce()
-            self.debouncer_1shot[relay] = factory.Debounce()
+            self.debouncers_1shot[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
 
     def set_relay(
@@ -149,38 +150,66 @@ class Relay(factory.Relay):
 
         # sometimes we need to strobe the relays for special
         # hardware - for instance IR light that has 3 modes
-        debounce_on = self.debouncers[relaypos].trigger(
+        debouncer= self.debouncers[relaypos]
+        debouncer_1shot= self.debouncers_1shot[relaypos]
+
+        #  functions as variables to make it a bit easier to read
+        debounce_on = functools.partial(
+                    debouncer.trigger,
                     GPIO.output,
                     self.gun_config.RELAY_IO[relaypos],
                     GPIO.HIGH)
-        debounce_off = self.debouncers[relaypos].trigger(
+        debounce_off = functools.partial(
+                    debouncer.trigger,
+                    GPIO.output,
+                    self.gun_config.RELAY_IO[relaypos],
+                    GPIO.LOW)
+        debounce_1shot_on = functools.partial(
+                    debouncer_1shot.trigger_oneshot_simple,
+                    GPIO.output,
+                    self.gun_config.RELAY_IO[relaypos],
+                    GPIO.HIGH)
+        debounce_1shot_off = functools.partial(
+                    debouncer_1shot.trigger_oneshot_simple,
                     GPIO.output,
                     self.gun_config.RELAY_IO[relaypos],
                     GPIO.LOW)
 
+        if not debouncer_1shot.can_trigger():
+            return False
+         
+        if state:
+            if not debounce_1shot_on():
+                # here the user can still be holding down FIRE
+                return False
+        else:
+            if not debounce_1shot_off():
+                # here the user can still be holding down FIRE
+                return False
+
         if (strobe_cnt == 0) or (state is False):
             if state:
-                return debounce_on
+                return debounce_on()
             else:
-                return debounce_off
+                return debounce_off()
 
         if strobe_cnt == 0 or state is False:
-            raise Exception("Bad input to relay strobe")
+            raise Exception("Bad logic to relay strobe")
 
-        # different logic for strobing, use the memory of the debounce class
+        # different logic for strobing
         strobe_state = True
-        if debouncer_1shot.can_trigger() is False:
-            return
+
         for _ in range ((strobe_cnt * 2) - 1):
             while not debouncer.can_trigger():
-                print("waiting")
                 time.sleep(0.005)
-            print("setting trig to ", strobe_state)
-            debouncer.trigger(
-                self._set_fake_relay,
-                self.gun_config.RELAY_IO[relaypos],
-                strobe_state)
+            if strobe_state:
+                debounce_on()
+            else:
+                debounce_off()
             strobe_state = not strobe_state
+        if strobe_state is False:
+            raise Exception("should always end here high!")
+        return True
 
 
 class CSI_Camera(factory.Camera):
