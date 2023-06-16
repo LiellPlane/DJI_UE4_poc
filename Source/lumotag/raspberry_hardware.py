@@ -162,14 +162,10 @@ class Relay(factory.Relay):
                     GPIO.LOW)
         debounce_1shot_on = functools.partial(
                     debouncer_1shot.trigger_oneshot_simple,
-                    GPIO.output,
-                    self.gun_config.RELAY_IO[relaypos],
-                    GPIO.HIGH)
+                    True)
         debounce_1shot_off = functools.partial(
                     debouncer_1shot.trigger_oneshot_simple,
-                    GPIO.output,
-                    self.gun_config.RELAY_IO[relaypos],
-                    GPIO.LOW)
+                    False)
 
         if not debouncer_1shot.can_trigger():
             return False
