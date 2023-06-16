@@ -199,7 +199,8 @@ class Relay(factory.Relay):
             else:
                 debounce_off()
             strobe_state = not strobe_state
-        if strobe_state is False:
+
+        if strobe_state is True:
             raise Exception("should always end here high!")
         return True
 
