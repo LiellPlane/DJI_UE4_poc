@@ -211,7 +211,7 @@ class TZAR_config(gun_config):
 
     @property
     def light_strobe_cnt(self):
-        return(2)
+        return(3)
 
 class simitzar_config(gun_config):
     model = "SIMITZAR"
