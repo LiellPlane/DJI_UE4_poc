@@ -24,10 +24,6 @@ import json
 
 GPI_MODE_SET = False
 
-
-
-
-
 def set_GPIO_mode(is_set):
     try:
         if is_set is False:
@@ -150,8 +146,8 @@ class Relay(factory.Relay):
 
         # sometimes we need to strobe the relays for special
         # hardware - for instance IR light that has 3 modes
-        debouncer= self.debouncers[relaypos]
-        debouncer_1shot= self.debouncers_1shot[relaypos]
+        debouncer = self.debouncers[relaypos]
+        debouncer_1shot = self.debouncers_1shot[relaypos]
 
         #  functions as variables to make it a bit easier to read
         debounce_on = functools.partial(
