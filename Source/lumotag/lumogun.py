@@ -24,11 +24,19 @@ GUN_CONFIGURATION  = factory.get_config(model)
 
 
 def main():
+    triggers = lumogun.Triggers(GUN_CONFIGURATION)
+    # if user is holding down trigger on boot up, quit
+    # application
+    results_trig_positions = (triggers.test_states())
+    is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
+    if is_trigger_reqd:
+        raise Exception("Trigger detected on boot-up - exit app")
+
     # initialise components of lumogun
     voice = sound.Voice()
     voice.speak(f"{GUN_CONFIGURATION.model}")
     relay = lumogun.Relay(GUN_CONFIGURATION)
-    triggers = lumogun.Triggers(GUN_CONFIGURATION)
+    
     #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera(factory.HQ_GS_Cam_vidmodes)
     voice.speak("cam")
@@ -58,12 +66,7 @@ def main():
     
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce.trigger_oneshot_simple
 
-    # if user is holding down trigger on boot up, quit
-    # application
-    results_trig_positions = (triggers.test_states())
-    is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
-    if is_trigger_reqd:
-        raise Exception("Trigger detected on boot-up - exit app")
+
 
     cnt = 0 
     while True:
