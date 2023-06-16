@@ -28,7 +28,7 @@ def main():
     # if user is holding down trigger on boot up, quit
     # application
     results_trig_positions = (triggers.test_states())
-    if any(results_trig_positions):
+    if any([True for i in results_trig_positions.values() if i is True]):
         raise Exception("Trigger detected on boot-up - exit app")
 
     # initialise components of lumogun
