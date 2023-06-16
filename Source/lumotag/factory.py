@@ -400,7 +400,7 @@ class KillProcess(ABC):
 
 class Debounce:
 
-    def __init__(self, debounce_sec = 0.01) -> None:
+    def __init__(self, debounce_sec = 0.02) -> None:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
         self._statemem = False
