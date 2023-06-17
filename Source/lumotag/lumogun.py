@@ -115,15 +115,18 @@ def main():
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
 
-        #set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
-        #set_laser(state=is_torch_reqd, strobe_cnt=0)
+        # in this case 
+        result = torch_debounce(is_torch_reqd)
+        if result is True:
+            set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
+            set_laser(state=is_torch_reqd, strobe_cnt=0)
 
         # desired behaviour: 
         # User presses trigger - gun fires immediately
         # after 0.N seconds, relay clicks off
         # user can now fire again immediately
         # any other behaviour during refractory period is ignored
-        result=trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+        result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
         if result is True:
             # true will only be available as an impulse after
             # pulling trigger, then go low again - but
