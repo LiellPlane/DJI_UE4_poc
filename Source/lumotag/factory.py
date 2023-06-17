@@ -218,7 +218,7 @@ class TZAR_config(gun_config):
 
     @property
     def light_strobe_cnt(self):
-        return(3)
+        return(4)
 
 class simitzar_config(gun_config):
     model = "SIMITZAR"
@@ -407,7 +407,7 @@ class KillProcess(ABC):
 
 class Debounce:
 
-    def __init__(self, debounce_sec = 0.015) -> None:
+    def __init__(self, debounce_sec = 0.200) -> None:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
         self._statemem = False
