@@ -11,6 +11,8 @@ import queue
 import uuid
 from enum import Enum,auto
 
+RELAY_BOUNCE_S = 0.02
+
 class AutoStrEnum(str, Enum):
     """
     StrEnum where auto() returns the field name.
@@ -79,7 +81,7 @@ class gun_config(ABC):
         self.msg_heartbeat_s = 20
 
         self.torch_debounce = Debounce(
-            debounce_sec=0.3)
+            debounce_sec=1.0)
 
 
     @property
@@ -407,7 +409,7 @@ class KillProcess(ABC):
 
 class Debounce:
 
-    def __init__(self, debounce_sec = 0.200) -> None:
+    def __init__(self, debounce_sec = RELAY_BOUNCE_S) -> None:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
         self._statemem = False
