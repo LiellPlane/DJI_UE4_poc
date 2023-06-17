@@ -173,6 +173,7 @@ class Relay(factory.Relay):
         strobe_state = True
 
         for _ in range ((strobe_cnt * 2) - 1):
+            print(debouncer.debouncetime_sec)
             while not debouncer.can_trigger():
                 time.sleep(0.005)
             if strobe_state:
