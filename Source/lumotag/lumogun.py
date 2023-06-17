@@ -136,11 +136,11 @@ def main():
                 target="some twat",
                 message_str="lol QQ l2p"
             )
-            voice.speak("BANG")
+
         # trigger is held on by debouncer even if user releases
         # trigger
         set_trigger(
-            state=trigger_debounce.get_memstate(),
+            state=trigger_debounce.get_heldstate(),
             strobe_cnt=0) # click noise from relay only
 
 

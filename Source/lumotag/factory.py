@@ -411,6 +411,7 @@ class Debounce:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
         self._statemem = False
+        self._stateheld = False
         self._configuration = None
 
     def set_check_config(self, funcname):
@@ -427,6 +428,9 @@ class Debounce:
     
     def get_memstate(self):
         return self._statemem
+
+    def get_heldstate(self):
+        return self._stateheld
 
     def trigger(self, triggerfunc, *args):
         self.set_check_config("trigger")
@@ -471,15 +475,17 @@ class Debounce:
         use with get mem state"""
         self.set_check_config("trigger_1shot_simple_High")
         # in this condition we can turn it straight back on
-        if boolstate is True and self._statemem is False:
+        if boolstate is True and self._statemem is False and self._statemem is False:
             self.debouncer.reset()
+            self._stateheld = True
             self._statemem = True
             return True
 
         # here we are still holding mem HIGH until
         # time out
         if self.can_trigger() is True:
-            self._statemem = False
+            self._stateheld = False
+            self._statemem = boolstate
 
         return False
 
