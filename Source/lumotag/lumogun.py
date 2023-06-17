@@ -63,8 +63,8 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
     
-    trigger_debounce = GUN_CONFIGURATION.trigger_debounce.trigger_oneshot_simple
-
+    trigger_debounce = GUN_CONFIGURATION.trigger_debounce
+    torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
 
 
     cnt = 0 
@@ -114,27 +114,35 @@ def main():
         is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
         is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
-        set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
-        set_laser(state=is_torch_reqd, strobe_cnt=0)
 
-        # if user presses trigger - use one-shot debounce (so not constantly firing
-        # when active). Relays also have debounces for electrical stability
-        # when user releases trigger - do not need a debounce - deactivate immediately
-        result=trigger_debounce(is_trigger_reqd)
-        if is_trigger_reqd is True:
-            if result is True:
-                set_trigger(state=True, strobe_cnt=0) # click noise from relay only
-                msgs.package_send_report(
-                    type_=msgs.MessageTypes.HIT_REPORT.value,
-                    image=image_capture.last_img,
-                    gun_config=GUN_CONFIGURATION,
-                    messenger=messenger,
-                    target="some twat",
-                    message_str="lol QQ l2p"
-                )
-                voice.speak("BANG")
-        else:
-            set_trigger(state=False, strobe_cnt=0) # click noise from relay only
+        #set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
+        #set_laser(state=is_torch_reqd, strobe_cnt=0)
+
+        # desired behaviour: 
+        # User presses trigger - gun fires immediately
+        # after 0.N seconds, relay clicks off
+        # user can now fire again immediately
+        # any other behaviour during refractory period is ignored
+        result=trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+        if result is True:
+            # true will only be available as an impulse after
+            # pulling trigger, then go low again - but
+            # mem state of debouncer will remain high
+            msgs.package_send_report(
+                type_=msgs.MessageTypes.HIT_REPORT.value,
+                image=image_capture.last_img,
+                gun_config=GUN_CONFIGURATION,
+                messenger=messenger,
+                target="some twat",
+                message_str="lol QQ l2p"
+            )
+            voice.speak("BANG")
+        # trigger is held on by debouncer even if user releases
+        # trigger
+        set_trigger(
+            state=trigger_debounce.get_memstate(),
+            strobe_cnt=0) # click noise from relay only
+
 
         cam_img = next(image_capture)
         #img_with_analysis = decode_clothID.find_lumotag(cam_img, workingdata)

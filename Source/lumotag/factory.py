@@ -70,10 +70,17 @@ class gun_config(ABC):
             'port' : 5672,
             'virtual_host' : '/'
         }
+
         self.my_id = create_id()
+
         self.trigger_debounce = Debounce(
-            debounce_sec=0.5)
+            debounce_sec=0.2)
+
         self.msg_heartbeat_s = 20
+
+        self.torch_debounce = Debounce(
+            debounce_sec=0.3)
+
 
     @property
     @abstractmethod
@@ -400,15 +407,29 @@ class KillProcess(ABC):
 
 class Debounce:
 
-    def __init__(self, debounce_sec = 0.020) -> None:
+    def __init__(self, debounce_sec = 0.015) -> None:
         self.debouncetime_sec = debounce_sec
         self.debouncer = TimeDiffObject()
         self._statemem = False
+        self._configuration = None
 
+    def set_check_config(self, funcname):
+        if self._configuration is None:
+            self._configuration = funcname
+        else:
+            if self._configuration != funcname:
+                print("debounce config:", self._configuration)
+                print("attempted reconfig:", funcname)
+                raise Exception("debouncer config mix-up, multiple configs")
+        
     def can_trigger(self):
         return self.debouncer.get_dt() >= self.debouncetime_sec
+    
+    def get_memstate(self):
+        return self._statemem
 
     def trigger(self, triggerfunc, *args):
+        self.set_check_config("trigger")
         if self.can_trigger() is False:
             return False
         else:
@@ -417,6 +438,10 @@ class Debounce:
             return True
 
     def trigger_oneshot(self, boolstate, triggerfunc, *args):
+        """needs to be released before retriggering with
+        symmetrical delay"""
+        self.set_check_config("trigger_oneshot")
+
         if self.can_trigger() is True:
             if self._statemem != boolstate:
                 triggerfunc(*args)
@@ -426,12 +451,36 @@ class Debounce:
         return False
 
     def trigger_oneshot_simple(self, boolstate):
+        """needs to be released before retriggering with
+        symmetrical delay but you handle the function
+        yourself, for more complicated events"""
+        self.set_check_config("trigger_oneshot_simple")
+
         if self.can_trigger() is True:
             if self._statemem != boolstate:
                 self.debouncer.reset()
                 self._statemem = boolstate
                 return True
             self._statemem = boolstate
+        return False
+
+    def trigger_1shot_simple_High(self, boolstate):
+        """needs to be released before retriggering but
+        upon release has no wait period
+        
+        use with get mem state"""
+        self.set_check_config("trigger_1shot_simple_High")
+        # in this condition we can turn it straight back on
+        if boolstate is True and self._statemem is False:
+            self.debouncer.reset()
+            self._statemem = True
+            return True
+
+        # here we are still holding mem HIGH until
+        # time out
+        if self.can_trigger() is True:
+            self._statemem = False
+
         return False
 
 class TimeDiffObject:

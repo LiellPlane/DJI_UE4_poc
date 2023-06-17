@@ -64,13 +64,6 @@ class Relay(factory.Relay):
 
     def set_relay(self, relaypos:int, state:bool, strobe_cnt: int):
         debouncer = self.debouncers[self.gun_config.RELAY_IO[relaypos]]
-        debouncer_1shot = self.debouncers_1shot[self.gun_config.RELAY_IO[relaypos]]
-        
-        if not debouncer_1shot.can_trigger():
-            return False
-        if not debouncer_1shot.trigger_oneshot_simple(state):
-            # here the user can still be holding down FIRE
-            return False
         
         if (strobe_cnt == 0) or (state is False):
             return debouncer.trigger(

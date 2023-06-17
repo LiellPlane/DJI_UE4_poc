@@ -147,7 +147,6 @@ class Relay(factory.Relay):
         # sometimes we need to strobe the relays for special
         # hardware - for instance IR light that has 3 modes
         debouncer = self.debouncers[relaypos]
-        debouncer_1shot = self.debouncers_1shot[relaypos]
 
         #  functions as variables to make it a bit easier to read
         debounce_on = functools.partial(
@@ -160,24 +159,6 @@ class Relay(factory.Relay):
                     GPIO.output,
                     self.gun_config.RELAY_IO[relaypos],
                     GPIO.LOW)
-        debounce_1shot_on = functools.partial(
-                    debouncer_1shot.trigger_oneshot_simple,
-                    True)
-        debounce_1shot_off = functools.partial(
-                    debouncer_1shot.trigger_oneshot_simple,
-                    False)
-
-        if not debouncer_1shot.can_trigger():
-            return False
-         
-        if state:
-            if not debounce_1shot_on():
-                # here the user can still be holding down FIRE
-                return False
-        else:
-            if not debounce_1shot_off():
-                # here the user can still be holding down FIRE
-                return False
 
         if (strobe_cnt == 0) or (state is False):
             if state:
