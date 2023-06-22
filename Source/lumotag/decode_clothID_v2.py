@@ -272,6 +272,7 @@ class ShapeItem:
     id: str
     approx_contour: np.array
     default_contour: np.array
+    filtered_contour: np.array
     boundingbox: np.array
     boundingbox_min: np.array
     boundingbox_ellipse: np.array
@@ -288,6 +289,14 @@ def get_approx_shape_and_bbox(
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
     approx = cv2.approxPolyDP(contour, dataobject.approx_epsilon*cv2.arcLength(contour, True), True)
+
+    # occasionally we get a triangle or square with a blunt edge,
+    # so remove this extra point by filtering outlier distances
+    filtered_cont = None
+    res, val = math_utils.filter_small_edges(approx)
+    if res is True:
+        filtered_cont = val
+
     minRect = cv2.minAreaRect(approx)
     box = cv2.boxPoints(minRect)
     box = np.intp(box)
@@ -302,6 +311,7 @@ def get_approx_shape_and_bbox(
         id="ID TBD",
         approx_contour=approx,
         default_contour=None,
+        filtered_contour=filtered_cont,
         boundingbox=cv2.boundingRect(contour),
         boundingbox_min=box,
         boundingbox_ellipse=ellipse,
@@ -311,36 +321,36 @@ def get_approx_shape_and_bbox(
 
     return output
 
-def check_shape(
-        contour,
-        dataobject : WorkingData,
-        img,
-        sides):
-    #img[:,:] = 0
-    #img= cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-    # cv2.arcLength() is used to calculate the perimeter of the contour.
-    # If the second argument is True then it considers the contour to be closed.
-    # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
-    # function with a precision factor for approximating a shape
-    approx = cv2.approxPolyDP(contour, 0.05*cv2.arcLength(contour, True), True)
-    if len(approx)>0:#== sides:
-        # get rotated bounding box
+# def check_shape(
+#         contour,
+#         dataobject : WorkingData,
+#         img,
+#         sides):
+#     #img[:,:] = 0
+#     #img= cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+#     # cv2.arcLength() is used to calculate the perimeter of the contour.
+#     # If the second argument is True then it considers the contour to be closed.
+#     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
+#     # function with a precision factor for approximating a shape
+#     approx = cv2.approxPolyDP(contour, 0.05*cv2.arcLength(contour, True), True)
+#     if len(approx)>0:#== sides:
+#         # get rotated bounding box
 
-        img = cv2.drawContours(img, [contour], -1, (255,255,255), 3)
-        img = cv2.drawContours(img, [approx], -1, (255,0,255), 3)
+#         img = cv2.drawContours(img, [contour], -1, (255,255,255), 3)
+#         img = cv2.drawContours(img, [approx], -1, (255,0,255), 3)
 
-        # rotated bounding box
-        minRect = cv2.minAreaRect(approx)
-        box = cv2.boxPoints(minRect)
-        box = np.intp(box) #np.intp: Integer used for indexing (same as C ssize_t; normally either int32 or int64)
-        cv2.drawContours(img, [box], 0, (0,0,255))
-        # M = cv2.moments(contour)
-        # if M['m00'] != 0.0:
-        #     x = int(M['m10']/M['m00'])
-        #     y = int(M['m01']/M['m00'])
+#         # rotated bounding box
+#         minRect = cv2.minAreaRect(approx)
+#         box = cv2.boxPoints(minRect)
+#         box = np.intp(box) #np.intp: Integer used for indexing (same as C ssize_t; normally either int32 or int64)
+#         cv2.drawContours(img, [box], 0, (0,0,255))
+#         # M = cv2.moments(contour)
+#         # if M['m00'] != 0.0:
+#         #     x = int(M['m10']/M['m00'])
+#         #     y = int(M['m01']/M['m00'])
         
-        return contour, img
-    return None, img
+#         return contour, img
+#     return None, img
 
 
 def debug_save_images(img, contours, text : str, dataobject: WorkingData):
@@ -471,6 +481,7 @@ def analyse_candidates_shapematch(
     for c in contours:
         contour_stats.append(get_approx_shape_and_bbox(c, dataobject))
 
+
     if dataobject.debug == True:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
@@ -498,17 +509,29 @@ def analyse_candidates_shapematch(
     # break out triangles and squares
     squrs_found = [cont for cont in contour_stats if cont.sum_int_angles == 360]
     tris_found = [cont for cont in contour_stats if cont.sum_int_angles == 180]
-    
+    filtered_objs = [cont for cont in contour_stats if type(cont.filtered_contour) != type(None)]
+
+
     if dataobject.debug == True:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in squrs_found:
-            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 3)
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
         for c in tris_found:
-            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 3)
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 2)
         dataobject.img_view_or_save_if_debug(
             debug_img,
             f"shapes_found")
+
+    if dataobject.debug == True:
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in filtered_objs:
+                cv2.drawContours(debug_img, [c.filtered_contour], -1, (255,0,0), 2)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"filtered_shapes")
+        
     #for i, c in enumerate(contours):
     #    _, img_bbxoes = check_shape(c, dataobject, img_bbxoes, 0)
         
