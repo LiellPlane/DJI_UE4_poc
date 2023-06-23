@@ -21,9 +21,10 @@ def ImageViewer_Quickv2(inputimage,pausetime_Secs=0,presskey=False,destroyWindow
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
 
-workingdata = decode_clothID.WorkingData()
 
-workingdata.debug = True
+
+
+workingdata = decode_clothID.WorkingData(debug=True)
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
 
@@ -41,6 +42,8 @@ def crop_in(img, pc_x, pc_y):
           int(crop_in_x):int(new_width)]
 
 for img_filepath in input_imgs: 
+    #if not "0068" in img_filepath:
+    #     continue
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)

@@ -84,8 +84,37 @@ def get_internal_angles_of_shape(contour):
         
     return(sum(angles))
 
+def filter_close_points(contour):
+    dists = []
+    next_pt = 1
+    for _2dpt in range (0, contour.shape[0]):
+        if _2dpt == contour.shape[0]-1:
+            next_pt = 0
+        else:
+            next_pt = _2dpt + 1
+        dists.append(
+            np.linalg.norm(contour[_2dpt]-contour[next_pt]))
+    # find outlier of small data with q-test
+    # https://en.wikipedia.org/wiki/Dixon%27s_Q_test
+    dists = sorted(
+        {x: i for x, i in enumerate(dists)}.items(),
+        key=lambda x:x[1])
+    
+    bad_points = [cont for cont in dists if cont[1] < 10.0]
+    if len(bad_points) == 0:
+        return False, 0
 
-def filter_small_edges(contour):
+    new_cnt = list(contour)
+
+    indices = [i[0] for i in bad_points]
+    indices.sort(reverse=True)
+    for i in indices:
+        del(new_cnt[i])
+
+    return True, np.asarray(new_cnt)
+
+
+def filter_outlier_edges(contour):
     """if a shape is well-defined but has an
     errant small edge, remove this edge.
 
@@ -110,7 +139,6 @@ def filter_small_edges(contour):
             np.linalg.norm(contour[_2dpt]-contour[next_pt]))
     # find outlier of small data with q-test
     # https://en.wikipedia.org/wiki/Dixon%27s_Q_test
-    unsorted_dists = dists.copy()
     dists = sorted(
         {x: i for x, i in enumerate(dists)}.items(),
         key=lambda x:x[1])
@@ -119,7 +147,7 @@ def filter_small_edges(contour):
     q_ = gap/range_
     dixon_q = get_dixonQ(
         no_of_values=contour.shape[0],
-        conf_pc="q95")
+        conf_pc="q90")
     if q_ < dixon_q:
         # probably not an outlier
         return False, 0
@@ -132,7 +160,7 @@ def filter_small_edges(contour):
     del(new_cnt[index])
     new_cnt = np.asarray(new_cnt)
 
-    return True, contour
+    return True, new_cnt
 
 
 def get_dixonQ(no_of_values, conf_pc: Literal["q90", "q95", "q99"]):

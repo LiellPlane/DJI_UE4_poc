@@ -79,9 +79,9 @@ class Debug_Images(AutoStrEnum):
 
 
 class WorkingData():
-    def __init__(self) -> None:
+    def __init__(self, debug=False) -> None:
         self.debugimgs = r"D:\lumodebug"
-        self.debug = False
+        self.debug = debug
         self.debug_img_cnt = 0
         self.debug_subfldr = None
         if self.debug is True:
@@ -283,20 +283,30 @@ class ShapeItem:
 
 def get_approx_shape_and_bbox(
         contour,
-        dataobject : WorkingData) -> ShapeItem:
+        dataobject : WorkingData,
+        index = 0) -> ShapeItem:
     # cv2.arcLength() is used to calculate the perimeter of the contour.
     # If the second argument is True then it considers the contour to be closed.
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
     approx = cv2.approxPolyDP(contour, dataobject.approx_epsilon*cv2.arcLength(contour, True), True)
 
+    filtered_cont = None
+    # filter close together points, sometimes outlier doesnt tend to work?
+    res, val = math_utils.filter_close_points(approx)
+    if res is True:
+        filtered_cont = val
     # occasionally we get a triangle or square with a blunt edge,
     # so remove this extra point by filtering outlier distances
-    filtered_cont = None
-    res, val = math_utils.filter_small_edges(approx)
+
+    if filtered_cont is None:
+        res, val = math_utils.filter_outlier_edges(approx)
+    else:
+        res, val = math_utils.filter_outlier_edges(filtered_cont)
     if res is True:
         filtered_cont = val
 
+    
     minRect = cv2.minAreaRect(approx)
     box = cv2.boxPoints(minRect)
     box = np.intp(box)
@@ -308,7 +318,7 @@ def get_approx_shape_and_bbox(
         ellipse = None
 
     output = ShapeItem(
-        id="ID TBD",
+        id=index,
         approx_contour=approx,
         default_contour=None,
         filtered_contour=filtered_cont,
@@ -478,8 +488,8 @@ def analyse_candidates_shapematch(
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
     contour_stats = []
-    for c in contours:
-        contour_stats.append(get_approx_shape_and_bbox(c, dataobject))
+    for index, c in enumerate(contours):
+        contour_stats.append(get_approx_shape_and_bbox(c, dataobject, index))
 
 
     if dataobject.debug == True:
@@ -491,7 +501,7 @@ def analyse_candidates_shapematch(
             ROI = debug_img[y:y+h, x:x+w]
             dataobject.img_view_or_save_if_debug(
                 ROI,
-                f"check_shape_extract_{c.sum_int_angles}d_")
+                f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
 
     if dataobject.debug == True:
         img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
@@ -682,7 +692,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
     #with time_it():
         #print("median_blur")
         ##blurred = median_blur(gray_orig,7)
-        squr_img = cv2.blur(inputimg,(5,5)) # fastest filter
+        squr_img = cv2.blur(inputimg,(3,3)) # fastest filter
         #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
         #edge_im = edge_img(blurred)edge_img
     #with time_it():
@@ -697,16 +707,22 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
         #squr_img=edge_img(gray_orig)
         #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
-        canny_params = [(i,i+20) for i in range(0,250,20)]
-        canny_img = np.zeros_like(squr_img)
-        for lr, uper in canny_params:
-            next_canny_img=img_pro.simple_canny(
-                blurred_img=squr_img,
-                lower=lr,
-                upper=uper)
-            canny_img = np.add(canny_img,next_canny_img) 
-        dataobject.img_view_or_save_if_debug(canny_img, "thresholdimg")
-        squr_img=img_pro.threshold_img(canny_img,low=40,high=255)
+        with time_it("canny loop"):
+            canny_params = [(i,i+20) for i in range(3,100,20)]
+            canny_img = np.zeros_like(squr_img)
+            for lr, uper in canny_params:
+                next_canny_img=img_pro.simple_canny(
+                    blurred_img=squr_img,
+                    lower=lr,
+                    upper=uper)
+                dataobject.img_view_or_save_if_debug(next_canny_img, f"cannyimage{lr}", resize=False)
+                canny_img = np.add(canny_img,next_canny_img) 
+            dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
+
+
+
+        squr_img=img_pro.threshold_img_static(canny_img,low=40,high=255)
+        dataobject.img_view_or_save_if_debug(squr_img, "thresholded_canny")
     #with time_it():
         #print("invert_img")
         #squr_img=invert_img(squr_img)
