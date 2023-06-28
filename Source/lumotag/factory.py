@@ -130,8 +130,6 @@ class display(ABC):
     def display_output(self):
         pass
 
-    def display_output(self):
-        pass
 
 class stryker_config(gun_config):
     model = "STRYKER"

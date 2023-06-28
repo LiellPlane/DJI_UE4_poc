@@ -86,18 +86,23 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
 
     def display_output(self, output):
+        # quicker in theory to resize first then rotate as
+        # input image is expected to be much larger than display size
         if self.display_rotate == 90:
+            output = cv2.resize(output, tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         elif self.display_rotate == -90 or self.display_rotate == 270:
+            output = cv2.resize(output, tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
         elif self.display_rotate == 180:
+            output = cv2.resize(output, self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
         elif self.display_rotate == 0:
-            pass
+            output = cv2.resize(output, self.screen_size)
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
 
-        output = cv2.resize(output, self.screen_size)
+        
 
         #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
 
