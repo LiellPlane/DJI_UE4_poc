@@ -20,6 +20,7 @@ import digitalio
 import busio
 import adafruit_lis3dh
 import json
+import img_processing
 #import imutils
 
 GPI_MODE_SET = False
@@ -98,11 +99,15 @@ class display(factory.display):
             output = cv2.resize(output, self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
         elif self.display_rotate == 0:
-            output = cv2.resize(output, self.screen_size)
+            output = img_processing.image_resize_ratio(
+                output,
+                height=self.screen_size[0])
+            #output = cv2.resize(output, self.screen_size)
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
 
         
+
 
         #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
 
