@@ -101,7 +101,7 @@ class display(factory.display):
         elif self.display_rotate == 0:
             output = img_processing.image_resize_ratio(
                 output,
-                height=self.screen_size[0])
+                height=self.screen_size[1])
             #output = cv2.resize(output, self.screen_size)
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
