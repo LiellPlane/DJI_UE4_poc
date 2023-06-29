@@ -212,6 +212,7 @@ def resize_centre_img(image, screensize):
         image = image_resize_ratio(
             image,
             width=screensize[1])
+
     offset_x = (emptyscreen.shape[0] - image.shape[0]) // 2
     offset_y = (emptyscreen.shape[1] - image.shape[1]) // 2
     emptyscreen[
