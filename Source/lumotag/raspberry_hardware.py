@@ -43,7 +43,7 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
-        cv2.moveWindow("img", 480, 0)
+        #cv2.moveWindow("img", 600, 0)
         if presskey==True:
             cv2.waitKey(0); #any key
     
@@ -103,7 +103,7 @@ class display(factory.display):
                output,
                self.screen_size)
             output = img_processing.add_cross_hair(output, adapt=True)
-            output = cv2.resize(output, self.screen_size)
+            #output = cv2.resize(output, self.screen_size)
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
 
