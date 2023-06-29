@@ -222,11 +222,17 @@ def resize_centre_img(image, screensize):
 
     return emptyscreen
 
-def add_cross_hair(image):
+def add_cross_hair(image, adapt):
     thick = 3
     midx = image.shape[0] // 2
     midy = image.shape[1] // 2
-    image[midx-thick : midx+thick,:,1] = 255
-    image[:, midy-thick : midy+thick ,1] = 255
+    # TODO another potential lag point
+    if adapt is True:
+        col = int(
+            image[midx-50:midx+50, midy-50:midy+50, :].mean())
+    else:
+        col = 255
+    image[midx-thick : midx+thick,:,1] = max(col, 50)
+    image[:, midy-thick : midy+thick ,1] = max(col, 50)
 
     return image

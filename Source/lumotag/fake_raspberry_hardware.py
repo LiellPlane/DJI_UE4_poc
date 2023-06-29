@@ -118,7 +118,7 @@ class CSI_Camera(factory.Camera):
 class display(factory.display):
     def display_output(self, output):
         img = img_processing.resize_centre_img(output, self.screen_size)
-        img = img_processing.add_cross_hair(img)
+        img = img_processing.add_cross_hair(img, adapt=True)
         lumo_viewer(img, 0, False, False)
 
 
