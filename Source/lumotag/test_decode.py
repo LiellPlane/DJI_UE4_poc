@@ -42,7 +42,9 @@ def crop_in(img, pc_x, pc_y):
           int(crop_in_x):int(new_width)]
 
 for img_filepath in input_imgs: 
-    #if not "0068" in img_filepath:
+    # if not "063_original_inpu2t" in img_filepath:
+    #     continue
+    # if "063_original_inpu2ts" in img_filepath:
     #     continue
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]

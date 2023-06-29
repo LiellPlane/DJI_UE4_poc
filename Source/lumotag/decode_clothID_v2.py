@@ -78,6 +78,12 @@ class Debug_Images(AutoStrEnum):
     find_shape = auto()
 
 
+class Shapes(AutoStrEnum):
+   SQUARE = auto()
+   TRIANGLE = auto()
+   CIRCLE = auto()
+
+
 class WorkingData():
     def __init__(self, debug=False) -> None:
         self.debugimgs = r"D:\lumodebug"
@@ -279,7 +285,8 @@ class ShapeItem:
     img_cut: np.array
     sum_int_angles: float
     size: int
-
+    min_bbx_size: int
+    shape: Shapes
 
 def get_approx_shape_and_bbox(
         contour,
@@ -308,8 +315,8 @@ def get_approx_shape_and_bbox(
 
     
     minRect = cv2.minAreaRect(approx)
-    box = cv2.boxPoints(minRect)
-    box = np.intp(box)
+    min_bbox = cv2.boxPoints(minRect)
+    min_bbox = np.intp(min_bbox)
 
     # can't make ellipse with <5 points
     if len(contour) > 4:
@@ -317,17 +324,22 @@ def get_approx_shape_and_bbox(
     else:
         ellipse = None
 
+
     output = ShapeItem(
         id=index,
         approx_contour=approx,
         default_contour=None,
         filtered_contour=filtered_cont,
         boundingbox=cv2.boundingRect(contour),
-        boundingbox_min=box,
+        boundingbox_min=min_bbox,
         boundingbox_ellipse=ellipse,
         img_cut=None,
         sum_int_angles=int(math_utils.get_internal_angles_of_shape(approx)),
-        size=contour.size)
+        size=cv2.contourArea(contour),
+        min_bbx_size = cv2.contourArea(min_bbox),
+        shape=None)
+    
+
 
     return output
 
@@ -384,6 +396,9 @@ def get_possible_candidates(img, dataobject : WorkingData):
     on edge of image being classed as external), will filter contours for circularity"""
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
 
+    smallest_area = (img.shape[0]*0.01) *  (img.shape[1]*0.01)
+    largest_area = (img.shape[0]*0.5) *  (img.shape[1]*0.5)
+
     dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
     contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -396,13 +411,19 @@ def get_possible_candidates(img, dataobject : WorkingData):
         return [], []
     for con, hier in zip(contours, hierarchy[0]):
         area = cv2.contourArea(con)
-        if 400 < area < 1000000:
+        #print(area)
+        if (area > smallest_area) and (area < largest_area):
             contours_area.append(con)
             hierarchy_area.append(hier)
+        else:
+            pass
+            #print("rejeted area", area)
+            #debug_save_images(img, [con], "rejected_area", dataobject)
     if len(contours_area) != len(hierarchy_area):
         raise Exception("bad unzip - use python 3.10 for strict=true")
-    debug_save_images(img, contours_area, Debug_Images.Filtered_area_contours.value, dataobject)
 
+    debug_save_images(img, contours_area, Debug_Images.Filtered_area_contours.value, dataobject)
+    #ff
     # filter by circularity - * warning might filter out very fuzzy images
     contours_cirles = []
     hierarchy_cirles = []
@@ -519,7 +540,7 @@ def analyse_candidates_shapematch(
     # break out triangles and squares
     squrs_found = [cont for cont in contour_stats if cont.sum_int_angles == 360]
     tris_found = [cont for cont in contour_stats if cont.sum_int_angles == 180]
-    filtered_objs = [cont for cont in contour_stats if type(cont.filtered_contour) != type(None)]
+    filtered_objs = [cont for cont in contour_stats if type(cont.filtered_contour) != type(None) and len(cont.filtered_contour)>0]
 
 
     if dataobject.debug == True:
@@ -708,7 +729,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
         #squr_img=edge_img(gray_orig)
         #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
         with time_it("canny loop"):
-            canny_params = [(i,i+20) for i in range(3,100,20)]
+            canny_params = [(i,i+20) for i in range(10,100,20)]
             canny_img = np.zeros_like(squr_img)
             for lr, uper in canny_params:
                 next_canny_img=img_pro.simple_canny(
@@ -720,7 +741,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
 
 
-
+        #canny_img = cv2.dilate(canny_img,np.ones((5,5),np.uint8),iterations = 1)
         squr_img=img_pro.threshold_img_static(canny_img,low=40,high=255)
         dataobject.img_view_or_save_if_debug(squr_img, "thresholded_canny")
     #with time_it():
