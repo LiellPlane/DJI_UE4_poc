@@ -194,3 +194,38 @@ def image_resize_ratio(image, width = None, height = None, inter = cv2.INTER_ARE
 
     # return the resized image
     return resized
+
+def resize_centre_img(image, screensize):
+
+    # this is slow - might be faster passing in the image again?
+    # TODO
+    emptyscreen = np.zeros((screensize + (3,)), np.uint8)
+
+    if len(image.shape) < 3:
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
+    if screensize[0] < screensize[1]:
+        image = image_resize_ratio(
+            image,
+            height=screensize[0])
+    else:
+        image = image_resize_ratio(
+            image,
+            width=screensize[1])
+    offset_x = (emptyscreen.shape[0] - image.shape[0]) // 2
+    offset_y = (emptyscreen.shape[1] - image.shape[1]) // 2
+    emptyscreen[
+        offset_x:image.shape[0]+offset_x,
+        offset_y:image.shape[1]+offset_y,
+        :] = image
+
+    return emptyscreen
+
+def add_cross_hair(image):
+    thick = 3
+    midx = image.shape[0] // 2
+    midy = image.shape[1] // 2
+    image[midx-thick : midx+thick,:,1] = 255
+    image[:, midy-thick : midy+thick ,1] = 255
+
+    return image

@@ -44,8 +44,9 @@ def time_it(process):
 
 
 class screensizes(Enum):
+    format = ("height", "width")
     tzar = (480, 740)
-    windows_laptop = (1000, 1000)
+    windows_laptop = (1000, 4000)
     stryker = (480, 800)
 
 class RelayFunction(Enum):
