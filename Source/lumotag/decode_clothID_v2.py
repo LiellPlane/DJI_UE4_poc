@@ -306,12 +306,12 @@ def get_approx_shape_and_bbox(
     # occasionally we get a triangle or square with a blunt edge,
     # so remove this extra point by filtering outlier distances
 
-    if filtered_cont is None:
-        res, val = math_utils.filter_outlier_edges(approx)
-    else:
-        res, val = math_utils.filter_outlier_edges(filtered_cont)
-    if res is True:
-        filtered_cont = val
+    # if filtered_cont is None:
+    #     res, val = math_utils.filter_outlier_edges(approx)
+    # else:
+    #     res, val = math_utils.filter_outlier_edges(filtered_cont)
+    # if res is True:
+    #     filtered_cont = val
 
     
     minRect = cv2.minAreaRect(approx)
@@ -548,12 +548,17 @@ def analyse_candidates_shapematch(
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in squrs_found:
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"shapes_found_sqr")
+    if dataobject.debug == True:
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in tris_found:
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 2)
         dataobject.img_view_or_save_if_debug(
             debug_img,
-            f"shapes_found")
-
+            f"shapes_found_tri")
     if dataobject.debug == True:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)

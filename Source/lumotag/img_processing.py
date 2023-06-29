@@ -232,7 +232,9 @@ def add_cross_hair(image, adapt):
             image[midx-50:midx+50, midy-50:midy+50, :].mean())
     else:
         col = 255
+    image[midx-thick : midx+thick,:,:] = 0 
     image[midx-thick : midx+thick,:,1] = max(col, 50)
+    image[:, midy-thick : midy+thick ,:] = 0 
     image[:, midy-thick : midy+thick ,1] = max(col, 50)
 
     return image
