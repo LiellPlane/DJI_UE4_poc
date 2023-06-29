@@ -43,7 +43,7 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage); 
-        cv2.moveWindow("img", 0, 0)
+        cv2.moveWindow("img", 300, 0)
         if presskey==True:
             cv2.waitKey(0); #any key
     
