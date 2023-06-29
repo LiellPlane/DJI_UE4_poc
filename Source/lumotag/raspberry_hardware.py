@@ -99,15 +99,13 @@ class display(factory.display):
             output = cv2.resize(output, self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
         elif self.display_rotate == 0:
-            img = img_processing.resize_centre_img(
+            output = img_processing.resize_centre_img(
                 output,
                 self.screen_size)
-            img = img_processing.add_cross_hair(img)
+            output = img_processing.add_cross_hair(output)
             #output = cv2.resize(output, self.screen_size)
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
-
-        
 
 
         #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
