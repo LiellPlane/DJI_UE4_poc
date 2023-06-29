@@ -116,10 +116,12 @@ def main():
 
 
         # in this case 
-        result = torch_debounce(is_torch_reqd)
-        if result is True:
-            set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
-            set_laser(state=is_torch_reqd, strobe_cnt=0)
+        # result = torch_debounce(is_torch_reqd)
+        # if result is True:
+        #     set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
+        #     set_laser(state=is_torch_reqd, strobe_cnt=0)
+        set_torch(state=is_torch_reqd, strobe_cnt=0)
+        set_laser(state=is_torch_reqd, strobe_cnt=0)
 
         # desired behaviour: 
         # User presses trigger - gun fires immediately
