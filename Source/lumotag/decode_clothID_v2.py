@@ -296,6 +296,7 @@ def get_approx_shape_and_bbox(
     # If the second argument is True then it considers the contour to be closed.
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
+    
     approx = cv2.approxPolyDP(contour, dataobject.approx_epsilon*cv2.arcLength(contour, True), True)
 
     filtered_cont = None
@@ -509,7 +510,7 @@ def analyse_candidates_shapematch(
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
     contour_stats = []
-    with time_it("get approx shape"):
+    with time_it("AC: get approx shape"):
         for index, c in enumerate(contours):
             contour_stats.append(get_approx_shape_and_bbox(c, dataobject, index))
 
@@ -764,7 +765,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
         if len(contours) == 0:
             return img_grayscale
-        with time_it("analyse_candidates TOTAL"):
+        with time_it("AC: TOTAL"):
             output_img = analyse_candidates_shapematch(original_img=inputimg,
                                                     original_img_grayscale = img_grayscale,
                                                     contours = contours,
