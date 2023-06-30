@@ -402,43 +402,47 @@ def get_possible_candidates(img, dataobject : WorkingData):
 
     dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
-    contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    with time_it("get possible candidates: find contours"):
+        contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    print(f"{len(contours)} contours found")
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
 
-    # filter by area
-    contours_area = []
-    hierarchy_area = []
-    if hierarchy is None or len(contours) == 0:
-        return [], []
-    for con, hier in zip(contours, hierarchy[0]):
-        area = cv2.contourArea(con)
-        #print(area)
-        if (area > smallest_area) and (area < largest_area):
-            contours_area.append(con)
-            hierarchy_area.append(hier)
-        else:
-            pass
-            #print("rejeted area", area)
-            #debug_save_images(img, [con], "rejected_area", dataobject)
-    if len(contours_area) != len(hierarchy_area):
-        raise Exception("bad unzip - use python 3.10 for strict=true")
 
-    debug_save_images(img, contours_area, Debug_Images.Filtered_area_contours.value, dataobject)
-    #ff
-    # filter by circularity - * warning might filter out very fuzzy images
-    contours_cirles = []
-    hierarchy_cirles = []
-    for con, hier in zip(contours_area, hierarchy_area):
-        perimeter = cv2.arcLength(con, True)
-        area = cv2.contourArea(con)
-        if perimeter == 0:
-            break
-        circularity = 4*math.pi*(area/(perimeter*perimeter))
-        if circularity > 0.2:
-            contours_cirles.append(con)
-            hierarchy_cirles.append(hier)
-    if len(contours_cirles) != len(hierarchy_cirles):
-        raise Exception("bad unzip - use python 3.10 for strict=true")
+    with time_it("get possible candidates: filter"):
+        # filter by area
+        contours_area = []
+        hierarchy_area = []
+        if hierarchy is None or len(contours) == 0:
+            return [], []
+        for con, hier in zip(contours, hierarchy[0]):
+            area = cv2.contourArea(con)
+            #print(area)
+            if (area > smallest_area) and (area < largest_area):
+                contours_area.append(con)
+                hierarchy_area.append(hier)
+            else:
+                pass
+                #print("rejeted area", area)
+                #debug_save_images(img, [con], "rejected_area", dataobject)
+        if len(contours_area) != len(hierarchy_area):
+            raise Exception("bad unzip - use python 3.10 for strict=true")
+
+        debug_save_images(img, contours_area, Debug_Images.Filtered_area_contours.value, dataobject)
+        #ff
+        # filter by circularity - * warning might filter out very fuzzy images
+        contours_cirles = []
+        hierarchy_cirles = []
+        for con, hier in zip(contours_area, hierarchy_area):
+            perimeter = cv2.arcLength(con, True)
+            area = cv2.contourArea(con)
+            if perimeter == 0:
+                break
+            circularity = 4*math.pi*(area/(perimeter*perimeter))
+            if circularity > 0.2:
+                contours_cirles.append(con)
+                hierarchy_cirles.append(hier)
+        if len(contours_cirles) != len(hierarchy_cirles):
+            raise Exception("bad unzip - use python 3.10 for strict=true")
     debug_save_images(img, contours_cirles, Debug_Images.filtered_circularity_contours.value, dataobject)
 
 
