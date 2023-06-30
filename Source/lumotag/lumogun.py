@@ -122,7 +122,7 @@ def main():
         #     set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
         #     set_laser(state=is_torch_reqd, strobe_cnt=0)
         set_torch(state=is_torch_reqd, strobe_cnt=0)
-        
+
         set_laser(state=is_torch_reqd, strobe_cnt=0)
 
         # desired behaviour: 
@@ -151,6 +151,7 @@ def main():
             strobe_cnt=0) # click noise from relay only
 
         cap_img = next(image_capture)
+        print("img size", cap_img.shape())
         central_img = img_processing.get_internal_section(cap_img, (500, 500))
         img_with_analysis = decode_clothID.find_TV_tag(central_img, workingdata)
         fart = img_processing.implant_internal_section(cap_img, img_with_analysis)
