@@ -104,12 +104,12 @@ class CSI_Camera(factory.Camera):
         pass
 
     def gen_image(self):
-        blank_image = np.zeros((500, 500, 3), np.uint8)
+        blank_image = np.zeros((1456, 1088, 3), np.uint8)
         blank_image[:,:,:] = random.randint(0,255)
         blank_image = cv2.circle(
             blank_image,
-            (250, 250),
-            40,
+            (blank_image.shape[0]//2, blank_image.shape[1]//2),
+            90,
             50,
             5)
         return blank_image

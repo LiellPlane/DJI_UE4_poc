@@ -260,6 +260,8 @@ def implant_internal_section(img, img_to_implant):
         img_to_implant = cv2.cvtColor(img_to_implant, cv2.COLOR_GRAY2RGB)
     img_to_implant[0:img_to_implant.shape[0]-1, 1,:] = 255
     img_to_implant[0:img_to_implant.shape[0]-1, img_to_implant.shape[1]-1,:] = 255
+    img_to_implant[1, 0:img_to_implant.shape[1]-1,:] = 255
+    img_to_implant[img_to_implant.shape[0]-1, 0:img_to_implant.shape[1]-1,:] = 255
     midx = img.shape[0] // 2
     midy = img.shape[1] // 2
     regionx = img_to_implant.shape[0] // 2
