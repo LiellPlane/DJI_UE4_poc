@@ -250,9 +250,10 @@ def get_internal_section(img, size: tuple[int, int]):
 
 def implant_internal_section(img, img_to_implant):
 
-    if len(img.shape) < 3 and len(img_to_implant.shape) == 3:
+    if len(img.shape) < 3:
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
-
+    if len(img_to_implant.shape) < 3:
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     midx = img.shape[0] // 2
     midy = img.shape[1] // 2
     regionx = img_to_implant.shape[0] // 2
