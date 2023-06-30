@@ -734,7 +734,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
         #squr_img=edge_img(gray_orig)
         #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
         with time_it("canny loop"):
-            canny_params = [(i,i+20) for i in range(10,100,20)]
+            canny_params = [(i,i+20) for i in range(30,100,20)]
             canny_img = np.zeros_like(squr_img)
             for lr, uper in canny_params:
                 next_canny_img=img_pro.simple_canny(
@@ -746,7 +746,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
 
 
-        #canny_img = cv2.dilate(canny_img,np.ones((5,5),np.uint8),iterations = 1)
+        canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
         squr_img=img_pro.threshold_img_static(canny_img,low=40,high=255)
         dataobject.img_view_or_save_if_debug(squr_img, "thresholded_canny")
     #with time_it():

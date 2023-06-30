@@ -383,6 +383,8 @@ class Camera(ABC):
         img = self.gen_image()
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        
         self.last_img = img
         return img
 
