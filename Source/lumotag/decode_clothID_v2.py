@@ -509,8 +509,9 @@ def analyse_candidates_shapematch(
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
     contour_stats = []
-    for index, c in enumerate(contours):
-        contour_stats.append(get_approx_shape_and_bbox(c, dataobject, index))
+    with time_it("get approx shape"):
+        for index, c in enumerate(contours):
+            contour_stats.append(get_approx_shape_and_bbox(c, dataobject, index))
 
 
     if dataobject.debug == True:
@@ -694,79 +695,82 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 def find_TV_tag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
+    with time_it("total time"):
     #~2ms
-    with time_it("grayscale"):
-        if len(inputimg.shape)>2:
-            img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
-        else:
-            img_grayscale = inputimg
-    dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
-    #copy original image into folder
-    #orig_img = img.copy()
-    
-    #~3ms for grayscale
-    with time_it("pre-processing/filtering"):
-        #print("equalisation")
-        # orig_img=img_pro.clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
-        # dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value, resize=False)
-        # ''''test area'''
-   
-   #this section about 25ms
-    #with time_it():
+        with time_it("grayscale"):
+            if len(inputimg.shape)>2:
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+            else:
+                img_grayscale = inputimg
+        dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
+        #copy original image into folder
+        #orig_img = img.copy()
         
-        #gray_orig = img_pro.mono_img(orig_img)
-    #with time_it():
-        #print("median_blur")
-        ##blurred = median_blur(gray_orig,7)
-        squr_img = cv2.blur(inputimg,(3,3)) # fastest filter
-        #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
-        #edge_im = edge_img(blurred)edge_img
-    #with time_it():
-        #print("canny_filter")
-        #blurred = median_blur(gray_orig,7)
-        #plop = edge_img(squr_img)
-        #dataobject.img_view_or_save_if_debug(plop, "canny_filter")
-        #edge_im = edge_img(blurred)edge_img
-    #with time_it():
-        #print("threshold_img")
-
-
-        #squr_img=edge_img(gray_orig)
-        #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
-        with time_it("canny loop"):
-            canny_params = [(i,i+20) for i in range(30,100,20)]
-            canny_img = np.zeros_like(squr_img)
-            for lr, uper in canny_params:
-                next_canny_img=img_pro.simple_canny(
-                    blurred_img=squr_img,
-                    lower=lr,
-                    upper=uper)
-                dataobject.img_view_or_save_if_debug(next_canny_img, f"cannyimage{lr}", resize=False)
-                canny_img = np.add(canny_img,next_canny_img) 
-            dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
-
-
-        canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
-        squr_img=img_pro.threshold_img_static(canny_img,low=40,high=255)
-        dataobject.img_view_or_save_if_debug(squr_img, "thresholded_canny")
-    #with time_it():
-        #print("invert_img")
-        #squr_img=invert_img(squr_img)
-        #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
-
+        #~3ms for grayscale
+        with time_it("PP TOTAL"):
+            #print("equalisation")
+            # orig_img=img_pro.clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
+            # dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value, resize=False)
+            # ''''test area'''
     
-    with time_it("get_possible_candidates total"):
-        contours, hierarchy=get_possible_candidates(squr_img, dataobject)
+    #this section about 25ms
+        #with time_it():
+            
+            #gray_orig = img_pro.mono_img(orig_img)
+        #with time_it():
+            #print("median_blur")
+            ##blurred = median_blur(gray_orig,7)
+            with time_it("PP:blur"):
+                squr_img = cv2.blur(inputimg,(3,3)) # fastest filter
+            #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
+            #edge_im = edge_img(blurred)edge_img
+        #with time_it():
+            #print("canny_filter")
+            #blurred = median_blur(gray_orig,7)
+            #plop = edge_img(squr_img)
+            #dataobject.img_view_or_save_if_debug(plop, "canny_filter")
+            #edge_im = edge_img(blurred)edge_img
+        #with time_it():
+            #print("threshold_img")
 
-    if len(contours) == 0:
-        return img_grayscale
-    with time_it("analyse_candidates"):
-        output_img = analyse_candidates_shapematch(original_img=inputimg,
-                                                original_img_grayscale = img_grayscale,
-                                                contours = contours,
-                                                contour_hierarchy = hierarchy,
-                                                dataobject = dataobject)
-    # if analyse_IDs is not None:
-    #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
-    #     return analyse_IDs, playerfound
+
+            #squr_img=edge_img(gray_orig)
+            #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
+            with time_it("PP: canny loop"):
+                canny_params = [(i,i+20) for i in range(30,100,70)]
+                canny_img = np.zeros_like(squr_img)
+                for lr, uper in canny_params:
+                    next_canny_img=img_pro.simple_canny(
+                        blurred_img=squr_img,
+                        lower=lr,
+                        upper=uper)
+                    dataobject.img_view_or_save_if_debug(next_canny_img, f"cannyimage{lr}", resize=False)
+                    canny_img = np.add(canny_img,next_canny_img)
+                dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
+
+            with time_it("PP:dilate"):
+                canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
+            with time_it("PP:threshold"):
+                squr_img=img_pro.threshold_img_static(canny_img,low=40,high=255)
+            dataobject.img_view_or_save_if_debug(squr_img, "thresholded_canny")
+        #with time_it():
+            #print("invert_img")
+            #squr_img=invert_img(squr_img)
+            #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
+
+        
+        with time_it("get_possible_candidates TOTAL"):
+            contours, hierarchy=get_possible_candidates(squr_img, dataobject)
+
+        if len(contours) == 0:
+            return img_grayscale
+        with time_it("analyse_candidates TOTAL"):
+            output_img = analyse_candidates_shapematch(original_img=inputimg,
+                                                    original_img_grayscale = img_grayscale,
+                                                    contours = contours,
+                                                    contour_hierarchy = hierarchy,
+                                                    dataobject = dataobject)
+        # if analyse_IDs is not None:
+        #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
+        #     return analyse_IDs, playerfound
     return output_img

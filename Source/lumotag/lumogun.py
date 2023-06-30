@@ -5,6 +5,7 @@ from functools import partial
 import msgs
 import time
 import decode_clothID_v2 as decode_clothID
+import img_processing
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 RASP_PI_4_OS = "armv7l"
 
@@ -148,9 +149,9 @@ def main():
             state=trigger_debounce.get_heldstate(),
             strobe_cnt=0) # click noise from relay only
 
-
-        cam_img = next(image_capture)
-        img_with_analysis = decode_clothID.find_TV_tag(cam_img, workingdata)
+        cap_img = next(image_capture)
+        cap_img = img_processing.image_resize_ratio(cap_img, width=800)
+        img_with_analysis = decode_clothID.find_TV_tag(cap_img, workingdata)
         display.display_output(img_with_analysis)
 
     raise RuntimeError("something broke out of loop")
