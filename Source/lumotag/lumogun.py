@@ -152,9 +152,9 @@ def main():
         cap_img = next(image_capture)
         central_img = img_processing.get_internal_section(cap_img, (500, 500))
         img_with_analysis = decode_clothID.find_TV_tag(central_img, workingdata)
-        img_processing.implant_internal_section(cap_img, img_with_analysis)
+        fart = img_processing.implant_internal_section(cap_img, img_with_analysis)
         #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
-        display.display_output(cap_img)
+        display.display_output(fart)
 
     raise RuntimeError("something broke out of loop")
 

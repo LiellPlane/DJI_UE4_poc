@@ -244,9 +244,13 @@ def get_internal_section(img, size: tuple[int, int]):
     midy = img.shape[1] // 2
     regionx = size[0]//2
     regiony = size[1]//2
+    left = max(midx-regionx, 0)
+    right = min(midx+regionx, img.shape[0])
+    top = max(midy-regiony, 0)
+    lower = min(midy+regiony, img.shape[1])
     return img[
-        midx-regionx:midx+regionx,
-        midy-regiony:midy+regiony]
+        left: right,
+        top: lower]
 
 def implant_internal_section(img, img_to_implant):
 
@@ -254,6 +258,8 @@ def implant_internal_section(img, img_to_implant):
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     if len(img_to_implant.shape) < 3:
         img_to_implant = cv2.cvtColor(img_to_implant, cv2.COLOR_GRAY2RGB)
+    img_to_implant[0:img_to_implant.shape[0]-1, 1,:] = 255
+    img_to_implant[0:img_to_implant.shape[0]-1, img_to_implant.shape[1]-1,:] = 255
     midx = img.shape[0] // 2
     midy = img.shape[1] // 2
     regionx = img_to_implant.shape[0] // 2
