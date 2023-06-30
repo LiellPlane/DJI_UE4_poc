@@ -6,6 +6,7 @@ import msgs
 import time
 import decode_clothID_v2 as decode_clothID
 import img_processing
+from utils import time_it
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 RASP_PI_4_OS = "armv7l"
 
@@ -109,54 +110,60 @@ def main():
 
         GUN_CONFIGURATION.loop_wait()
 
-        #accelerometer.update_vel()
-        results_trig_positions = (triggers.test_states())
+        with time_it("gun states set"):
+            #accelerometer.update_vel()
+            results_trig_positions = (triggers.test_states())
 
-        is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
-        is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
+            is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
+            is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
 
 
-        # in this case 
-        # result = torch_debounce(is_torch_reqd)
-        # if result is True:
-        #     set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
-        #     set_laser(state=is_torch_reqd, strobe_cnt=0)
-        set_torch(state=is_torch_reqd, strobe_cnt=0)
+            # in this case 
+            # result = torch_debounce(is_torch_reqd)
+            # if result is True:
+            #     set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
+            #     set_laser(state=is_torch_reqd, strobe_cnt=0)
+            set_torch(state=is_torch_reqd, strobe_cnt=0)
 
-        set_laser(state=is_torch_reqd, strobe_cnt=0)
+            set_laser(state=is_torch_reqd, strobe_cnt=0)
 
-        # desired behaviour: 
-        # User presses trigger - gun fires immediately
-        # after 0.N seconds, relay clicks off
-        # user can now fire again immediately
-        # any other behaviour during refractory period is ignored
-        result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
-        if result is True:
-            # true will only be available as an impulse after
-            # pulling trigger, then go low again - but
-            # mem state of debouncer will remain high
-            msgs.package_send_report(
-                type_=msgs.MessageTypes.HIT_REPORT.value,
-                image=image_capture.last_img,
-                gun_config=GUN_CONFIGURATION,
-                messenger=messenger,
-                target="some twat",
-                message_str="lol QQ l2p"
-            )
+            # desired behaviour: 
+            # User presses trigger - gun fires immediately
+            # after 0.N seconds, relay clicks off
+            # user can now fire again immediately
+            # any other behaviour during refractory period is ignored
+            result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+            if result is True:
+                # true will only be available as an impulse after
+                # pulling trigger, then go low again - but
+                # mem state of debouncer will remain high
+                msgs.package_send_report(
+                    type_=msgs.MessageTypes.HIT_REPORT.value,
+                    image=image_capture.last_img,
+                    gun_config=GUN_CONFIGURATION,
+                    messenger=messenger,
+                    target="some twat",
+                    message_str="lol QQ l2p"
+                )
 
-        # trigger is held on by debouncer even if user releases
-        # trigger
-        set_trigger(
-            state=trigger_debounce.get_heldstate(),
-            strobe_cnt=0) # click noise from relay only
+            # trigger is held on by debouncer even if user releases
+            # trigger
+            set_trigger(
+                state=trigger_debounce.get_heldstate(),
+                strobe_cnt=0) # click noise from relay only
 
-        cap_img = next(image_capture)
-        print("img size", cap_img.shape)
-        central_img = img_processing.get_internal_section(cap_img, (500, 500))
-        img_with_analysis = decode_clothID.find_TV_tag(central_img, workingdata)
-        fart = img_processing.implant_internal_section(cap_img, img_with_analysis)
-        #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
-        display.display_output(fart)
+        with time_it("gun image stuff TOTAL"):
+            with time_it("get next image"):
+                cap_img = next(image_capture)
+            with time_it("gun get centra img"):
+                central_img = img_processing.get_internal_section(cap_img, (500, 500))
+            with time_it("gun total analysis time"):
+                img_with_analysis = decode_clothID.find_TV_tag(central_img, workingdata)
+            with time_it("gun implant image"):
+                fart = img_processing.implant_internal_section(cap_img, img_with_analysis)
+            #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
+            with time_it("gun display"):
+                display.display_output(fart)
 
     raise RuntimeError("something broke out of loop")
 

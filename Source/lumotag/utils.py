@@ -1,4 +1,15 @@
 import time
+from contextlib import contextmanager
+from typing import Iterator
+
+@contextmanager
+def time_it(comment) -> Iterator[None]:
+    tic: float = time.perf_counter()
+    try:
+        yield
+    finally:
+        toc: float = time.perf_counter()
+        print(f"{comment}:Computation time = {1000*(toc - tic):.3f}ms")
 
 class TimeDiffObject:
     """stopwatch function"""
