@@ -238,3 +238,25 @@ def add_cross_hair(image, adapt):
     image[:, midy-thick : midy+thick ,1] = max(col, 50)
 
     return image
+
+def get_internal_section(img, size: tuple[int, int]):
+    midx = img.shape[0] // 2
+    midy = img.shape[1] // 2
+    regionx = size[0]//2
+    regiony = size[1]//2
+    return img[
+        midx-regionx:midx+regionx,
+        midy-regiony:midy+regiony]
+
+def implant_internal_section(img, img_to_implant):
+
+    if len(img.shape) < 3 and len(img_to_implant.shape) == 3:
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
+
+    midx = img.shape[0] // 2
+    midy = img.shape[1] // 2
+    regionx = img_to_implant.shape[0] // 2
+    regiony = img_to_implant.shape[1] // 2
+    img[midx-regionx:midx+regionx,
+        midy-regiony:midy+regiony, :] = img_to_implant
+    return img
