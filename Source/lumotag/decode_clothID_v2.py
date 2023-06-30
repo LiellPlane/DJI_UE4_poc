@@ -22,7 +22,7 @@ def time_it(comment) -> Iterator[None]:
         yield
     finally:
         toc: float = time.perf_counter()
-        print(f"{comment}:Computation time = {1000*(toc - tic):.3f}ms")
+        #print(f"{comment}:Computation time = {1000*(toc - tic):.3f}ms")
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
