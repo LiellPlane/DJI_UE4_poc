@@ -190,7 +190,7 @@ def image_resize_ratio(image, width = None, height = None, inter = cv2.INTER_ARE
         dim = (width, int(h * r))
 
     # resize the image
-    resized = cv2.resize(image, dim, interpolation = inter)
+    resized = cv2.resize(image, dim, interpolation = cv2.INTER_NEAREST)
 
     # return the resized image
     return resized
@@ -199,10 +199,8 @@ def resize_centre_img(image, screensize):
 
     # this is slow - might be faster passing in the image again?
     # TODO
+    # empty is faster than zeros
     emptyscreen = np.zeros((screensize + (3,)), np.uint8)
-
-    if len(image.shape) < 3:
-        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
     if screensize[0] < screensize[1]:
         image = image_resize_ratio(
@@ -213,6 +211,9 @@ def resize_centre_img(image, screensize):
             image,
             width=screensize[1])
 
+
+    if len(image.shape) < 3:
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB) 
     offset_x = (emptyscreen.shape[0] - image.shape[0]) // 2
     offset_y = (emptyscreen.shape[1] - image.shape[1]) // 2
     emptyscreen[
@@ -267,5 +268,5 @@ def implant_internal_section(img, img_to_implant):
     regionx = img_to_implant.shape[0] // 2
     regiony = img_to_implant.shape[1] // 2
     img[midx-regionx:midx+regionx,
-        midy-regiony:midy+regiony, :] = img_to_implant
+       midy-regiony:midy+regiony, :] = img_to_implant
     return img

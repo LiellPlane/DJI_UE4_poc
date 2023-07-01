@@ -156,11 +156,11 @@ def main():
             with time_it("get next image"):
                 cap_img = next(image_capture)
             with time_it("gun get centra img"):
-                central_img = img_processing.get_internal_section(cap_img, (500, 500))
+                central_img = img_processing.get_internal_section(cap_img, (5000, 5000))
             with time_it("gun total analysis time"):
-                img_with_analysis = decode_clothID.find_TV_tag(central_img, workingdata)
+               central_img = decode_clothID.find_TV_tag(central_img, workingdata)
             with time_it("gun implant image"):
-                fart = img_processing.implant_internal_section(cap_img, img_with_analysis)
+                fart = img_processing.implant_internal_section(cap_img, central_img)
             #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
             with time_it("gun display"):
                 display.display_output(fart)
