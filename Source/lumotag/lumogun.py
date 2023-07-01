@@ -156,7 +156,7 @@ def main():
             with time_it("get next image"):
                 cap_img = next(image_capture)
             with time_it("gun get centra img"):
-                central_img = img_processing.get_internal_section(cap_img, (5000, 5000))
+                central_img = img_processing.get_internal_section(cap_img, (500, 500))
             with time_it("gun total analysis time"):
                central_img = decode_clothID.find_TV_tag(central_img, workingdata)
             with time_it("gun implant image"):
