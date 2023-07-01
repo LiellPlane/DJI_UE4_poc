@@ -441,12 +441,9 @@ def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, ori
                 cannyied_img[
                 xrange[xdex]: xrange[xdex+1],
                 yrange[ydex]: yrange[ydex+1]] = 0
-                orig_img_area = original_image[
-                xrange[xdex]: xrange[xdex+1],
-                yrange[ydex]: yrange[ydex+1]]
                 original_image[
                 xrange[xdex]: xrange[xdex+1],
-                yrange[ydex]: yrange[ydex+1]] = cv2.blur(orig_img_area,(21,21))
+                yrange[ydex]: yrange[ydex+1]] = 0
 
     return cannyied_img, original_image
 
@@ -582,7 +579,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
                 dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
 
             with time_it("PP: remove high freqs"):
-                fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 8,40,img_grayscale)
+                fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 8,30,img_grayscale)
                 dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
             with time_it("PP:dilate"):
                 canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
