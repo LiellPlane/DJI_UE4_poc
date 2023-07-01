@@ -415,10 +415,14 @@ def analyse_candidates_shapematch(
         
     #dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
     output_colour = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
+
+    for c in unknown_found:
+        cv2.drawContours(output_colour, [c.approx_contour], -1, (30,0,90), 3)
     for c in squrs_found:
         cv2.drawContours(output_colour, [c.approx_contour], -1, (0,255,0), 3)
     for c in tris_found:
         cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
+    
     return output_colour
 
 
