@@ -120,7 +120,9 @@ class gun_config(ABC):
     @abstractmethod
     def light_strobe_cnt(self):
         ...
-
+    @abstractmethod
+    def internal_img_crop(self):
+        ...
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
@@ -175,6 +177,10 @@ class stryker_config(gun_config):
     @property
     def light_strobe_cnt(self):
         return(0)
+    
+    @property
+    def internal_img_crop(self):
+        return((500,500))
 
 
 class TZAR_config(gun_config):
@@ -221,6 +227,10 @@ class TZAR_config(gun_config):
     def light_strobe_cnt(self):
         return(4)
 
+    @property
+    def internal_img_crop(self):
+        return((500,500))
+
 class simitzar_config(gun_config):
     model = "SIMITZAR"
     def __init__(self) -> None:
@@ -266,6 +276,10 @@ class simitzar_config(gun_config):
     @property
     def light_strobe_cnt(self):
         return(0)
+
+    @property
+    def internal_img_crop(self):
+        return((500,500))
 
 class Accelerometer(ABC):
 

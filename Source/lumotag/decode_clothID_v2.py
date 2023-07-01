@@ -230,7 +230,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
 
     smallest_area = (img.shape[0]*0.01) *  (img.shape[1]*0.01)
-    largest_area = (img.shape[0]*0.5) *  (img.shape[1]*0.5)
+    largest_area = (img.shape[0]*0.9) *  (img.shape[1]*0.9)
 
     dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
@@ -421,6 +421,35 @@ def analyse_candidates_shapematch(
         cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
     return output_colour
 
+
+def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):
+    """expects a canny image or whatever results in edges (high frequencies)"""
+    imgx = cannyied_img.shape[0]
+    imgy = cannyied_img.shape[1]
+    xrange = [i for i in range(0, imgx, int(imgx*(block_pc/100)//1))]
+    xrange += [imgx for i in [xrange[-1]] if i != imgx]
+    yrange = [i for i in range(0, imgy, int(imgy*(block_pc/100)//1))]
+    yrange += [imgy for i in [xrange[-1]] if i != imgy]
+    max = cannyied_img.max()
+    for xdex in range (0, len(xrange)-1):
+        for ydex in range (0, len(yrange)-1):
+            testarea = cannyied_img[
+                xrange[xdex]: xrange[xdex+1],
+                yrange[ydex]: yrange[ydex+1]]
+            #b = np.array(random.choices(testarea, k=2))
+            if testarea.mean() > max_white_per_block:
+                cannyied_img[
+                xrange[xdex]: xrange[xdex+1],
+                yrange[ydex]: yrange[ydex+1]] = 0
+                orig_img_area = original_image[
+                xrange[xdex]: xrange[xdex+1],
+                yrange[ydex]: yrange[ydex+1]]
+                original_image[
+                xrange[xdex]: xrange[xdex+1],
+                yrange[ydex]: yrange[ydex+1]] = cv2.blur(orig_img_area,(21,21))
+
+    return cannyied_img, original_image
+
 def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
@@ -552,6 +581,9 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
                     canny_img = np.add(canny_img,next_canny_img)
                 dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
 
+            with time_it("PP: remove high freqs"):
+                fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 8,40,img_grayscale)
+                dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
             with time_it("PP:dilate"):
                 canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
             with time_it("PP:threshold"):

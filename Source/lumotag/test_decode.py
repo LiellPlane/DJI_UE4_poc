@@ -24,7 +24,7 @@ def read_img(img_filepath):
 
 
 
-workingdata = decode_clothID.WorkingData(debug=False)
+workingdata = decode_clothID.WorkingData(debug=True)
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
 
