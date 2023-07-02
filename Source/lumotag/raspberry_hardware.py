@@ -141,7 +141,7 @@ class display(factory.display):
     
                 img, scale_factor = img_processing.resize_centre_img(
                     main_img,
-                    self.screen_size)
+                    tuple(reversed(self.screen_size)))
                 img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
                 img_to_implant = cv2.rotate(img_to_implant, cv2.ROTATE_90_COUNTERCLOCKWISE)
                 imp_size_x = int(img_to_implant.shape[0] * scale_factor)
