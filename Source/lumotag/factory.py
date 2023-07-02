@@ -133,6 +133,9 @@ class display(ABC):
     def display_output(self):
         pass
 
+    @abstractmethod
+    def display_output_with_implant(self):
+        pass
 
 class stryker_config(gun_config):
     model = "STRYKER"
@@ -280,7 +283,7 @@ class simitzar_config(gun_config):
 
     @property
     def internal_img_crop(self):
-        return((500,500))
+        return((5000,5000))
 
 class Accelerometer(ABC):
 

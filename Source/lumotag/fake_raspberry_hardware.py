@@ -117,10 +117,22 @@ class CSI_Camera(factory.Camera):
 
 class display(factory.display):
     def display_output(self, output):
-        img = img_processing.resize_centre_img(output, self.screen_size)
+        img, scale_factor = img_processing.resize_centre_img(output, self.screen_size)
         img = img_processing.add_cross_hair(img, adapt=True)
         lumo_viewer(img, 0, False, False)
 
+    def display_output_with_implant(self, main_img, img_to_implant):
+        """resize both images before implantating central graphic as
+        this can be a significant contribution to update latency"""
+        img, scale_factor = img_processing.resize_centre_img(
+             main_img,
+             self.screen_size)
+        imp_size_x = int(img_to_implant.shape[0] * scale_factor)
+        imp_size_y = int(img_to_implant.shape[1] * scale_factor)
+        img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
+        output = img_processing.implant_internal_section(img, img_to_implant)
+        output = img_processing.add_cross_hair(output, adapt=True)
+        lumo_viewer(output, 0, False, False)
 
 class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):

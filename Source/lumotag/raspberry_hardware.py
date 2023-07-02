@@ -101,7 +101,7 @@ class display(factory.display):
             output = cv2.resize(output, self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
         elif self.display_rotate == 0:
-            output = img_processing.resize_centre_img(
+            output, scale_factor = img_processing.resize_centre_img(
                output,
                self.screen_size)
             output = img_processing.add_cross_hair(output, adapt=True)
@@ -109,13 +109,25 @@ class display(factory.display):
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
 
-
         #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
 
         #output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
 
         lumo_viewer(output,0,False,False)
 
+    def display_output_with_implant(self, main_img, img_to_implant):
+            """avoid performing higher workload by resizing images to
+            display size before any rotation or copying """
+            img, scale_factor = img_processing.resize_centre_img(
+                main_img,
+                self.screen_size)
+            imp_size_x = int(img_to_implant.shape[0] * scale_factor)
+            imp_size_y = int(img_to_implant.shape[1] * scale_factor)
+            img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
+            output = img_processing.implant_internal_section(img, img_to_implant)
+            output = img_processing.add_cross_hair(output, adapt=True)
+    
+            lumo_viewer(output, 0, False, False)
 
 class Triggers(factory.Triggers):
 

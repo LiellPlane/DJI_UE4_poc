@@ -195,7 +195,7 @@ def image_resize_ratio(image, width = None, height = None, inter = cv2.INTER_ARE
     # return the resized image
     return resized
 
-def resize_centre_img(image, screensize):
+def resize_centre_img(inputimage, screensize):
 
     # this is slow - might be faster passing in the image again?
     # TODO
@@ -204,11 +204,11 @@ def resize_centre_img(image, screensize):
 
     if screensize[0] < screensize[1]:
         image = image_resize_ratio(
-            image,
+            inputimage,
             height=screensize[0])
     else:
         image = image_resize_ratio(
-            image,
+            inputimage,
             width=screensize[1])
 
 
@@ -221,7 +221,9 @@ def resize_centre_img(image, screensize):
         offset_y:image.shape[1]+offset_y,
         :] = image
 
-    return emptyscreen
+    # should be equal scaling for dims as maintains aspect ratio
+    scale_factor = (image.shape[0] / inputimage.shape[0])
+    return emptyscreen, scale_factor
 
 def add_cross_hair(image, adapt):
     thick = 3
@@ -259,14 +261,17 @@ def implant_internal_section(img, img_to_implant):
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     if len(img_to_implant.shape) < 3:
         img_to_implant = cv2.cvtColor(img_to_implant, cv2.COLOR_GRAY2RGB)
-    img_to_implant[0:img_to_implant.shape[0]-1, 1,:] = 255
-    img_to_implant[0:img_to_implant.shape[0]-1, img_to_implant.shape[1]-1,:] = 255
-    img_to_implant[1, 0:img_to_implant.shape[1]-1,:] = 255
-    img_to_implant[img_to_implant.shape[0]-1, 0:img_to_implant.shape[1]-1,:] = 255
+    #draw white border around area to implant
+    img_to_implant[2:img_to_implant.shape[0]-2, 2,:] = 255
+    img_to_implant[2:img_to_implant.shape[0]-2, img_to_implant.shape[1]-1,:] = 255
+    img_to_implant[2, 2:img_to_implant.shape[1]-2,:] = 255
+    img_to_implant[img_to_implant.shape[0]-2, 2:img_to_implant.shape[1]-1,:] = 255
     midx = img.shape[0] // 2
     midy = img.shape[1] // 2
     regionx = img_to_implant.shape[0] // 2
     regiony = img_to_implant.shape[1] // 2
+    # specifying the area to implant is incase of odd sized half, so might miss 
+    # a pixel leading to broadcast error
     img[midx-regionx:midx+regionx,
-       midy-regiony:midy+regiony, :] = img_to_implant
+       midy-regiony:midy+regiony, :] = img_to_implant[0:regionx*2, 0:regiony*2]
     return img
