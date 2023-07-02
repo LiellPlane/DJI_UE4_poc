@@ -118,14 +118,32 @@ class display(factory.display):
     def display_output_with_implant(self, main_img, img_to_implant):
             """avoid performing higher workload by resizing images to
             display size before any rotation or copying """
-            img, scale_factor = img_processing.resize_centre_img(
-                main_img,
-                self.screen_size)
-            imp_size_x = int(img_to_implant.shape[0] * scale_factor)
-            imp_size_y = int(img_to_implant.shape[1] * scale_factor)
-            img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
-            output = img_processing.implant_internal_section(img, img_to_implant)
-            output = img_processing.add_cross_hair(output, adapt=True)
+            if self.display_rotate == 0:
+
+                img, scale_factor = img_processing.resize_centre_img(
+                    main_img,
+                    self.screen_size)
+                imp_size_x = int(img_to_implant.shape[0] * scale_factor)
+                imp_size_y = int(img_to_implant.shape[1] * scale_factor)
+                img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
+                output = img_processing.implant_internal_section(img, img_to_implant)
+                output = img_processing.add_cross_hair(output, adapt=True)
+
+            elif self.display_rotate == -90 or self.display_rotate == 270:
+    
+                img, scale_factor = img_processing.resize_centre_img(
+                    main_img,
+                    tuple(reversed(self.screen_size)))
+                img = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                img_to_implant = cv2.rotate(img_to_implant, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                imp_size_x = int(img_to_implant.shape[0] * scale_factor)
+                imp_size_y = int(img_to_implant.shape[1] * scale_factor)
+                img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
+                output = img_processing.implant_internal_section(img, img_to_implant)
+                output = img_processing.add_cross_hair(output, adapt=True)
+            else:
+                raise Exception("unhandled screen rotation", self.display_rotate)
+
     
             lumo_viewer(output, 0, False, False)
 
