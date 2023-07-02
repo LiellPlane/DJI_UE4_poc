@@ -137,8 +137,13 @@ class display(factory.display):
         img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
         output = img_processing.implant_internal_section(img, img_to_implant)
         output = img_processing.add_cross_hair(output, adapt=True)
-        lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
-
+        lumo_viewer(
+            inputimage=output,
+            move_windowx=self.opencv_win_pos[0],
+            move_windowy=self.opencv_win_pos[1],
+            pausetime_Secs=0,
+            presskey=False,
+            destroyWindow=False)
 class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):
         pass

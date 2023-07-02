@@ -45,7 +45,7 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
-        cv2.moveWindow("img", move_windowx, move_windowy)
+        #cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
     
@@ -115,7 +115,13 @@ class display(factory.display):
 
         #output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
 
-        lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
+            lumo_viewer(
+                inputimage=output,
+                move_windowx=self.opencv_win_pos[0],
+                move_windowy=self.opencv_win_pos[1],
+                pausetime_Secs=0,
+                presskey=False,
+                destroyWindow=False)
 
     def display_output_with_implant(self, main_img, img_to_implant):
             """avoid performing higher workload by resizing images to
@@ -147,7 +153,13 @@ class display(factory.display):
                 raise Exception("unhandled screen rotation", self.display_rotate)
 
     
-            lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
+            lumo_viewer(
+                inputimage=output,
+                move_windowx=self.opencv_win_pos[0],
+                move_windowy=self.opencv_win_pos[1],
+                pausetime_Secs=0,
+                presskey=False,
+                destroyWindow=False)
 
 class Triggers(factory.Triggers):
 
