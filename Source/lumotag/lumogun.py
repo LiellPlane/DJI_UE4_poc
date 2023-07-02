@@ -38,7 +38,7 @@ def main():
     voice.speak(f"{GUN_CONFIGURATION.model}")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
-    accelerometer = lumogun.Accelerometer()
+    #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera(factory.HQ_GS_Cam_vidmodes)
     voice.speak("cam")
     img = next(image_capture)
@@ -111,7 +111,7 @@ def main():
         GUN_CONFIGURATION.loop_wait()
 
         with time_it("gun states set"):
-            accelerometer.update_vel()
+            #accelerometer.update_vel()
             results_trig_positions = (triggers.test_states())
 
             is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
