@@ -221,7 +221,7 @@ class TZAR_config(gun_config):
         return(screensizes.tzar.value)
 
     def loop_wait(self):
-        time.sleep(0.1)
+        #time.sleep(0.1)
         return
 
     def cam_processing(self, inputimg):

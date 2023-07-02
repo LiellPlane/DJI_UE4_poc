@@ -583,7 +583,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
                 dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
 
             with time_it("PP: remove high freqs"):
-                fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 8,30,img_grayscale)
+                fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 5,30,img_grayscale)
                 dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
             with time_it("PP:dilate"):
                 canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
