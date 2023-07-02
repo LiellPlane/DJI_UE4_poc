@@ -24,7 +24,7 @@ def read_img(img_filepath):
 
 
 
-workingdata = decode_clothID.WorkingData(debug=True)
+workingdata = decode_clothID.WorkingData(debug=False)
 
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
 
@@ -49,9 +49,11 @@ for img_filepath in input_imgs:
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+    img = cv2.resize(img, (img.shape[0]* 10,img.shape[1]* 10))
     #img = crop_in(img, pc_x=50, pc_y=50)
     print("_________")
     print(f"{img_filepath} {img.shape}")
     arse = decode_clothID.find_TV_tag(img, workingdata)
     if arse is not None:
         ImageViewer_Quickv2(arse,0,False,True)
+        workingdata.img_view_or_save_if_debug(arse, "output_to_client", resize=False)

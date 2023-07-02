@@ -75,10 +75,12 @@ class Accelerometer(factory.Accelerometer):
         self._last_xyz = (x, y, z)
         # reverse polarity is to match with
         # LT display - not good place to have it
+        self.update_fifo()
         return (
             self.round(x*-1),
             self.round(y*-1),
             self.round(z*-1))
+        
 
     def get_visual(self):
         return super().get_visual()

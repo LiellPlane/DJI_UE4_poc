@@ -218,6 +218,7 @@ class TZAR_config(gun_config):
         return(screensizes.tzar.value)
 
     def loop_wait(self):
+        time.sleep(0.1)
         return
 
     def cam_processing(self, inputimg):
@@ -288,10 +289,21 @@ class Accelerometer(ABC):
         self._display_size = 100
         self._disp_val_lim_max = 20
         self._disp_val_lim_min = -20
+        self._fifo = []
+        self._timer = TimeDiffObject()
 
     @abstractmethod
     def update_vel(self) -> tuple:
         pass
+
+    def update_fifo(self):
+        return
+        if self._last_xyz is not None:
+            self._fifo.append(
+                np.asarray(self._last_xyz))
+        if self._timer.get_dt() > 0.01:
+            plop=1
+
 
     @staticmethod
     def round(val):
@@ -317,7 +329,7 @@ class Accelerometer(ABC):
         visual = np.ones((ds,ds,3))
         if self._last_xyz is None:
             return visual
-        input_vec = np.asarray(self._last_xyz)
+        input_vec = self._last_xyz
         half_ds = int(ds/2)
         # rectify and stretch to size of output
         input_vec = np.clip(
