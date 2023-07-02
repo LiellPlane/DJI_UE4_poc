@@ -109,6 +109,10 @@ class gun_config(ABC):
     @abstractmethod
     def screen_size(self):
         ...
+    @property
+    @abstractmethod
+    def opencv_window_pos(self):
+        ...
     @abstractmethod
     def loop_wait(self):
         ...
@@ -128,6 +132,7 @@ class display(ABC):
     def __init__(self,  _gun_config: gun_config) -> None:
         self.display_rotate = _gun_config.screen_rotation
         self.screen_size = _gun_config.screen_size
+        self.opencv_win_pos = _gun_config.opencv_window_pos
 
     @abstractmethod
     def display_output(self):
@@ -185,6 +190,9 @@ class stryker_config(gun_config):
     def internal_img_crop(self):
         return((500,500))
 
+    @property
+    def opencv_window_pos(self):
+        return(0, 0)
 
 class TZAR_config(gun_config):
     model = "TZAR"
@@ -235,6 +243,10 @@ class TZAR_config(gun_config):
     def internal_img_crop(self):
         return((500,500))
 
+    @property
+    def opencv_window_pos(self):
+        return(640, 0)
+
 class simitzar_config(gun_config):
     model = "SIMITZAR"
     def __init__(self) -> None:
@@ -284,6 +296,10 @@ class simitzar_config(gun_config):
     @property
     def internal_img_crop(self):
         return((5000,5000))
+
+    @property
+    def opencv_window_pos(self):
+        return(0, 0)
 
 class Accelerometer(ABC):
 

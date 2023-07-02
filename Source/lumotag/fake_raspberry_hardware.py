@@ -12,19 +12,24 @@ import img_processing
 
 def lumo_viewer(
         inputimage,
+        move_windowx,
+        move_windowy,
         pausetime_Secs=0,
         presskey=False,
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
+        cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
+    
         if presskey==False:
             if cv2.waitKey(20) & 0xFF == 27:
                     pass
         if pausetime_Secs>0:
             time.sleep(pausetime_Secs)
         if destroyWindow==True: cv2.destroyAllWindows()
+
     except Exception as e:
         print(e)
 
@@ -119,7 +124,7 @@ class display(factory.display):
     def display_output(self, output):
         img, scale_factor = img_processing.resize_centre_img(output, self.screen_size)
         img = img_processing.add_cross_hair(img, adapt=True)
-        lumo_viewer(img, 0, False, False)
+        lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
 
     def display_output_with_implant(self, main_img, img_to_implant):
         """resize both images before implantating central graphic as
@@ -132,7 +137,7 @@ class display(factory.display):
         img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
         output = img_processing.implant_internal_section(img, img_to_implant)
         output = img_processing.add_cross_hair(output, adapt=True)
-        lumo_viewer(output, 0, False, False)
+        lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
 
 class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):

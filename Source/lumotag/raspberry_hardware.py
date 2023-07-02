@@ -38,12 +38,14 @@ def set_GPIO_mode(is_set):
 
 def lumo_viewer(
         inputimage,
+        move_windowx,
+        move_windowy,
         pausetime_Secs=0,
         presskey=False,
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
-        cv2.moveWindow("img", 640, 0)
+        cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
     
@@ -113,7 +115,7 @@ class display(factory.display):
 
         #output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
 
-        lumo_viewer(output,0,False,False)
+        lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
 
     def display_output_with_implant(self, main_img, img_to_implant):
             """avoid performing higher workload by resizing images to
@@ -145,7 +147,7 @@ class display(factory.display):
                 raise Exception("unhandled screen rotation", self.display_rotate)
 
     
-            lumo_viewer(output, 0, False, False)
+            lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
 
 class Triggers(factory.Triggers):
 
