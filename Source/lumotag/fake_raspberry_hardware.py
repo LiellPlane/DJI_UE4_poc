@@ -144,6 +144,8 @@ class display(factory.display):
             pausetime_Secs=0,
             presskey=False,
             destroyWindow=False)
+        
+
 class KillProcess(factory.KillProcess):
     def clean_up_processes(self, cmds, rec_depth=0):
         pass
