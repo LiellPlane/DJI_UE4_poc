@@ -32,7 +32,6 @@ class HQ_GS_Cam_vidmodes(Enum):
     """global shutter model"""
     _2 = ["1456 × 1088p50,",(1456, 1088)]
 
-
 @contextmanager
 def time_it(process):
     tic: float = time.perf_counter()
@@ -127,6 +126,11 @@ class gun_config(ABC):
     @abstractmethod
     def internal_img_crop(self):
         ...
+    @property
+    @abstractmethod
+    def video_modes(self):
+        ...
+
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
@@ -194,6 +198,11 @@ class stryker_config(gun_config):
     def opencv_window_pos(self):
         return(0, 0)
 
+    @property
+    def video_modes(self):
+        return HQ_Cam_vidmodes
+
+
 class TZAR_config(gun_config):
     model = "TZAR"
     def __init__(self) -> None:
@@ -246,6 +255,10 @@ class TZAR_config(gun_config):
     @property
     def opencv_window_pos(self):
         return(640, 0)
+
+    @property
+    def video_modes(self):
+        return HQ_GS_Cam_vidmodes
 
 class simitzar_config(gun_config):
     model = "SIMITZAR"
@@ -300,6 +313,10 @@ class simitzar_config(gun_config):
     @property
     def opencv_window_pos(self):
         return(0, 0)
+
+    @property
+    def video_modes(self):
+        return HQ_Cam_vidmodes
 
 class Accelerometer(ABC):
 

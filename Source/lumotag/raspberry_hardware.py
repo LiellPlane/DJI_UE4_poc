@@ -149,6 +149,20 @@ class display(factory.display):
                 img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
                 output = img_processing.implant_internal_section(img, img_to_implant)
                 output = img_processing.add_cross_hair(output, adapt=True)
+                #TODO this is rough - we know this rotation is stryker which is connors
+                # unit - so for now do connor -specific stuff here although it should
+                # be in the gun config
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                cv2.putText(
+                    img,
+                    f'CONNOR',
+                    (50, 50),
+                    font,
+                    0.5,
+                    (0, 0, 200),
+                    3,
+                    cv2.LINE_AA
+                    )
             else:
                 raise Exception("unhandled screen rotation", self.display_rotate)
 
