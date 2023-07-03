@@ -158,7 +158,7 @@ class display(factory.display):
                     f'CONNOR',
                     (50, 50),
                     font,
-                    0.5,
+                    1.0,
                     (0, 0, 200),
                     3,
                     cv2.LINE_AA
