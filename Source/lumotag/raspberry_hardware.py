@@ -38,7 +38,7 @@ def set_GPIO_mode(is_set):
 
 
 class filesystem(factory.filesystem):
-    images_folder = "~/debugimages/"
+    images_folder = "/home/lumotag/debugimages/"
 
     def __init__(self) -> None:
         if not os.path.isdir(self.images_folder):
