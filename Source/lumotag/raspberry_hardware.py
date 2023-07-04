@@ -45,7 +45,7 @@ class filesystem(factory.filesystem):
         if not os.path.isdir(self.images_folder):
             os.mkdir(self.images_folder)
 
-    def save_image(img, self):
+    def save_image(self, img):
         ts = utils.get_epoch_timestamp()
         cv2.imwrite(
             self.images_folder + "/" + ts + ".jpg",
