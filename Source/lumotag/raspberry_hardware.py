@@ -47,8 +47,8 @@ class filesystem(factory.filesystem):
     def save_image(img, self):
         ts = utils.get_epoch_timestamp()
         cv2.imwrite(
-            img,
-            self.images_folder + "/" + ts + ".jpg")
+            self.images_folder + "/" + ts + ".jpg",
+            img)
             
 
 def lumo_viewer(
