@@ -34,6 +34,11 @@ def lumo_viewer(
         print(e)
 
 
+class filesystem(factory.filesystem):
+    def save_image(self):
+        pass
+
+
 class Triggers(factory.Triggers):
     def __init__(self, _gun_config) -> None:
         super().__init__(_gun_config)

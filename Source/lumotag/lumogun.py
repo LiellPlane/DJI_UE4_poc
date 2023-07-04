@@ -50,6 +50,7 @@ def main():
     voice.speak("ok")
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     workingdata = decode_clothID.WorkingData()
+    file_system = lumogun.filesystem()
     voice.speak("all devices healthy")
 
     # set partial functions
@@ -146,6 +147,13 @@ def main():
                     message_str="lol QQ l2p"
                 )
 
+                # debugging code to capture images
+                if image_capture.last_img is not None:
+                    file_system.save_image(image_capture.last_img)
+                    central_img = img_processing.get_internal_section(
+                                image_capture.last_img,
+                                GUN_CONFIGURATION.internal_img_crop)
+                    file_system.save_image(central_img)
             # trigger is held on by debouncer even if user releases
             # trigger
             set_trigger(

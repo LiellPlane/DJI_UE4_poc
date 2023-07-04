@@ -2,6 +2,9 @@ import time
 from contextlib import contextmanager
 from typing import Iterator
 
+def get_epoch_timestamp():
+    return str(time.time()).replace(".", "_")
+
 @contextmanager
 def time_it(comment) -> Iterator[None]:
     tic: float = time.perf_counter()

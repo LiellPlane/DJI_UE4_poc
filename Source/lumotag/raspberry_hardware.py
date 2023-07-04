@@ -1,7 +1,7 @@
 import time
 import re
 from subprocess import Popen, PIPE
-from os import kill
+import os
 from signal import SIGKILL
 import cv2
 import numpy as np
@@ -21,6 +21,7 @@ import busio
 import adafruit_lis3dh
 import json
 import img_processing
+import utils
 #import imutils
 
 GPI_MODE_SET = False
@@ -35,6 +36,20 @@ def set_GPIO_mode(is_set):
         print(e)
         print("attempting to continue - accelerometer may have taken precedence")
 
+
+class filesystem(factory.filesystem):
+    images_folder = "~/debugimages/"
+
+    def __init__(self) -> None:
+        if not os.path.isdir(self.images_folder):
+            os.mkdir(self.images_folder)
+
+    def save_image(img, self):
+        ts = utils.get_epoch_timestamp()
+        cv2.imwrite(
+            img,
+            self.images_folder + "/" + ts + ".jpg")
+            
 
 def lumo_viewer(
         inputimage,
@@ -300,7 +315,7 @@ class KillProcess(factory.KillProcess):
                 print(f"PROCESS {str(line)}")
                 pid = int(str(line).split()[1])
                 print(f"PID {pid}")
-                kill(pid, SIGKILL)
+                os.kill(pid, SIGKILL)
                 time.sleep(1)
                 self.clean_up_processes(cmds, rec_depth)
                 break

@@ -131,6 +131,12 @@ class gun_config(ABC):
     def video_modes(self):
         ...
 
+
+class filesystem(ABC):
+    @abstractmethod
+    def save_image(self):
+        pass
+
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
@@ -445,8 +451,6 @@ class Camera(ABC):
         img = self.gen_image()
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        
         self.last_img = img
         return img
 
