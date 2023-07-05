@@ -24,9 +24,9 @@ def read_img(img_filepath):
 
 
 
-workingdata = decode_clothID.WorkingData(debug=False)
+workingdata = decode_clothID.WorkingData(debug=True)
 
-input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\testshapes")
+input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_real_images")
 
 print(f"{len(input_imgs)} images found")
 
@@ -49,7 +49,11 @@ for img_filepath in input_imgs:
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-    img = cv2.resize(img, (img.shape[0]* 10,img.shape[1]* 10))
+
+    if img.shape != (500,500):
+        img = cv2.resize(img, (int(img.shape[1]/2),int(img.shape[0]/2)))
+
+    #img = cv2.resize(img, (img.shape[0]* 10,img.shape[1]* 10))
     #img = crop_in(img, pc_x=50, pc_y=50)
     print("_________")
     print(f"{img_filepath} {img.shape}")

@@ -19,7 +19,7 @@ def read_img(img_filepath):
 
 def clahe_equalisation(img, claheprocessor):
     if claheprocessor is None:
-        claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
+        claheprocessor = cv2.createCLAHE(clipLimit=255.0, tileGridSize=(10,10))
     # colour
     if len(img.shape) >2:
         #luminosity
@@ -118,7 +118,7 @@ def simple_canny(blurred_img, lower, upper):
     # wide = cv2.Canny(blurred, 10, 200)
     # mid = cv2.Canny(blurred, 30, 150)
     # tight = cv2.Canny(blurred, 240, 250)
-    return cv2.Canny(blurred_img, upper, lower)
+    return cv2.Canny(blurred_img, upper, lower, 5)
 
 def get_hist(img):
     #fig = plt.figure()

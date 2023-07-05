@@ -180,11 +180,11 @@ def get_approx_shape_and_bbox(
     shape_ = Shapes.UNKNOWN
     #test for square
     # TODO rough at moment
-    if len(approx) in [4, 5]:
+    if len(approx) in [4, 5, 6, 7, 8]:
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
             shape_ = Shapes.SQUARE
 
-    if len(approx) in [3, 4]:
+    if len(approx) in [3, 4, 5, 6]:
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
             if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):
                 shape_ = Shapes.TRIANGLE
@@ -546,7 +546,9 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             # orig_img=img_pro.clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
             # dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value, resize=False)
             # ''''test area'''
-    
+            with time_it("PP: clahe"):
+                img_grayscale = img_pro.clahe_equalisation(img_grayscale, dataobject.claheprocessor)
+                dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.clahe_equalisation.value, resize=False)
     #this section about 25ms
         #with time_it():
             
@@ -555,7 +557,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             #print("median_blur")
             ##blurred = median_blur(gray_orig,7)
             with time_it("PP:blur"):
-                squr_img = cv2.blur(inputimg,(3,3)) # fastest filter
+                squr_img = cv2.blur(img_grayscale,(3,3)) # fastest filter
             #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
             #edge_im = edge_img(blurred)edge_img
         #with time_it():
@@ -571,7 +573,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             #squr_img=edge_img(gray_orig)
             #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
             with time_it("PP: canny loop"):
-                canny_params = [(i,i+20) for i in range(30,100,70)]
+                canny_params = [(i,i+30) for i in range(60,100,30)]
                 canny_img = np.zeros_like(squr_img)
                 for lr, uper in canny_params:
                     next_canny_img=img_pro.simple_canny(
@@ -582,9 +584,9 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
                     canny_img = np.add(canny_img,next_canny_img)
                 dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
 
-            with time_it("PP: remove high freqs"):
-                fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 5,30,img_grayscale)
-                dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
+            #with time_it("PP: remove high freqs"):
+            #    fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 5,30,img_grayscale)
+            #    dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
             with time_it("PP:dilate"):
                 canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
             with time_it("PP:threshold"):
