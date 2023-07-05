@@ -19,7 +19,7 @@ def read_img(img_filepath):
 
 def clahe_equalisation(img, claheprocessor):
     if claheprocessor is None:
-        claheprocessor = cv2.createCLAHE(clipLimit=255.0, tileGridSize=(10,10))
+        claheprocessor = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(50,50))
     # colour
     if len(img.shape) >2:
         #luminosity

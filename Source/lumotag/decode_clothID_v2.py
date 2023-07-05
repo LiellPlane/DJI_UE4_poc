@@ -572,17 +572,27 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
             #squr_img=edge_img(gray_orig)
             #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
-            with time_it("PP: canny loop"):
-                canny_params = [(i,i+30) for i in range(60,100,30)]
-                canny_img = np.zeros_like(squr_img)
-                for lr, uper in canny_params:
-                    next_canny_img=img_pro.simple_canny(
+
+
+
+
+            # with time_it("PP: canny loop"):
+            #     canny_params = [(i,i+30) for i in range(60,100,30)]
+            #     canny_img = np.zeros_like(squr_img)
+            #     for lr, uper in canny_params:
+            #         next_canny_img=img_pro.simple_canny(
+            #             blurred_img=squr_img,
+            #             lower=lr,
+            #             upper=uper)
+            #         dataobject.img_view_or_save_if_debug(next_canny_img, f"cannyimage{lr}", resize=False)
+            #canny_img = np.add(canny_img,next_canny_img)
+
+            canny_img=img_pro.simple_canny(
                         blurred_img=squr_img,
-                        lower=lr,
-                        upper=uper)
-                    dataobject.img_view_or_save_if_debug(next_canny_img, f"cannyimage{lr}", resize=False)
-                    canny_img = np.add(canny_img,next_canny_img)
-                dataobject.img_view_or_save_if_debug(canny_img, "additive_canny")
+                        lower=5,
+                        upper=40)
+            
+            dataobject.img_view_or_save_if_debug(canny_img, "canny_img")
 
             #with time_it("PP: remove high freqs"):
             #    fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 5,30,img_grayscale)
