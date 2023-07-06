@@ -589,7 +589,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
             canny_img=img_pro.simple_canny(
                         blurred_img=squr_img,
-                        lower=30,
+                        lower=40,
                         upper=60)
             
             dataobject.img_view_or_save_if_debug(canny_img, "canny_img")
