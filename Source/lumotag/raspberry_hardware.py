@@ -279,8 +279,9 @@ class CSI_Camera(factory.Camera):
         self.cam_res = video_modes
         self.picam2 = Picamera2()
         _config = self.picam2.create_video_configuration(
-            main={"size": self.get_res(),  "format": "YUV420", "AnalogueGain": 2.0})#, controls={"FrameDurationLimits": (233333, 233333)})
+            main={"size": self.get_res(),  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
         #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
+        self.picam2.set_controls({"AnalogueGain": 4.0})
         self.picam2.configure(_config)
         self.picam2.start()
         time.sleep(0.1)
