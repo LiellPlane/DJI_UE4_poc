@@ -283,9 +283,10 @@ class CSI_Camera(factory.Camera):
         #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         
         self.picam2.configure(_config)
-        self.picam2.set_controls({"AnalogueGain": 20.0})
+        #  set_controls must come after config!!
+        self.picam2.set_controls({"AnalogueGain": 10.0})
         self.picam2.start()
-        time.sleep(0.1)
+        time.sleep(0.2)
     
     def get_res(self):
         return [e.value for e in self.cam_res][self.res_select][1]
