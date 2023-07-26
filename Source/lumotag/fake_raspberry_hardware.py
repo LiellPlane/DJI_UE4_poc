@@ -9,6 +9,7 @@ import math
 import rabbit_mq
 import json
 import img_processing
+from multiprocessing import Process, Queue, shared_memory
 
 def lumo_viewer(
         inputimage,
@@ -106,15 +107,16 @@ class Relay(factory.Relay):
 
 class CSI_Camera(factory.Camera):
 
-    def __init__(self, *args) -> None:
+    def __init__(self, video_modes) -> None:
+        self.cam_res = video_modes
         # fake input needed for interchangeability
         super().__init__()
 
     def get_res(self):
-        pass
+        return [e.value for e in self.cam_res][self.res_select][1]
 
     def gen_image(self):
-        blank_image = np.zeros((14560, 10880, 3), np.uint8)
+        blank_image = np.zeros((self.get_res() + (3,)), np.uint8)
         blank_image[:,:,:] = random.randint(0,255)
         blank_image = cv2.circle(
             blank_image,
@@ -123,6 +125,28 @@ class CSI_Camera(factory.Camera):
             50,
             -1)
         return blank_image
+
+
+class SynthImgGen(factory.ImageGenerator):
+
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(res, np.uint8)
+
+    def get_image(self):
+        self.blank_image[:,:,:] = random.randint(0,255)
+        self.blank_image = cv2.circle(
+            self.blank_image,
+            (self.blank_image.shape[1]//2, self.blank_image.shape[0]//2),
+            self.blank_image.shape[0]//10,
+            50,
+            -1)
+        return self.blank_image
+    
+
+class CSI_Camera_Async(factory.CameraAsync):
+
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, SynthImgGen)
 
 
 class display(factory.display):

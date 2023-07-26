@@ -539,16 +539,19 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
         dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
         #copy original image into folder
         #orig_img = img.copy()
-        
+        with time_it("PP:blur"):
+            #img_grayscale = img_pro.blur_img(img_grayscale,filtersize=5) # fastest filter
+            img_grayscale = cv2.bilateralFilter(img_grayscale, 45, 45, 25)
+            dataobject.img_view_or_save_if_debug(img_grayscale, "bilateralFilter", resize=False)
         #~3ms for grayscale
-        with time_it("PP TOTAL"):
+        #with time_it("PP TOTAL"):
             #print("equalisation")
-            # orig_img=img_pro.clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
-            # dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value, resize=False)
+        #    img_grayscale=img_pro.clahe_equalisation(img_grayscale.copy(), dataobject.claheprocessor)
+        #    dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.clahe_equalisation.value, resize=False)
             # ''''test area'''
-            with time_it("PP: clahe"):
-                img_grayscale = img_pro.clahe_equalisation(img_grayscale, dataobject.claheprocessor)
-                dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.clahe_equalisation.value, resize=False)
+            #with time_it("PP: clahe"):
+            #    img_grayscale = img_pro.clahe_equalisation(img_grayscale, dataobject.claheprocessor)
+            #    dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.clahe_equalisation.value, resize=False)
     #this section about 25ms
         #with time_it():
             
@@ -556,9 +559,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
         #with time_it():
             #print("median_blur")
             ##blurred = median_blur(gray_orig,7)
-            with time_it("PP:blur"):
-                squr_img = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
+            
             #edge_im = edge_img(blurred)edge_img
         #with time_it():
             #print("canny_filter")
@@ -571,10 +572,10 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
 
             #squr_img=edge_img(gray_orig)
-            #squr_img=img_pro.threshold_img(squr_img,low=40,high=255)
+            #squr_img=img_pro.threshold_img(img_grayscale,low=40,high=255)
+            #dataobject.img_view_or_save_if_debug(squr_img, "threshold_img")
 
-
-
+            #squr_img = img_pro.median_blur(squr_img,3)
 
             # with time_it("PP: canny loop"):
             #     canny_params = [(i,i+30) for i in range(60,100,30)]
@@ -588,20 +589,20 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             #canny_img = np.add(canny_img,next_canny_img)
 
             canny_img=img_pro.simple_canny(
-                        blurred_img=squr_img,
-                        lower=40,
-                        upper=60)
+                        blurred_img=img_grayscale,
+                        lower=10,
+                        upper=100)
             
             dataobject.img_view_or_save_if_debug(canny_img, "canny_img")
 
             #with time_it("PP: remove high freqs"):
             #    fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 5,30,img_grayscale)
             #    dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
-            with time_it("PP:dilate"):
-                canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
-            with time_it("PP:threshold"):
-                squr_img=img_pro.threshold_img_static(canny_img,low=40,high=255)
-            dataobject.img_view_or_save_if_debug(squr_img, "thresholded_canny")
+            #with time_it("PP:dilate"):
+            #    canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
+            #with time_it("PP:threshold"):
+            #    squr_img=img_pro.threshold_img_static(squr_img,low=40,high=255)
+            #dataobject.img_view_or_save_if_debug(canny_img, "simple_canny")
         #with time_it():
             #print("invert_img")
             #squr_img=invert_img(squr_img)
@@ -609,7 +610,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
         
         with time_it("get_possible_candidates TOTAL"):
-            contours, hierarchy=get_possible_candidates(squr_img, dataobject)
+            contours, hierarchy=get_possible_candidates(canny_img, dataobject)
 
         if len(contours) == 0:
             return img_grayscale
