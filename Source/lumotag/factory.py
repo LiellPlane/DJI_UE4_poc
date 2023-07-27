@@ -483,11 +483,14 @@ class CameraAsync(ABC):
         self.cam_res = video_modes
         # this has to be after initialising self.cam_res
         self.imagegen_cls = imagegen_cls
+        # this would be nice to have in a __post_init__ type thing
         self.configure_shared_memory()
-        
+ 
     def configure_shared_memory(self):
         # we need to get shape of image first to
         # create memory buffer
+        # don't call this before everything else has been initialised!
+
         img_byte_size = reduce(
             lambda acc, curr: acc * curr,self.get_res())
 
