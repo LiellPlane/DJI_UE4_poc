@@ -40,16 +40,18 @@ def main():
     
     #accelerometer = lumogun.Accelerometer()
     image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
-    image_capture2 = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
-    arse=1
-    time.sleep(10000)
+    #image_capture2 = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
+
     voice.speak("cam")
     img = next(image_capture)
     if img is None:
         raise Exception("Error with camera")
     voice.speak("ok display")
     display = lumogun.display(GUN_CONFIGURATION)
-    display.display_output(img)
+    # display.display_output(img)
+    # while True:
+    #     display.display_output(next(image_capture2))
+
     voice.speak("ok")
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     workingdata = decode_clothID.WorkingData()

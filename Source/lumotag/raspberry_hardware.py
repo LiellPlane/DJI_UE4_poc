@@ -293,7 +293,7 @@ class CsiCameraImageGen(factory.ImageGenerator):
         return output
 
 class CSI_Camera_Async(factory.CameraAsync):
-
+    
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, CsiCameraImageGen)
 

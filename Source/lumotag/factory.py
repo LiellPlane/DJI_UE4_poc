@@ -25,19 +25,18 @@ class AutoStrEnum(str, Enum):
         return name
 
 class HQ_Cam_vidmodes(Enum):
-    _2 = ["2028 × 1080p50,",(2020, 1080, 1)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
-    _3 = ["1332 × 990p120",(1332, 990, 1)] 
-    _1 = ["2028 × 1520p40",(2020, 1520, 1)]
+    _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
+    _3 = ["1332 × 990p120",(1332, 990)] 
+    _1 = ["2028 × 1520p40",(2020, 1520)]
 
 
 class HQ_GS_Cam_vidmodes(Enum):
     """global shutter model"""
-    _2 = ["1456 × 1088p50,",(1456, 1088, 1)]
+    _2 = ["1456 × 1088p50,",(1456, 1088)]
 
 
 class Fake_Cam_vidmodes(Enum):
-    """global shutter model"""
-    _2 = ["1456 × 1088p50,",(3000, 1000, 3)]
+    _2 = ["1456 × 1088p50,",(3000, 1000)]
 
 
 @contextmanager
@@ -494,6 +493,7 @@ class CameraAsync(ABC):
         img_byte_size = reduce(
             lambda acc, curr: acc * curr,self.get_res())
 
+
         self.shared_mem_handler = SharedMemory(
                             obj_bytesize=img_byte_size,
                             discrete_ids=[str(self.res_select)]
@@ -523,15 +523,13 @@ class CameraAsync(ABC):
 
         strm_buff = self.shared_mem_handler.mem_ids[str(self.res_select)].buf
 
-        img_buff = np.ndarray(
-            self.get_res(),
-            dtype=('uint8'),
-            buffer=strm_buff)
+        img_buff = np.frombuffer(
+            strm_buff,
+            dtype=('uint8')
+                ).reshape(self.get_res())
 
-        # this shouldn't be done here but as just for testing 
-        # we aren't too concerned with efficiency
-        if len(img_buff.shape) == 3:
-            img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
+        #if len(img_buff.shape) == 3:
+        #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
 
         self.last_img = img_buff
 

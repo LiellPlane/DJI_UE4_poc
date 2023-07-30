@@ -131,15 +131,20 @@ class SynthImgGen(factory.ImageGenerator):
 
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(res, np.uint8)
+        self.res = res
 
     def get_image(self):
-        self.blank_image[:,:,:] = random.randint(0,255)
+        if len(self.res) == 3:
+            self.blank_image[:,:,:] = random.randint(0,255)
+        else:
+            self.blank_image[:,:] = random.randint(0,255)
         self.blank_image = cv2.circle(
             self.blank_image,
             (self.blank_image.shape[1]//2, self.blank_image.shape[0]//2),
             self.blank_image.shape[0]//10,
             50,
             -1)
+
         return self.blank_image
     
 
