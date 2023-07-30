@@ -291,7 +291,7 @@ class CsiCameraImageGen(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
         output = output[0: y, 0: x]#  Need to do this for YUV!
-        print(output.shape, output[0,0], output.type)
+        print(output.shape, output.dtype)
         return output
 
 class CSI_Camera_Async(factory.CameraAsync):
