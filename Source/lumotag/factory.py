@@ -15,6 +15,7 @@ from functools import reduce
 
 RELAY_BOUNCE_S = 0.02
 
+
 class AutoStrEnum(str, Enum):
     """
     StrEnum where auto() returns the field name.
@@ -23,6 +24,7 @@ class AutoStrEnum(str, Enum):
     @staticmethod
     def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
         return name
+
 
 class HQ_Cam_vidmodes(Enum):
     _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
@@ -54,6 +56,7 @@ class screensizes(Enum):
     tzar = (800, 480)
     windows_laptop = (1000, 400)
     stryker = (480, 800)
+
 
 class RelayFunction(Enum):
     torch = 1
@@ -144,6 +147,7 @@ class filesystem(ABC):
     def save_image(self):
         pass
 
+
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
@@ -158,6 +162,7 @@ class display(ABC):
     @abstractmethod
     def display_output_with_implant(self):
         pass
+
 
 class stryker_config(gun_config):
     model = "STRYKER"
@@ -331,6 +336,7 @@ class simitzar_config(gun_config):
     @property
     def video_modes(self):
         return Fake_Cam_vidmodes
+
 
 class Accelerometer(ABC):
 
@@ -666,6 +672,7 @@ class Debounce:
             self._statemem = boolstate
 
         return False
+
 
 class TimeDiffObject:
     """stopwatch function"""

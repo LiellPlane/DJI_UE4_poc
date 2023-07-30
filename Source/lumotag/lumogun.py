@@ -39,8 +39,8 @@ def main():
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
     #accelerometer = lumogun.Accelerometer()
-    image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
-    #image_capture2 = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
+    #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
+    image_capture = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
 
     voice.speak("cam")
     img = next(image_capture)

@@ -541,7 +541,7 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
         #orig_img = img.copy()
         with time_it("PP:blur"):
             #img_grayscale = img_pro.blur_img(img_grayscale,filtersize=5) # fastest filter
-            img_grayscale = cv2.bilateralFilter(img_grayscale, 45, 45, 25)
+            img_grayscale = cv2.bilateralFilter(img_grayscale, 35, 35, 25)
             dataobject.img_view_or_save_if_debug(img_grayscale, "bilateralFilter", resize=False)
         #~3ms for grayscale
         #with time_it("PP TOTAL"):
@@ -572,8 +572,8 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
 
 
             #squr_img=edge_img(gray_orig)
-            #squr_img=img_pro.threshold_img(img_grayscale,low=40,high=255)
-            #dataobject.img_view_or_save_if_debug(squr_img, "threshold_img")
+            squr_img=img_pro.threshold_img(img_grayscale,low=40,high=255)
+            dataobject.img_view_or_save_if_debug(squr_img, "threshold_img")
 
             #squr_img = img_pro.median_blur(squr_img,3)
 
@@ -598,8 +598,9 @@ def find_TV_tag(inputimg, dataobject : WorkingData):
             #with time_it("PP: remove high freqs"):
             #    fart,  img_grayscale= block_filter_highfreq_areas(canny_img, 5,30,img_grayscale)
             #    dataobject.img_view_or_save_if_debug(fart, "remove_high_freqs_10_20")
-            #with time_it("PP:dilate"):
-            #    canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
+            with time_it("PP:dilate"):
+               canny_img = cv2.dilate(canny_img,np.ones((3,3),np.uint8),iterations = 1)
+            dataobject.img_view_or_save_if_debug(canny_img, "dilate")
             #with time_it("PP:threshold"):
             #    squr_img=img_pro.threshold_img_static(squr_img,low=40,high=255)
             #dataobject.img_view_or_save_if_debug(canny_img, "simple_canny")
