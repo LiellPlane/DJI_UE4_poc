@@ -499,7 +499,7 @@ class CameraAsync(ABC):
         img_byte_size = reduce(
             lambda acc, curr: acc * curr,self.get_res())
 
-
+        print("configure_shared_memory", self.get_res())
         self.shared_mem_handler = SharedMemory(
                             obj_bytesize=img_byte_size,
                             discrete_ids=[str(self.res_select)]
@@ -533,7 +533,7 @@ class CameraAsync(ABC):
             strm_buff,
             dtype=('uint8')
                 ).reshape(self.get_res())
-
+        print("__next__", img_buff.shape, img_buff.dtype)
         #if len(img_buff.shape) == 3:
         #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
 

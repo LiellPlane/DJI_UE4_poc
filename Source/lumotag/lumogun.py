@@ -29,12 +29,18 @@ def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
     # application
-    results_trig_positions = (triggers.test_states())
-    if any([True for i in results_trig_positions.values() if i is True]):
-        raise Exception("Trigger detected on boot-up - exit app")
-
     # initialise components of lumogun
     voice = sound.Voice()
+
+    for i in range(0,5):
+        voice.speak("cancel")
+        results_trig_positions = (triggers.test_states())
+        if any([True for i in results_trig_positions.values() if i is True]):
+            voice.speak("bye")
+            time.sleep(3)
+            raise Exception("Trigger detected on boot-up - exit app")
+        time.sleep(2)
+
     voice.speak(f"{GUN_CONFIGURATION.model}")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
