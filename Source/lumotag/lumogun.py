@@ -32,7 +32,7 @@ def main():
     # initialise components of lumogun
     voice = sound.Voice()
 
-    for i in range(0,5):
+    for i in range(0,2):
         voice.speak("cancel")
         results_trig_positions = (triggers.test_states())
         if any([True for i in results_trig_positions.values() if i is True]):
