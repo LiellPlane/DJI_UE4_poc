@@ -57,7 +57,7 @@ for img_filepath in input_imgs:
     #img = crop_in(img, pc_x=50, pc_y=50)
     print("_________")
     print(f"{img_filepath} {img.shape}")
-    arse = decode_clothID.find_TV_tag(img, workingdata)
+    arse = decode_clothID.find_lumotag(img, workingdata)
     if arse is not None:
         ImageViewer_Quickv2(arse,0,True,True)
         workingdata.img_view_or_save_if_debug(arse, "output_to_client", resize=False)

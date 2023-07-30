@@ -173,7 +173,7 @@ def main():
                     cap_img,
                     GUN_CONFIGURATION.internal_img_crop)
             with time_it("gun total analysis time"):
-                central_img = decode_clothID.find_TV_tag(central_img, workingdata)
+                central_img = decode_clothID.find_lumotag(central_img, workingdata)
             with time_it("gun implant and display image"):
                 display.display_output_with_implant(cap_img, central_img)
             #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
