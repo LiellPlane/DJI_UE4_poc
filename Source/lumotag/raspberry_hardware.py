@@ -291,8 +291,7 @@ class CsiCameraImageGen(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
         output = output[0: y, 0: x]#  Need to do this for YUV!
-        # maybe this image is not 8 bit depth, so breaks memory map
-        output = cv2.normalize(output, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+        print(output.shape, output[0,0], output.type)
         return output
 
 class CSI_Camera_Async(factory.CameraAsync):
