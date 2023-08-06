@@ -15,7 +15,7 @@ sudo apt install python3-pip -Y
 sudo pip3 install rpi_ws281x
 sudo pip3 install adafruit-circuitpython-neopixel
 sudo python3 -m pip install --force-reinstall adafruit-blinka
-
+sudo apt-get install git
 
 
 #overclock
@@ -36,3 +36,11 @@ over_voltage=6
 
 reboot - if it doesnt turn on drop the freqs by putting
 card into a computer and modding boot section
+
+
+autostart:
+
+sudo nano /etc/rc.local
+Scroll down, and just before the exit 0 line, enter the following:
+
+sudo python3 /boot/boostrap.py &
