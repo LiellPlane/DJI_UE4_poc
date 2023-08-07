@@ -60,6 +60,7 @@ def decode_image_from_str(encoded_image: str):
     Returns:
         np.array image"""
     jpg_original = base64.b64decode(encoded_image)
+    return jpg_original
     jpg_as_np = np.frombuffer(jpg_original, dtype=np.uint8)
 
     return cv2.imdecode(buf=jpg_as_np, flags=1)
@@ -67,25 +68,33 @@ def decode_image_from_str(encoded_image: str):
 def main():
 
     url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello"
-    # img_path = r"C:\VMs\SharedFolder\temp_get_imgs\00.jpg"
-    # img = cv2.imread(img_path)
-    # img_bytes = encode_img_to_str(img)
-    # myobj = {
-    #     "authentication": "farts",
-    #     "action": "image_raw",
-    #     "payload": img_bytes
-    #     }
-    # try:
-    #     response = requests.post(url, json=myobj)
-    #     print(response.text)
-    # except ConnectionError:
-    #     print("could not connect")
+    img_path = r"C:\VMs\SharedFolder\temp_get_imgs\00.jpg"
+    img = cv2.imread(img_path)
+
+    #img2 = encode_img_to_str(img)
+    #img3 = decode_image_from_str(img2)
+    #ImageViewer_Quick_no_resize(img,0,True,False)
+
+
+    img_string = encode_img_to_str(img)
+    myobj = {
+        "authentication": "farts",
+        "action": "image_overlay",
+        "payload": img_string
+        }
+    try:
+        response = requests.post(url, json=myobj)
+        print(response.text)
+    except ConnectionError:
+        print("could not connect")
     
 
 
+    #getimage_raw
+    #getimage_overlay
     get_img = {
         "authentication": "farts",
-        "action": "getimage_overlay"
+        "action": "getimage_raw"
         }
 
     response = requests.post(url, json=get_img)

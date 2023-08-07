@@ -947,7 +947,7 @@ def main():
     # main loop
     index = 0
     flipflop = False
-    sent_overlay = False
+    sent_overlay = 10
     while True:
         subsampled = 0
         with time_it("main loop"):
@@ -971,20 +971,30 @@ def main():
                         unit.get_dominant_colour_flat(prev, subsample=2)
                         subsampled += 1
 
-            if PLATFORM == _OS.WINDOWS or sent_overlay is False:
+            if PLATFORM == _OS.WINDOWS or sent_overlay > 0:
+                sent_overlay -= 1
+                display_img = prev.copy()
                 with time_it(f"overlay"):
                     for index, unit in enumerate(scambi_units):
-                        unit.draw_warped_boundingbox(prev)
-                        prev = unit.draw_lerp_contour(prev)
-                        prev = unit.draw_warped_led_pos(
-                            prev,
+                        unit.draw_warped_boundingbox(display_img)
+                        display_img = unit.draw_lerp_contour(display_img)
+                        display_img = unit.draw_warped_led_pos(
+                            display_img,
                             unit.colour,
                             offset=(0, 0),
                             size=10)
-                if sent_overlay is False:
-                    upload_img_to_aws(prev, img_upload_url, action = "overlay")
-                    sent_overlay = True
 
+                if sent_overlay == 0:
+                    before_warp = display_img.copy()
+                    display_img = fisheriser.fish_eye_image(display_img, reverse=True)
+                    display_img = homography_tool.warp_img(display_img)
+                    upload_img_to_aws(
+                        np.vstack((before_warp,display_img)),
+                        img_upload_url,
+                        action = "overlay")
+                    #sent_overlay = True
+                    ImageViewer_Quick_no_resize(np.vstack((before_warp,display_img)),0,True,False)
+                ImageViewer_Quick_no_resize(display_img,0,False,False)
             with time_it(f"subsampled {subsampled}/{len(scambi_units)}"):
                 pass
 
@@ -992,8 +1002,7 @@ def main():
                 led_subsystem.set_LED_values(scambi_units)
                 led_subsystem.execute_LEDS()
 
-            if PLATFORM == _OS.WINDOWS:
-                ImageViewer_Quick_no_resize(prev,0,False,False)
+
 
 
 def upload_img_to_aws(img, url, action):
