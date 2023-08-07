@@ -972,7 +972,8 @@ def main():
                         subsampled += 1
 
             if PLATFORM == _OS.WINDOWS or sent_overlay > 0:
-                sent_overlay -= 1
+                if sent_overlay > -2:
+                    sent_overlay -= 1
                 display_img = prev.copy()
                 with time_it(f"overlay"):
                     for index, unit in enumerate(scambi_units):
