@@ -993,7 +993,10 @@ def main():
                         np.vstack((before_warp,display_img)),
                         img_upload_url,
                         action = "overlay")
+
+            if PLATFORM == _OS.WINDOWS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
+    
             with time_it(f"subsampled {subsampled}/{len(scambi_units)}"):
                 pass
 
