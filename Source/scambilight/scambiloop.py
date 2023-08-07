@@ -850,7 +850,7 @@ def main():
     no_leds_vert = 11
     no_leds_horiz = 20
     move_in_horiz = 0.2
-    move_in_vert = 0.22
+    move_in_vert = 0.3
     resize_ratio = 1.0 #expected input res 1080 * 1920
     sample_area_edge = 90 * resize_ratio
     subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
