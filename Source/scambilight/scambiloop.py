@@ -992,8 +992,6 @@ def main():
                         np.vstack((before_warp,display_img)),
                         img_upload_url,
                         action = "overlay")
-                    #sent_overlay = True
-                    ImageViewer_Quick_no_resize(np.vstack((before_warp,display_img)),0,True,False)
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
             with time_it(f"subsampled {subsampled}/{len(scambi_units)}"):
                 pass
