@@ -4,7 +4,7 @@ import cv2
 import time
 import math
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 from time import perf_counter
 from contextlib import contextmanager
 import random
@@ -619,6 +619,23 @@ def draw_rectangle(left, right, top, down, img):
                   8)
     return rec
 
+
+@dataclass
+class lens_details():
+    id: str
+    vid: str
+    width: int
+    height: int
+    fish_eye_circle: int
+    corners: list[int]
+    targets: list[int] = None
+    def __post_init__(self):
+        self.targets = [
+        [0, 0],
+        [self.width,0 ],
+        [self.width, self.height],
+        [0, self.height]]
+
 class real_fish_eye_cam_1269():
     vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
     # 1296 * 976 or whatever mode it is
@@ -711,8 +728,8 @@ class get_homography():
         [91, 786]], dtype="float32")"""
         self._img_height = img_height_ * resize_ratio
         self._img_width = img_width_ * resize_ratio
-        self._corners = corners * resize_ratio
-        self._target_corners = target_corners * resize_ratio
+        self._corners = np.asarray(corners,  dtype="float32") * resize_ratio
+        self._target_corners = np.asarray(target_corners,  dtype="float32") * resize_ratio
         self.trans_matrix = cv2.getPerspectiveTransform(
                     self._corners,
                     self._target_corners)
@@ -835,8 +852,34 @@ def encode_img_to_str(img: np.ndarray):
                 img=img)[1]).decode()
     return img_string
 
+def clahe_equalisation(img, claheprocessor):
+    if claheprocessor is None:
+        claheprocessor = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(50,50))
+    # colour
+    if len(img.shape) >2:
+        #luminosity
+        lab_image=cv2.cvtColor(img,cv2.COLOR_BGR2LAB)
+        l,a,b = cv2.split(lab_image)
+        #equ = cv2.equalizeHist(l)
+        #updated_lab_img1=cv2.merge((equ,a,b))
+        clahe_img= claheprocessor.apply(l)
+        updated_lab_img1=cv2.merge((clahe_img,a,b))
+        CLAHE_img = cv2.cvtColor(updated_lab_img1,cv2.COLOR_LAB2BGR)
+    # grayscale
+    else:
+        CLAHE_img = claheprocessor.apply(img)
+    return CLAHE_img
 
 def main():
+
+    daisybank_hd_lens_details = {
+        'id': 'daisybank HD',
+        'vid': 'C:\\Working\\nonwork\\SCAMBILIGHT\\fisheye_taped.mp4',
+        'width': 1269,
+        'height': 972,
+        'fish_eye_circle': 1250,
+        'corners': [[81, 234],[1157, 346],[860, 600],[363, 572]]}
+    rfish = lens_details(**daisybank_hd_lens_details)
     system = get_platform()
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
@@ -859,7 +902,7 @@ def main():
 
     if resize_ratio != 1.0:
         raise Exception("any non unity values break the fisheye stuff in scambiunit")
-    rfish = real_fish_eye_cam_1269
+    
 
     # fisheriser = fisheye_lib.fisheye_tool(
     #     img_width_height=(rfish.width, rfish.height),
@@ -1015,6 +1058,7 @@ def upload_img_to_aws(img, url, action):
         action = "image_overlay"
     else:
         raise Exception("bad action")
+    img = clahe_equalisation(img, None)
     img_bytes = encode_img_to_str(img)
     myobj = {
         "authentication": "farts",
