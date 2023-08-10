@@ -14,6 +14,7 @@ from typing import Optional
 import async_cam_lib
 import requests
 import base64
+import json
 from typing import Literal
 
 def get_platform():
@@ -836,7 +837,8 @@ def test_find_screen():
 
 def str_to_bytes(string_: str):
     return str.encode(string_)
-
+def bytes_to_str(bytes_: bytes):
+    return bytes_.decode()
 
 def encode_img_to_str(img: np.ndarray):
     """Encode single image for compatibility with json msg
@@ -870,6 +872,37 @@ def clahe_equalisation(img, claheprocessor):
         CLAHE_img = claheprocessor.apply(img)
     return CLAHE_img
 
+@dataclass
+class config_corner():
+    flat_corner: list[int, int]
+    real_corner: list[int, int]
+
+def get_corners_from_remote_config(config, img):
+    """find corners from disorder of inputs in format:
+    {
+                "clickx": 299
+                "clicky": 339}
+    """
+    #min_x = min([i['clickx'] for i in config])
+    corners = {}
+    corners["top_left"] = [0, 0]
+    corners["top_right"] = [img_width(img), 0 ]
+    corners["lower_right"] = [img_width(img), img_height(img),]
+    corners["lower_left"] =  [0, img_height(img)]
+    list_config_pts = [[i['clickx'], i['clicky']] for i in config]
+    for pt_id, pt_coord in corners.items():
+        match_pt = find_closest(pt_coord, list_config_pts)
+        arse = config_corner(flat_corner=corners[pt_id], real_corner=match_pt)
+        corners[pt_id] = arse
+    return corners
+
+def find_closest(testpt: list [int, int], input_pts:list):
+    dists = {
+        np.linalg.norm(np.asarray(testpt)-np.asarray(i)):i
+        for i in input_pts}
+    return dists[sorted(dists)[0]]
+
+    
 def main():
 
     daisybank_hd_lens_details = {
@@ -893,7 +926,7 @@ def main():
     no_leds_vert = 11
     no_leds_horiz = 20
     move_in_horiz = 0.2
-    move_in_vert = 0.3
+    move_in_vert = 0.2
     resize_ratio = 1.0 #expected input res 1080 * 1920
     sample_area_edge = 90 * resize_ratio
     subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
@@ -909,21 +942,35 @@ def main():
     #     image_circle_size=rfish.fish_eye_circle)
 
 
+    prev = next(cam)
+
+
+    real_corners = rfish.corners
+    positions = get_config_from_aws(img_upload_url)
+    if len(positions) > 3:
+        real_corners = get_corners_from_remote_config(positions, prev)
+        real_corners = [real_corners['top_left'].real_corner,
+        real_corners['top_right'].real_corner,
+        real_corners['lower_right'].real_corner,
+        real_corners['lower_left'].real_corner]
+    else:
+        print("not enough positions in remote config ", positions)
+    #raise Exception("stop stop")
+
+
     homography_tool = get_homography(
         img_height_=rfish.height,
         img_width_=rfish.width,
-        corners=rfish.corners,
+        corners=real_corners,
         target_corners=rfish.targets,
         resize_ratio=resize_ratio)
 
 
-    print("getting first image")
-    prev = next(cam)
-    prev = cv2.resize(
-            prev,
-            (int(img_width(prev)*resize_ratio),int(img_height(prev)*resize_ratio)))
 
-    print("grabbed first image")
+    # prev = cv2.resize(
+    #         prev,
+    #         (int(img_width(prev)*resize_ratio),int(img_height(prev)*resize_ratio)))
+
     scambi_units = []
     led_positions = get_led_perimeter_pos(prev, no_leds_vert, no_leds_horiz)
     print("got get_led_perimeter_pos")
@@ -959,6 +1006,7 @@ def main():
 
     for scambi in scambi_units:
         scambi.assign_physical_LED_pos(led_subsystem.get_LEDpos_for_edge_range(scambi))
+
 
 
     # send test image to aws
@@ -1051,6 +1099,7 @@ def main():
 
 
 def upload_img_to_aws(img, url, action):
+    
     print("uploading image")
     if action == "raw":
         action = "image_raw"
@@ -1072,7 +1121,26 @@ def upload_img_to_aws(img, url, action):
         print(e)
         print("could not connect first image upload to ", url)
     
+def get_config_from_aws(url):
+    print("getting config from aws")
+    myobj = {
+        "authentication": "farts",
+        "action": "request_config"
+        }
+    positions = []
+    try:
+        response = requests.post(url, json=myobj)
+        #TODO not good - why is this so arduous - can't be right
+        clicked_positions = json.loads(json.loads(response.content)['config'])
 
+        for elem in clicked_positions:
+            # sorry
+            positions.append({i:int(json.loads(elem)[i]) for i in json.loads(elem)})
+    except (requests.exceptions.RequestException, KeyError) as e:
+        print(e)
+        print("could not connect get config or find key from", url)
+
+    return positions
 
 
 
