@@ -478,7 +478,9 @@ class Scambi_unit():
             print(f"{self.bb_lower-self.bb_top} * {self.bb_right-self.bb_left}")
         data = np.reshape(sample_area, (-1,3))
         data = np.float32(data)
-        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 1, 2.0)
+        epsilon = 1.0
+        max_iter = 10
+        criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER,max_iter,epsilon)
         flags = cv2.KMEANS_PP_CENTERS
         _, _, centers = cv2.kmeans(
             data=data,
