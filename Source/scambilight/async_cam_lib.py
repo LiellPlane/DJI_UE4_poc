@@ -323,6 +323,7 @@ class ScambilightCamImageGen(ImageGenerator):
 
     def get_image(self):
         output = self.picam2.capture_array("main")
+        time.sleep(0.01)
         return output
 
 

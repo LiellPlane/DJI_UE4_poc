@@ -1065,12 +1065,12 @@ def main():
 
             with time_it(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
-                    # if flipflop is True:
-                    #     if index%2 == 0:
-                    #         continue
-                    # if flipflop is False:
-                    #     if index%2 == 1:
-                    #         continue
+                    if flipflop is True:
+                        if index%2 == 0:
+                            continue
+                    if flipflop is False:
+                        if index%2 == 1:
+                            continue
                     if (unit.bb_right - unit.bb_left) < subsample_cut or (unit.bb_lower-unit.bb_top) < subsample_cut:
                         unit.get_dominant_colour_flat(prev, subsample=1)
                     else:
