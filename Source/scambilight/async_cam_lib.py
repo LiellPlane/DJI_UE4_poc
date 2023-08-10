@@ -317,13 +317,16 @@ class ScambilightCamImageGen(ImageGenerator):
         self.picam2.configure(_config)
         #  set_controls must come after config!!
         #self.picam2.set_controls({"AnalogueGain": 10.0})
-        self.picam2.set_controls({"ExposureTime": 900000000}) # for blurring - but can get over exposed at night
+        #self.picam2.set_controls({"ExposureTime": 900000000}) # for blurring - but can get over exposed at night
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
         self.picam2.start()
         time.sleep(0.2)
 
     def get_image(self):
         output = self.picam2.capture_array("main")
+        output2 = self.picam2.capture_array("main")
+        final = output + output2
+        final = final / 2
         return output
 
 
