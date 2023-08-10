@@ -933,7 +933,7 @@ def main():
         cam = async_cam_lib.Scamblight_Camera_Async(async_cam_lib.ScambiLight_Cam_vidmodes)
         #cam = async_cam_lib.ScambilightCamImageGen([e.value for e in async_cam_lib.ScambiLight_Cam_vidmodes][0][1][0:2])
         led_subsystem = ws281Leds(DaisybankLedSpacing)
-        cores = 4
+        cores = 3
     else:
         raise Exception(system + " not supported")
     no_leds_vert = 11

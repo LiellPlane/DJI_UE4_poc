@@ -299,7 +299,6 @@ class ImageLibrary(ImageGenerator):
 
     def get_image(self):
         img_to_load = random.choice(self.images)
-
         latch = cv2.imread(img_to_load)
         latch = cv2.resize(latch, list(reversed(self.res[0:2])))
         return latch
