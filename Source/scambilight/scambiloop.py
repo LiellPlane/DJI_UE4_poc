@@ -954,8 +954,14 @@ def main():
 
     prev = next(cam)
     # upload before anything crashes - handy when changing res
-    upload_img_to_aws(prev, img_upload_url, action = "raw")
+    # send test image to aws
+    fisheriser = fisheye_lib.fisheye_tool(
+        img_width_height=(rfish.width, rfish.height),
+        image_circle_size=rfish.fish_eye_circle)
+    img_2_upload = fisheriser.fish_eye_image(next(cam), reverse=True)
+    upload_img_to_aws(img_2_upload, img_upload_url, action = "raw")
 
+    
     real_corners = rfish.corners
     positions = get_config_from_aws(img_upload_url)
     if len(positions) > 3:
@@ -1019,12 +1025,7 @@ def main():
 
 
 
-    # send test image to aws
-    fisheriser = fisheye_lib.fisheye_tool(
-        img_width_height=(rfish.width, rfish.height),
-        image_circle_size=rfish.fish_eye_circle)
-    img_2_upload = fisheriser.fish_eye_image(next(cam), reverse=True)
-    upload_img_to_aws(img_2_upload, img_upload_url, action = "raw")
+
 
 
     # prepare for main loop
