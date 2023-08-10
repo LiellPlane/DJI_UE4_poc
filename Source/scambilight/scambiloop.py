@@ -459,7 +459,7 @@ class Scambi_unit():
     def get_dominant_colour_perspective(self, img):
         pass
 
-    def get_mean_colour(self, img):
+    def get_mean_colour(self, img, subsample):
         sample_area = img[
             self.bb_top:self.bb_lower,
             self.bb_left:self.bb_right,
