@@ -968,7 +968,7 @@ def main():
         print("not enough positions in remote config ", positions)
     #raise Exception("stop stop")
 
-
+    print(positions)
     homography_tool = get_homography(
         img_height_=rfish.height,
         img_width_=rfish.width,
