@@ -284,6 +284,7 @@ class Scambi_unit():
         self.bb_right = None
         self.bb_top = None
         self.bb_lower = None
+        self.last_dom_col_dif = None
         self.colour = (
             random.randint(1,255),
             random.randint(1,255),
@@ -1071,9 +1072,9 @@ def main():
                         if index%2 == 1:
                             continue
                     if (unit.bb_right - unit.bb_left) < subsample_cut or (unit.bb_lower-unit.bb_top) < subsample_cut:
-                        unit.get_dominant_colour_flat(prev, subsample=1)
+                        unit.get_mean_colour(prev, subsample=1)
                     else:
-                        unit.get_dominant_colour_flat(prev, subsample=2)
+                        unit.get_mean_colour(prev, subsample=2)
                         subsampled += 1
 
             if PLATFORM == _OS.WINDOWS or sent_overlay > -1:
