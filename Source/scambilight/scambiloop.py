@@ -890,7 +890,7 @@ def get_corners_from_remote_config(config, img):
     corners["lower_left"] =  [0, img_height(img)]
     list_config_pts = [[i['clickx'], i['clicky']] for i in config]
     for pt_id, pt_coord in corners.items():
-        match_pt = find_closest(pt_coord, list_config_pts)
+        match_pt, list_config_pts = find_closest(pt_coord, list_config_pts)
         arse = config_corner(flat_corner=corners[pt_id], real_corner=match_pt)
         corners[pt_id] = arse
     return corners
@@ -899,7 +899,8 @@ def find_closest(testpt: list [int, int], input_pts:list):
     dists = {
         np.linalg.norm(np.asarray(testpt)-np.asarray(i)):i
         for i in input_pts}
-    return dists[sorted(dists)[0]]
+    pt = dists[sorted(dists)[0]]
+    return pt, [i for i in input_pts if i != pt]
 
     
 def main():
@@ -938,7 +939,7 @@ def main():
     move_in_horiz = 0.2
     move_in_vert = 0.2
     #resize_ratio = 1.0 #expected input res 1080 * 1920
-    sample_area_edge = 60
+    sample_area_edge = 50
     subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
@@ -961,7 +962,7 @@ def main():
     img_2_upload = fisheriser.fish_eye_image(next(cam), reverse=True)
     upload_img_to_aws(img_2_upload, img_upload_url, action = "raw")
 
-    
+
     real_corners = rfish.corners
     positions = get_config_from_aws(img_upload_url)
     if len(positions) > 3:
