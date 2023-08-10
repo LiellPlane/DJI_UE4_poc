@@ -479,7 +479,7 @@ class Scambi_unit():
         data = np.reshape(sample_area, (-1,3))
         data = np.float32(data)
         criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 10, 1.0)
-        flags = cv2.KMEANS_RANDOM_CENTERS
+        flags = cv2.KMEANS_PP_CENTERS
         _, _, centers = cv2.kmeans(
             data=data,
             K=1,
