@@ -16,7 +16,7 @@ import requests
 import base64
 import json
 from typing import Literal
-
+dd
 def get_platform():
     #  detect what OS we are on - test environment (Windows) or production (pi hardware)
     RASP_PI_4_OS = "armv7l"
