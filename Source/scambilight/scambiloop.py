@@ -637,100 +637,99 @@ class lens_details():
         [self.width, self.height],
         [0, self.height]]
 
-class real_fish_eye_cam_1269():
-    vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
-    # 1296 * 976 or whatever mode it is
-    # width = 1296
-    # height = 972
+# class real_fish_eye_cam_1269():
+#     vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
+#     # 1296 * 976 or whatever mode it is
+#     # width = 1296
+#     # height = 972
 
-    # fish_eye_circle = 1296 - 150
-    width = 1269
-    height = 972
+#     # fish_eye_circle = 1296 - 150
+#     width = 1269
+#     height = 972
 
-    fish_eye_circle = 1250
+#     fish_eye_circle = 1250
 
-    # these are corners from fisheye so need
-    # to be converted/reversed
-    #"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.png"
-    corners = np.asarray([
-        [81, 234],
-        [1157, 346],
-        [860, 600],
-        [363, 572]], dtype="float32")
+#     # these are corners from fisheye so need
+#     # to be converted/reversed
+#     #"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.png"
+#     corners = np.asarray([
+#         [81, 234],
+#         [1157, 346],
+#         [860, 600],
+#         [363, 572]], dtype="float32")
 
-    targets = np.asarray([
-        [0, 0],
-        [width,0 ],
-        [width, height],
-        [0, height]], dtype="float32")
+#     targets = np.asarray([
+#         [0, 0],
+#         [width,0 ],
+#         [width, height],
+#         [0, height]], dtype="float32")
 
 
-class real_fish_eye_cam_640():
-    vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
-    # 1296 * 976 or whatever mode it is
-    # width = 1296
-    # height = 972
+# class real_fish_eye_cam_640():
+#     vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
+#     # 1296 * 976 or whatever mode it is
+#     # width = 1296
+#     # height = 972
 
-    # fish_eye_circle = 1296 - 150
-    width = 640
-    height = 480
+#     # fish_eye_circle = 1296 - 150
+#     width = 640
+#     height = 480
 
-    fish_eye_circle = 600
+#     fish_eye_circle = 600
 
-    # these are corners from fisheye so need
-    # to be converted/reversed
-    #"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.png"
-    corners = np.asarray([
-        [18, 114],
-        [587, 173],
-        [431, 301],
-        [176, 285]], dtype="float32")
+#     # these are corners from fisheye so need
+#     # to be converted/reversed
+#     #"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.png"
+#     corners = np.asarray([
+#         [18, 114],
+#         [587, 173],
+#         [431, 301],
+#         [176, 285]], dtype="float32")
 
-    targets = np.asarray([
-        [0, 0],
-        [width,0 ],
-        [width, height],
-        [0, height]], dtype="float32")
+#     targets = np.asarray([
+#         [0, 0],
+#         [width,0 ],
+#         [width, height],
+#         [0, height]], dtype="float32")
     
 
 class get_homography():
     # class variables
-    demo_img = r"C:\Working\nonwork\SCAMBILIGHT\calibrate_screen.png"
-    demo_vid = r"C:\Working\nonwork\SCAMBILIGHT\fluid_sim.mp4"
-    demo_width = 1920
-    demo_height = 1080
+    # demo_img = r"C:\Working\nonwork\SCAMBILIGHT\calibrate_screen.png"
+    # demo_vid = r"C:\Working\nonwork\SCAMBILIGHT\fluid_sim.mp4"
+    # demo_width = 1920
+    # demo_height = 1080
+    # # demo_corners = np.asarray([
+    # #     [419, 204],
+    # #     [1707, 327],
+    # #     [1761, 1038],
+    # #     [91, 786]], dtype="float32")
     # demo_corners = np.asarray([
-    #     [419, 204],
-    #     [1707, 327],
-    #     [1761, 1038],
-    #     [91, 786]], dtype="float32")
-    demo_corners = np.asarray([
-        [640, 340],
-        [1391, 292],
-        [1413, 799],
-        [669, 778]], dtype="float32")
-    demo_targets = np.asarray([
-        [0, 0],
-        [demo_width,0 ],
-        [demo_width, demo_height],
-        [0, demo_height]], dtype="float32")
+    #     [640, 340],
+    #     [1391, 292],
+    #     [1413, 799],
+    #     [669, 778]], dtype="float32")
+    # demo_targets = np.asarray([
+    #     [0, 0],
+    #     [demo_width,0 ],
+    #     [demo_width, demo_height],
+    #     [0, demo_height]], dtype="float32")
 
     def __init__(
             self,
             img_height_,
             img_width_,
             corners,
-            target_corners,
-            resize_ratio):
+            target_corners):
         """ calibrate_pts = np.asarray([
         [419, 204],
         [1707, 327],
         [1761, 1038],
         [91, 786]], dtype="float32")"""
-        self._img_height = img_height_ * resize_ratio
-        self._img_width = img_width_ * resize_ratio
-        self._corners = np.asarray(corners,  dtype="float32") * resize_ratio
-        self._target_corners = np.asarray(target_corners,  dtype="float32") * resize_ratio
+        self._img_height = img_height_ 
+        self._img_width = img_width_ 
+        self._corners = np.asarray(corners,  dtype="float32") 
+        self._target_corners = np.asarray(target_corners,  dtype="float32") 
         self.trans_matrix = cv2.getPerspectiveTransform(
                     self._corners,
                     self._target_corners)
@@ -905,36 +904,47 @@ def find_closest(testpt: list [int, int], input_pts:list):
     
 def main():
 
-    daisybank_hd_lens_details = {
+    daisybank_hd_lens_details_HD = {
         'id': 'daisybank HD',
         'vid': 'C:\\Working\\nonwork\\SCAMBILIGHT\\fisheye_taped.mp4',
         'width': 1269,
         'height': 972,
         'fish_eye_circle': 1250,
         'corners': [[81, 234],[1157, 346],[860, 600],[363, 572]]}
-    rfish = lens_details(**daisybank_hd_lens_details)
+
+    daisybank_hd_lens_details_LD = {
+        'id': 'daisybank HD',
+        'vid': 'C:\\Working\\nonwork\\SCAMBILIGHT\\fisheye_taped.mp4',
+        'width': 640,
+        'height': 480,
+        'fish_eye_circle': 600,
+        'corners': [[18, 114], [587, 173], [431, 301], [176, 285]]}
+
+    rfish = lens_details(**daisybank_hd_lens_details_LD)
     system = get_platform()
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cam = async_cam_lib.Synth_Camera_Async(async_cam_lib.ScambiLight_Cam_vidmodes)
+        cores = 8
     elif system == _OS.RASPBERRY:
         cam = async_cam_lib.Scamblight_Camera_Async(async_cam_lib.ScambiLight_Cam_vidmodes)
         #cam = async_cam_lib.ScambilightCamImageGen([e.value for e in async_cam_lib.ScambiLight_Cam_vidmodes][0][1][0:2])
         led_subsystem = ws281Leds(DaisybankLedSpacing)
+        cores = 2
     else:
         raise Exception(system + " not supported")
     no_leds_vert = 11
     no_leds_horiz = 20
     move_in_horiz = 0.2
     move_in_vert = 0.2
-    resize_ratio = 1.0 #expected input res 1080 * 1920
-    sample_area_edge = 90 * resize_ratio
+    #resize_ratio = 1.0 #expected input res 1080 * 1920
+    sample_area_edge = 60
     subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
-    cores_for_col_dect = 4
+    cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
 
-    if resize_ratio != 1.0:
-        raise Exception("any non unity values break the fisheye stuff in scambiunit")
+    #if resize_ratio != 1.0:
+     #   raise Exception("any non unity values break the fisheye stuff in scambiunit")
     
 
     # fisheriser = fisheye_lib.fisheye_tool(
@@ -943,7 +953,8 @@ def main():
 
 
     prev = next(cam)
-
+    # upload before anything crashes - handy when changing res
+    upload_img_to_aws(prev, img_upload_url, action = "raw")
 
     real_corners = rfish.corners
     positions = get_config_from_aws(img_upload_url)
@@ -962,8 +973,7 @@ def main():
         img_height_=rfish.height,
         img_width_=rfish.width,
         corners=real_corners,
-        target_corners=rfish.targets,
-        resize_ratio=resize_ratio)
+        target_corners=rfish.targets)
 
 
 

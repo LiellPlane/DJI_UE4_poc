@@ -292,13 +292,16 @@ class ImageLibrary(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(res, np.uint8)
         self.images = jpgs_in_folder(r"C:\VMs\SharedFolder\temp_get_imgs")
+        self.res = res
         if len(self.images) < 1:
             raise Exception("could not find images in folder")
 
 
     def get_image(self):
         img_to_load = random.choice(self.images)
+
         latch = cv2.imread(img_to_load)
+        latch = cv2.resize(latch, list(reversed(self.res[0:2])))
         return latch
     
 
@@ -350,9 +353,9 @@ class HQ_GS_Cam_vidmodes(Enum):
 class ScambiLight_Cam_vidmodes(Enum):
     """scambilight fisheye ov5647"""
     # dimensions are reversed (h, w) due to quirk of ov5647
-    _1 = ["1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",(972, 1296 , 3)]
     _2 = ["640x480 [58.92 fps - (16, 0)/2560x1920 crop]",(480, 640, 3)]
-    
+    _1 = ["1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",(972, 1296 , 3)]
+
     
     _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
     _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
