@@ -183,7 +183,7 @@ class ws281Leds(Leds):
             print("**************")
             print("Try running as SUDO or ROOT user")
             print("**************")
-        print("FUDGE BEING USED!!! FIX PLEASE")
+        #print("FUDGE BEING USED!!! FIX PLEASE")
         print("ws281Leds")
         time.sleep(2)
         self.test_leds()
@@ -939,10 +939,10 @@ def main():
         raise Exception(system + " not supported")
     no_leds_vert = 11
     no_leds_horiz = 20
-    move_in_horiz = 0.2
-    move_in_vert = 0.2
+    move_in_horiz = 0.1
+    move_in_vert = 0.1
     #resize_ratio = 1.0 #expected input res 1080 * 1920
-    sample_area_edge = 65
+    sample_area_edge = 80
     subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
@@ -1093,10 +1093,13 @@ def main():
 
                 if sent_overlay == 0:
                     before_warp = display_img.copy()
+                    perp_warped = fisheriser.fish_eye_image(display_img.copy(), reverse=True)
+                    for pt in homography_tool._corners:
+                        perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
                     display_img = fisheriser.fish_eye_image(display_img, reverse=True)
                     display_img = homography_tool.warp_img(display_img)
                     upload_img_to_aws(
-                        np.vstack((before_warp,display_img)),
+                        np.vstack((before_warp,display_img, perp_warped)),
                         img_upload_url,
                         action = "overlay")
 
