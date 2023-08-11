@@ -924,7 +924,7 @@ def main():
         'fish_eye_circle': 600,
         'corners': [[18, 114], [587, 173], [431, 301], [176, 285]]}
 
-    rfish = lens_details(**daisybank_hd_lens_details_LD)
+    rfish = lens_details(**daisybank_hd_lens_details_HD)
     system = get_platform()
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)

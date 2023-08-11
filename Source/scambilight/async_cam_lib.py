@@ -319,7 +319,7 @@ class ScambilightCamImageGen(ImageGenerator):
         #self.picam2.set_controls({"AnalogueGain": 30.0})
         #self.picam2.set_controls({"ExposureTime": 1000000}) # for blurring - but can get over exposed at night
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
-        self.picam2.set_controls({"ExposureTime": 100000000, "AnalogueGain": 1.0})
+        #self.picam2.set_controls({"ExposureTime": 100000000, "AnalogueGain": 1.0})
         self.picam2.start()
         time.sleep(0.2)
 
@@ -354,10 +354,8 @@ class HQ_GS_Cam_vidmodes(Enum):
 class ScambiLight_Cam_vidmodes(Enum):
     """scambilight fisheye ov5647"""
     # dimensions are reversed (h, w) due to quirk of ov5647
-    _2 = ["640x480 [58.92 fps - (16, 0)/2560x1920 crop]",(480, 640, 3)]
     _1 = ["1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",(972, 1296 , 3)]
-
-    
+    _2 = ["640x480 [58.92 fps - (16, 0)/2560x1920 crop]",(480, 640, 3)]
     _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
     _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
 
