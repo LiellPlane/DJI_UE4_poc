@@ -251,21 +251,21 @@ class ScambiInit():
     position_norm_end: float
     id: int
 
+@dataclass
+class ScambiWarp():
+    roi = []
+    warped_led_pos: any = None
+    warped_bounding_rect: any = None
+    bb_left: int = None
+    bb_right: int = None
+    bb_top: int = None
+    bb_lower: int = None
+    sample_area_lerp_contour: any = None
+    convex_hulls_lerp_contour: any = None
+
 class Scambi_unit():
     def __init__(self,
-                 led_positionxy: tuple,
-                 sample_area_left: int,
-                 sample_area_right: int,
-                 sample_area_top: int,
-                 sample_area_lower: int,
-                 inverse_warp_m: any,
-                 img_shape: Optional[any],
-                 img_circle: Optional[int],
-                 edge: Edges,
-                 position_normed: float,
-                 position_norm_start: float,
-                 position_norm_end: float,
-                 id: int):
+                 init_object: ScambiInit):
 
         """supply led and roi positions on a flat representation of
         the screen
@@ -278,143 +278,148 @@ class Scambi_unit():
         to a fisheye of img_circle
         
         needs to be manually initialised by calling .initialise"""
-        self.id = id
-        self.img_shape = img_shape
-        self.img_circle = img_circle
-        self.led_positionxy = led_positionxy
-        self.sample_area_left = sample_area_left
-        self.sample_area_right = sample_area_right
-        self.sample_area_top = sample_area_top
-        self.sample_area_lower = sample_area_lower
-        self.inverse_warp_m = inverse_warp_m
-        self.edge = edge
-        self.position_normed = position_normed
-        self.position_norm_start = position_norm_start
-        self.position_norm_end =position_norm_end
-        self.roi = []
-        self.warped_led_pos = None
-        self.warped_bounding_rect = None
-        # this all needs to go in a dataclass or something
-        self.bb_left = None
-        self.bb_right = None
-        self.bb_top = None
-        self.bb_lower = None
+        self.initobj = init_object
+        self.perpwarp = ScambiWarp()
+        self.fishwarp = ScambiWarp()
+        #self.roi = []
+        #self.warped_led_pos = None
+        #self.warped_bounding_rect = None
+        #self.bb_left = None
+        #self.bb_right = None
+        #self.bb_top = None
+        #self.bb_lower = None
         self.last_dom_col_dif = None
         self.colour = (
             random.randint(1,255),
             random.randint(1,255),
             random.randint(1,255))
-        self.sample_area_lerp_contour = None
-        self.convex_hulls_lerp_contour = None
+        #self.sample_area_lerp_contour = None
+        #self.convex_hulls_lerp_contour = None
         self.physical_led_pos = None
         
     def initialise(self):
-        self.lerp_sample_area()
         self.warp_rois_homograpy()
         self.fisheye_rois()
-        print(f"scambiunit {self.id} initialised")
+        print(f"scambiunit {self.initobj.id} initialised")
 
     def assign_physical_LED_pos(self, pos: int):
         self.physical_led_pos = pos
+
+    @property
+    def edge(self):
+        return self.initobj.edge
+
+    @property
+    def position_normed(self):
+        return self.initobj.position_normed
+    
+    @property
+    def position_norm_start(self):
+        return self.initobj.position_norm_start
+
+    @property
+    def position_norm_end(self):
+        return self.initobj.position_norm_end
 
     def lerp_sample_area(self):
         """Create interpolation between corners so we can
         warp in a non-linear fashion such as fish eye"""
         contours = []
         # along top left to right
-        lin = np.linspace(self.sample_area_left, self.sample_area_right, 10)
+        lin = np.linspace(self.initobj.sample_area_left, self.initobj.sample_area_right, 10)
         for x in lin:
-            contours.append((x, self.sample_area_top))
+            contours.append((x, self.initobj.sample_area_top))
         # down right side
-        lin = np.linspace(self.sample_area_top, self.sample_area_lower, 10)
+        lin = np.linspace(self.initobj.sample_area_top, self.initobj.sample_area_lower, 10)
         for y in lin:
-            contours.append((self.sample_area_right, y))
+            contours.append((self.initobj.sample_area_right, y))
         # along bottom right to left
-        lin = np.linspace(self.sample_area_right, self.sample_area_left, 10)
+        lin = np.linspace(self.initobj.sample_area_right, self.initobj.sample_area_left, 10)
         for x in lin:
-            contours.append((x, self.sample_area_lower))
+            contours.append((x, self.initobj.sample_area_lower))
         # up left side
-        lin = np.linspace(self.sample_area_lower, self.sample_area_top, 10)
+        lin = np.linspace(self.initobj.sample_area_lower, self.initobj.sample_area_top, 10)
         for y in lin:
-            contours.append((self.sample_area_left, y))
+            contours.append((self.initobj.sample_area_left, y))
         cont_ints = [(int(i[0]), int(i[1])) for i in contours]
-        self.sample_area_lerp_contour = cont_ints
+        return cont_ints
 
     def warp_rois_homograpy(self):
         """warp rois if we just have a perspective warp"""
         # warp sample colour region
         temp_roi = []
-        temp_roi.append(np.asarray([self.sample_area_left, self.sample_area_top, 1]))
-        temp_roi.append(np.asarray([self.sample_area_left, self.sample_area_lower, 1]))
-        temp_roi.append(np.asarray([self.sample_area_right, self.sample_area_lower, 1]))
-        temp_roi.append(np.asarray([self.sample_area_right, self.sample_area_top, 1]))
+        temp_roi.append(np.asarray([self.initobj.sample_area_left, self.initobj.sample_area_top, 1]))
+        temp_roi.append(np.asarray([self.initobj.sample_area_left, self.initobj.sample_area_lower, 1]))
+        temp_roi.append(np.asarray([self.initobj.sample_area_right, self.initobj.sample_area_lower, 1]))
+        temp_roi.append(np.asarray([self.initobj.sample_area_right, self.initobj.sample_area_top, 1]))
         for pt in temp_roi:
-            homog_coords = np.matmul(self.inverse_warp_m, pt)
+            homog_coords = np.matmul(self.initobj.inverse_warp_m, pt)
             new_pt = list((np.floor(homog_coords[0:2]/homog_coords[-1])).astype(int))
-            self.roi.append(new_pt)
-        self.roi = np.asarray(self.roi).astype(np.int32)
-        self.roi = self.roi.reshape((-1, 1, 2))
+            self.perpwarp.roi.append(new_pt)
+        self.perpwarp.roi = np.asarray(self.perpwarp.roi).astype(np.int32)
+        self.perpwarp.roi = self.perpwarp.roi.reshape((-1, 1, 2))
 
         # warp expected LED region
-        temp_led_pos = np.asarray(self.led_positionxy + (1,))
-        homog_coords = np.matmul(self.inverse_warp_m, temp_led_pos)
-        self.warped_led_pos = tuple((np.floor(homog_coords[0:2]/homog_coords[-1])).astype(int))
+        temp_led_pos = np.asarray(self.initobj.led_positionxy + (1,))
+        homog_coords = np.matmul(self.initobj.inverse_warp_m, temp_led_pos)
+        self.perpwarp.warped_led_pos = tuple((np.floor(homog_coords[0:2]/homog_coords[-1])).astype(int))
 
         #get bounding box for ROI
-        self.warped_bounding_rect = cv2.boundingRect(self.roi)
-        left, top, w, h = self.warped_bounding_rect
+        self.perpwarp.warped_bounding_rect = cv2.boundingRect(self.perpwarp.roi)
+        left, top, w, h = self.perpwarp.warped_bounding_rect
         right = left + w
         lower = top + h
-        self.bb_left = left
-        self.bb_right = right
-        self.bb_top = top
-        self.bb_lower = lower
+        self.perpwarp.bb_left = left
+        self.perpwarp.bb_right = right
+        self.perpwarp.bb_top = top
+        self.perpwarp.bb_lower = lower
 
         #warp the lerped rois (rois with points between corners for non-linear warping)
         warped_lerp_roi = []
-        for lerp_pt in self.sample_area_lerp_contour:
+        lerp_area = self.lerp_sample_area()
+        for lerp_pt in lerp_area:
             temp_lerp_pos = np.asarray(lerp_pt + (1,))
-            homog_coords = np.matmul(self.inverse_warp_m, temp_lerp_pos)
+            homog_coords = np.matmul(self.initobj.inverse_warp_m, temp_lerp_pos)
             warped_lerp_pt = tuple((np.floor(homog_coords[0:2]/homog_coords[-1])).astype(int))
             warped_lerp_roi.append(warped_lerp_pt)
-        self.sample_area_lerp_contour = warped_lerp_roi
+        self.perpwarp.sample_area_lerp_contour = warped_lerp_roi
         
     def fisheye_rois(self):
         """warp the rois to fisheye - expected to have
         warped perspective first"""
         
         fisheyeser = fisheye_lib.fisheye_tool(
-            img_width_height=tuple(reversed(self.img_shape[0:2])),
-            image_circle_size=self.img_circle)
+            img_width_height=tuple(reversed(self.initobj.img_shape[0:2])),
+            image_circle_size=self.initobj.img_circle)
         
         temp_pts = []
 
-        for pt in self.sample_area_lerp_contour:
+        for pt in self.perpwarp.sample_area_lerp_contour:
             temp_pts.append(
                 fisheyeser.brute_force_find_fisheye_pt(pt))
 
-        self.sample_area_lerp_contour = temp_pts
-        self.convex_hulls_lerp_contour = convert_pts_to_convex_hull(
-            self.sample_area_lerp_contour)
+        self.fishwarp.sample_area_lerp_contour = temp_pts
+        self.fishwarp.convex_hulls_lerp_contour = convert_pts_to_convex_hull(
+            self.fishwarp.sample_area_lerp_contour)
 
-        self.warped_led_pos = fisheyeser.brute_force_find_fisheye_pt(self.warped_led_pos)
+        self.fishwarp.warped_led_pos = fisheyeser.brute_force_find_fisheye_pt(self.perpwarp.warped_led_pos)
         
         #recalculate
-        fish_roi = np.asarray([np.asarray(fisheyeser.brute_force_find_fisheye_pt(list(pt[0]))) for pt in self.roi]).reshape(-1, 1, 2)
-        self.warped_bounding_rect = cv2.boundingRect(fish_roi)
-        left, top, w, h = self.warped_bounding_rect
+        self.fishwarp.roi = np.asarray([np.asarray(fisheyeser.brute_force_find_fisheye_pt(list(pt[0]))) for pt in self.perpwarp.roi]).reshape(-1, 1, 2)
+        self.fishwarp.warped_bounding_rect = cv2.boundingRect(self.fishwarp.roi)
+        left, top, w, h = self.fishwarp.warped_bounding_rect
         right = left + w
         lower = top + h
-        self.bb_left = left
-        self.bb_right = right
-        self.bb_top = top
-        self.bb_lower = lower
+        self.fishwarp.bb_left = left
+        self.fishwarp.bb_right = right
+        self.fishwarp.bb_top = top
+        self.fishwarp.bb_lower = lower
     
     def draw_lerp_contour(self, img):
 
         cv2.drawContours(
             image=img,
-            contours=[self.convex_hulls_lerp_contour],
+            contours=[self.fishwarp.convex_hulls_lerp_contour],
             contourIdx=-1,
             color=(100,200,250),
             thickness=1,
@@ -426,8 +431,8 @@ class Scambi_unit():
         #for pt in self.roi:
         #    img[pt[1], pt[0], :] = (255, 255, 255)
         img = cv2.polylines(img,
-                            [self.roi],
-                      isClosed=True, color=(255,255,255),
+                            [self.perpwarp.roi],
+                      isClosed=True, color=(random.randint(30,255),random.randint(30,255),random.randint(30,255)),
                       thickness=1)
         
         #cv2.drawContours(img, [br], -1, (0,0,255), 1)
@@ -436,15 +441,14 @@ class Scambi_unit():
         return img
     
     def draw_warped_boundingbox(self,img):
-
-        x,y,w,h = self.warped_bounding_rect
+        x, y, w, h = self.perpwarp.warped_bounding_rect
         cv2.rectangle(img, (x, y), (x + w, y + h), (255,0,0), 1)
 
         return img
 
     def draw_led_pos(self, img, colour=None, offset=None, size=16):
 
-        pos = self.led_positionxy
+        pos = self.initobj.led_positionxy
         if offset is not None:
             pos = (pos[0] + offset[0], pos[1] + offset[1])
         if colour is None:
@@ -454,7 +458,7 @@ class Scambi_unit():
 
     def draw_warped_led_pos(self, img, colour=None, offset=None, size=16):
     
-        pos = self.warped_led_pos
+        pos = self.fishwarp.warped_led_pos
         if offset is not None:
             pos = (pos[0] + offset[0], pos[1] + offset[1])
         if colour is None:
@@ -466,18 +470,18 @@ class Scambi_unit():
 
     def draw_rectangle(self, img):
         draw_rectangle(
-            self.sample_area_left,
-            self.sample_area_right,
-            self.sample_area_top,
-            self.sample_area_lower, img)
+            self.initobj.sample_area_left,
+            self.initobj.sample_area_right,
+            self.initobj.sample_area_top,
+            self.initobj.sample_area_lower, img)
 
     def get_dominant_colour_perspective(self, img):
         pass
 
     def get_mean_colour(self, img, subsample):
         sample_area = img[
-            self.bb_top:self.bb_lower,
-            self.bb_left:self.bb_right,
+            self.fishwarp.bb_top:self.fishwarp.bb_lower,
+            self.fishwarp.bb_left:self.fishwarp.bb_right,
             :]
         
         self.colour = tuple(
@@ -487,11 +491,11 @@ class Scambi_unit():
     def get_dominant_colour_flat(self, img, subsample):
         """keep subsample between 1 (unity) and 4 usually"""
         sample_area = img[
-            self.bb_top:self.bb_lower:subsample,
-            self.bb_left:self.bb_right:subsample,
+            self.fishwarp.bb_top:self.fishwarp.bb_lower:subsample,
+            self.fishwarp.bb_left:self.fishwarp.bb_right:subsample,
             :]
         if random.randint(0,5000) < 2:
-            print(f"{self.bb_lower-self.bb_top} * {self.bb_right-self.bb_left}")
+            print(f"{self.fishwarp.bb_lower-self.fishwarp.bb_top} * {self.fishwarp.bb_right-self.fishwarp.bb_left}")
         data = np.reshape(sample_area, (-1,3))
         data = np.float32(data)
         epsilon = 1.0
@@ -509,6 +513,12 @@ class Scambi_unit():
         dom_col = [int(i) for i in dom_col]
         self.colour = tuple(dom_col)
         return self.colour
+
+    def is_sample_area_smaller(self, cut_off: int):
+        tp = self.fishwarp
+        if (abs(tp.bb_right - tp.bb_left)) < cut_off or (abs(tp.bb_lower-tp.bb_top)) < cut_off:
+            return True
+        return False
 
 def get_dominant_colour_flat_vectorize(img, list_of_scambiunits):
     return 
@@ -948,8 +958,7 @@ def main():
             if led.edge  in [Edges.LEFT, Edges.RIGHT]:
                 new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * move_in_horiz)).astype(int))
             left, right, top, lower = create_rectangle_from_centrepoint(new_pos, edge=sample_area_edge)
-            scambi_units.append(Scambi_unit(
-                led_positionxy=centre_,
+            init = ScambiInit(led_positionxy=centre_,
                 sample_area_left=left,
                 sample_area_right=right,
                 sample_area_top=top,
@@ -962,6 +971,7 @@ def main():
                 position_norm_start=led.normed_pos_along_edge_start,
                 position_norm_end=led.normed_pos_along_edge_end,
                 id=index)
+            scambi_units.append(Scambi_unit(init)
             )
 
     for scambi in scambi_units:
@@ -1011,7 +1021,7 @@ def main():
                     if flipflop is False:
                         if index%2 == 1:
                             continue
-                    if (unit.bb_right - unit.bb_left) < subsample_cut or (unit.bb_lower-unit.bb_top) < subsample_cut:
+                    if unit.is_sample_area_smaller(subsample_cut):
                         unit.get_dominant_colour_flat(prev, subsample=1)
                     else:
                         unit.get_dominant_colour_flat(prev, subsample=2)
@@ -1023,6 +1033,8 @@ def main():
                 display_img = prev.copy()
                 with time_it(f"overlay"):
                     for index, unit in enumerate(scambi_units):
+                        display_img = unit.draw_warped_roi(display_img)
+                        continue
                         unit.draw_warped_boundingbox(display_img)
                         display_img = unit.draw_lerp_contour(display_img)
                         display_img = unit.draw_warped_led_pos(
@@ -1030,6 +1042,7 @@ def main():
                             unit.colour,
                             offset=(0, 0),
                             size=10)
+                        
 
                 if sent_overlay == 0:
                     before_warp = display_img.copy()
