@@ -235,6 +235,21 @@ def time_it(comment):
 def convert_pts_to_convex_hull(points:list[list[int, int]]):
    return cv2.convexHull(np.array(points, dtype='int32'))
 
+@dataclass
+class ScambiInit():
+    led_positionxy: tuple
+    sample_area_left: int
+    sample_area_right: int
+    sample_area_top: int
+    sample_area_lower: int
+    inverse_warp_m: any
+    img_shape: Optional[any]
+    img_circle: Optional[int]
+    edge: Edges
+    position_normed: float
+    position_norm_start: float
+    position_norm_end: float
+    id: int
 
 class Scambi_unit():
     def __init__(self,
