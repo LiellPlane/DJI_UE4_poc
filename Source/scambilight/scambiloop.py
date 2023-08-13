@@ -640,83 +640,8 @@ class lens_details():
         [self.width, self.height],
         [0, self.height]]
 
-# class real_fish_eye_cam_1269():
-#     vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
-#     # 1296 * 976 or whatever mode it is
-#     # width = 1296
-#     # height = 972
-
-#     # fish_eye_circle = 1296 - 150
-#     width = 1269
-#     height = 972
-
-#     fish_eye_circle = 1250
-
-#     # these are corners from fisheye so need
-#     # to be converted/reversed
-#     #"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.png"
-#     corners = np.asarray([
-#         [81, 234],
-#         [1157, 346],
-#         [860, 600],
-#         [363, 572]], dtype="float32")
-
-#     targets = np.asarray([
-#         [0, 0],
-#         [width,0 ],
-#         [width, height],
-#         [0, height]], dtype="float32")
-
-
-# class real_fish_eye_cam_640():
-#     vid = r"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.mp4"
-#     # 1296 * 976 or whatever mode it is
-#     # width = 1296
-#     # height = 972
-
-#     # fish_eye_circle = 1296 - 150
-#     width = 640
-#     height = 480
-
-#     fish_eye_circle = 600
-
-#     # these are corners from fisheye so need
-#     # to be converted/reversed
-#     #"C:\Working\nonwork\SCAMBILIGHT\fisheye_taped.png"
-#     corners = np.asarray([
-#         [18, 114],
-#         [587, 173],
-#         [431, 301],
-#         [176, 285]], dtype="float32")
-
-#     targets = np.asarray([
-#         [0, 0],
-#         [width,0 ],
-#         [width, height],
-#         [0, height]], dtype="float32")
-    
 
 class get_homography():
-    # class variables
-    # demo_img = r"C:\Working\nonwork\SCAMBILIGHT\calibrate_screen.png"
-    # demo_vid = r"C:\Working\nonwork\SCAMBILIGHT\fluid_sim.mp4"
-    # demo_width = 1920
-    # demo_height = 1080
-    # # demo_corners = np.asarray([
-    # #     [419, 204],
-    # #     [1707, 327],
-    # #     [1761, 1038],
-    # #     [91, 786]], dtype="float32")
-    # demo_corners = np.asarray([
-    #     [640, 340],
-    #     [1391, 292],
-    #     [1413, 799],
-    #     [669, 778]], dtype="float32")
-    # demo_targets = np.asarray([
-    #     [0, 0],
-    #     [demo_width,0 ],
-    #     [demo_width, demo_height],
-    #     [0, demo_height]], dtype="float32")
 
     def __init__(
             self,
