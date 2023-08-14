@@ -1040,8 +1040,7 @@ def main():
                     # if flipflop is False:
                     #     if index%2 == 1:
                     #         continue
-                    if random.randint(1, 4) != 1:
-                        continue
+
                     unit.get_dom_colour_with_auto_subsample(prev, cut_off = subsample_cut)
 
 
