@@ -906,10 +906,10 @@ def main():
         raise Exception(system + " not supported")
     no_leds_vert = 11
     no_leds_horiz = 20
-    move_in_horiz = 0.15
-    move_in_vert = 0.15
+    move_in_horiz = 0.25
+    move_in_vert = 0.2
     #resize_ratio = 1.0 #expected input res 1080 * 1920
-    sample_area_edge = 100
+    sample_area_edge = 40
     subsample_cut = 15 # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
