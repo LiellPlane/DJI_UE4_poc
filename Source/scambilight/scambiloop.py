@@ -262,6 +262,13 @@ class ScambiWarp():
     bb_lower: int = None
     sample_area_lerp_contour: any = None
     convex_hulls_lerp_contour: any = None
+    @property
+    def bb_height(self):
+        return abs(self.bb_lower-self.bb_top)
+    @property
+    def bb_width(self):
+        return abs(self.bb_right-self.bb_left)
+    
 
 class Scambi_unit():
     def __init__(self,
@@ -490,6 +497,14 @@ class Scambi_unit():
         self.colour = tuple(
             [int(i) for i in sample_area.mean(axis=0).mean(axis=0)])
         return self.colour
+
+    def get_dom_colour_with_auto_subsample(self, img, cut_off):
+        min_edge = min([self.fishwarp.bb_height, self.fishwarp.bb_width])
+        subsampling = math.ceil(min_edge/cut_off)
+        print(subsampling, self.fishwarp.bb_height, self.fishwarp.bb_width)
+        if subsampling < 1:
+            raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
+        return self.get_dominant_colour_flat(img, subsampling)
 
     def get_dominant_colour_flat(self, img, subsample):
         """keep subsample between 1 (unity) and 4 usually"""
@@ -1026,11 +1041,9 @@ def main():
                     if flipflop is False:
                         if index%2 == 1:
                             continue
-                    if unit.is_sample_area_smaller(subsample_cut):
-                        unit.get_dominant_colour_flat(prev, subsample=1)
-                    else:
-                        unit.get_dominant_colour_flat(prev, subsample=2)
-                        subsampled += 1
+
+                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = subsample_cut)
+
 
             if PLATFORM == _OS.WINDOWS or sent_overlay > -1:
                 if sent_overlay > -2:
