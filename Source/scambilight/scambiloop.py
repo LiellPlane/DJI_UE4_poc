@@ -501,7 +501,6 @@ class Scambi_unit():
     def get_dom_colour_with_auto_subsample(self, img, cut_off):
         min_edge = min([self.fishwarp.bb_height, self.fishwarp.bb_width])
         subsampling = math.ceil(min_edge/cut_off)
-        print(subsampling, self.fishwarp.bb_height, self.fishwarp.bb_width)
         if subsampling < 1:
             raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
         return self.get_dominant_colour_flat(img, subsampling)
@@ -911,7 +910,7 @@ def main():
     move_in_vert = 0.15
     #resize_ratio = 1.0 #expected input res 1080 * 1920
     sample_area_edge = 100
-    subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
+    subsample_cut = 15 # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
 
