@@ -352,13 +352,16 @@ class Scambi_unit():
         temp_roi.append(np.asarray([self.initobj.sample_area_left, self.initobj.sample_area_lower, 1]))
         temp_roi.append(np.asarray([self.initobj.sample_area_right, self.initobj.sample_area_lower, 1]))
         temp_roi.append(np.asarray([self.initobj.sample_area_right, self.initobj.sample_area_top, 1]))
+        self.perpwarp.roi = []
         for pt in temp_roi:
             homog_coords = np.matmul(self.initobj.inverse_warp_m, pt)
             new_pt = list((np.floor(homog_coords[0:2]/homog_coords[-1])).astype(int))
             self.perpwarp.roi.append(new_pt)
         self.perpwarp.roi = np.asarray(self.perpwarp.roi).astype(np.int32)
         self.perpwarp.roi = self.perpwarp.roi.reshape((-1, 1, 2))
-
+        # if self.perpwarp.roi.shape[0] != 4:
+        #     print("something funky happening", self.perpwarp.roi)
+        #     raise Exception("perpwarp.roi bad shape!! should only be 4 elements")
         # warp expected LED region
         temp_led_pos = np.asarray(self.initobj.led_positionxy + (1,))
         homog_coords = np.matmul(self.initobj.inverse_warp_m, temp_led_pos)
@@ -431,7 +434,7 @@ class Scambi_unit():
         #for pt in self.roi:
         #    img[pt[1], pt[0], :] = (255, 255, 255)
         img = cv2.polylines(img,
-                            [self.perpwarp.roi],
+                            [self.fishwarp.roi],
                       isClosed=True, color=(random.randint(30,255),random.randint(30,255),random.randint(30,255)),
                       thickness=1)
         
@@ -441,7 +444,7 @@ class Scambi_unit():
         return img
     
     def draw_warped_boundingbox(self,img):
-        x, y, w, h = self.perpwarp.warped_bounding_rect
+        x, y, w, h = self.fishwarp.warped_bounding_rect
         cv2.rectangle(img, (x, y), (x + w, y + h), (255,0,0), 1)
 
         return img
@@ -889,10 +892,10 @@ def main():
         raise Exception(system + " not supported")
     no_leds_vert = 11
     no_leds_horiz = 20
-    move_in_horiz = 0.1
-    move_in_vert = 0.1
+    move_in_horiz = 0.2
+    move_in_vert = 0.2
     #resize_ratio = 1.0 #expected input res 1080 * 1920
-    sample_area_edge = 80
+    sample_area_edge = 100
     subsample_cut = 15 # we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
@@ -995,9 +998,11 @@ def main():
         in range(0,len(scambi_units), scambis_per_core)]
 
     # get initialised scambiunits from parallel processing
+    
     scambi_units = []
     for scamproc in proc_scambis:
         scambi_units.append(scamproc.initialised_scambis_q.get(block=True, timeout=None))
+    
     # flatten nested list
     scambi_units = [item for sublist in scambi_units for item in sublist]
     # main loop
@@ -1033,8 +1038,8 @@ def main():
                 display_img = prev.copy()
                 with time_it(f"overlay"):
                     for index, unit in enumerate(scambi_units):
-                        display_img = unit.draw_warped_roi(display_img)
-                        continue
+                        #display_img = unit.draw_warped_roi(display_img)
+                        
                         unit.draw_warped_boundingbox(display_img)
                         display_img = unit.draw_lerp_contour(display_img)
                         display_img = unit.draw_warped_led_pos(
