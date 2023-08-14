@@ -906,10 +906,10 @@ def main():
         raise Exception(system + " not supported")
     no_leds_vert = 11
     no_leds_horiz = 20
-    move_in_horiz = 0.25
+    move_in_horiz = 0.2
     move_in_vert = 0.2
     #resize_ratio = 1.0 #expected input res 1080 * 1920
-    sample_area_edge = 40
+    sample_area_edge = 80
     subsample_cut = 15 # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
@@ -1034,13 +1034,14 @@ def main():
 
             with time_it(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
-                    if flipflop is True:
-                        if index%2 == 0:
-                            continue
-                    if flipflop is False:
-                        if index%2 == 1:
-                            continue
-
+                    # if flipflop is True:
+                    #     if index%2 == 0:
+                    #         continue
+                    # if flipflop is False:
+                    #     if index%2 == 1:
+                    #         continue
+                    if random.randint(1, 4) != 1:
+                        continue
                     unit.get_dom_colour_with_auto_subsample(prev, cut_off = subsample_cut)
 
 
