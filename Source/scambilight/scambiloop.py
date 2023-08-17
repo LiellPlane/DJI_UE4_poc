@@ -858,7 +858,7 @@ def get_corners_from_remote_config(config, img):
     corners["top_right"] = [img_width(img), 0 ]
     corners["lower_right"] = [img_width(img), img_height(img),]
     corners["lower_left"] =  [0, img_height(img)]
-    list_config_pts = [[i['clickx'], i['clicky']] for i in config]
+    list_config_pts = [[i['clickX'], i['clickY']] for i in config]
     for pt_id, pt_coord in corners.items():
         match_pt, list_config_pts = find_closest(pt_coord, list_config_pts)
         arse = config_corner(flat_corner=corners[pt_id], real_corner=match_pt)
@@ -1123,7 +1123,7 @@ def get_config_from_aws(url):
 
         for elem in clicked_positions:
             # sorry
-            positions.append({i:int(json.loads(elem)[i]) for i in json.loads(elem)})
+            positions.append({i:int((elem)[i]) for i in elem})
     except (requests.exceptions.RequestException, KeyError) as e:
         print(e)
         print("could not connect get config or find key from", url)

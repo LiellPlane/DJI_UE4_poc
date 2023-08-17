@@ -1,7 +1,6 @@
 import math
 import numpy as np
 import collections
-#import cv2
 
 class fisheye_tool():
     def __init__(
@@ -24,8 +23,8 @@ class fisheye_tool():
         r = math.sqrt(nx2 + ny2)
         #  discard pixels outside from circle!
         if (0.0 <= r and r <= 1.0):
-            nr = math.sqrt(1.0 - (r * r))
-            nr = (r + (1.0 - nr)) / 2.0
+            #nr = math.sqrt(1.0 - (r * r))
+            nr = (r + (1.0 -  math.sqrt(1.0 - (r * r)))) / 2.0
             # discard radius greater than 1.0
             if (nr <= 1.0):
                 theta = math.atan2(ny, nx)
@@ -38,21 +37,51 @@ class fisheye_tool():
                 x2 = x2 - self.offset_x
                 y2 = y2 - self.offset_y
                 if x2 < self.width and y2 < self.height:
-                    #self.check_inverse_pt(x2, y2)
+                    #self.check_inverse_pt(x,y, x2, y2, nr, theta, ny, nx, r)
                     return (x2, y2)
         return None
     
-    def check_inverse_pt(self, x, y):
-        x2, y2 = x, y
-        if x2 > self.width or y2 > self.height:
+    def check_inverse_pt(self,origx, origy, x, y, nr, theta, ny, nx, r):
+        _x2, _y2 = x, y
+        if _x2 > self.width or _y2 > self.height:
             return None
-        y2 = y2 + self.offset_y
-        x2 = x2 + self.offset_x
+        _y2 = _y2 + self.offset_y
+        _x2 = _x2 + self.offset_x
 
-        nyn = ((y2 * 2) / self.image_circle_size) - 1
-        nxn = ((x2 * 2) / self.image_circle_size) - 1
+        _nyn = ((_y2 * 2) / self.image_circle_size) - 1
+        _nxn = ((_x2 * 2) / self.image_circle_size) - 1
 
-        theta = math.asin(nyn / nr)
+        theta2 = math.atan2(_nyn, _nxn)
+        _nr = _nxn / math.cos(theta)
+        dx = _nr * math.cos(theta)
+        dy = _nr * math.sin(theta)
+
+        # _nr = (_r + (1.0 -  math.sqrt(1.0 - (_r * _r)))) / 2.0
+        # _nr /2  = _r + (1.0 -  math.sqrt(1.0 - (_r * _r)))
+        # (_nr /2) - (1.0 -  math.sqrt(1.0 - (_r * _r))) = _r
+        # _r = (_nr /2) - (1.0) -  math.sqrt(1.0 - (_r * _r))
+        # _r**2 = (_nr /2)**2 - (1.0) - (1.0) - (_r * _r)
+        # _r**2 + _r**2 = (_nr /2)**2 - (1.0) - (1.0)
+        # _r**2 + _r**2 = (_nr /2)**2 - (2.0)
+        _r = None
+        try:
+            _r = math.sqrt((_nr /2)**2 - (2.0)) / 2
+        except:
+            print("maths error")
+        
+        print(_r)
+                                       
+
+
+        # _r = (_nr / 2.0) - 1.0 -  math.sqrt(1.0 - (_r * _r))
+        # _r = (_nr / 2.0) - (1.0 -  math.sqrt(1.0 - (_r * _r)))
+
+        # _r_squred = ((_nr / 2.0)**2) - (1.0**2) - (1.0 - (_r * _r))
+        # _r_squred + _r_squred= 
+        # _r = math.sqrt(((_nr / 2.0)**2) - (1.0**2) - 1.0)/2
+        plop1=1
+        #dx = nr * math.cos(theta)
+        #theta = math.asin(nyn / nr)
 
     def fish_eye_image(self, img, reverse):
         fish_eye = np.empty_like(img)
