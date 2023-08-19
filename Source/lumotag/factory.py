@@ -478,7 +478,7 @@ class ImageGenerator(ABC):
 
 
 class CameraAsync(ABC):
-
+    
     def __init__(self, video_modes, imagegen_cls) -> None:
         self.res_select = 0
         self.last_img = None
@@ -499,7 +499,7 @@ class CameraAsync(ABC):
         img_byte_size = reduce(
             lambda acc, curr: acc * curr,self.get_res())
 
-        print("configure_shared_memory", self.get_res())
+
         self.shared_mem_handler = SharedMemory(
                             obj_bytesize=img_byte_size,
                             discrete_ids=[str(self.res_select)]
@@ -533,7 +533,7 @@ class CameraAsync(ABC):
             strm_buff,
             dtype=('uint8')
                 ).reshape(self.get_res())
-        print("__next__", img_buff.shape, img_buff.dtype)
+
         #if len(img_buff.shape) == 3:
         #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
 
@@ -769,15 +769,18 @@ class SharedMemory():
             shared memory object and associate with ID"""
         self._bytesize = obj_bytesize
         self.mem_ids = {}
+
         for my_id in discrete_ids:
             try:
                 self.mem_ids[my_id] = (shared_memory.SharedMemory(
                     create=True,
                     size=obj_bytesize,
                     name=my_id))
+
             except FileExistsError:
                 print(f"Warning: shared memory {my_id} has not been cleaned up")
                 self.mem_ids[my_id] = (shared_memory.SharedMemory(
                     create=False,
                     size=obj_bytesize,
                     name=my_id))
+

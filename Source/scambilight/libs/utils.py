@@ -91,3 +91,25 @@ def encode_img_to_str(img: np.ndarray):
                 ext='.jpg',
                 img=img)[1]).decode()
     return img_string
+
+def img_width(img):
+    if hasattr(img, 'shape'):
+        return img.shape[1]
+    else:
+        return img[1]
+
+def img_height(img):
+    if hasattr(img, 'shape'):
+        return img.shape[0]
+    else:
+        return img[0]
+
+@contextmanager
+def time_it(comment):
+    tic: float = time.perf_counter()
+    try:
+        yield
+    finally:
+        toc: float = time.perf_counter()
+        if random.randint(1,100) < 4:
+            print(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")

@@ -28,3 +28,20 @@ libcamera-hello --list-cameras
                              2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]
 
 #tv flange =26.20mm
+
+
+new project:
+
+empty directory
+
+npm init -y (now should have package.json)
+if typescript isnt global dependency - install it
+check :
+tsc --version
+create root ts file
+
+touch app.ts
+tsc --init
+
+conpile file: 
+tsc app.ts

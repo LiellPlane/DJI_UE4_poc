@@ -1,7 +1,13 @@
 #test code copied from lumotag
 # test by copying and pasting using ssh
 # then create a COMMON library
+import sys
+import os
+from pathlib import Path
+import imp
 
+# factory is imported from another directory by module load
+from factory import CameraAsync
 from abc import ABC, abstractmethod
 import numpy as np
 import time
@@ -17,6 +23,7 @@ import uuid
 from enum import Enum,auto
 from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
+
 
 import random
 
@@ -112,130 +119,6 @@ class Process_Scambiunits():
                     return_dic[unit.id] = color
             self.done_queue.put(
                 return_dic, block=True, timeout=None)
-
-
-class CameraAsync(ABC):
-    
-    def __init__(self, video_modes, imagegen_cls) -> None:
-        self.res_select = 0
-        self.last_img = None
-        self.handshake_queue = Queue(maxsize=1)
-        self.process = None
-        self.shared_mem_handler = None
-        self.cam_res = video_modes
-        # this has to be after initialising self.cam_res
-        self.imagegen_cls = imagegen_cls
-        # this would be nice to have in a __post_init__ type thing
-        self.configure_shared_memory()
- 
-    def configure_shared_memory(self):
-        # we need to get shape of image first to
-        # create memory buffer
-        # don't call this before everything else has been initialised!
-
-        img_byte_size = reduce(
-            lambda acc, curr: acc * curr,self.get_res())
-
-
-        self.shared_mem_handler = SharedMemory(
-                            obj_bytesize=img_byte_size,
-                            discrete_ids=[str(self.res_select)]
-                                        )
-
-        memblock = self.shared_mem_handler.mem_ids[str(self.res_select)]
-
-        func_args = (
-            self.handshake_queue,
-            memblock,
-            self.get_res(),
-            self.imagegen_cls)
-
-        process = Process(
-            target=self.async_img_loop,
-            args=func_args,
-            daemon=True)
-
-        process.start()
-
-    def __next__(self):
-        # popping the queue item unblocks image sender
-        _ = self.handshake_queue.get(
-                        block=True,
-                        timeout=None
-                        )
-
-        strm_buff = self.shared_mem_handler.mem_ids[str(self.res_select)].buf
-
-        img_buff = np.frombuffer(
-            strm_buff,
-            dtype=('uint8')
-                ).reshape(self.get_res())
-
-        #if len(img_buff.shape) == 3:
-        #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
-
-        self.last_img = img_buff
-
-        return img_buff
-
-    def __iter__(self):
-        return self
-
-    def async_img_loop(
-        self,
-        myqueue: Queue,
-        shared_mem_object: shared_memory.SharedMemory,
-        res: tuple,
-        img_gen: ImageGenerator):
-
-        _img_gen = img_gen(res)
-
-        shared_mem = None
-
-        while True:
-            img = _img_gen.get_image()
-            # one-time initialise buffer
-            if shared_mem is None:
-                shared_mem: np.ndarray = np.ndarray(
-                img.shape,
-                dtype=img.dtype,
-                buffer=shared_mem_object.buf
-            )
-
-            shared_mem[:] = img[:]
-            #blocking put until consumer handshakes 
-            myqueue.put("image_ready", block=True, timeout=None)
-
-    def get_res(self):
-        return [e.value for e in self.cam_res][self.res_select][1]
-
-
-class SharedMemory():
-    def __init__(self, obj_bytesize: int,
-                 discrete_ids: list[str]
-                 ):
-        """Memory which can be shared between processes.
-
-            obj_bytesize: expected size of payload
-
-            discrete_ids: for each element create a
-            shared memory object and associate with ID"""
-        self._bytesize = obj_bytesize
-        self.mem_ids = {}
-
-        for my_id in discrete_ids:
-            try:
-                self.mem_ids[my_id] = (shared_memory.SharedMemory(
-                    create=True,
-                    size=obj_bytesize,
-                    name=my_id))
-
-            except FileExistsError:
-                print(f"Warning: shared memory {my_id} has not been cleaned up")
-                self.mem_ids[my_id] = (shared_memory.SharedMemory(
-                    create=False,
-                    size=obj_bytesize,
-                    name=my_id))
 
 
 class CsiCameraImageGen(ImageGenerator):

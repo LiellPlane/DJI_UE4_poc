@@ -17,8 +17,8 @@ import base64
 import json
 from typing import Literal
 from libs.utils import get_platform, _OS, convert_pts_to_convex_hull
-from libs.collections import Edges
-
+from libs.collections import lens_details, config_regions, Edges
+from libs.lighting import SimLeds, ws281Leds, get_led_perimeter_pos
 @dataclass
 class ScambiInit():
     led_positionxy: tuple
@@ -347,3 +347,88 @@ def get_dominant_colour_flat_vectorize(img, list_of_scambiunits):
     dom_col = [int(i) for i in dom_col]
     return tuple([int(i) for i in centers[0]])
     return (0, 0, 0)
+
+
+def generate_scambis(
+        img_shape: tuple,
+        regions: config_regions,
+        lens_details: lens_details,
+        initialise: True,
+        init_cores: Optional[int]):
+    scambi_units = []
+    led_positions = get_led_perimeter_pos(img_shape, regions.no_leds_vert, regions.no_leds_horiz)
+    print("got get_led_perimeter_pos")
+    for index,  led in enumerate(led_positions):
+        print(f"calculating scambiunit {index}/{regions.no_leds_vert+regions.no_leds_vert+regions.no_leds_horiz+regions.no_leds_horiz}")
+        centre_ = tuple((np.asarray(led.positionxy)).astype(int))
+        #cv2.circle(prev,plop,16,(255,0,100),-1)
+        mid_screen = (np.array(tuple(reversed(img_shape[:2])))/2).astype(int)[:2]
+        vec_to_midscreen = mid_screen-np.asarray(centre_)
+        #cv2.circle(prev,tuple(mid_screen),16,(255,0,100),-1)
+        if led.edge  not in [Edges.TOP, Edges.LOWER, Edges.LEFT, Edges.RIGHT]:
+            raise Exception("edge name " + led.edge + "not valid")
+        if led.edge  in [Edges.TOP, Edges.LOWER]:
+            new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_vert)).astype(int))
+        if led.edge  in [Edges.LEFT, Edges.RIGHT]:
+            new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_horiz)).astype(int))
+        left, right, top, lower = create_rectangle_from_centrepoint(new_pos, edge=regions.sample_area_edge)
+        init = ScambiInit(led_positionxy=centre_,
+            sample_area_left=left,
+            sample_area_right=right,
+            sample_area_top=top,
+            sample_area_lower=lower,
+            inverse_warp_m=homography_tool.inverse_trans_matrix,
+            img_shape=img_shape,
+            img_circle=lens_details.fish_eye_circle,
+            edge=led.edge,
+            position_normed=led.normed_pos_along_edge_mid,
+            position_norm_start=led.normed_pos_along_edge_start,
+            position_norm_end=led.normed_pos_along_edge_end,
+            id=index)
+        scambi_units.append(Scambi_unit(init)
+        )
+
+    for scambi in scambi_units:
+        scambi.assign_physical_LED_pos(led_subsystem.get_LEDpos_for_edge_range(scambi))
+
+
+class HomographyTool():
+    
+    def __init__(
+            self,
+            img_height_,
+            img_width_,
+            corners,
+            target_corners):
+        """ calibrate_pts = np.asarray([
+        [419, 204],
+        [1707, 327],
+        [1761, 1038],
+        [91, 786]], dtype="float32")"""
+        self._img_height = img_height_ 
+        self._img_width = img_width_ 
+        self._corners = np.asarray(corners,  dtype="float32") 
+        self._target_corners = np.asarray(target_corners,  dtype="float32") 
+        self.trans_matrix = cv2.getPerspectiveTransform(
+                    self._corners,
+                    self._target_corners)
+        self.inverse_trans_matrix = np.linalg.inv(
+            self.trans_matrix
+            )
+
+    def warp_img(self, img):
+        return(cv2.warpPerspective(
+            img,
+            self.trans_matrix,
+            list(img.shape[0:2]).reverse()
+            ))
+
+def create_rectangle_from_centrepoint(centrepoint, edge):
+    half_edge = int(edge/2)
+    posx =centrepoint[0]
+    posy = centrepoint[1]
+    left = posx - half_edge
+    right = posx + half_edge
+    top = posy - half_edge
+    lower = posy + half_edge
+    return left, right, top, lower

@@ -1,11 +1,15 @@
 import enum
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 
 class Edges(str, enum.Enum):
     TOP = "TOP"
     LOWER = "LOWER"
     LEFT = "LEFT"
     RIGHT = "RIGHT"
+
+class LensConfigs(str, enum.Enum):
+    DAISYBANK_HQ = "DAISYBANK_HQ",
+    DAISYBANK_LQ =  "DAISYBANK_LQ"
 
 @dataclass
 class LedSpacing():
@@ -37,7 +41,18 @@ class LedsLayout():
     clockwise_start: int
     clockwise_end: int
 
+
 @dataclass
 class config_corner():
     flat_corner: list[int, int]
     real_corner: list[int, int]
+
+
+@dataclass
+class config_regions():
+    no_leds_vert: int
+    no_leds_horiz: int
+    move_in_horiz: float
+    move_in_vert: float
+    sample_area_edge : int
+    subsample_cut: int # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing

@@ -13,6 +13,14 @@ import requests
 import base64
 import json
 from typing import Literal
+from libs.utils import img_height, img_width
+from libs.collections import (
+    LedSpacing,
+    Edges,
+    lens_details,
+    LedsLayout,
+    config_corner)
+
 from libs.utils import (
     get_platform,
     _OS)
@@ -161,4 +169,53 @@ class ws281Leds(Leds):
                 self.strip.setPixelColor(i, color)
             self.execute_LEDS()
 
+#cache this
+def perimeter_spacing(img_dim, no_of_leds):
+    perimeter_pxls = img_dim
+    # maybe work out closest integer here 
+    remainder = perimeter_pxls % no_of_leds
+    spacing = (perimeter_pxls-remainder)/no_of_leds
+    return int(spacing)
 
+
+def get_led_perimeter_pos(img, no_leds_vert, no_leds_horiz) -> LedSpacing:
+    # imagine moving around the screen in a clockwise manner to
+    # determine what is 0% and 100% of an edge
+    led_spacing_vert = perimeter_spacing(img_height(img), no_leds_vert)
+    led_spacing_horiz = perimeter_spacing(img_width(img), no_leds_horiz)
+    x = 1
+    y = 0
+    _reversed = 1
+    while True:
+        for pos in [(0,i ) for i in range(0, img_height(img), led_spacing_vert)]:
+            yield LedSpacing(
+                positionxy=pos,
+                edge=Edges.LEFT,
+                normed_pos_along_edge_mid=_reversed - round(pos[x]/img_height(img),3),
+                normed_pos_along_edge_start=_reversed - round((pos[x]-(led_spacing_vert/2))/img_height(img),3),
+                normed_pos_along_edge_end=_reversed - round((pos[x]+(led_spacing_vert/2))/img_height(img),3))
+
+        for pos in [(i, 0) for i in range(0, img_width(img), led_spacing_horiz)]:
+            yield LedSpacing(
+                positionxy=pos,
+                edge=Edges.TOP,
+                normed_pos_along_edge_mid=round(pos[y]/img_width(img),3),
+                normed_pos_along_edge_start=round((pos[y]-(led_spacing_horiz/2))/img_width(img),3),
+                normed_pos_along_edge_end=round((pos[y]+(led_spacing_horiz/2))/img_width(img),3))
+
+        for pos in [(img_width(img), i) for i in range(0, img_height(img), led_spacing_vert)]:
+            yield LedSpacing(
+                positionxy=pos,
+                edge=Edges.RIGHT,
+                normed_pos_along_edge_mid=round(pos[x]/img_height(img),3),
+                normed_pos_along_edge_start=round((pos[x]-(led_spacing_vert/2))/img_height(img),3),
+                normed_pos_along_edge_end=round((pos[x]+(led_spacing_vert/2))/img_height(img),3))
+
+        for pos in [(i, img_height(img)) for i in range(0, img_width(img), led_spacing_horiz)]:
+            yield LedSpacing(
+                positionxy=pos,
+                edge=Edges.LOWER,
+                normed_pos_along_edge_mid=_reversed - round(pos[y]/img_width(img),3),
+                normed_pos_along_edge_start=_reversed - round((pos[y]-(led_spacing_horiz/2))/img_width(img),3),
+                normed_pos_along_edge_end=_reversed - round((pos[y]+(led_spacing_horiz/2))/img_width(img),3))
+        break
