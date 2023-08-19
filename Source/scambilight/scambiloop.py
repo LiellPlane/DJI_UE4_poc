@@ -9,31 +9,31 @@ from libs.scambiunits import (
     HomographyTool,
     generate_scambis)
 from libs.collections import (
-    LensConfigs)
+    LensConfigs,
+    LEDColours)
 import libs.async_cam_lib as async_cam_lib
 import libs.fisheye_lib as fisheye_lib
 from libs.lighting import SimLeds, ws281Leds
 from libs.configs import (
     DaisybankLedSpacing,
-    get_regions_config,
+    get_sample_regions_config,
     get_lens_details)
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
-    get_corners_from_remote_config,
     get_ext_corners_or_use_default)
 
-PLATFORM = get_platform()
-if PLATFORM == _OS.RASPBERRY:
-    # sorry not sorry
-    import rpi_ws281x as leds
+#PLATFORM = get_platform()
+#if PLATFORM == _OS.RASPBERRY:
+#    # sorry not sorry
+#    import rpi_ws281x as leds
 
 def main():
 
-    lens_details = get_lens_details(LensConfigs.DAISYBANK_HQ)
-    fisheriser = fisheye_lib.fisheye_tool(
-        img_width_height=(lens_details.width, lens_details.height),
-        image_circle_size=lens_details.fish_eye_circle)
+    optical_details = get_lens_details(LensConfigs.DAISYBANK_HQ)
+    fisheye_compute = fisheye_lib.fisheye_tool(
+        img_width_height=(optical_details.width, optical_details.height),
+        image_circle_size=optical_details.fish_eye_circle)
     system = get_platform()
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
@@ -46,38 +46,42 @@ def main():
     else:
         raise Exception(system + " not supported")
 
+    led_subsystem.display_info_colours(LEDColours.Red.value)
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
 
     curr_img = next(cam)
     # upload image before anything crashes 
 
-    img_2_upload = fisheriser.fish_eye_image(next(cam), reverse=True)
+    img_2_upload = fisheye_compute.fish_eye_image(next(cam), reverse=True)
     upload_img_to_aws(img_2_upload, img_upload_url, action = "raw")
+    led_subsystem.display_info_colours(LEDColours.Blue.value)
 
     aws_config = get_config_from_aws(img_upload_url)
-
+    led_subsystem.display_info_colours(LEDColours.Cyan.value)
     fish_img_corners = get_ext_corners_or_use_default(
         ext_click_data=aws_config.fish_eye_clicked_corners,
-        default_corners=lens_details.corners,
+        default_corners=optical_details.corners,
         imgshape=curr_img.shape)
-
+    led_subsystem.display_info_colours(LEDColours.Magenta.value)
     homography_tool = HomographyTool(
-        img_height_=lens_details.height,
-        img_width_=lens_details.width,
+        img_height_=optical_details.height,
+        img_width_=optical_details.width,
         corners=fish_img_corners,
-        target_corners=lens_details.targets)
+        target_corners=optical_details.targets)
 
-    regions = get_regions_config()
+    led_subsystem.display_info_colours(LEDColours.Yellow.value)
+    img_sample_controller = get_sample_regions_config()
 
     scambi_units = generate_scambis(
         img_shape=curr_img.shape,
-        regions=regions,
-        lens_details=lens_details,
+        regions=img_sample_controller,
+        optical_details=optical_details,
         homography_tool=homography_tool,
         led_subsystem=led_subsystem,
         initialise=True,
-        init_cores=cores_for_col_dect)
+        init_cores=cores_for_col_dect,
+        progress_bar_func=led_subsystem.display_info_bar)
 
 
     # main loop
@@ -102,7 +106,7 @@ def main():
                     #     if index%2 == 1:
                     #         continue
 
-                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = regions.subsample_cut)
+                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
 
 
             if PLATFORM == _OS.WINDOWS or sent_overlay > -1:
@@ -124,10 +128,10 @@ def main():
 
                 if sent_overlay == 0:
                     before_warp = display_img.copy()
-                    perp_warped = fisheriser.fish_eye_image(display_img.copy(), reverse=True)
+                    perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
                     for pt in homography_tool._corners:
                         perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
-                    display_img = fisheriser.fish_eye_image(display_img, reverse=True)
+                    display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
                     display_img = homography_tool.warp_img(display_img)
                     upload_img_to_aws(
                         np.vstack((before_warp,display_img, perp_warped)),

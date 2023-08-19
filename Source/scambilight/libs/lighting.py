@@ -57,6 +57,10 @@ class Leds(ABC):
     def display_info_colours(self):
         pass
 
+    @abstractmethod
+    def display_info_bar(self):
+        pass
+    
     def get_LEDpos_for_edge_range(self, scambiunit):
         """ for each scambiunit we need to map it to a physical LED
         position for the LED library
@@ -109,8 +113,11 @@ class SimLeds(Leds):
     def execute_LEDS(self):
         pass
 
-    def display_info_colours(self):
-        pass
+    def display_info_colours(self, colour):
+        print("progress colour", colour)
+
+    def display_info_bar(self, pc_done):
+        print("progress bar", min(1, round(pc_done, 2)))
     #def display(self, *args, **kwargs):
     #    ImageViewer_Quick_no_resize(*args, **kwargs)
 
@@ -120,6 +127,8 @@ class SimLeds(Leds):
 class ws281Leds(Leds):
     
     def __init__(self, site_led_layout):
+        global leds
+        import rpi_ws281x as leds
         super().__init__(site_led_layout)
         # Create NeoPixel object with configuration.
         self.strip = leds.Adafruit_NeoPixel(
@@ -187,6 +196,10 @@ class ws281Leds(Leds):
                 self.strip.setPixelColor(i, color)
             self.execute_LEDS()
 
+    def display_info_bar(self, pc_done):
+        pass
+
+    
 #cache this
 def perimeter_spacing(img_dim, no_of_leds):
     perimeter_pxls = img_dim

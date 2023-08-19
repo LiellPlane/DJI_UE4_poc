@@ -13,6 +13,20 @@ class LensConfigs(str, enum.Enum):
     DAISYBANK_HQ = "DAISYBANK_HQ",
     DAISYBANK_LQ =  "DAISYBANK_LQ"
 
+class LEDColours(tuple, enum.Enum):
+    Black = (0,0,0)
+    White = (255,255,255)
+    Red = (0,0,255)
+    Green = (0,255,0)
+    Blue = (255,0,0)
+    Yellow = (0,255,255)
+    Magenta = (255,0,255)
+    Cyan = (255,255,0)
+
+
+
+
+
 @dataclass
 class LedSpacing():
     positionxy: tuple[int, int]
@@ -21,10 +35,10 @@ class LedSpacing():
     normed_pos_along_edge_start: float
     normed_pos_along_edge_end: float
 
+
 @dataclass
 class lens_details():
-    id: str
-    vid: str
+    id: LensConfigs
     width: int
     height: int
     fish_eye_circle: int
@@ -36,6 +50,7 @@ class lens_details():
         [self.width,0 ],
         [self.width, self.height],
         [0, self.height]]
+
 
 @dataclass
 class LedsLayout():
@@ -59,6 +74,7 @@ class config_regions():
     sample_area_edge : int
     subsample_cut: int # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
 
+
 @dataclass
 class clicked_xy():
     clickX: Union[int, str]
@@ -66,6 +82,7 @@ class clicked_xy():
     def __post_init__(self):
         self.clickX = int(self.clickX)
         self.clickY = int(self.clickY)
+
 
 @dataclass
 class External_Config():

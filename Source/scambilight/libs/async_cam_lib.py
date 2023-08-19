@@ -65,6 +65,8 @@ class ImageGenerator(ABC):
     def get_image(self):
         pass
 
+class FinishedProcess():
+    finished = True
 
 class Process_Scambiunits():
 
@@ -101,9 +103,10 @@ class Process_Scambiunits():
         # we will init scambis here and pull off
         # do not have to use the output but so we 
         # can experiment with the rasberry pi
+            self.initialised_scambis_q.put(
+                unit, block=True, timeout=None)
         self.initialised_scambis_q.put(
-            self.scambiunits, block=True, timeout=None)
-
+            FinishedProcess(), block=True, timeout=None)
         while True:
             image = self.in_queue.get(
                 block=True,
@@ -229,9 +232,9 @@ class Synth_Camera_Async(CameraAsync):
         super().__init__(video_modes, ImageLibrary)
 
 
-class HQ_GS_Cam_vidmodes(Enum):
-    """global shutter model"""
-    _2 = ["1456 × 1088p50,",(1456, 1088)]
+# class HQ_GS_Cam_vidmodes(Enum):
+#     """global shutter model"""
+#     _2 = ["1456 × 1088p50,",(1456, 1088)]
 
 
 class ScambiLight_Cam_vidmodes(Enum):

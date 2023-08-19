@@ -1,24 +1,17 @@
 import numpy as np
-from abc import ABC, abstractmethod
 import cv2
-import time
 import math
 
-from dataclasses import dataclass, asdict
-from time import perf_counter
-from contextlib import contextmanager
+from dataclasses import dataclass
 import random
-import enum
 import libs.fisheye_lib as fisheye_lib
 from typing import Optional
 import libs.async_cam_lib as async_cam_lib
-import requests
-import base64
-import json
-from typing import Literal
-from libs.utils import get_platform, _OS, convert_pts_to_convex_hull
+from libs.utils import  convert_pts_to_convex_hull
 from libs.collections import lens_details, config_regions, Edges
-from libs.lighting import SimLeds, ws281Leds, get_led_perimeter_pos
+from libs.lighting import get_led_perimeter_pos
+
+
 @dataclass
 class ScambiInit():
     led_positionxy: tuple
@@ -55,6 +48,7 @@ class ScambiWarp():
          # error here can mean not initialised
         return abs(self.bb_right-self.bb_left)
     
+
 
 class Scambi_unit():
     def __init__(self,
@@ -386,11 +380,12 @@ class HomographyTool():
 def generate_scambis(
         img_shape: tuple,
         regions: config_regions,
-        lens_details: lens_details,
+        optical_details: lens_details,
         homography_tool: HomographyTool,
         led_subsystem: any,
         initialise: True,
-        init_cores: Optional[int]):
+        init_cores: Optional[int],
+        progress_bar_func: Optional[callable]):
     scambi_units = []
     led_positions = get_led_perimeter_pos(img_shape, regions.no_leds_vert, regions.no_leds_horiz)
     print("got get_led_perimeter_pos")
@@ -415,7 +410,7 @@ def generate_scambis(
             sample_area_lower=lower,
             inverse_warp_m=homography_tool.inverse_trans_matrix,
             img_shape=img_shape,
-            img_circle=lens_details.fish_eye_circle,
+            img_circle=optical_details.fish_eye_circle,
             edge=led.edge,
             position_normed=led.normed_pos_along_edge_mid,
             position_norm_start=led.normed_pos_along_edge_start,
@@ -441,14 +436,31 @@ def generate_scambis(
             in range(0,len(scambi_units), scambis_per_core)]
 
         # get initialised scambiunits from parallel processing
-        scambi_units = []
-        for scamproc in proc_scambis:
-            scambi_units.append(scamproc.initialised_scambis_q.get(block=True, timeout=None))
+        initialised_scambi_units = []
+        finished_procs = []
+        total_leds = (regions.no_leds_vert + regions.no_leds_horiz) * 2
+        while len(initialised_scambi_units) != len(scambi_units):
+            if len(finished_procs) == len(proc_scambis):
+                raise Exception("procs finished but not correct # of scambis")
+            for index, scamproc in enumerate(proc_scambis):
+                if index in finished_procs:
+                    continue
+                data = scamproc.initialised_scambis_q.get(
+                    block=True,
+                    timeout=None)
+                if isinstance(data, Scambi_unit):
+                    initialised_scambi_units.append(data)
+                    progress_bar_func(len(initialised_scambi_units)/(total_leds+1))
+                elif isinstance(data, async_cam_lib.FinishedProcess):
+                    finished_procs.append(index)
+                else:
+                    raise Exception("unexpected item in processing area")
+            
         # flatten nested list
-        scambi_units = [item for sublist in scambi_units for item in sublist]
+        #scambi_units = [item for sublist in scambi_units for item in sublist]
     
     
-    return scambi_units
+    return initialised_scambi_units
     
 
 
