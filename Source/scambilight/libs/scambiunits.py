@@ -48,9 +48,11 @@ class ScambiWarp():
     convex_hulls_lerp_contour: any = None
     @property
     def bb_height(self):
+        # error here can mean not initialised
         return abs(self.bb_lower-self.bb_top)
     @property
     def bb_width(self):
+         # error here can mean not initialised
         return abs(self.bb_right-self.bb_left)
     
 
@@ -349,10 +351,44 @@ def get_dominant_colour_flat_vectorize(img, list_of_scambiunits):
     return (0, 0, 0)
 
 
+class HomographyTool():
+    
+    def __init__(
+            self,
+            img_height_,
+            img_width_,
+            corners,
+            target_corners):
+        """ calibrate_pts = np.asarray([
+        [419, 204],
+        [1707, 327],
+        [1761, 1038],
+        [91, 786]], dtype="float32")"""
+        self._img_height = img_height_ 
+        self._img_width = img_width_ 
+        self._corners = np.asarray(corners,  dtype="float32") 
+        self._target_corners = np.asarray(target_corners,  dtype="float32") 
+        self.trans_matrix = cv2.getPerspectiveTransform(
+                    self._corners,
+                    self._target_corners)
+        self.inverse_trans_matrix = np.linalg.inv(
+            self.trans_matrix
+            )
+
+    def warp_img(self, img):
+        return(cv2.warpPerspective(
+            img,
+            self.trans_matrix,
+            list(img.shape[0:2]).reverse()
+            ))
+
+
 def generate_scambis(
         img_shape: tuple,
         regions: config_regions,
         lens_details: lens_details,
+        homography_tool: HomographyTool,
+        led_subsystem: any,
         initialise: True,
         init_cores: Optional[int]):
     scambi_units = []
@@ -391,37 +427,30 @@ def generate_scambis(
     for scambi in scambi_units:
         scambi.assign_physical_LED_pos(led_subsystem.get_LEDpos_for_edge_range(scambi))
 
+    if initialise is True:
+        # initialise scambis - this can take a while
+        random.shuffle(scambi_units)
+        scambis_per_core = int(len(scambi_units)/init_cores)
+        # chop up list of scambiunits for parallel processing
+        proc_scambis = [
+            async_cam_lib.Process_Scambiunits(
+                scambiunits=scambi_units[i:i+scambis_per_core],
+                subsample_cutoff=regions.subsample_cut,
+                flipflop=False)
+            for i
+            in range(0,len(scambi_units), scambis_per_core)]
 
-class HomographyTool():
+        # get initialised scambiunits from parallel processing
+        scambi_units = []
+        for scamproc in proc_scambis:
+            scambi_units.append(scamproc.initialised_scambis_q.get(block=True, timeout=None))
+        # flatten nested list
+        scambi_units = [item for sublist in scambi_units for item in sublist]
     
-    def __init__(
-            self,
-            img_height_,
-            img_width_,
-            corners,
-            target_corners):
-        """ calibrate_pts = np.asarray([
-        [419, 204],
-        [1707, 327],
-        [1761, 1038],
-        [91, 786]], dtype="float32")"""
-        self._img_height = img_height_ 
-        self._img_width = img_width_ 
-        self._corners = np.asarray(corners,  dtype="float32") 
-        self._target_corners = np.asarray(target_corners,  dtype="float32") 
-        self.trans_matrix = cv2.getPerspectiveTransform(
-                    self._corners,
-                    self._target_corners)
-        self.inverse_trans_matrix = np.linalg.inv(
-            self.trans_matrix
-            )
+    
+    return scambi_units
+    
 
-    def warp_img(self, img):
-        return(cv2.warpPerspective(
-            img,
-            self.trans_matrix,
-            list(img.shape[0:2]).reverse()
-            ))
 
 def create_rectangle_from_centrepoint(centrepoint, edge):
     half_edge = int(edge/2)
@@ -432,3 +461,12 @@ def create_rectangle_from_centrepoint(centrepoint, edge):
     top = posy - half_edge
     lower = posy + half_edge
     return left, right, top, lower
+
+
+def draw_rectangle(left, right, top, down, img):
+    rec = cv2.rectangle(img,
+                  (left, top),
+                  (right, down),
+                  (0,100,255),
+                  8)
+    return rec

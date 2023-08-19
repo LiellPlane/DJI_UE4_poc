@@ -53,6 +53,10 @@ class Leds(ABC):
     def execute_LEDS(self):
         pass
     
+    @abstractmethod
+    def display_info_colours(self):
+        pass
+
     def get_LEDpos_for_edge_range(self, scambiunit):
         """ for each scambiunit we need to map it to a physical LED
         position for the LED library
@@ -105,6 +109,8 @@ class SimLeds(Leds):
     def execute_LEDS(self):
         pass
 
+    def display_info_colours(self):
+        pass
     #def display(self, *args, **kwargs):
     #    ImageViewer_Quick_no_resize(*args, **kwargs)
 
@@ -161,6 +167,18 @@ class ws281Leds(Leds):
                     random.randint(0,1)*255,
                     random.randint(0,1)*255,
                     random.randint(0,1)*255)
+                self.strip.setPixelColor(i, color)
+            self.execute_LEDS()
+        for i in range (0, 50):
+            for i in range(self.strip.numPixels()):
+                color =  leds.Color(0, 0, 0)
+                self.strip.setPixelColor(i, color)
+            self.execute_LEDS()
+
+    def display_info_colours(self, colour):
+        for i in range (0, 50):
+            for i in range(self.strip.numPixels()):
+                color =  leds.Color(colour)
                 self.strip.setPixelColor(i, color)
             self.execute_LEDS()
         for i in range (0, 50):

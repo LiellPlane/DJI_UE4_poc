@@ -1,28 +1,18 @@
 import numpy as np
 import cv2
-import time
-from contextlib import contextmanager
-import random
 from libs.utils import (
     get_platform,
     _OS,
-    TimeDiffObject,
     ImageViewer_Quick_no_resize,
-    encode_img_to_str,
-    img_height,
-    img_width,
     time_it)
 from libs.scambiunits import (
-    Scambi_unit,
-    ScambiInit,
-    HomographyTool)
+    HomographyTool,
+    generate_scambis)
 from libs.collections import (
-    Edges,
-    lens_details,
     LensConfigs)
 import libs.async_cam_lib as async_cam_lib
 import libs.fisheye_lib as fisheye_lib
-from libs.lighting import SimLeds, ws281Leds, get_led_perimeter_pos
+from libs.lighting import SimLeds, ws281Leds
 from libs.configs import (
     DaisybankLedSpacing,
     get_regions_config,
@@ -30,39 +20,20 @@ from libs.configs import (
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
-    get_corners_from_remote_config)
+    get_corners_from_remote_config,
+    get_ext_corners_or_use_default)
 
 PLATFORM = get_platform()
 if PLATFORM == _OS.RASPBERRY:
     # sorry not sorry
     import rpi_ws281x as leds
 
-
-def create_rectangle_from_centrepoint(centrepoint, edge):
-    half_edge = int(edge/2)
-    posx =centrepoint[0]
-    posy = centrepoint[1]
-    left = posx - half_edge
-    right = posx + half_edge
-    top = posy - half_edge
-    lower = posy + half_edge
-    return left, right, top, lower
-
-def draw_rectangle(left, right, top, down, img):
-    rec = cv2.rectangle(img,
-                  (left, top),
-                  (right, down),
-                  (0,100,255),
-                  8)
-    return rec
-
-
-
-
-
 def main():
 
-    rfish = get_lens_details(LensConfigs.DAISYBANK_HQ)
+    lens_details = get_lens_details(LensConfigs.DAISYBANK_HQ)
+    fisheriser = fisheye_lib.fisheye_tool(
+        img_width_height=(lens_details.width, lens_details.height),
+        image_circle_size=lens_details.fish_eye_circle)
     system = get_platform()
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
@@ -78,96 +49,37 @@ def main():
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
 
-    prev = next(cam)
-    # upload before anything crashes - handy when changing res
-    # send test image to aws
-    fisheriser = fisheye_lib.fisheye_tool(
-        img_width_height=(rfish.width, rfish.height),
-        image_circle_size=rfish.fish_eye_circle)
+    curr_img = next(cam)
+    # upload image before anything crashes 
+
     img_2_upload = fisheriser.fish_eye_image(next(cam), reverse=True)
     upload_img_to_aws(img_2_upload, img_upload_url, action = "raw")
 
+    aws_config = get_config_from_aws(img_upload_url)
 
-    real_corners = rfish.corners
-    positions = get_config_from_aws(img_upload_url)
-    if len(positions) > 3:
-        real_corners = get_corners_from_remote_config(positions, prev)
-        real_corners = [real_corners['top_left'].real_corner,
-        real_corners['top_right'].real_corner,
-        real_corners['lower_right'].real_corner,
-        real_corners['lower_left'].real_corner]
-    else:
-        print("not enough positions in remote config ", positions)
+    fish_img_corners = get_ext_corners_or_use_default(
+        ext_click_data=aws_config.fish_eye_clicked_corners,
+        default_corners=lens_details.corners,
+        imgshape=curr_img.shape)
 
-
-    print(positions)
     homography_tool = HomographyTool(
-        img_height_=rfish.height,
-        img_width_=rfish.width,
-        corners=real_corners,
-        target_corners=rfish.targets)
+        img_height_=lens_details.height,
+        img_width_=lens_details.width,
+        corners=fish_img_corners,
+        target_corners=lens_details.targets)
 
     regions = get_regions_config()
 
-
-    scambi_units = []
-    led_positions = get_led_perimeter_pos(prev, regions.no_leds_vert, regions.no_leds_horiz)
-    print("got get_led_perimeter_pos")
-    for index,  led in enumerate(led_positions):
-            print(f"calculating scambiunit {index}/{regions.no_leds_vert+regions.no_leds_vert+regions.no_leds_horiz+regions.no_leds_horiz}")
-            centre_ = tuple((np.asarray(led.positionxy)).astype(int))
-            #cv2.circle(prev,plop,16,(255,0,100),-1)
-            mid_screen = (np.array(tuple(reversed(prev.shape[:2])))/2).astype(int)[:2]
-            vec_to_midscreen = mid_screen-np.asarray(centre_)
-            #cv2.circle(prev,tuple(mid_screen),16,(255,0,100),-1)
-            if led.edge  not in [Edges.TOP, Edges.LOWER, Edges.LEFT, Edges.RIGHT]:
-                raise Exception("edge name " + led.edge + "not valid")
-            if led.edge  in [Edges.TOP, Edges.LOWER]:
-                new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_vert)).astype(int))
-            if led.edge  in [Edges.LEFT, Edges.RIGHT]:
-                new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_horiz)).astype(int))
-            left, right, top, lower = create_rectangle_from_centrepoint(new_pos, edge=regions.sample_area_edge)
-            init = ScambiInit(led_positionxy=centre_,
-                sample_area_left=left,
-                sample_area_right=right,
-                sample_area_top=top,
-                sample_area_lower=lower,
-                inverse_warp_m=homography_tool.inverse_trans_matrix,
-                img_shape=prev.shape,
-                img_circle=rfish.fish_eye_circle,
-                edge=led.edge,
-                position_normed=led.normed_pos_along_edge_mid,
-                position_norm_start=led.normed_pos_along_edge_start,
-                position_norm_end=led.normed_pos_along_edge_end,
-                id=index)
-            scambi_units.append(Scambi_unit(init)
-            )
-
-    for scambi in scambi_units:
-        scambi.assign_physical_LED_pos(led_subsystem.get_LEDpos_for_edge_range(scambi))
+    scambi_units = generate_scambis(
+        img_shape=curr_img.shape,
+        regions=regions,
+        lens_details=lens_details,
+        homography_tool=homography_tool,
+        led_subsystem=led_subsystem,
+        initialise=True,
+        init_cores=cores_for_col_dect)
 
 
-    # prepare for main loop
-    random.shuffle(scambi_units)
-    scambis_per_core = int(len(scambi_units)/cores_for_col_dect)
-    # chop up list of scambiunits for parallel processing
-    proc_scambis = [
-        async_cam_lib.Process_Scambiunits(
-            scambiunits=scambi_units[i:i+scambis_per_core],
-            subsample_cutoff=regions.subsample_cut,
-            flipflop=False)
-        for i
-        in range(0,len(scambi_units), scambis_per_core)]
-
-    # get initialised scambiunits from parallel processing
-    scambi_units = []
-    for scamproc in proc_scambis:
-        scambi_units.append(scamproc.initialised_scambis_q.get(block=True, timeout=None))
-    # flatten nested list
-    scambi_units = [item for sublist in scambi_units for item in sublist]
-
-
-    
     # main loop
     index = 0
     flipflop = False

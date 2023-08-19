@@ -1,5 +1,7 @@
 import enum
 from dataclasses import dataclass
+from typing import Union
+
 
 class Edges(str, enum.Enum):
     TOP = "TOP"
@@ -56,3 +58,16 @@ class config_regions():
     move_in_vert: float
     sample_area_edge : int
     subsample_cut: int # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
+
+@dataclass
+class clicked_xy():
+    clickX: Union[int, str]
+    clickY: Union[int, str]
+    def __post_init__(self):
+        self.clickX = int(self.clickX)
+        self.clickY = int(self.clickY)
+
+@dataclass
+class External_Config():
+    # user can click in any order
+    fish_eye_clicked_corners: list[clicked_xy]
