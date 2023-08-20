@@ -58,8 +58,8 @@ class Leds(ABC):
         pass
 
     @abstractmethod
-    def display_info_bar(self):
-        pass
+    def display_info_bar(self, pc_done):
+        print("progress bar", min(1, round(pc_done, 2)))
     
     def get_LEDpos_for_edge_range(self, scambiunit):
         """ for each scambiunit we need to map it to a physical LED

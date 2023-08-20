@@ -107,7 +107,9 @@ class Process_Scambiunits():
                 unit, block=True, timeout=None)
         self.initialised_scambis_q.put(
             FinishedProcess(), block=True, timeout=None)
+        return
         while True:
+            raise Exception("this has to be updated for new scamiprocess code")
             image = self.in_queue.get(
                 block=True,
                 timeout=None
