@@ -99,12 +99,12 @@ def main():
 
             with time_it(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
-                    if flipflop is True:
-                        if index%2 == 0:
-                            continue
-                    if flipflop is False:
-                        if index%2 == 1:
-                            continue
+                    # if flipflop is True:
+                    #     if index%2 == 0:
+                    #         continue
+                    # if flipflop is False:
+                    #     if index%2 == 1:
+                    #         continue
 
                     unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
 
