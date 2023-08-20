@@ -99,12 +99,12 @@ def main():
 
             with time_it(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
-                    # if flipflop is True:
-                    #     if index%2 == 0:
-                    #         continue
-                    # if flipflop is False:
-                    #     if index%2 == 1:
-                    #         continue
+                    if flipflop is True:
+                        if index%2 == 0:
+                            continue
+                    if flipflop is False:
+                        if index%2 == 1:
+                            continue
 
                     unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
 
@@ -134,7 +134,7 @@ def main():
                     display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
                     display_img = homography_tool.warp_img(display_img)
                     upload_img_to_aws(
-                        np.vstack((before_warp,display_img, perp_warped)),
+                        np.vstack((before_warp, display_img, perp_warped)),
                         img_upload_url,
                         action = "overlay")
 
