@@ -127,11 +127,14 @@ def main():
                         
 
                 if sent_overlay == 0:
+                    led_subsystem.display_info_colours(LEDColours.Blue.value)
                     before_warp = display_img.copy()
                     perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
+                    led_subsystem.display_info_colours(LEDColours.Red.value)
                     for pt in homography_tool._corners:
                         perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
                     display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
+                    led_subsystem.display_info_colours(LEDColours.Blue.value)
                     display_img = homography_tool.warp_img(display_img)
                     upload_img_to_aws(
                         np.vstack((before_warp, display_img, perp_warped)),
