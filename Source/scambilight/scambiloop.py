@@ -23,7 +23,7 @@ from libs.external_data import (
     get_config_from_aws,
     get_ext_corners_or_use_default)
 
-#PLATFORM = get_platform()
+PLATFORM = get_platform()
 #if PLATFORM == _OS.RASPBERRY:
 #    # sorry not sorry
 #    import rpi_ws281x as leds
