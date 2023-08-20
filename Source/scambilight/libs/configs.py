@@ -45,8 +45,8 @@ def get_sample_regions_config() -> config_regions:
     return config_regions(
         no_leds_vert= 11,
         no_leds_horiz= 20,
-        move_in_horiz= 0.2,
-        move_in_vert= 0.2,
+        move_in_horiz= 0.1,
+        move_in_vert= 0.1,
         sample_area_edge= 100,
         subsample_cut=15
     )
