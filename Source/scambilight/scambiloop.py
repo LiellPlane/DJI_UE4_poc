@@ -96,7 +96,7 @@ def main():
             with time_it("get img"):
                 prev = next(cam)
             flipflop = not flipflop
-
+            continue
             with time_it(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
                     # if flipflop is True:
