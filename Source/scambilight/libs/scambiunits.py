@@ -385,7 +385,7 @@ def generate_scambis(
         led_subsystem: any,
         initialise: True,
         init_cores: Optional[int],
-        progress_bar_func: Optional[callable[int, list[Scambi_unit]]]):
+        progress_bar_func: Optional[callable]):
     scambi_units = []
     led_positions = get_led_perimeter_pos(img_shape, regions.no_leds_vert, regions.no_leds_horiz)
     print("got get_led_perimeter_pos")
