@@ -43,11 +43,11 @@ def get_lens_details(lens: LensConfigs) -> lens_details:
    
 def get_sample_regions_config() -> config_regions:
     return config_regions(
-        no_leds_vert= 15,
-        no_leds_horiz= 24,
+        no_leds_vert= 11,
+        no_leds_horiz= 20,
         move_in_horiz= 0.2,
         move_in_vert= 0.2,
-        sample_area_edge= 80,
+        sample_area_edge= 100,
         subsample_cut=15
     )
 

@@ -126,29 +126,29 @@ class Process_Scambiunits():
                 return_dic, block=True, timeout=None)
 
 
-class CsiCameraImageGen(ImageGenerator):
+# class CsiCameraImageGen(ImageGenerator):
     
-    def __init__(self, res) -> None:
-        self.cam_res = res
-        self.picam2 = Picamera2()
-        res_xy = res[0:2]
-        _config = self.picam2.create_video_configuration(
-                    main={"size": res_xy,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
-                #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
-        self.picam2.configure(_config)
-        #  set_controls must come after config!!
-        self.picam2.set_controls({"AnalogueGain": 10.0})
-        self.picam2.start()
-        time.sleep(0.2)
+#     def __init__(self, res) -> None:
+#         self.cam_res = res
+#         self.picam2 = Picamera2()
+#         res_xy = res[0:2]
+#         _config = self.picam2.create_video_configuration(
+#                     main={"size": res_xy,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
+#                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
+#         self.picam2.configure(_config)
+#         #  set_controls must come after config!!
+#         self.picam2.set_controls({"AnalogueGain": 10.0})
+#         self.picam2.start()
+#         time.sleep(0.2)
 
-    def get_image(self):
-        output = self.picam2.capture_array("main")
-        # some dims will be (x,y) and some (x,y, 3)
-        x, y, *_ = self.cam_res
-        #x = res[0]
-        #y = res[1]
-        output = output[0: y, 0: x]#  Need to do this for YUV!
-        return output
+#     def get_image(self):
+#         output = self.picam2.capture_array("main")
+#         # some dims will be (x,y) and some (x,y, 3)
+#         x, y, *_ = self.cam_res
+#         #x = res[0]
+#         #y = res[1]
+#         output = output[0: y, 0: x]#  Need to do this for YUV!
+#         return output
 
 
 class SynthImgGen(ImageGenerator):
