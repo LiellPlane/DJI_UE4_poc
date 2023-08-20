@@ -77,9 +77,9 @@ class Scambi_unit():
         #self.bb_lower = None
         self.last_dom_col_dif = None
         self.colour = (
-            random.randint(1,255),
-            random.randint(1,255),
-            random.randint(1,255))
+            0,
+            0,
+            255)
         #self.sample_area_lerp_contour = None
         #self.convex_hulls_lerp_contour = None
         self.physical_led_pos = None
@@ -385,7 +385,7 @@ def generate_scambis(
         led_subsystem: any,
         initialise: True,
         init_cores: Optional[int],
-        progress_bar_func: Optional[callable]):
+        progress_bar_func: Optional[callable[int, list[Scambi_unit]]]):
     scambi_units = []
     led_positions = get_led_perimeter_pos(img_shape, regions.no_leds_vert, regions.no_leds_horiz)
     print("got get_led_perimeter_pos")
@@ -450,7 +450,8 @@ def generate_scambis(
                     timeout=None)
                 if isinstance(data, Scambi_unit):
                     initialised_scambi_units.append(data)
-                    progress_bar_func(len(initialised_scambi_units)/(total_leds+1))
+                    progress_bar_func(
+                        len(initialised_scambi_units)/(total_leds+1), initialised_scambi_units)
                 elif isinstance(data, async_cam_lib.FinishedProcess):
                     finished_procs.append(index)
                 else:

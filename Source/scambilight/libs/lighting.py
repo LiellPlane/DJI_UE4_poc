@@ -58,8 +58,8 @@ class Leds(ABC):
         pass
 
     @abstractmethod
-    def display_info_bar(self, pc_done):
-        print("progress bar", min(1, round(pc_done, 2)))
+    def display_info_bar(self, pc_done, scambi_units):
+        pass
     
     def get_LEDpos_for_edge_range(self, scambiunit):
         """ for each scambiunit we need to map it to a physical LED
@@ -116,7 +116,7 @@ class SimLeds(Leds):
     def display_info_colours(self, colour):
         print("progress colour", colour)
 
-    def display_info_bar(self, pc_done):
+    def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
     #def display(self, *args, **kwargs):
     #    ImageViewer_Quick_no_resize(*args, **kwargs)
@@ -196,8 +196,10 @@ class ws281Leds(Leds):
                 self.strip.setPixelColor(i, color)
             self.execute_LEDS()
 
-    def display_info_bar(self, pc_done):
-        pass
+    def display_info_bar(self, pc_done, scambi_units):
+        print("progress bar", min(1, round(pc_done, 2)))
+        self.set_LED_values(scambi_units)
+        self.execute_LEDS()
 
     
 #cache this
