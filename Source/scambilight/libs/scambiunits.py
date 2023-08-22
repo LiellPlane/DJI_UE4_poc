@@ -155,7 +155,7 @@ class Scambi_unit():
         self.perpwarp.warped_led_pos = tuple((np.floor(homog_coords[0:2]/homog_coords[-1])).astype(int))
 
         #get bounding box for ROI
-        self.perpwarp.warped_bounding_rect = cv2.boundingRect(self.perpwarp.roi)
+        self.perpwarp.warped_bounding_rect = get_bounding_box(self.perpwarp.roi)
         left, top, w, h = self.perpwarp.warped_bounding_rect
         right = left + w
         lower = top + h
@@ -196,7 +196,7 @@ class Scambi_unit():
         
         #recalculate
         self.fishwarp.roi = np.asarray([np.asarray(fisheyeser.brute_force_find_fisheye_pt(list(pt[0]))) for pt in self.perpwarp.roi]).reshape(-1, 1, 2)
-        self.fishwarp.warped_bounding_rect = cv2.boundingRect(self.fishwarp.roi)
+        self.fishwarp.warped_bounding_rect =get_bounding_box(self.fishwarp.roi)
         left, top, w, h = self.fishwarp.warped_bounding_rect
         right = left + w
         lower = top + h
@@ -317,7 +317,17 @@ class Scambi_unit():
             return True
         return False
 
+def get_bounding_box(x):
+    return (
+        min(x[:,0][:,0]),
+        min(x[:,0][:,1]),
+        abs(max(x[:,0][:,0]) - min(x[:,0][:,0])),
+        abs(max(x[:,0][:,1]) - min(x[:,0][:,1]))
+    )
+
 def get_dominant_colour_flat_vectorize(img, list_of_scambiunits):
+ 
+ 
     return 
     for unit in list_of_scambiunits:
 

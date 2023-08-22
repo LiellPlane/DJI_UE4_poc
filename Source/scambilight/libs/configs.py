@@ -1,12 +1,14 @@
 from libs.collections import (
-    LedSpacing,
     Edges,
     lens_details,
     LedsLayout,
-    config_corner,
     config_regions,
     LensConfigs)
 
+# good youtube videos to try:
+#fluid sim
+#the batmoan batmobile chase scene 2022
+#4k background
 
 class DaisybankLedSpacing():
     def __init__(self) -> None:
