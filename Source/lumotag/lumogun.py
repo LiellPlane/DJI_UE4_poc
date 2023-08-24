@@ -171,6 +171,8 @@ def main():
                 state=trigger_debounce.get_heldstate(),
                 strobe_cnt=0) # click noise from relay only
 
+        display.display_method(display.emptyscreen)
+        continue
         with time_it("gun image stuff TOTAL"):
             with time_it("get next image"):
                 cap_img = next(image_capture)

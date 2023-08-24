@@ -158,13 +158,14 @@ class display(ABC):
         self.emptyscreen = np.zeros(
             ( _gun_config.screen_size + (3,)), np.uint8)
         self.draw_test_rect()
+
     def draw_test_rect(self):
         buffer = int(self.emptyscreen.shape[0]/100)
         self.emptyscreen = cv2.rectangle(
             self.emptyscreen,
             (buffer, buffer),
             tuple(np.asarray(list(reversed(self.emptyscreen.shape[0:2]))) - np.asarray([buffer, buffer])),
-            75,
+            (255,255,255),
             min(int(buffer/2),2))
 
     @abstractmethod
