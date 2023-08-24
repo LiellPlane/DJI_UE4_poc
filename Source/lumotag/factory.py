@@ -13,6 +13,7 @@ from enum import Enum,auto
 from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
+from math import floor
 
 RELAY_BOUNCE_S = 0.02
 
@@ -182,19 +183,22 @@ class display(ABC):
                 output,
                 tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+            offset = floor((self.emptyscreen.shape[0] - output.shape[0]) /2)
+            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 0] = output
         elif self.display_rotate == -90 or self.display_rotate == 270:
             output = img_processing.get_resized_equalaspect(
                 output,
                 tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+            offset = floor((self.emptyscreen.shape[1] - output.shape[1]) /2)
+            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 0] = output
         elif self.display_rotate == 180:
             output = img_processing.get_resized_equalaspect(
                 output,
                 self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
-            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+            offset = floor((self.emptyscreen.shape[0] - output.shape[0]) /2)
+            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 0] = output
         elif self.display_rotate == 0:
             # output, scale_factor = img_processing.resize_centre_img(
             #    output,
@@ -204,7 +208,8 @@ class display(ABC):
             output = img_processing.get_resized_equalaspect(
                 output,
                 (self.screen_size))
-            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+            offset = floor((self.emptyscreen.shape[0] - output.shape[0]) /2)
+            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 0] = output
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
         #output = img_processing.add_cross_hair(output, adapt=True)
@@ -362,7 +367,7 @@ class simitzar_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(0)
+        return(90)
 
     @property
     def screen_size(self):
