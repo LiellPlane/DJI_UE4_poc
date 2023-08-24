@@ -40,7 +40,7 @@ class HQ_GS_Cam_vidmodes(Enum):
 
 
 class Fake_Cam_vidmodes(Enum):
-    _2 = ["700 × 600,",(2020, 1080)]
+    _2 = ["700 × 600,",(1456, 1088)]
 
 
 @contextmanager
@@ -56,7 +56,7 @@ def time_it(process):
 class screensizes(Enum):
     format = ("height", "width")
     tzar = (800 - 25, 480)
-    windows_laptop = (480, 800- 25)
+    windows_laptop = (800 - 25, 480)
     stryker = (480, 800- 25)
 
 
@@ -173,6 +173,20 @@ class display(ABC):
     def display_method(image, self):
         pass
 
+    def set_image_in_centre(self, inputimg):
+        if inputimg.shape[0] == self.emptyscreen.shape[0]:
+            offset = floor((self.emptyscreen.shape[1] - inputimg.shape[1]) /2)
+            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 0] = inputimg
+            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
+            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
+        elif inputimg.shape[1] == self.emptyscreen.shape[1]:
+            offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) /2)
+            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
+            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
+            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
+        else:
+            raise Exception("Warning, bad resized image shapes", inputimg.shape,  self.emptyscreen.shape )
+
     def display_output(self, output):
         # quicker in theory to resize first then rotate as
         # input image is expected to be much larger than display size
@@ -183,28 +197,20 @@ class display(ABC):
                 output,
                 tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-            offset = floor((self.emptyscreen.shape[0] - output.shape[0]) /2)
-            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 0] = output
-            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 1] = output
-            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 2] = output
+            
+            self.set_image_in_centre(output)
         elif self.display_rotate == -90 or self.display_rotate == 270:
             output = img_processing.get_resized_equalaspect(
                 output,
                 tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-            offset = floor((self.emptyscreen.shape[0] - output.shape[0]) /2)
-            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 0] = output
-            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 1] = output
-            self.emptyscreen[offset:output.shape[0]+ offset, 0:output.shape[1], 2] = output
+            self.set_image_in_centre(output)
         elif self.display_rotate == 180:
             output = img_processing.get_resized_equalaspect(
                 output,
                 self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
-            offset = floor((self.emptyscreen.shape[1] - output.shape[1]) /2)
-            self.emptyscreen[:, offset:output.shape[1]+offset, 0] = output
-            self.emptyscreen[:, offset:output.shape[1]+offset, 1] = output
-            self.emptyscreen[:, offset:output.shape[1]+offset, 2] = output
+            self.set_image_in_centre(output)
         elif self.display_rotate == 0:
             # output, scale_factor = img_processing.resize_centre_img(
             #    output,
@@ -214,10 +220,8 @@ class display(ABC):
             output = img_processing.get_resized_equalaspect(
                 output,
                 (self.screen_size))
-            offset = floor((self.emptyscreen.shape[1] - output.shape[1]) /2)
-            self.emptyscreen[:, offset:output.shape[1]+offset, 0] = output
-            self.emptyscreen[:, offset:output.shape[1]+offset, 1] = output
-            self.emptyscreen[:, offset:output.shape[1]+offset, 2] = output
+            self.set_image_in_centre(output)
+
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
         #output = img_processing.add_cross_hair(output, adapt=True)
@@ -375,7 +379,7 @@ class simitzar_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(-90)
+        return(0)
 
     @property
     def screen_size(self):
