@@ -190,15 +190,29 @@ def image_resize_ratio(image, width = None, height = None, inter = cv2.INTER_ARE
     return resized
 
 def get_resized_equalaspect(inputimage, screensize):
-    if screensize[0] < screensize[1]:
-        image = image_resize_ratio(
-            inputimage,
-            height=screensize[0])
-    else:
-        image = image_resize_ratio(
-            inputimage,
-            width=screensize[1])
-    return image
+
+    tofit_height = inputimage.shape[0]
+    tofit_width = inputimage.shape[1]
+    to_fit_height2width = tofit_height / tofit_width
+    screensize_height = screensize[0]
+    screensize_width = screensize[1]
+
+    # fit to height and check if width is ok
+    test_height = screensize_height
+    test_width = screensize_height / to_fit_height2width
+    dim = None
+    if test_width > screensize_width:
+        test_width = screensize_width
+        test_height = test_width * to_fit_height2width
+        if test_height > screensize_height:
+            raise Exception(
+                "screen resize with aspect ratio has failed in heght & width cases, bad")
+
+    dim = (
+        int(np.floor(test_width)),
+        int(np.floor(test_height)))
+
+    return cv2.resize(inputimage, dim, interpolation = cv2.INTER_NEAREST)
 
 def resize_centre_img(inputimage, screensize):
 
