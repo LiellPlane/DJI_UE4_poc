@@ -6,14 +6,13 @@ import msgs
 import time
 import decode_clothID_v2 as decode_clothID
 import img_processing
-from utils import time_it
+from utils import time_it, get_platform, _OS
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
-RASP_PI_4_OS = "armv7l"
 
-if hasattr(os, 'uname') is False:
+if get_platform() ==  _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
-elif os.uname()[-1] == RASP_PI_4_OS:
+elif get_platform() ==  _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry_hardware as lumogun
 else:
@@ -32,14 +31,15 @@ def main():
     # initialise components of lumogun
     voice = sound.Voice()
 
-    for i in range(0,2):
-        voice.speak("cancel")
-        results_trig_positions = (triggers.test_states())
-        if any([True for i in results_trig_positions.values() if i is True]):
-            voice.speak("bye")
-            time.sleep(3)
-            raise Exception("Trigger detected on boot-up - exit app")
-        time.sleep(2)
+    if get_platform() == _OS.RASPBERRY:
+        for i in range(0,2):
+            voice.speak("cancel")
+            results_trig_positions = (triggers.test_states())
+            if any([True for i in results_trig_positions.values() if i is True]):
+                voice.speak("bye")
+                time.sleep(3)
+                raise Exception("Trigger detected on boot-up - exit app")
+            time.sleep(2)
 
     voice.speak(f"{GUN_CONFIGURATION.model}")
     relay = lumogun.Relay(GUN_CONFIGURATION)

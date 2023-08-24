@@ -12,6 +12,7 @@ import uuid
 from enum import Enum,auto
 from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
+import img_processing
 
 RELAY_BOUNCE_S = 0.02
 
@@ -38,7 +39,7 @@ class HQ_GS_Cam_vidmodes(Enum):
 
 
 class Fake_Cam_vidmodes(Enum):
-    _2 = ["1456 × 1088p50,",(3000, 1000)]
+    _2 = ["700 × 600,",(1000, 590)]
 
 
 @contextmanager
@@ -54,7 +55,7 @@ def time_it(process):
 class screensizes(Enum):
     format = ("height", "width")
     tzar = (800, 480)
-    windows_laptop = (1000, 400)
+    windows_laptop = (800, 400)
     stryker = (480, 800)
 
 
@@ -154,14 +155,67 @@ class display(ABC):
         self.display_rotate = _gun_config.screen_rotation
         self.screen_size = _gun_config.screen_size
         self.opencv_win_pos = _gun_config.opencv_window_pos
+        self.emptyscreen = np.zeros(
+            ( _gun_config.screen_size + (3,)), np.uint8)
+        self.draw_test_rect()
+    def draw_test_rect(self):
+        buffer = int(self.emptyscreen.shape[0]/100)
+        self.emptyscreen = cv2.rectangle(
+            self.emptyscreen,
+            (buffer, buffer),
+            tuple(np.asarray(list(reversed(self.emptyscreen.shape[0:2]))) - np.asarray([buffer, buffer])),
+            75,
+            min(int(buffer/2),2))
 
     @abstractmethod
-    def display_output(self):
+    def display_method(image, self):
         pass
+
+    def display_output(self, output):
+        # quicker in theory to resize first then rotate as
+        # input image is expected to be much larger than display size
+        if self.display_rotate == 90:
+            #output = cv2.resize(output, tuple(reversed(self.screen_size)))
+            #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+            output = img_processing.get_resized_equalaspect(
+                output,
+                tuple(reversed(self.screen_size)))
+            output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+        elif self.display_rotate == -90 or self.display_rotate == 270:
+            output = img_processing.get_resized_equalaspect(
+                output,
+                tuple(reversed(self.screen_size)))
+            output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
+            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+        elif self.display_rotate == 180:
+            output = img_processing.get_resized_equalaspect(
+                output,
+                self.screen_size)
+            output = cv2.rotate(output, cv2.ROTATE_180)
+            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+        elif self.display_rotate == 0:
+            # output, scale_factor = img_processing.resize_centre_img(
+            #    output,
+            #    self.screen_size)
+            #output = img_processing.add_cross_hair(output, adapt=True)
+            #output = cv2.resize(output, self.screen_size)
+            output = img_processing.get_resized_equalaspect(
+                output,
+                (self.screen_size))
+            self.emptyscreen[0:output.shape[0], 0:output.shape[1], 0] = output
+        else:
+            raise Exception("incorrect display rotate value", self.display_rotate)
+        #output = img_processing.add_cross_hair(output, adapt=True)
+
+        
+        self.display_method(self.emptyscreen)
 
     @abstractmethod
     def display_output_with_implant(self):
         pass
+
+
 
 
 class stryker_config(gun_config):

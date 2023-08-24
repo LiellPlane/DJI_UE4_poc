@@ -106,38 +106,48 @@ class Accelerometer(factory.Accelerometer):
 
 class display(factory.display):
 
-    def display_output(self, output):
-        # quicker in theory to resize first then rotate as
-        # input image is expected to be much larger than display size
-        if self.display_rotate == 90:
-            output = cv2.resize(output, tuple(reversed(self.screen_size)))
-            output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-        elif self.display_rotate == -90 or self.display_rotate == 270:
-            output = cv2.resize(output, tuple(reversed(self.screen_size)))
-            output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        elif self.display_rotate == 180:
-            output = cv2.resize(output, self.screen_size)
-            output = cv2.rotate(output, cv2.ROTATE_180)
-        elif self.display_rotate == 0:
-            output, scale_factor = img_processing.resize_centre_img(
-               output,
-               self.screen_size)
-            output = img_processing.add_cross_hair(output, adapt=True)
-            #output = cv2.resize(output, self.screen_size)
-        else:
-            raise Exception("incorrect display rotate value", self.display_rotate)
+    def display_method(self, image):
+        lumo_viewer(
+            inputimage=image,
+            move_windowx=self.opencv_win_pos[0],
+            move_windowy=self.opencv_win_pos[1],
+            pausetime_Secs=0,
+            presskey=False,
+            destroyWindow=False)
+        
 
-        #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
+    # def display_output(self, output):
+    #     # quicker in theory to resize first then rotate as
+    #     # input image is expected to be much larger than display size
+    #     if self.display_rotate == 90:
+    #         output = cv2.resize(output, tuple(reversed(self.screen_size)))
+    #         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+    #     elif self.display_rotate == -90 or self.display_rotate == 270:
+    #         output = cv2.resize(output, tuple(reversed(self.screen_size)))
+    #         output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    #     elif self.display_rotate == 180:
+    #         output = cv2.resize(output, self.screen_size)
+    #         output = cv2.rotate(output, cv2.ROTATE_180)
+    #     elif self.display_rotate == 0:
+    #         output, scale_factor = img_processing.resize_centre_img(
+    #            output,
+    #            self.screen_size)
+    #         output = img_processing.add_cross_hair(output, adapt=True)
+    #         #output = cv2.resize(output, self.screen_size)
+    #     else:
+    #         raise Exception("incorrect display rotate value", self.display_rotate)
 
-        #output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
+    #     #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
 
-            lumo_viewer(
-                inputimage=output,
-                move_windowx=self.opencv_win_pos[0],
-                move_windowy=self.opencv_win_pos[1],
-                pausetime_Secs=0,
-                presskey=False,
-                destroyWindow=False)
+    #     #output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
+
+    #         lumo_viewer(
+    #             inputimage=output,
+    #             move_windowx=self.opencv_win_pos[0],
+    #             move_windowy=self.opencv_win_pos[1],
+    #             pausetime_Secs=0,
+    #             presskey=False,
+    #             destroyWindow=False)
 
     def display_output_with_implant(self, main_img, img_to_implant):
             """avoid performing higher workload by resizing images to

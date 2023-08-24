@@ -189,6 +189,17 @@ def image_resize_ratio(image, width = None, height = None, inter = cv2.INTER_ARE
     # return the resized image
     return resized
 
+def get_resized_equalaspect(inputimage, screensize):
+    if screensize[0] < screensize[1]:
+        image = image_resize_ratio(
+            inputimage,
+            height=screensize[0])
+    else:
+        image = image_resize_ratio(
+            inputimage,
+            width=screensize[1])
+    return image
+
 def resize_centre_img(inputimage, screensize):
 
     # this is slow - might be faster passing in the image again?

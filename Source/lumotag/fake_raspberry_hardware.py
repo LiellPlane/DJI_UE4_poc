@@ -3,13 +3,11 @@ import random
 import cv2
 import numpy as np
 import time
-import decode_clothID_v1 as decode_clothID
 import factory
 import math
 import rabbit_mq
 import json
 import img_processing
-from multiprocessing import Process, Queue, shared_memory
 
 def lumo_viewer(
         inputimage,
@@ -105,26 +103,27 @@ class Relay(factory.Relay):
         self.relay_mem[relay] = state
 
 
-class CSI_Camera(factory.Camera):
+# class CSI_Camera(factory.Camera):
 
-    def __init__(self, video_modes) -> None:
-        self.cam_res = video_modes
-        # fake input needed for interchangeability
-        super().__init__()
+#     def __init__(self, video_modes) -> None:
+#         self.cam_res = video_modes
+#         # fake input needed for interchangeability
+#         super().__init__()
 
-    def get_res(self):
-        return [e.value for e in self.cam_res][self.res_select][1]
+#     def get_res(self):
+#         return [e.value for e in self.cam_res][self.res_select][1]
 
-    def gen_image(self):
-        blank_image = np.zeros((self.get_res() + (3,)), np.uint8)
-        blank_image[:,:,:] = random.randint(0,255)
-        blank_image = cv2.circle(
-            blank_image,
-            (blank_image.shape[1]//2, blank_image.shape[0]//2),
-            blank_image.shape[0]//10,
-            50,
-            -1)
-        return blank_image
+#     def gen_image(self):
+#         blank_image = np.zeros((self.get_res() + (3,)), np.uint8)
+#         blank_image[:,:,:] = random.randint(0,255)
+#         blank_image = cv2.circle(
+#             blank_image,
+#             (blank_image.shape[1]//2, blank_image.shape[0]//2),
+#             blank_image.shape[0]//10,
+#             50,
+#             -1)
+
+#         return blank_image
 
 
 class SynthImgGen(factory.ImageGenerator):
@@ -144,7 +143,19 @@ class SynthImgGen(factory.ImageGenerator):
             self.blank_image.shape[0]//10,
             50,
             -1)
-
+        self.blank_image = cv2.circle(
+            self.blank_image,
+            (self.blank_image.shape[1]//2, self.blank_image.shape[0]//4),
+            self.blank_image.shape[0]//30,
+            50,
+            -1)
+        buffer = int(self.blank_image.shape[0]/100)
+        self.blank_image = cv2.rectangle(
+            self.blank_image,
+            (buffer, buffer),
+            tuple(np.asarray(list(reversed(self.blank_image.shape[0:2]))) - np.asarray([buffer, buffer])),
+            255,
+            min(int(buffer/2),2))
         return self.blank_image
     
 
@@ -155,10 +166,20 @@ class CSI_Camera_Async(factory.CameraAsync):
 
 
 class display(factory.display):
-    def display_output(self, output):
-        img, scale_factor = img_processing.resize_centre_img(output, self.screen_size)
-        img = img_processing.add_cross_hair(img, adapt=True)
-        lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
+
+
+    def display_method(self, image):
+        lumo_viewer(
+            inputimage=image,
+            move_windowx=self.opencv_win_pos[0],
+            move_windowy=self.opencv_win_pos[1],
+            pausetime_Secs=0,
+            presskey=False,
+            destroyWindow=False)
+    # def display_output(self, output):
+    #     img, scale_factor = img_processing.resize_centre_img(output, self.screen_size)
+    #     img = img_processing.add_cross_hair(img, adapt=True)
+    #     lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
 
     def display_output_with_implant(self, main_img, img_to_implant):
         """resize both images before implantating central graphic as

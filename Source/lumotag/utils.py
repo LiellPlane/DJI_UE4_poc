@@ -1,6 +1,25 @@
 import time
 from contextlib import contextmanager
 from typing import Iterator
+import enum
+import os
+
+class _OS(str, enum.Enum):
+    WINDOWS = "windows"
+    RASPBERRY = "raspberry"
+
+def get_platform():
+    #  detect what OS we are on - test environment (Windows) or production (pi hardware)
+    RASP_PI_4_OS = "armv7l"
+
+    if hasattr(os, 'uname') is False:
+        print("scambiloop raspberry presence failed, probably Windows system")
+        return _OS.WINDOWS
+    elif os.uname()[-1] == RASP_PI_4_OS:
+        print("scambiloop raspberry presence detected, loading hardware libraries")
+        return _OS.RASPBERRY
+    else:
+        raise Exception("Could not detect platform")
 
 def get_epoch_timestamp():
     return str(time.time()).replace(".", "_")
