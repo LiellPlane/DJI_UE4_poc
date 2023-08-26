@@ -319,8 +319,8 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         time.sleep(0.2)
 
     def get_image(self):
-        y = self.cam_res[0]
-        x = self.cam_res[1]
+        x = self.cam_res[0]
+        y = self.cam_res[1]
         return self.picam2.capture_array("main")[0: y, 0: x]
         output = self.picam2.capture_array("main")
 
