@@ -327,7 +327,9 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get cut image", output.shape, output.dtype)
-        return self.picam2.capture_array("main")[0: y, 0: x]
+        #output = output[0: y, 0: x]#  Need to do this for YUV!
+        #print("get_image", output.shape, output.dtype)
+        return output
 
 class CSI_Camera_Async(factory.Camera_async):
     

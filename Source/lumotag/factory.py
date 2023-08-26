@@ -564,31 +564,6 @@ class Camera_synchronous(Camera):
 
 
 
-# class Camera_synchronousx(ABC):
-
-#     def __init__(self, video_modes, imagegen_cls) -> None:
-#         self.res_select = 0
-#         self.last_img = None
-#         self.imagegen_cls = imagegen_cls(self.get_res)
-
-#     def gen_image(self):
-#        return self.imagegen_cls.get_image()
-
-#     def __next__(self):
-#         img = self.gen_image()
-#         if len(img.shape) == 3:
-#             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-#         self.last_img = img
-#         return img
-
-#     def __iter__(self):
-#         return self
-
-#     def get_res(self):
-#         return [e.value for e in self.cam_res][self.res_select][1][0:2]
-
-
-
 class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls) -> None:
