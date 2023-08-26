@@ -7,6 +7,9 @@ import time
 import decode_clothID_v2 as decode_clothID
 import img_processing
 from utils import time_it, get_platform, _OS
+# need this import to detect lumogun types (subclasses)
+import configs
+
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 
 if get_platform() ==  _OS.WINDOWS:
@@ -22,7 +25,7 @@ else:
 # model ID from file on device
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
-
+del configs
 
 def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)

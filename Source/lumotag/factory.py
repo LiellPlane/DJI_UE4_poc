@@ -9,12 +9,11 @@ import threading
 #from queue import Queue
 import queue
 import uuid
-from enum import Enum,auto
+from enum import Enum
 from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
 from math import floor
-
 RELAY_BOUNCE_S = 0.02
 
 
@@ -28,36 +27,18 @@ class AutoStrEnum(str, Enum):
         return name
 
 
-class HQ_Cam_vidmodes(Enum):
-    _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
-    _3 = ["1332 × 990p120",(1332, 990)] 
-    _1 = ["2028 × 1520p40",(2020, 1520)]
 
 
-class HQ_GS_Cam_vidmodes(Enum):
-    """global shutter model"""
-    _2 = ["1456 × 1088p50,",(1456, 1088)]
 
 
-class Fake_Cam_vidmodes(Enum):
-    _2 = ["700 × 600,",(1456, 1088)]
-
-
-@contextmanager
-def time_it(process):
-    tic: float = time.perf_counter()
-    try:
-        yield
-    finally:
-        toc: float = time.perf_counter()
-        print(f"time for {process} = {1000*(toc - tic):.3f}ms")
-
-
-class screensizes(Enum):
-    format = ("height", "width")
-    tzar = (800 - 25, 480)
-    windows_laptop = (800 - 25, 480)
-    stryker = (480, 800- 25)
+# @contextmanager
+# def time_it(process):
+#     tic: float = time.perf_counter()
+#     try:
+#         yield
+#     finally:
+#         toc: float = time.perf_counter()
+#         print(f"time for {process} = {1000*(toc - tic):.3f}ms")
 
 
 class RelayFunction(Enum):
@@ -127,9 +108,7 @@ class gun_config(ABC):
     @abstractmethod
     def loop_wait(self):
         ...
-    @abstractmethod
-    def cam_processing(self):
-        ...
+
     # UNIQUEFIRE T65 IR light has 3 modes
     # need to cycle through them each time
     @abstractmethod
@@ -232,182 +211,6 @@ class display(ABC):
     @abstractmethod
     def display_output_with_implant(self):
         pass
-
-
-
-
-class stryker_config(gun_config):
-    model = "STRYKER"
-    def __init__(self) -> None:
-        super().__init__()
-        #for reference on rasperry pi 4
-        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
-        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
-        self.TRIGGER_IO_BOARD = {1:15, 2:13}
-        self.TRIGGER_IO_BCM = {1:22, 2:27}
-
-    @property
-    def rly_torch(self):
-        return 1
-
-    @property
-    def rly_triggerclick(self):
-        return 2
-
-    @property
-    def RELAY_IO(self):
-        return(self.RELAY_IO_BCM)
-    
-    @property
-    def TRIGGER_IO(self):
-        return (self.TRIGGER_IO_BCM)
-    
-    @property
-    def screen_rotation(self):
-        return(270)
-
-    @property
-    def screen_size(self):
-        return(screensizes.stryker.value)
-
-    def loop_wait(self):
-        pass
-
-    def cam_processing(self, inputimg):
-        return inputimg
-    
-    @property
-    def light_strobe_cnt(self):
-        return(0)
-    
-    @property
-    def internal_img_crop(self):
-        return((500,500))
-
-    @property
-    def opencv_window_pos(self):
-        return(0, 0)
-
-    @property
-    def video_modes(self):
-        return HQ_Cam_vidmodes
-
-
-class TZAR_config(gun_config):
-    model = "TZAR"
-    def __init__(self) -> None:
-        super().__init__()
-        #for reference on rasperry pi 4
-        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
-        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
-        self.TRIGGER_IO_BOARD = {1:15, 2:13}
-        self.TRIGGER_IO_BCM = {1:22, 2:27}
-
-    @property
-    def rly_torch(self):
-        return 1
-
-    @property
-    def rly_triggerclick(self):
-        return 2
-
-    @property
-    def RELAY_IO(self):
-        return(self.RELAY_IO_BCM)
-
-    @property
-    def TRIGGER_IO(self):
-        return (self.TRIGGER_IO_BCM)
-    
-    @property
-    def screen_rotation(self):
-        return(0)
-
-    @property
-    def screen_size(self):
-        return(screensizes.tzar.value)
-
-    def loop_wait(self):
-        #time.sleep(0.1)
-        return
-
-    def cam_processing(self, inputimg):
-        return inputimg
-
-    @property
-    def light_strobe_cnt(self):
-        return(4)
-
-    @property
-    def internal_img_crop(self):
-        return((500,500))
-
-    @property
-    def opencv_window_pos(self):
-        return(640, 0)
-
-    @property
-    def video_modes(self):
-        return HQ_GS_Cam_vidmodes
-
-
-class simitzar_config(gun_config):
-    model = "SIMITZAR"
-    def __init__(self) -> None:
-        super().__init__()
-        #for reference on rasperry pi 4
-        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
-        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
-        self.TRIGGER_IO_BOARD = {1:15, 2:13}
-        self.TRIGGER_IO_BCM = {1:22, 2:27}
-
-    @property
-    def rly_torch(self):
-        return 1
-
-    @property
-    def rly_triggerclick(self):
-        return 2
-        
-    @property
-    def RELAY_IO(self):
-        return(self.RELAY_IO_BCM)
-    
-    @property
-    def TRIGGER_IO(self):
-        return (self.TRIGGER_IO_BCM)
-    
-    @property
-    def screen_rotation(self):
-        return(0)
-
-    @property
-    def screen_size(self):
-        return(screensizes.windows_laptop.value)
-
-    def loop_wait(self):
-        time.sleep(0.3)
-
-    def cam_processing(self, inputimg):
-        h, w, _ = inputimg.shape
-        output_img = inputimg[0:h, 0:w]
-        return output_img
-
-    @property
-    def light_strobe_cnt(self):
-        return(0)
-
-    @property
-    def internal_img_crop(self):
-        return((500,500))
-
-    @property
-    def opencv_window_pos(self):
-        return(0, 0)
-
-    @property
-    def video_modes(self):
-        return Fake_Cam_vidmodes
 
 
 class Accelerometer(ABC):
