@@ -301,7 +301,29 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
         output = output[0: y, 0: x]#  Need to do this for YUV!
-        print("get_image", output.shape, output.dtype)
+        #print("get_image", output.shape, output.dtype)
+        return output
+
+class CsiCameraImageGen_GS_test(factory.ImageGenerator):
+    
+    def __init__(self, res) -> None:
+        self.cam_res = tuple(reversed(res))
+        self.picam2 = Picamera2()
+        _config = self.picam2.create_video_configuration(
+                    main={"size": res,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
+                #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
+        self.picam2.configure(_config)
+        #  set_controls must come after config!!
+        self.picam2.set_controls({"AnalogueGain": 10.0})
+        self.picam2.start()
+        time.sleep(0.2)
+
+    def get_image(self):
+        output = self.picam2.capture_array("main")
+        x = self.cam_res[0]
+        y = self.cam_res[1]
+        #output = output[0: y, 0: x]#  Need to do this for YUV!
+        #print("get_image", output.shape, output.dtype)
         return output
 
 
@@ -327,7 +349,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get cut image", output.shape, output.dtype)
-        #output = output[0: y, 0: x]#  Need to do this for YUV!
+        output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
         return output
 
@@ -348,7 +370,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
         if video_modes == factory.HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == factory.HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS)
+            super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
             raise Exception("no match for video mode input")
 
