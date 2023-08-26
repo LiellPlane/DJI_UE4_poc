@@ -339,6 +339,8 @@ class CSI_Camera_Async(factory.CameraAsync):
         else:
             raise Exception("no match for video mode input")
 
+
+
 class CSI_Camera(factory.Camera):
 
     def __init__(self, video_modes) -> None:

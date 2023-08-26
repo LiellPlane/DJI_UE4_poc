@@ -126,6 +126,7 @@ class Relay(factory.Relay):
 #         return blank_image
 
 
+
 class SynthImgGen(factory.ImageGenerator):
 
     def __init__(self, res) -> None:
@@ -161,6 +162,12 @@ class SynthImgGen(factory.ImageGenerator):
 
 class CSI_Camera_Async(factory.CameraAsync):
 
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, SynthImgGen)
+
+
+class CSI_Camera(factory.Camera):
+    
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, SynthImgGen)
 

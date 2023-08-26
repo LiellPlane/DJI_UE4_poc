@@ -521,9 +521,10 @@ class Triggers(ABC):
 
 class Camera(ABC):
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, video_modes, imagegen_cls) -> None:
         self.res_select = 0
         self.last_img = None
+        self.imagegen_cls = imagegen_cls(self.get_res)
 
     @abstractmethod
     def gen_image(self):
