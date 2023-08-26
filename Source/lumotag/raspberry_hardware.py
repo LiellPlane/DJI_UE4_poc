@@ -323,7 +323,7 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
         output = output[0: y, 0: x]#  Need to do this for YUV!
-        print("get_image", output.shape, output.dtype, x, y)
+        #print("get_image", output.shape, output.dtype, x, y)
         return output
 
 
@@ -359,7 +359,7 @@ class CSI_Camera_Async(factory.Camera_async):
         if video_modes == factory.HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == factory.HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS)
+            super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
             raise Exception("no match for video mode input")
 
