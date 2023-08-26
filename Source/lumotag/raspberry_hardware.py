@@ -307,7 +307,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
 class CsiCameraImageGen_GS_test(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
-        self.cam_res = tuple(reversed(res))
+        self.cam_res = res
         self.picam2 = Picamera2()
         _config = self.picam2.create_video_configuration(
                     main={"size": res,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
@@ -319,8 +319,8 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         time.sleep(0.2)
 
     def get_image(self):
-        x = self.cam_res[0]
-        y = self.cam_res[1]
+        y = self.cam_res[0]
+        x = self.cam_res[1]
         return self.picam2.capture_array("main")[0: y, 0: x]
         output = self.picam2.capture_array("main")
 
