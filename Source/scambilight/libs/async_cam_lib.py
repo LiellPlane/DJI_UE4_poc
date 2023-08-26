@@ -152,13 +152,13 @@ class ScambilightCamImageGen(ImageGenerator):
 
 
 
-class Scamblight_Camera_Async(Camera_async):
+class Scamblight_Camera_Async(Camera_synchronous):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ScambilightCamImageGen)
 
 
-class Synth_Camera_Async(Camera_async):
+class Synth_Camera_Async(Camera_synchronous):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
