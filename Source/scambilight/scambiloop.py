@@ -4,7 +4,7 @@ from libs.utils import (
     get_platform,
     _OS,
     ImageViewer_Quick_no_resize,
-    time_it)
+    time_it_sparse)
 from libs.scambiunits import (
     HomographyTool,
     generate_scambis)
@@ -17,16 +17,14 @@ from libs.lighting import SimLeds, ws281Leds
 from libs.configs import (
     DaisybankLedSpacing,
     get_sample_regions_config,
-    get_lens_details)
+    get_lens_details,
+    ScambiLight_Cam_vidmodes)
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
     get_ext_corners_or_use_default)
 
 PLATFORM = get_platform()
-#if PLATFORM == _OS.RASPBERRY:
-#    # sorry not sorry
-#    import rpi_ws281x as leds
 
 def main():
 
@@ -37,10 +35,10 @@ def main():
     system = get_platform()
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        cam = async_cam_lib.Synth_Camera_Async(async_cam_lib.ScambiLight_Cam_vidmodes)
+        cam = async_cam_lib.Synth_Camera_Async(ScambiLight_Cam_vidmodes)
         cores = 8
     elif system == _OS.RASPBERRY:
-        cam = async_cam_lib.Scamblight_Camera_Async(async_cam_lib.ScambiLight_Cam_vidmodes)
+        cam = async_cam_lib.Scamblight_Camera_Async(ScambiLight_Cam_vidmodes)
         led_subsystem = ws281Leds(DaisybankLedSpacing)
         cores = 3
     else:
@@ -90,14 +88,14 @@ def main():
     sent_overlay = 10
     while True:
         subsampled = 0
-        with time_it("main loop"):
+        with time_it_sparse("main loop"):
             index += 1
 
-            with time_it("get img"):
+            with time_it_sparse("get img"):
                 prev = next(cam)
             flipflop = not flipflop
             
-            with time_it(f"get {len(scambi_units)} colours"):
+            with time_it_sparse(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
                     # if flipflop is True:
                     #     if index%2 == 0:
@@ -113,7 +111,7 @@ def main():
                 if sent_overlay > -2:
                     sent_overlay -= 1
                 display_img = prev.copy()
-                with time_it("overlay"):
+                with time_it_sparse("overlay"):
                     for index, unit in enumerate(scambi_units):
                         #display_img = unit.draw_warped_roi(display_img)
                         
@@ -144,10 +142,10 @@ def main():
             if PLATFORM == _OS.WINDOWS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
     
-            with time_it(f"subsampled {subsampled}/{len(scambi_units)}"):
+            with time_it_sparse(f"subsampled {subsampled}/{len(scambi_units)}"):
                 pass
 
-            with time_it("set leds"):
+            with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambi_units)
                 led_subsystem.execute_LEDS()
 

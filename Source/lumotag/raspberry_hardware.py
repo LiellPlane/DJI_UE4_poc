@@ -329,7 +329,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         #print("get cut image", output.shape, output.dtype)
         return self.picam2.capture_array("main")[0: y, 0: x]
 
-class CSI_Camera_Async(factory.CameraAsync):
+class CSI_Camera_Async(factory.Camera_async):
     
     def __init__(self, video_modes) -> None:
         if video_modes == factory.HQ_Cam_vidmodes:
@@ -340,35 +340,15 @@ class CSI_Camera_Async(factory.CameraAsync):
             raise Exception("no match for video mode input")
 
 
-
-class CSI_Camera(factory.Camera):
+class CSI_Camera_Synchro(factory.Camera_synchronous):
 
     def __init__(self, video_modes) -> None:
-        super().__init__()
-        self.cam_res = video_modes
-        self.picam2 = Picamera2()
-        _config = self.picam2.create_video_configuration(
-            main={"size": self.get_res(),  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
-        #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
-        
-        self.picam2.configure(_config)
-        #  set_controls must come after config!!
-        self.picam2.set_controls({"AnalogueGain": 10.0})
-        self.picam2.start()
-        time.sleep(0.2)
-
-    def _gen_image(self):
-        output = self.picam2.capture_array("main")
-        (x, y) = self.get_res()#  Need to do this for YUV!
-        output = output[0:y, 0:x]#  Need to do this for YUV!
-        return output
-
-    def gen_image(self):
-        return self._gen_image()
-
-    def __del__(self):
-        # this doesn't seem to end cleanly
-        self.picam2.stop()
+        if video_modes == factory.HQ_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGen_HQ)
+        elif video_modes == factory.HQ_GS_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGen_GS)
+        else:
+            raise Exception("no match for video mode input")
 
 
 class KillProcess(factory.KillProcess):

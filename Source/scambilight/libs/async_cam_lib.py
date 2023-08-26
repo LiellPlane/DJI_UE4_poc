@@ -1,72 +1,30 @@
-#test code copied from lumotag
-# test by copying and pasting using ssh
-# then create a COMMON library
-import sys
+
 import os
-from pathlib import Path
-import imp
 
 # factory is imported from another directory by module load
-from factory import CameraAsync
-from abc import ABC, abstractmethod
+from factory import Camera_async, Camera_synchronous, ImageGenerator
 import numpy as np
 import time
-from enum import Enum
 import os
 import cv2
 from contextlib import contextmanager
-from dataclasses import dataclass
-import threading
-#from queue import Queue
-import queue
-import uuid
-from enum import Enum,auto
-from multiprocessing import Process, Queue, shared_memory
-from functools import reduce
-
-
+from multiprocessing import Process, Queue
+from libs.utils import (
+    get_platform,
+    _OS,
+    time_it_sparse)
 import random
 
-
-@contextmanager
-def time_it(comment):
-    tic: float = time.perf_counter()
-    try:
-        yield
-    finally:
-        toc: float = time.perf_counter()
-        if random.randint(1,100) < 4:
-            print(f"{comment}:asynclib proc time = {1000*(toc - tic):.3f}ms")
-
-def get_platform():
-    #  detect what OS we are on - test environment (Windows) or production (pi hardware)
-    RASP_PI_4_OS = "armv7l"
-
-    if hasattr(os, 'uname') is False:
-        print("async_cam_lib raspberry presence failed, probably Windows system")
-        return _OS.WINDOWS
-    elif os.uname()[-1] == RASP_PI_4_OS:
-        print("async_cam_lib raspberry presence detected, loading hardware libraries")
-        return _OS.RASPBERRY
-    else:
-        raise Exception("Could not detect platform")
-
-
-class _OS(str, Enum):
-    WINDOWS = "windows"
-    RASPBERRY = "raspberry"
 
 if get_platform() == _OS.RASPBERRY:
     # sorry not sorry
     from picamera2 import Picamera2
 
-class ImageGenerator(ABC):
-    @abstractmethod
-    def get_image(self):
-        pass
+
 
 class FinishedProcess():
     finished = True
+
 
 class Process_Scambiunits():
 
@@ -126,30 +84,6 @@ class Process_Scambiunits():
                 return_dic, block=True, timeout=None)
 
 
-# class CsiCameraImageGen(ImageGenerator):
-    
-#     def __init__(self, res) -> None:
-#         self.cam_res = res
-#         self.picam2 = Picamera2()
-#         res_xy = res[0:2]
-#         _config = self.picam2.create_video_configuration(
-#                     main={"size": res_xy,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
-#                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
-#         self.picam2.configure(_config)
-#         #  set_controls must come after config!!
-#         self.picam2.set_controls({"AnalogueGain": 10.0})
-#         self.picam2.start()
-#         time.sleep(0.2)
-
-#     def get_image(self):
-#         output = self.picam2.capture_array("main")
-#         # some dims will be (x,y) and some (x,y, 3)
-#         x, y, *_ = self.cam_res
-#         #x = res[0]
-#         #y = res[1]
-#         output = output[0: y, 0: x]#  Need to do this for YUV!
-#         return output
-
 
 class SynthImgGen(ImageGenerator):
     
@@ -174,6 +108,7 @@ def jpgs_in_folder(directory):
             if name[-4:len(name)] == '.jpg':
                 allFiles.append(os.path.join(root, name))
     return allFiles
+
 
 class ImageLibrary(ImageGenerator):
     
@@ -216,71 +151,18 @@ class ScambilightCamImageGen(ImageGenerator):
         return output
 
 
-class CSI_Camera_Async(CameraAsync):
 
-    def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, ScambilightCamImageGen)
-
-
-class Scamblight_Camera_Async(CameraAsync):
+class Scamblight_Camera_Async(Camera_async):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ScambilightCamImageGen)
 
 
-class Synth_Camera_Async(CameraAsync):
+class Synth_Camera_Async(Camera_async):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
 
 
-# class HQ_GS_Cam_vidmodes(Enum):
-#     """global shutter model"""
-#     _2 = ["1456 × 1088p50,",(1456, 1088)]
 
 
-class ScambiLight_Cam_vidmodes(Enum):
-    """scambilight fisheye ov5647"""
-    # dimensions are reversed (h, w) due to quirk of ov5647
-    _1 = ["1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",(972, 1296 , 3)]
-    _2 = ["640x480 [58.92 fps - (16, 0)/2560x1920 crop]",(480, 640, 3)]
-    _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
-    _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
-
-
-def lumo_viewer(
-        inputimage,
-        move_windowx,
-        move_windowy,
-        pausetime_Secs=0,
-        presskey=False,
-        destroyWindow=True):
-    try:
-        cv2.imshow("img", inputimage)
-        cv2.moveWindow("img", move_windowx, move_windowy)
-        if presskey==True:
-            cv2.waitKey(0); #any key
-    
-        if presskey==False:
-            if cv2.waitKey(20) & 0xFF == 27:
-                    pass
-        if pausetime_Secs>0:
-            time.sleep(pausetime_Secs)
-        if destroyWindow==True: cv2.destroyAllWindows()
-
-    except Exception as e:
-        print(e)
-
-# def main():
-#     image_capture2 = Scamblight_Camera_Async(ScambiLight_Cam_vidmodes)
-
-#     weewee = 0
-#     while True:
-#         fart = next(image_capture2)
-#         #lumo_viewer(fart,0,0,0,False,False)
-#         print("final output", fart.shape)
-#         cv2.imwrite(f"/home/scambilight/0{weewee}.jpg", fart)
-#         weewee = weewee + 1
-
-# if __name__ == '__main__':
-#     main()

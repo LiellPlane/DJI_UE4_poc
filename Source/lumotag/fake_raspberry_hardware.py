@@ -157,16 +157,19 @@ class SynthImgGen(factory.ImageGenerator):
             tuple(np.asarray(list(reversed(self.blank_image.shape[0:2]))) - np.asarray([buffer, buffer])),
             255,
             min(int(buffer/2),2))
+
         return self.blank_image
     
 
-class CSI_Camera_Async(factory.CameraAsync):
+class CSI_Camera_Async(factory.Camera_async):
 
     def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, SynthImgGen)
+        super().__init__(
+            video_modes=video_modes,
+            imagegen_cls=SynthImgGen)
 
 
-class CSI_Camera(factory.Camera):
+class CSI_Camera_Synchro(factory.Camera_synchronous):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, SynthImgGen)

@@ -1,18 +1,14 @@
 import numpy as np
 import cv2
 import time
-from dataclasses import dataclass, asdict
-from time import perf_counter
 from contextlib import contextmanager
 import random
 import base64
-from utils import _OS, get_platform, TimeDiffObject
-
+# need these for other modules to load
+from lumotag_utils import get_platform, _OS, TimeDiffObject
 
 def convert_pts_to_convex_hull(points:list[list[int, int]]):
    return cv2.convexHull(np.array(points, dtype='int32'))
-
-
 
 def ImageViewer_Quick_no_resize(inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
     if inputimage is None:
@@ -68,7 +64,7 @@ def img_height(img):
         return img[0]
 
 @contextmanager
-def time_it(comment):
+def time_it_sparse(comment):
     tic: float = time.perf_counter()
     try:
         yield

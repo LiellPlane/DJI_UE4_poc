@@ -1,3 +1,4 @@
+import enum
 from libs.collections import (
     Edges,
     lens_details,
@@ -9,6 +10,15 @@ from libs.collections import (
 #fluid sim
 #the batmoan batmobile chase scene 2022
 #4k background
+
+class ScambiLight_Cam_vidmodes(enum.Enum):
+    """scambilight fisheye ov5647"""
+    # dimensions are reversed (h, w) due to quirk of ov5647
+    _1 = ["1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",(972, 1296 , 3)]
+    _2 = ["640x480 [58.92 fps - (16, 0)/2560x1920 crop]",(480, 640, 3)]
+    _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
+    _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
+
 
 class DaisybankLedSpacing():
     def __init__(self) -> None:

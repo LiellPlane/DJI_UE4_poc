@@ -519,38 +519,77 @@ class Triggers(ABC):
         pass
 
 
-class Camera(ABC):
-
-    def __init__(self, video_modes, imagegen_cls) -> None:
-        self.res_select = 0
-        self.last_img = None
-        self.imagegen_cls = imagegen_cls(self.get_res)
-
-    @abstractmethod
-    def gen_image(self):
-       pass
-
-    def __next__(self):
-        img = self.gen_image()
-        if len(img.shape) == 3:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        self.last_img = img
-        return img
-
-    def __iter__(self):
-        return self
-
-    def get_res(self):
-        return [e.value for e in self.cam_res][self.res_select][1][0:2]
-
-
 class ImageGenerator(ABC):
     @abstractmethod
     def get_image(self):
         pass
 
 
-class CameraAsync(ABC):
+class Camera(ABC):
+
+    def __init__(self, video_modes) -> None:
+        self.res_select = 0
+        self.last_img = None
+        self.cam_res = video_modes
+
+    @abstractmethod
+    def gen_image(self):
+        pass
+
+    @abstractmethod
+    def __next__(self):
+        pass
+
+    def __iter__(self):
+        return self
+
+    def get_res(self):
+        return [
+            e.value for e in self.cam_res][self.res_select][1]
+
+
+class Camera_synchronous(Camera):
+    
+    def __init__(self, video_modes, imagegen_cls) -> None:
+        super().__init__(video_modes)
+        self.imagegen_cls = imagegen_cls(self.get_res())
+
+    def gen_image(self):
+        return self.imagegen_cls.get_image()
+
+    def __next__(self):
+        img = self.gen_image()
+        self.last_img = img
+        return img
+
+
+
+# class Camera_synchronousx(ABC):
+
+#     def __init__(self, video_modes, imagegen_cls) -> None:
+#         self.res_select = 0
+#         self.last_img = None
+#         self.imagegen_cls = imagegen_cls(self.get_res)
+
+#     def gen_image(self):
+#        return self.imagegen_cls.get_image()
+
+#     def __next__(self):
+#         img = self.gen_image()
+#         if len(img.shape) == 3:
+#             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#         self.last_img = img
+#         return img
+
+#     def __iter__(self):
+#         return self
+
+#     def get_res(self):
+#         return [e.value for e in self.cam_res][self.res_select][1][0:2]
+
+
+
+class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls) -> None:
         self.res_select = 0
@@ -570,7 +609,7 @@ class CameraAsync(ABC):
         # don't call this before everything else has been initialised!
 
         img_byte_size = reduce(
-            lambda acc, curr: acc * curr,self.get_res())
+            lambda acc, curr: acc * curr, self.get_res())
 
 
         self.shared_mem_handler = SharedMemory(
@@ -594,6 +633,9 @@ class CameraAsync(ABC):
         process.start()
 
     def __next__(self):
+        return self.gen_image()
+
+    def gen_image(self):
         # popping the queue item unblocks image sender
         _ = self.handshake_queue.get(
                         block=True,
@@ -613,9 +655,6 @@ class CameraAsync(ABC):
         self.last_img = img_buff
 
         return img_buff
-
-    def __iter__(self):
-        return self
 
     def async_img_loop(
         self,
@@ -642,8 +681,6 @@ class CameraAsync(ABC):
             #blocking put until consumer handshakes 
             myqueue.put("image_ready", block=True, timeout=None)
 
-    def get_res(self):
-        return [e.value for e in self.cam_res][self.res_select][1]
 
 
 class Relay(ABC):

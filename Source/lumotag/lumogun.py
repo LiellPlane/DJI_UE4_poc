@@ -32,7 +32,7 @@ def main():
     voice = sound.Voice()
 
     if get_platform() == _OS.RASPBERRY:
-        for i in range(0,2):
+        for _ in range(0,2):
             voice.speak("cancel")
             results_trig_positions = (triggers.test_states())
             if any([True for i in results_trig_positions.values() if i is True]):
@@ -46,7 +46,7 @@ def main():
     
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
-    image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
+    image_capture = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
 
     voice.speak("cam")
     img = next(image_capture)
