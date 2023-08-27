@@ -25,7 +25,7 @@ from libs.external_data import (
     get_ext_corners_or_use_default,
     check_events_from_aws,
     ExternalDataWorker)
-
+import os
 PLATFORM = get_platform()
 
 def main():
@@ -58,9 +58,7 @@ def main():
     curr_img = next(cam)
     # upload image before anything crashes 
 
-    img_2_upload = fisheye_compute.fish_eye_image(next(cam), reverse=True)
-    upload_img_to_aws(img_2_upload, img_upload_url, action = "raw")
-    led_subsystem.display_info_colours(LEDColours.Blue.value)
+
 
     aws_config = get_config_from_aws(img_upload_url)
     led_subsystem.display_info_colours(LEDColours.Cyan.value)
@@ -94,6 +92,7 @@ def main():
     flipflop = False
     sent_overlay = 10
     while True:
+        event = ActionChecker.check_for_action()
         subsampled = 0
         with time_it_sparse("main loop"):
             index += 1
@@ -114,9 +113,7 @@ def main():
                     unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
 
 
-            if PLATFORM == _OS.WINDOWS or sent_overlay > -1:
-                if sent_overlay > -2:
-                    sent_overlay -= 1
+            if PLATFORM == _OS.WINDOWS:
                 display_img = prev.copy()
                 with time_it_sparse("overlay"):
                     for index, unit in enumerate(scambi_units):
@@ -131,21 +128,42 @@ def main():
                             size=10)
                         
 
-                if sent_overlay == 0:
-                    led_subsystem.display_info_colours(LEDColours.Blue.value)
-                    before_warp = display_img.copy()
-                    perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                    led_subsystem.display_info_colours(LEDColours.Red.value)
-                    for pt in homography_tool._corners:
-                        perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
-                    display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
-                    led_subsystem.display_info_colours(LEDColours.Blue.value)
-                    display_img = homography_tool.warp_img(display_img)
-                    upload_img_to_aws(
-                        np.vstack((before_warp, display_img, perp_warped)),
-                        img_upload_url,
-                        action = "overlay")
-
+                # if sent_overlay == 0:
+                #     led_subsystem.display_info_colours(LEDColours.Blue.value)
+                #     before_warp = display_img.copy()
+                #     perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
+                #     led_subsystem.display_info_colours(LEDColours.Red.value)
+                #     for pt in homography_tool._corners:
+                #         perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
+                #     display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
+                #     led_subsystem.display_info_colours(LEDColours.Blue.value)
+                #     display_img = homography_tool.warp_img(display_img)
+                #     upload_img_to_aws(
+                #         np.vstack((before_warp, display_img, perp_warped)),
+                #         img_upload_url,
+                #         action = "overlay")
+            if event == "update_image":
+                display_img = prev.copy()                
+                led_subsystem.display_info_colours(LEDColours.Blue.value)
+                before_warp = display_img.copy()
+                perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
+                led_subsystem.display_info_colours(LEDColours.Red.value)
+                upload_img_to_aws(perp_warped, img_upload_url, action = "raw")
+                led_subsystem.display_info_colours(LEDColours.Yellow.value)
+                for pt in homography_tool._corners:
+                    perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
+                display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
+                led_subsystem.display_info_colours(LEDColours.Blue.value)
+                display_img = homography_tool.warp_img(display_img)
+                upload_img_to_aws(
+                    np.vstack((before_warp, display_img, perp_warped)),
+                    img_upload_url,
+                    action = "overlay")
+            if event == "reset":
+                if PLATFORM == _OS.RASPBERRY:
+                    os.system("sudo reboot")
+                else:
+                    raise Exception("reboot requested")
             if PLATFORM == _OS.WINDOWS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
     

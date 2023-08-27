@@ -85,7 +85,6 @@ def check_events_from_aws(url):
     events = json.loads(response.content)
     if len(events) > 0:
         event = list(events[0].values())[0]
-        print(event)
     else:
         event="None"
 
@@ -116,6 +115,18 @@ class ExternalDataWorker():
             self.msg_queue.put(
                 event, block=True, timeout=None)
 
+    def check_for_action(self):
+        if self.msg_queue.empty():
+            pass
+        else:
+            try:
+                event = self.msg_queue.get_nowait()
+                return event
+            except Queue.Empty:
+                pass
+        return "None"
+    
+    
 def get_config_from_aws(url):
     print("getting config from aws")
     myobj = {
