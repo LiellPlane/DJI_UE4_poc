@@ -143,7 +143,11 @@ def main():
                 #         img_upload_url,
                 #         action = "overlay")
             if event == "update_image":
-                display_img = prev.copy() 
+                led_subsystem.display_info_colours(LEDColours.Magenta.value)
+                display_img = prev.copy()
+                perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
+                upload_img_to_aws(perp_warped, img_upload_url, action = "raw")
+                display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                         #display_img = unit.draw_warped_roi(display_img)
                         
@@ -157,8 +161,6 @@ def main():
                 led_subsystem.display_info_colours(LEDColours.Blue.value)
                 before_warp = display_img.copy()
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                led_subsystem.display_info_colours(LEDColours.Red.value)
-                upload_img_to_aws(perp_warped, img_upload_url, action = "raw")
                 led_subsystem.display_info_colours(LEDColours.Yellow.value)
                 for pt in homography_tool._corners:
                     perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
@@ -170,6 +172,7 @@ def main():
                     img_upload_url,
                     action = "overlay")
             if event == "reset":
+                led_subsystem.display_info_colours(LEDColours.Red.value)
                 if PLATFORM == _OS.RASPBERRY:
                     os.system("sudo reboot")
                 else:
