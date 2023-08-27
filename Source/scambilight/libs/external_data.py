@@ -2,26 +2,20 @@
 import requests
 import json
 import numpy as np
-
+import time
 
 from libs.utils import (
-    get_platform,
-    _OS,
-    TimeDiffObject,
-    ImageViewer_Quick_no_resize,
     encode_img_to_str,
     img_height,
     img_width)
+
 from libs.collections import (
-    LedSpacing,
-    Edges,
-    lens_details,
-    LedsLayout,
     config_corner,
     clicked_xy,
     External_Config)
-from img_processing import clahe_equalisation
 
+from img_processing import clahe_equalisation
+from multiprocessing import Process, Queue
 def get_corners_from_remote_config(config, img):
     """find corners from disorder of inputs in format:
     {
@@ -72,7 +66,55 @@ def upload_img_to_aws(img, url, action):
     except requests.exceptions.RequestException as e:
         print(e)
         print("could not connect first image upload to ", url)
+
+def check_event_validity(event: str):
+    if event.lower() not in ["reset", "update_image", "none"]:
+        raise Exception("event malformed")
+
+def check_events_from_aws(url):
+    myobj = {
+        "authentication": "farts",
+        "action": "check_event"
+        }
+    try:
+        response = requests.post(url, json=myobj)
+    except (requests.exceptions.RequestException, KeyError) as e:
+        print(e)
+        print("could not connect get config or find key from", url)
+        return "Error connecting"
+    events = json.loads(response.content)
+    if len(events) > 0:
+        event = list(events[0].values())[0]
+        print(event)
+    else:
+        event="None"
+
+    check_event_validity(event)
+    return event
+
+class ExternalDataWorker():
+    def __init__(
+            self,
+            url):
+        self.in_queue = Queue(maxsize=1)
+        self.msg_queue = Queue(maxsize=1)
+        self.url = url
+
+    def _start(self):
     
+        process = Process(
+            target=self._run,
+            args=(),
+            daemon=True)
+
+        process.start()
+
+    def _run(self):
+        while True:
+            event = check_events_from_aws(self.url)
+            time.sleep(10)
+            self.msg_queue.put(
+                event, block=True, timeout=None)
 
 def get_config_from_aws(url):
     print("getting config from aws")

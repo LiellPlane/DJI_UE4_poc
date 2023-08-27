@@ -1,4 +1,3 @@
-import os
 import factory
 import sound
 from functools import partial

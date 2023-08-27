@@ -22,7 +22,9 @@ from libs.configs import (
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
-    get_ext_corners_or_use_default)
+    get_ext_corners_or_use_default,
+    check_events_from_aws,
+    ExternalDataWorker)
 
 PLATFORM = get_platform()
 
@@ -48,6 +50,11 @@ def main():
     cores_for_col_dect = cores
     img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
 
+    ActionChecker = ExternalDataWorker(img_upload_url)
+    ActionChecker._start()
+    #event = check_events_from_aws(img_upload_url)
+    #print("purging old action requests", event)
+    
     curr_img = next(cam)
     # upload image before anything crashes 
 
