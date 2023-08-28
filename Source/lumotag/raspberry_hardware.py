@@ -323,9 +323,9 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
 
-        output = self.picam2.capture_array("main")[0: x, 0: y]
+        #output = self.picam2.capture_array("main")[0: x, 0: y]
         #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-        return output
+        return self.picam2.capture_array("main")
         output = self.picam2.capture_array("main")
 
         output = output[0: y, 0: x]#  Need to do this for YUV!
