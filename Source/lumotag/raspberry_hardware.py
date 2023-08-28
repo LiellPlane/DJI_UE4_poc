@@ -322,7 +322,10 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
     def get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
-        return self.picam2.capture_array("main")[0: y, 0: x]
+
+        output = self.picam2.capture_array("main")[0: x, 0: y]
+        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        return output
         output = self.picam2.capture_array("main")
 
         output = output[0: y, 0: x]#  Need to do this for YUV!
@@ -347,14 +350,14 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
     def get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
-        output = self.picam2.capture_array("main")
-        print("get raw image", output.shape, output.dtype)
+        #output = self.picam2.capture_array("main")
+        #print("get raw image", output.shape, output.dtype)
         
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get cut image", output.shape, output.dtype)
-        output = output[0: y, 0: x]#  Need to do this for YUV!
+        #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
-        return output
+        return self.picam2.capture_array("main")[0: y, 0: x]
 
 class CSI_Camera_Async(factory.Camera_async):
     
