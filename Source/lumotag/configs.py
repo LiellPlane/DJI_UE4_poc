@@ -11,7 +11,7 @@ class HQ_Cam_vidmodes(Enum):
 
 class HQ_GS_Cam_vidmodes(Enum):
     """global shutter model"""
-    _2 = ["1456 × 1088p50,",(1088, 1456)]
+    _2 = ["1456 × 1088p50,",(1456, 1088)]
 
 
 class Fake_Cam_vidmodes(Enum):
