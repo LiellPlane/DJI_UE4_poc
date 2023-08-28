@@ -19,10 +19,11 @@ class Fake_Cam_vidmodes(Enum):
 
 
 class screensizes(Enum):
+    title_bar_pxls = 25
     format = ("height", "width")
-    tzar = (800 - 25, 480)
-    windows_laptop = (800 - 25, 480)
-    stryker = (480, 800- 25)
+    tzar = (800 - title_bar_pxls, 480)
+    windows_laptop = (800 - title_bar_pxls, 480)
+    stryker = (480, 800 - title_bar_pxls)
 
 
 class stryker_config(gun_config):

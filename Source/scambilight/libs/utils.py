@@ -70,5 +70,5 @@ def time_it_sparse(comment):
         yield
     finally:
         toc: float = time.perf_counter()
-        if random.randint(1,10000) < 4:
+        if random.randint(1,1000) < 4:
             print(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")

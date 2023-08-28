@@ -90,10 +90,10 @@ def main():
     # main loop
     index = 0
     flipflop = False
-    sent_overlay = 10
+    #sent_overlay = 10
     while True:
         event = ActionChecker.check_for_action()
-        subsampled = 0
+        #subsampled = 0
         with time_it_sparse("main loop"):
             index += 1
 
@@ -180,8 +180,8 @@ def main():
             if PLATFORM == _OS.WINDOWS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
     
-            with time_it_sparse(f"subsampled {subsampled}/{len(scambi_units)}"):
-                pass
+            # with time_it_sparse(f"subsampled {subsampled}/{len(scambi_units)}"):
+            #     pass
 
             with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambi_units)
