@@ -1,7 +1,7 @@
 #pip install pyttsx3
 import threading
 from queue import Queue
-import pyttsx3
+#import pyttsx3
 
 
 class Voice():
@@ -32,6 +32,7 @@ class Voice():
 
 def speaker(in_box):
     #TODO
+    return
     """Ideally this should inherit from threading.thread
     and override init and run - but w/e this works for now"""
     engine = pyttsx3.init()
