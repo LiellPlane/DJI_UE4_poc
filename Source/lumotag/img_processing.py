@@ -252,7 +252,7 @@ def add_cross_hair(image, adapt):
     # TODO another potential lag point
     if adapt is True:
         col = int(
-            image[midx-50:midx+50, midy-50:midy+50, :].mean())
+            image[midx-50:midx+50:4, midy-50:midy+50:4, :].mean())
     else:
         col = 255
     image[midx-thick : midx+thick,:,:] = 0 
@@ -260,7 +260,6 @@ def add_cross_hair(image, adapt):
     image[:, midy-thick : midy+thick ,:] = 0 
     image[:, midy-thick : midy+thick ,1] = max(col, 50)
 
-    return image
 
 def get_internal_section(img, size: tuple[int, int]):
     midx = img.shape[0] // 2

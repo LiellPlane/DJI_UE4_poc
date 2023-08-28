@@ -177,19 +177,18 @@ class display(ABC):
                 tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
             
-            self.set_image_in_centre(output)
         elif self.display_rotate == -90 or self.display_rotate == 270:
             output = img_processing.get_resized_equalaspect(
                 output,
                 tuple(reversed(self.screen_size)))
             output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-            self.set_image_in_centre(output)
+
         elif self.display_rotate == 180:
             output = img_processing.get_resized_equalaspect(
                 output,
                 self.screen_size)
             output = cv2.rotate(output, cv2.ROTATE_180)
-            self.set_image_in_centre(output)
+
         elif self.display_rotate == 0:
             # output, scale_factor = img_processing.resize_centre_img(
             #    output,
@@ -199,13 +198,15 @@ class display(ABC):
             output = img_processing.get_resized_equalaspect(
                 output,
                 (self.screen_size))
-            self.set_image_in_centre(output)
+            
 
         else:
             raise Exception("incorrect display rotate value", self.display_rotate)
         #output = img_processing.add_cross_hair(output, adapt=True)
 
         
+        self.set_image_in_centre(output)
+        img_processing.add_cross_hair(self.emptyscreen, adapt=True)
         self.display_method(self.emptyscreen)
 
     @abstractmethod
