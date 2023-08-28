@@ -22,6 +22,7 @@ import adafruit_lis3dh
 import json
 import img_processing
 import utils
+from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes
 #import imutils
 
 GPI_MODE_SET = False
@@ -358,9 +359,9 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
 class CSI_Camera_Async(factory.Camera_async):
     
     def __init__(self, video_modes) -> None:
-        if video_modes == factory.HQ_Cam_vidmodes:
+        if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
-        elif video_modes == factory.HQ_GS_Cam_vidmodes:
+        elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
             raise Exception("no match for video mode input")
@@ -369,9 +370,9 @@ class CSI_Camera_Async(factory.Camera_async):
 class CSI_Camera_Synchro(factory.Camera_synchronous):
 
     def __init__(self, video_modes) -> None:
-        if video_modes == factory.HQ_Cam_vidmodes:
+        if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
-        elif video_modes == factory.HQ_GS_Cam_vidmodes:
+        elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
             raise Exception("no match for video mode input")
