@@ -324,7 +324,7 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         y = self.cam_res[1]
 
         output = self.picam2.capture_array("main")[0: y, 0: x]
-        output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+        #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         return output
         output = self.picam2.capture_array("main")
 
