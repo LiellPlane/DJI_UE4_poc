@@ -1,0 +1,4 @@
+https://medium.com/@abderraoufbenchoubane/setup-a-python-environment-with-docker-a4e38811e0d3#:~:text=Also%2C%20Docker%20is%20a%20good,configuring%20various%20dependencies%20and%20packages.
+
+docker-compose up
+docker-compose up --build
