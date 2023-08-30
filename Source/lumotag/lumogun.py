@@ -1,5 +1,5 @@
 import factory
-import sound
+
 from functools import partial
 import msgs
 import time
@@ -8,7 +8,7 @@ import img_processing
 from utils import time_it, get_platform, _OS
 # need this import to detect lumogun types (subclasses)
 import configs
-
+import sound
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 
 if get_platform() ==  _OS.WINDOWS:
