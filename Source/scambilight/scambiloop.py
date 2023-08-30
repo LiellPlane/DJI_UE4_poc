@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import os
 from libs.utils import (
     get_platform,
     _OS,
@@ -25,7 +26,7 @@ from libs.external_data import (
     get_ext_corners_or_use_default,
     check_events_from_aws,
     ExternalDataWorker)
-import os
+
 PLATFORM = get_platform()
 
 def main():
