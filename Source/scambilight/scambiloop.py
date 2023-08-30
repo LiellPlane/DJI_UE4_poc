@@ -57,7 +57,7 @@ def main():
     #print("purging old action requests", event)
     
     curr_img = next(cam)
-    ImageViewer_Quick_no_resize(curr_img,0,True,False)
+    #ImageViewer_Quick_no_resize(curr_img,0,True,False)
     # upload image before anything crashes 
 
 
