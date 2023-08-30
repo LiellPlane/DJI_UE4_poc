@@ -207,7 +207,7 @@ def get_resized_equalaspect(inputimage, screensize):
         if test_height > screensize_height:
             raise Exception(
                 "screen resize with aspect ratio has failed in heght & width cases, bad")
-
+    
     dim = (
         int(np.floor(test_width)),
         int(np.floor(test_height)))
