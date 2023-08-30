@@ -15,7 +15,7 @@ class HQ_GS_Cam_vidmodes(Enum):
 
 
 class Fake_Cam_vidmodes(Enum):
-    _2 = ["700 × 600,",(1456, 1088)]
+    _2 = ["1456 × 500,",(1456, 500)]
 
 
 class screensizes(Enum):

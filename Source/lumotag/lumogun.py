@@ -187,6 +187,13 @@ def main():
             #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
             #with time_it("gun display"):
             #    display.display_output(fart)
+            # lumogun.lumo_viewer(
+            #     inputimage=cap_img,
+            #     move_windowx=0,
+            #     move_windowy=0,
+            #     pausetime_Secs=0,
+            #     presskey=False,
+            #     destroyWindow=False)
             display.display_output(cap_img)
     raise RuntimeError("something broke out of loop")
 

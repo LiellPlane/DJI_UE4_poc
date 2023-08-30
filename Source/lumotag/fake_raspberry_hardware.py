@@ -130,6 +130,7 @@ class Relay(factory.Relay):
 class SynthImgGen(factory.ImageGenerator):
 
     def __init__(self, res) -> None:
+        res = tuple(reversed(res))
         self.blank_image = np.zeros(res, np.uint8)
         self.res = res
 
