@@ -23,6 +23,7 @@ import json
 import img_processing
 import utils
 from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes
+from fake_raspberry_hardware import SynthImgGen
 #import imutils
 
 GPI_MODE_SET = False
@@ -281,41 +282,6 @@ class Relay(factory.Relay):
         if strobe_state is True:
             raise Exception("should always end here high!")
         return True
-
-class SynthImgGen(factory.ImageGenerator):
-    
-    def __init__(self, res) -> None:
-        res = tuple(reversed(res))
-        self.blank_image = np.zeros(res, np.uint8)
-        self.res = res
-
-    def get_image(self):
-        if len(self.res) == 3:
-            self.blank_image[:,:,:] = random.randint(0,255)
-        else:
-            self.blank_image[:,:] = random.randint(0,255)
-        self.blank_image = cv2.circle(
-            self.blank_image,
-            (self.blank_image.shape[1]//2, self.blank_image.shape[0]//2),
-            self.blank_image.shape[0]//10,
-            50,
-            -1)
-        self.blank_image = cv2.circle(
-            self.blank_image,
-            (self.blank_image.shape[1]//2, self.blank_image.shape[0]//4),
-            self.blank_image.shape[0]//30,
-            50,
-            -1)
-        buffer = int(self.blank_image.shape[0]/100)
-        self.blank_image = cv2.rectangle(
-            self.blank_image,
-            (buffer, buffer),
-            tuple(np.asarray(list(reversed(self.blank_image.shape[0:2]))) - np.asarray([buffer, buffer])),
-            255,
-            min(int(buffer/2),2))
-
-        return self.blank_image
-    
 
 class CsiCameraImageGen_GS(factory.ImageGenerator):
     
