@@ -363,7 +363,7 @@ class CSI_Camera_Async(factory.Camera_async):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, SynthImgGen)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, SynthImgGen)
+            super().__init__(video_modes, CsiCameraImageGen_GS)
         else:
             raise Exception("no match for video mode input")
 
@@ -374,7 +374,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, SynthImgGen)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, SynthImgGen)
+            super().__init__(video_modes, CsiCameraImageGen_GS)
         else:
             raise Exception("no match for video mode input")
 
