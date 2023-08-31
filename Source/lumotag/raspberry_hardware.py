@@ -282,6 +282,40 @@ class Relay(factory.Relay):
             raise Exception("should always end here high!")
         return True
 
+class SynthImgGen(factory.ImageGenerator):
+    
+    def __init__(self, res) -> None:
+        res = tuple(reversed(res))
+        self.blank_image = np.zeros(res, np.uint8)
+        self.res = res
+
+    def get_image(self):
+        if len(self.res) == 3:
+            self.blank_image[:,:,:] = random.randint(0,255)
+        else:
+            self.blank_image[:,:] = random.randint(0,255)
+        self.blank_image = cv2.circle(
+            self.blank_image,
+            (self.blank_image.shape[1]//2, self.blank_image.shape[0]//2),
+            self.blank_image.shape[0]//10,
+            50,
+            -1)
+        self.blank_image = cv2.circle(
+            self.blank_image,
+            (self.blank_image.shape[1]//2, self.blank_image.shape[0]//4),
+            self.blank_image.shape[0]//30,
+            50,
+            -1)
+        buffer = int(self.blank_image.shape[0]/100)
+        self.blank_image = cv2.rectangle(
+            self.blank_image,
+            (buffer, buffer),
+            tuple(np.asarray(list(reversed(self.blank_image.shape[0:2]))) - np.asarray([buffer, buffer])),
+            255,
+            min(int(buffer/2),2))
+
+        return self.blank_image
+    
 
 class CsiCameraImageGen_GS(factory.ImageGenerator):
     
@@ -363,7 +397,7 @@ class CSI_Camera_Async(factory.Camera_async):
     
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_HQ)
+            super().__init__(video_modes, SynthImgGen)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
@@ -374,7 +408,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
 
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_HQ)
+            super().__init__(video_modes, SynthImgGen)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
