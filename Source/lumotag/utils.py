@@ -15,9 +15,17 @@ def get_platform():
 
     if hasattr(os, 'uname') is False:
         print("scambiloop raspberry presence failed, probably Windows system")
+        print("sys info:",
+            platform.system(),
+            platform.release(),
+            platform.platform())
         return _OS.WINDOWS
     elif os.uname()[-1] == RASP_PI_4_OS:
         print("scambiloop raspberry presence detected, loading hardware libraries")
+        print("sys info:",
+            platform.system(),
+            platform.release(),
+            platform.platform())
         return _OS.RASPBERRY
     else:
         raise Exception(
