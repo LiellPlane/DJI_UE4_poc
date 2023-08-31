@@ -281,7 +281,7 @@ class Relay(factory.Relay):
             raise Exception("should always end here high!")
         return True
 
-class CsiCameraImageGen_GS(factory.ImageGenerator):
+class CsiCameraImageGen_GS_old(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
         self.cam_res = tuple(reversed(res))
@@ -303,7 +303,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         #print("get_image", output.shape, output.dtype)
         return self.picam2.capture_array("main")[0: y, 0: x]
 
-class CsiCameraImageGen_GS_test(factory.ImageGenerator):
+class CsiCameraImageGen_GS(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
         self.cam_res = tuple(reversed(res))
@@ -363,7 +363,7 @@ class CSI_Camera_Async(factory.Camera_async):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, SynthImgGen)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS_test)
+            super().__init__(video_modes, SynthImgGen)
         else:
             raise Exception("no match for video mode input")
 
@@ -374,7 +374,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, SynthImgGen)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS_test)
+            super().__init__(video_modes, SynthImgGen)
         else:
             raise Exception("no match for video mode input")
 
