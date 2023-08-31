@@ -57,7 +57,7 @@ class stryker_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(270)
+        return(0)
 
     @property
     def screen_size(self):
@@ -76,7 +76,7 @@ class stryker_config(gun_config):
 
     @property
     def opencv_window_pos(self):
-        return(200, 200)
+        return(0, 0)
 
     @property
     def video_modes(self):
