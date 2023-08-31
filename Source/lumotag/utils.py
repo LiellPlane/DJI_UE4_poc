@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from typing import Iterator
 import enum
 import os
+import platform
 
 class _OS(str, enum.Enum):
     WINDOWS = "windows"
@@ -19,7 +20,11 @@ def get_platform():
         print("scambiloop raspberry presence detected, loading hardware libraries")
         return _OS.RASPBERRY
     else:
-        raise Exception("Could not detect platform")
+        raise Exception(
+            "Could not detect platform",
+            platform.system(),
+            platform.release(),
+            platform.platform())
 
 def get_epoch_timestamp():
     return str(time.time()).replace(".", "_")
