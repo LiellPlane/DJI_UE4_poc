@@ -4,8 +4,6 @@ from subprocess import Popen, PIPE
 import os
 from signal import SIGKILL
 import cv2
-import numpy as np
-import enum
 import functools
 # for finding pinout, type pinout in terminal
 import RPi.GPIO as GPIO
