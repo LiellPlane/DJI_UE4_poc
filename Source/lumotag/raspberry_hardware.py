@@ -61,7 +61,8 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
-        cv2.moveWindow("img", move_windowx, move_windowy)
+        if move_windowx is not None and move_windowy is not None:
+            cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
     
