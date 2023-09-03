@@ -5,6 +5,7 @@ import os
 from signal import SIGKILL
 import cv2
 import functools
+import random
 # for finding pinout, type pinout in terminal
 import RPi.GPIO as GPIO
 import time
@@ -61,6 +62,8 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
+        move_windowx = random.randint(-500, 500)
+        move_windowy = random.randint(-500, 500)
         if move_windowx is not None and move_windowy is not None:
             cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
