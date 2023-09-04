@@ -193,4 +193,3 @@ class simitzar_config(gun_config):
     @property
     def video_modes(self):
         return Fake_Cam_vidmodes
-s
