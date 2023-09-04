@@ -76,7 +76,7 @@ class stryker_config(gun_config):
 
     @property
     def opencv_window_pos(self):
-        return(300, 500)
+        return(0, 0)
 
     @property
     def video_modes(self):
