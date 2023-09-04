@@ -1,0 +1,46 @@
+#https://core-electronics.com.au/guides/raspberry-pi/fully-addressable-rgb-raspberry-pi/
+
+
+#WS2812B
+#tested raspberry pi zero w GPIO18
+
+sudo apt update
+sudo apt upgrade -y
+sudo rpi-update -y
+sudo apt-get update
+sudo apt install -y ffmpeg
+sudo apt-get install python3-numpy -Y
+sudo apt-get install python3-opencv -Y
+sudo apt install python3-pip -Y
+sudo pip3 install rpi_ws281x
+sudo pip3 install adafruit-circuitpython-neopixel
+sudo python3 -m pip install --force-reinstall adafruit-blinka
+sudo apt-get install git
+
+
+#overclock
+sudo apt update && sudo apt dist-upgrade
+sudo nano /boot/config.txt
+
+add to bottom of file (can we use CAT instead?)
+overlocking gpu seems to break it when streaming
+
+
+# we can go up to 1400 for arm_freq but that started crashing
+# 1000 is the default
+#Overclock 1400
+arm_freq=1300
+core_freq=525
+over_voltage=6
+#gpu_freq=700
+
+reboot - if it doesnt turn on drop the freqs by putting
+card into a computer and modding boot section
+
+
+autostart:
+
+sudo nano /etc/rc.local
+Scroll down, and just before the exit 0 line, enter the following:
+
+sudo python3 /boot/boostrap.py &

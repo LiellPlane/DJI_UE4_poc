@@ -1,7 +1,7 @@
 services:
   app:
     build: .
-    command: python3 ./src/scambilight/scambiloop.py
+    command: python3 ./scambilight/scambiloop.py
     ports:
       - "8080:8080"
     volumes:
