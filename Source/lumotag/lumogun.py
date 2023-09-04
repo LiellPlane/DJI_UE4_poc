@@ -23,7 +23,9 @@ else:
 # load config depending on if simulated, or if on hardware,
 # model ID from file on device
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
+print("MY_ID", model)
 GUN_CONFIGURATION  = factory.get_config(model)
+print("GUN_CONFIGURATION", GUN_CONFIGURATION)
 del configs
 
 def main():
