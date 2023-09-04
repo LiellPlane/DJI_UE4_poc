@@ -367,7 +367,7 @@ class CSI_Camera_Async(factory.Camera_async):
     
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:
-            super().__init__(video_modes, SynthImgGen)
+            super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS)
         else:
@@ -378,7 +378,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
 
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:
-            super().__init__(video_modes, SynthImgGen)
+            super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS)
         else:
