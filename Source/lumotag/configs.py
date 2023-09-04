@@ -26,7 +26,7 @@ class screensizes(Enum):
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
     windows_laptop = (800 - title_bar_pxls, 480)
-    stryker = (480, 800 - title_bar_pxls)
+    stryker = (800 - title_bar_pxls, 480)
 
 
 class stryker_config(gun_config):
