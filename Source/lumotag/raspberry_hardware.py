@@ -64,8 +64,8 @@ def lumo_viewer(
         cv2.imshow("img", inputimage)
         #move_windowx = random.randint(0, 500)
         #move_windowx = 0
-        move_windowx = random.randint(0, 500)
-        move_windowy = random.randint(0, 500)
+        move_windowx = 0#random.randint(0, 500)
+        move_windowy = 0#random.randint(0, 500)
         if move_windowx is not None and move_windowy is not None:
             cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
