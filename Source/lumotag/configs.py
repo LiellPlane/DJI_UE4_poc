@@ -26,7 +26,7 @@ class screensizes(Enum):
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
     windows_laptop = (800 - title_bar_pxls, 480)
-    stryker = (800 - title_bar_pxls, 480)
+    stryker = (480, 800 - title_bar_pxls)
 
 
 class stryker_config(gun_config):
@@ -193,3 +193,4 @@ class simitzar_config(gun_config):
     @property
     def video_modes(self):
         return Fake_Cam_vidmodes
+s
