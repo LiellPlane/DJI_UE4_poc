@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install --no-cache-dir -r requirements_scambi.txt
 #can't copy anyting out of docker scope
 COPY ./scambilight ./scambilight
+COPY ./lumotag ./lumotag
 EXPOSE 8080
 
 CMD ["sudo", "python3", "./src/scambilight/scambiloop.py"]

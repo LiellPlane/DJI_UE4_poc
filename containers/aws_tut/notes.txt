@@ -1,0 +1,9 @@
+https://levelup.gitconnected.com/how-to-deploy-an-application-to-aws-fargate-cd3cfaccc537
+https://fastapi.tiangolo.com/tutorial/body/  (request body stuff in fastapi)
+build (in same folder)
+docker build -t whatevernameis .
+run (have to map ports )
+docker run -p=8000:8000 whatevernameis
+
+show all containers
+docker ps -a

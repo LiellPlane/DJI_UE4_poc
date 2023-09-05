@@ -7,8 +7,7 @@ RUN apt-get update && apt-get install -y python3 python3-pip
 #this line only needed for specific containers that may not work with opencv
 RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install --no-cache-dir -r requirements.txt
-#can't copy anyting out of docker scope
 COPY ./src ./src
 EXPOSE 8080
 
-CMD ["sudo", "python3", "./src/scambilight/scambiloop.py"]
+CMD ["flask","--app", "./src/hello" ,"--debug","run","--host=0.0.0.0", "--port=8080" ]
