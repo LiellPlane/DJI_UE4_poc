@@ -5,9 +5,12 @@ import enum
 import os
 import platform
 
+
 class _OS(str, enum.Enum):
     WINDOWS = "windows"
     RASPBERRY = "raspberry"
+    LINUX = "digusting linux"
+
 
 def get_platform():
     #  detect what OS we are on - test environment (Windows) or production (pi hardware)
@@ -19,6 +22,9 @@ def get_platform():
     elif os.uname()[-1] == RASP_PI_4_OS:
         print("scambiloop raspberry presence detected, loading hardware libraries")
         return _OS.RASPBERRY
+    elif os.name == 'posix' and platform.system() == 'Linux':
+        print("EWWWWWWWWWWWW linux, disgusting")
+        return _OS.LINUX
     else:
         raise Exception(
             "Could not detect platform",
