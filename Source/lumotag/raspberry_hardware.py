@@ -4,8 +4,9 @@ from subprocess import Popen, PIPE
 import os
 from signal import SIGKILL
 import cv2
+import numpy as np
+import enum
 import functools
-import random
 # for finding pinout, type pinout in terminal
 import RPi.GPIO as GPIO
 import time
@@ -22,7 +23,6 @@ import json
 import img_processing
 import utils
 from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes
-from fake_raspberry_hardware import SynthImgGen
 #import imutils
 
 GPI_MODE_SET = False
@@ -62,12 +62,7 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
-        #move_windowx = random.randint(0, 500)
-        #move_windowx = 0
-        move_windowx = 0#random.randint(0, 500)
-        move_windowy = 0#random.randint(0, 500)
-        if move_windowx is not None and move_windowy is not None:
-            cv2.moveWindow("img", move_windowx, move_windowy)
+        cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
     
@@ -287,7 +282,8 @@ class Relay(factory.Relay):
             raise Exception("should always end here high!")
         return True
 
-class CsiCameraImageGen_GS_old(factory.ImageGenerator):
+
+class CsiCameraImageGen_GS(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
         self.cam_res = tuple(reversed(res))
@@ -309,7 +305,7 @@ class CsiCameraImageGen_GS_old(factory.ImageGenerator):
         #print("get_image", output.shape, output.dtype)
         return self.picam2.capture_array("main")[0: y, 0: x]
 
-class CsiCameraImageGen_GS(factory.ImageGenerator):
+class CsiCameraImageGen_GS_test(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
         self.cam_res = tuple(reversed(res))
@@ -326,7 +322,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
     def get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
-        return self.picam2.capture_array("main")[0: x, 0: y]
+
         #output = self.picam2.capture_array("main")[0: x, 0: y]
         #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
         return self.picam2.capture_array("main")
@@ -361,7 +357,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         #print("get cut image", output.shape, output.dtype)
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
-        return self.picam2.capture_array("main")[0: x, 0: y]
+        return self.picam2.capture_array("main")[0: y, 0: x]
 
 class CSI_Camera_Async(factory.Camera_async):
     
@@ -369,7 +365,7 @@ class CSI_Camera_Async(factory.Camera_async):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS)
+            super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
             raise Exception("no match for video mode input")
 
@@ -380,7 +376,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS)
+            super().__init__(video_modes, CsiCameraImageGen_GS_test)
         else:
             raise Exception("no match for video mode input")
 

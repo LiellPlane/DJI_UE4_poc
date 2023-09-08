@@ -1,5 +1,5 @@
 import factory
-
+import sound
 from functools import partial
 import msgs
 import time
@@ -8,7 +8,7 @@ import img_processing
 from utils import time_it, get_platform, _OS
 # need this import to detect lumogun types (subclasses)
 import configs
-import sound
+
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 
 if get_platform() ==  _OS.WINDOWS:
@@ -23,9 +23,7 @@ else:
 # load config depending on if simulated, or if on hardware,
 # model ID from file on device
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
-print("MY_ID", model)
 GUN_CONFIGURATION  = factory.get_config(model)
-print("GUN_CONFIGURATION", GUN_CONFIGURATION)
 del configs
 
 def main():
@@ -50,7 +48,7 @@ def main():
     
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
-    image_capture = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
+    image_capture = lumogun.CSI_Camera_Synchro(GUN_CONFIGURATION.video_modes)
 
     voice.speak("cam")
     img = next(image_capture)
@@ -189,13 +187,6 @@ def main():
             #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
             #with time_it("gun display"):
             #    display.display_output(fart)
-            # lumogun.lumo_viewer(
-            #     inputimage=cap_img,
-            #     move_windowx=0,
-            #     move_windowy=0,
-            #     pausetime_Secs=0,
-            #     presskey=False,
-            #     destroyWindow=False)
             display.display_output(cap_img)
     raise RuntimeError("something broke out of loop")
 

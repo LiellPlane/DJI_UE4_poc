@@ -4,7 +4,6 @@ import time
 
 
 class HQ_Cam_vidmodes(Enum):
-    # always width/ height
     _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
     _3 = ["1332 × 990p120",(1332, 990)] 
     _1 = ["2028 × 1520p40",(2020, 1520)]
@@ -12,13 +11,11 @@ class HQ_Cam_vidmodes(Enum):
 
 class HQ_GS_Cam_vidmodes(Enum):
     """global shutter model"""
-    # always width/ height
     _2 = ["1456 × 1088p50,",(1456, 1088)]
 
 
 class Fake_Cam_vidmodes(Enum):
-    # always width/ height
-    _2 = ["1456 × 500,",(1456, 500)]
+    _2 = ["700 × 600,",(1456, 1088)]
 
 
 class screensizes(Enum):

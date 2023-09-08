@@ -18,8 +18,7 @@ def lumo_viewer(
         destroyWindow=True):
     try:
         cv2.imshow("img", inputimage)
-        if move_windowx is not None and move_windowy is not None:
-            cv2.moveWindow("img", move_windowx, move_windowy)
+        cv2.moveWindow("img", move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
     
@@ -131,7 +130,6 @@ class Relay(factory.Relay):
 class SynthImgGen(factory.ImageGenerator):
 
     def __init__(self, res) -> None:
-        res = tuple(reversed(res))
         self.blank_image = np.zeros(res, np.uint8)
         self.res = res
 

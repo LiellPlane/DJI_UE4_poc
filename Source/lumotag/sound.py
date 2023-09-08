@@ -1,11 +1,6 @@
 #pip install pyttsx3
 import threading
 from queue import Queue
-
-import sys
-print(sys.path)
-
-sys.path.insert(0, "/home/lumotag/.local/lib/python3.9/site-packages")
 import pyttsx3
 
 

@@ -1,0 +1,4 @@
+open using pallete (shift mac button P)
+then choose open folder in container - watch out for caching! I had a lot of trouble
+ensuring it was updating the requirements.txt.. so beware
+

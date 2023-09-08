@@ -367,6 +367,7 @@ class Camera_synchronous(Camera):
         return img
 
 
+
 class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls) -> None:
@@ -421,18 +422,11 @@ class Camera_async(Camera):
                         )
 
         strm_buff = self.shared_mem_handler.mem_ids[str(self.res_select)].buf
-        res = self.get_res() 
-        #range returns nothing if out of bounds - eg if using grayscale image
-        #(w, h, c)
-        if len(res) == 2:
-            _shape = (res[1], res[0])
-        else:
-            _shape = (res[0], res[1], res[2])
-        
+
         img_buff = np.frombuffer(
             strm_buff,
             dtype=('uint8')
-                ).reshape(_shape)
+                ).reshape(self.get_res())
 
         #if len(img_buff.shape) == 3:
         #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)

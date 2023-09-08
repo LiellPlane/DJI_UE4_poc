@@ -1,6 +1,5 @@
 import numpy as np
 import cv2
-import os
 from libs.utils import (
     get_platform,
     _OS,
@@ -26,7 +25,7 @@ from libs.external_data import (
     get_ext_corners_or_use_default,
     check_events_from_aws,
     ExternalDataWorker)
-
+import os
 PLATFORM = get_platform()
 
 def main():
@@ -36,7 +35,7 @@ def main():
         img_width_height=(optical_details.width, optical_details.height),
         image_circle_size=optical_details.fish_eye_circle)
     system = get_platform()
-    if system == _OS.WINDOWS:
+    if system == _OS.WINDOWS or system == _OS.LINUX:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cam = async_cam_lib.Synth_Camera_Async(ScambiLight_Cam_vidmodes)
         cores = 8
@@ -57,7 +56,6 @@ def main():
     #print("purging old action requests", event)
     
     curr_img = next(cam)
-    #ImageViewer_Quick_no_resize(curr_img,0,True,False)
     # upload image before anything crashes 
 
 

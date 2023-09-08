@@ -114,7 +114,8 @@ class ImageLibrary(ImageGenerator):
     
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(res, np.uint8)
-        self.images = jpgs_in_folder(r"C:\VMs\SharedFolder\temp_get_imgs\get_imgs_LQ")
+        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        self.images = jpgs_in_folder(imgfoler)
         self.res = res
         if len(self.images) < 1:
             raise Exception("could not find images in folder")
@@ -165,7 +166,4 @@ class Synth_Camera_Async(Camera_async):
 
 
 
-class Synth_Camera_sync(Camera_synchronous):
-    
-    def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, ImageLibrary)
+
