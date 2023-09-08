@@ -1,0 +1,128 @@
+
+<b>Instructions:</b><br><br>
+
+<i>Type password in text field</i><br>
+<i>Click top left of image - wait for response - if no response then inspect console</i><br>
+<i>Continue clicking corners clockwise</i><br>
+<i>Click Submit to finish calibration</i><br><br>
+<b>WARNING: password transmission not secure in HTTP!! </b><br>
+<i>to crash device - click in same place to create singular matrix</i><br>
+<i>then SSH and debug issue</i><br><br><br><br>
+<form action="/action_page.php"><input type="text" id="lname" name="password" placeholder="type pass here" > </form>
+<textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
+
+<img class="image" id="image" width="1296" height="972" src="raw_image.jpg"><br>
+<img class="image2" id="image2" src="overlay_image.jpg"><br>
+<button onclick="finish();">FINISH</button><br>
+<button onclick="reset();">RESET_DEVICE</button><br>
+<button onclick="req_new_image();">REQUEST_IMAGE</button><br>
+    <form id="form" action="/" method="POST">
+        <input id="imageId" type="hidden" name="imageId" value="{{imageID}}">
+        <input id="positionX" type="hidden" name="positionX" value="0">
+        <input id="positionY" type="hidden" name="positionY" value="0">
+    </form>
+    <script>
+        const proxyUrl  = 'https://corsproxy.io/?';
+        const targetUrl   = 'https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello';
+        var clicks = [];
+        var imageElement = document.getElementById('image');
+        var imageIdInput = document.getElementById('imageId');
+        var positionXInput = document.getElementById('positionX');
+        var positionYInput = document.getElementById('positionY');
+        var form = document.getElementById('form');
+        imageElement.addEventListener("click", submitPosition);
+        //buttonElement.addEventListener("click", userFinished);
+        let finish = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "sendposfinish",
+		"data":clicks
+            };
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(res => {
+            console.log("Finish complete! response:", res);
+            alert(String(res))
+            });
+        }
+
+        let reset = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "reset",
+		"data":"empty"
+            };
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(res => {
+            console.log("Finish complete! response:", res);
+            alert(String(res))
+            });
+        }
+        let req_new_image = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "update_image",
+		"data":"empty"
+            };
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(res => {
+            console.log("Finish complete! response:", res);
+            alert(String(res))
+            });
+        }
+        function submitPosition(e) {
+	    
+            var inputPassword = document.getElementById("lname").value;
+            clickX = e.pageX - imageElement.getBoundingClientRect().left;
+            clickY = e.pageY - imageElement.getBoundingClientRect().top;
+            positionX.value = Math.floor(clickX / (imageElement.width / imageElement.naturalWidth));
+            positionY.value = Math.floor(clickY / (imageElement.height / imageElement.naturalHeight));
+	    clicks.push({"clickX": positionX.value,"clickY": positionY.value});
+            console.log(clicks);
+	    document.getElementById('infobox').value = JSON.stringify(clicks);
+            // need cors proxy for some reason
+
+            // var xhr = new XMLHttpRequest();
+            // xhr.open("POST", targetUrl, false);
+            // xhr.setRequestHeader('Content-Type', 'application/json');
+            // xhr.send(JSON.stringify({
+            //     "authentication": inputPassword,
+            //     "action": "sendpos",
+            //     "clickX": positionX.value,
+            //     "clickY": positionY.value,
+            // }));
+            // console.log("sent value maybe?");
+
+            //let data = {
+            //    "authentication": inputPassword,
+            //    "action": "sendpos",
+            //    "clickX": positionX.value,
+            //    "clickY": positionY.value,
+            //    
+            //};
+
+            //fetch(targetUrl, {
+            //method: "POST",
+            //headers: {'Content-Type': 'application/json'}, 
+            //body: JSON.stringify(data)
+            //}).then(res => {
+            //console.log("coord complete! response:", res);
+            //alert("coord complete! response:", res)
+            //});
+        }
+
+    </script>
