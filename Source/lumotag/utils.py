@@ -5,9 +5,12 @@ import enum
 import os
 import platform
 
+
 class _OS(str, enum.Enum):
     WINDOWS = "windows"
     RASPBERRY = "raspberry"
+    LINUX = "digusting linux"
+
 
 def get_platform():
     #  detect what OS we are on - test environment (Windows) or production (pi hardware)
@@ -15,24 +18,19 @@ def get_platform():
 
     if hasattr(os, 'uname') is False:
         print("scambiloop raspberry presence failed, probably Windows system")
-        print("sys info:",
-            platform.system(),
-            platform.release(),
-            platform.platform())
         return _OS.WINDOWS
     elif os.uname()[-1] == RASP_PI_4_OS:
         print("scambiloop raspberry presence detected, loading hardware libraries")
-        print("sys info:",
-            platform.system(),
-            platform.release(),
-            platform.platform())
         return _OS.RASPBERRY
+    elif os.name == 'posix' and platform.system() == 'Linux':
+        print("EWWWWWWWWWWWW linux, disgusting")
+        return _OS.LINUX
     else:
         raise Exception(
             "Could not detect platform",
+            os.name,
             platform.system(),
-            platform.release(),
-            platform.platform())
+            platform.release())
 
 def get_epoch_timestamp():
     return str(time.time()).replace(".", "_")
