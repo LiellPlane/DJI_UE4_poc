@@ -17,7 +17,10 @@
 <button onclick="reset();">RESET_DEVICE</button><br>
 <button onclick="req_new_image();">REQUEST_IMAGE</button><br>
 <button onclick="req_sample_config();">REQUEST_REGION_CONFIG</button><br>
-<textarea id="configbox" name="configbox" rows="8" cols="50"></textarea>
+<button onclick="submit_sample_config();">SUBMIT_REGION_CONFIG</button><br>
+
+<textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
+<b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
     <form id="form" action="/" method="POST">
         <input id="imageId" type="hidden" name="imageId" value="{{imageID}}">
         <input id="positionX" type="hidden" name="positionX" value="0">
@@ -70,6 +73,7 @@
                 });
         }
         let req_sample_config = () => {
+            document.getElementById('configbox').value = "attempt to load sample region configuration"
             var inputPassword = document.getElementById("lname").value;
             let data = {
                 "authentication": inputPassword,
@@ -84,7 +88,7 @@
             body: JSON.stringify(data)
             }).then(response => response.json())
                 .then(json => {console.log(JSON.stringify(json));
-                document.getElementById('configbox').value = JSON.stringify(json);
+                document.getElementById('configbox').value = json['config'];
                 });
         }
         let req_new_image = () => {
@@ -104,6 +108,24 @@
                 alert(JSON.stringify(json));
                 });
         }
+        let submit_sample_config = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "send_sample_config",
+                "data": JSON.parse(document.getElementById('configbox').value)
+                };
+                
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        };
+
         function submitPosition(e) {
 	    
             var inputPassword = document.getElementById("lname").value;
@@ -111,9 +133,9 @@
             clickY = e.pageY - imageElement.getBoundingClientRect().top;
             positionX.value = Math.floor(clickX / (imageElement.width / imageElement.naturalWidth));
             positionY.value = Math.floor(clickY / (imageElement.height / imageElement.naturalHeight));
-	    clicks.push({"clickX": positionX.value,"clickY": positionY.value});
+	        clicks.push({"clickX": positionX.value,"clickY": positionY.value});
             console.log(clicks);
-	    document.getElementById('infobox').value = JSON.stringify(clicks);
+	        document.getElementById('infobox').value = JSON.stringify(clicks);
             // need cors proxy for some reason
 
             // var xhr = new XMLHttpRequest();
