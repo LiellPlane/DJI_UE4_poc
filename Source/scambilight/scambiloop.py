@@ -18,12 +18,12 @@ from libs.configs import (
     DaisybankLedSpacing,
     get_sample_regions_config,
     get_lens_details,
-    ScambiLight_Cam_vidmodes)
+    ScambiLight_Cam_vidmodes,
+    SCAMILIGHT_API)
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
     get_ext_corners_or_use_default,
-    check_events_from_aws,
     ExternalDataWorker)
 import os
 PLATFORM = get_platform()
@@ -48,11 +48,10 @@ def main():
 
     led_subsystem.display_info_colours(LEDColours.Red.value)
     cores_for_col_dect = cores
-    img_upload_url = "https://yqnz152azi.execute-api.us-east-1.amazonaws.com/Prod/hello" # for AWS experiment
 
-    ActionChecker = ExternalDataWorker(img_upload_url)
+    ActionChecker = ExternalDataWorker(SCAMILIGHT_API)
     ActionChecker._start()
-    #event = check_events_from_aws(img_upload_url)
+    #event = check_events_from_aws(SCAMILIGHT_API)
     #print("purging old action requests", event)
     
     curr_img = next(cam)
@@ -60,7 +59,7 @@ def main():
 
 
 
-    aws_config = get_config_from_aws(img_upload_url)
+    aws_config = get_config_from_aws(SCAMILIGHT_API)
     led_subsystem.display_info_colours(LEDColours.Cyan.value)
     fish_img_corners = get_ext_corners_or_use_default(
         ext_click_data=aws_config.fish_eye_clicked_corners,
@@ -140,13 +139,13 @@ def main():
                 #     display_img = homography_tool.warp_img(display_img)
                 #     upload_img_to_aws(
                 #         np.vstack((before_warp, display_img, perp_warped)),
-                #         img_upload_url,
+                #         SCAMILIGHT_API,
                 #         action = "overlay")
             if event == "update_image":
                 led_subsystem.display_info_colours(LEDColours.Magenta.value)
                 display_img = prev.copy()
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                upload_img_to_aws(perp_warped, img_upload_url, action = "raw")
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = "raw")
                 display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                         #display_img = unit.draw_warped_roi(display_img)
@@ -169,7 +168,7 @@ def main():
                 display_img = homography_tool.warp_img(perp_warped)
                 upload_img_to_aws(
                     np.vstack((before_warp, display_img, perp_warped)),
-                    img_upload_url,
+                    SCAMILIGHT_API,
                     action = "overlay")
             if event == "reset":
                 led_subsystem.display_info_colours(LEDColours.Red.value)

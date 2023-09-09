@@ -11,6 +11,8 @@ from libs.collections import (
 #the batmoan batmobile chase scene 2022
 #4k background
 
+SCAMILIGHT_API = "https://api.scambilight.com/hello"
+
 class ScambiLight_Cam_vidmodes(enum.Enum):
     """scambilight fisheye ov5647"""
     # dimensions are reversed (h, w) due to quirk of ov5647
