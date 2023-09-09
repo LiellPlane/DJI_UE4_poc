@@ -5,6 +5,15 @@ Description: >
 
   Sample SAM Template for scambilight
 
+Parameters:
+# use SAM DEPLOY --guided to rebuild these parameters in the config
+  FQDN:
+    Type: String
+    Description: api.scambilight.com #Fully qualified domain name, for example ip.eol.dev
+  ZoneId:
+    Type: String
+    Description: Z0447796FWX5TS64OAUF # rotue 53 zoneid
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Api:
@@ -33,6 +42,27 @@ Globals:
   #Api:
   #  TracingEnabled: true
 Resources:
+  # Create our SSL certificate
+  GenerateCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: !Ref FQDN
+      ValidationMethod: DNS
+      DomainValidationOptions:
+      - DomainName: !Ref FQDN
+        HostedZoneId: !Ref ZoneId
+
+  # Create endpoint for our domain
+  RestApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Domain:
+        DomainName: !Ref FQDN
+        CertificateArn: !Ref GenerateCertificate
+        Route53:
+          HostedZoneId: !Ref ZoneId
+
   UploadSomething:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -47,6 +77,7 @@ Resources:
         Uploader:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
+            RestApiId: !Ref RestApiGateway # Add the RestApiId property
             Path: /hello
             Method: POST
       Policies:
@@ -93,7 +124,7 @@ Resources:
         Name: event
         Type: String
 
-Outputs:
-  CreateOrdersAPI:
-    Description: "API Gatseway endpoint url for creating orders"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
+# Outputs:
+#   CreateOrdersAPI:
+#     Description: "API Gatseway endpoint url for creating orders"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"

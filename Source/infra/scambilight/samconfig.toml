@@ -18,9 +18,10 @@ capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
 s3_prefix = "scambilight"
-region = "us-east-1"
+region = "eu-west-2"
 disable_rollback = true
 image_repositories = []
+parameter_overrides = "FQDN=\"api.scambilight.com\" ZoneId=\"Z0447796FWX5TS64OAUF\""
 
 [default.package.parameters]
 resolve_s3 = true
