@@ -75,6 +75,7 @@ def main():
     led_subsystem.display_info_colours(LEDColours.Yellow.value)
     img_sample_controller = get_sample_regions_config()
 
+    
     scambi_units = generate_scambis(
         img_shape=curr_img.shape,
         regions=img_sample_controller,
