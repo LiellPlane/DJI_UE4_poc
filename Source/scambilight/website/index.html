@@ -107,6 +107,10 @@
                 .then(json => {console.log(JSON.stringify(json));
                 alert(JSON.stringify(json));
                 });
+        var refresh_image = document.getElementById("image");  
+        refresh_image.src = "raw_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("image2");  
+        refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
         }
         let req_new_image_all = () => {
             var inputPassword = document.getElementById("lname").value;
@@ -123,6 +127,10 @@
                 .then(json => {console.log(JSON.stringify(json));
                 alert(JSON.stringify(json));
                 });
+        var refresh_image = document.getElementById("image");  
+        refresh_image.src = "raw_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("image2");  
+        refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
         }
         let submit_sample_config = () => {
             var inputPassword = document.getElementById("lname").value;
