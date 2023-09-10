@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import time
 from libs.utils import (
     get_platform,
     _OS,
@@ -23,6 +24,7 @@ from libs.configs import (
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
+    get_region_config_from_aws,
     get_ext_corners_or_use_default,
     ExternalDataWorker)
 import os
@@ -73,9 +75,12 @@ def main():
         target_corners=optical_details.targets)
 
     led_subsystem.display_info_colours(LEDColours.Yellow.value)
-    img_sample_controller = get_sample_regions_config()
 
-    
+    if (img_sample_controller := get_region_config_from_aws("gay")) is None:
+        print("Could not get sample region data - using default")
+        time.sleep(2)
+        img_sample_controller = get_sample_regions_config()
+
     scambi_units = generate_scambis(
         img_shape=curr_img.shape,
         regions=img_sample_controller,

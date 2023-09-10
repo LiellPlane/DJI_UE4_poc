@@ -12,7 +12,8 @@ from libs.utils import (
 from libs.collections import (
     config_corner,
     clicked_xy,
-    External_Config)
+    External_Config,
+    config_regions)
 
 from img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
@@ -150,6 +151,35 @@ def get_config_from_aws(url):
         print("could not connect get config or find key from", url)
     return External_Config(
         fish_eye_clicked_corners=ext_config_pos)
+
+
+def get_region_config_from_aws(url):
+    print("getting config from aws")
+    myobj = {
+        "authentication": "farts",
+        "action": "request_sample_config"
+        }
+    positions = []
+    ext_config_pos = []
+    try:
+        response = requests.post(url, json=myobj)
+        #TODO not good - why is this so arduous - can't be right
+        ext_regions_config = json.loads(json.loads(response.content)['config'])
+        
+        expected_keys = list(config_regions.__dataclass_fields__.keys())
+        incoming_keys = list(ext_regions_config.keys())
+
+        if not set(expected_keys) == set(incoming_keys):
+            print("expected_keys", expected_keys)
+            print("incoming_keys", incoming_keys)
+            raise Exception("incoming region config does not match")
+        configured_regions = config_regions(**{k: float(v) for k, v in ext_regions_config.items()})
+        return configured_regions
+    except (requests.exceptions.RequestException, KeyError) as e:
+        print(e)
+        print("could not connect get config or find key from", url)
+    
+    return None
 
 def get_ext_corners_or_use_default(
         ext_click_data: External_Config,
