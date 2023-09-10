@@ -188,7 +188,9 @@ def main():
                         unit.colour,
                         offset=(0, 0),
                         size=10)
-                upload_img_to_aws(display_img,
+                upload_img_to_aws(
+                    display_img,
+                    SCAMILIGHT_API,
                     action = "overlay")
             if event == "reset":
                 led_subsystem.display_info_colours(LEDColours.Red.value)
