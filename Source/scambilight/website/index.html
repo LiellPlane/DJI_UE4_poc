@@ -2,24 +2,23 @@
 <b>Instructions:</b><br><br>
 
 <i>Type password in text field</i><br>
-<i>Click top left of image - wait for response - if no response then inspect console</i><br>
-<i>Continue clicking corners clockwise</i><br>
-<i>Click Submit to finish calibration</i><br><br>
+<i>Click corners of screen: WARNING! Scroll-bars in browsers adds offsets!!</i><br>
+<i>Click FINISH to finish calibration. Device needs to be reset after</i><br><br>
 <b>WARNING: password transmission not secure in HTTP!! </b><br>
 <i>to crash device - click in same place to create singular matrix</i><br>
 <i>then SSH and debug issue</i><br><br><br><br>
 <form action="/action_page.php"><input type="text" id="lname" name="password" placeholder="type pass here" > </form>
 <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
 
-<img class="image" id="image" width="1296" height="972" src="raw_image.jpg"><br>
-<img class="image2" id="image2" src="overlay_image.jpg"><br>
+<img class="image" id="image" width="1296" height="972" src="raw_image.jpg?" + new Date().getTime()><br>
+<img class="image2" id="image2" src="overlay_image.jpg?" + new Date().getTime()><br>
 <button onclick="finish();">FINISH</button><br>
 <button onclick="reset();">RESET_DEVICE</button><br>
 <button onclick="req_new_image();">REQUEST_REGIONS_CHECK_IMAGE</button><br>
 <button onclick="req_new_image_all();">REQUEST_ALL_VISUALISATION_IMAGES</button><br>
 <button onclick="req_sample_config();">REQUEST_REGION_CONFIG</button><br>
 <button onclick="submit_sample_config();">SUBMIT_REGION_CONFIG</button><br>
-
+<button onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button><br>
 <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
 <b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
     <form id="form" action="/" method="POST">
@@ -107,10 +106,7 @@
                 .then(json => {console.log(JSON.stringify(json));
                 alert(JSON.stringify(json));
                 });
-        var refresh_image = document.getElementById("image");  
-        refresh_image.src = "raw_image.jpg?" + new Date().getTime();
-        var refresh_image = document.getElementById("image2");  
-        refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
+        decache_images_maybe();
         }
         let req_new_image_all = () => {
             var inputPassword = document.getElementById("lname").value;
@@ -127,11 +123,16 @@
                 .then(json => {console.log(JSON.stringify(json));
                 alert(JSON.stringify(json));
                 });
+        decache_images_maybe();
+        }
+        
+        let decache_images_maybe = () => {
         var refresh_image = document.getElementById("image");  
         refresh_image.src = "raw_image.jpg?" + new Date().getTime();
         var refresh_image = document.getElementById("image2");  
         refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
-        }
+        };
+
         let submit_sample_config = () => {
             var inputPassword = document.getElementById("lname").value;
             let data = {
