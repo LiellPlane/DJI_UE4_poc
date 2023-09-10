@@ -15,15 +15,15 @@ class HQ_GS_Cam_vidmodes(Enum):
 
 
 class Fake_Cam_vidmodes(Enum):
-    _2 = ["700 × 600,",(1456, 1088)]
+    _2 = ["2028 × 1080p50,",(2020, 1080)]
 
 
 class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (800 - title_bar_pxls, 480)
-    stryker = (480, 800 - title_bar_pxls)
+    windows_laptop = (480, 800 - title_bar_pxls)
+    stryker = (480, 600 - title_bar_pxls)
 
 
 class stryker_config(gun_config):
@@ -166,7 +166,7 @@ class simitzar_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(0)
+        return(270)
 
     @property
     def screen_size(self):
