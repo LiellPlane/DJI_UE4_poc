@@ -2,6 +2,8 @@ import enum
 from dataclasses import dataclass
 from typing import Union
 
+def clamp(n, minn, maxn):
+    return max(min(maxn, n), minn)
 
 class Edges(str, enum.Enum):
     TOP = "TOP"
@@ -73,7 +75,13 @@ class config_regions():
     move_in_vert: float
     sample_area_edge : int
     subsample_cut: int # min edge pxls, we can subsample areas of image to speed up, but we don't want to subsample small areas into nothing
-
+    def __post_init__(self):
+        self.no_leds_vert = clamp(self.no_leds_vert, 5, 100)
+        self.no_leds_horiz = clamp(self.no_leds_horiz, 5, 100)
+        self.move_in_horiz = clamp(self.move_in_horiz, 0, 1.5)
+        self.move_in_vert = clamp(self.move_in_vert, 0, 1.5)
+        self.sample_area_edge = clamp(self.sample_area_edge, 10, 1000)
+        self.subsample_cut = clamp(self.subsample_cut, 10, 1000)
 
 @dataclass
 class clicked_xy():

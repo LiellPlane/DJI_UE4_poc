@@ -76,7 +76,7 @@ def main():
 
     led_subsystem.display_info_colours(LEDColours.Yellow.value)
 
-    if (img_sample_controller := get_region_config_from_aws("gay")) is None:
+    if (img_sample_controller := get_region_config_from_aws(SCAMILIGHT_API)) is None:
         print("Could not get sample region data - using default")
         time.sleep(2)
         img_sample_controller = get_sample_regions_config()
