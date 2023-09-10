@@ -350,8 +350,8 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
     def get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
-        return self.picam2.capture_array("main")
-        return self.picam2.capture_array("main")[0: y, 0: x]
+        #return self.picam2.capture_array("main")
+        return self.picam2.capture_array("main")[0: x, 0: y]
 
 class CSI_Camera_Async(factory.Camera_async):
     
