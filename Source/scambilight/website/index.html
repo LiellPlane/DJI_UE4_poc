@@ -15,7 +15,8 @@
 <img class="image2" id="image2" src="overlay_image.jpg"><br>
 <button onclick="finish();">FINISH</button><br>
 <button onclick="reset();">RESET_DEVICE</button><br>
-<button onclick="req_new_image();">REQUEST_IMAGE</button><br>
+<button onclick="req_new_image();">REQUEST_REGIONS_CHECK_IMAGE</button><br>
+<button onclick="req_new_image_all();">REQUEST_ALL_VISUALISATION_IMAGES</button><br>
 <button onclick="req_sample_config();">REQUEST_REGION_CONFIG</button><br>
 <button onclick="submit_sample_config();">SUBMIT_REGION_CONFIG</button><br>
 
@@ -98,7 +99,22 @@
                 "action": "update_image",
 		"data":"empty"
             };
-
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        }
+        let req_new_image_all = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "update_image_all",
+		"data":"empty"
+            };
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 

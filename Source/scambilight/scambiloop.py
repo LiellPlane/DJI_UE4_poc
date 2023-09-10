@@ -147,7 +147,7 @@ def main():
                 #         np.vstack((before_warp, display_img, perp_warped)),
                 #         SCAMILIGHT_API,
                 #         action = "overlay")
-            if event == "update_image":
+            if event == "update_image_all":
                 led_subsystem.display_info_colours(LEDColours.Magenta.value)
                 display_img = prev.copy()
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
@@ -175,6 +175,20 @@ def main():
                 upload_img_to_aws(
                     np.vstack((before_warp, display_img, perp_warped)),
                     SCAMILIGHT_API,
+                    action = "overlay")
+            if event == "update_image":
+                display_img = prev.copy()
+                for index, unit in enumerate(scambi_units):
+                    #display_img = unit.draw_warped_roi(display_img)
+                    
+                    unit.draw_warped_boundingbox(display_img)
+                    display_img = unit.draw_lerp_contour(display_img)
+                    display_img = unit.draw_warped_led_pos(
+                        display_img,
+                        unit.colour,
+                        offset=(0, 0),
+                        size=10)
+                upload_img_to_aws(display_img,
                     action = "overlay")
             if event == "reset":
                 led_subsystem.display_info_colours(LEDColours.Red.value)

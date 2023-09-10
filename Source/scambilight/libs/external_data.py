@@ -69,7 +69,7 @@ def upload_img_to_aws(img, url, action):
         print("could not connect first image upload to ", url)
 
 def check_event_validity(event: str):
-    if event.lower() not in ["reset", "update_image", "none"]:
+    if event.lower() not in ["reset", "update_image", "none", "update_image_all"]:
         raise Exception("event malformed")
 
 def check_events_from_aws(url):
