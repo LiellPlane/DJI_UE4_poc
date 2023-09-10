@@ -286,7 +286,7 @@ def lambda_handler(event, context):
             'statusCode': 201,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'got raw image',
+                'message': 'got raw image ok',
                 'image': bytes_to_str(obj)})
         }
 
@@ -301,7 +301,7 @@ def lambda_handler(event, context):
             'statusCode': 201,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'got overlay image',
+                'message': 'got overlay image ok',
                 'image': bytes_to_str(obj)})
         }
 
@@ -352,25 +352,47 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'send position'})
+                'message': 'update_image ok'})
         }
     #sam deploy --no-confirm-changeset
     if action == "send_sample_config":
         click_data = (order['data'])
         messages_bytes = str_to_bytes(json.dumps(click_data))
         print(messages_bytes)
+
+        # now load existing one
+        curr_config_bytes = s3_custom.read(
+            bucket_name=SCAMBIFOLDER,
+            folder_name=SCAMBICONFIG,
+            object_name=SAMPLE_CONFIG_FILE)
+
+        curr_config_str = bytes_to_str(curr_config_bytes)
+        curr_config_json = json.loads(curr_config_str)
+        print("curr_config_json", curr_config_json)
+        print("type curr_config_json", type(curr_config_json))
+        print("click_data", click_data)
+        print("type click_data", type(click_data))
+        
+        # check both have same keys
+        if not set(curr_config_json.keys()) == set(click_data.keys()):
+            return {
+                'statusCode': 201,
+                'headers': cors_headers,
+                'body': json.dumps({
+                    'message': "ERROR - CONFIG KEYS DO NOT MATCH - RELOAD DEFAULTS"})
+            }
         s3_custom.write(
             input_bytes=messages_bytes,
             bucket_name=SCAMBIFOLDER,
             folder_name=SCAMBICONFIG,
-            object_name=CONFIG_FILE)
+            object_name=SAMPLE_CONFIG_FILE)
 
         # need this for CORS
         return {
             'statusCode': 200,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': "processed OK"})
+                'message': "send_sample_config ok"})
         }
 
     if action == "request_config":
@@ -384,10 +406,23 @@ def lambda_handler(event, context):
             'statusCode': 201,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'got config',
+                'message': 'request_config ok',
                 'config': bytes_to_str(config_bytes)})
         }
+    if action == "request_sample_config":
 
+        config_bytes = s3_custom.read(
+            bucket_name=SCAMBIFOLDER,
+            folder_name=SCAMBICONFIG,
+            object_name=SAMPLE_CONFIG_FILE)
+        print("req", config_bytes)
+        return{
+            'statusCode': 201,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': 'request_sample_config ok',
+                'config': bytes_to_str(config_bytes)})
+        }
     if action == "sendposfinish":
         # should be a list of dictionaries
         click_data = (order['data'])
