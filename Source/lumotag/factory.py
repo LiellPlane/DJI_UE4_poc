@@ -673,3 +673,32 @@ class SharedMemory():
                     size=obj_bytesize,
                     name=my_id))
 
+
+class VoiceBase(ABC):
+
+    def __init__(self) -> None:
+        """Class to provide synthetic
+        voice prompts or alerts"""
+        self.in_box = Queue(maxsize=10)
+        self.t = threading.Thread(
+            target=self.speaker,
+            args=(self.in_box,))
+        self.t.start()
+
+    def speak(
+            self,
+            message: str):
+        # use  in_box._qsize() to prevent
+        # blowing it up
+        if self.in_box._qsize() >= self.in_box.maxsize - 1:
+            self.in_box.queue.clear()
+            self.in_box.put(
+                "Voice buffer overflow",
+                block=False)
+        else:
+            self.in_box.put(
+                message,
+                block=False)
+
+    def speaker(self, in_box):
+        pass

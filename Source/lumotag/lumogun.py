@@ -1,5 +1,5 @@
 import factory
-import sound
+import sound_fake as sound
 from functools import partial
 import msgs
 import time
@@ -11,14 +11,16 @@ import configs
 
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 
-if get_platform() ==  _OS.WINDOWS:
+if get_platform() == _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
-elif get_platform() ==  _OS.RASPBERRY:
+elif get_platform() == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry_hardware as lumogun
 else:
-    raise Exception("Could not detect platform")
+    import fake_raspberry_hardware as lumogun
+    pass
+    #raise Exception("Could not detect platform")
 
 # load config depending on if simulated, or if on hardware,
 # model ID from file on device

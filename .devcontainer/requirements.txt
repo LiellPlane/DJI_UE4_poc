@@ -1,5 +1,7 @@
 Flask
-opencv-python
 numpy
-requests
-scipy
+opencv-python
+pika
+pylint
+pycodestyle
+black

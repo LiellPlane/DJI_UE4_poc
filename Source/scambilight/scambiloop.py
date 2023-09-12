@@ -59,8 +59,6 @@ def main():
     curr_img = next(cam)
     # upload image before anything crashes 
 
-
-
     aws_config = get_config_from_aws(SCAMILIGHT_API)
     led_subsystem.display_info_colours(LEDColours.Cyan.value)
     fish_img_corners = get_ext_corners_or_use_default(
