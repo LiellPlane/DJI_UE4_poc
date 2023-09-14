@@ -1,0 +1,7 @@
+Flask
+numpy
+opencv-python
+pika
+pylint
+pycodestyle
+black
