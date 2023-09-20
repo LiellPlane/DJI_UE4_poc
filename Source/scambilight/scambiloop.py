@@ -1,6 +1,16 @@
+import os
+import sys
+#abs_path = os.path.dirname(os.path.abspath(__file__))
+#scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
+print( os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
 import numpy as np
 import cv2
 import time
+
+
 from libs.utils import (
     get_platform,
     _OS,
@@ -30,7 +40,7 @@ from libs.external_data import (
 import os
 PLATFORM = get_platform()
 
-def main(args: dict = None):
+def main(action = None):
 
     optical_details = get_lens_details(
         LensConfigs.DAISYBANK_HQ)
@@ -216,5 +226,9 @@ def main(args: dict = None):
 
 
 if __name__ == "__main__":
-    #test_find_screen()
-    main(args=None)
+    main()
+
+
+def handler(event, context):
+    print("boom")
+    main(action = "")

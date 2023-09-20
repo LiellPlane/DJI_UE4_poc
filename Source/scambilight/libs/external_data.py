@@ -92,6 +92,20 @@ def check_events_from_aws(url):
     check_event_validity(event)
     return event
 
+
+class ExternalDataWorker_dummy():
+    def __init__(
+            self,
+            url):
+        self.url = url
+
+    def _start(self):
+        pass
+
+    def check_for_action(self):
+        return "None"
+
+
 class ExternalDataWorker():
     def __init__(
             self,
