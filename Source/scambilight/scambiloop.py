@@ -30,21 +30,29 @@ from libs.external_data import (
 import os
 PLATFORM = get_platform()
 
-def main():
+def main(args: dict = None):
 
-    optical_details = get_lens_details(LensConfigs.DAISYBANK_HQ)
+    optical_details = get_lens_details(
+        LensConfigs.DAISYBANK_HQ)
     fisheye_compute = fisheye_lib.fisheye_tool(
         img_width_height=(optical_details.width, optical_details.height),
         image_circle_size=optical_details.fish_eye_circle)
     system = get_platform()
-    if system == _OS.WINDOWS or system == _OS.LINUX:
+    if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        cam = async_cam_lib.Synth_Camera_Async(ScambiLight_Cam_vidmodes)
+        cam = async_cam_lib.Synth_Camera_Async(
+            ScambiLight_Cam_vidmodes)
         cores = 8
     elif system == _OS.RASPBERRY:
-        cam = async_cam_lib.Scamblight_Camera_Async(ScambiLight_Cam_vidmodes)
+        cam = async_cam_lib.Scamblight_Camera_Async(
+            ScambiLight_Cam_vidmodes)
         led_subsystem = ws281Leds(DaisybankLedSpacing)
         cores = 3
+    elif system == _OS.linux:
+        cam = async_cam_lib.Synth_Camera_Async(
+            ScambiLight_Cam_vidmodes)
+        led_subsystem = SimLeds(DaisybankLedSpacing)
+        cores = 8
     else:
         raise Exception(system + " not supported")
 
@@ -209,4 +217,4 @@ def main():
 
 if __name__ == "__main__":
     #test_find_screen()
-    main()
+    main(args=None)

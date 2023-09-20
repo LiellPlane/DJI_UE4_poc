@@ -152,7 +152,6 @@ class ScambilightCamImageGen(ImageGenerator):
         return output
 
 
-
 class Scamblight_Camera_Async(Camera_async):
     
     def __init__(self, video_modes) -> None:
@@ -165,5 +164,7 @@ class Synth_Camera_Async(Camera_async):
         super().__init__(video_modes, ImageLibrary)
 
 
-
-
+class Synth_Camera_sync(Camera_synchronous):
+    
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, ImageLibrary)
