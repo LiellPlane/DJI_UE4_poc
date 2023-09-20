@@ -36,12 +36,13 @@ from libs.external_data import (
     get_config_from_aws,
     get_region_config_from_aws,
     get_ext_corners_or_use_default,
-    ExternalDataWorker)
+    ExternalDataWorker,
+    ExternalDataWorker_dummy)
 import os
 PLATFORM = get_platform()
 
 def main(action = None):
-
+    
     optical_details = get_lens_details(
         LensConfigs.DAISYBANK_HQ)
     fisheye_compute = fisheye_lib.fisheye_tool(
@@ -52,16 +53,19 @@ def main(action = None):
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cam = async_cam_lib.Synth_Camera_Async(
             ScambiLight_Cam_vidmodes)
+        ActionChecker = ExternalDataWorker(SCAMILIGHT_API)
         cores = 8
     elif system == _OS.RASPBERRY:
         cam = async_cam_lib.Scamblight_Camera_Async(
             ScambiLight_Cam_vidmodes)
         led_subsystem = ws281Leds(DaisybankLedSpacing)
+        ActionChecker = ExternalDataWorker(SCAMILIGHT_API)
         cores = 3
-    elif system == _OS.linux:
-        cam = async_cam_lib.Synth_Camera_Async(
+    elif system == _OS.LINUX:
+        cam = async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
         led_subsystem = SimLeds(DaisybankLedSpacing)
+        ActionChecker = ExternalDataWorker_dummy(SCAMILIGHT_API)
         cores = 8
     else:
         raise Exception(system + " not supported")
@@ -97,16 +101,30 @@ def main(action = None):
         time.sleep(2)
         img_sample_controller = get_sample_regions_config()
 
-    scambi_units = generate_scambis(
-        img_shape=curr_img.shape,
-        regions=img_sample_controller,
-        optical_details=optical_details,
-        homography_tool=homography_tool,
-        led_subsystem=led_subsystem,
-        initialise=True,
-        init_cores=cores_for_col_dect,
-        progress_bar_func=led_subsystem.display_info_bar)
+    print(f"Requested action: {action}")
+    if action == None:
+        scambi_units = generate_scambis(
+            img_shape=curr_img.shape,
+            regions=img_sample_controller,
+            optical_details=optical_details,
+            homography_tool=homography_tool,
+            led_subsystem=led_subsystem,
+            initialise=True,
+            init_cores=cores_for_col_dect,
+            progress_bar_func=led_subsystem.display_info_bar)
+    else:
+        scambi_units = generate_scambis(
+            img_shape=curr_img.shape,
+            regions=img_sample_controller,
+            optical_details=optical_details,
+            homography_tool=homography_tool,
+            led_subsystem=led_subsystem,
+            initialise=False,
+            init_cores=cores_for_col_dect,
+            progress_bar_func=led_subsystem.display_info_bar)
 
+        for index, unit in enumerate(scambi_units):
+            unit.initialise()
 
     # main loop
     index = 0
