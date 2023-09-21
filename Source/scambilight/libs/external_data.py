@@ -4,8 +4,13 @@ import json
 import numpy as np
 import time
 
+from factory import Camera_synchronous, ImageGenerator
+
 from libs.utils import (
     encode_img_to_str,
+    decode_image_from_str,
+    str_to_bytes,
+    bytes_to_str,
     img_height,
     img_width)
 
@@ -44,6 +49,42 @@ def find_closest(testpt: list [int, int], input_pts:list):
         for i in input_pts}
     pt = dists[sorted(dists)[0]]
     return pt, [i for i in input_pts if i != pt]
+
+
+
+
+# class Aws_Camera_sync(Camera_synchronous):
+    
+#     def __init__(self, video_modes) -> None:
+#         super().__init__(video_modes, ImageLibrary)
+
+
+# class ImageLibrary(ImageGenerator):
+    
+#     def __init__(self, res) -> None:
+#         pass
+
+
+#     def get_image(self):
+#         return get_image_from_aws()
+
+
+def get_image_from_aws(url):
+    print("getting raw image from aws")
+    myobj = {
+        "authentication": "farts",
+        "action": "getimage_raw"
+        }
+    try:
+        response = requests.post(url, json=myobj)
+    except (requests.exceptions.RequestException, KeyError) as e:
+        print(e)
+        print("could not connect get config or find key from", url)
+        return "Error connecting"
+    events = json.loads(response.content)
+    encoded_img = events['image']
+    return decode_image_from_str(encoded_img)
+
 
 def upload_img_to_aws(img, url, action):
     

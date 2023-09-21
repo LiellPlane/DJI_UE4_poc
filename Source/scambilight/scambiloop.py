@@ -36,6 +36,7 @@ from libs.external_data import (
     get_config_from_aws,
     get_region_config_from_aws,
     get_ext_corners_or_use_default,
+    get_image_from_aws,
     ExternalDataWorker,
     ExternalDataWorker_dummy)
 import os
@@ -96,7 +97,7 @@ def main(action = None):
     
     curr_img = next(cam)
     # upload image before anything crashes 
-
+ 
     aws_config = get_config_from_aws(SCAMILIGHT_API)
     led_subsystem.display_info_colours(LEDColours.Cyan.value)
     fish_img_corners = get_ext_corners_or_use_default(
@@ -142,6 +143,16 @@ def main(action = None):
         for index, unit in enumerate(scambi_units):
             unit.initialise()
 
+
+    if action is not None:
+        prev = get_image_from_aws(SCAMILIGHT_API)
+        for index, unit in enumerate(scambi_units):
+            unit.draw_warped_boundingbox(prev)
+            prev = unit.draw_lerp_contour(prev)
+        print("drawn contours on image")
+        return
+
+
     # main loop
     index = 0
     flipflop = False
@@ -154,6 +165,7 @@ def main(action = None):
 
             with time_it_sparse("get img"):
                 prev = next(cam)
+                
             flipflop = not flipflop
             
             with time_it_sparse(f"get {len(scambi_units)} colours"):
@@ -241,7 +253,9 @@ def main(action = None):
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = "overlay")
+                    action = "image_raw")
+                
+
             if event == "reset":
                 led_subsystem.display_info_colours(LEDColours.Red.value)
                 if PLATFORM == _OS.RASPBERRY:
@@ -260,7 +274,7 @@ def main(action = None):
 
 
 if __name__ == "__main__":
-    main(action = "init scambis for me")
+    main()
 
 def handler(event, context):
     print("boom")

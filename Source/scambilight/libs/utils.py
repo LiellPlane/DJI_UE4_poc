@@ -72,3 +72,11 @@ def time_it_sparse(comment):
         toc: float = time.perf_counter()
         if random.randint(1,1000) < 4:
             print(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")
+
+
+def decode_image_from_str(incoming_encoded_img: str):
+    original = base64.b64decode(incoming_encoded_img)
+    jpg_as_np = np.frombuffer(original, dtype=np.uint8)
+
+    return cv2.imdecode(buf=jpg_as_np, flags=1)
+
