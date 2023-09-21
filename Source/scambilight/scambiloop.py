@@ -149,7 +149,10 @@ def main(action = None):
         for index, unit in enumerate(scambi_units):
             unit.draw_warped_boundingbox(prev)
             prev = unit.draw_lerp_contour(prev)
-        print("drawn contours on image")
+        upload_img_to_aws(
+            prev,
+            SCAMILIGHT_API,
+            action = "image_raw")
         return
 
 
