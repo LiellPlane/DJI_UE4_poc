@@ -246,7 +246,7 @@ def main(action = None):
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = "image_raw")
+                    action = "raw")
                 for index, unit in enumerate(scambi_units):
                     #display_img = unit.draw_warped_roi(display_img)
                     unit.draw_warped_boundingbox(display_img)
