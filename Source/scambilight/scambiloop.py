@@ -152,7 +152,7 @@ def main(action = None):
         upload_img_to_aws(
             prev,
             SCAMILIGHT_API,
-            action = "image_raw")
+            action = "overlay")
         return
 
 
@@ -243,9 +243,12 @@ def main(action = None):
                     action = "overlay")
             if event == "update_image":
                 display_img = prev.copy()
+                upload_img_to_aws(
+                    display_img,
+                    SCAMILIGHT_API,
+                    action = "image_raw")
                 for index, unit in enumerate(scambi_units):
                     #display_img = unit.draw_warped_roi(display_img)
-                    
                     unit.draw_warped_boundingbox(display_img)
                     display_img = unit.draw_lerp_contour(display_img)
                     display_img = unit.draw_warped_led_pos(
@@ -256,7 +259,7 @@ def main(action = None):
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = "image_raw")
+                    action = "overlay")
                 
 
             if event == "reset":
