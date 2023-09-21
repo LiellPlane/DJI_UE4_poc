@@ -201,6 +201,7 @@ def get_config_from_aws(url):
             positions.append({i:int((elem)[i]) for i in elem})
             
             ext_config_pos.append(clicked_xy(**elem))
+        print(f"from AWS {clicked_positions}")
     except (requests.exceptions.RequestException, KeyError) as e:
         print(e)
         print("could not connect get config or find key from", url)
