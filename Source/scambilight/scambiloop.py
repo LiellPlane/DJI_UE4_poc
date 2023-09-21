@@ -41,6 +41,29 @@ from libs.external_data import (
 import os
 PLATFORM = get_platform()
 
+
+def get_cam(system: _OS, action: str):
+    if action is not None:
+        return async_cam_lib.Synth_Camera_sync(
+            ScambiLight_Cam_vidmodes)
+    if system == _OS.WINDOWS:
+        return async_cam_lib.Synth_Camera_Async(
+            ScambiLight_Cam_vidmodes)
+    elif system == _OS.RASPBERRY:
+        return async_cam_lib.Scamblight_Camera_Async(
+            ScambiLight_Cam_vidmodes)
+    elif system == _OS.LINUX:
+        return async_cam_lib.Synth_Camera_Async(
+            ScambiLight_Cam_vidmodes)
+    else:
+        raise Exception(system + " not supported")
+    
+def get_external_data_workr(action):
+    if action is not None:
+        return ExternalDataWorker_dummy(SCAMILIGHT_API)
+    return ExternalDataWorker(SCAMILIGHT_API)
+
+
 def main(action = None):
     
     optical_details = get_lens_details(
@@ -49,23 +72,15 @@ def main(action = None):
         img_width_height=(optical_details.width, optical_details.height),
         image_circle_size=optical_details.fish_eye_circle)
     system = get_platform()
+    cam = get_cam(system=system, action=action)
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        cam = async_cam_lib.Synth_Camera_Async(
-            ScambiLight_Cam_vidmodes)
-        ActionChecker = ExternalDataWorker(SCAMILIGHT_API)
         cores = 8
     elif system == _OS.RASPBERRY:
-        cam = async_cam_lib.Scamblight_Camera_Async(
-            ScambiLight_Cam_vidmodes)
         led_subsystem = ws281Leds(DaisybankLedSpacing)
-        ActionChecker = ExternalDataWorker(SCAMILIGHT_API)
         cores = 3
     elif system == _OS.LINUX:
-        cam = async_cam_lib.Synth_Camera_sync(
-            ScambiLight_Cam_vidmodes)
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        ActionChecker = ExternalDataWorker_dummy(SCAMILIGHT_API)
         cores = 8
     else:
         raise Exception(system + " not supported")
@@ -73,7 +88,8 @@ def main(action = None):
     led_subsystem.display_info_colours(LEDColours.Red.value)
     cores_for_col_dect = cores
 
-    ActionChecker = ExternalDataWorker(SCAMILIGHT_API)
+    # for incoming action, don't use external worker 
+    ActionChecker = get_external_data_workr(action=action)
     ActionChecker._start()
     #event = check_events_from_aws(SCAMILIGHT_API)
     #print("purging old action requests", event)
@@ -244,9 +260,8 @@ def main(action = None):
 
 
 if __name__ == "__main__":
-    main()
-
+    main(action = "init scambis for me")
 
 def handler(event, context):
     print("boom")
-    main(action = "")
+    main(action = "init scambis for me")

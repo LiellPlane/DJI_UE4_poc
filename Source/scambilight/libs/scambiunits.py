@@ -469,9 +469,10 @@ def generate_scambis(
             
         # flatten nested list
         #scambi_units = [item for sublist in scambi_units for item in sublist]
-    
-    
-    return initialised_scambi_units
+        # flatten nested list
+        #scambi_units = [item for sublist in scambi_units for item in sublist]
+        return initialised_scambi_units
+    return scambi_units
     
 
 
