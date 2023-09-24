@@ -17,6 +17,7 @@ SCAMBIIMAGES = os.environ.get('SCAMBIIMAGES')
 SCAMBICONFIG = os.environ.get('SCAMBICONFIG')
 CONFIG_FILE = os.environ.get('CONFIG_FILE')
 SAMPLE_CONFIG_FILE = os.environ.get('SAMPLE_CONFIG_FILE')
+SIM_LAMBDA = os.environ.get('SIM_LAMBDA')
 RAW_IMAGE = os.environ.get('RAW_IMAGE')
 OVERLAY_IMAGE = os.environ.get('OVERLAY_IMAGE')
 SCAMBIWEB = os.environ.get('SCAMBIWEB')
@@ -30,6 +31,7 @@ sqs_client = boto3.client('sqs')
 #     )
 dynamodb = boto3.resource('dynamodb')
 db_table_client = dynamodb.Table(EVENTS_TABLE)
+lambda_client = boto3.client('lambda')
 
 def purge_queue(_sqs_client, queue_url):
     """
@@ -319,9 +321,13 @@ def lambda_handler(event, context):
             'headers': cors_headers,
             'body': json.dumps(output)
         }
-    if action in ["reset", "update_image"]:
+    if action in [
+                    "reset",
+                    "update_image",
+                    "update_image_all"]:
 
-        if action == "update_image":
+
+        if action in ["update_image", "update_image_all"]:
             s3_custom.delete(
                 bucket_name=SCAMBIWEB,
                 folder_name=None,
@@ -352,7 +358,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'update_image ok'})
+                'message': f'{action} ok'})
         }
     #sam deploy --no-confirm-changeset
     if action == "send_sample_config":
@@ -393,6 +399,22 @@ def lambda_handler(event, context):
             'headers': cors_headers,
             'body': json.dumps({
                 'message': "send_sample_config ok"})
+        }
+
+    if action == "get_region_sim":
+        print("get region sim")
+        lambda_payload = json.dumps({}).encode('utf-8') # doesnt matter for now - but add action in here later
+        print("get region sim created json")
+        response = lambda_client.invoke(FunctionName=SIM_LAMBDA,
+                     InvocationType='RequestResponse',
+                     Payload=lambda_payload)
+        print("region sim response", response)
+        return{
+            'statusCode': 201,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': 'request_config ok',
+                'config': bytes_to_str(config_bytes)})
         }
 
     if action == "request_config":

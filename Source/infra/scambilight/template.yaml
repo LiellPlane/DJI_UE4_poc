@@ -35,7 +35,8 @@ Globals:
         OVERLAY_IMAGE: "overlay_image.jpg"
         RAW_IMAGE: "raw_image.jpg"
         CONFIG_FILE: "config.json"
-        SAMPLE_CONFIG_FILE: "SAMPLE_CONFIG_FILE.json"
+        SIM_LAMBDA: "scambilight-sim"
+        SAMPLE_CONFIG_FILE: "config_regions.json"
         EVENT_QUEUE_URL: !Ref SqsQueueEvents # Gets SQS Queue URL
         EVENTS_TABLE: !Ref MyEventTable
     Tracing: Active
@@ -69,6 +70,8 @@ Resources:
       CodeUri: scambi/
       Handler: upload.lambda_handler
       Runtime: python3.9
+      # this seems long but its only to accomodate the SIM REGION action
+      Timeout: 40
       EventInvokeConfig:
         MaximumRetryAttempts: 0
       Architectures:
@@ -93,7 +96,9 @@ Resources:
               !GetAtt SqsQueueEvents.QueueName
         - DynamoDBCrudPolicy:
             TableName: !Ref MyEventTable
-  
+        - LambdaInvokePolicy:
+            FunctionName:
+              scambilight-sim
   SqsQueueEvents:
     Type: AWS::SQS::Queue
     Properties:

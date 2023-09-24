@@ -150,6 +150,11 @@ def main(action = None):
         for index, unit in enumerate(scambi_units):
             unit.draw_warped_boundingbox(prev)
             prev = unit.draw_lerp_contour(prev)
+            prev = unit.draw_warped_led_pos(
+                prev,
+                unit.colour,
+                offset=(0, 0),
+                size=10)
         upload_img_to_aws(
             prev,
             SCAMILIGHT_API,

@@ -18,6 +18,7 @@
 <button onclick="req_new_image_all();">REQUEST_ALL_VISUALISATION_IMAGES</button><br>
 <button onclick="req_sample_config();">REQUEST_REGION_CONFIG</button><br>
 <button onclick="submit_sample_config();">SUBMIT_REGION_CONFIG</button><br>
+<button onclick="sim_regions();">SIM REGIONS (maybe)</button><br>
 <button onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button><br>
 <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
 <b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
@@ -96,6 +97,24 @@
             let data = {
                 "authentication": inputPassword,
                 "action": "update_image",
+		"data":"empty"
+            };
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        decache_images_maybe();
+	}
+        let sim_regions = () => {
+	    document.getElementById('configbox').value = "attempting to generate sim region image - this can take up to 30 seconds or may fail quitely due to todo CORS"
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "get_region_sim",
 		"data":"empty"
             };
             fetch(targetUrl, {

@@ -95,7 +95,7 @@ def upload_img_to_aws(img, url, action):
         action = "image_overlay"
     else:
         raise Exception("bad action")
-    img = clahe_equalisation(img, None)
+    #img = clahe_equalisation(img, None)
     img_bytes = encode_img_to_str(img)
     myobj = {
         "authentication": "farts",
