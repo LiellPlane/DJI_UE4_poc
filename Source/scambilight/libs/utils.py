@@ -67,9 +67,9 @@ def img_height(img):
 def time_it_sparse(comment):
     tic: float = time.perf_counter()
     try:
-        yield
-    finally:
         toc: float = time.perf_counter()
+        yield toc
+    finally:
         if random.randint(1,1000) < 4:
             print(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")
 

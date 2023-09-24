@@ -10,6 +10,7 @@ import numpy as np
 import cv2
 import time
 import json
+from collections import deque
 
 from libs.utils import (
     get_platform,
@@ -282,10 +283,11 @@ def main(action = None):
             with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambi_units)
                 led_subsystem.execute_LEDS()
-
+            
 
 if __name__ == "__main__":
     main()
+
 
 def handler(event, context):
     print("boom")
