@@ -9,7 +9,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
 import cv2
 import time
-
+import json
 
 from libs.utils import (
     get_platform,
@@ -153,7 +153,12 @@ def main(action = None):
             prev,
             SCAMILIGHT_API,
             action = "overlay")
-        return
+        # TODO can we wrap this somewhere nicely like an ATEXIT
+        # or similar so it doesnt pollute the main thread?
+        return {
+            'statusCode': 200,
+            'body': json.dumps(f"completed {action}")
+        }
 
 
     # main loop
@@ -284,4 +289,4 @@ if __name__ == "__main__":
 
 def handler(event, context):
     print("boom")
-    main(action = "init scambis for me")
+    main(action = "Sim Scambis")
