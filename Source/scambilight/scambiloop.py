@@ -150,6 +150,8 @@ def main(action = None):
         for index, unit in enumerate(scambi_units):
             unit.draw_warped_boundingbox(prev)
             prev = unit.draw_lerp_contour(prev)
+            unit.get_dom_colour_with_auto_subsample(
+                prev, cut_off = img_sample_controller.subsample_cut)
             prev = unit.draw_warped_led_pos(
                 prev,
                 unit.colour,
