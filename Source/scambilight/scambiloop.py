@@ -39,7 +39,8 @@ from libs.external_data import (
     get_ext_corners_or_use_default,
     get_image_from_aws,
     ExternalDataWorker,
-    ExternalDataWorker_dummy)
+    ExternalDataWorker_dummy,
+    cors_headers)
 import os
 PLATFORM = get_platform()
 
@@ -163,10 +164,12 @@ def main(action = None):
             action = "overlay")
         # TODO can we wrap this somewhere nicely like an ATEXIT
         # or similar so it doesnt pollute the main thread?
-        return {
-            'statusCode': 200,
-            'body': json.dumps(f"completed {action}")
+        return{
+            'statusCode': 201,
+            'headers': cors_headers,
+            'body': json.dumps({'message': f"completed {action}"})
         }
+
 
 
     # main loop

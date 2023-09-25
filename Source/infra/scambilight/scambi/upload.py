@@ -9,6 +9,8 @@ from botocore.exceptions import ClientError  # type: ignore[import]
 import base64
 import copy
 
+from common import cors_headers
+
 logger = logging.getLogger('scambiupload')
 logger.setLevel(logging.INFO)
 
@@ -208,11 +210,7 @@ def bytes_to_str(bytes_: bytes):
 
 def lambda_handler(event, context):
 
-    cors_headers = {
-                'Access-Control-Allow-Headers': 'Content-Type',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-            }
+
     order = json.loads(event['body'])
     # this is the dynamic reference in template.yaml
     authentication_code = order['authentication']
