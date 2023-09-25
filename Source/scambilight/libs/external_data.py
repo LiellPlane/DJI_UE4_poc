@@ -100,6 +100,8 @@ def upload_img_to_aws(img, url, action):
         action = "image_raw"
     elif action =="overlay":
         action = "image_overlay"
+    elif action =="perpwarp":
+        pass
     else:
         raise Exception("bad action")
     #img = clahe_equalisation(img, None)

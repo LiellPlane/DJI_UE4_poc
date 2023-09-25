@@ -242,8 +242,12 @@ def main(action = None):
             if event == "update_image_all":
                 led_subsystem.display_info_colours(LEDColours.Magenta.value)
                 display_img = prev.copy()
+                upload_img_to_aws(
+                    display_img,
+                    SCAMILIGHT_API,
+                    action = "raw")
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = "raw")
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = "perpwarp")
                 display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                         #display_img = unit.draw_warped_roi(display_img)
@@ -257,7 +261,7 @@ def main(action = None):
                             size=10)              
                 led_subsystem.display_info_colours(LEDColours.Blue.value)
                 before_warp = display_img.copy()
-                perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
+                #perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
                 led_subsystem.display_info_colours(LEDColours.Yellow.value)
                 for pt in homography_tool._corners:
                     perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
@@ -274,9 +278,11 @@ def main(action = None):
                     display_img,
                     SCAMILIGHT_API,
                     action = "raw")
+                perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = "perpwarp")
+                display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                     #display_img = unit.draw_warped_roi(display_img)
-                    display_img = prev.copy()
                     unit.draw_warped_boundingbox(display_img)
                     display_img = unit.draw_lerp_contour(display_img)
                     display_img = unit.draw_warped_led_pos(
