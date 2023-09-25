@@ -276,6 +276,7 @@ def main(action = None):
                     action = "raw")
                 for index, unit in enumerate(scambi_units):
                     #display_img = unit.draw_warped_roi(display_img)
+                    display_img = prev.copy()
                     unit.draw_warped_boundingbox(display_img)
                     display_img = unit.draw_lerp_contour(display_img)
                     display_img = unit.draw_warped_led_pos(
@@ -307,7 +308,7 @@ def main(action = None):
             
 
 if __name__ == "__main__":
-    main(action = "Sim Scambis")
+    main()
 
 
 def handler(event, context):
