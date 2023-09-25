@@ -7,8 +7,25 @@ import base64
 # need these for other modules to load
 from lumotag_utils import get_platform, _OS, TimeDiffObject
 
+
+def create_progress_image(progress_percent: int):
+    """create lightweight progress image to upload to AWS
+    until we have a better solution"""
+    progress_img = np.zeros(
+            (200, 200), np.uint8)
+    cv2.putText(
+            progress_img,
+            f"{progress_percent} %",(50,100),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.2,
+            225,
+            thickness=2)
+    return progress_img
+
+
 def convert_pts_to_convex_hull(points:list[list[int, int]]):
    return cv2.convexHull(np.array(points, dtype='int32'))
+
 
 def ImageViewer_Quick_no_resize(inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
     if inputimage is None:

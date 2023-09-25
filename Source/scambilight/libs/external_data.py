@@ -3,6 +3,7 @@ import requests
 import json
 import numpy as np
 import time
+import random
 
 from factory import Camera_synchronous, ImageGenerator
 
@@ -23,6 +24,11 @@ from libs.collections import (
 from img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
 from common import cors_headers
+
+
+def send_sim_progress_update_to_AWS(progress_im):
+    print("aws", progress)
+
 def get_corners_from_remote_config(config, img):
     """find corners from disorder of inputs in format:
     {

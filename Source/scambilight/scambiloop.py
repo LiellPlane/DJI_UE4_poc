@@ -11,12 +11,14 @@ import cv2
 import time
 import json
 from collections import deque
+from math import floor
 
 from libs.utils import (
     get_platform,
     _OS,
     ImageViewer_Quick_no_resize,
-    time_it_sparse)
+    time_it_sparse,
+    create_progress_image)
 from libs.scambiunits import (
     HomographyTool,
     generate_scambis)
@@ -40,7 +42,8 @@ from libs.external_data import (
     get_image_from_aws,
     ExternalDataWorker,
     ExternalDataWorker_dummy,
-    cors_headers)
+    cors_headers,
+    send_sim_progress_update_to_AWS)
 import os
 PLATFORM = get_platform()
 
@@ -142,9 +145,17 @@ def main(action = None):
             init_cores=cores_for_col_dect,
             progress_bar_func=led_subsystem.display_info_bar)
 
+        update_cnter = -1
         for index, unit in enumerate(scambi_units):
             unit.initialise()
-
+            progress = int((index/len(scambi_units)) * 100)
+            updaterate = floor(progress/10)
+            if updaterate != update_cnter:
+                upload_img_to_aws(
+                    create_progress_image(progress_percent=progress),
+                    SCAMILIGHT_API,
+                    action = "overlay")
+            update_cnter = updaterate
 
     if action is not None:
         prev = get_image_from_aws(SCAMILIGHT_API)
@@ -296,7 +307,7 @@ def main(action = None):
             
 
 if __name__ == "__main__":
-    main()
+    main(action = "Sim Scambis")
 
 
 def handler(event, context):
