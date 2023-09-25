@@ -71,7 +71,8 @@ Resources:
       Handler: upload.lambda_handler
       Runtime: python3.9
       # this seems long but its only to accomodate the SIM REGION action
-      Timeout: 40
+      Timeout: 120
+      ReservedConcurrentExecutions: 5
       EventInvokeConfig:
         MaximumRetryAttempts: 0
       Architectures:
