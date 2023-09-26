@@ -84,7 +84,7 @@ def main(action = None):
         cores = 8
     elif system == _OS.RASPBERRY:
         led_subsystem = ws281Leds(DaisybankLedSpacing)
-        cores = 3
+        cores = 2
     elif system == _OS.LINUX:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cores = 8
