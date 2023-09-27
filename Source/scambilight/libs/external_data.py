@@ -96,14 +96,7 @@ def get_image_from_aws(url):
 def upload_img_to_aws(img, url, action):
     
     print("uploading image")
-    if action == "raw":
-        action = "image_raw"
-    elif action =="overlay":
-        action = "image_overlay"
-    elif action =="perpwarp":
-        pass
-    else:
-        raise Exception("bad action")
+
     #img = clahe_equalisation(img, None)
     img_bytes = encode_img_to_str(img)
     myobj = {

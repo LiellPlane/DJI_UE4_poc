@@ -15,6 +15,7 @@ SCAMILIGHT_API = "https://api.scambilight.com/hello"
 
 
 class UploadImageTypes(enum.Enum):
+    """keywords for main lambda"""
     RAW = "image_raw"
     PERPWARPED = "perpwarp"
     OVERLAY = "image_overlay"

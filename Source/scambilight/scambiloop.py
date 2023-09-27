@@ -33,7 +33,8 @@ from libs.configs import (
     get_sample_regions_config,
     get_lens_details,
     ScambiLight_Cam_vidmodes,
-    SCAMILIGHT_API)
+    SCAMILIGHT_API,
+    UploadImageTypes)
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
@@ -154,7 +155,7 @@ def main(action = None):
                 upload_img_to_aws(
                     create_progress_image(progress_percent=progress),
                     SCAMILIGHT_API,
-                    action = "overlay")
+                    action = UploadImageTypes.OVERLAY.value)
             update_cnter = updaterate
 
     if action is not None:
@@ -172,7 +173,7 @@ def main(action = None):
         upload_img_to_aws(
             prev,
             SCAMILIGHT_API,
-            action = "overlay")
+            action = UploadImageTypes.OVERLAY.value)
         # TODO can we wrap this somewhere nicely like an ATEXIT
         # or similar so it doesnt pollute the main thread?
         return{
@@ -223,35 +224,18 @@ def main(action = None):
                             unit.colour,
                             offset=(0, 0),
                             size=10)
-                        
 
-                # if sent_overlay == 0:
-                #     led_subsystem.display_info_colours(LEDColours.Blue.value)
-                #     before_warp = display_img.copy()
-                #     perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                #     led_subsystem.display_info_colours(LEDColours.Red.value)
-                #     for pt in homography_tool._corners:
-                #         perp_warped = cv2.circle(perp_warped, tuple(pt.astype(int)), 20, (255,0,0), -1)
-                #     display_img = fisheye_compute.fish_eye_image(display_img, reverse=True)
-                #     led_subsystem.display_info_colours(LEDColours.Blue.value)
-                #     display_img = homography_tool.warp_img(display_img)
-                #     upload_img_to_aws(
-                #         np.vstack((before_warp, display_img, perp_warped)),
-                #         SCAMILIGHT_API,
-                #         action = "overlay")
             if event == "update_image_all":
                 led_subsystem.display_info_colours(LEDColours.Magenta.value)
                 display_img = prev.copy()
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = "raw")
+                    action = UploadImageTypes.RAW.value)
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = "perpwarp")
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = UploadImageTypes.PERPWARPED.value)
                 display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
-                        #display_img = unit.draw_warped_roi(display_img)
-                        
                         unit.draw_warped_boundingbox(display_img)
                         display_img = unit.draw_lerp_contour(display_img)
                         display_img = unit.draw_warped_led_pos(
@@ -271,15 +255,15 @@ def main(action = None):
                 upload_img_to_aws(
                     np.vstack((before_warp, display_img, perp_warped)),
                     SCAMILIGHT_API,
-                    action = "overlay")
+                    action = UploadImageTypes.OVERLAY.value)
             if event == "update_image":
                 display_img = prev.copy()
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = "raw")
+                    action = UploadImageTypes.RAW.value)
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = "perpwarp")
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = UploadImageTypes.PERPWARPED.value)
                 display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                     #display_img = unit.draw_warped_roi(display_img)
@@ -293,7 +277,7 @@ def main(action = None):
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = "overlay")
+                    action = UploadImageTypes.OVERLAY.value)
                 
 
             if event == "reset":

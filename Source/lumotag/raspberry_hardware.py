@@ -293,6 +293,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
+        self.picam2.set_controls({"AwbEnable": 0})
         self.picam2.set_controls({"AnalogueGain": 10.0})
         self.picam2.start()
         time.sleep(0.2)
@@ -315,6 +316,7 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
+        self.picam2.set_controls({"AwbEnable": 0})
         self.picam2.set_controls({"AnalogueGain": 10.0})
         self.picam2.start()
         time.sleep(0.2)
