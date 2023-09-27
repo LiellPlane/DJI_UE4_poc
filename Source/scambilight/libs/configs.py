@@ -13,6 +13,13 @@ from libs.collections import (
 
 SCAMILIGHT_API = "https://api.scambilight.com/hello"
 
+
+class UploadImageTypes(enum.Enum):
+    RAW = "image_raw"
+    PERPWARPED = "perpwarp"
+    OVERLAY = "image_overlay"
+
+
 class ScambiLight_Cam_vidmodes(enum.Enum):
     """scambilight fisheye ov5647"""
     # dimensions are reversed (h, w) due to quirk of ov5647
