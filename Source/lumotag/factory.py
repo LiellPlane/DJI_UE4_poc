@@ -690,7 +690,7 @@ class VoiceBase(ABC):
             message: str):
         # use  in_box._qsize() to prevent
         # blowing it up
-        if self.in_box._qsize() >= self.in_box.maxsize - 1:
+        if self.in_box.qsize() >= self.in_box._maxsize - 1:
             self.in_box.queue.clear()
             self.in_box.put(
                 "Voice buffer overflow",

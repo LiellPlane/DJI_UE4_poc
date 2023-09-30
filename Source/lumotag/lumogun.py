@@ -1,5 +1,5 @@
 import factory
-import sound_fake as sound
+
 from functools import partial
 import msgs
 import time
@@ -14,12 +14,14 @@ import configs
 if get_platform() == _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
+    import sound as sound
 elif get_platform() == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry_hardware as lumogun
+    import sound as sound
 else:
     import fake_raspberry_hardware as lumogun
-    pass
+    import sound_fake as sound
     #raise Exception("Could not detect platform")
 
 # load config depending on if simulated, or if on hardware,
@@ -36,7 +38,7 @@ def main():
     voice = sound.Voice()
 
     if get_platform() == _OS.RASPBERRY:
-        for _ in range(0,2):
+        for _ in range(0, 2):
             voice.speak("cancel")
             results_trig_positions = (triggers.test_states())
             if any([True for i in results_trig_positions.values() if i is True]):

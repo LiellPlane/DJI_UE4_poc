@@ -3,7 +3,7 @@ import factory
 
 class Voice(factory.VoiceBase):
 
-    def speaker(in_box):
+    def speaker(self, in_box):
         #  TODO
         """Ideally this should inherit from threading.thread
         and override init and run - but w/e this works for now"""
