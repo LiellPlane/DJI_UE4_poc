@@ -22,6 +22,7 @@ elif get_platform() == _OS.RASPBERRY:
 else:
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
+
     #raise Exception("Could not detect platform")
 
 # load config depending on if simulated, or if on hardware,
