@@ -117,39 +117,6 @@ class display(factory.display):
             destroyWindow=False)
         
 
-    # def display_output(self, output):
-    #     # quicker in theory to resize first then rotate as
-    #     # input image is expected to be much larger than display size
-    #     if self.display_rotate == 90:
-    #         output = cv2.resize(output, tuple(reversed(self.screen_size)))
-    #         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-    #     elif self.display_rotate == -90 or self.display_rotate == 270:
-    #         output = cv2.resize(output, tuple(reversed(self.screen_size)))
-    #         output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-    #     elif self.display_rotate == 180:
-    #         output = cv2.resize(output, self.screen_size)
-    #         output = cv2.rotate(output, cv2.ROTATE_180)
-    #     elif self.display_rotate == 0:
-    #         output, scale_factor = img_processing.resize_centre_img(
-    #            output,
-    #            self.screen_size)
-    #         output = img_processing.add_cross_hair(output, adapt=True)
-    #         #output = cv2.resize(output, self.screen_size)
-    #     else:
-    #         raise Exception("incorrect display rotate value", self.display_rotate)
-
-    #     #output = cv2.normalize(output, output,0, 255, cv2.NORM_MINMAX)
-
-    #     #output = cv2.applyColorMap(output, cv2.COLORMAP_JET)
-
-    #         lumo_viewer(
-    #             inputimage=output,
-    #             move_windowx=self.opencv_win_pos[0],
-    #             move_windowy=self.opencv_win_pos[1],
-    #             pausetime_Secs=0,
-    #             presskey=False,
-    #             destroyWindow=False)
-
     def display_output_with_implant(self, main_img, img_to_implant):
             """avoid performing higher workload by resizing images to
             display size before any rotation or copying """
@@ -306,34 +273,6 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         #print("get_image", output.shape, output.dtype)
         return self.picam2.capture_array("main")[0: x, 0: y]
 
-class CsiCameraImageGen_GS_test(factory.ImageGenerator):
-    
-    def __init__(self, res) -> None:
-        self.cam_res = tuple(reversed(res))
-        self.picam2 = Picamera2()
-        _config = self.picam2.create_video_configuration(
-                    main={"size": res,  "format": "YUV420"})#, controls={"FrameDurationLimits": (233333, 233333)})
-                #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
-        self.picam2.configure(_config)
-        #  set_controls must come after config!!
-        self.picam2.set_controls({"AwbEnable": 0})
-        self.picam2.set_controls({"AnalogueGain": 10.0})
-        self.picam2.start()
-        time.sleep(0.2)
-
-    def get_image(self):
-        x = self.cam_res[0]
-        y = self.cam_res[1]
-
-        #output = self.picam2.capture_array("main")[0: x, 0: y]
-        #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-        return self.picam2.capture_array("main")
-        output = self.picam2.capture_array("main")
-
-        output = output[0: y, 0: x]#  Need to do this for YUV!
-        #print("get_image", output.shape, output.dtype, x, y)
-        return output
-
 
 class CsiCameraImageGen_HQ(factory.ImageGenerator):
     
@@ -345,6 +284,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
+        self.picam2.set_controls({"AwbEnable": 0})
         self.picam2.set_controls({"AnalogueGain": 5.0})
         self.picam2.start()
         time.sleep(0.2)
