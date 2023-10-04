@@ -296,7 +296,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         # this way works with async but captures bad areas of image
         #return self.picam2.capture_array("main")[0: y, 0: x]
 
-        return self.picam2.capture_array("main")
+        #return self.picam2.capture_array("main")
     
         #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
         return self.picam2.capture_array("main")[0: y, 0: x]
