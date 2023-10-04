@@ -293,8 +293,8 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
 
-        arse =  self.picam2.capture_array("main")
-        print(arse.shape)
+        flop = self.picam2.capture_array("main")[0: x, 0: y]
+        print(flop.shape)
         #   DO NOT MODIFY
         #   DO NOT MODIFY
         #   DO NOT MODIFY
