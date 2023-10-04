@@ -293,11 +293,15 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         x = self.cam_res[0]
         y = self.cam_res[1]
         #return self.picam2.capture_array("main")
-        return self.picam2.capture_array("main")[0: y, 0: x]
-        #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
-        return self.picam2.capture_array("main")[0: y, 0: x]
-        #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
+        # this way works with async but captures bad areas of image
+
+        #return self.picam2.capture_array("main")[0: y, 0: x]
+
         
+        #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
+        return self.picam2.capture_array("main")[0: y, 0: x]
+        #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
+
 class CSI_Camera_Async(factory.Camera_async):
     
     def __init__(self, video_modes) -> None:

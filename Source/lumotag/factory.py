@@ -348,8 +348,7 @@ class Camera(ABC):
         return self
 
     def get_res(self):
-        return [
-            e.value for e in self.cam_res][self.res_select][1]
+        return tuple(reversed([e.value for e in self.cam_res][self.res_select][1]))
 
 
 class Camera_synchronous(Camera):
