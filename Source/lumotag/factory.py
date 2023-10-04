@@ -426,7 +426,7 @@ class Camera_async(Camera):
         img_buff = np.frombuffer(
             strm_buff,
             dtype=('uint8')
-                ).reshape(self.get_res())
+                ).reshape(tuple(reversed(self.get_res())))
 
         #if len(img_buff.shape) == 3:
         #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
