@@ -181,7 +181,7 @@ def main():
         with time_it("gun image stuff TOTAL"):
             with time_it("get next image"):
                 cap_img = next(image_capture)
-                print(cap_img.shape)
+                #print(cap_img.shape)
             # with time_it("gun get central img"):
             #     central_img = img_processing.get_internal_section(
             #         cap_img,
