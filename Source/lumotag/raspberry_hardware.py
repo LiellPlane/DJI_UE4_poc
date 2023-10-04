@@ -292,15 +292,26 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
     def get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
-        #return self.picam2.capture_array("main")
-        # this way works with async but captures bad areas of image
-        #return self.picam2.capture_array("main")[0: y, 0: x]
 
-        #return self.picam2.capture_array("main")
-    
+        arse =  self.picam2.capture_array("main")
+        print(arse.shape)
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
         #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
-        return self.picam2.capture_array("main")[0: x, 0: y]
+        # return self.picam2.capture_array("main")[0: x, 0: y] VVVV MUST BE THE SAME!!
+        return self.picam2.capture_array("main")[0: x, 0: y] # DO not change!!
+        # return self.picam2.capture_array("main")[0: x, 0: y] ^^^ MUST BE THE SAME
         #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+
+
 
 class CSI_Camera_Async(factory.Camera_async):
     
