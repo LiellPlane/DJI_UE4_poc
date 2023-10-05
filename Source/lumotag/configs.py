@@ -9,17 +9,17 @@ class HQ_Cam_vidmodes(Enum):
         camera_model="HQ_Cam",
         res_width_height=(2020, 1080),
         doc_description="2028 × 1080p50,",
-        shared_mem_reversed=False,special_notes="")
+        shared_mem_reversed=True,special_notes="")
     _2 = ImagingMode(
         camera_model="HQ_Cam",
         res_width_height=(1332, 990),
         doc_description="1332 × 990p120",
-        shared_mem_reversed=False,special_notes="")
+        shared_mem_reversed=True,special_notes="")
     _1 = ImagingMode(
         camera_model="HQ_Cam",
         res_width_height=(2020, 1520),
         doc_description="2028 × 1520p40",
-        shared_mem_reversed=False,special_notes="")
+        shared_mem_reversed=True,special_notes="")
 
 # class HQ_Cam_vidmodes(Enum):
 #     _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one

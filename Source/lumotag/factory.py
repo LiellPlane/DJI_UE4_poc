@@ -339,6 +339,8 @@ class Camera(ABC):
         self.res_select = 0
         self.last_img = None
         self.cam_res = video_modes
+        self._is_reversed = None
+        self._res = None
 
     @abstractmethod
     def gen_image(self):
@@ -352,8 +354,15 @@ class Camera(ABC):
         return self
 
     def get_res(self):
-        return [e.value for e in self.cam_res][self.res_select].res_width_height
+        if self._res is None:
+            self._res =  [e.value for e in self.cam_res][self.res_select].res_width_height
+        return self._res
         #return tuple(reversed([e.value for e in self.cam_res][self.res_select][1]))
+
+    def get_is_reversed(self):
+        if self._is_reversed is None:
+            self._is_reversed =  [e.value for e in self.cam_res][self.res_select].shared_mem_reversed
+        return self._is_reversed
 
 
 class Camera_synchronous(Camera):
@@ -375,12 +384,12 @@ class Camera_synchronous(Camera):
 class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls) -> None:
+        super().__init__(video_modes)
         self.res_select = 0
         self.last_img = None
         self.handshake_queue = Queue(maxsize=1)
         self.process = None
         self.shared_mem_handler = None
-        self.cam_res = video_modes
         # this has to be after initialising self.cam_res
         self.imagegen_cls = imagegen_cls
         # this would be nice to have in a __post_init__ type thing
@@ -427,11 +436,17 @@ class Camera_async(Camera):
 
         strm_buff = self.shared_mem_handler.mem_ids[str(self.res_select)].buf
 
-        img_buff = np.frombuffer(
-            strm_buff,
-            dtype=('uint8')
-                ).reshape(self.get_res())
-        # reshape(tuple(reversed(self.get_res())))
+        if not self.get_is_reversed():
+            img_buff = np.frombuffer(
+                strm_buff,
+                dtype=('uint8')
+                    ).reshape(self.get_res())
+        else:
+            img_buff = np.frombuffer(
+                strm_buff,
+                dtype=('uint8')
+                    ).reshape(tuple(reversed(self.get_res())))
+
 
         
         #if len(img_buff.shape) == 3:
