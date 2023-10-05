@@ -28,9 +28,6 @@ class AutoStrEnum(str, Enum):
 
 
 
-
-
-
 # @contextmanager
 # def time_it(process):
 #     tic: float = time.perf_counter()
