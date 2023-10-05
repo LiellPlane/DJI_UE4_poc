@@ -283,7 +283,12 @@ class Scambi_unit():
         subsampling = math.ceil(min_edge/cut_off)
         if subsampling < 1:
             raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
-        return self.get_dominant_colour_flat(img, subsampling)
+        col =  self.get_dominant_colour_flat(img, subsampling)
+        return self.lerp_color (col)
+
+    def lerp_color(self, input_color: tuple[float,float,float]):
+        # lerp colors using f(t) = t.t.t
+        return tuple([((x/255)**3)*255 for x in input_color])
 
     def get_dominant_colour_flat(self, img, subsample):
         """keep subsample between 1 (unity) and 4 usually"""
@@ -309,6 +314,7 @@ class Scambi_unit():
         dom_col = centers[0].astype(np.int32)
         dom_col = [int(i) for i in dom_col]
         self.colour = tuple(dom_col)
+
         return self.colour
 
     def is_sample_area_smaller(self, cut_off: int):
