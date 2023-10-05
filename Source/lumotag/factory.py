@@ -37,6 +37,13 @@ class AutoStrEnum(str, Enum):
 #         toc: float = time.perf_counter()
 #         print(f"time for {process} = {1000*(toc - tic):.3f}ms")
 
+@dataclass
+class ImagingMode():
+    camera_model: str
+    res_width_height: tuple[int, int]
+    doc_description: str
+    shared_mem_reversed: bool
+    special_notes: str
 
 class RelayFunction(Enum):
     torch = 1
@@ -345,7 +352,7 @@ class Camera(ABC):
         return self
 
     def get_res(self):
-        return [e.value for e in self.cam_res][self.res_select][1]
+        return [e.value for e in self.cam_res][self.res_select].res_width_height
         #return tuple(reversed([e.value for e in self.cam_res][self.res_select][1]))
 
 
