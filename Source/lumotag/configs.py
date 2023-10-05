@@ -1,21 +1,59 @@
 from enum import Enum
+from dataclasses import dataclass
 from factory import gun_config
 import time
 
+@dataclass
+class ImagingMode():
+    camera_model: str
+    res_width_height: tuple[int, int]
+    doc_description: str
+    shared_mem_reversed: bool
+    special_notes: str
 
-class HQ_Cam_vidmodes(Enum):
-    _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
-    _3 = ["1332 × 990p120",(1332, 990)] 
-    _1 = ["2028 × 1520p40",(2020, 1520)]
+class HQ_Cam_vidmodess(Enum):
+    _3 = ImagingMode(
+        camera_model="HQ_Cam",
+        res_width_height=(2020, 1080),
+        doc_description="2028 × 1080p50,",
+        shared_mem_reversed=False,special_notes="")
+    _2 = ImagingMode(
+        camera_model="HQ_Cam",
+        res_width_height=(1332, 990),
+        doc_description="1332 × 990p120",
+        shared_mem_reversed=False,special_notes="")
+    _1 = ImagingMode(
+        camera_model="HQ_Cam",
+        res_width_height=(2020, 1520),
+        doc_description="2028 × 1520p40",
+        shared_mem_reversed=False,special_notes="")
 
+# class HQ_Cam_vidmodes(Enum):
+#     _2 = ["2028 × 1080p50,",(2020, 1080)] # 2.0MP  this is not losing res -  turn camera 90 degrees - probably want this one
+#     _3 = ["1332 × 990p120",(1332, 990)] 
+#     _1 = ["2028 × 1520p40",(2020, 1520)]
 
-class HQ_GS_Cam_vidmodes(Enum):
+class HQ_GS_Cam_vidmodess(Enum):
     """global shutter model"""
-    _2 = ["1456 × 1088p50,",(1456, 1088)]
+    _1 = ImagingMode(
+        camera_model="global shutter HQ camera",
+        res_width_height=(1456, 1088),
+        doc_description="1456 × 1088p50",
+        shared_mem_reversed=False,special_notes="")
 
+# class HQ_GS_Cam_vidmodes(Enum):
+#     """global shutter model"""
+#     _2 = ["1456 × 1088p50,",(1456, 1088)]
 
-class Fake_Cam_vidmodes(Enum):
-    _2 = ["2028 × 1080p50,",(2020, 1080)]
+class Fake_Cam_vidmodess(Enum):
+    _1 = ImagingMode(
+        camera_model="global shutter HQ camera",
+        res_width_height=(2020, 1080),
+        doc_description="2028 × 1080p50",
+        shared_mem_reversed=False,special_notes="")
+
+# class Fake_Cam_vidmodes(Enum):
+#     _2 = ["2028 × 1080p50,",(2020, 1080)]
 
 
 class screensizes(Enum):
