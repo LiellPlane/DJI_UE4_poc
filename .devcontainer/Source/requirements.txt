@@ -1,9 +1,0 @@
-pika
-pylint
-pycodestyle
-black
-numpy
-opencv-python-headless
-boto3<=1.17.64
-Flask
-requests

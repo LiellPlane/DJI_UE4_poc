@@ -46,7 +46,8 @@ RUN apt-get install libgl1
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}
 #COPY Source/* ${FUNCTION_DIR}
-COPY --chown=user:user --chmod=600 Source/ ${FUNCTION_DIR}
+#COPY --chown=user:user --chmod=600 ..Source/ ${FUNCTION_DIR}
+COPY --chown=user:user --chmod=600 requirements.txt ${FUNCTION_DIR}
 WORKDIR ${FUNCTION_DIR}
 
 RUN pip install -r requirements.txt --target ${FUNCTION_DIR}
