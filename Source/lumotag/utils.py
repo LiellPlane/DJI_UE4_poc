@@ -24,21 +24,32 @@ def get_platform():
     except Exception:
         pass
 
-    if hasattr(os, 'uname') is False:
-        print("scambiloop raspberry presence failed, probably Windows system")
-        return _OS.WINDOWS
-    elif os.uname()[-1] == RASP_PI_4_OS:
-        print("scambiloop raspberry presence detected, loading hardware libraries")
-        return _OS.RASPBERRY
-    elif os.name == 'posix' and platform.system() == 'Linux':
-        print("EWWWWWWWWWWWW linux, disgusting")
-        return _OS.LINUX
-    else:
-        raise Exception(
-            "Could not detect platform",
-            os.name,
-            platform.system(),
-            platform.release())
+    try:
+        if hasattr(os, 'uname') is False:
+            print("scambiloop raspberry presence failed, probably Windows system")
+            return _OS.WINDOWS
+    except Exception:
+        pass
+
+    try:
+        if os.uname()[-1] == RASP_PI_4_OS:
+            print("scambiloop raspberry presence detected, loading hardware libraries")
+            return _OS.RASPBERRY
+    except Exception:
+        pass
+
+    try:
+        if os.name == 'posix' and platform.system() == 'Linux':
+            print("EWWWWWWWWWWWW linux, disgusting")
+            return _OS.LINUX
+    except Exception:
+        pass
+
+    raise Exception(
+        "Could not detect platform",
+        os.name,
+        platform.system(),
+        platform.release())
 
 def get_epoch_timestamp():
     return str(time.time()).replace(".", "_")
