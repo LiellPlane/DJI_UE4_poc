@@ -15,6 +15,14 @@ class _OS(str, enum.Enum):
 def get_platform():
     #  detect what OS we are on - test environment (Windows) or production (pi hardware)
     RASP_PI_4_OS = "armv7l"
+    RASP_PI_MACHINE = "aarch64"
+
+    try:
+        if RASP_PI_MACHINE.lower() in platform.machine().lower():
+            print(f"probably a raspberry pi - {RASP_PI_MACHINE}")
+            return _OS.RASPBERRY
+    except Exception:
+        pass
 
     if hasattr(os, 'uname') is False:
         print("scambiloop raspberry presence failed, probably Windows system")
