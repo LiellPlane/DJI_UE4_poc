@@ -26,8 +26,9 @@ def read_img(img_filepath):
 
 workingdata = decode_clothID.WorkingData(debug=True)
 
+
 #input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_real_images")
-input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_real_images\subset")
+input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_images_squarehole")
 print(f"{len(input_imgs)} images found")
 
 def crop_in(img, pc_x, pc_y):
