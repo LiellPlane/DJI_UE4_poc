@@ -43,7 +43,7 @@ class Fake_Cam_vidmodes(Enum):
         camera_model="global shutter HQ camera",
         res_width_height=(2020, 1080),
         doc_description="2028 × 1080p50",
-        shared_mem_reversed=True,special_notes="")
+        shared_mem_reversed=False,special_notes="")
 
 # class Fake_Cam_vidmodes(Enum):
 #     _2 = ["2028 × 1080p50,",(2020, 1080)]

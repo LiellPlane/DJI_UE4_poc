@@ -306,7 +306,6 @@ def has_child_contour(hierarchy: np.array):
 
 def analyse_candidates_shapematch(
         original_img,
-        original_img_grayscale,
         contours : tuple [np.ndarray],
         dataobject : WorkingData,
         contour_hierarchy : tuple [np.ndarray]):
@@ -467,8 +466,11 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #~3ms for grayscale
     with time_it("pre-processing/filtering"):
         #print("equalisation")
-        orig_img=img_pro.clahe_equalisation(inputimg.copy(), dataobject.claheprocessor)
-        dataobject.img_view_or_save_if_debug(orig_img, Debug_Images.clahe_equalisation.value, resize=False)
+        img_op = cv2.blur(img_grayscale,(7,7)) # fastest filter
+        dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
+
+        img_op=img_pro.clahe_equalisation(img_op.copy(), dataobject.claheprocessor)
+        dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
         ''''test area'''
    
    #this section about 25ms
@@ -478,7 +480,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #with time_it():
         #print("median_blur")
         ##blurred = median_blur(gray_orig,7)
-        squr_img = cv2.blur(orig_img,(5,5)) # fastest filter
+
         #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
         #edge_im = edge_img(blurred)edge_img
     #with time_it():
@@ -492,13 +494,13 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
 
         #squr_img=edge_img(gray_orig)
-        squr_img=img_pro.threshold_img_static(squr_img,low=40,high=255)
+        img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
         # squr_img=img_pro.simple_canny(
         #     blurred_img=squr_img,
         #     lower=0,
         #     upper=255)
 
-        dataobject.img_view_or_save_if_debug(squr_img, "thresholdimg")
+        dataobject.img_view_or_save_if_debug(img_op, "thresholdimg")
     #with time_it():
         #print("invert_img")
         #squr_img=invert_img(squr_img)
@@ -506,7 +508,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     
     with time_it("get_possible_candidates total"):
-        contours, hierarchy=get_possible_candidates(squr_img, dataobject)
+        contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
     if len(contours) == 0:
         print("no results found for image")
@@ -514,7 +516,6 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     with time_it("analyse_candidates"):
         output_img = analyse_candidates_shapematch(original_img=inputimg,
-                                                original_img_grayscale = img_grayscale,
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)
