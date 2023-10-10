@@ -11,7 +11,7 @@ def ImageViewer_Quickv2(inputimage,pausetime_Secs=0,presskey=False,destroyWindow
     if presskey==True:
         cv2.waitKey(0); #any key
     if presskey==False:
-        if cv2.waitKey(20) & 0xFF == 27:#need [waitkey] for GUI to update
+        if cv2.waitKey(20) & 0xFF == 27:#need [waitkey] for GUI to update 
                 #for some reason
                 pass
     if pausetime_Secs>0:
@@ -30,7 +30,7 @@ workingdata = decode_clothID.WorkingData(debug=True)
 #input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_real_images")
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_images_squarehole")
 print(f"{len(input_imgs)} images found")
-
+ 
 def crop_in(img, pc_x, pc_y):
      height, width = img.shape
      new_height = (pc_y /100) * height

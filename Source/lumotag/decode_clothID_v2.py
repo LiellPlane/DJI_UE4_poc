@@ -135,6 +135,7 @@ class ShapeItem:
     size: int
     min_bbx_size: int
     shape: Shapes
+    centre_x_y: list[int]
 
 def get_approx_shape_and_bbox(
         contour,
@@ -177,12 +178,39 @@ def get_approx_shape_and_bbox(
     #     ellipse = None
     #unaligned_bbx = cv2.boundingRect(contour)
 
+    # get centre
+
+
     shape_ = Shapes.UNKNOWN
     #test for square
     # TODO rough at moment
+    # this is a pattern which is square with an inner circle
     if len(approx) in [4, 5, 6, 7, 8]:
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
-            shape_ = Shapes.SQUARE
+            
+
+            # we know we have a square - lets see if it 
+            # has the internal inverse colour circle pattern
+            img_debug = img.copy()
+            moments = cv2.moments(contour)
+            x, y, w, h = cv2.boundingRect(contour)
+            cX = int(moments["m10"] / moments["m00"])
+            cY = int(moments["m01"] / moments["m00"])
+            radius = 5
+            # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
+            cv2.circle(img_debug, (cX, cY), radius, 255, 1)
+            sqr_sample_area = img[
+                cY-radius:cY+radius,
+                cX-radius:cX+radius]
+            inner_circle_mean = sqr_sample_area.mean()
+            
+
+            if w > 10 and h > 10: # arbitrary min size
+                if 0.7 < w/h < 1.3: # arbitrary ratio range
+                    crop_img = img_debug[y:y+h, x:x+w]
+                    dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+                    dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
+                    shape_ = Shapes.SQUARE
 
     if len(approx) in [3, 4, 5, 6]:
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
@@ -199,9 +227,10 @@ def get_approx_shape_and_bbox(
         boundingbox_ellipse=None,
         img_cut=None,
         sum_int_angles=None,
-        size=cv2.contourArea(contour),
+        size=contour_pxl_cnt,
         min_bbx_size = cv2.contourArea(min_bbox),
-        shape=shape_)
+        shape=shape_,
+        centre_x_y=None)
     
     return output
 
