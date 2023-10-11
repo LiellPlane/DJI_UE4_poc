@@ -188,7 +188,6 @@ def get_approx_shape_and_bbox(
     if len(approx) in [4, 5, 6, 7, 8]:
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
             
-
             # we know we have a square - lets see if it 
             # has the internal inverse colour circle pattern
             img_debug = img.copy()
@@ -202,14 +201,35 @@ def get_approx_shape_and_bbox(
             sqr_sample_area = img[
                 cY-radius:cY+radius,
                 cX-radius:cX+radius]
-            inner_circle_mean = sqr_sample_area.mean()
+            
             
 
             if w > 10 and h > 10: # arbitrary min size
                 if 0.7 < w/h < 1.3: # arbitrary ratio range
                     crop_img = img_debug[y:y+h, x:x+w]
                     dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-                    dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
+                    #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
+                    inner_circle_mean = sqr_sample_area.mean()
+                    top_y_indx = np.argmin(min_bbox[:,0 ])
+                    low_y_index = np.argmax(min_bbox[:,0 ])
+                    top_x_indx = np.argmin(min_bbox[:,1 ])
+                    low_x_index = np.argmax(min_bbox[:,1 ])
+
+                    inner_circle_mean = sqr_sample_area.mean()
+                    top_xy = min_bbox[np.argmin(min_bbox[:,0 ])]
+                    low_xy = min_bbox[np.argmax(min_bbox[:,0 ])]
+                    cv2.circle(img_debug, tuple(top_xy), 3, 255, 1)
+                    cv2.circle(img_debug, tuple(low_xy), 3, 255, 1)
+                    sample_line = img_pro.bresenham_line(
+                        x1=top_xy[0],
+                        y1=top_xy[1],
+                        x2 = low_xy[0],
+                        y2 = low_xy[1])
+                    for xy in sample_line:
+                        img_debug[xy[1],xy[0]] = 255
+                    dataobject.img_view_or_save_if_debug(img_debug, "testline")
+                    crop_img = img_debug[y:y+h, x:x+w]
+                    dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
                     shape_ = Shapes.SQUARE
 
     if len(approx) in [3, 4, 5, 6]:
