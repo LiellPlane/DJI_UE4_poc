@@ -10,13 +10,13 @@ class _OS(str, enum.Enum):
     WINDOWS = "windows"
     RASPBERRY = "raspberry"
     LINUX = "digusting linux"
+    MAC_OS = "disgusting mac os"
 
 
 def get_platform():
     #  detect what OS we are on - test environment (Windows) or production (pi hardware)
     RASP_PI_4_OS = "armv7l"
     RASP_PI_MACHINE = "aarch64"
-
     try:
         if RASP_PI_MACHINE.lower() in platform.machine().lower():
             print(f"probably a raspberry pi - {RASP_PI_MACHINE}")
@@ -42,6 +42,13 @@ def get_platform():
         if os.name == 'posix' and platform.system() == 'Linux':
             print("EWWWWWWWWWWWW linux, disgusting")
             return _OS.LINUX
+    except Exception:
+        pass
+
+    try:
+        if os.name == 'posix' and platform.system == 'Darwin':
+            print("EWWWWWWWWWWWW Mac, disgusting")
+            return _OS.MAC_OS
     except Exception:
         pass
 
