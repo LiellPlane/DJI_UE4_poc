@@ -220,13 +220,16 @@ def get_approx_shape_and_bbox(
                     low_xy = min_bbox[np.argmax(min_bbox[:,0 ])]
                     cv2.circle(img_debug, tuple(top_xy), 3, 255, 1)
                     cv2.circle(img_debug, tuple(low_xy), 3, 255, 1)
-                    sample_line = img_pro.bresenham_line(
+                    sample_line = img_pro.bresenham_line_ski(
                         x1=top_xy[0],
                         y1=top_xy[1],
                         x2 = low_xy[0],
                         y2 = low_xy[1])
+                    col =0
                     for xy in sample_line:
-                        img_debug[xy[1],xy[0]] = 255
+                        img_debug[xy[1],xy[0]] = col
+                        col += 1
+                    cv2.drawContours(img_debug, [min_bbox], 0, 255)
                     dataobject.img_view_or_save_if_debug(img_debug, "testline")
                     crop_img = img_debug[y:y+h, x:x+w]
                     dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
