@@ -11,6 +11,7 @@ sudo apt-get install build-essential cmake pkg-config libjpeg-dev libtiff5-dev l
 sudo apt-get install python3-opencv -y
 sudo pip3 install adafruit-circuitpython-lis3dh
 sudo apt-get install git
+sudo apt-get install python-skimage
 
 # dont use ~/ here - doesnt seem to download to correct place
 cd /home/lumotag/

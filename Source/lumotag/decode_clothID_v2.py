@@ -200,7 +200,7 @@ def get_approx_shape_and_bbox(
             cv2.circle(img_debug, (cX, cY), radius, 255, 1)
             sqr_sample_area = img[
                 cY-radius:cY+radius,
-                cX-radius:cX+radius]
+                cX-radius:cX+radius].copy()
             
             
 
@@ -225,10 +225,22 @@ def get_approx_shape_and_bbox(
                         y1=top_xy[1],
                         x2 = low_xy[0],
                         y2 = low_xy[1])
-                    col =0
+                    
+
+
+                    averages = []
+                    _step = 1
+                    sample_size = 2
+                    for i in range (0, len(sample_line), _step):
+                        sample_area = img[sample_line[i][0]-sample_size:sample_line[i][0]+sample_size, sample_line[i][1]-sample_size: sample_line[i][1]+sample_size]
+                        averages.append(sample_area.mean())
+
+                    for xy, ave_col in zip(sample_line, averages):
+                        img_debug[xy[1]-50,xy[0]-50] = ave_col
+
                     for xy in sample_line:
-                        img_debug[xy[1],xy[0]] = col
-                        col += 1
+                        img_debug[xy[1],xy[0]] = 255
+
                     cv2.drawContours(img_debug, [min_bbox], 0, 255)
                     dataobject.img_view_or_save_if_debug(img_debug, "testline")
                     crop_img = img_debug[y:y+h, x:x+w]

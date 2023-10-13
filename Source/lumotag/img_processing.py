@@ -7,7 +7,7 @@ import numpy as np
 from contextlib import contextmanager
 from typing import Iterator
 from dataclasses import dataclass
-from skimage.draw import line_aa
+from skimage.draw import line
 
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
@@ -301,6 +301,6 @@ def implant_internal_section(img, img_to_implant):
 
 
 def bresenham_line_ski(x1,y1,x2, y2):
-    rr, cc, _ = line_aa(x1,y1,x2, y2)
+    rr, cc = line(x1,y1,x2, y2)
     return [i for i in zip(rr, cc)]
 
