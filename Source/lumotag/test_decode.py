@@ -52,8 +52,8 @@ for img_filepath in input_imgs:
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
 
-    if img.shape != (500,500):
-        img = cv2.resize(img, (int(img.shape[1]/2),int(img.shape[0]/2)))
+    # if img.shape != (500,500):
+    #     img = cv2.resize(img, (int(img.shape[1]/2),int(img.shape[0]/2)))
 
     #img = cv2.resize(img, (img.shape[0]* 10,img.shape[1]* 10))
     #img = crop_in(img, pc_x=50, pc_y=50)

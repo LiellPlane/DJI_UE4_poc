@@ -198,47 +198,50 @@ def get_approx_shape_and_bbox(
             radius = 5
             # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
             cv2.circle(img_debug, (cX, cY), radius, 255, 1)
-            sqr_sample_area = img[
-                cY-radius:cY+radius,
-                cX-radius:cX+radius].copy()
-            
-            
 
             if w > 10 and h > 10: # arbitrary min size
-                if 0.7 < w/h < 1.3: # arbitrary ratio range
+                if 0.7 < w/h < 1.3: # arbitrary edge ratio range
                     crop_img = img_debug[y:y+h, x:x+w]
                     dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
                     #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
-                    inner_circle_mean = sqr_sample_area.mean()
-                    top_y_indx = np.argmin(min_bbox[:,0 ])
-                    low_y_index = np.argmax(min_bbox[:,0 ])
-                    top_x_indx = np.argmin(min_bbox[:,1 ])
-                    low_x_index = np.argmax(min_bbox[:,1 ])
 
-                    inner_circle_mean = sqr_sample_area.mean()
-                    top_xy = min_bbox[np.argmin(min_bbox[:,0 ])]
-                    low_xy = min_bbox[np.argmax(min_bbox[:,0 ])]
-                    cv2.circle(img_debug, tuple(top_xy), 3, 255, 1)
-                    cv2.circle(img_debug, tuple(low_xy), 3, 255, 1)
-                    sample_line = img_pro.bresenham_line_ski(
-                        x1=top_xy[0],
-                        y1=top_xy[1],
-                        x2 = low_xy[0],
-                        y2 = low_xy[1])
-                    
+                    cv2.circle(img_debug, tuple(min_bbox[0]), 3, 255, 1)
+                    cv2.circle(img_debug, tuple(min_bbox[2]), 3, 255, 1)
+                    cv2.circle(img_debug, tuple(min_bbox[1]), 3, 0, 1)
+                    cv2.circle(img_debug, tuple(min_bbox[3]), 3, 0, 1)
+                    sample_line1 = img_pro.bresenham_line_ski(
+                        x1=min_bbox[0][0],
+                        y1=min_bbox[0][1],
+                        x2 = min_bbox[2][0],
+                        y2 = min_bbox[2][1])
+                    sample_line2 = img_pro.bresenham_line_ski(
+                        x1=min_bbox[1][0],
+                        y1=min_bbox[1][1],
+                        x2 = min_bbox[3][0],
+                        y2 = min_bbox[3][1])
 
 
                     averages = []
+                    averages2 = []
                     _step = 1
-                    sample_size = 2
-                    for i in range (0, len(sample_line), _step):
-                        sample_area = img[sample_line[i][0]-sample_size:sample_line[i][0]+sample_size, sample_line[i][1]-sample_size: sample_line[i][1]+sample_size]
+                    sample_size = 1
+                    for i in range (sample_size, len(sample_line1)-sample_size, _step):
+                        sample_area = img[sample_line1[i][1]-sample_size:sample_line1[i][1]+sample_size, sample_line1[i][0]-sample_size: sample_line1[i][0]+sample_size]
                         averages.append(sample_area.mean())
+                    for i in range (sample_size, len(sample_line2)-sample_size, _step):
+                        sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
+                        averages2.append(sample_area.mean())
+                    try:
+                        for xy, ave_col in zip(sample_line1, averages):
+                            img_debug[xy[1]-50,xy[0]-50] = ave_col
+                        for xy, ave_col in zip(sample_line2, averages):
+                            img_debug[xy[1],xy[0]+50] = ave_col
+                    except Exception:
+                        pass
 
-                    for xy, ave_col in zip(sample_line, averages):
-                        img_debug[xy[1]-50,xy[0]-50] = ave_col
-
-                    for xy in sample_line:
+                    for xy in sample_line1:
+                        img_debug[xy[1],xy[0]] = 255
+                    for xy in sample_line2:
                         img_debug[xy[1],xy[0]] = 255
 
                     cv2.drawContours(img_debug, [min_bbox], 0, 255)
