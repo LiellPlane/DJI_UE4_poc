@@ -136,6 +136,31 @@ class ShapeItem:
     min_bbx_size: int
     shape: Shapes
     centre_x_y: list[int]
+    _2d_samples: list[list]
+
+
+def draw_pattern_output(image, patterndetails: ShapeItem):
+    """draw graphics for user if a pattern is found
+    TODO: maybe want floating numbers etc above this which
+    will eventually need a user registry"""
+    min_bbox = patterndetails.boundingbox_min
+    cX, cY = patterndetails.centre_x_y
+
+    # corners of square
+    cv2.circle(image, tuple(min_bbox[0]), 3, 255, 1)
+    cv2.circle(image, tuple(min_bbox[2]), 3, 255, 1)
+    cv2.circle(image, tuple(min_bbox[1]), 3, 0, 1)
+    cv2.circle(image, tuple(min_bbox[3]), 3, 0, 1)
+
+    # centre of pattern
+    cv2.circle(image, (cX, cY), 5, 255, 1)
+   
+    # bounding box of contour - this does not handle perspective
+    cv2.drawContours(image, [min_bbox], 0, 255)
+
+    #draw barcode sampling lines - for illustration only
+    # may not match exactly with generated sampled lines
+    cv2.line(image, start_point, end_point, color, thickness) 
 
 def get_approx_shape_and_bbox(
         contour,
@@ -154,6 +179,9 @@ def get_approx_shape_and_bbox(
     res, val = math_utils.filter_close_points(approx)
     if res is True:
         filtered_cont = val
+
+
+
     # occasionally we get a triangle or square with a blunt edge,
     # so remove this extra point by filtering outlier distances
 
@@ -165,12 +193,12 @@ def get_approx_shape_and_bbox(
     #     filtered_cont = val
     #int_angle = int(math_utils.get_internal_angles_of_shape(approx))
     
-    minRect = cv2.minAreaRect(approx)
-    min_bbox = cv2.boxPoints(minRect)
-    min_bbox = np.intp(min_bbox)
-    min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
+    # minRect = cv2.minAreaRect(approx)
+    # min_bbox = cv2.boxPoints(minRect)
+    # min_bbox = np.intp(min_bbox)
+    # min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
 
-    contour_pxl_cnt = cv2.contourArea(contour)
+    # contour_pxl_cnt = cv2.contourArea(contour)
     # can't make ellipse with <5 points
     # if len(contour) > 4:
     #     ellipse = cv2.fitEllipse(contour)
@@ -180,12 +208,19 @@ def get_approx_shape_and_bbox(
 
     # get centre
 
-
+    output = None
     shape_ = Shapes.UNKNOWN
     #test for square
     # TODO rough at moment
     # this is a pattern which is square with an inner circle
     if len(approx) in [4, 5, 6, 7, 8]:
+
+        minRect = cv2.minAreaRect(approx)
+        min_bbox = cv2.boxPoints(minRect)
+        min_bbox = np.intp(min_bbox)
+        min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
+        contour_pxl_cnt = cv2.contourArea(contour)
+
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
             
             # we know we have a square - lets see if it 
@@ -231,44 +266,47 @@ def get_approx_shape_and_bbox(
                     for i in range (sample_size, len(sample_line2)-sample_size, _step):
                         sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
                         averages2.append(sample_area.mean())
-                    try:
-                        for xy, ave_col in zip(sample_line1, averages):
-                            img_debug[xy[1]-50,xy[0]-50] = ave_col
-                        for xy, ave_col in zip(sample_line2, averages):
-                            img_debug[xy[1],xy[0]+50] = ave_col
-                    except Exception:
-                        pass
 
-                    for xy in sample_line1:
-                        img_debug[xy[1],xy[0]] = 255
-                    for xy in sample_line2:
-                        img_debug[xy[1],xy[0]] = 255
+                    if dataobject.debug == True:
+                        try:
+                            for xy, ave_col in zip(sample_line1, averages):
+                                img_debug[xy[1]-50,xy[0]-50] = ave_col
+                            for xy, ave_col in zip(sample_line2, averages):
+                                img_debug[xy[1],xy[0]+50] = ave_col
+                        except Exception:
+                            pass
 
-                    cv2.drawContours(img_debug, [min_bbox], 0, 255)
-                    dataobject.img_view_or_save_if_debug(img_debug, "testline")
-                    crop_img = img_debug[y:y+h, x:x+w]
-                    dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
+                        for xy in sample_line1:
+                            img_debug[xy[1],xy[0]] = 255
+                        for xy in sample_line2:
+                            img_debug[xy[1],xy[0]] = 255
+
+                        cv2.drawContours(img_debug, [min_bbox], 0, 255)
+                        dataobject.img_view_or_save_if_debug(img_debug, "testline")
+                        crop_img = img_debug[y:y+h, x:x+w]
+                        dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
                     shape_ = Shapes.SQUARE
 
-    if len(approx) in [3, 4, 5, 6]:
-        if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
-            if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):
-                shape_ = Shapes.TRIANGLE
+    # if len(approx) in [3, 4, 5, 6]:
+    #     if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
+    #         if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):
+    #             shape_ = Shapes.TRIANGLE
 
-    output = ShapeItem(
-        id=index,
-        approx_contour=approx,
-        default_contour=None,
-        filtered_contour=filtered_cont,
-        boundingbox=None,
-        boundingbox_min=min_bbox,
-        boundingbox_ellipse=None,
-        img_cut=None,
-        sum_int_angles=None,
-        size=contour_pxl_cnt,
-        min_bbx_size = cv2.contourArea(min_bbox),
-        shape=shape_,
-        centre_x_y=None)
+                    output = ShapeItem(
+                        id=index,
+                        approx_contour=approx,
+                        default_contour=None,
+                        filtered_contour=filtered_cont,
+                        boundingbox=None,
+                        boundingbox_min=min_bbox,
+                        boundingbox_ellipse=None,
+                        img_cut=None,
+                        sum_int_angles=None,
+                        size=contour_pxl_cnt,
+                        min_bbx_size = cv2.contourArea(min_bbox),
+                        shape=shape_,
+                        centre_x_y=[cX, cY],
+                        _2d_samples=[averages, averages2])
     
     return output
 
@@ -416,6 +454,7 @@ def analyse_candidates_shapematch(
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         for c in contour_stats:
+            if c is None: continue
             cv2.drawContours(img_bbxoes, [c.boundingbox_min], 0, (0,0,255))
             #if c.boundingbox_ellipse is not None:
             #    cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
@@ -425,9 +464,9 @@ def analyse_candidates_shapematch(
         dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
 
     # break out triangles and squares
-    squrs_found = [cont for cont in contour_stats if cont.shape == Shapes.SQUARE]
-    tris_found = [cont for cont in contour_stats if cont.shape == Shapes.TRIANGLE]
-    unknown_found = [cont for cont in contour_stats if cont.shape == Shapes.UNKNOWN]
+    squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
+    tris_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TRIANGLE]
+    unknown_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.UNKNOWN]
     filtered_objs = []#[cont for cont in contour_stats if type(cont.filtered_contour) != type(None) and len(cont.filtered_contour)>0]
 
 
