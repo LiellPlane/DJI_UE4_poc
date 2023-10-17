@@ -160,7 +160,8 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
 
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
-    cv2.line(image, start_point, end_point, color, thickness) 
+    cv2.line(image, tuple(min_bbox[0]), tuple(min_bbox[2]), 255, 2) 
+    cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), 255, 2) 
 
 def get_approx_shape_and_bbox(
         contour,
@@ -172,7 +173,10 @@ def get_approx_shape_and_bbox(
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
     
-    approx = cv2.approxPolyDP(contour, dataobject.approx_epsilon*cv2.arcLength(contour, True), True)
+    approx = cv2.approxPolyDP(
+        contour,
+        dataobject.approx_epsilon*cv2.arcLength(contour, True),
+        True)
 
     filtered_cont = None
     # filter close together points, sometimes outlier doesnt tend to work?
@@ -449,6 +453,8 @@ def analyse_candidates_shapematch(
     #             ROI,
     #             f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
 
+
+
     if dataobject.debug == True:
         img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
@@ -463,14 +469,13 @@ def analyse_candidates_shapematch(
         #dataobject.img_view_or_save_if_debug(img_bbxoes_2, "fit_ellipse")
         dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
 
-    # break out triangles and squares
-    squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
-    tris_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TRIANGLE]
-    unknown_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.UNKNOWN]
-    filtered_objs = []#[cont for cont in contour_stats if type(cont.filtered_contour) != type(None) and len(cont.filtered_contour)>0]
+        # break out triangles and squares
+        squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
+        tris_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TRIANGLE]
+        unknown_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.UNKNOWN]
+        filtered_objs = []#[cont for cont in contour_stats if type(cont.filtered_contour) != type(None) and len(cont.filtered_contour)>0]
 
 
-    if dataobject.debug == True:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in squrs_found:
@@ -482,7 +487,8 @@ def analyse_candidates_shapematch(
         dataobject.img_view_or_save_if_debug(
             debug_img,
             f"shapes_found_tri_sqr_unknown")
-    if dataobject.debug == True and len(squrs_found) > 0:
+
+    if  len(squrs_found) > 0:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in squrs_found:
@@ -490,7 +496,8 @@ def analyse_candidates_shapematch(
         dataobject.img_view_or_save_if_debug(
             debug_img,
             f"shapes_found_sqr")
-    if dataobject.debug == True and len(tris_found) > 0:
+
+    if  len(tris_found) > 0:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in tris_found:
@@ -498,7 +505,8 @@ def analyse_candidates_shapematch(
         dataobject.img_view_or_save_if_debug(
             debug_img,
             f"shapes_found_tri")
-    if dataobject.debug == True and len(unknown_found) > 0:
+
+    if len(unknown_found) > 0:
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in unknown_found:
@@ -521,12 +529,16 @@ def analyse_candidates_shapematch(
     #dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
     output_colour = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
 
-    for c in unknown_found:
-        cv2.drawContours(output_colour, [c.approx_contour], -1, (30,0,90), 3)
-    for c in squrs_found:
-        cv2.drawContours(output_colour, [c.approx_contour], -1, (0,255,0), 3)
-    for c in tris_found:
-        cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
+    for c in contour_stats:
+        if c is None: continue
+        draw_pattern_output(image=output_colour, patterndetails=c)
+
+    # for c in unknown_found:
+    #     cv2.drawContours(output_colour, [c.approx_contour], -1, (30,0,90), 3)
+    # for c in squrs_found:
+    #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,255,0), 3)
+    # for c in tris_found:
+    #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
     
     return output_colour
 
