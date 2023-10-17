@@ -24,19 +24,19 @@ def read_img(img_filepath):
 
 
 
-workingdata = decode_clothID.WorkingData(debug=True)
+workingdata = decode_clothID.WorkingData(debug=False )
 
 
 #input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_real_images")
 input_imgs = decode_clothID.GetAllFilesInFolder_Recursive(r"D:\lumotag_images_squarehole")
 print(f"{len(input_imgs)} images found")
- 
- 
+
+
 def crop_in(img, pc_x, pc_y):
      height, width = img.shape
      new_height = (pc_y /100) * height
      new_width = (pc_x /100) * width
-     crop_in_y = (height - new_height)/2
+     crop_in_y = (height - new_height)/2            
      crop_in_x = (width - new_width)/2
      #img is [width, height]
      return img[
