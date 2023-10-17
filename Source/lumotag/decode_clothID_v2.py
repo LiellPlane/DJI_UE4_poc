@@ -548,12 +548,13 @@ def analyse_candidates_shapematch(
         #    _, img_bbxoes = check_shape(c, dataobject, img_bbxoes, 0)
             
         #dataobject.img_view_or_save_if_debug(img_bbxoes, f"checkshape")
-    output_colour = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
-
-    for c in contour_stats:
-        if c is None: continue
-        draw_pattern_output(image=output_colour, patterndetails=c)
-
+    #output_colour = cv2.cvtColor(original_img, cv2.COLOR_GRAY2RGB)
+    # output_contour_data = []
+    # for c in contour_stats:
+    #     if c is None: continue
+    #     draw_pattern_output(image=output_colour, patterndetails=c)
+    #     output_contour_data.append(c)
+    output_contour_data = [c for c in contour_stats if c is not None]
     # for c in unknown_found:
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (30,0,90), 3)
     # for c in squrs_found:
@@ -561,7 +562,7 @@ def analyse_candidates_shapematch(
     # for c in tris_found:
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
     
-    return output_colour
+    return output_contour_data
 
 
 def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):
@@ -654,14 +655,14 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         return img_grayscale
 
     with time_it("analyse_candidates"):
-        output_img = analyse_candidates_shapematch(original_img=inputimg,
+        output_contour_data = analyse_candidates_shapematch(original_img=inputimg,
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)
     # if analyse_IDs is not None:
     #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
     #     return analyse_IDs, playerfound
-    return output_img
+    return output_contour_data
 
 
 
