@@ -662,6 +662,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     # if analyse_IDs is not None:
     #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
     #     return analyse_IDs, playerfound
+    
     return output_contour_data
 
 

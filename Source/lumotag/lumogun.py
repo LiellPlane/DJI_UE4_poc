@@ -193,9 +193,10 @@ def main():
                 contour_data = decode_clothID.find_lumotag(
                     central_img, workingdata)
                 for c in contour_data:
-                    decode_clothID.draw_pattern_output(
-                        image=central_img,
-                        patterndetails=c)
+                    if isinstance(c, decode_clothID.ShapeItem):
+                        decode_clothID.draw_pattern_output(
+                            image=central_img,
+                            patterndetails=c)
             #with time_it("replant internal image"):
             # with time_it("gun implant and display image"):
             #     display.display_output_with_implant(cap_img, central_img)
