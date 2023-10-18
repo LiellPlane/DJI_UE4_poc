@@ -68,13 +68,13 @@ def time_it(comment) -> Iterator[None]:
         yield
     finally:
         pass
-        # toc: float = time.perf_counter()
-        # output = f"{comment}:Computation time"
-        # time_ = f"{1000*(toc - tic):.3f}ms"
-        # buffer = ''.join(["="] * (60-len(output)))
-        # shiftbuff = len(str(int((1000*(toc - tic))//1)))
-        # buffer = buffer[0:-shiftbuff]
-        # print(output + buffer + time_)
+        toc: float = time.perf_counter()
+        output = f"{comment}:Computation time"
+        time_ = f"{1000*(toc - tic):.3f}ms"
+        buffer = ''.join(["="] * (60-len(output)))
+        shiftbuff = len(str(int((1000*(toc - tic))//1)))
+        buffer = buffer[0:-shiftbuff]
+        print(output + buffer + time_)
 class TimeDiffObject:
     """stopwatch function"""
     def __init__(self) -> None:

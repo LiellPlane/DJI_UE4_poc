@@ -1,5 +1,7 @@
 
 #!/bin/bash
+# run this on raspberry pi in user folder (~/)
+# do not run from within repo so copy the file out into ~/
 sudo apt update
 sudo apt upgrade -y
 sudo rpi-update -y
@@ -11,7 +13,7 @@ sudo apt-get install build-essential cmake pkg-config libjpeg-dev libtiff5-dev l
 sudo apt-get install python3-opencv -y
 sudo pip3 install adafruit-circuitpython-lis3dh
 sudo apt-get install git
-sudo apt-get install python-skimage
+sudo apt-get install python3-skimage -y
 
 # dont use ~/ here - doesnt seem to download to correct place
 cd /home/lumotag/
