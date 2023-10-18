@@ -188,19 +188,24 @@ def get_approx_shape_and_bbox(
         return None
     # filter by how much of ideal square is taken up by contour area
     # with extreme perspective this will not be sufficient
+
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.80):
         return None
+
+    if w/h < 0.7 or w/h > 1.3:
+        return None
+
 
     approx = cv2.approxPolyDP(
         contour,
         dataobject.approx_epsilon*cv2.arcLength(contour, True),
         True)
 
-    filtered_cont = None
-    # filter close together points, sometimes outlier doesnt tend to work?
-    res, val = math_utils.filter_close_points(approx)
-    if res is True:
-        filtered_cont = val
+    # filtered_cont = None
+    # # filter close together points, sometimes outlier doesnt tend to work?
+    # res, val = math_utils.filter_close_points(approx)
+    # if res is True:
+    #     filtered_cont = val
 
 
 
@@ -247,91 +252,89 @@ def get_approx_shape_and_bbox(
             
             # we know we have a square - lets see if it 
             # has the internal inverse colour circle pattern
-            img_debug = img.copy()
+            
             moments = cv2.moments(contour)
-            x, y, w, h = cv2.boundingRect(contour)
             cX = int(moments["m10"] / moments["m00"])
             cY = int(moments["m01"] / moments["m00"])
-            radius = 5
             # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
             
-
-            if w > 10 and h > 10: # arbitrary min size
-                if 0.7 < w/h < 1.3: # arbitrary edge ratio range
+            
+                 # arbitrary edge ratio range
 
                     #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
 
+            
+            sample_line1 = img_pro.bresenham_line_ski(
+                x1=min_bbox[0][0],
+                y1=min_bbox[0][1],
+                x2 = min_bbox[2][0],
+                y2 = min_bbox[2][1])
+            sample_line2 = img_pro.bresenham_line_ski(
+                x1=min_bbox[1][0],
+                y1=min_bbox[1][1],
+                x2 = min_bbox[3][0],
+                y2 = min_bbox[3][1])
 
-                    sample_line1 = img_pro.bresenham_line_ski(
-                        x1=min_bbox[0][0],
-                        y1=min_bbox[0][1],
-                        x2 = min_bbox[2][0],
-                        y2 = min_bbox[2][1])
-                    sample_line2 = img_pro.bresenham_line_ski(
-                        x1=min_bbox[1][0],
-                        y1=min_bbox[1][1],
-                        x2 = min_bbox[3][0],
-                        y2 = min_bbox[3][1])
+            
+            averages = []
+            averages2 = []
+            _step = max(int((math.floor(len(sample_line1)) / 90)), 1)
+            sample_size = 1
+            for i in range (sample_size, len(sample_line1)-sample_size, _step):
+                sample_area = img[sample_line1[i][1]-sample_size:sample_line1[i][1]+sample_size, sample_line1[i][0]-sample_size: sample_line1[i][0]+sample_size]
+                averages.append(sample_area.mean())
+            for i in range (sample_size, len(sample_line2)-sample_size, _step):
+                sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
+                averages2.append(sample_area.mean())
 
+            if dataobject.debug == True:
+                img_debug = img.copy()
+                cv2.circle(img_debug, (cX, cY), 5, 255, 1)
+                crop_img = img_debug[y:y+h, x:x+w]
+                dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+                cv2.circle(img_debug, tuple(min_bbox[0]), 3, 255, 1)
+                cv2.circle(img_debug, tuple(min_bbox[2]), 3, 255, 1)
+                cv2.circle(img_debug, tuple(min_bbox[1]), 3, 0, 1)
+                cv2.circle(img_debug, tuple(min_bbox[3]), 3, 0, 1)
+                try:
+                    for xy, ave_col in zip(sample_line1, averages):
+                        img_debug[xy[1]-50,xy[0]-50] = ave_col
+                    for xy, ave_col in zip(sample_line2, averages):
+                        img_debug[xy[1],xy[0]+50] = ave_col
+                except Exception:
+                    pass
 
-                    averages = []
-                    averages2 = []
-                    _step = 1
-                    sample_size = 1
-                    for i in range (sample_size, len(sample_line1)-sample_size, _step):
-                        sample_area = img[sample_line1[i][1]-sample_size:sample_line1[i][1]+sample_size, sample_line1[i][0]-sample_size: sample_line1[i][0]+sample_size]
-                        averages.append(sample_area.mean())
-                    for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                        sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
-                        averages2.append(sample_area.mean())
+                for xy in sample_line1:
+                    img_debug[xy[1],xy[0]] = 255
+                for xy in sample_line2:
+                    img_debug[xy[1],xy[0]] = 255
 
-                    if dataobject.debug == True:
-                        cv2.circle(img_debug, (cX, cY), 5, 255, 1)
-                        crop_img = img_debug[y:y+h, x:x+w]
-                        dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-                        cv2.circle(img_debug, tuple(min_bbox[0]), 3, 255, 1)
-                        cv2.circle(img_debug, tuple(min_bbox[2]), 3, 255, 1)
-                        cv2.circle(img_debug, tuple(min_bbox[1]), 3, 0, 1)
-                        cv2.circle(img_debug, tuple(min_bbox[3]), 3, 0, 1)
-                        try:
-                            for xy, ave_col in zip(sample_line1, averages):
-                                img_debug[xy[1]-50,xy[0]-50] = ave_col
-                            for xy, ave_col in zip(sample_line2, averages):
-                                img_debug[xy[1],xy[0]+50] = ave_col
-                        except Exception:
-                            pass
+                cv2.drawContours(img_debug, [min_bbox], 0, 255)
+                dataobject.img_view_or_save_if_debug(img_debug, "testline")
+                crop_img = img_debug[y:y+h, x:x+w]
+                dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
+            shape_ = Shapes.SQUARE
 
-                        for xy in sample_line1:
-                            img_debug[xy[1],xy[0]] = 255
-                        for xy in sample_line2:
-                            img_debug[xy[1],xy[0]] = 255
+# if len(approx) in [3, 4, 5, 6]:
+#     if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
+#         if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):
+#             shape_ = Shapes.TRIANGLE
 
-                        cv2.drawContours(img_debug, [min_bbox], 0, 255)
-                        dataobject.img_view_or_save_if_debug(img_debug, "testline")
-                        crop_img = img_debug[y:y+h, x:x+w]
-                        dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
-                    shape_ = Shapes.SQUARE
-
-    # if len(approx) in [3, 4, 5, 6]:
-    #     if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
-    #         if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):
-    #             shape_ = Shapes.TRIANGLE
-
-                    output = ShapeItem(
-                        id=index,
-                        approx_contour=approx,
-                        default_contour=None,
-                        filtered_contour=filtered_cont,
-                        boundingbox=None,
-                        boundingbox_min=min_bbox,
-                        boundingbox_ellipse=None,
-                        img_cut=None,
-                        sum_int_angles=None,
-                        size=contour_pxl_cnt,
-                        min_bbx_size = cv2.contourArea(min_bbox),
-                        shape=shape_,
-                        centre_x_y=[cX, cY],
-                        _2d_samples=[averages, averages2])
+            output = ShapeItem(
+                id=index,
+                approx_contour=approx,
+                default_contour=None,
+                filtered_contour=None,
+                boundingbox=None,
+                boundingbox_min=min_bbox,
+                boundingbox_ellipse=None,
+                img_cut=None,
+                sum_int_angles=None,
+                size=contour_pxl_cnt,
+                min_bbx_size = cv2.contourArea(min_bbox),
+                shape=shape_,
+                centre_x_y=[cX, cY],
+                _2d_samples=[averages, averages2])
     
     return output
 
@@ -604,14 +607,16 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #orig_img = img.copy()
     
     #~3ms for grayscale
-    with time_it("pre-processing/filtering"):
+    with time_it("pre-processing/filtering total"):
         #print("equalisation")
-        img_op = cv2.blur(img_grayscale,(7,7)) # fastest filter
-        dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
+        with time_it("pre-processing/filtering: blur"):
+            img_op = cv2.blur(img_grayscale,(7,7)) # fastest filter
+            dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
 
-        img_op=img_pro.clahe_equalisation(img_op.copy(), dataobject.claheprocessor)
-        dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
-        ''''test area'''
+        with time_it("pre-processing/filtering: clahe_equalisation"):
+            img_op=img_pro.clahe_equalisation(img_op, dataobject.claheprocessor)
+            dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
+            ''''test area'''
    
    #this section about 25ms
     #with time_it():
@@ -634,10 +639,11 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
 
         #squr_img=edge_img(gray_orig)
-        img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
-        # squr_img=img_pro.simple_canny(
-        #     blurred_img=squr_img,
-        #     lower=0,
+        with time_it("pre-processing/filtering: threshold_img_static"):
+            img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
+            # squr_img=img_pro.simple_canny(
+            #     blurred_img=squr_img,
+            #     lower=0,
         #     upper=255)
 
         dataobject.img_view_or_save_if_debug(img_op, "thresholdimg")

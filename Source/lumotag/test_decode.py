@@ -51,7 +51,7 @@ for img_filepath in input_imgs:
     img = read_img(img_filepath)
     workingdata.debug_subfldr = img_filepath.split("\\")[-1].split(".jpg")[-2]
     img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-
+    img = cv2.resize(img, (int(img.shape[1]*10),int(img.shape[0]*10)))
     # if img.shape != (500,500):
     #     img = cv2.resize(img, (int(img.shape[1]/2),int(img.shape[0]/2)))
 
