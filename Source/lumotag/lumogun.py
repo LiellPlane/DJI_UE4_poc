@@ -185,17 +185,17 @@ def main():
             with time_it("get next image"):
                 cap_img = next(image_capture)
                 #print(cap_img.shape)
-            with time_it("gun get central img"):
-                central_img, (left, right, top, lower) = img_processing.get_internal_section(
-                    cap_img,
-                    GUN_CONFIGURATION.internal_img_crop)
+            # with time_it("gun get central img"):
+            #     central_img, (left, right, top, lower) = img_processing.get_internal_section(
+            #         cap_img,
+            #         GUN_CONFIGURATION.internal_img_crop)
             with time_it("gun total analysis time"):
                 contour_data = decode_clothID.find_lumotag(
-                    central_img, workingdata)
+                    cap_img, workingdata)
                 for c in contour_data:
                     if isinstance(c, decode_clothID.ShapeItem):
                         decode_clothID.draw_pattern_output(
-                            image=central_img,
+                            image=cap_img,
                             patterndetails=c)
             #with time_it("replant internal image"):
             # with time_it("gun implant and display image"):
@@ -203,7 +203,7 @@ def main():
             #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
             #with time_it("gun display"):
             #    display.display_output(fart)
-            display.display_output(central_img)
+            display.display_output(cap_img)
     raise RuntimeError("something broke out of loop")
 
 def test_strobe():
