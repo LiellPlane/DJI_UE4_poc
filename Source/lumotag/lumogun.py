@@ -56,7 +56,7 @@ def main():
     
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
-    image_capture = lumogun.CSI_Camera_Async(GUN_CONFIGURATION.video_modes)
+    image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
 
     voice.speak("cam")
     img = next(image_capture)
@@ -171,7 +171,7 @@ def main():
                 # debugging code to capture images
                 if image_capture.last_img is not None:
                     file_system.save_image(image_capture.last_img)
-                    central_img = img_processing.get_internal_section(
+                    central_img, _ = img_processing.get_internal_section(
                                 image_capture.last_img,
                                 GUN_CONFIGURATION.internal_img_crop)
                     file_system.save_image(central_img)

@@ -175,6 +175,11 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
         super().__init__(video_modes, SynthImgGen)
 
 
+class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
+    
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, SynthImgGen)
+
 class display(factory.display):
 
 

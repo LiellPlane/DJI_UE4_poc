@@ -332,7 +332,6 @@ class ImageGenerator(ABC):
     def get_image(self):
         pass
 
-
 class Camera(ABC):
 
     def __init__(self, video_modes) -> None:
@@ -380,6 +379,147 @@ class Camera_synchronous(Camera):
         return img
 
 
+class Camera_async_flipflop(Camera):
+    """for each iteration call, the shared memory buffer is
+    alternated to give other processes time to analyse
+    
+    another shared memory mechanism is used to determine which is
+    the static buffer (not to be overwritten) during async capture of
+    next image"""
+    def __init__(self, video_modes, imagegen_cls) -> None:
+        super().__init__(video_modes)
+        self.res_select = 0
+        self.last_img = None
+        self.handshake_queue = Queue(maxsize=1)
+        self.process = None
+        self.shared_mem_handler = []
+        self.shared_mem_index = None
+        self._shared_id_index_name = "whatever"
+        # this has to be after initialising self.cam_res
+        self.imagegen_cls = imagegen_cls
+        # this would be nice to have in a __post_init__ type thing
+        self.configure_shared_memory()
+ 
+    def configure_shared_memory(self):
+        # we need to get shape of image first to
+        # create memory buffer
+        # don't call this before everything else has been initialised!
+
+        img_byte_size = reduce(
+            lambda acc, curr: acc * curr, self.get_res())
+
+
+        # we add more than 1 instance of shared memory
+        self.shared_mem_handler.append(SharedMemory(
+                            obj_bytesize=img_byte_size,
+                            discrete_ids=["0"]
+                                        ))
+
+        self.shared_mem_handler.append(SharedMemory(
+                            obj_bytesize=img_byte_size,
+                            discrete_ids=["1"]
+                                        ))
+        self.shared_mem_index = SharedMemory(
+                            obj_bytesize=img_byte_size,
+                            discrete_ids=[self._shared_id_index_name]
+                                        )
+
+        memblock_0 = self.shared_mem_handler[0].mem_ids["0"]
+        memblock_1 = self.shared_mem_handler[1].mem_ids["1"]
+        memblock_index = self.shared_mem_index.mem_ids[
+            self._shared_id_index_name]
+
+        func_args = (
+            self.handshake_queue,
+            memblock_0, memblock_1, memblock_index,
+            self.get_res(),
+            self.imagegen_cls)
+
+        process = Process(
+            target=self.async_img_loop,
+            args=func_args,
+            daemon=True)
+
+        process.start()
+
+    def __next__(self):
+        return self.gen_image()
+
+    def gen_image(self):
+        # popping the queue item unblocks image sender
+        safe_id = self.handshake_queue.get(
+                        block=True,
+                        timeout=None
+                        )
+
+        strm_buff = self.shared_mem_handler[
+            int(safe_id)].mem_ids[safe_id].buf
+
+        if not self.get_is_reversed():
+            img_buff = np.frombuffer(
+                strm_buff,
+                dtype=('uint8')
+                    ).reshape(self.get_res())
+        else:
+            img_buff = np.frombuffer(
+                strm_buff,
+                dtype=('uint8')
+                    ).reshape(tuple(reversed(self.get_res())))
+
+        #if len(img_buff.shape) == 3:
+        #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
+
+        self.last_img = img_buff
+
+        return img_buff
+
+    def async_img_loop(
+        self,
+        myqueue: Queue,
+        memblock_0: shared_memory.SharedMemory,
+        memblock_1: shared_memory.SharedMemory,
+        memblock_index: shared_memory.SharedMemory,
+        res: tuple,
+        img_gen: ImageGenerator):
+
+        _img_gen = img_gen(res)
+
+        shared_mem_0 = None
+        shared_mem_1 = None
+        shared_curr_id_quick = np.ndarray(
+            [1],
+            'i1',
+            memblock_index.buf)
+        
+
+        while True:
+            img = _img_gen.get_image()
+            # one-time initialise buffer
+            if shared_mem_0 is None:
+                shared_mem_0: np.ndarray = np.ndarray(
+                img.shape,
+                dtype=img.dtype,
+                buffer=memblock_0.buf
+            )
+            if shared_mem_1 is None:
+                shared_mem_1: np.ndarray = np.ndarray(
+                img.shape,
+                dtype=img.dtype,
+                buffer=memblock_1.buf
+            )
+
+            safe_shared_mem = str(shared_curr_id_quick[0])
+            if shared_curr_id_quick == [1]:
+                shared_mem_1[:] = img[:]
+                shared_curr_id_quick = [0]
+            elif shared_curr_id_quick == [0]:
+                shared_mem_0[:] = img[:]
+                shared_curr_id_quick = [1]
+            else:
+                raise Exception("Invalid buffer ID")
+            #blocking put until consumer handshakes
+            myqueue.put(safe_shared_mem, block=True, timeout=None)
+            
 
 class Camera_async(Camera):
     
@@ -447,8 +587,6 @@ class Camera_async(Camera):
                 dtype=('uint8')
                     ).reshape(tuple(reversed(self.get_res())))
 
-
-        
         #if len(img_buff.shape) == 3:
         #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
 
