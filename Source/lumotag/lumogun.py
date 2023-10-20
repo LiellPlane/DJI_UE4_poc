@@ -7,6 +7,7 @@ from functools import partial
 import msgs
 import time
 import decode_clothID_v2 as decode_clothID
+import analyse_lumotag
 import img_processing
 from utils import time_it, get_platform, _OS
 # need this import to detect lumogun types (subclasses)
@@ -57,6 +58,7 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(sharedmem_buffs=image_capture.get_mem_buffers())
 
     voice.speak("cam")
     img = next(image_capture)

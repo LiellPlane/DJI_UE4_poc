@@ -14,6 +14,7 @@ from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
 from math import floor
+from analyse_lumotag import SharedMemoryMap
 RELAY_BOUNCE_S = 0.02
 
 
@@ -395,11 +396,17 @@ class Camera_async_flipflop(Camera):
         self.shared_mem_handler = []
         self.shared_mem_index = None
         self._shared_id_index_name = "whatever"
+        self._store_res = None
         # this has to be after initialising self.cam_res
         self.imagegen_cls = imagegen_cls
         # this would be nice to have in a __post_init__ type thing
         self.configure_shared_memory()
  
+    def get_mem_buffers(self) -> dict:
+        return (
+            {0: self.shared_mem_handler[0].mem_ids["0"],
+            1: self.shared_mem_handler[1].mem_ids["1"]})
+
     def configure_shared_memory(self):
         # we need to get shape of image first to
         # create memory buffer
@@ -453,21 +460,22 @@ class Camera_async_flipflop(Camera):
                         )
 
         strm_buff = self.shared_mem_handler[
-            int(safe_id)].mem_ids[safe_id].buf
+            int(safe_id.index)].mem_ids[str(safe_id.index)].buf
 
         if not self.get_is_reversed():
+            if self._store_res is None:
+                self._store_res = self.get_res()
             img_buff = np.frombuffer(
                 strm_buff,
                 dtype=('uint8')
-                    ).reshape(self.get_res())
+                    ).reshape(self._store_res)
         else:
+            if self._store_res is None:
+                self._store_res = tuple(reversed(self.get_res()))
             img_buff = np.frombuffer(
                 strm_buff,
                 dtype=('uint8')
-                    ).reshape(tuple(reversed(self.get_res())))
-
-        #if len(img_buff.shape) == 3:
-        #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)
+                    ).reshape(self._store_res)
 
         self.last_img = img_buff
 
@@ -508,7 +516,9 @@ class Camera_async_flipflop(Camera):
                 buffer=memblock_1.buf
             )
 
-            safe_shared_mem = str(shared_curr_id_quick[0])
+            output = SharedMemoryMap(
+                index=shared_curr_id_quick[0],
+                res=self._store_res)
             if shared_curr_id_quick == [1]:
                 shared_mem_1[:] = img[:]
                 shared_curr_id_quick = [0]
@@ -518,7 +528,8 @@ class Camera_async_flipflop(Camera):
             else:
                 raise Exception("Invalid buffer ID")
             #blocking put until consumer handshakes
-            myqueue.put(safe_shared_mem, block=True, timeout=None)
+            
+            myqueue.put(output, block=True, timeout=None)
             
 
 class Camera_async(Camera):
