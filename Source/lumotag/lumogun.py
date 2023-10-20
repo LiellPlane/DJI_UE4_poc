@@ -58,8 +58,9 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(sharedmem_buffs=image_capture.get_mem_buffers())
-
+    #image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(sharedmem_buffs=image_capture.get_mem_buffers())
+    #image_analysis.trigger_analysis(next(image_capture))
+    #time.sleep(100000)
     voice.speak("cam")
     img = next(image_capture)
     if img is None:

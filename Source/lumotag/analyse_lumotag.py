@@ -29,7 +29,13 @@ class ImageAnalyser_shared_mem():
             daemon=True)
 
         process.start()
-    
+
+    def trigger_analysis(self, mapped_details: SharedMemoryMap):
+        self.input_shared_mem_index_q.put(
+            mapped_details,
+            block=True,
+            timeout=None)
+
     def async_imganalysis_loop(
             self,
             input_shared_mem_index_q,
@@ -49,7 +55,7 @@ class ImageAnalyser_shared_mem():
             # information (index, resolution of image)
             # from the input queue (usually from image generator)
             img_buff = np.frombuffer(
-                sharedmem_bufs[shared_details.index],
+                sharedmem_bufs[shared_details.index].buf,
                 dtype=('uint8')
                     ).reshape(shared_details.res)
 

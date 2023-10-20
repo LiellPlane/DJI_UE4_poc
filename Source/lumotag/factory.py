@@ -401,7 +401,13 @@ class Camera_async_flipflop(Camera):
         self.imagegen_cls = imagegen_cls
         # this would be nice to have in a __post_init__ type thing
         self.configure_shared_memory()
- 
+        #  hack to get around confusion with different combinations
+        #  of screens orientations and camera resolutions
+        if not self.get_is_reversed():
+            self._store_res = self.get_res()
+        else:
+            self._store_res = tuple(reversed(self.get_res()))
+
     def get_mem_buffers(self) -> dict:
         return (
             {0: self.shared_mem_handler[0].mem_ids["0"],
@@ -454,28 +460,18 @@ class Camera_async_flipflop(Camera):
 
     def gen_image(self):
         # popping the queue item unblocks image sender
-        safe_id = self.handshake_queue.get(
+        mem_details = self.handshake_queue.get(
                         block=True,
                         timeout=None
                         )
 
         strm_buff = self.shared_mem_handler[
-            int(safe_id.index)].mem_ids[str(safe_id.index)].buf
+            int(mem_details.index)].mem_ids[str(mem_details.index)].buf
 
-        if not self.get_is_reversed():
-            if self._store_res is None:
-                self._store_res = self.get_res()
-            img_buff = np.frombuffer(
-                strm_buff,
-                dtype=('uint8')
-                    ).reshape(self._store_res)
-        else:
-            if self._store_res is None:
-                self._store_res = tuple(reversed(self.get_res()))
-            img_buff = np.frombuffer(
-                strm_buff,
-                dtype=('uint8')
-                    ).reshape(self._store_res)
+        img_buff = np.frombuffer(
+            strm_buff,
+            dtype=('uint8')
+                ).reshape(self._store_res)
 
         self.last_img = img_buff
 
