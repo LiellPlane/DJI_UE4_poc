@@ -14,7 +14,13 @@ from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
 from math import floor
-from analyse_lumotag import SharedMem_ImgTicket
+try:
+    from analyse_lumotag import SharedMem_ImgTicket
+except Exception:
+    # TODO
+    print("this must be scambilight - bad solution please fix TODO")
+
+
 RELAY_BOUNCE_S = 0.02
 
 
