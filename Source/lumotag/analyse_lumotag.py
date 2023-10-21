@@ -64,6 +64,6 @@ class ImageAnalyser_shared_mem():
                     dtype=('uint8')
                         )[0:bytesize].reshape(shared_details.res)
                 contour_data = decode_clothID.find_lumotag(
-                    img_buff, workingdata)
+                    img_buff[0:500,0:500], workingdata)
             #analysis_output_q.put(img_buff, block=True, timeout=None)
 
