@@ -72,7 +72,7 @@ def main():
 
     voice.speak("ok")
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
-    workingdata = decode_clothID.WorkingData()
+    #workingdata = decode_clothID.WorkingData()
     file_system = lumogun.filesystem()
     voice.speak("all devices healthy")
 
@@ -186,23 +186,21 @@ def main():
         with time_it("gun image stuff TOTAL"):
             with time_it("get next image"):
                 cap_img = next(image_capture)
-                #print(cap_img.shape)
-            with time_it("set off async image analysis"):
-                # this is bad code - should come as package with the image -
-                # but in easy of modularity have to do it like this for now
-                image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
+            # this is bad code - should come as package with the image -
+            # but in easy of modularity have to do it like this for now
+            image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
             with time_it("gun get central img"):
                 central_img, (left, right, top, lower) = img_processing.get_internal_section(
                     cap_img,
                     GUN_CONFIGURATION.internal_img_crop)
-            with time_it("gun total analysis time"):
-                contour_data = decode_clothID.find_lumotag(
-                    central_img, workingdata)
-                for c in contour_data:
-                    if isinstance(c, decode_clothID.ShapeItem):
-                        decode_clothID.draw_pattern_output(
-                            image=central_img,
-                            patterndetails=c)
+            # with time_it("gun total analysis time"):
+            #     contour_data = decode_clothID.find_lumotag(
+            #         central_img, workingdata)
+            #     for c in contour_data:
+            #         if isinstance(c, decode_clothID.ShapeItem):
+            #             decode_clothID.draw_pattern_output(
+            #                 image=central_img,
+            #                 patterndetails=c)
             #with time_it("replant internal image"):
             # with time_it("gun implant and display image"):
             #     display.display_output_with_implant(cap_img, central_img)

@@ -3,7 +3,8 @@ import decode_clothID_v2 as decode_clothID
 from multiprocessing import Process, Queue, shared_memory
 from dataclasses import dataclass
 import numpy as np
-import cv2
+from functools import reduce
+from utils import time_it
 
 @dataclass
 class SharedMem_ImgTicket:
@@ -20,6 +21,7 @@ class ImageAnalyser_shared_mem():
         self.safe_index = None
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
+        
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -41,7 +43,7 @@ class ImageAnalyser_shared_mem():
             self,
             input_shared_mem_index_q,
             analysis_output_q):
-
+        workingdata = decode_clothID.WorkingData()
         while True:
             # get index of last image buffer - this will be safe
             # until two conditions are met:
@@ -51,14 +53,17 @@ class ImageAnalyser_shared_mem():
                 block=True,
                 timeout=None
                 )
-            # grab the image out of shared memory using the
-            # information (index, resolution of image)
-            # from the input queue (usually from image generator)
-            print("got image")
-            img_buff = np.frombuffer(
-                self.sharedmem_bufs[shared_details.index].buf,
-                dtype=('uint8')
-                    )[0:2020*1080].reshape(2020, 1080)
-
+            with time_it("analyse lumotag"):
+                # shared memory is in chunks of 4096 - so have to slice it
+                bytesize = reduce((lambda x, y: x * y), shared_details.res)
+                # grab the image out of shared memory using the
+                # information (index, resolution of image)
+                # from the input queue (usually from image generator)
+                img_buff = np.frombuffer(
+                    self.sharedmem_bufs[shared_details.index].buf,
+                    dtype=('uint8')
+                        )[0:bytesize].reshape(shared_details.res)
+                # contour_data = decode_clothID.find_lumotag(
+                #     img_buff, workingdata)
             #analysis_output_q.put(img_buff, block=True, timeout=None)
 
