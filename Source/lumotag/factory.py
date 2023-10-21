@@ -533,8 +533,7 @@ class Camera_async_flipflop(Camera):
             else:
                 raise Exception("Invalid buffer ID")
             #blocking put until consumer handshakes
-            shared_mem_0 = None
-            shared_mem_1 = None
+
             myqueue.put(output, block=True, timeout=None)
             
 
