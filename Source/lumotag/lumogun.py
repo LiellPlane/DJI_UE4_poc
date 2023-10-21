@@ -209,6 +209,7 @@ def main():
             #    display.display_output(fart)
             with time_it("display image time"):
                 display.display_output(central_img)
+            image_analysis.analysis_output_q.get(block=True, timeout=None)
     raise RuntimeError("something broke out of loop")
 
 def test_strobe():

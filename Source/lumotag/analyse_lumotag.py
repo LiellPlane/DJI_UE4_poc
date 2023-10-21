@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import numpy as np
 from functools import reduce
 from utils import time_it
+import time
 
 @dataclass
 class SharedMem_ImgTicket:
@@ -65,5 +66,6 @@ class ImageAnalyser_shared_mem():
                         )[0:bytesize].reshape(shared_details.res)
                 contour_data = decode_clothID.find_lumotag(
                     img_buff[0:500,0:500], workingdata)
-            #analysis_output_q.put(img_buff, block=True, timeout=None)
+
+            analysis_output_q.put(img_buff, block=True, timeout=None)
 
