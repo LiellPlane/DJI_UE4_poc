@@ -59,7 +59,6 @@ def main():
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     #image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(sharedmem_buffs=image_capture.get_mem_buffers())
-    #image_analysis.trigger_analysis(next(image_capture))
     #time.sleep(100000)
     voice.speak("cam")
     img = next(image_capture)
@@ -188,6 +187,10 @@ def main():
             with time_it("get next image"):
                 cap_img = next(image_capture)
                 #print(cap_img.shape)
+            # with time_it("set off async image analysis"):
+            #     # this is bad code - should come as package with the image -
+            #     # but in easy of modularity have to do it like this for now
+            #     image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
             with time_it("gun get central img"):
                 central_img, (left, right, top, lower) = img_processing.get_internal_section(
                     cap_img,

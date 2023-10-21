@@ -5,9 +5,10 @@ from dataclasses import dataclass
 import numpy as np
 
 @dataclass
-class SharedMemoryMap:
+class SharedMem_ImgTicket:
     index: int
     res: dict
+    buf_size: any
 
 
 class ImageAnalyser_shared_mem():
@@ -20,8 +21,7 @@ class ImageAnalyser_shared_mem():
         self.analysis_output_q = Queue(maxsize=1)
         func_args = (
             self.input_shared_mem_index_q,
-            self.analysis_output_q,
-            self.sharedmem_bufs)
+            self.analysis_output_q)
 
         process = Process(
             target=self.async_imganalysis_loop,
@@ -30,7 +30,7 @@ class ImageAnalyser_shared_mem():
 
         process.start()
 
-    def trigger_analysis(self, mapped_details: SharedMemoryMap):
+    def trigger_analysis(self, mapped_details: SharedMem_ImgTicket):
         self.input_shared_mem_index_q.put(
             mapped_details,
             block=True,
@@ -39,8 +39,7 @@ class ImageAnalyser_shared_mem():
     def async_imganalysis_loop(
             self,
             input_shared_mem_index_q,
-            analysis_output_q,
-            sharedmem_bufs):
+            analysis_output_q):
 
         while True:
             # get index of last image buffer - this will be safe
@@ -54,9 +53,11 @@ class ImageAnalyser_shared_mem():
             # grab the image out of shared memory using the
             # information (index, resolution of image)
             # from the input queue (usually from image generator)
+
             img_buff = np.frombuffer(
-                sharedmem_bufs[shared_details.index].buf,
+                shared_memory.SharedMemory(name=self.sharedmem_bufs[shared_details.index]).buf,
                 dtype=('uint8')
                     ).reshape(shared_details.res)
 
             analysis_output_q.put(img_buff, block=True, timeout=None)
+

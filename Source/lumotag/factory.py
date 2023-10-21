@@ -14,7 +14,7 @@ from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
 from math import floor
-from analyse_lumotag import SharedMemoryMap
+from analyse_lumotag import SharedMem_ImgTicket
 RELAY_BOUNCE_S = 0.02
 
 
@@ -397,21 +397,23 @@ class Camera_async_flipflop(Camera):
         self.shared_mem_index = None
         self._shared_id_index_name = "whatever"
         self._store_res = None
+        self.get_safe_mem_details = None
+        if not self.get_is_reversed():
+            self._store_res = self.get_res()
+        else:
+            self._store_res = tuple(reversed(self.get_res()))
         # this has to be after initialising self.cam_res
         self.imagegen_cls = imagegen_cls
         # this would be nice to have in a __post_init__ type thing
         self.configure_shared_memory()
         #  hack to get around confusion with different combinations
         #  of screens orientations and camera resolutions
-        if not self.get_is_reversed():
-            self._store_res = self.get_res()
-        else:
-            self._store_res = tuple(reversed(self.get_res()))
+
 
     def get_mem_buffers(self) -> dict:
         return (
-            {0: self.shared_mem_handler[0].mem_ids["0"],
-            1: self.shared_mem_handler[1].mem_ids["1"]})
+            {0: self.shared_mem_handler[0].mem_ids["0"].name,
+            1: self.shared_mem_handler[1].mem_ids["1"].name})
 
     def configure_shared_memory(self):
         # we need to get shape of image first to
@@ -475,6 +477,11 @@ class Camera_async_flipflop(Camera):
 
         self.last_img = img_buff
 
+        self.get_safe_mem_details = SharedMem_ImgTicket(
+            index=mem_details.index,
+            res=mem_details.res,
+            buf_size=mem_details.buf_size)
+
         return img_buff
 
     def async_img_loop(
@@ -512,9 +519,11 @@ class Camera_async_flipflop(Camera):
                 buffer=memblock_1.buf
             )
 
-            output = SharedMemoryMap(
+            output = SharedMem_ImgTicket(
                 index=shared_curr_id_quick[0],
-                res=self._store_res)
+                res=self._store_res,
+                buf_size=[memblock_1.buf.shape, memblock_1.buf.shape])
+
             if shared_curr_id_quick == [1]:
                 shared_mem_1[:] = img[:]
                 shared_curr_id_quick = [0]
@@ -524,7 +533,8 @@ class Camera_async_flipflop(Camera):
             else:
                 raise Exception("Invalid buffer ID")
             #blocking put until consumer handshakes
-            
+            shared_mem_0 = None
+            shared_mem_1 = None
             myqueue.put(output, block=True, timeout=None)
             
 
