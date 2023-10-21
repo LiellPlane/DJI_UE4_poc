@@ -3,6 +3,7 @@ import decode_clothID_v2 as decode_clothID
 from multiprocessing import Process, Queue, shared_memory
 from dataclasses import dataclass
 import numpy as np
+import cv2
 
 @dataclass
 class SharedMem_ImgTicket:
@@ -53,11 +54,11 @@ class ImageAnalyser_shared_mem():
             # grab the image out of shared memory using the
             # information (index, resolution of image)
             # from the input queue (usually from image generator)
-
+            print("got image")
             img_buff = np.frombuffer(
-                shared_memory.SharedMemory(name=self.sharedmem_bufs[shared_details.index]).buf,
+                self.sharedmem_bufs[shared_details.index].buf,
                 dtype=('uint8')
-                    ).reshape(shared_details.res)
+                    )[0:2020*1080].reshape(2020, 1080)
 
-            analysis_output_q.put(img_buff, block=True, timeout=None)
+            #analysis_output_q.put(img_buff, block=True, timeout=None)
 

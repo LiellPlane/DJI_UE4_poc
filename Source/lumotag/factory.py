@@ -412,8 +412,8 @@ class Camera_async_flipflop(Camera):
 
     def get_mem_buffers(self) -> dict:
         return (
-            {0: self.shared_mem_handler[0].mem_ids["0"].name,
-            1: self.shared_mem_handler[1].mem_ids["1"].name})
+            {0: self.shared_mem_handler[0].mem_ids["0"],
+            1: self.shared_mem_handler[1].mem_ids["1"]})
 
     def configure_shared_memory(self):
         # we need to get shape of image first to
