@@ -2,7 +2,7 @@
 import os
 
 # factory is imported from another directory by module load
-from factory import Camera_async, Camera_synchronous, ImageGenerator
+from factory import Camera_async, Camera_synchronous, ImageGenerator, Camera_async_alwaysloop
 import numpy as np
 import time
 import os
@@ -110,6 +110,16 @@ def jpgs_in_folder(directory):
     return allFiles
 
 
+class RandomColour(ImageGenerator):
+
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(res, np.uint8)
+
+    def get_image(self):
+        self.blank_image[:] = random.randint(20,255)
+        return self.blank_image
+    
+
 class ImageLibrary(ImageGenerator):
     
     def __init__(self, res) -> None:
@@ -159,6 +169,17 @@ class Scamblight_Camera_Async(Camera_async):
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ScambilightCamImageGen)
 
+
+class Scamblight_Camera_Async_run4ever(Camera_async_alwaysloop):
+    
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, ScambilightCamImageGen)
+
+
+class Synth_Camera_Async_run4ever(Camera_async_alwaysloop):
+    
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, RandomColour)
 
 class Synth_Camera_Async(Camera_async):
     

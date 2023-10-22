@@ -555,6 +555,8 @@ class Camera_async_flipflop(Camera):
             myqueue.put(output, block=True, timeout=None)
             print("FLIPFLOP sent!! ASYNC outgoing:", output)
 
+
+
 class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls) -> None:
@@ -655,6 +657,39 @@ class Camera_async(Camera):
 
 
 
+class Camera_async_alwaysloop(Camera_async):
+
+    def __init__(self, video_modes, imagegen_cls) -> None:
+        super().__init__(video_modes, imagegen_cls)
+
+    def async_img_loop(
+        self,
+        myqueue: Queue,
+        shared_mem_object: shared_memory.SharedMemory,
+        res: tuple,
+        img_gen: ImageGenerator):
+
+        _img_gen = img_gen(res)
+
+        shared_mem = None
+
+        first_image = False
+        while True:
+            img = _img_gen.get_image()
+            # one-time initialise buffer
+            if shared_mem is None:
+                shared_mem: np.ndarray = np.ndarray(
+                img.shape,
+                dtype=img.dtype,
+                buffer=shared_mem_object.buf
+            )
+
+            shared_mem[:] = img[:]
+            if first_image == False:
+                print("forever loop cam needs one image removed first using NEXT")
+                myqueue.put("image_ready", block=True, timeout=None)
+                first_image = True
+    
 class Relay(ABC):
     def __init__(self, _gun_config) -> None:
         self.debouncers = {}

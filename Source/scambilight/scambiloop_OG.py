@@ -54,10 +54,10 @@ def get_cam(system: _OS, action: str):
         return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     if system == _OS.WINDOWS:
-        return async_cam_lib.Synth_Camera_Async_run4ever(
+        return async_cam_lib.Synth_Camera_Async(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.RASPBERRY:
-        return async_cam_lib.Scamblight_Camera_Async_run4ever(
+        return async_cam_lib.Scamblight_Camera_Async(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.LINUX:
         return async_cam_lib.Synth_Camera_Async(
@@ -188,20 +188,14 @@ def main(action = None):
     index = 0
     flipflop = False
     #sent_overlay = 10
-
-    prev: np.ndarray = np.ndarray(
-        curr_img.shape,
-        dtype=curr_img.dtype,
-        buffer=cam.shared_mem_handler.mem_ids["0"].buf)
-
     while True:
         event = ActionChecker.check_for_action()
         #subsampled = 0
         with time_it_sparse("main loop"):
             index += 1
 
-            # with time_it_sparse("get img"):
-            #     prev = next(cam)
+            with time_it_sparse("get img"):
+                prev = next(cam)
                 
             flipflop = not flipflop
             
