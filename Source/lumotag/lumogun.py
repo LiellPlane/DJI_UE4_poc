@@ -190,6 +190,7 @@ def main():
             # this is bad code - should come as package with the image -
             # but in easy of modularity have to do it like this for now
             image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
+
             with time_it("gun get central img"):
                 central_img, (left, right, top, lower) = img_processing.get_internal_section(
                     cap_img,
@@ -208,9 +209,12 @@ def main():
             #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
             #with time_it("gun display"):
             #    display.display_output(fart)
+
             with time_it("display image time"):
                 display.display_output(central_img)
-            image_analysis.analysis_output_q.get(block=True, timeout=None)
+            with time_it("wait for image analysis"):
+                graphics = image_analysis.analysis_output_q.get(block=True, timeout=None)
+                plop=1
     raise RuntimeError("something broke out of loop")
 
 def test_strobe():

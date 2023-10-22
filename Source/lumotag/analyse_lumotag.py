@@ -73,4 +73,4 @@ class ImageAnalyser_shared_mem():
                     img_buff[0:500,0:500], workingdata)
             print("ANALOL waiting to put response")
 
-            analysis_output_q.put(img_buff, block=True, timeout=None)
+            analysis_output_q.put(contour_data, block=True, timeout=None)
