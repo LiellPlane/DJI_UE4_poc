@@ -157,7 +157,7 @@ class SynthImgGen(factory.ImageGenerator):
             tuple(np.asarray(list(reversed(self.blank_image.shape[0:2]))) - np.asarray([buffer, buffer])),
             255,
             min(int(buffer/2),2))
-
+        #time.sleep(0.10 * random.random())
         return self.blank_image
     
 

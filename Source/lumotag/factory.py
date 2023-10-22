@@ -6,6 +6,7 @@ import cv2
 from contextlib import contextmanager
 from dataclasses import dataclass
 import threading
+import random
 #from queue import Queue
 import queue
 import uuid
@@ -398,6 +399,7 @@ class Camera_async_flipflop(Camera):
         self.res_select = 0
         self.last_img = None
         self.handshake_queue = Queue(maxsize=1)
+        self.handshake_queue2 = Queue(maxsize=1)
         self.process = None
         self.shared_mem_handler = []
         self.shared_mem_index = None
@@ -452,6 +454,7 @@ class Camera_async_flipflop(Camera):
 
         func_args = (
             self.handshake_queue,
+            self.handshake_queue2,
             memblock_0, memblock_1, memblock_index,
             self.get_res(),
             self.imagegen_cls)
@@ -468,11 +471,13 @@ class Camera_async_flipflop(Camera):
 
     def gen_image(self):
         # popping the queue item unblocks image sender
+        self.handshake_queue2.put("please rename this", block=True, timeout=None)
         mem_details = self.handshake_queue.get(
                         block=True,
                         timeout=None
                         )
-
+        print("FLIPFLOP Requested Image, NP incoming:", mem_details)
+        
         strm_buff = self.shared_mem_handler[
             int(mem_details.index)].mem_ids[str(mem_details.index)].buf
 
@@ -486,13 +491,15 @@ class Camera_async_flipflop(Camera):
         self.get_safe_mem_details = SharedMem_ImgTicket(
             index=mem_details.index,
             res=mem_details.res,
-            buf_size=mem_details.buf_size)
-
+            buf_size=mem_details.buf_size,
+            id = mem_details.id)
+        print("FLIPFLOP saving record for analyis", self.get_safe_mem_details)
         return img_buff
 
     def async_img_loop(
         self,
         myqueue: Queue,
+        handshake_queue: Queue,
         memblock_0: shared_memory.SharedMemory,
         memblock_1: shared_memory.SharedMemory,
         memblock_index: shared_memory.SharedMemory,
@@ -511,6 +518,7 @@ class Camera_async_flipflop(Camera):
 
         while True:
             img = _img_gen.get_image()
+            
             # one-time initialise buffer
             if shared_mem_0 is None:
                 shared_mem_0: np.ndarray = np.ndarray(
@@ -528,20 +536,24 @@ class Camera_async_flipflop(Camera):
             output = SharedMem_ImgTicket(
                 index=shared_curr_id_quick[0],
                 res=self._store_res,
-                buf_size=[memblock_1.buf.shape, memblock_1.buf.shape])
+                buf_size=[memblock_1.buf.shape, memblock_1.buf.shape],
+                id=random.randint(1111,9999))
 
             if shared_curr_id_quick == [1]:
+                print("FLIPFLOP WRITING ASYNC image to 1")
                 shared_mem_1[:] = img[:]
                 shared_curr_id_quick = [0]
             elif shared_curr_id_quick == [0]:
+                print("FLIPFLOP WRITING ASYNC image to 0")
                 shared_mem_0[:] = img[:]
                 shared_curr_id_quick = [1]
             else:
                 raise Exception("Invalid buffer ID")
             #blocking put until consumer handshakes
-
+            print("FLIPFLOP waiting to send ASYNC outgoing:", output)
+            _ = handshake_queue.get(block=True, timeout=None)
             myqueue.put(output, block=True, timeout=None)
-            
+            print("FLIPFLOP sent!! ASYNC outgoing:", output)
 
 class Camera_async(Camera):
     

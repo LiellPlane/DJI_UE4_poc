@@ -62,6 +62,7 @@ def main():
     #time.sleep(100000)
     voice.speak("cam")
     img = next(image_capture)
+
     if img is None:
         raise Exception("Error with camera")
     voice.speak("ok display")
