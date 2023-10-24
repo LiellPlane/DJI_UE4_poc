@@ -45,9 +45,13 @@ class RunScambisWithAsyncImage():
         self.subsample_cutoff = subsample_cutoff
         self.scambiunits = scambiunits
         self.done_queue = Queue(maxsize=1)
+        self.handshake_queue = Queue(maxsize=1)
         self.curr_img = curr_img
         self.Scambi_unit_LED_only = Scambi_unit_LED_only
-        args = (self.done_queue, async_image_buf)
+        args = (
+            self.done_queue,
+            async_image_buf,
+            self.handshake_queue)
     
         self._process = Process(
             target=self._run,
@@ -59,7 +63,8 @@ class RunScambisWithAsyncImage():
     def _run(
             self,
             done_q,
-            async_img_buf):
+            async_img_buf,
+            handshake_queue):
 
         prev: np.ndarray = np.ndarray(
             self.curr_img.shape,
@@ -73,8 +78,8 @@ class RunScambisWithAsyncImage():
                 scambiunits_led_info.append(self.Scambi_unit_LED_only(
                     colour=unit.colour,
                         physical_led_pos=unit.physical_led_pos))
-            done_q.put(scambiunits_led_info, block=True)
-
+            done_q.put(scambiunits_led_info, block=True, timeout=None)
+            _ = handshake_queue.get(block=True,timeout=None)
 
 class Process_Scambiunits():
 

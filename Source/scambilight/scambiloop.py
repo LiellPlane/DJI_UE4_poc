@@ -1,5 +1,6 @@
 import os
 import sys
+import copy
 #abs_path = os.path.dirname(os.path.abspath(__file__))
 #scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
 print( os.path.dirname(os.path.abspath(__file__)))
@@ -126,7 +127,7 @@ def main(action = None):
         img_sample_controller = get_sample_regions_config()
 
     print(f"Requested action: {action}")
-    if action == None:
+    if action is None:
         scambi_units = generate_scambis(
             img_shape=curr_img.shape,
             regions=img_sample_controller,
@@ -197,13 +198,18 @@ def main(action = None):
         dtype=curr_img.dtype,
         buffer=cam.shared_mem_handler.mem_ids["0"].buf)
 
-    # proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
-    #     scambiunits=scambi_units[0:len(scambi_units)//2],
-    #     curr_img=curr_img,
-    #     async_image_buf=cam.shared_mem_handler.mem_ids["0"],
-    #     Scambi_unit_LED_only = Scambi_unit_LED_only,
-    #     subsample_cutoff=img_sample_controller.subsample_cut
-    # )
+    # things with queues can break the AWS lambda container images
+    if action is None:
+        proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
+            scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
+            curr_img=curr_img,
+            async_image_buf=cam.shared_mem_handler.mem_ids["0"],
+            Scambi_unit_LED_only = Scambi_unit_LED_only,
+            subsample_cutoff=img_sample_controller.subsample_cut
+        )
+        # half scambis to parallel process half to main proces
+        scambi_units = scambi_units[len(scambi_units)//2:]
+
 
     while True:
         event = ActionChecker.check_for_action()
@@ -228,7 +234,12 @@ def main(action = None):
                     scambiunits_led_info.append(Scambi_unit_LED_only(
                         colour=unit.colour,
                         physical_led_pos=unit.physical_led_pos))
-
+                    
+                #TODO all these conditions are not good code
+                # probably take it all out
+                if action is None: #  not running in container (which doesn't like queues)
+                    scambiunits_led_info += proc_scambis.done_queue.get(block=True)
+                    proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
             if PLATFORM == _OS.WINDOWS:
                 display_img = prev.copy()
