@@ -26,6 +26,56 @@ class FinishedProcess():
     finished = True
 
 
+class RunScambisWithAsyncImage():
+    """ Run scambiunits in a parallel Process
+
+    scambiunits: list of scambiunits
+    async_image_buf: shared memory object
+    curr_img: ndarray image, used to get shape, dtype etc
+    subsample_cutoff: parameter to set dynamic subsampling
+    Scambi_unit_LED_only: dataclass, easier to pass in than import
+        """
+    def __init__(
+            self,
+            scambiunits,
+            async_image_buf,
+            curr_img,
+            Scambi_unit_LED_only,
+            subsample_cutoff: int) -> None:
+        self.subsample_cutoff = subsample_cutoff
+        self.scambiunits = scambiunits
+        self.done_queue = Queue(maxsize=1)
+        self.curr_img = curr_img
+        self.Scambi_unit_LED_only = Scambi_unit_LED_only
+        args = (self.done_queue, async_image_buf)
+    
+        self._process = Process(
+            target=self._run,
+            args=args,
+            daemon=True)
+
+        self._process.start()
+
+    def _run(
+            self,
+            done_q,
+            async_img_buf):
+
+        prev: np.ndarray = np.ndarray(
+            self.curr_img.shape,
+            dtype=self.curr_img.dtype,
+            buffer=async_img_buf.buf)
+
+        while True:
+            scambiunits_led_info = []
+            for unit in self.scambiunits:
+                unit.get_dom_colour_with_auto_subsample(prev, cut_off = self.subsample_cutoff)
+                scambiunits_led_info.append(self.Scambi_unit_LED_only(
+                    colour=unit.colour,
+                        physical_led_pos=unit.physical_led_pos))
+            done_q.put(scambiunits_led_info, block=True)
+
+
 class Process_Scambiunits():
 
     def __init__(
@@ -66,23 +116,6 @@ class Process_Scambiunits():
         self.initialised_scambis_q.put(
             FinishedProcess(), block=True, timeout=None)
         return
-        while True:
-            raise Exception("this has to be updated for new scamiprocess code")
-            image = self.in_queue.get(
-                block=True,
-                timeout=None
-                )
-            return_dic = {}
-            with time_it("process scambis"):
-                for unit in self.scambiunits:
-                    if (unit.bb_right - unit.bb_left) < self.subsample_cutoff or (unit.bb_lower-unit.bb_top) < self.subsample_cutoff:
-                        color = unit.get_dominant_colour_flat(image, subsample=1)
-                    else:
-                        color = unit.get_dominant_colour_flat(image, subsample=2)
-                    return_dic[unit.id] = color
-            self.done_queue.put(
-                return_dic, block=True, timeout=None)
-
 
 
 class SynthImgGen(ImageGenerator):

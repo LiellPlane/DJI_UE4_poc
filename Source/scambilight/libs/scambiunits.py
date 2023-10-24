@@ -47,7 +47,14 @@ class ScambiWarp():
     def bb_width(self):
          # error here can mean not initialised
         return abs(self.bb_right-self.bb_left)
-    
+
+
+@dataclass
+class Scambi_unit_LED_only():
+    """cheat class so we don't have to pass the whole
+    object to a class which expects these members"""
+    colour: any
+    physical_led_pos: any
 
 
 class Scambi_unit():

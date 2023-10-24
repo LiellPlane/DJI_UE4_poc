@@ -21,7 +21,8 @@ from libs.utils import (
     create_progress_image)
 from libs.scambiunits import (
     HomographyTool,
-    generate_scambis)
+    generate_scambis,
+    Scambi_unit_LED_only)
 from libs.collections import (
     LensConfigs,
     LEDColours)
@@ -189,10 +190,20 @@ def main(action = None):
     flipflop = False
     #sent_overlay = 10
 
+    # this is being updated constantly by the camera class
+    # and luckily we can read frrom it without mem errors
     prev: np.ndarray = np.ndarray(
         curr_img.shape,
         dtype=curr_img.dtype,
         buffer=cam.shared_mem_handler.mem_ids["0"].buf)
+
+    # proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
+    #     scambiunits=scambi_units[0:len(scambi_units)//2],
+    #     curr_img=curr_img,
+    #     async_image_buf=cam.shared_mem_handler.mem_ids["0"],
+    #     Scambi_unit_LED_only = Scambi_unit_LED_only,
+    #     subsample_cutoff=img_sample_controller.subsample_cut
+    # )
 
     while True:
         event = ActionChecker.check_for_action()
@@ -204,7 +215,7 @@ def main(action = None):
             #     prev = next(cam)
                 
             flipflop = not flipflop
-            
+            scambiunits_led_info = []
             with time_it_sparse(f"get {len(scambi_units)} colours"):
                 for index, unit in enumerate(scambi_units):
                     # if flipflop is True:
@@ -213,8 +224,10 @@ def main(action = None):
                     # if flipflop is False:
                     #     if index%2 == 1:
                     #         continue
-
                     unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
+                    scambiunits_led_info.append(Scambi_unit_LED_only(
+                        colour=unit.colour,
+                        physical_led_pos=unit.physical_led_pos))
 
 
             if PLATFORM == _OS.WINDOWS:
@@ -299,7 +312,7 @@ def main(action = None):
             #     pass
 
             with time_it_sparse("set leds"):
-                led_subsystem.set_LED_values(scambi_units)
+                led_subsystem.set_LED_values(scambiunits_led_info)
                 led_subsystem.execute_LEDS()
             
 
