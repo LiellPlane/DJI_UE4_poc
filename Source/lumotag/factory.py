@@ -15,6 +15,7 @@ from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
 from math import floor
+from functools import reduce
 try:
     from analyse_lumotag import SharedMem_ImgTicket
 except Exception:
@@ -609,19 +610,22 @@ class Camera_async(Camera):
                         block=True,
                         timeout=None
                         )
-
+        
+        
         strm_buff = self.shared_mem_handler.mem_ids[str(self.res_select)].buf
+
+        _product = reduce((lambda x, y: x * y), self.get_res())
 
         if not self.get_is_reversed():
             img_buff = np.frombuffer(
                 strm_buff,
                 dtype=('uint8')
-                    ).reshape(self.get_res())
+                    )[0:_product].reshape(self.get_res())  # some systems have page size granularity of 4096 bytes (?)
         else:
             img_buff = np.frombuffer(
                 strm_buff,
                 dtype=('uint8')
-                    ).reshape(tuple(reversed(self.get_res())))
+                    )[0:_product].reshape(tuple(reversed(self.get_res())))  # some systems have page size granularity of 4096 bytes (?)
 
         #if len(img_buff.shape) == 3:
         #    img_buff = cv2.cvtColor(img_buff, cv2.COLOR_BGR2GRAY)

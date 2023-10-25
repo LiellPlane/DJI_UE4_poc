@@ -46,7 +46,7 @@ def get_platform():
         pass
 
     try:
-        if os.name == 'posix' and platform.system == 'Darwin':
+        if os.name == 'posix' and platform.system() == 'Darwin':
             print("EWWWWWWWWWWWW Mac, disgusting")
             return _OS.MAC_OS
     except Exception:

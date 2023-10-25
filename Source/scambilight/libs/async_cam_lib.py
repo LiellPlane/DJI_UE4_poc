@@ -173,6 +173,8 @@ class ImageLibrary(ImageGenerator):
         img_to_load = random.choice(self.images)
         latch = cv2.imread(img_to_load)
         latch = cv2.resize(latch, list(reversed(self.res[0:2])))
+        latch[:, :, 0] = latch[:, :, 0] * random.random()
+        latch[:, :, 1] = latch[:, :, 1] * random.random()
         return latch
     
 
@@ -217,7 +219,7 @@ class Scamblight_Camera_Async_run4ever(Camera_async_alwaysloop):
 class Synth_Camera_Async_run4ever(Camera_async_alwaysloop):
     
     def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, RandomColour)
+        super().__init__(video_modes, ImageLibrary)
 
 class Synth_Camera_Async(Camera_async):
     

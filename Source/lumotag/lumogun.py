@@ -15,7 +15,7 @@ import configs
 
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 
-if get_platform() == _OS.WINDOWS:
+if get_platform() in [_OS.WINDOWS, _OS.MAC_OS]:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
     import sound as sound

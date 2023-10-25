@@ -1,0 +1,11 @@
+pika
+pylint
+pycodestyle
+black
+numpy
+OpenCV-Python==4.5.1
+boto3
+Flask
+requests
+scikit-image
+pyttsx3

@@ -64,6 +64,9 @@ def get_cam(system: _OS, action: str):
     elif system == _OS.LINUX:
         return async_cam_lib.Synth_Camera_Async(
             ScambiLight_Cam_vidmodes)
+    elif system == _OS.MAC_OS:
+        return async_cam_lib.Synth_Camera_Async_run4ever(
+            ScambiLight_Cam_vidmodes)
     else:
         raise Exception(system + " not supported")
     
@@ -89,6 +92,9 @@ def main(action = None):
         led_subsystem = ws281Leds(DaisybankLedSpacing)
         cores = 2
     elif system == _OS.LINUX:
+        led_subsystem = SimLeds(DaisybankLedSpacing)
+        cores = 8
+    elif system == _OS.MAC_OS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cores = 8
     else:
@@ -204,12 +210,11 @@ def main(action = None):
             scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
             curr_img=curr_img,
             async_image_buf=cam.shared_mem_handler.mem_ids["0"],
-            Scambi_unit_LED_only = Scambi_unit_LED_only,
+            Scambi_unit_LED_only=Scambi_unit_LED_only,
             subsample_cutoff=img_sample_controller.subsample_cut
         )
         # half scambis to parallel process half to main proces
         scambi_units = scambi_units[len(scambi_units)//2:]
-
 
     while True:
         event = ActionChecker.check_for_action()
@@ -241,8 +246,9 @@ def main(action = None):
                     scambiunits_led_info += proc_scambis.done_queue.get(block=True)
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
-            if PLATFORM == _OS.WINDOWS:
+            if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()
+                time.sleep(0.1)
                 with time_it_sparse("overlay"):
                     for index, unit in enumerate(scambi_units):
                         #display_img = unit.draw_warped_roi(display_img)
@@ -316,7 +322,7 @@ def main(action = None):
                     os.system("sudo reboot")
                 else:
                     raise Exception("reboot requested")
-            if PLATFORM == _OS.WINDOWS:
+            if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
     
             # with time_it_sparse(f"subsampled {subsampled}/{len(scambi_units)}"):
