@@ -865,7 +865,8 @@ class Messenger(ABC):
         messages = []
         try:
             # just get one but keep in list structure for convenience
-            messages.append(self._in_box.get(block=blocking))
+            if not self._in_box.empty():
+                messages.append(self._in_box.get(block=blocking))
         except queue.Empty:
             pass
 

@@ -61,10 +61,10 @@ def main():
     image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(sharedmem_buffs=image_capture.get_mem_buffers())
     #time.sleep(100000)
     voice.speak("cam")
-    img = next(image_capture)
+    # img = next(image_capture)
 
-    if img is None:
-        raise Exception("Error with camera")
+    # if img is None:
+    #     raise Exception("Error with camera")
     voice.speak("ok display")
     display = lumogun.display(GUN_CONFIGURATION)
     # display.display_output(img)
@@ -97,41 +97,49 @@ def main():
     cnt = 0 
     while True:
         cnt += 1
+        with time_it("get next image"):
+            cap_img = next(image_capture)
+            # this is bad code - should come as package with the image -
+            # but in easy of modularity have to do it like this for now
+        with time_it("start analysis"):
+            image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
 
-        for msg in messenger.check_in_box():
-            in_msg = msgs.parse_input_msg(msg)
-            if in_msg.success is False:
-                errmsg = in_msg.error
-                print("Input Message Err:", errmsg)
-            else:
-                msg_body = in_msg.msg_body
 
-                if msg_body.msg_type == msgs.MessageTypes.HEARTBEAT.value:
-                    print(f"heartbeat in from {msg_body.my_id}")
-                    continue
+        with time_it("check messaging"):
+            for msg in messenger.check_in_box():
+                in_msg = msgs.parse_input_msg(msg)
+                if in_msg.success is False:
+                    errmsg = in_msg.error
+                    print("Input Message Err:", errmsg)
+                else:
+                    msg_body = in_msg.msg_body
 
-                if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
-                    if msg_body.my_id == GUN_CONFIGURATION.my_id:
-                        voice.speak("CONNECTED")
-                    else:
-                        voice.speak("new player, " + msg_body.msg_string)
-                    continue
+                    if msg_body.msg_type == msgs.MessageTypes.HEARTBEAT.value:
+                        print(f"heartbeat in from {msg_body.my_id}")
+                        continue
 
-                if msg_body.msg_type == msgs.MessageTypes.TEST.value:
-                    print("test input message OK")
-                    continue
+                    if msg_body.msg_type == msgs.MessageTypes.HELLO.value:
+                        if msg_body.my_id == GUN_CONFIGURATION.my_id:
+                            voice.speak("CONNECTED")
+                        else:
+                            voice.speak("new player, " + msg_body.msg_string)
+                        continue
 
-                if msg_body.msg_type == msgs.MessageTypes.ERROR.value:
-                    print(f"Message ERROR (is me={msg_body.my_id==GUN_CONFIGURATION.my_id}): {msg_body.msg_string}")
-                    continue
+                    if msg_body.msg_type == msgs.MessageTypes.TEST.value:
+                        print("test input message OK")
+                        continue
 
-                if msg_body.my_id != GUN_CONFIGURATION.my_id:
-                    if msg_body.msg_type == msgs.MessageTypes.HIT_REPORT.value:
-                        if msg_body.img_as_str is not None:
-                            display.display_output(
-                                msgs.decode_image_from_str(msg_body.img_as_str))
-                        time.sleep(1)
-                    continue
+                    if msg_body.msg_type == msgs.MessageTypes.ERROR.value:
+                        print(f"Message ERROR (is me={msg_body.my_id==GUN_CONFIGURATION.my_id}): {msg_body.msg_string}")
+                        continue
+
+                    if msg_body.my_id != GUN_CONFIGURATION.my_id:
+                        if msg_body.msg_type == msgs.MessageTypes.HIT_REPORT.value:
+                            if msg_body.img_as_str is not None:
+                                display.display_output(
+                                    msgs.decode_image_from_str(msg_body.img_as_str))
+                            time.sleep(1)
+                        continue
 
         GUN_CONFIGURATION.loop_wait()
 
@@ -184,12 +192,7 @@ def main():
                 state=trigger_debounce.get_heldstate(),
                 strobe_cnt=0) # click noise from relay only
 
-        with time_it("gun image stuff TOTAL"):
-            with time_it("get next image"):
-                cap_img = next(image_capture)
-            # this is bad code - should come as package with the image -
-            # but in easy of modularity have to do it like this for now
-            image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
+        with time_it("gun image stuff"):
 
             with time_it("gun get central img"):
                 central_img, (left, right, top, lower) = img_processing.get_internal_section(
@@ -217,27 +220,6 @@ def main():
                 plop=1
     raise RuntimeError("something broke out of loop")
 
-def test_strobe():
-    relay = lumogun.Relay(GUN_CONFIGURATION)
-    set_torch = partial(
-        relay.set_relay,
-        GUN_CONFIGURATION.relay_map["torch"])
-    print("setting first torch state - debounce timers not finished init")
-    set_torch(state=True, strobe_cnt=3)
-    print("trying again after sleep")
-    time.sleep(0.2)
-    set_torch(state=True, strobe_cnt=3)
-    print("something should have happened - now lets try again immediately")
-    set_torch(state=True, strobe_cnt=3)
-    print("anything happen?")
-    print(set_torch(state=False, strobe_cnt=3))
-    print("wait again")
-    time.sleep(0.1)
-    print("turn off")
-    print(set_torch(state=False, strobe_cnt=3))
-    time.sleep(0.0)
-    print("try again")
-    print(set_torch(state=True, strobe_cnt=3))
 if __name__ == '__main__':
     main()
 
