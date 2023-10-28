@@ -213,11 +213,12 @@ def main():
             #with time_it("gun display"):
             #    display.display_output(fart)
 
-            with time_it("display image time"):
-                display.display_output(central_img)
+
             with time_it("wait for image analysis"):
                 graphics = image_analysis.analysis_output_q.get(block=True, timeout=None)
-                plop=1
+            with time_it("display image time"):
+                display.display_output(graphics)
+
     raise RuntimeError("something broke out of loop")
 
 if __name__ == '__main__':

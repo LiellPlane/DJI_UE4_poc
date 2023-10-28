@@ -656,9 +656,9 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     with time_it("get_possible_candidates total"):
         contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
-    if len(contours) == 0:
-        print("no results found for image")
-        return img_grayscale
+    # if len(contours) == 0:
+    #     print("no results found for image")
+    #     return []
 
     with time_it("analyse_candidates"):
         output_contour_data = analyse_candidates_shapematch(original_img=inputimg,
