@@ -8,6 +8,7 @@ import math
 import rabbit_mq
 import json
 import img_processing
+import os
 
 def lumo_viewer(
         inputimage,
@@ -125,7 +126,32 @@ class Relay(factory.Relay):
 
 #         return blank_image
 
+class ImageLibrary(factory.ImageGenerator):
+    
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(res, np.uint8)
+        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        self.images = jpgs_in_folder(imgfoler)
+        self.res = res
+        if len(self.images) < 1:
+            raise Exception("could not find images in folder")
 
+
+    def get_image(self):
+        img_to_load = random.choice(self.images)
+        latch = cv2.imread(img_to_load)
+        latch = cv2.resize(latch, list(reversed(self.res[0:2])))
+        latch[:, :, 0] = latch[:, :, 0] * random.random()
+        latch[:, :, 1] = latch[:, :, 1] * random.random()
+        return latch
+
+def jpgs_in_folder(directory):
+    allFiles = []
+    for root, dirs, files in os.walk(directory):
+        for name in files:
+            if name[-4:len(name)] == '.jpg':
+                allFiles.append(os.path.join(root, name))
+    return allFiles
 
 class SynthImgGen(factory.ImageGenerator):
 
