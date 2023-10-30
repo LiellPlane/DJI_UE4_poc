@@ -47,7 +47,7 @@ class ImageAnalyser_shared_mem():
             self,
             input_shared_mem_index_q,
             analysis_output_q):
-        workingdata = decode_clothID.WorkingData()
+        workingdata = decode_clothID.WorkingData(debug=True)
         while True:
             # get index of last image buffer - this will be safe
             # until two conditions are met:
@@ -70,7 +70,7 @@ class ImageAnalyser_shared_mem():
                     dtype=('uint8')
                         )[0:bytesize].reshape(shared_details.res)
                 contour_data = decode_clothID.find_lumotag(
-                    img_buff[0:500,0:500], workingdata)
+                    img_buff, workingdata)
             print("ANALOL waiting to put response")
 
             analysis_output_q.put(contour_data, block=True, timeout=None)

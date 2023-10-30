@@ -139,11 +139,12 @@ class ImageLibrary(factory.ImageGenerator):
 
     def get_image(self):
         img_to_load = random.choice(self.images)
-        latch = cv2.imread(img_to_load)
-        latch = cv2.resize(latch, list(reversed(self.res[0:2])))
-        latch[:, :, 0] = latch[:, :, 0] * random.random()
-        latch[:, :, 1] = latch[:, :, 1] * random.random()
-        return latch
+        img = cv2.imread(img_to_load)
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.resize(img, list(reversed(self.res[0:2])))
+        self.blank_image[:] = img
+        return self.blank_image
 
 def jpgs_in_folder(directory):
     allFiles = []
@@ -192,19 +193,19 @@ class CSI_Camera_Async(factory.Camera_async):
     def __init__(self, video_modes) -> None:
         super().__init__(
             video_modes=video_modes,
-            imagegen_cls=SynthImgGen)
+            imagegen_cls=ImageLibrary)
 
 
 class CSI_Camera_Synchro(factory.Camera_synchronous):
     
     def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, SynthImgGen)
+        super().__init__(video_modes, ImageLibrary)
 
 
 class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
     
     def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, SynthImgGen)
+        super().__init__(video_modes, ImageLibrary)
 
 class display(factory.display):
 

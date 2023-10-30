@@ -198,6 +198,8 @@ def main():
                 central_img, (left, right, top, lower) = img_processing.get_internal_section(
                     cap_img,
                     GUN_CONFIGURATION.internal_img_crop)
+
+
             # with time_it("gun total analysis time"):
             #     contour_data = decode_clothID.find_lumotag(
             #         central_img, workingdata)
@@ -217,7 +219,7 @@ def main():
             with time_it("wait for image analysis"):
                 graphics = image_analysis.analysis_output_q.get(block=True, timeout=None)
             with time_it("display image time"):
-                display.display_output(graphics)
+                display.display_output(central_img)
 
     raise RuntimeError("something broke out of loop")
 
