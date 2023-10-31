@@ -10,3 +10,6 @@ class Voice(factory.VoiceBase):
         while True:
             message = in_box.get(block=True)
             print(f"Pretending to say {message}")
+
+    def speak(self, message):
+        pass
