@@ -223,6 +223,8 @@ def main():
             with time_it("wait for image analysis"):
                 graphics = image_analysis.analysis_output_q.get(block=True, timeout=None)
             with time_it("display image time"):
+                for c in graphics:
+                    decode_clothID.draw_pattern_output(image=central_img, patterndetails=c)
                 display.display_output(central_img)
 
     raise RuntimeError("something broke out of loop")
