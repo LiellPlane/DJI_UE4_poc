@@ -172,12 +172,15 @@ class display(ABC):
             self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
             self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
         elif inputimg.shape[1] == self.emptyscreen.shape[1]:
-            offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) /2)
+            offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) / 2)
             self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
             self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
             self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
         else:
-            raise Exception("Warning, bad resized image shapes", inputimg.shape,  self.emptyscreen.shape )
+            raise Exception(
+                "Warning, bad resized image shapes",
+                inputimg.shape,
+                self.emptyscreen.shape)
 
     def display_output(self, output):
         # quicker in theory to resize first then rotate as
@@ -482,10 +485,13 @@ class Camera_async_flipflop(Camera):
         strm_buff = self.shared_mem_handler[
             int(mem_details.index)].mem_ids[str(mem_details.index)].buf
 
+        img_byte_size = reduce(
+            lambda acc, curr: acc * curr, self._store_res)
+        
         img_buff = np.frombuffer(
             strm_buff,
             dtype=('uint8')
-                ).reshape(self._store_res)
+                )[0:img_byte_size].reshape(self._store_res)
 
         self.last_img = img_buff
 
