@@ -8,7 +8,7 @@ from contextlib import contextmanager
 from typing import Iterator
 from dataclasses import dataclass
 from skimage.draw import line
-
+from my_collections import CropSlicing
 RED = (0, 0, 255)
 
 def read_img(img_filepath):
@@ -264,18 +264,16 @@ def add_cross_hair(image, adapt):
     image[:, midy-thick : midy+thick ,1] = max(col, 50)
 
 
-def get_internal_section(img, size: tuple[int, int]):
-    midx = img.shape[0] // 2
-    midy = img.shape[1] // 2
+def get_internal_section(imgshape, size: tuple[int, int]):
+    midx = imgshape[0] // 2
+    midy = imgshape[1] // 2
     regionx = size[0]//2
     regiony = size[1]//2
     left = max(midx-regionx, 0)
-    right = min(midx+regionx, img.shape[0])
+    right = min(midx+regionx, imgshape[0])
     top = max(midy-regiony, 0)
-    lower = min(midy+regiony, img.shape[1])
-    return img[
-        left: right,
-        top: lower], (left, right, top, lower)
+    lower = min(midy+regiony, imgshape[1])
+    return CropSlicing(left=left, right=right, top=top, lower=lower)
 
 def implant_internal_section(img, img_to_implant):
 

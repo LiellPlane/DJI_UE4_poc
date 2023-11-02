@@ -9,10 +9,11 @@ from datetime import datetime
 import time
 from enum import Enum, auto
 from json.decoder import JSONDecodeError
+from my_collections import AutoStrEnum
 #import numpy.typing as npt
 
 
-class MessageTypes(factory.AutoStrEnum):
+class MessageTypes(AutoStrEnum):
     ERROR = auto()
     HIT_REPORT = auto()
     HELLO = auto()

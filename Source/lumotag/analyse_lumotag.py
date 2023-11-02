@@ -7,24 +7,20 @@ from functools import reduce
 from utils import time_it
 import time
 import random
-
-@dataclass
-class SharedMem_ImgTicket:
-    index: int
-    res: dict
-    buf_size: any
-    id: int
-
+from my_collections import SharedMem_ImgTicket, CropSlicing
 
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
     using shared memory as the input"""
-    def __init__(self, sharedmem_buffs: dict) -> None:
+    def __init__(
+            self,
+            sharedmem_buffs: dict,
+            slice_details: CropSlicing) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
-        
+        self.img_crop = slice_details
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -47,7 +43,7 @@ class ImageAnalyser_shared_mem():
             self,
             input_shared_mem_index_q,
             analysis_output_q):
-        workingdata = decode_clothID.WorkingData(debug=False)
+        workingdata = decode_clothID.WorkingData(debug=True)
         while True:
             # get index of last image buffer - this will be safe
             # until two conditions are met:
@@ -69,8 +65,14 @@ class ImageAnalyser_shared_mem():
                     self.sharedmem_bufs[shared_details.index].buf,
                     dtype=('uint8')
                         )[0:bytesize].reshape(shared_details.res)
+                
+                # add any cropping
+                img_buff = img_buff[
+                        self.img_crop.left:self.img_crop.right,
+                        self.img_crop.top:self.img_crop.lower]
+
                 contour_data = decode_clothID.find_lumotag(
                     img_buff, workingdata)
             print("ANALOL waiting to put response")
 
-            analysis_output_q.put(contour_data, block=True, timeout=None)
+            analysis_output_q.put((contour_data, self.img_crop), block=True, timeout=None)

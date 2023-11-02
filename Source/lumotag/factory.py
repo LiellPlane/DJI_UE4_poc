@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import time
 from enum import Enum
+
 import cv2
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -24,35 +25,6 @@ except Exception:
 
 
 RELAY_BOUNCE_S = 0.02
-
-
-class AutoStrEnum(str, Enum):
-    """
-    StrEnum where auto() returns the field name.
-    See https://docs.python.org/3.9/library/enum.html#using-automatic-values
-    """
-    @staticmethod
-    def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
-        return name
-
-
-
-# @contextmanager
-# def time_it(process):
-#     tic: float = time.perf_counter()
-#     try:
-#         yield
-#     finally:
-#         toc: float = time.perf_counter()
-#         print(f"time for {process} = {1000*(toc - tic):.3f}ms")
-
-@dataclass
-class ImagingMode():
-    camera_model: str
-    res_width_height: tuple[int, int]
-    doc_description: str
-    shared_mem_reversed: bool
-    special_notes: str
 
 class RelayFunction(Enum):
     torch = 1
@@ -182,6 +154,18 @@ class display(ABC):
                 inputimg.shape,
                 self.emptyscreen.shape)
 
+    def display_output_affine(self, output):
+        """use affine transform to resize and rotate image in one calculation
+        need 2 sets of 3 corresponding points to create calculation"""
+        # get 3 points from the input image
+        source_affine_pts = [(0,0), (0, output.shape[0]), (output.shape[0], output.shape[1])]
+        self.screen_size
+        ratio = self.screen_size[0] /  output.shape[0]
+        if floor(output.shape[1] * ratio) > output.shape[1]:
+            ratio = self.screen_size[1] /  output.shape[1]
+        output_x = floor(output.shape[0] * ratio)
+        output_y = floor(output.shape[1] * ratio)
+        # get 3 corresponding points from the 
     def display_output(self, output):
         # quicker in theory to resize first then rotate as
         # input image is expected to be much larger than display size
@@ -343,6 +327,7 @@ class ImageGenerator(ABC):
     @abstractmethod
     def get_image(self):
         pass
+
 
 class Camera(ABC):
 
@@ -563,7 +548,6 @@ class Camera_async_flipflop(Camera):
             print("FLIPFLOP sent!! ASYNC outgoing:", output)
 
 
-
 class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls) -> None:
@@ -666,7 +650,6 @@ class Camera_async(Camera):
             myqueue.put("image_ready", block=True, timeout=None)
 
 
-
 class Camera_async_alwaysloop(Camera_async):
 
     def __init__(self, video_modes, imagegen_cls) -> None:
@@ -699,7 +682,8 @@ class Camera_async_alwaysloop(Camera_async):
                 print("forever loop cam needs one image removed first using NEXT")
                 myqueue.put("image_ready", block=True, timeout=None)
                 first_image = True
-    
+
+
 class Relay(ABC):
     def __init__(self, _gun_config) -> None:
         self.debouncers = {}

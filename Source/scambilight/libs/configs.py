@@ -6,7 +6,7 @@ from libs.collections import (
     config_regions,
     LensConfigs)
 
-from factory import ImagingMode
+from my_collections import ImagingMode
 
 # good youtube videos to try:
 #fluid sim
