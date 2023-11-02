@@ -35,3 +35,9 @@ class CropSlicing:
     right: int
     top: int
     lower: int
+
+@dataclass
+class AffinePoints:
+    top_left_w_h: tuple[int, int]
+    top_right_w_h: tuple[int, int]
+    lower_right_w_h: tuple[int, int]

@@ -267,8 +267,8 @@ def add_cross_hair(image, adapt):
 def get_internal_section(imgshape, size: tuple[int, int]):
     midx = imgshape[0] // 2
     midy = imgshape[1] // 2
-    regionx = size[0]//2
-    regiony = size[1]//2
+    regionx = size[0] // 2
+    regiony = size[1] // 2
     left = max(midx-regionx, 0)
     right = min(midx+regionx, imgshape[0])
     top = max(midy-regiony, 0)

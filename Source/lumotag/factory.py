@@ -17,6 +17,7 @@ from functools import reduce
 import img_processing
 from math import floor
 from functools import reduce
+from my_collections import AffinePoints
 try:
     from analyse_lumotag import SharedMem_ImgTicket
 except Exception:
@@ -157,15 +158,37 @@ class display(ABC):
     def display_output_affine(self, output):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
+        
+        incoming_w = output.shape[1]
+        incoming_h = output.shape[0]
+        outgoing_w = self.emptyscreen.shape[1]
+        outgoing_h = self.emptyscreen.shape[0]
         # get 3 points from the input image
-        source_affine_pts = [(0,0), (0, output.shape[0]), (output.shape[0], output.shape[1])]
-        self.screen_size
-        ratio = self.screen_size[0] /  output.shape[0]
-        if floor(output.shape[1] * ratio) > output.shape[1]:
-            ratio = self.screen_size[1] /  output.shape[1]
-        output_x = floor(output.shape[0] * ratio)
-        output_y = floor(output.shape[1] * ratio)
-        # get 3 corresponding points from the 
+        incoming_pts = AffinePoints(
+            top_left_w_h=(0,0),
+            top_right_w_h=(incoming_w , 0),
+            lower_right_w_h=(incoming_w , incoming_h))
+        # pick any ratio
+        ratio = outgoing_h / incoming_h
+        # if resizing with aspect ratio doesn't fit, do the other way
+        if floor(incoming_w * ratio) > outgoing_w:
+            ratio = outgoing_w / incoming_w
+        output_fit_h = floor(incoming_h * ratio)
+        output_fit_w = floor(incoming_w * ratio)
+        # get 3 corresponding points from the output view - keeping in mind
+        # any rotation
+        w_crop_in = (outgoing_w - output_fit_w) // 2
+        h_crop_in = (outgoing_h - output_fit_h) // 2
+        view_pts = AffinePoints(
+            top_left_w_h=(w_crop_in, h_crop_in),
+            top_right_w_h=(w_crop_in + output_fit_w, h_crop_in),
+            lower_right_w_h=(h_crop_in + output_fit_h, w_crop_in + output_fit_h))
+        # self.emptyscreen[view_pts.top_left] = 255
+        # self.emptyscreen[view_pts.top_right] = 255
+        cv2.circle(self.emptyscreen,(view_pts.top_right_w_h), 90,255, 90)
+        self.display_method(self.emptyscreen)
+        time.sleep(1)
+
     def display_output(self, output):
         # quicker in theory to resize first then rotate as
         # input image is expected to be much larger than display size
