@@ -185,7 +185,9 @@ class display(ABC):
             lower_right_w_h=(h_crop_in + output_fit_h, w_crop_in + output_fit_h))
         # self.emptyscreen[view_pts.top_left] = 255
         # self.emptyscreen[view_pts.top_right] = 255
-        cv2.circle(self.emptyscreen,(view_pts.top_right_w_h), 90,255, 90)
+        #cv2.circle(self.emptyscreen,(view_pts.lower_right_w_h), 90,255, 90)
+
+        
         self.display_method(self.emptyscreen)
         time.sleep(1)
 
