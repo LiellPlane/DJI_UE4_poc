@@ -58,7 +58,7 @@ class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (480, 800 - title_bar_pxls)
+    windows_laptop = (200, 300)
     stryker = (480, 620)
 
 
@@ -202,7 +202,7 @@ class simitzar_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(270)
+        return(180)
 
     @property
     def screen_size(self):

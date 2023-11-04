@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import time
 from enum import Enum
-
+from functools import lru_cache
 import cv2
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -155,15 +155,23 @@ class display(ABC):
                 inputimg.shape,
                 self.emptyscreen.shape)
 
-    def display_output_affine(self, output):
-        """use affine transform to resize and rotate image in one calculation
-        need 2 sets of 3 corresponding points to create calculation"""
+    @staticmethod
+    @lru_cache
+    def get_affine_points(incoming_img_dims, outgoing_img_dims) -> AffinePoints:
+        """Return the corresponding points to fit the incoming image central to the
+        view screen maintaining the aspect ratio, to be used to calculate affine
+        transform
         
-        incoming_w = output.shape[1]
-        incoming_h = output.shape[0]
-        outgoing_w = self.emptyscreen.shape[1]
-        outgoing_h = self.emptyscreen.shape[0]
-        # get 3 points from the input image
+        inputs:
+        incoming_img_dims: numpy array .shape
+        outcoming_img_dims: numpy array .shape
+
+        return source points, target points
+        """
+        incoming_w = incoming_img_dims[1]
+        incoming_h = incoming_img_dims[0]
+        outgoing_w = outgoing_img_dims[1]
+        outgoing_h = outgoing_img_dims[0]
         incoming_pts = AffinePoints(
             top_left_w_h=(0,0),
             top_right_w_h=(incoming_w , 0),
@@ -175,6 +183,9 @@ class display(ABC):
             ratio = outgoing_w / incoming_w
         output_fit_h = floor(incoming_h * ratio)
         output_fit_w = floor(incoming_w * ratio)
+        # test to make sure aspect ratio is 
+        if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 1:
+            raise ValueError("error calculating output image dimensions")
         # get 3 corresponding points from the output view - keeping in mind
         # any rotation
         w_crop_in = (outgoing_w - output_fit_w) // 2
@@ -182,13 +193,51 @@ class display(ABC):
         view_pts = AffinePoints(
             top_left_w_h=(w_crop_in, h_crop_in),
             top_right_w_h=(w_crop_in + output_fit_w, h_crop_in),
-            lower_right_w_h=(h_crop_in + output_fit_h, w_crop_in + output_fit_h))
-        # self.emptyscreen[view_pts.top_left] = 255
-        # self.emptyscreen[view_pts.top_right] = 255
-        #cv2.circle(self.emptyscreen,(view_pts.lower_right_w_h), 90,255, 90)
+            lower_right_w_h=(w_crop_in + output_fit_w, h_crop_in + output_fit_h))
+
+        return incoming_pts, view_pts 
+
+    @staticmethod
+    def rotate_affine_targets(targets, degrees, outputscreen_shape):
+        mid_img = [int(x/2) for x in outputscreen_shape[0:2][::-1]] # get reversed dims
+        new_target = AffinePoints(
+                    top_left_w_h=img_processing.rotate_pt_around_origin(targets.top_left_w_h, mid_img, degrees),
+                    top_right_w_h=img_processing.rotate_pt_around_origin(targets.top_right_w_h, mid_img, degrees),
+                    lower_right_w_h=img_processing.rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
+        return new_target
+
+    def display_output_affine(self, output):
+        """use affine transform to resize and rotate image in one calculation
+        need 2 sets of 3 corresponding points to create calculation"""
 
         
-        self.display_method(self.emptyscreen)
+
+        if self.display_rotate == 90:
+            pass
+        elif self.display_rotate == -90 or self.display_rotate == 270:
+            pass
+        elif self.display_rotate == 180:
+            input_targets, output_targets = self.get_affine_points(
+                output.shape,
+                self.emptyscreen.shape)
+            # have to flip output targets
+            output_targets = self.rotate_affine_targets(
+                output_targets,
+                180,
+                self.emptyscreen.shape)
+
+        elif self.display_rotate == 0:
+            input_targets, output_targets = self.get_affine_points(
+                output.shape,
+                (self.emptyscreen.shape))
+
+        affine_transform = img_processing.get_affine_transform(
+            pts1=np.asarray(input_targets.as_array(), dtype="float32"),
+            pts2=np.asarray(output_targets.as_array(), dtype="float32"))
+
+        row_cols = tuple(reversed(self.emptyscreen.shape[0:2]))
+        outptu_img = img_processing.do_affine(output, affine_transform, row_cols)
+        self.display_method(outptu_img)
         time.sleep(1)
 
     def display_output(self, output):

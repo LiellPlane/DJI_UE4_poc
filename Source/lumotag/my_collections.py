@@ -41,3 +41,10 @@ class AffinePoints:
     top_left_w_h: tuple[int, int]
     top_right_w_h: tuple[int, int]
     lower_right_w_h: tuple[int, int]
+
+    def as_array(self):
+        return [
+            self.top_left_w_h,
+            self.top_right_w_h,
+            self.lower_right_w_h]
+

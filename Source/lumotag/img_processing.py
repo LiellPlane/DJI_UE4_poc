@@ -304,3 +304,25 @@ def bresenham_line_ski(x1,y1,x2, y2):
     rr, cc = line(x1,y1,x2, y2)
     return [i for i in zip(rr, cc)]
 
+
+def get_affine_transform(pts1, pts2):
+    """from 2 sets of 3 corresponding points
+    calculate the affine transform"""
+    return cv2.getAffineTransform(pts1, pts2)
+
+
+def do_affine(img, T, row_cols: tuple[int, int]):
+    return cv2.warpAffine(img, T, row_cols)
+
+
+def rotate_pt_around_origin(point, origin, degrees):
+    radians = np.deg2rad(degrees)
+    x,y = point
+    offset_x, offset_y = origin
+    adjusted_x = (x - offset_x)
+    adjusted_y = (y - offset_y)
+    cos_rad = np.cos(radians)
+    sin_rad = np.sin(radians)
+    qx = offset_x + (cos_rad * adjusted_x) + (sin_rad * adjusted_y)
+    qy = offset_y + (-sin_rad * adjusted_x) + (cos_rad * adjusted_y)
+    return qx, qy

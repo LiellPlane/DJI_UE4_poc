@@ -228,9 +228,9 @@ def main():
                 with time_it("display image time"):
                     for c in graphics:
                         decode_clothID.draw_pattern_output(image=cap_img, patterndetails=c)
-                    display.display_output(cap_img[
-                        slice_details.left:slice_details.right,
-                        slice_details.top:slice_details.lower])
+                    # display.display_output(cap_img[
+                    #     slice_details.left:slice_details.right,
+                    #     slice_details.top:slice_details.lower])
                     display.display_output_affine(cap_img)
     raise RuntimeError("something broke out of loop")
 
