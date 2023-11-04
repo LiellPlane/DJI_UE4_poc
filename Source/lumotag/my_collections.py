@@ -48,3 +48,12 @@ class AffinePoints:
             self.top_right_w_h,
             self.lower_right_w_h]
 
+    def add_offset_w(self, offset):
+        self.top_left_w_h = (self.top_left_w_h[0] + offset, self.top_left_w_h[1])
+        self.top_right_w_h = (self.top_right_w_h[0] + offset, self.top_right_w_h[1])
+        self.lower_right_w_h = (self.lower_right_w_h[0] + offset, self.lower_right_w_h[1])
+
+    def add_offset_h(self, offset):
+        self.top_left_w_h = (self.top_left_w_h[0], self.top_left_w_h[1] + offset)
+        self.top_right_w_h = (self.top_right_w_h[0], self.top_right_w_h[1] + offset)
+        self.lower_right_w_h = (self.lower_right_w_h[0], self.lower_right_w_h[1] + offset)

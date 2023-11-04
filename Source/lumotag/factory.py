@@ -124,6 +124,7 @@ class display(ABC):
         self.emptyscreen = np.zeros(
             ( _gun_config.screen_size + (3,)), np.uint8)
         self.draw_test_rect()
+        self._affine_transform = None
 
     def draw_test_rect(self):
         buffer = int(self.emptyscreen.shape[0]/100)
@@ -138,22 +139,22 @@ class display(ABC):
     def display_method(image, self):
         pass
 
-    def set_image_in_centre(self, inputimg):
-        if inputimg.shape[0] == self.emptyscreen.shape[0]:
-            offset = floor((self.emptyscreen.shape[1] - inputimg.shape[1]) /2)
-            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 0] = inputimg
-            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
-            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
-        elif inputimg.shape[1] == self.emptyscreen.shape[1]:
-            offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) / 2)
-            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
-            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
-            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
-        else:
-            raise Exception(
-                "Warning, bad resized image shapes",
-                inputimg.shape,
-                self.emptyscreen.shape)
+    # def set_image_in_centre(self, inputimg):
+    #     if inputimg.shape[0] == self.emptyscreen.shape[0]:
+    #         offset = floor((self.emptyscreen.shape[1] - inputimg.shape[1]) /2)
+    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 0] = inputimg
+    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
+    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
+    #     elif inputimg.shape[1] == self.emptyscreen.shape[1]:
+    #         offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) / 2)
+    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
+    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
+    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
+    #     else:
+    #         raise Exception(
+    #             "Warning, bad resized image shapes",
+    #             inputimg.shape,
+    #             self.emptyscreen.shape)
 
     @staticmethod
     @lru_cache
@@ -210,78 +211,88 @@ class display(ABC):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
-        
+        if self._affine_transform is None:        
+            if self.display_rotate == 90 or self.display_rotate == -90 or self.display_rotate == 270:
+                reverse_output_shape = tuple(reversed(self.emptyscreen.shape[0:2]))
+                # if planning for 90 degrees, swap image dims
+                input_targets, output_targets = self.get_affine_points(
+                    output.shape,
+                    reverse_output_shape)
+                output_targets = self.rotate_affine_targets(
+                    output_targets,
+                    self.display_rotate,
+                    reverse_output_shape)
 
-        if self.display_rotate == 90:
-            pass
-        elif self.display_rotate == -90 or self.display_rotate == 270:
-            pass
-        elif self.display_rotate == 180:
-            input_targets, output_targets = self.get_affine_points(
-                output.shape,
-                self.emptyscreen.shape)
-            # have to flip output targets
-            output_targets = self.rotate_affine_targets(
-                output_targets,
-                180,
-                self.emptyscreen.shape)
+                diffs = (np.asarray(reverse_output_shape) - np.asarray(self.emptyscreen.shape[0:2]))/2
+                output_targets.add_offset_h(diffs[1])
+                output_targets.add_offset_w(diffs[0])
 
-        elif self.display_rotate == 0:
-            input_targets, output_targets = self.get_affine_points(
-                output.shape,
-                (self.emptyscreen.shape))
+            elif self.display_rotate == 180:
+                input_targets, output_targets = self.get_affine_points(
+                    output.shape,
+                    self.emptyscreen.shape)
+                # have to flip output targets
+                output_targets = self.rotate_affine_targets(
+                    output_targets,
+                    self.display_rotate,
+                    self.emptyscreen.shape)
 
-        affine_transform = img_processing.get_affine_transform(
-            pts1=np.asarray(input_targets.as_array(), dtype="float32"),
-            pts2=np.asarray(output_targets.as_array(), dtype="float32"))
+            elif self.display_rotate == 0:
+                input_targets, output_targets = self.get_affine_points(
+                    output.shape,
+                    (self.emptyscreen.shape))
 
-        row_cols = tuple(reversed(self.emptyscreen.shape[0:2]))
+            affine_transform = img_processing.get_affine_transform(
+                pts1=np.asarray(input_targets.as_array(), dtype="float32"),
+                pts2=np.asarray(output_targets.as_array(), dtype="float32"))
+
+        row_cols = self.emptyscreen.shape[0:2][::-1]
         outptu_img = img_processing.do_affine(output, affine_transform, row_cols)
         self.display_method(outptu_img)
         time.sleep(1)
 
-    def display_output(self, output):
-        # quicker in theory to resize first then rotate as
-        # input image is expected to be much larger than display size
-        if self.display_rotate == 90:
-            #output = cv2.resize(output, tuple(reversed(self.screen_size)))
-            #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-            output = img_processing.get_resized_equalaspect(
-                output,
-                tuple(reversed(self.screen_size)))
-            output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+    # def display_output(self, output):
+    #     # quicker in theory to resize first then rotate as
+    #     # input image is expected to be much larger than display size
+    #     if self.display_rotate == 90:
+    #         #output = cv2.resize(output, tuple(reversed(self.screen_size)))
+    #         #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
+    #         output = img_processing.get_resized_equalaspect(
+    #             output,
+    #             tuple(reversed(self.screen_size)))
+    #         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
             
-        elif self.display_rotate == -90 or self.display_rotate == 270:
-            output = img_processing.get_resized_equalaspect(
-                output,
-                tuple(reversed(self.screen_size)))
-            output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    #     elif self.display_rotate == -90 or self.display_rotate == 270:
+    #         output = img_processing.get_resized_equalaspect(
+    #             output,
+    #             tuple(reversed(self.screen_size)))
+    #         output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
-        elif self.display_rotate == 180:
-            output = img_processing.get_resized_equalaspect(
-                output,
-                self.screen_size)
-            output = cv2.rotate(output, cv2.ROTATE_180)
+    #     elif self.display_rotate == 180:
+    #         output = img_processing.get_resized_equalaspect(
+    #             output,
+    #             self.screen_size)
+    #         output = cv2.rotate(output, cv2.ROTATE_180)
 
-        elif self.display_rotate == 0:
-            # output, scale_factor = img_processing.resize_centre_img(
-            #    output,
-            #    self.screen_size)
-            #output = img_processing.add_cross_hair(output, adapt=True)
-            #output = cv2.resize(output, self.screen_size)
-            output = img_processing.get_resized_equalaspect(
-                output,
-                (self.screen_size))
+    #     elif self.display_rotate == 0:
+    #         # output, scale_factor = img_processing.resize_centre_img(
+    #         #    output,
+    #         #    self.screen_size)
+    #         #output = img_processing.add_cross_hair(output, adapt=True)
+    #         #output = cv2.resize(output, self.screen_size)
+    #         output = img_processing.get_resized_equalaspect(
+    #             output,
+    #             (self.screen_size))
             
 
-        else:
-            raise Exception("incorrect display rotate value", self.display_rotate)
-        #output = img_processing.add_cross_hair(output, adapt=True)
+    #     else:
+    #         raise Exception("incorrect display rotate value", self.display_rotate)
+    #     #output = img_processing.add_cross_hair(output, adapt=True)
 
         
-        self.set_image_in_centre(output)
-        img_processing.add_cross_hair(self.emptyscreen, adapt=True)
-        self.display_method(self.emptyscreen)
+    #     self.set_image_in_centre(output)
+    #     img_processing.add_cross_hair(self.emptyscreen, adapt=True)
+    #     self.display_method(self.emptyscreen)
 
     @abstractmethod
     def display_output_with_implant(self):
