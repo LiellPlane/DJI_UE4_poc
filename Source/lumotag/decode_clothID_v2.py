@@ -12,7 +12,7 @@ import random
 import time
 from utils import time_it
 from dataclasses import dataclass
-
+from my_collections import ShapeItem, Shapes
 import img_processing as img_pro
 
 
@@ -71,12 +71,6 @@ class Debug_Images(AutoStrEnum):
     find_shape = auto()
 
 
-class Shapes(AutoStrEnum):
-   SQUARE = auto()
-   TRIANGLE = auto()
-   CIRCLE = auto()
-   UNKNOWN = auto()
-
 class WorkingData():
     def __init__(self, debug=False) -> None:
         self.debugimgs = r"D:\lumodebug"
@@ -120,34 +114,6 @@ class WorkingData():
             self.debug_img_cnt += 1
 
 
-
-@dataclass
-class ShapeItem:
-    id: str
-    approx_contour: np.array
-    default_contour: np.array
-    filtered_contour: np.array
-    boundingbox: np.array
-    boundingbox_min: np.array
-    boundingbox_ellipse: np.array
-    img_cut: np.array
-    sum_int_angles: float
-    size: int
-    min_bbx_size: int
-    shape: Shapes
-    centre_x_y: list[int]
-    _2d_samples: list[list]
-
-    def add_offset_for_graphics(self, offset: list[int, int]):
-        """mutating function is used when a cropped part of the image
-        has been analysed, and we wish to print the graphics on uncropped"""
-        if self.approx_contour is not None:
-            self.approx_contour += np.asarray(offset)
-        if self.boundingbox_min is not None:
-            self.boundingbox_min += np.asarray(offset)
-        if self.centre_x_y is not None:
-            self.centre_x_y[0] += offset[0]
-            self.centre_x_y[1] += offset[1]
 
 def draw_pattern_output(image, patterndetails: ShapeItem):
     """draw graphics for user if a pattern is found

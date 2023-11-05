@@ -17,7 +17,7 @@ from functools import reduce
 import img_processing
 from math import floor
 from functools import reduce
-from my_collections import AffinePoints
+from my_collections import AffinePoints, ShapeItem
 try:
     from analyse_lumotag import SharedMem_ImgTicket
 except Exception:
@@ -207,7 +207,7 @@ class display(ABC):
                     lower_right_w_h=img_processing.rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
         return new_target
 
-    def display_output_affine(self, output, graphics):
+    def display_output_affine(self, output, graphics: ShapeItem):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
@@ -245,7 +245,8 @@ class display(ABC):
             affine_transform = img_processing.get_affine_transform(
                 pts1=np.asarray(input_targets.as_array(), dtype="float32"),
                 pts2=np.asarray(output_targets.as_array(), dtype="float32"))
-
+        # get matrix multiplication here to transform graphics to fit image
+        https://stackoverflow.com/questions/53569897/affine-transformation-in-image-processing
         row_cols = self.emptyscreen.shape[0:2][::-1]
         outptu_img = img_processing.do_affine(output, affine_transform, row_cols)
         self.display_method(outptu_img)
