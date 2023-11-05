@@ -20,8 +20,6 @@ class ImagingMode():
     shared_mem_reversed: bool
     special_notes: str
 
-
-
 @dataclass
 class SharedMem_ImgTicket:
     index: int

@@ -207,7 +207,7 @@ class display(ABC):
                     lower_right_w_h=img_processing.rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
         return new_target
 
-    def display_output_affine(self, output):
+    def display_output_affine(self, output, graphics):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 

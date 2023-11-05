@@ -43,7 +43,7 @@ class ImageAnalyser_shared_mem():
             self,
             input_shared_mem_index_q,
             analysis_output_q):
-        workingdata = decode_clothID.WorkingData(debug=True)
+        workingdata = decode_clothID.WorkingData(debug=False)
         while True:
             # get index of last image buffer - this will be safe
             # until two conditions are met:
@@ -70,9 +70,16 @@ class ImageAnalyser_shared_mem():
                 img_buff = img_buff[
                         self.img_crop.left:self.img_crop.right,
                         self.img_crop.top:self.img_crop.lower]
-
+                print(f"analysing img_buff shape {img_buff.shape}")
                 contour_data = decode_clothID.find_lumotag(
                     img_buff, workingdata)
+                
+                for contour in contour_data:
+                    # TODO check xy orientation correct
+                    contour.add_offset_for_graphics([self.img_crop.top,self.img_crop.left])
+                    
+                # correct contour data here? not sure if correct place
+                
             print("ANALOL waiting to put response")
 
             analysis_output_q.put((contour_data, self.img_crop), block=True, timeout=None)

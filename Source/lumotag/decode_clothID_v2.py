@@ -138,6 +138,16 @@ class ShapeItem:
     centre_x_y: list[int]
     _2d_samples: list[list]
 
+    def add_offset_for_graphics(self, offset: list[int, int]):
+        """mutating function is used when a cropped part of the image
+        has been analysed, and we wish to print the graphics on uncropped"""
+        if self.approx_contour is not None:
+            self.approx_contour += np.asarray(offset)
+        if self.boundingbox_min is not None:
+            self.boundingbox_min += np.asarray(offset)
+        if self.centre_x_y is not None:
+            self.centre_x_y[0] += offset[0]
+            self.centre_x_y[1] += offset[1]
 
 def draw_pattern_output(image, patterndetails: ShapeItem):
     """draw graphics for user if a pattern is found

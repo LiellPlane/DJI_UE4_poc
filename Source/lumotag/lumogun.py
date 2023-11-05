@@ -226,12 +226,12 @@ def main():
                 with time_it("wait for image analysis"):
                     graphics, cropdetails = image_analysis.analysis_output_q.get(block=True, timeout=None)
                 with time_it("display image time"):
-                    for c in graphics:
-                        decode_clothID.draw_pattern_output(image=cap_img, patterndetails=c)
+                    # for c in graphics:
+                    #     decode_clothID.draw_pattern_output(image=cap_img, patterndetails=c)
                     # display.display_output(cap_img[
                     #     slice_details.left:slice_details.right,
                     #     slice_details.top:slice_details.lower])
-                    display.display_output_affine(cap_img)
+                    display.display_output_affine(cap_img, graphics)
     raise RuntimeError("something broke out of loop")
 
 
