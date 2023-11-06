@@ -47,6 +47,27 @@ class ShapeItem:
             self.centre_x_y[0] += offset[0]
             self.centre_x_y[1] += offset[1]
 
+    def transform_points(self, affine_transform):
+        """Transform points to fit transformed video feedback
+        https://stackoverflow.com/questions/53569897/affine-transformation-in-image-processing
+
+        expects a 2* 3 affine matrix
+        affine_transform
+        
+        [[  0.27389706   0.         251.        ]
+        [  0.           0.27472527   0.        ]]
+        """
+
+        concat_affine = np.eye(3)
+        concat_affine[0:2, :] = affine_transform
+        if self.approx_contour is not None:
+            extra_element = np.ones((self.approx_contour.shape[0], 1, 1), dtype=np.int)
+            concat_toaffine = (
+                np.concatenate(
+                (self.approx_contour, extra_element), axis=-1)).transpose().reshape(3, 8)
+            res = np.matmul(concat_affine, concat_toaffine)
+            self.approx_contour = res.transpose()[:,0:2].reshape(8,1,2)
+
 @dataclass
 class ImagingMode():
     camera_model: str

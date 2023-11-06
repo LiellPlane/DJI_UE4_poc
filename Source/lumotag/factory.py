@@ -23,7 +23,7 @@ try:
 except Exception:
     # TODO
     print("this must be scambilight - bad solution please fix TODO")
-
+import decode_clothID_v2 as decode_clothID
 
 RELAY_BOUNCE_S = 0.02
 
@@ -207,6 +207,7 @@ class display(ABC):
                     lower_right_w_h=img_processing.rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
         return new_target
 
+
     def display_output_affine(self, output, graphics: ShapeItem):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
@@ -246,9 +247,12 @@ class display(ABC):
                 pts1=np.asarray(input_targets.as_array(), dtype="float32"),
                 pts2=np.asarray(output_targets.as_array(), dtype="float32"))
         # get matrix multiplication here to transform graphics to fit image
-        https://stackoverflow.com/questions/53569897/affine-transformation-in-image-processing
+
         row_cols = self.emptyscreen.shape[0:2][::-1]
         outptu_img = img_processing.do_affine(output, affine_transform, row_cols)
+        for c in graphics:
+            c.transform_points(affine_transform)
+            decode_clothID.draw_pattern_output(image=outptu_img, patterndetails=c)
         self.display_method(outptu_img)
         time.sleep(1)
 
