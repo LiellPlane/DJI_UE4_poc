@@ -208,7 +208,7 @@ class display(ABC):
         return new_target
 
 
-    def display_output_affine(self, output, graphics: ShapeItem):
+    def generate_output_affine(self, output):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
@@ -243,61 +243,28 @@ class display(ABC):
                     output.shape,
                     (self.emptyscreen.shape))
 
-            affine_transform = img_processing.get_affine_transform(
+            self._affine_transform = img_processing.get_affine_transform(
                 pts1=np.asarray(input_targets.as_array(), dtype="float32"),
                 pts2=np.asarray(output_targets.as_array(), dtype="float32"))
         # get matrix multiplication here to transform graphics to fit image
 
         row_cols = self.emptyscreen.shape[0:2][::-1]
-        outptu_img = img_processing.do_affine(output, affine_transform, row_cols)
+        outptu_img = img_processing.do_affine(output, self._affine_transform, row_cols)
+        outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
+        return outptu_img
+
+    def display_output_with_graphics(self, output, graphics: ShapeItem):
+        img_processing.add_cross_hair(
+            output,
+            adapt=True)
         for c in graphics:
-            c.transform_points(affine_transform)
-            decode_clothID.draw_pattern_output(image=outptu_img, patterndetails=c)
-        self.display_method(outptu_img)
-        time.sleep(1)
+            c.transform_points(self._affine_transform)
+            decode_clothID.draw_pattern_output(
+                image=output,
+                patterndetails=c)
 
-    # def display_output(self, output):
-    #     # quicker in theory to resize first then rotate as
-    #     # input image is expected to be much larger than display size
-    #     if self.display_rotate == 90:
-    #         #output = cv2.resize(output, tuple(reversed(self.screen_size)))
-    #         #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-    #         output = img_processing.get_resized_equalaspect(
-    #             output,
-    #             tuple(reversed(self.screen_size)))
-    #         output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-            
-    #     elif self.display_rotate == -90 or self.display_rotate == 270:
-    #         output = img_processing.get_resized_equalaspect(
-    #             output,
-    #             tuple(reversed(self.screen_size)))
-    #         output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
-    #     elif self.display_rotate == 180:
-    #         output = img_processing.get_resized_equalaspect(
-    #             output,
-    #             self.screen_size)
-    #         output = cv2.rotate(output, cv2.ROTATE_180)
-
-    #     elif self.display_rotate == 0:
-    #         # output, scale_factor = img_processing.resize_centre_img(
-    #         #    output,
-    #         #    self.screen_size)
-    #         #output = img_processing.add_cross_hair(output, adapt=True)
-    #         #output = cv2.resize(output, self.screen_size)
-    #         output = img_processing.get_resized_equalaspect(
-    #             output,
-    #             (self.screen_size))
-            
-
-    #     else:
-    #         raise Exception("incorrect display rotate value", self.display_rotate)
-    #     #output = img_processing.add_cross_hair(output, adapt=True)
-
-        
-    #     self.set_image_in_centre(output)
-    #     img_processing.add_cross_hair(self.emptyscreen, adapt=True)
-    #     self.display_method(self.emptyscreen)
+        self.display_method(output)
+ 
 
     @abstractmethod
     def display_output_with_implant(self):
@@ -522,7 +489,7 @@ class Camera_async_flipflop(Camera):
                             discrete_ids=["1"]
                                         ))
         self.shared_mem_index = SharedMemory(
-                            obj_bytesize=img_byte_size,
+                            obj_bytesize=1,
                             discrete_ids=[self._shared_id_index_name]
                                         )
 
@@ -555,7 +522,7 @@ class Camera_async_flipflop(Camera):
                         block=True,
                         timeout=None
                         )
-        print("FLIPFLOP Requested Image, NP incoming:", mem_details)
+        #print("FLIPFLOP Requested Image, NP incoming:", mem_details)
         
         strm_buff = self.shared_mem_handler[
             int(mem_details.index)].mem_ids[str(mem_details.index)].buf
@@ -575,7 +542,7 @@ class Camera_async_flipflop(Camera):
             res=mem_details.res,
             buf_size=mem_details.buf_size,
             id = mem_details.id)
-        print("FLIPFLOP saving record for analyis", self.get_safe_mem_details)
+        #print("FLIPFLOP saving record for analyis", self.get_safe_mem_details)
         return img_buff
 
     def async_img_loop(
@@ -622,20 +589,20 @@ class Camera_async_flipflop(Camera):
                 id=random.randint(1111,9999))
 
             if shared_curr_id_quick == [1]:
-                print("FLIPFLOP WRITING ASYNC image to 1")
+                #print("FLIPFLOP WRITING ASYNC image to 1")
                 shared_mem_1[:] = img[:]
                 shared_curr_id_quick = [0]
             elif shared_curr_id_quick == [0]:
-                print("FLIPFLOP WRITING ASYNC image to 0")
+                #print("FLIPFLOP WRITING ASYNC image to 0")
                 shared_mem_0[:] = img[:]
                 shared_curr_id_quick = [1]
             else:
                 raise Exception("Invalid buffer ID")
             #blocking put until consumer handshakes
-            print("FLIPFLOP waiting to send ASYNC outgoing:", output)
+            #print("FLIPFLOP waiting to send ASYNC outgoing:", output)
             _ = handshake_queue.get(block=True, timeout=None)
             myqueue.put(output, block=True, timeout=None)
-            print("FLIPFLOP sent!! ASYNC outgoing:", output)
+            #print("FLIPFLOP sent!! ASYNC outgoing:", output)
 
 
 class Camera_async(Camera):

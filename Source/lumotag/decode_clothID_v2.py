@@ -123,10 +123,10 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
     cX, cY = patterndetails.centre_x_y
 
     # corners of square
-    cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 3)
-    cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 3)
-    cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 3)
-    cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 3)
+    cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
+    cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
+    cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
+    cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
 
     # centre of pattern
     cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
@@ -136,8 +136,8 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
 
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
-    cv2.line(image, tuple(min_bbox[0]), tuple(min_bbox[2]), img_pro.RED, 2) 
-    cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 2) 
+    cv2.line(image, tuple(min_bbox[0]), tuple(min_bbox[2]), img_pro.RED, 1) 
+    cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 1) 
 
 
 def get_approx_shape_and_bbox(

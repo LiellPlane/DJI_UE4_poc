@@ -60,13 +60,27 @@ class ShapeItem:
 
         concat_affine = np.eye(3)
         concat_affine[0:2, :] = affine_transform
+
         if self.approx_contour is not None:
             extra_element = np.ones((self.approx_contour.shape[0], 1, 1), dtype=np.int)
             concat_toaffine = (
                 np.concatenate(
-                (self.approx_contour, extra_element), axis=-1)).transpose().reshape(3, 8)
+                (self.approx_contour, extra_element), axis=-1)).transpose().reshape(3, self.approx_contour.shape[0])
             res = np.matmul(concat_affine, concat_toaffine)
-            self.approx_contour = res.transpose()[:,0:2].reshape(8,1,2)
+            self.approx_contour = res.transpose()[:,0:2].reshape(self.approx_contour.shape[0],1,2).astype(np.int64)
+
+        if self.boundingbox_min is not None:
+            extra_element = np.ones((self.boundingbox_min.shape[0], 1), dtype=np.int)
+            concat_toaffine = (
+                np.concatenate(
+                (self.boundingbox_min, extra_element), axis=-1)).transpose().reshape(3, self.boundingbox_min.shape[0])
+            res = np.matmul(concat_affine, concat_toaffine)
+            self.boundingbox_min = res.transpose()[:,0:2].reshape(self.boundingbox_min.shape[0],2).astype(np.int64)
+
+        if self.centre_x_y is not None:
+            extra_element = np.array(self.centre_x_y + [1])
+            np.matmul(concat_affine, extra_element)
+            self.centre_x_y = list(np.matmul(concat_affine, extra_element)[0:2].astype(np.int64))
 
 @dataclass
 class ImagingMode():

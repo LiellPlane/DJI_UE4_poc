@@ -49,12 +49,12 @@ class ImageAnalyser_shared_mem():
             # until two conditions are met:
             # 1: a new asynchronous image has been generated
             # 2: we have called _next_ to get it
-            print("ANALOL waiting in analysis loop for record")
+            #print("ANALOL waiting in analysis loop for record")
             shared_details = input_shared_mem_index_q.get(
                 block=True,
                 timeout=None
                 )
-            print("ANALOL received analysis details", shared_details)
+            #print("ANALOL received analysis details", shared_details)
             with time_it("analyse lumotag"):
                 # shared memory is in chunks of 4096 - so have to slice it
                 bytesize = reduce((lambda x, y: x * y), shared_details.res)
@@ -80,6 +80,6 @@ class ImageAnalyser_shared_mem():
                     
                 # correct contour data here? not sure if correct place
                 
-            print("ANALOL waiting to put response")
+            #print("ANALOL waiting to put response")
 
             analysis_output_q.put((contour_data, self.img_crop), block=True, timeout=None)

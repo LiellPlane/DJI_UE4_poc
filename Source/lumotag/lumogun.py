@@ -204,34 +204,14 @@ def main():
 
             with time_it("gun image stuff"):
 
-
-
-
-                # with time_it("gun total analysis time"):
-                #     contour_data = decode_clothID.find_lumotag(
-                #         central_img, workingdata)
-                #     for c in contour_data:
-                #         if isinstance(c, decode_clothID.ShapeItem):
-                #             decode_clothID.draw_pattern_output(
-                #                 image=central_img,
-                #                 patterndetails=c)
-                #with time_it("replant internal image"):
-                # with time_it("gun implant and display image"):
-                #     display.display_output_with_implant(cap_img, central_img)
-                #cap_img = img_processing.image_resize_ratio(cap_img, width=800)
-                #with time_it("gun display"):
-                #    display.display_output(fart)
-
-
+                with time_it("execute affine transform"):
+                    img = display.generate_output_affine(cap_img)
                 with time_it("wait for image analysis"):
-                    graphics, cropdetails = image_analysis.analysis_output_q.get(block=True, timeout=None)
-                with time_it("display image time"):
-                    # for c in graphics:
-                    #     decode_clothID.draw_pattern_output(image=cap_img, patterndetails=c)
-                    # display.display_output(cap_img[
-                    #     slice_details.left:slice_details.right,
-                    #     slice_details.top:slice_details.lower])
-                    display.display_output_affine(cap_img, graphics)
+                    graphics, _ = image_analysis.analysis_output_q.get(block=True, timeout=None)
+                
+                with time_it("add graphics and display image"):
+                    display.display_output_with_graphics(img, graphics)
+
     raise RuntimeError("something broke out of loop")
 
 
