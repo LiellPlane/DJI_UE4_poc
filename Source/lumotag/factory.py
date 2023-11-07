@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 import time
 from enum import Enum
+from functools import lru_cache
 import cv2
 from contextlib import contextmanager
 from dataclasses import dataclass
@@ -16,43 +17,15 @@ from functools import reduce
 import img_processing
 from math import floor
 from functools import reduce
+from my_collections import AffinePoints, ShapeItem
 try:
     from analyse_lumotag import SharedMem_ImgTicket
 except Exception:
     # TODO
     print("this must be scambilight - bad solution please fix TODO")
-
+import decode_clothID_v2 as decode_clothID
 
 RELAY_BOUNCE_S = 0.02
-
-
-class AutoStrEnum(str, Enum):
-    """
-    StrEnum where auto() returns the field name.
-    See https://docs.python.org/3.9/library/enum.html#using-automatic-values
-    """
-    @staticmethod
-    def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
-        return name
-
-
-
-# @contextmanager
-# def time_it(process):
-#     tic: float = time.perf_counter()
-#     try:
-#         yield
-#     finally:
-#         toc: float = time.perf_counter()
-#         print(f"time for {process} = {1000*(toc - tic):.3f}ms")
-
-@dataclass
-class ImagingMode():
-    camera_model: str
-    res_width_height: tuple[int, int]
-    doc_description: str
-    shared_mem_reversed: bool
-    special_notes: str
 
 class RelayFunction(Enum):
     torch = 1
@@ -151,6 +124,7 @@ class display(ABC):
         self.emptyscreen = np.zeros(
             ( _gun_config.screen_size + (3,)), np.uint8)
         self.draw_test_rect()
+        self._affine_transform = None
 
     def draw_test_rect(self):
         buffer = int(self.emptyscreen.shape[0]/100)
@@ -165,65 +139,132 @@ class display(ABC):
     def display_method(image, self):
         pass
 
-    def set_image_in_centre(self, inputimg):
-        if inputimg.shape[0] == self.emptyscreen.shape[0]:
-            offset = floor((self.emptyscreen.shape[1] - inputimg.shape[1]) /2)
-            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 0] = inputimg
-            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
-            self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
-        elif inputimg.shape[1] == self.emptyscreen.shape[1]:
-            offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) / 2)
-            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
-            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
-            self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
-        else:
-            raise Exception(
-                "Warning, bad resized image shapes",
-                inputimg.shape,
-                self.emptyscreen.shape)
+    # def set_image_in_centre(self, inputimg):
+    #     if inputimg.shape[0] == self.emptyscreen.shape[0]:
+    #         offset = floor((self.emptyscreen.shape[1] - inputimg.shape[1]) /2)
+    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 0] = inputimg
+    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
+    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
+    #     elif inputimg.shape[1] == self.emptyscreen.shape[1]:
+    #         offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) / 2)
+    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
+    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
+    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
+    #     else:
+    #         raise Exception(
+    #             "Warning, bad resized image shapes",
+    #             inputimg.shape,
+    #             self.emptyscreen.shape)
 
-    def display_output(self, output):
-        # quicker in theory to resize first then rotate as
-        # input image is expected to be much larger than display size
-        if self.display_rotate == 90:
-            #output = cv2.resize(output, tuple(reversed(self.screen_size)))
-            #output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-            output = img_processing.get_resized_equalaspect(
-                output,
-                tuple(reversed(self.screen_size)))
-            output = cv2.rotate(output, cv2.ROTATE_90_CLOCKWISE)
-            
-        elif self.display_rotate == -90 or self.display_rotate == 270:
-            output = img_processing.get_resized_equalaspect(
-                output,
-                tuple(reversed(self.screen_size)))
-            output = cv2.rotate(output, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
-        elif self.display_rotate == 180:
-            output = img_processing.get_resized_equalaspect(
-                output,
-                self.screen_size)
-            output = cv2.rotate(output, cv2.ROTATE_180)
-
-        elif self.display_rotate == 0:
-            # output, scale_factor = img_processing.resize_centre_img(
-            #    output,
-            #    self.screen_size)
-            #output = img_processing.add_cross_hair(output, adapt=True)
-            #output = cv2.resize(output, self.screen_size)
-            output = img_processing.get_resized_equalaspect(
-                output,
-                (self.screen_size))
-            
-
-        else:
-            raise Exception("incorrect display rotate value", self.display_rotate)
-        #output = img_processing.add_cross_hair(output, adapt=True)
-
+    @staticmethod
+    @lru_cache
+    def get_affine_points(incoming_img_dims, outgoing_img_dims) -> AffinePoints:
+        """Return the corresponding points to fit the incoming image central to the
+        view screen maintaining the aspect ratio, to be used to calculate affine
+        transform
         
-        self.set_image_in_centre(output)
-        img_processing.add_cross_hair(self.emptyscreen, adapt=True)
-        self.display_method(self.emptyscreen)
+        inputs:
+        incoming_img_dims: numpy array .shape
+        outcoming_img_dims: numpy array .shape
+
+        return source points, target points
+        """
+        incoming_w = incoming_img_dims[1]
+        incoming_h = incoming_img_dims[0]
+        outgoing_w = outgoing_img_dims[1]
+        outgoing_h = outgoing_img_dims[0]
+        incoming_pts = AffinePoints(
+            top_left_w_h=(0,0),
+            top_right_w_h=(incoming_w , 0),
+            lower_right_w_h=(incoming_w , incoming_h))
+        # pick any ratio
+        ratio = outgoing_h / incoming_h
+        # if resizing with aspect ratio doesn't fit, do the other way
+        if floor(incoming_w * ratio) > outgoing_w:
+            ratio = outgoing_w / incoming_w
+        output_fit_h = floor(incoming_h * ratio)
+        output_fit_w = floor(incoming_w * ratio)
+        # test to make sure aspect ratio is 
+        if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 1:
+            raise ValueError("error calculating output image dimensions")
+        # get 3 corresponding points from the output view - keeping in mind
+        # any rotation
+        w_crop_in = (outgoing_w - output_fit_w) // 2
+        h_crop_in = (outgoing_h - output_fit_h) // 2
+        view_pts = AffinePoints(
+            top_left_w_h=(w_crop_in, h_crop_in),
+            top_right_w_h=(w_crop_in + output_fit_w, h_crop_in),
+            lower_right_w_h=(w_crop_in + output_fit_w, h_crop_in + output_fit_h))
+
+        return incoming_pts, view_pts 
+
+    @staticmethod
+    def rotate_affine_targets(targets, degrees, outputscreen_shape):
+        mid_img = [int(x/2) for x in outputscreen_shape[0:2][::-1]] # get reversed dims
+        new_target = AffinePoints(
+                    top_left_w_h=img_processing.rotate_pt_around_origin(targets.top_left_w_h, mid_img, degrees),
+                    top_right_w_h=img_processing.rotate_pt_around_origin(targets.top_right_w_h, mid_img, degrees),
+                    lower_right_w_h=img_processing.rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
+        return new_target
+
+
+    def generate_output_affine(self, output):
+        """use affine transform to resize and rotate image in one calculation
+        need 2 sets of 3 corresponding points to create calculation"""
+
+        if self._affine_transform is None:        
+            if self.display_rotate == 90 or self.display_rotate == -90 or self.display_rotate == 270:
+                reverse_output_shape = tuple(reversed(self.emptyscreen.shape[0:2]))
+                # if planning for 90 degrees, swap image dims
+                input_targets, output_targets = self.get_affine_points(
+                    output.shape,
+                    reverse_output_shape)
+                output_targets = self.rotate_affine_targets(
+                    output_targets,
+                    self.display_rotate,
+                    reverse_output_shape)
+
+                diffs = (np.asarray(reverse_output_shape) - np.asarray(self.emptyscreen.shape[0:2]))/2
+                output_targets.add_offset_h(diffs[1])
+                output_targets.add_offset_w(diffs[0])
+
+            elif self.display_rotate == 180:
+                input_targets, output_targets = self.get_affine_points(
+                    output.shape,
+                    self.emptyscreen.shape)
+                # have to flip output targets
+                output_targets = self.rotate_affine_targets(
+                    output_targets,
+                    self.display_rotate,
+                    self.emptyscreen.shape)
+
+            elif self.display_rotate == 0:
+                input_targets, output_targets = self.get_affine_points(
+                    output.shape,
+                    (self.emptyscreen.shape))
+
+            self._affine_transform = img_processing.get_affine_transform(
+                pts1=np.asarray(input_targets.as_array(), dtype="float32"),
+                pts2=np.asarray(output_targets.as_array(), dtype="float32"))
+        # get matrix multiplication here to transform graphics to fit image
+
+        row_cols = self.emptyscreen.shape[0:2][::-1]
+        outptu_img = img_processing.do_affine(output, self._affine_transform, row_cols)
+        outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
+        return outptu_img
+
+    def display_output_with_graphics(self, output, graphics: ShapeItem):
+        img_processing.add_cross_hair(
+            output,
+            adapt=True)
+        for c in graphics:
+            c.transform_points(self._affine_transform)
+            decode_clothID.draw_pattern_output(
+                image=output,
+                patterndetails=c)
+
+        self.display_method(output)
+ 
 
     @abstractmethod
     def display_output_with_implant(self):
@@ -344,6 +385,7 @@ class ImageGenerator(ABC):
     def get_image(self):
         pass
 
+
 class Camera(ABC):
 
     def __init__(self, video_modes) -> None:
@@ -447,7 +489,7 @@ class Camera_async_flipflop(Camera):
                             discrete_ids=["1"]
                                         ))
         self.shared_mem_index = SharedMemory(
-                            obj_bytesize=img_byte_size,
+                            obj_bytesize=1,
                             discrete_ids=[self._shared_id_index_name]
                                         )
 
@@ -480,7 +522,7 @@ class Camera_async_flipflop(Camera):
                         block=True,
                         timeout=None
                         )
-        print("FLIPFLOP Requested Image, NP incoming:", mem_details)
+        #print("FLIPFLOP Requested Image, NP incoming:", mem_details)
         
         strm_buff = self.shared_mem_handler[
             int(mem_details.index)].mem_ids[str(mem_details.index)].buf
@@ -500,7 +542,7 @@ class Camera_async_flipflop(Camera):
             res=mem_details.res,
             buf_size=mem_details.buf_size,
             id = mem_details.id)
-        print("FLIPFLOP saving record for analyis", self.get_safe_mem_details)
+        #print("FLIPFLOP saving record for analyis", self.get_safe_mem_details)
         return img_buff
 
     def async_img_loop(
@@ -547,21 +589,20 @@ class Camera_async_flipflop(Camera):
                 id=random.randint(1111,9999))
 
             if shared_curr_id_quick == [1]:
-                print("FLIPFLOP WRITING ASYNC image to 1")
+                #print("FLIPFLOP WRITING ASYNC image to 1")
                 shared_mem_1[:] = img[:]
                 shared_curr_id_quick = [0]
             elif shared_curr_id_quick == [0]:
-                print("FLIPFLOP WRITING ASYNC image to 0")
+                #print("FLIPFLOP WRITING ASYNC image to 0")
                 shared_mem_0[:] = img[:]
                 shared_curr_id_quick = [1]
             else:
                 raise Exception("Invalid buffer ID")
             #blocking put until consumer handshakes
-            print("FLIPFLOP waiting to send ASYNC outgoing:", output)
+            #print("FLIPFLOP waiting to send ASYNC outgoing:", output)
             _ = handshake_queue.get(block=True, timeout=None)
             myqueue.put(output, block=True, timeout=None)
-            print("FLIPFLOP sent!! ASYNC outgoing:", output)
-
+            #print("FLIPFLOP sent!! ASYNC outgoing:", output)
 
 
 class Camera_async(Camera):
@@ -666,7 +707,6 @@ class Camera_async(Camera):
             myqueue.put("image_ready", block=True, timeout=None)
 
 
-
 class Camera_async_alwaysloop(Camera_async):
 
     def __init__(self, video_modes, imagegen_cls) -> None:
@@ -699,7 +739,8 @@ class Camera_async_alwaysloop(Camera_async):
                 print("forever loop cam needs one image removed first using NEXT")
                 myqueue.put("image_ready", block=True, timeout=None)
                 first_image = True
-    
+
+
 class Relay(ABC):
     def __init__(self, _gun_config) -> None:
         self.debouncers = {}

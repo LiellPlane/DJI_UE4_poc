@@ -1,5 +1,6 @@
 from enum import Enum
-from factory import gun_config, ImagingMode
+from factory import gun_config
+from my_collections import ImagingMode
 import time
 
 
@@ -48,19 +49,16 @@ class Fake_Cam_vidmodes2(Enum):
 class Fake_Cam_vidmodes(Enum):
     _1 = ImagingMode(
         camera_model="test5005x500",
-        res_width_height=(500, 500),
+        res_width_height=(1456, 1088),
         doc_description="500 × 500",
         shared_mem_reversed=False,special_notes="")
     
-# class Fake_Cam_vidmodes(Enum):
-#     _2 = ["2028 × 1080p50,",(2020, 1080)]
-
 
 class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (480, 800 - title_bar_pxls)
+    windows_laptop = (900, 800)
     stryker = (480, 620)
 
 
@@ -204,7 +202,7 @@ class simitzar_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(270)
+        return(0)
 
     @property
     def screen_size(self):

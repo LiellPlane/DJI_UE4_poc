@@ -12,7 +12,7 @@ import random
 import time
 from utils import time_it
 from dataclasses import dataclass
-
+from my_collections import ShapeItem, Shapes
 import img_processing as img_pro
 
 
@@ -71,12 +71,6 @@ class Debug_Images(AutoStrEnum):
     find_shape = auto()
 
 
-class Shapes(AutoStrEnum):
-   SQUARE = auto()
-   TRIANGLE = auto()
-   CIRCLE = auto()
-   UNKNOWN = auto()
-
 class WorkingData():
     def __init__(self, debug=False) -> None:
         self.debugimgs = r"D:\lumodebug"
@@ -121,24 +115,6 @@ class WorkingData():
 
 
 
-@dataclass
-class ShapeItem:
-    id: str
-    approx_contour: np.array
-    default_contour: np.array
-    filtered_contour: np.array
-    boundingbox: np.array
-    boundingbox_min: np.array
-    boundingbox_ellipse: np.array
-    img_cut: np.array
-    sum_int_angles: float
-    size: int
-    min_bbx_size: int
-    shape: Shapes
-    centre_x_y: list[int]
-    _2d_samples: list[list]
-
-
 def draw_pattern_output(image, patterndetails: ShapeItem):
     """draw graphics for user if a pattern is found
     TODO: maybe want floating numbers etc above this which
@@ -147,10 +123,10 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
     cX, cY = patterndetails.centre_x_y
 
     # corners of square
-    cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 3)
-    cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 3)
-    cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 3)
-    cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 3)
+    cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
+    cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
+    cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
+    cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
 
     # centre of pattern
     cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
@@ -160,8 +136,8 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
 
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
-    cv2.line(image, tuple(min_bbox[0]), tuple(min_bbox[2]), img_pro.RED, 2) 
-    cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 2) 
+    cv2.line(image, tuple(min_bbox[0]), tuple(min_bbox[2]), img_pro.RED, 1) 
+    cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 1) 
 
 
 def get_approx_shape_and_bbox(
