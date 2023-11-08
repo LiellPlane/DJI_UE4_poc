@@ -20,10 +20,11 @@ from functools import reduce
 from my_collections import AffinePoints, ShapeItem
 try:
     from analyse_lumotag import SharedMem_ImgTicket
+    import decode_clothID_v2 as decode_clothID
 except Exception:
     # TODO
     print("this must be scambilight - bad solution please fix TODO")
-import decode_clothID_v2 as decode_clothID
+
 
 RELAY_BOUNCE_S = 0.02
 
@@ -926,6 +927,8 @@ def get_config(model) -> gun_config:
     raise Exception("No config found for model ID ", str(model))
 
 
+
+
 class SharedMemory():
     def __init__(self, obj_bytesize: int,
                  discrete_ids: list[str]
@@ -940,18 +943,26 @@ class SharedMemory():
         self.mem_ids = {}
 
         for my_id in discrete_ids:
+            #try:
             try:
-                self.mem_ids[my_id] = (shared_memory.SharedMemory(
-                    create=True,
-                    size=obj_bytesize,
+                # if shrd memory already exists, tidy it up or crash out
+                tidy_mem = (shared_memory.SharedMemory(
+                    create=False,
+                    name=my_id))
+                tidy_mem.close()
+                tidy_mem.unlink()
+            except FileNotFoundError:
+                # shared memory has been tidied up previously
+                pass
+
+            self.mem_ids[my_id] = (shared_memory.SharedMemory(
+                create=True,
+                size=obj_bytesize,
                     name=my_id))
 
-            except FileExistsError:
-                print(f"Warning: shared memory {my_id} has not been cleaned up")
-                self.mem_ids[my_id] = (shared_memory.SharedMemory(
-                    create=False,
-                    size=obj_bytesize,
-                    name=my_id))
+            # except FileExistsError:
+            #     print(f"Warning: shared memory {my_id} has not been cleaned up")
+
 
 
 class VoiceBase(ABC):

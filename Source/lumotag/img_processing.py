@@ -9,6 +9,7 @@ from typing import Iterator
 from dataclasses import dataclass
 from skimage.draw import line
 from my_collections import CropSlicing
+
 RED = (0, 0, 255)
 
 def read_img(img_filepath):
