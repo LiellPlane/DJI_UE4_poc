@@ -17,7 +17,7 @@ from functools import reduce
 import img_processing
 from math import floor
 from functools import reduce
-from my_collections import AffinePoints, ShapeItem
+from my_collections import AffinePoints, ShapeItem, CropSlicing
 try:
     from analyse_lumotag import SharedMem_ImgTicket
     import decode_clothID_v2 as decode_clothID
@@ -253,6 +253,12 @@ class display(ABC):
         outptu_img = img_processing.do_affine(output, self._affine_transform, row_cols)
         outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
         return outptu_img
+
+    def add_internal_section_region(self, inputimg, slice: CropSlicing):
+
+        left_top = np.matmul(self._affine_transform, np.array([slice.left,slice.top,1]))
+        right_low = np.matmul(self._affine_transform, np.array([slice.right,slice.lower,1]))
+        inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 255
 
     def display_output_with_graphics(self, output, graphics: ShapeItem):
         img_processing.add_cross_hair(

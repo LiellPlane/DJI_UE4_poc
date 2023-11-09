@@ -62,15 +62,15 @@ class ShapeItem:
         concat_affine[0:2, :] = affine_transform
 
         if self.approx_contour is not None:
-            extra_element = np.ones((self.approx_contour.shape[0], 1, 1), dtype=np.int)
+            extra_element = np.ones((self.approx_contour.shape[0], 1, 1), dtype=int)
             concat_toaffine = (
                 np.concatenate(
                 (self.approx_contour, extra_element), axis=-1)).transpose().reshape(3, self.approx_contour.shape[0])
             res = np.matmul(concat_affine, concat_toaffine)
-            self.approx_contour = res.transpose()[:,0:2].reshape(self.approx_contour.shape[0],1,2).astype(np.int64)
+            self.approx_contour = res.transpose()[:,0:2].reshape(self.approx_contour.shape[0],1,2).astype(int)
 
         if self.boundingbox_min is not None:
-            extra_element = np.ones((self.boundingbox_min.shape[0], 1), dtype=np.int)
+            extra_element = np.ones((self.boundingbox_min.shape[0], 1), dtype=int)
             concat_toaffine = (
                 np.concatenate(
                 (self.boundingbox_min, extra_element), axis=-1)).transpose().reshape(3, self.boundingbox_min.shape[0])
