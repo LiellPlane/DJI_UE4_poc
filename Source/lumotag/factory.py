@@ -254,11 +254,14 @@ class display(ABC):
         outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
         return outptu_img
 
-    def add_internal_section_region(self, inputimg, slice: CropSlicing):
+    def add_internal_section_region(self, inputimg, _slice: CropSlicing):
 
-        left_top = np.matmul(self._affine_transform, np.array([slice.left,slice.top,1]))
-        right_low = np.matmul(self._affine_transform, np.array([slice.right,slice.lower,1]))
-        #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 255
+        left_top = tuple(
+            np.matmul(self._affine_transform, np.array([_slice.left,_slice.top,1])).astype(int))
+        right_low = tuple(
+            np.matmul(self._affine_transform, np.array([_slice.right,_slice.lower,1])).astype(int))
+        inputimg = cv2.rectangle(inputimg, left_top, right_low, (255,255,255), 2)
+        #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
     def display_output_with_graphics(self, output, graphics: ShapeItem):
         img_processing.add_cross_hair(

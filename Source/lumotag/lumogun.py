@@ -211,8 +211,8 @@ def main():
                     graphics, _ = image_analysis.analysis_output_q.get(
                         block=True,
                         timeout=None)
-
-                display.add_internal_section_region(img, slice_details)
+                with time_it("add internal section"):
+                    display.add_internal_section_region(img, slice_details)
 
                 with time_it("add graphics and display image"):
                     display.display_output_with_graphics(img, graphics)
