@@ -68,15 +68,15 @@ class ImageAnalyser_shared_mem():
                 
                 # add any cropping
                 img_buff = img_buff[
-                        self.img_crop.left:self.img_crop.right,
-                        self.img_crop.top:self.img_crop.lower]
+                        self.img_crop.top:self.img_crop.lower,
+                        self.img_crop.left:self.img_crop.right]
                 print(f"analysing img_buff shape {img_buff.shape}")
                 contour_data = decode_clothID.find_lumotag(
                     img_buff, workingdata)
                 
                 for contour in contour_data:
                     # TODO check xy orientation correct
-                    contour.add_offset_for_graphics([self.img_crop.top,self.img_crop.left])
+                    contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
                     
                 # correct contour data here? not sure if correct place
                 

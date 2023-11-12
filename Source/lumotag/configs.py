@@ -49,16 +49,16 @@ class Fake_Cam_vidmodes2(Enum):
 class Fake_Cam_vidmodes(Enum):
     _1 = ImagingMode(
         camera_model="test5005x500",
-        res_width_height=(1456, 1088),
+        res_width_height=(1080, 1920),
         doc_description="500 × 500",
-        shared_mem_reversed=False,special_notes="")
+        shared_mem_reversed=True,special_notes="")
     
 
 class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (900, 800)
+    windows_laptop = (800, 400)
     stryker = (480, 620)
 
 

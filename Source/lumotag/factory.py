@@ -186,7 +186,7 @@ class display(ABC):
         output_fit_h = floor(incoming_h * ratio)
         output_fit_w = floor(incoming_w * ratio)
         # test to make sure aspect ratio is 
-        if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 1:
+        if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 2:
             raise ValueError("error calculating output image dimensions")
         # get 3 corresponding points from the output view - keeping in mind
         # any rotation
@@ -258,7 +258,7 @@ class display(ABC):
 
         left_top = np.matmul(self._affine_transform, np.array([slice.left,slice.top,1]))
         right_low = np.matmul(self._affine_transform, np.array([slice.right,slice.lower,1]))
-        inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 255
+        #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 255
 
     def display_output_with_graphics(self, output, graphics: ShapeItem):
         img_processing.add_cross_hair(
