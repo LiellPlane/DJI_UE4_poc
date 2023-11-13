@@ -216,7 +216,7 @@ def main():
 
                 with time_it("add graphics and display image"):
                     display.display_output_with_graphics(img, graphics)
-            display.display_method(img)
+
     raise RuntimeError("something broke out of loop")
 
 

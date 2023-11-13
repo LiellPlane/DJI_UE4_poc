@@ -166,9 +166,23 @@ def get_approx_shape_and_bbox(
     # with extreme perspective this will not be sufficient
 
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.80):
+        if dataobject.debug == True:
+            img_debug = img.copy()
+            img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
+            cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
+            dataobject.img_view_or_save_if_debug(img_debug, "not_enough_pixels_for_sqr")
+            
         return None
 
     if w/h < 0.7 or w/h > 1.3:
+        if dataobject.debug == True:
+            img_debug = img.copy()
+            img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
+            cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
+            ratio = str(round(w/h, 3))
+            ratio = ratio.replace(".", "p")
+            dataobject.img_view_or_save_if_debug(img_debug, f"bad_ratio{ratio}")
+            
         return None
 
 
@@ -290,7 +304,7 @@ def get_approx_shape_and_bbox(
                 crop_img = img_debug[y:y+h, x:x+w]
                 dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
             shape_ = Shapes.SQUARE
-
+    
 # if len(approx) in [3, 4, 5, 6]:
 #     if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
 #         if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):

@@ -216,7 +216,7 @@ class display(factory.display):
             move_windowx=self.opencv_win_pos[0],
             move_windowy=self.opencv_win_pos[1],
             pausetime_Secs=0,
-            presskey=False,
+            presskey=True,
             destroyWindow=False)
     # def display_output(self, output):
     #     img, scale_factor = img_processing.resize_centre_img(output, self.screen_size)
