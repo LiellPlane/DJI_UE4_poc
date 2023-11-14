@@ -150,32 +150,39 @@ def get_approx_shape_and_bbox(
     # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
     # function with a precision factor for approximating a shape
     
-
+    contour = cv2.convexHull(contour)
 
     # filter first by minimum bounding box of raw contours:
     minRect = cv2.minAreaRect(contour)
     min_bbox = cv2.boxPoints(minRect)
     min_bbox = np.intp(min_bbox)
     contour_pxl_cnt = cv2.contourArea(contour)
-    x, y, w, h = cv2.boundingRect(contour)
+    
+    
+    #taking a wild guess for rotated rectangle - can;t be far off
+    w = np.linalg.norm(min_bbox[0]-min_bbox[1])
+    h = np.linalg.norm(min_bbox[1]-min_bbox[2])
+    #x, y, w, h = cv2.boundingRect(contour)
     min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
     # filter by ratio
     if w < 10 or h < 10:
         return None
     # filter by how much of ideal square is taken up by contour area
     # with extreme perspective this will not be sufficient
-
-    if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.80):
+    
+    if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.50):
+        # try and repair it
+        
         if dataobject.debug is True:
-            img_debug = img.copy()
-            img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
-            cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
-            dataobject.img_view_or_save_if_debug(img_debug, "not_enough_pixels_for_sqr")
+            #img_debug = img.copy()
+            #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
+            #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
+            #dataobject.img_view_or_save_if_debug(img_debug, "not_enough_pixels_for_sqr")
             
             return ShapeItem(
                     id=index,
                     approx_contour=None,
-                    default_contour=None,
+                    default_contour=contour,
                     filtered_contour=None,
                     boundingbox=None,
                     boundingbox_min=min_bbox,
@@ -190,19 +197,19 @@ def get_approx_shape_and_bbox(
                     notes_for_debug_file="not_enough_pixels_for_sqr")
         return None
 
-    if w/h < 0.65 or w/h > 1.3:
+    if w/h < 0.1 or w/h > 9:
         if dataobject.debug is True:
-            img_debug = img.copy()
-            img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
-            cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
+            #img_debug = img.copy()
+            #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
+            #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
             ratio = str(round(w/h, 3))
             ratio = ratio.replace(".", "p")
-            dataobject.img_view_or_save_if_debug(img_debug, f"bad_ratio{ratio}")
+            #dataobject.img_view_or_save_if_debug(img_debug, f"bad_ratio{ratio}")
             
             return ShapeItem(
                     id=index,
                     approx_contour=None,
-                    default_contour=None,
+                    default_contour=contour,
                     filtered_contour=None,
                     boundingbox=None,
                     boundingbox_min=min_bbox,
@@ -261,6 +268,26 @@ def get_approx_shape_and_bbox(
     #test for square
     # TODO rough at moment
     # this is a pattern which is square with an inner circle
+
+    if len(approx) not in [4, 5, 6, 7, 8]:
+        return ShapeItem(
+            id=index,
+            approx_contour=approx,
+            default_contour=contour,
+            filtered_contour=None,
+            boundingbox=None,
+            boundingbox_min=min_bbox,
+            boundingbox_ellipse=None,
+            img_cut=None,
+            sum_int_angles=None,
+            size=contour_pxl_cnt,
+            min_bbx_size=cv2.contourArea(min_bbox),
+            shape=Shapes.BAD_APPROX_LEN,
+            centre_x_y=None,
+            _2d_samples=None,
+            notes_for_debug_file=f"bad_approxlen")
+
+
     if len(approx) in [4, 5, 6, 7, 8]:
 
         minRect = cv2.minAreaRect(approx)
@@ -268,6 +295,25 @@ def get_approx_shape_and_bbox(
         min_bbox = np.intp(min_bbox)
         #min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
         #contour_pxl_cnt = cv2.contourArea(contour)
+
+
+        if contour_pxl_cnt <= (min_bbox_pxl_cnt * 0.80):
+            return ShapeItem(
+                id=index,
+                approx_contour=approx,
+                default_contour=contour,
+                filtered_contour=None,
+                boundingbox=None,
+                boundingbox_min=min_bbox,
+                boundingbox_ellipse=None,
+                img_cut=None,
+                sum_int_angles=None,
+                size=contour_pxl_cnt,
+                min_bbx_size=cv2.contourArea(min_bbox),
+                shape=Shapes.BAD_APPROX_PXL,
+                centre_x_y=None,
+                _2d_samples=None,
+                notes_for_debug_file=f"BAD_APPROX_PXL")
 
         if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
             
@@ -300,7 +346,8 @@ def get_approx_shape_and_bbox(
             
             averages = []
             averages2 = []
-            _step = max(int((math.floor(len(sample_line1)) / 90)), 1)
+            pixel_div_count = 90
+            _step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
             sample_size = 1
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
                 sample_area = img[sample_line1[i][1]-sample_size:sample_line1[i][1]+sample_size, sample_line1[i][0]-sample_size: sample_line1[i][0]+sample_size]
@@ -309,33 +356,33 @@ def get_approx_shape_and_bbox(
                 sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
                 averages2.append(sample_area.mean())
 
-            if dataobject.debug is True:
-                img_debug = img.copy()
-                cv2.circle(img_debug, (cX, cY), 5, 255, 1)
-                crop_img = img_debug[y:y+h, x:x+w]
-                dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-                cv2.circle(img_debug, tuple(min_bbox[0]), 3, 255, 1)
-                cv2.circle(img_debug, tuple(min_bbox[2]), 3, 255, 1)
-                cv2.circle(img_debug, tuple(min_bbox[1]), 3, 0, 1)
-                cv2.circle(img_debug, tuple(min_bbox[3]), 3, 0, 1)
-                try:
-                    for xy, ave_col in zip(sample_line1, averages):
-                        img_debug[xy[1]-50,xy[0]-50] = ave_col
-                    for xy, ave_col in zip(sample_line2, averages):
-                        img_debug[xy[1],xy[0]+50] = ave_col
-                    for xy in sample_line1:
-                        img_debug[xy[1],xy[0]] = 255
-                    for xy in sample_line2:
-                        img_debug[xy[1],xy[0]] = 255
-                except Exception:
-                    pass
+            # if dataobject.debug is True:
+            #     img_debug = img.copy()
+            #     cv2.circle(img_debug, (cX, cY), 5, 255, 1)
+            #     crop_img = img_debug[y:y+h, x:x+w]
+            #     dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+            #     cv2.circle(img_debug, tuple(min_bbox[0]), 3, 255, 1)
+            #     cv2.circle(img_debug, tuple(min_bbox[2]), 3, 255, 1)
+            #     cv2.circle(img_debug, tuple(min_bbox[1]), 3, 0, 1)
+            #     cv2.circle(img_debug, tuple(min_bbox[3]), 3, 0, 1)
+            #     try:
+            #         for xy, ave_col in zip(sample_line1, averages):
+            #             img_debug[xy[1]-50,xy[0]-50] = ave_col
+            #         for xy, ave_col in zip(sample_line2, averages):
+            #             img_debug[xy[1],xy[0]+50] = ave_col
+            #         for xy in sample_line1:
+            #             img_debug[xy[1],xy[0]] = 255
+            #         for xy in sample_line2:
+            #             img_debug[xy[1],xy[0]] = 255
+            #     except Exception:
+            #         pass
 
 
 
-                cv2.drawContours(img_debug, [min_bbox], 0, 255)
-                dataobject.img_view_or_save_if_debug(img_debug, "testline")
-                crop_img = img_debug[y:y+h, x:x+w]
-                dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
+            #     cv2.drawContours(img_debug, [min_bbox], 0, 255)
+            #     dataobject.img_view_or_save_if_debug(img_debug, "testline")
+            #     crop_img = img_debug[y:y+h, x:x+w]
+            #     dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
             shape_ = Shapes.SQUARE
     
 # if len(approx) in [3, 4, 5, 6]:
@@ -504,64 +551,93 @@ def analyse_candidates_shapematch(
 
 
     if dataobject.debug == True:
-        img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+        #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
-        img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
-        for c in contour_stats:
-            if c is None: continue
-            cv2.drawContours(img_bbxoes, [c.boundingbox_min], 0, (0,0,255))
-            #if c.boundingbox_ellipse is not None:
-            #    cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
-            cv2.drawContours(img_bbxoes_3, [c.approx_contour], 0, (255,0,255))
-        dataobject.img_view_or_save_if_debug(img_bbxoes, "bounding_boxes")
+        #img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
+        # for c in contour_stats:
+        #     if c is None: continue
+        #     cv2.drawContours(img_bbxoes, [c.boundingbox_min], 0, (0,0,255))
+        #     #if c.boundingbox_ellipse is not None:
+        #     #    cv2.ellipse(img_bbxoes_2, c.boundingbox_ellipse,(0,255,0))
+        #     cv2.drawContours(img_bbxoes_3, [c.approx_contour], 0, (255,0,255))
+        #dataobject.img_view_or_save_if_debug(img_bbxoes, "bounding_boxes")
         #dataobject.img_view_or_save_if_debug(img_bbxoes_2, "fit_ellipse")
-        dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
+        #dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
 
         # break out triangles and squares
         squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
-        tris_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TRIANGLE]
-        unknown_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.UNKNOWN]
-        filtered_objs = []#[cont for cont in contour_stats if type(cont.filtered_contour) != type(None) and len(cont.filtered_contour)>0]
-
-
+        BAD_PIXELS = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_PIXELS]
+        BAD_RATIO = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_RATIO]
+        BAD_APPROX_LEN = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_APPROX_LEN]
+        BAD_APPROX_PXL =  [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_APPROX_PXL]
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in squrs_found:
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
-        for c in tris_found:
-            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 2)
-        for c in unknown_found:
-            cv2.drawContours(debug_img, [c.approx_contour], -1, (255,0,0), 2)
         dataobject.img_view_or_save_if_debug(
             debug_img,
-            f"shapes_found_tri_sqr_unknown")
+            f"squares_found")
 
-        if  len(squrs_found) > 0:
-            debug_img = original_img.copy()
-            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
-            for c in squrs_found:
-                cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
-            dataobject.img_view_or_save_if_debug(
-                debug_img,
-                f"shapes_found_sqr")
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in BAD_PIXELS:
+            cv2.drawContours(debug_img, [c.default_contour], -1, (0,0,255), 2)
+            cv2.drawContours(debug_img, [c.boundingbox_min.reshape(4,1,2).astype(int)], -1, (255,0,0), 1)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"BAD_PIXELS")
 
-        if  len(tris_found) > 0:
-            debug_img = original_img.copy()
-            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
-            for c in tris_found:
-                cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 2)
-            dataobject.img_view_or_save_if_debug(
-                debug_img,
-                f"shapes_found_tri")
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in BAD_RATIO:
+            cv2.drawContours(debug_img, [c.default_contour], -1, (255,0,0), 2)
+            cv2.drawContours(debug_img, [c.boundingbox_min.reshape(4,1,2).astype(int)], -1, (255,0,0), 1)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"BAD_RATIO")
 
-        if len(unknown_found) > 0:
-            debug_img = original_img.copy()
-            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
-            for c in unknown_found:
-                cv2.drawContours(debug_img, [c.approx_contour], -1, (255,0,0), 2)
-            dataobject.img_view_or_save_if_debug(
-                debug_img,
-                f"shapes_found_tri")
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in BAD_APPROX_LEN:
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"BAD_APPROX_LEN")
+        
+        debug_img = original_img.copy()
+        debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        for c in BAD_APPROX_PXL:
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
+        dataobject.img_view_or_save_if_debug(
+            debug_img,
+            f"BAD_APPROX_PXL")
+        
+        # if  len(squrs_found) > 0:
+        #     debug_img = original_img.copy()
+        #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        #     for c in squrs_found:
+        #         cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
+        #     dataobject.img_view_or_save_if_debug(
+        #         debug_img,
+        #         f"shapes_found_sqr")
+
+        # if  len(tris_found) > 0:
+        #     debug_img = original_img.copy()
+        #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        #     for c in tris_found:
+        #         cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 2)
+        #     dataobject.img_view_or_save_if_debug(
+        #         debug_img,
+        #         f"shapes_found_tri")
+
+        # if len(unknown_found) > 0:
+        #     debug_img = original_img.copy()
+        #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+        #     for c in unknown_found:
+        #         cv2.drawContours(debug_img, [c.approx_contour], -1, (255,0,0), 2)
+        #     dataobject.img_view_or_save_if_debug(
+        #         debug_img,
+        #         f"shapes_found_tri")
         # if dataobject.debug == True:
         #     debug_img = original_img.copy()
         #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
@@ -581,7 +657,7 @@ def analyse_candidates_shapematch(
     #     if c is None: continue
     #     draw_pattern_output(image=output_colour, patterndetails=c)
     #     output_contour_data.append(c)
-    output_contour_data = [c for c in contour_stats if c is not None]
+    #output_contour_data = [c for c in contour_stats if c is not None]
     # for c in unknown_found:
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (30,0,90), 3)
     # for c in squrs_found:
@@ -589,7 +665,7 @@ def analyse_candidates_shapematch(
     # for c in tris_found:
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
     
-    return output_contour_data
+    return squrs_found
 
 
 def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):

@@ -19,7 +19,9 @@ class Shapes(AutoStrEnum):
     UNKNOWN = auto()
     BAD_RATIO = auto()
     BAD_PIXELS = auto()
-
+    BAD_APPROX_LEN = auto()
+    BAD_APPROX_PXL = auto()
+    
 @dataclass
 class ShapeItem:
     id: str

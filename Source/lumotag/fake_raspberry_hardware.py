@@ -139,6 +139,7 @@ class ImageLibrary(factory.ImageGenerator):
 
     def get_image(self):
         img_to_load = random.choice(self.images)
+        
         img = cv2.imread(img_to_load)
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
