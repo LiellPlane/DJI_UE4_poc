@@ -72,8 +72,8 @@ class Debug_Images(AutoStrEnum):
 
 
 class WorkingData():
-    def __init__(self, debug=False) -> None:
-        self.debugimgs = r"D:\lumodebug"
+    def __init__(self, debug=False, debugimgs=r"D:/lumodebug/") -> None:
+        self.debugimgs = debugimgs
         self.debug = debug
         self.debug_img_cnt = 0
         self.debug_subfldr = None
@@ -166,16 +166,32 @@ def get_approx_shape_and_bbox(
     # with extreme perspective this will not be sufficient
 
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.80):
-        if dataobject.debug == True:
+        if dataobject.debug is True:
             img_debug = img.copy()
             img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
             dataobject.img_view_or_save_if_debug(img_debug, "not_enough_pixels_for_sqr")
             
+            return ShapeItem(
+                    id=index,
+                    approx_contour=None,
+                    default_contour=None,
+                    filtered_contour=None,
+                    boundingbox=None,
+                    boundingbox_min=min_bbox,
+                    boundingbox_ellipse=None,
+                    img_cut=None,
+                    sum_int_angles=None,
+                    size=contour_pxl_cnt,
+                    min_bbx_size=cv2.contourArea(min_bbox),
+                    shape=Shapes.BAD_PIXELS,
+                    centre_x_y=None,
+                    _2d_samples=None,
+                    notes_for_debug_file="not_enough_pixels_for_sqr")
         return None
 
-    if w/h < 0.7 or w/h > 1.3:
-        if dataobject.debug == True:
+    if w/h < 0.65 or w/h > 1.3:
+        if dataobject.debug is True:
             img_debug = img.copy()
             img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -183,8 +199,23 @@ def get_approx_shape_and_bbox(
             ratio = ratio.replace(".", "p")
             dataobject.img_view_or_save_if_debug(img_debug, f"bad_ratio{ratio}")
             
+            return ShapeItem(
+                    id=index,
+                    approx_contour=None,
+                    default_contour=None,
+                    filtered_contour=None,
+                    boundingbox=None,
+                    boundingbox_min=min_bbox,
+                    boundingbox_ellipse=None,
+                    img_cut=None,
+                    sum_int_angles=None,
+                    size=contour_pxl_cnt,
+                    min_bbx_size=cv2.contourArea(min_bbox),
+                    shape=Shapes.BAD_RATIO,
+                    centre_x_y=None,
+                    _2d_samples=None,
+                    notes_for_debug_file=f"bad_ratio{ratio}")
         return None
-
 
     approx = cv2.approxPolyDP(
         contour,
@@ -259,6 +290,7 @@ def get_approx_shape_and_bbox(
                 y1=min_bbox[0][1],
                 x2 = min_bbox[2][0],
                 y2 = min_bbox[2][1])
+
             sample_line2 = img_pro.bresenham_line_ski(
                 x1=min_bbox[1][0],
                 y1=min_bbox[1][1],
@@ -277,7 +309,7 @@ def get_approx_shape_and_bbox(
                 sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
                 averages2.append(sample_area.mean())
 
-            if dataobject.debug == True:
+            if dataobject.debug is True:
                 img_debug = img.copy()
                 cv2.circle(img_debug, (cX, cY), 5, 255, 1)
                 crop_img = img_debug[y:y+h, x:x+w]
@@ -291,13 +323,14 @@ def get_approx_shape_and_bbox(
                         img_debug[xy[1]-50,xy[0]-50] = ave_col
                     for xy, ave_col in zip(sample_line2, averages):
                         img_debug[xy[1],xy[0]+50] = ave_col
+                    for xy in sample_line1:
+                        img_debug[xy[1],xy[0]] = 255
+                    for xy in sample_line2:
+                        img_debug[xy[1],xy[0]] = 255
                 except Exception:
                     pass
 
-                for xy in sample_line1:
-                    img_debug[xy[1],xy[0]] = 255
-                for xy in sample_line2:
-                    img_debug[xy[1],xy[0]] = 255
+
 
                 cv2.drawContours(img_debug, [min_bbox], 0, 255)
                 dataobject.img_view_or_save_if_debug(img_debug, "testline")
@@ -324,7 +357,8 @@ def get_approx_shape_and_bbox(
                 min_bbx_size = cv2.contourArea(min_bbox),
                 shape=shape_,
                 centre_x_y=[cX, cY],
-                _2d_samples=[averages, averages2])
+                _2d_samples=[averages, averages2],
+                notes_for_debug_file=None)
     
     return output
 

@@ -17,7 +17,8 @@ class Shapes(AutoStrEnum):
     TRIANGLE = auto()
     CIRCLE = auto()
     UNKNOWN = auto()
-
+    BAD_RATIO = auto()
+    BAD_PIXELS = auto()
 
 @dataclass
 class ShapeItem:
@@ -35,6 +36,7 @@ class ShapeItem:
     shape: Shapes
     centre_x_y: list[int]
     _2d_samples: list[list]
+    notes_for_debug_file: str
 
     def add_offset_for_graphics(self, offset: list[int, int]):
         """mutating function is used when a cropped part of the image
