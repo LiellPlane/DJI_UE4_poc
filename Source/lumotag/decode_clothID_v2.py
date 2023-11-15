@@ -293,8 +293,8 @@ def get_approx_shape_and_bbox(
         minRect = cv2.minAreaRect(approx)
         min_bbox = cv2.boxPoints(minRect)
         min_bbox = np.intp(min_bbox)
-        #min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
-        #contour_pxl_cnt = cv2.contourArea(contour)
+        min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
+        contour_pxl_cnt = cv2.contourArea(contour)
 
 
         if contour_pxl_cnt <= (min_bbox_pxl_cnt * 0.80):
