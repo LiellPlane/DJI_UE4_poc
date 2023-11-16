@@ -12,6 +12,14 @@ class AutoStrEnum(str, Enum):
     def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
         return name
 
+
+class _OS(str, Enum):
+    WINDOWS = "windows"
+    RASPBERRY = "raspberry"
+    LINUX = "digusting linux"
+    MAC_OS = "disgusting mac os"
+
+
 class Shapes(AutoStrEnum):
     SQUARE = auto()
     TRIANGLE = auto()

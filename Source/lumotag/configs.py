@@ -1,8 +1,32 @@
 from enum import Enum
 from factory import gun_config
 from my_collections import ImagingMode
+from dataclasses import dataclass
 import time
+from my_collections import _OS
 
+
+@dataclass
+class base_find_lumotag_config():
+    SAVE_IMAGES_DEBUG: bool
+    SAVE_IMAGES_PATH: str
+
+
+def get_lumofind_config(platform):
+    if platform == _OS.RASPBERRY:
+        return base_find_lumotag_config(
+            SAVE_IMAGES_DEBUG=False,
+            SAVE_IMAGES_PATH=r"dunno")
+    elif platform == _OS.WINDOWS:
+        return base_find_lumotag_config(
+            SAVE_IMAGES_DEBUG=True,
+            SAVE_IMAGES_PATH=r"D:/lumodebug/")
+    elif platform == _OS.MAC_OS:
+        return base_find_lumotag_config(
+            SAVE_IMAGES_DEBUG=True,
+            SAVE_IMAGES_PATH=r"/Users/liell_p/lumodebug/")
+    else:
+        raise Exception("Could not detect platform")
 
 
 class HQ_Cam_vidmodes(Enum):
