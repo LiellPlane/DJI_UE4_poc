@@ -548,7 +548,7 @@ def analyse_candidates_shapematch(
     #             ROI,
     #             f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
 
-
+    squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
     if dataobject.debug == True:
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
@@ -565,7 +565,7 @@ def analyse_candidates_shapematch(
         #dataobject.img_view_or_save_if_debug(img_bbxoes_3, "approx_shape")
 
         # break out triangles and squares
-        squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
+        
         BAD_PIXELS = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_PIXELS]
         BAD_RATIO = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_RATIO]
         BAD_APPROX_LEN = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.BAD_APPROX_LEN]

@@ -44,7 +44,7 @@ class ImageAnalyser_shared_mem():
             input_shared_mem_index_q,
             analysis_output_q):
         workingdata = decode_clothID.WorkingData(
-            debug=True,
+            debug=False,
             debugimgs=r"/Users/liell_p/lumodebug/")
         # workingdata = decode_clothID.WorkingData(
         #     debug=True,
