@@ -131,6 +131,7 @@ class ImageLibrary(factory.ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        #imgfoler = r"C:\VMs\SharedFolder\lumotag_debug_imgs"
         self.images = jpgs_in_folder(imgfoler)
         self.res = res
         if len(self.images) < 1:
@@ -143,7 +144,7 @@ class ImageLibrary(factory.ImageGenerator):
         img = cv2.imread(img_to_load)
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img = cv2.resize(img, tuple(self.res[0:2]))
+        #img = cv2.resize(img, tuple(self.res[0:2]))
         self.blank_image[:] = img
         return self.blank_image
 

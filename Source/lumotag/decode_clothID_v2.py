@@ -711,13 +711,14 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     with time_it("pre-processing/filtering total"):
         #print("equalisation")
         with time_it("pre-processing/filtering: blur"):
-            img_op = cv2.blur(img_grayscale,(7,7)) # fastest filter
+            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+            img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
 
-        with time_it("pre-processing/filtering: clahe_equalisation"):
-            img_op=img_pro.clahe_equalisation(img_op, dataobject.claheprocessor)
-            dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
-            ''''test area'''
+        # with time_it("pre-processing/filtering: clahe_equalisation"):
+        #     img_op=img_pro.clahe_equalisation(img_op, dataobject.claheprocessor)
+        #     dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
+        #     ''''test area'''
    
    #this section about 25ms
     #with time_it():
@@ -741,7 +742,8 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
         #squr_img=edge_img(gray_orig)
         with time_it("pre-processing/filtering: threshold_img_static"):
-            img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
+            #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
+            img_op=img_pro.threshold_img(img_op,low=40,high=255)
             # squr_img=img_pro.simple_canny(
             #     blurred_img=squr_img,
             #     lower=0,
