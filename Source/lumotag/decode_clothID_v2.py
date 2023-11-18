@@ -548,6 +548,7 @@ def analyse_candidates_shapematch(
     #             ROI,
     #             f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
 
+
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
     if dataobject.debug == True:

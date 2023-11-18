@@ -4,13 +4,7 @@ from typing import Iterator
 import enum
 import os
 import platform
-
-
-class _OS(str, enum.Enum):
-    WINDOWS = "windows"
-    RASPBERRY = "raspberry"
-    LINUX = "digusting linux"
-    MAC_OS = "disgusting mac os"
+from my_collections import _OS
 
 
 def get_platform():

@@ -8,6 +8,8 @@ from utils import time_it
 import time
 import random
 from my_collections import SharedMem_ImgTicket, CropSlicing
+import configs
+
 
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
@@ -15,12 +17,15 @@ class ImageAnalyser_shared_mem():
     def __init__(
             self,
             sharedmem_buffs: dict,
-            slice_details: CropSlicing) -> None:
+            slice_details: CropSlicing,
+            config: configs.base_find_lumotag_config) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
         self.img_crop = slice_details
+        self.debug_mode = config.SAVE_IMAGES_DEBUG
+        self.debug_img_path = config.SAVE_IMAGES_PATH
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -44,8 +49,8 @@ class ImageAnalyser_shared_mem():
             input_shared_mem_index_q,
             analysis_output_q):
         workingdata = decode_clothID.WorkingData(
-            debug=False,
-            debugimgs=r"/Users/liell_p/lumodebug/")
+            debug=self.debug_mode,
+            debugimgs=self.debug_img_path)
         # workingdata = decode_clothID.WorkingData(
         #     debug=True,
         #     debugimgs=r"D:/lumodebug/")

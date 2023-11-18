@@ -19,7 +19,7 @@ from math import floor
 from functools import reduce
 from my_collections import AffinePoints, ShapeItem, CropSlicing
 try:
-    from analyse_lumotag import SharedMem_ImgTicket
+    from my_collections import SharedMem_ImgTicket
     import decode_clothID_v2 as decode_clothID
 except Exception:
     # TODO

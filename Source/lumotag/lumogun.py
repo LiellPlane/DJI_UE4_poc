@@ -9,21 +9,23 @@ import time
 import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
 import img_processing
-from utils import time_it, get_platform, _OS
+from utils import time_it, get_platform
+from my_collections import _OS
 # need this import to detect lumogun types (subclasses)
 import configs
 
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
+PLATFORM = get_platform()
 
-if get_platform() in [_OS.WINDOWS]:
+if PLATFORM == [_OS.WINDOWS]:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
     import sound as sound
-elif get_platform() == _OS.RASPBERRY:
+elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry_hardware as lumogun
     import sound as sound
-elif get_platform() == _OS.MAC_OS:
+elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
@@ -37,7 +39,7 @@ else:
 # model ID from file on device
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
-del configs
+
 
 def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
@@ -67,7 +69,8 @@ def main():
                         GUN_CONFIGURATION.internal_img_crop)
     image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture.get_mem_buffers(),
-        slice_details=slice_details)
+        slice_details=slice_details,
+        config=configs.get_lumofind_config(PLATFORM))
     #time.sleep(100000)
     voice.speak("cam")
     # img = next(image_capture)
