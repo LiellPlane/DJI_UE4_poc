@@ -613,6 +613,23 @@ def analyse_candidates_shapematch(
             debug_img,
             f"BAD_APPROX_PXL")
         
+
+        # break out individual squares found:
+
+        for c in squrs_found:
+            debug_img = original_img.copy()
+            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+            w = int(np.linalg.norm(c.boundingbox_min[0]-c.boundingbox_min[1]))
+            h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
+            x = c.centre_x_y[0]
+            y = c.centre_x_y[1]
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
+            crop_img = debug_img[y-h:y+h, x-w:x+w]
+            dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500))
+            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500))
+            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
         # if  len(squrs_found) > 0:
         #     debug_img = original_img.copy()
         #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
