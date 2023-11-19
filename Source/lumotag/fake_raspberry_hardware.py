@@ -131,7 +131,7 @@ class ImageLibrary(factory.ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        #imgfoler = r"C:\VMs\SharedFolder\lumotag_debug_imgs"
+        #imgfoler = r"D:\OutputImages"
         self.images = jpgs_in_folder(imgfoler)
         self.res = res
         if len(self.images) < 1:
