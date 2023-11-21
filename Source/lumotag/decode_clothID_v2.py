@@ -733,7 +733,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         #print("equalisation")
         with time_it("pre-processing/filtering: blur"):
             #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            img_op = cv2.medianBlur(img_grayscale, 5)
+            img_op = cv2.medianBlur(img_grayscale, 7)
             dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
 
         # with time_it("pre-processing/filtering: clahe_equalisation"):
@@ -775,8 +775,11 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         #print("invert_img")
         #squr_img=invert_img(squr_img)
         #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
+    with time_it("pre-processing/filtering: blur again"):
+        #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+        img_op = cv2.medianBlur(img_op, 3)
+        dataobject.img_view_or_save_if_debug(img_op, "blur_3_3_again", resize=False)
 
-    
     with time_it("get_possible_candidates total"):
         contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
