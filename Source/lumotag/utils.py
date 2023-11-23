@@ -65,7 +65,11 @@ def time_it(comment) -> Iterator[None]:
         toc: float = time.perf_counter()
         output = f"{comment}:Computation time"
         time_ = f"{1000*(toc - tic):.3f}ms"
-        buffer = ''.join(["="] * (60-len(output)))
+        if "total" in comment.lower():
+            buff = 65
+        else:
+            buff = 60
+        buffer = ''.join(["="] * (buff-len(output)))
         shiftbuff = len(str(int((1000*(toc - tic))//1)))
         buffer = buffer[0:-shiftbuff]
         print(output + buffer + time_)
