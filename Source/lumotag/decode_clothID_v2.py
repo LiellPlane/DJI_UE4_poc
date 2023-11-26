@@ -663,12 +663,9 @@ def get_approx_shape_and_bbox2(
             _step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
             sample_size = 1
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
-                sample_area = img[sample_line1[i][1]-sample_size:sample_line1[i][1]+sample_size, sample_line1[i][0]-sample_size: sample_line1[i][0]+sample_size]
-                averages.append(sample_area.mean())
+                averages.append(img[sample_line1[i][1], sample_line1[i][0]])
             for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
-                averages2.append(sample_area.mean())
-
+                averages.append(img[sample_line2[i][1], sample_line2[i][0]])
             # if dataobject.debug is True:
             #     img_debug = img.copy()
             #     cv2.circle(img_debug, (cX, cY), 5, 255, 1)
@@ -822,6 +819,7 @@ def has_child_contour(hierarchy: np.array):
 
 def analyse_candidates_shapematch(
         original_img,
+        original_blurred_image,
         contours : tuple [np.ndarray],
         dataobject : WorkingData,
         contour_hierarchy : tuple [np.ndarray]):
@@ -840,13 +838,13 @@ def analyse_candidates_shapematch(
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
     contour_stats = []
-    with time_it("AC: get approx shape"):
-        for index, c in enumerate(contours):
-            contour_stats.append(get_approx_shape_and_bbox(
-                c,
-                original_img,
-                dataobject,
-                index))
+    # with time_it("AC: get approx shape"):
+    #     for index, c in enumerate(contours):
+    #         contour_stats.append(get_approx_shape_and_bbox(
+    #             c,
+    #             original_img,
+    #             dataobject,
+    #             index))
 
     with time_it("AC: get approx shape 2"):
         contour_stats2= []
@@ -855,8 +853,8 @@ def analyse_candidates_shapematch(
                     dataobject)
 
         for index, c in enumerate(contours):
-            contour_stats2.append(get_approx_shape_and_bbox2(
-                original_img,
+            contour_stats.append(get_approx_shape_and_bbox2(
+                original_blurred_image,
                 dataobject,
                 index,
                 bulk_process))
@@ -941,23 +939,23 @@ def analyse_candidates_shapematch(
         # break out individual squares found:
 
         for c in squrs_found:
-            try:
-                debug_img = original_img.copy()
-                debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
-                w = int(np.linalg.norm(c.boundingbox_min[0]-c.boundingbox_min[1]))
-                h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
-                x = c.centre_x_y[0]
-                y = c.centre_x_y[1]
-                draw_pattern_output(debug_img, c)
-                cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
-                crop_img = debug_img[y-h:y+h, x-w:x+w]
-                dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-                out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500))
-                dataobject.img_view_or_save_if_debug(out_img, "squarecode")
-                out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500))
-                dataobject.img_view_or_save_if_debug(out_img, "squarecode")
-            except Exception:
-                print("error with debug contour outputs")
+            #try:
+            debug_img = original_img.copy()
+            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+            w = int(np.linalg.norm(c.boundingbox_min[0]-c.boundingbox_min[1]))
+            h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
+            x = c.centre_x_y[0]
+            y = c.centre_x_y[1]
+            draw_pattern_output(debug_img, c)
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
+            crop_img = debug_img[y-h:y+h, x-w:x+w]
+            dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500))
+            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500))
+            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            #except Exception:
+             #   print("error with debug contour outputs")
         # if  len(squrs_found) > 0:
         #     debug_img = original_img.copy()
         #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
@@ -1103,11 +1101,13 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         with time_it("pre-processing: blur again"):
             #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
             img_op = cv2.medianBlur(img_op, 3)
-            dataobject.img_view_or_save_if_debug(img_op, "blur_3_3_again", resize=False)
-        with time_it("pre-processing: blur orig for sample"):
+            dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
+
+        with time_it("pre-processing: blur orig for sampler"):
             #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
-            dataobject.img_view_or_save_if_debug(img_grayscale_blur, "blur_for_sampling", resize=False)
+            org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
+            dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
+
     with time_it("get_possible_candidates total"):
         contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
@@ -1116,7 +1116,9 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #     return []
 
     with time_it("analyse_candidates TOTAL"):
-        output_contour_data = analyse_candidates_shapematch(original_img=inputimg,
+        output_contour_data = analyse_candidates_shapematch(
+                                                original_img=inputimg,
+                                                original_blurred_image=org_img_grayscale_blur,
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)
