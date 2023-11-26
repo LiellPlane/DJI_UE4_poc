@@ -12,7 +12,10 @@ import random
 import time
 from utils import time_it
 from dataclasses import dataclass
-from my_collections import ShapeItem, Shapes
+from my_collections import (
+    ShapeItem,
+    Shapes,
+    ShapeInfo_BulkProcess)
 import img_processing as img_pro
 
 
@@ -140,14 +143,42 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
     cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 1) 
 
 
-
 def get_approx_shape_and_bbox_bulk(
         contours,
-        img,
-        dataobject : WorkingData):
-    return None
+        dataobject : WorkingData) -> ShapeInfo_BulkProcess:
 
-        
+    bulkprocess = ShapeInfo_BulkProcess()
+
+    pts_0 = np.zeros((len(contours), 2), dtype="int32")
+    pts_1 = np.zeros((len(contours), 2), dtype="int32")
+    pts_2 = np.zeros((len(contours), 2), dtype="int32")
+
+    for index, c in enumerate(contours):
+        bulkprocess.contour[index] = c
+        bulkprocess.convex_hull_contour[index] =cv2.convexHull(c)
+        bulkprocess.minRect[index] = cv2.minAreaRect(c)
+        bulkprocess.min_bbox[index] = cv2.boxPoints(bulkprocess.minRect[index])
+        bulkprocess.min_bbox[index] = np.intp(bulkprocess.min_bbox[index]).astype(int)
+        bulkprocess.contour_pxl_cnt[index] = cv2.contourArea(c)
+        bulkprocess.min_bbox_pxl_cnt[index] = cv2.contourArea(bulkprocess.min_bbox[index])
+        # cv2.arcLength() is used to calculate the perimeter of the contour.
+        # If the second argument is True then it considers the contour to be closed.
+        # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
+        # function with a precision factor for approximating a shape
+        bulkprocess.approx_contour[index] = cv2.approxPolyDP(
+            c,
+            dataobject.approx_epsilon*cv2.arcLength(c, True),
+            True)
+
+        pts_0[index] = bulkprocess.min_bbox[index][0]
+        pts_1[index] = bulkprocess.min_bbox[index][1]
+        pts_2[index] = bulkprocess.min_bbox[index][2]
+
+    bulkprocess.dists_0_to_1 = np.sqrt(np.sum((pts_0 - pts_1)**2, axis=1))
+    bulkprocess.dists_1_to_2 = np.sqrt(np.sum((pts_1 - pts_2)**2, axis=1))
+
+    return bulkprocess
+            
 def get_approx_shape_and_bbox(
         contour,
         img,
@@ -228,7 +259,7 @@ def get_approx_shape_and_bbox(
     #w = np.sqrt(np.sum((min_bbox[0]-min_bbox[1])**2))
     #h = np.sqrt(np.sum((min_bbox[1]-min_bbox[2])**2))
     #x, y, w, h = cv2.boundingRect(contour)
-
+    
     # filter by ratio
     if w < 10 or h < 10:
         return None
@@ -557,7 +588,6 @@ def analyse_candidates_shapematch(
     with time_it("AC: get approx shape 2"):
         get_approx_shape_and_bbox_bulk(
                     contours,
-                    original_img,
                     dataobject)
     
     # if dataobject.debug == True:
