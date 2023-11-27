@@ -469,7 +469,7 @@ def get_approx_shape_and_bbox2(
     min_bbox_pxl_cnt = bulk_process.min_bbox_pxl_cnt[index]
     contour = bulk_process.contour[index]
     min_bbox = bulk_process.min_bbox[index]
-
+    approx = bulk_process.approx_contour[index]
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.50):
         # try and repair it
         
@@ -497,7 +497,7 @@ def get_approx_shape_and_bbox2(
                     notes_for_debug_file="not_enough_pixels_for_sqr")
         return None
 
-    approx = bulk_process.approx_contour[index]
+    
     if len(approx) not in [4, 5, 6, 7, 8]:
         return ShapeItem(
             id=index,
@@ -665,7 +665,9 @@ def get_approx_shape_and_bbox2(
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
                 averages.append(img[sample_line1[i][1], sample_line1[i][0]])
             for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                averages.append(img[sample_line2[i][1], sample_line2[i][0]])
+                averages2.append(img[sample_line2[i][1], sample_line2[i][0]])
+            
+
             # if dataobject.debug is True:
             #     img_debug = img.copy()
             #     cv2.circle(img_debug, (cX, cY), 5, 255, 1)
@@ -940,7 +942,7 @@ def analyse_candidates_shapematch(
 
         for c in squrs_found:
             #try:
-            debug_img = original_img.copy()
+            debug_img = original_blurred_image.copy()
             debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
             w = int(np.linalg.norm(c.boundingbox_min[0]-c.boundingbox_min[1]))
             h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
@@ -1008,7 +1010,7 @@ def analyse_candidates_shapematch(
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,255,0), 3)
     # for c in tris_found:
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
-    
+    raise Exception("todo: add unblurred image to analyse small area barcodes")
     return squrs_found
 
 
