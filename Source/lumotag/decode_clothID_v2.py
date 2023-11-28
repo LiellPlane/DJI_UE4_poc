@@ -663,19 +663,23 @@ def get_approx_shape_and_bbox2(
             pixel_div_count = 90
             _step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
             sample_size = 1
-            if contour_pxl_cnt > 400:
+            if contour_pxl_cnt > 1600:
                 img2use = img_blurred
             else:
                 img2use = img
 
-            for i in range (sample_size, len(sample_line1)-sample_size, _step):
-                averages.append(img2use[sample_line1[i][1], sample_line1[i][0]])
-            for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
-            
-            if averages==[] or averages2==[]:
-                plop=-1
 
+            for i in range (sample_size, len(sample_line1)-sample_size, _step):
+                averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
+                #averages.append(img2use[sample_line1[i][0], sample_line1[i][0]])
+            for i in range (sample_size, len(sample_line2)-sample_size, _step):
+                averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
+
+            # for i in range (sample_size, len(sample_line1)-sample_size, _step):
+            #     averages.append(img2use[sample_line1[i][1], sample_line1[i][0]])
+            # for i in range (sample_size, len(sample_line2)-sample_size, _step):
+            #     averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
+            
             # if dataobject.debug is True:
             #     img_debug = img.copy()
             #     cv2.circle(img_debug, (cX, cY), 5, 255, 1)
@@ -950,11 +954,11 @@ def analyse_candidates_shapematch(
 
         for c in squrs_found:
             #try:
-            if c.contour_pxl_cnt > 400:
-                img2use = img_blurred
+            if c.size > 1600:
+                img2use = original_blurred_image
             else:
-                img2use = img
-            debug_img = original_blurred_image.copy()
+                img2use = original_img
+            debug_img = img2use.copy()
             debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
             w = int(np.linalg.norm(c.boundingbox_min[0]-c.boundingbox_min[1]))
             h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))

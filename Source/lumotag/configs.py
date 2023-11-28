@@ -241,7 +241,7 @@ class simitzar_config(gun_config):
 
     @property
     def internal_img_crop(self):
-        return((500,500))
+        return((500,600))
 
     @property
     def opencv_window_pos(self):
