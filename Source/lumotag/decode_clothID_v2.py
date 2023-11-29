@@ -885,8 +885,11 @@ def analyse_candidates_shapematch(
     #             f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
 
 
+    tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
+    tote_samples [x in i._2d_samples for i in squrs_found]
 
+    print("total samples: ", len(tote_samples))
     if dataobject.debug == True:
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)

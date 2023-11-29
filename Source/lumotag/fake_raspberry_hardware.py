@@ -133,7 +133,7 @@ class ImageLibrary(factory.ImageGenerator):
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         #imgfoler = r"D:\OutputImages"
         self.images = jpgs_in_folder(imgfoler)
-        #self.images = [i for i in self.images if "0227" in i]
+        self.images = [i for i in self.images if "0290" in i]#0290
         self.res = res
         if len(self.images) < 1:
             raise Exception("could not find images in folder")
@@ -143,6 +143,7 @@ class ImageLibrary(factory.ImageGenerator):
         img_to_load = random.choice(self.images)
         
         img = cv2.imread(img_to_load)
+        print(f"img {img_to_load}")
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #img = cv2.resize(img, tuple(self.res[0:2]))
