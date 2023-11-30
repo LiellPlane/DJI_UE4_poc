@@ -661,15 +661,15 @@ def get_approx_shape_and_bbox2(
             averages = []
             averages2 = []
             pixel_div_count = 90
-            _step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
+            #_step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
             sample_size = 1
             if contour_pxl_cnt > 1600:
                 img2use = img_blurred
             else:
                 img2use = img
 
-            samples_per_line = 20
-            
+            samples_per_line = 25
+            _step = max(math.floor(len(sample_line1)/samples_per_line), 1)
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
                 averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
                 #averages.append(img2use[sample_line1[i][0], sample_line1[i][0]])
@@ -987,9 +987,9 @@ def analyse_candidates_shapematch(
                 plop=1
                 pass
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500))
+            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
             dataobject.img_view_or_save_if_debug(out_img, "squarecode")
-            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500))
+            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
             dataobject.img_view_or_save_if_debug(out_img, "squarecode")
             #except Exception:
              #   print("error with debug contour outputs")
