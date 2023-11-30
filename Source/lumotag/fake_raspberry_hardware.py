@@ -133,7 +133,7 @@ class ImageLibrary(factory.ImageGenerator):
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         #imgfoler = r"D:\OutputImages"
         self.images = jpgs_in_folder(imgfoler)
-        self.images = [i for i in self.images if "0290" in i]#0290
+        #self.images = [i for i in self.images if "0290" in i]#0290
         self.res = res
         if len(self.images) < 1:
             raise Exception("could not find images in folder")

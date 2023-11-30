@@ -668,7 +668,8 @@ def get_approx_shape_and_bbox2(
             else:
                 img2use = img
 
-
+            samples_per_line = 20
+            
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
                 averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
                 #averages.append(img2use[sample_line1[i][0], sample_line1[i][0]])
@@ -887,7 +888,19 @@ def analyse_candidates_shapematch(
 
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
-    tote_samples [x in i._2d_samples for i in squrs_found]
+
+    def eb34(list1):
+        flat_list = []
+        for i in list1:
+            if isinstance(i, list):
+                for j in eb34(i):
+                    flat_list.append(j)
+            else:
+                flat_list.append(i)
+        return flat_list
+    samples_all = eb34([x._2d_samples for x in squrs_found])
+    print(f"Sample points: {len(samples_all)/2}")
+    #tote_samples [x in i._2d_samples for i in squrs_found]
 
     print("total samples: ", len(tote_samples))
     if dataobject.debug == True:
