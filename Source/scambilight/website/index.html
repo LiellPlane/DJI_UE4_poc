@@ -9,9 +9,9 @@
 <i>then SSH and debug issue</i><br><br><br><br>
 <form action="/action_page.php"><input type="text" id="lname" name="password" placeholder="type pass here" > </form>
 <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
-<img class="image" id="image" width="1296" height="972" src="perp_image.jpg?" + new Date().getTime()><br>
-<img class="image" id="image" width="1296" height="972" src="raw_image.jpg?" + new Date().getTime()><br>
-<img class="image2" id="image2" src="overlay_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="perp_image" width="1296" height="972" src="perp_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="raw_image" width="1296" height="972" src="raw_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="overlay_image" src="overlay_image.jpg?" + new Date().getTime()><br>
 <button style="height:30;width:300" onclick="finish();">SUBMIT CORNER CLICKS</button><br>
 <button style="height:30;width:300" onclick="reset();">RESET_DEVICE</button><br>
 <button style="height:30;width:300" onclick="req_new_image();">REQUEST_REGIONS_CHECK_IMAGE</button><br>
@@ -20,6 +20,7 @@
 <button style="height:30;width:300" onclick="submit_sample_config();">SUBMIT_REGION_CONFIG_JSON</button><br>
 <button style="height:30;width:300" onclick="sim_regions();">SIMULATE REGIONS</button><br>
 <button style="height:100;width:300" onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button><br>
+<button style="height:100;width:300" onclick="api_refresh_images();">TEST API IMAGE</button><br>
 <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
 <b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
     <form id="form" action="/" method="POST">
@@ -31,7 +32,7 @@
         const proxyUrl  = 'https://corsproxy.io/?';
         const targetUrl   = 'https://api.scambilight.com/hello';
         var clicks = [];
-        var imageElement = document.getElementById('image');
+        var imageElement = document.getElementById('perp_image');
         var imageIdInput = document.getElementById('imageId');
         var positionXInput = document.getElementById('positionX');
         var positionYInput = document.getElementById('positionY');
@@ -146,10 +147,12 @@
         }
         
         let decache_images_maybe = () => {
-        var refresh_image = document.getElementById("image");  
+        var refresh_image = document.getElementById("raw_image");  
         refresh_image.src = "raw_image.jpg?" + new Date().getTime();
-        var refresh_image = document.getElementById("image2");  
+        var refresh_image = document.getElementById("overlay_image");  
         refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("perp_image");  
+        refresh_image.src = "perp_image.jpg?" + new Date().getTime();
         };
 
         let submit_sample_config = () => {
@@ -167,8 +170,54 @@
             }).then(response => response.json())
                 .then(json => {console.log(JSON.stringify(json));
                 alert(JSON.stringify(json));
+            });
+        };
+
+        let api_refresh_images = () => {
+            
+            test_api_image('getimage_raw', 'raw_image');
+            test_api_image('getimage_perpwarp', 'perp_image');
+            test_api_image('getimage_overlay', 'overlay_image');
+        };
+
+        let test_api_image = (img_action, img_id) => {
+            var display_area = document.getElementById(img_id);
+            display_area.src = "";
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": img_action,
+                "data": "empty"
+                }; 
+            fetch(targetUrl, {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json',
+                // Add any other headers as needed
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                // Check if the response is successful (status code 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Parse JSON response
+                return response.json();
+                })
+                .then(data => {
+                // Assuming the JSON has an 'encodedImage' property containing the base64-encoded image
+                const encodedImage = data.image;
+
+                // Display the image
+                
+                display_area.src = `data:image/png;base64,${encodedImage}`;
+                })
+                .catch(error => {
+                console.error('Error fetching data:', error);
                 });
         };
+
 
         function submitPosition(e) {
 	    

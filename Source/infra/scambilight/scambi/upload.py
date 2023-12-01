@@ -21,6 +21,8 @@ CONFIG_FILE = os.environ.get('CONFIG_FILE')
 SAMPLE_CONFIG_FILE = os.environ.get('SAMPLE_CONFIG_FILE')
 SIM_LAMBDA = os.environ.get('SIM_LAMBDA')
 RAW_IMAGE = os.environ.get('RAW_IMAGE')
+PERPWARP_IMAGE = os.environ.get('PERPWARP_IMAGE')
+
 OVERLAY_IMAGE = os.environ.get('OVERLAY_IMAGE')
 SCAMBIWEB = os.environ.get('SCAMBIWEB')
 _EVENT_QUEUE_URL = os.environ.get('EVENT_QUEUE_URL')
@@ -224,7 +226,29 @@ def lambda_handler(event, context):
         }
 
     action = order['action']
+    if action == "perpwarp":
 
+        image_bytes = str_to_bytes(order['payload'])
+        img_jpg = decode_image_from_str(order['payload'])
+        s3_custom.write(
+            input_bytes=image_bytes,
+            bucket_name=SCAMBIFOLDER,
+            folder_name=SCAMBIIMAGES,
+            object_name=PERPWARP_IMAGE)
+
+        s3_custom.write_img(
+            img=img_jpg,
+            bucket_name=SCAMBIWEB,
+            folder_name=None,
+            object_name=PERPWARP_IMAGE)
+
+        return{
+            'statusCode': 201,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': action,
+                'bucketfiles': ""})
+        }
     if action == "image_raw":
 
         image_bytes = str_to_bytes(order['payload'])
@@ -245,7 +269,7 @@ def lambda_handler(event, context):
             'statusCode': 201,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'uploaded image to ',
+                'message': action,
                 'bucketfiles': ""})
         }
 
@@ -271,7 +295,7 @@ def lambda_handler(event, context):
             'statusCode': 201,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'uploaded image to ',
+                'message': action,
                 'bucketfiles': ""})
         }
 
@@ -287,6 +311,21 @@ def lambda_handler(event, context):
             'headers': cors_headers,
             'body': json.dumps({
                 'message': 'got raw image ok',
+                'image': bytes_to_str(obj)})
+        }
+
+    if action == "getimage_perpwarp":
+
+        obj = s3_custom.read(
+            bucket_name=SCAMBIFOLDER,
+            folder_name=SCAMBIIMAGES,
+            object_name=PERPWARP_IMAGE)
+
+        return{
+            'statusCode': 201,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': 'got perpwarp image ok',
                 'image': bytes_to_str(obj)})
         }
 

@@ -2,6 +2,8 @@
 from enum import Enum, auto
 from dataclasses import dataclass
 import numpy as np
+from typing import ClassVar
+
 
 class AutoStrEnum(str, Enum):
     """
@@ -29,7 +31,26 @@ class Shapes(AutoStrEnum):
     BAD_PIXELS = auto()
     BAD_APPROX_LEN = auto()
     BAD_APPROX_PXL = auto()
+
+
+@dataclass
+class ShapeInfo_BulkProcess:
+    """If processing shape candidates in a bulk
+    process to vectorise operations
     
+    static check can fuck off, sorry
+    """
+    contour: ClassVar[dict] = {}
+    dists_0_to_1: np.array = None
+    dists_1_to_2: np.array = None
+    approx_contour: ClassVar[dict] = {}
+    minRect: ClassVar[dict] = {}
+    min_bbox: ClassVar[dict] = {}
+    convex_hull_contour: ClassVar[dict] = {}
+    contour_pxl_cnt: ClassVar[dict] = {}
+    min_bbox_pxl_cnt: ClassVar[dict] = {}
+
+
 @dataclass
 class ShapeItem:
     id: str

@@ -65,29 +65,33 @@ class ImageAnalyser_shared_mem():
                 timeout=None
                 )
             #print("ANALOL received analysis details", shared_details)
-            with time_it("analyse lumotag"):
+            with time_it("analyse lumotag: total"):
                 # shared memory is in chunks of 4096 - so have to slice it
                 bytesize = reduce((lambda x, y: x * y), shared_details.res)
                 # grab the image out of shared memory using the
                 # information (index, resolution of image)
                 # from the input queue (usually from image generator)
+                
                 img_buff = np.frombuffer(
                     self.sharedmem_bufs[shared_details.index].buf,
                     dtype=('uint8')
                         )[0:bytesize].reshape(shared_details.res)
-                
+            #with time_it("analyse lumotag:crop"):
                 # add any cropping
                 img_buff = img_buff[
                         self.img_crop.top:self.img_crop.lower,
                         self.img_crop.left:self.img_crop.right]
                 print(f"analysing img_buff shape {img_buff.shape}")
+
+           # with time_it("analyse lumotag: find lumotag"):
+
                 contour_data = decode_clothID.find_lumotag(
                     img_buff, workingdata)
-                
+            #with time_it("analyse lumotag: prepare graphics"):
                 for contour in contour_data:
                     # TODO check xy orientation correct
                     contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
-                    
+                        
                 # correct contour data here? not sure if correct place
                 
             #print("ANALOL waiting to put response")

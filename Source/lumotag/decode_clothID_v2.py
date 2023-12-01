@@ -12,7 +12,10 @@ import random
 import time
 from utils import time_it
 from dataclasses import dataclass
-from my_collections import ShapeItem, Shapes
+from my_collections import (
+    ShapeItem,
+    Shapes,
+    ShapeInfo_BulkProcess)
 import img_processing as img_pro
 
 
@@ -140,6 +143,42 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
     cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 1) 
 
 
+def get_approx_shape_and_bbox_bulk(
+        contours,
+        dataobject : WorkingData) -> ShapeInfo_BulkProcess:
+
+    bulkprocess = ShapeInfo_BulkProcess()
+
+    pts_0 = np.zeros((len(contours), 2), dtype="int32")
+    pts_1 = np.zeros((len(contours), 2), dtype="int32")
+    pts_2 = np.zeros((len(contours), 2), dtype="int32")
+
+    for index, c in enumerate(contours):
+        bulkprocess.contour[index] = c
+        bulkprocess.convex_hull_contour[index] =cv2.convexHull(c)
+        bulkprocess.minRect[index] = cv2.minAreaRect(c)
+        bulkprocess.min_bbox[index] = cv2.boxPoints(bulkprocess.minRect[index])
+        bulkprocess.min_bbox[index] = np.intp(bulkprocess.min_bbox[index]).astype(int)
+        bulkprocess.contour_pxl_cnt[index] = cv2.contourArea(c)
+        bulkprocess.min_bbox_pxl_cnt[index] = cv2.contourArea(bulkprocess.min_bbox[index])
+        # cv2.arcLength() is used to calculate the perimeter of the contour.
+        # If the second argument is True then it considers the contour to be closed.
+        # Then this perimeter is used to calculate the epsilon value for cv2.approxPolyDP() 
+        # function with a precision factor for approximating a shape
+        bulkprocess.approx_contour[index] = cv2.approxPolyDP(
+            c,
+            dataobject.approx_epsilon*cv2.arcLength(c, True),
+            True)
+
+        pts_0[index] = bulkprocess.min_bbox[index][0]
+        pts_1[index] = bulkprocess.min_bbox[index][1]
+        pts_2[index] = bulkprocess.min_bbox[index][2]
+
+    bulkprocess.dists_0_to_1 = np.sqrt(np.sum((pts_0 - pts_1)**2, axis=1))
+    bulkprocess.dists_1_to_2 = np.sqrt(np.sum((pts_1 - pts_2)**2, axis=1))
+
+    return bulkprocess
+            
 def get_approx_shape_and_bbox(
         contour,
         img,
@@ -151,22 +190,14 @@ def get_approx_shape_and_bbox(
     # function with a precision factor for approximating a shape
     
     contour = cv2.convexHull(contour)
-
+    
     # filter first by minimum bounding box of raw contours:
     minRect = cv2.minAreaRect(contour)
     min_bbox = cv2.boxPoints(minRect)
-    min_bbox = np.intp(min_bbox)
+    min_bbox = np.intp(min_bbox).astype(int)
     contour_pxl_cnt = cv2.contourArea(contour)
     
-    
-    #taking a wild guess for rotated rectangle - can;t be far off
-    w = np.linalg.norm(min_bbox[0]-min_bbox[1])
-    h = np.linalg.norm(min_bbox[1]-min_bbox[2])
-    #x, y, w, h = cv2.boundingRect(contour)
     min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
-    # filter by ratio
-    if w < 10 or h < 10:
-        return None
     # filter by how much of ideal square is taken up by contour area
     # with extreme perspective this will not be sufficient
     
@@ -197,6 +228,43 @@ def get_approx_shape_and_bbox(
                     notes_for_debug_file="not_enough_pixels_for_sqr")
         return None
 
+    approx = cv2.approxPolyDP(
+        contour,
+        dataobject.approx_epsilon*cv2.arcLength(contour, True),
+        True)
+    
+
+    if len(approx) not in [4, 5, 6, 7, 8]:
+        return ShapeItem(
+            id=index,
+            approx_contour=approx,
+            default_contour=contour,
+            filtered_contour=None,
+            boundingbox=None,
+            boundingbox_min=min_bbox,
+            boundingbox_ellipse=None,
+            img_cut=None,
+            sum_int_angles=None,
+            size=contour_pxl_cnt,
+            min_bbx_size=cv2.contourArea(min_bbox),
+            shape=Shapes.BAD_APPROX_LEN,
+            centre_x_y=None,
+            _2d_samples=None,
+            notes_for_debug_file=f"bad_approxlen")
+    
+    
+    #taking a wild guess for rotated rectangle - can;t be far off
+    w = np.linalg.norm(min_bbox[0]-min_bbox[1])
+    h = np.linalg.norm(min_bbox[1]-min_bbox[2])
+    #w = np.sqrt(np.sum((min_bbox[0]-min_bbox[1])**2))
+    #h = np.sqrt(np.sum((min_bbox[1]-min_bbox[2])**2))
+    #x, y, w, h = cv2.boundingRect(contour)
+    
+    # filter by ratio
+    if w < 10 or h < 10:
+        return None
+    
+
     if w/h < 0.1 or w/h > 9:
         if dataobject.debug is True:
             #img_debug = img.copy()
@@ -223,11 +291,8 @@ def get_approx_shape_and_bbox(
                     _2d_samples=None,
                     notes_for_debug_file=f"bad_ratio{ratio}")
         return None
+    
 
-    approx = cv2.approxPolyDP(
-        contour,
-        dataobject.approx_epsilon*cv2.arcLength(contour, True),
-        True)
 
     # filtered_cont = None
     # # filter close together points, sometimes outlier doesnt tend to work?
@@ -269,23 +334,7 @@ def get_approx_shape_and_bbox(
     # TODO rough at moment
     # this is a pattern which is square with an inner circle
 
-    if len(approx) not in [4, 5, 6, 7, 8]:
-        return ShapeItem(
-            id=index,
-            approx_contour=approx,
-            default_contour=contour,
-            filtered_contour=None,
-            boundingbox=None,
-            boundingbox_min=min_bbox,
-            boundingbox_ellipse=None,
-            img_cut=None,
-            sum_int_angles=None,
-            size=contour_pxl_cnt,
-            min_bbx_size=cv2.contourArea(min_bbox),
-            shape=Shapes.BAD_APPROX_LEN,
-            centre_x_y=None,
-            _2d_samples=None,
-            notes_for_debug_file=f"bad_approxlen")
+
 
 
     if len(approx) in [4, 5, 6, 7, 8]:
@@ -410,6 +459,281 @@ def get_approx_shape_and_bbox(
     return output
 
 
+def get_approx_shape_and_bbox2(
+        img,
+        img_blurred,
+        dataobject : WorkingData,
+        index: int,
+        bulk_process: ShapeInfo_BulkProcess) -> ShapeItem:
+
+    contour_pxl_cnt = bulk_process.contour_pxl_cnt[index]
+    min_bbox_pxl_cnt = bulk_process.min_bbox_pxl_cnt[index]
+    contour = bulk_process.contour[index]
+    min_bbox = bulk_process.min_bbox[index]
+    approx = bulk_process.approx_contour[index]
+    if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.50):
+        # try and repair it
+        
+        if dataobject.debug is True:
+            #img_debug = img.copy()
+            #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
+            #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
+            #dataobject.img_view_or_save_if_debug(img_debug, "not_enough_pixels_for_sqr")
+            
+            return ShapeItem(
+                    id=index,
+                    approx_contour=None,
+                    default_contour=contour,
+                    filtered_contour=None,
+                    boundingbox=None,
+                    boundingbox_min=min_bbox,
+                    boundingbox_ellipse=None,
+                    img_cut=None,
+                    sum_int_angles=None,
+                    size=contour_pxl_cnt,
+                    min_bbx_size=cv2.contourArea(min_bbox),
+                    shape=Shapes.BAD_PIXELS,
+                    centre_x_y=None,
+                    _2d_samples=None,
+                    notes_for_debug_file="not_enough_pixels_for_sqr")
+        return None
+
+    
+    if len(approx) not in [4, 5, 6, 7, 8]:
+        return ShapeItem(
+            id=index,
+            approx_contour=approx,
+            default_contour=contour,
+            filtered_contour=None,
+            boundingbox=None,
+            boundingbox_min=min_bbox,
+            boundingbox_ellipse=None,
+            img_cut=None,
+            sum_int_angles=None,
+            size=contour_pxl_cnt,
+            min_bbx_size=cv2.contourArea(min_bbox),
+            shape=Shapes.BAD_APPROX_LEN,
+            centre_x_y=None,
+            _2d_samples=None,
+            notes_for_debug_file=f"bad_approxlen")
+    
+    
+    #taking a wild guess for rotated rectangle - can;t be far off
+    w = bulk_process.dists_0_to_1[index]
+    h = bulk_process.dists_1_to_2[index]
+    #w = np.sqrt(np.sum((min_bbox[0]-min_bbox[1])**2))
+    #h = np.sqrt(np.sum((min_bbox[1]-min_bbox[2])**2))
+    #x, y, w, h = cv2.boundingRect(contour)
+    
+    # filter by ratio
+    if w < 10 or h < 10:
+        return None
+    
+
+    if w/h < 0.1 or w/h > 9:
+        if dataobject.debug is True:
+            #img_debug = img.copy()
+            #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
+            #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
+            ratio = str(round(w/h, 3))
+            ratio = ratio.replace(".", "p")
+            #dataobject.img_view_or_save_if_debug(img_debug, f"bad_ratio{ratio}")
+            
+            return ShapeItem(
+                    id=index,
+                    approx_contour=None,
+                    default_contour=contour,
+                    filtered_contour=None,
+                    boundingbox=None,
+                    boundingbox_min=min_bbox,
+                    boundingbox_ellipse=None,
+                    img_cut=None,
+                    sum_int_angles=None,
+                    size=contour_pxl_cnt,
+                    min_bbx_size=cv2.contourArea(min_bbox),
+                    shape=Shapes.BAD_RATIO,
+                    centre_x_y=None,
+                    _2d_samples=None,
+                    notes_for_debug_file=f"bad_ratio{ratio}")
+        return None
+    
+
+
+    # filtered_cont = None
+    # # filter close together points, sometimes outlier doesnt tend to work?
+    # res, val = math_utils.filter_close_points(approx)
+    # if res is True:
+    #     filtered_cont = val
+
+
+
+    # occasionally we get a triangle or square with a blunt edge,
+    # so remove this extra point by filtering outlier distances
+
+    # if filtered_cont is None:
+    #     res, val = math_utils.filter_outlier_edges(approx)
+    # else:
+    #     res, val = math_utils.filter_outlier_edges(filtered_cont)
+    # if res is True:
+    #     filtered_cont = val
+    #int_angle = int(math_utils.get_internal_angles_of_shape(approx))
+    
+    # minRect = cv2.minAreaRect(approx)
+    # min_bbox = cv2.boxPoints(minRect)
+    # min_bbox = np.intp(min_bbox)
+    # min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
+
+    # contour_pxl_cnt = cv2.contourArea(contour)
+    # can't make ellipse with <5 points
+    # if len(contour) > 4:
+    #     ellipse = cv2.fitEllipse(contour)
+    # else:
+    #     ellipse = None
+    #unaligned_bbx = cv2.boundingRect(contour)
+
+    # get centre
+
+    output = None
+    shape_ = Shapes.UNKNOWN
+    #test for square
+    # TODO rough at moment
+    # this is a pattern which is square with an inner circle
+
+
+
+
+    if len(approx) in [4, 5, 6, 7, 8]:
+
+        minRect = cv2.minAreaRect(approx)
+        min_bbox = cv2.boxPoints(minRect)
+        min_bbox = np.intp(min_bbox)
+        min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
+        contour_pxl_cnt = cv2.contourArea(contour)
+
+
+        if contour_pxl_cnt <= (min_bbox_pxl_cnt * 0.80):
+            return ShapeItem(
+                id=index,
+                approx_contour=approx,
+                default_contour=contour,
+                filtered_contour=None,
+                boundingbox=None,
+                boundingbox_min=min_bbox,
+                boundingbox_ellipse=None,
+                img_cut=None,
+                sum_int_angles=None,
+                size=contour_pxl_cnt,
+                min_bbx_size=cv2.contourArea(min_bbox),
+                shape=Shapes.BAD_APPROX_PXL,
+                centre_x_y=None,
+                _2d_samples=None,
+                notes_for_debug_file=f"BAD_APPROX_PXL")
+
+        if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
+            
+            # we know we have a square - lets see if it 
+            # has the internal inverse colour circle pattern
+            
+            moments = cv2.moments(contour)
+            cX = int(moments["m10"] / moments["m00"])
+            cY = int(moments["m01"] / moments["m00"])
+            # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
+            
+            
+                 # arbitrary edge ratio range
+
+                    #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
+
+            
+            sample_line1 = img_pro.bresenham_line_ski(
+                x1=min_bbox[0][0],
+                y1=min_bbox[0][1],
+                x2 = min_bbox[2][0],
+                y2 = min_bbox[2][1])
+
+            sample_line2 = img_pro.bresenham_line_ski(
+                x1=min_bbox[1][0],
+                y1=min_bbox[1][1],
+                x2 = min_bbox[3][0],
+                y2 = min_bbox[3][1])
+
+       
+            averages = []
+            averages2 = []
+            pixel_div_count = 90
+            #_step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
+            sample_size = 1
+            if contour_pxl_cnt > 1600:
+                img2use = img_blurred
+            else:
+                img2use = img
+
+            samples_per_line = 25
+            _step = max(math.floor(len(sample_line1)/samples_per_line), 1)
+            for i in range (sample_size, len(sample_line1)-sample_size, _step):
+                averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
+                #averages.append(img2use[sample_line1[i][0], sample_line1[i][0]])
+            for i in range (sample_size, len(sample_line2)-sample_size, _step):
+                averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
+
+            # for i in range (sample_size, len(sample_line1)-sample_size, _step):
+            #     averages.append(img2use[sample_line1[i][1], sample_line1[i][0]])
+            # for i in range (sample_size, len(sample_line2)-sample_size, _step):
+            #     averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
+            
+            # if dataobject.debug is True:
+            #     img_debug = img.copy()
+            #     cv2.circle(img_debug, (cX, cY), 5, 255, 1)
+            #     crop_img = img_debug[y:y+h, x:x+w]
+            #     dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+            #     cv2.circle(img_debug, tuple(min_bbox[0]), 3, 255, 1)
+            #     cv2.circle(img_debug, tuple(min_bbox[2]), 3, 255, 1)
+            #     cv2.circle(img_debug, tuple(min_bbox[1]), 3, 0, 1)
+            #     cv2.circle(img_debug, tuple(min_bbox[3]), 3, 0, 1)
+            #     try:
+            #         for xy, ave_col in zip(sample_line1, averages):
+            #             img_debug[xy[1]-50,xy[0]-50] = ave_col
+            #         for xy, ave_col in zip(sample_line2, averages):
+            #             img_debug[xy[1],xy[0]+50] = ave_col
+            #         for xy in sample_line1:
+            #             img_debug[xy[1],xy[0]] = 255
+            #         for xy in sample_line2:
+            #             img_debug[xy[1],xy[0]] = 255
+            #     except Exception:
+            #         pass
+
+
+
+            #     cv2.drawContours(img_debug, [min_bbox], 0, 255)
+            #     dataobject.img_view_or_save_if_debug(img_debug, "testline")
+            #     crop_img = img_debug[y:y+h, x:x+w]
+            #     dataobject.img_view_or_save_if_debug(crop_img, "corners of square")
+            shape_ = Shapes.SQUARE
+    
+# if len(approx) in [3, 4, 5, 6]:
+#     if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.40):
+#         if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.60):
+#             shape_ = Shapes.TRIANGLE
+
+            output = ShapeItem(
+                id=index,
+                approx_contour=approx,
+                default_contour=None,
+                filtered_contour=None,
+                boundingbox=None,
+                boundingbox_min=min_bbox,
+                boundingbox_ellipse=None,
+                img_cut=None,
+                sum_int_angles=None,
+                size=contour_pxl_cnt,
+                min_bbx_size = cv2.contourArea(min_bbox),
+                shape=shape_,
+                centre_x_y=[cX, cY],
+                _2d_samples=[averages, averages2],
+                notes_for_debug_file=None)
+    
+    return output
+
 
 def debug_save_images(img, contours, text : str, dataobject: WorkingData):
     if dataobject.debug is True:
@@ -510,6 +834,7 @@ def has_child_contour(hierarchy: np.array):
 
 def analyse_candidates_shapematch(
         original_img,
+        original_blurred_image,
         contours : tuple [np.ndarray],
         dataobject : WorkingData,
         contour_hierarchy : tuple [np.ndarray]):
@@ -528,15 +853,27 @@ def analyse_candidates_shapematch(
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
 
     contour_stats = []
-    with time_it("AC: get approx shape"):
+    # with time_it("AC: get approx shape"):
+    #     for index, c in enumerate(contours):
+    #         contour_stats.append(get_approx_shape_and_bbox(
+    #             c,
+    #             original_img,
+    #             dataobject,
+    #             index))
+
+    with time_it("AC: get approx shape 2"):
+        bulk_process = get_approx_shape_and_bbox_bulk(
+                    contours,
+                    dataobject)
+
         for index, c in enumerate(contours):
-            contour_stats.append(get_approx_shape_and_bbox(
-                c,
+            contour_stats.append(get_approx_shape_and_bbox2(
                 original_img,
+                original_blurred_image,
                 dataobject,
-                index))
-
-
+                index,
+                bulk_process))
+    plop=1
     # if dataobject.debug == True:
     #     debug_img = original_img.copy()
     #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
@@ -549,8 +886,23 @@ def analyse_candidates_shapematch(
     #             f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
 
 
+    tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
+    def eb34(list1):
+        flat_list = []
+        for i in list1:
+            if isinstance(i, list):
+                for j in eb34(i):
+                    flat_list.append(j)
+            else:
+                flat_list.append(i)
+        return flat_list
+    samples_all = eb34([x._2d_samples for x in squrs_found])
+    print(f"Sample points: {len(samples_all)/2}")
+    #tote_samples [x in i._2d_samples for i in squrs_found]
+
+    print("total samples: ", len(tote_samples))
     if dataobject.debug == True:
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
@@ -613,6 +965,34 @@ def analyse_candidates_shapematch(
             debug_img,
             f"BAD_APPROX_PXL")
         
+
+        # break out individual squares found:
+
+        for c in squrs_found:
+            #try:
+            if c.size > 1600:
+                img2use = original_blurred_image
+            else:
+                img2use = original_img
+            debug_img = img2use.copy()
+            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+            w = int(np.linalg.norm(c.boundingbox_min[0]-c.boundingbox_min[1]))
+            h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
+            x = c.centre_x_y[0]
+            y = c.centre_x_y[1]
+            draw_pattern_output(debug_img, c)
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
+            crop_img =  debug_img[max(0,y-h):y+h, max(0,x-w):x+w]
+            if len([True for i in crop_img.shape if i == 0]) > 0:
+                plop=1
+                pass
+            dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
+            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
+            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
+            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            #except Exception:
+             #   print("error with debug contour outputs")
         # if  len(squrs_found) > 0:
         #     debug_img = original_img.copy()
         #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
@@ -665,7 +1045,6 @@ def analyse_candidates_shapematch(
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,255,0), 3)
     # for c in tris_found:
     #     cv2.drawContours(output_colour, [c.approx_contour], -1, (0,0,255), 3)
-    
     return squrs_found
 
 
@@ -698,26 +1077,28 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
     #~2ms
-    with time_it("grayscale"):
-        if len(inputimg.shape)>2:
-            img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
-        else:
-            img_grayscale = inputimg
-    dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
-    #copy original image into folder
-    #orig_img = img.copy()
+    with time_it("pre-processing: total"):
+        with time_it("grayscale"):
+            if len(inputimg.shape)>2:
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+            else:
+                img_grayscale = inputimg
+        dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
+        #copy original image into folder
+        #orig_img = img.copy()
+        
+        #~3ms for grayscale
     
-    #~3ms for grayscale
-    with time_it("pre-processing/filtering total"):
         #print("equalisation")
-        with time_it("pre-processing/filtering: blur"):
-            img_op = cv2.blur(img_grayscale,(7,7)) # fastest filter
+        with time_it("pre-processing: blur"):
+            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+            img_op = cv2.medianBlur(img_grayscale, 7)
             dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
 
-        with time_it("pre-processing/filtering: clahe_equalisation"):
-            img_op=img_pro.clahe_equalisation(img_op, dataobject.claheprocessor)
-            dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
-            ''''test area'''
+        # with time_it("pre-processing/filtering: clahe_equalisation"):
+        #     img_op=img_pro.clahe_equalisation(img_op, dataobject.claheprocessor)
+        #     dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
+        #     ''''test area'''
    
    #this section about 25ms
     #with time_it():
@@ -740,8 +1121,9 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
 
         #squr_img=edge_img(gray_orig)
-        with time_it("pre-processing/filtering: threshold_img_static"):
-            img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
+        with time_it("pre-processing: threshold_img"):
+            #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
+            img_op=img_pro.threshold_img(img_op,low=40,high=255)
             # squr_img=img_pro.simple_canny(
             #     blurred_img=squr_img,
             #     lower=0,
@@ -752,8 +1134,16 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         #print("invert_img")
         #squr_img=invert_img(squr_img)
         #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
+        with time_it("pre-processing: blur again"):
+            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+            img_op = cv2.medianBlur(img_op, 3)
+            dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
 
-    
+        with time_it("pre-processing: blur orig for sampler"):
+            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+            org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
+            dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
+
     with time_it("get_possible_candidates total"):
         contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
@@ -761,8 +1151,10 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #     print("no results found for image")
     #     return []
 
-    with time_it("analyse_candidates"):
-        output_contour_data = analyse_candidates_shapematch(original_img=inputimg,
+    with time_it("analyse_candidates TOTAL"):
+        output_contour_data = analyse_candidates_shapematch(
+                                                original_img=inputimg,
+                                                original_blurred_image=org_img_grayscale_blur,
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)

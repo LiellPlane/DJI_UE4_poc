@@ -19,7 +19,7 @@ def get_lumofind_config(platform):
             SAVE_IMAGES_PATH=r"dunno")
     elif platform == _OS.WINDOWS:
         return base_find_lumotag_config(
-            SAVE_IMAGES_DEBUG=False,
+            SAVE_IMAGES_DEBUG=True,
             SAVE_IMAGES_PATH=r"D:/lumodebug/")
     elif platform == _OS.MAC_OS:
         return base_find_lumotag_config(
@@ -66,14 +66,14 @@ class HQ_GS_Cam_vidmodes(Enum):
 class Fake_Cam_vidmodes2(Enum):
     _1 = ImagingMode(
         camera_model="global shutter HQ camera",
-        res_width_height=(2020, 1080),
+        res_width_height=(1456, 1088),
         doc_description="2028 × 1080p50",
         shared_mem_reversed=False,special_notes="")
 
 class Fake_Cam_vidmodes(Enum):
     _1 = ImagingMode(
         camera_model="test5005x500",
-        res_width_height=(1080, 1920),
+        res_width_height=(1456, 1088),
         doc_description="500 × 500",
         shared_mem_reversed=True,special_notes="")
     
@@ -241,7 +241,7 @@ class simitzar_config(gun_config):
 
     @property
     def internal_img_crop(self):
-        return((500,500))
+        return((500,600))
 
     @property
     def opencv_window_pos(self):
