@@ -670,11 +670,21 @@ def get_approx_shape_and_bbox2(
 
             samples_per_line = 25
             _step = max(math.floor(len(sample_line1)/samples_per_line), 1)
+
+        
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
-                averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
-                #averages.append(img2use[sample_line1[i][0], sample_line1[i][0]])
+                try:
+                #averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
+                    averages.append(img2use[sample_line1[i][1], sample_line1[i][0]])
+                except Exception as e:
+                    print("out of range - skip")
+
             for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
+                #averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
+                try:
+                    averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
+                except Exception:
+                    print("out of range")
 
             # for i in range (sample_size, len(sample_line1)-sample_size, _step):
             #     averages.append(img2use[sample_line1[i][1], sample_line1[i][0]])
