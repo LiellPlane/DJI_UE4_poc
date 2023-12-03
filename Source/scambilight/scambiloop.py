@@ -56,10 +56,10 @@ def get_cam(system: _OS, action: str):
         return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     if system == _OS.WINDOWS:
-        return async_cam_lib.Synth_Camera_Async_run4ever(
+        return async_cam_lib.Synth_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.RASPBERRY:
-        return async_cam_lib.Scamblight_Camera_Async_run4ever(
+        return async_cam_lib.Scamblight_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.LINUX:
         return async_cam_lib.Synth_Camera_Async(
@@ -79,7 +79,7 @@ def get_external_data_workr(action):
 def main(action = None):
     
     optical_details = get_lens_details(
-        LensConfigs.DAISYBANK_HQ)
+        LensConfigs.DAISYBANK_LQ)
     fisheye_compute = fisheye_lib.fisheye_tool(
         img_width_height=(optical_details.width, optical_details.height),
         image_circle_size=optical_details.fish_eye_circle)
@@ -90,7 +90,7 @@ def main(action = None):
         cores = 8
     elif system == _OS.RASPBERRY:
         led_subsystem = ws281Leds(DaisybankLedSpacing)
-        cores = 2
+        cores = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cores = 8
@@ -194,15 +194,11 @@ def main(action = None):
 
     # main loop
     index = 0
-    flipflop = False
     #sent_overlay = 10
 
     # this is being updated constantly by the camera class
     # and luckily we can read frrom it without mem errors
-    prev: np.ndarray = np.ndarray(
-        curr_img.shape,
-        dtype=curr_img.dtype,
-        buffer=cam.shared_mem_handler.mem_ids["0"].buf)
+
 
     # things with queues can break the AWS lambda container images
     if action is None:
@@ -224,28 +220,14 @@ def main(action = None):
 
             # with time_it_sparse("get img"):
             #     prev = next(cam)
-                
-            flipflop = not flipflop
-            scambiunits_led_info = []
-            with time_it_sparse(f"get {len(scambi_units)} colours"):
-                for index, unit in enumerate(scambi_units):
-                    # if flipflop is True:
-                    #     if index%2 == 0:
-                    #         continue
-                    # if flipflop is False:
-                    #     if index%2 == 1:
-                    #         continue
-                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
-                    scambiunits_led_info.append(Scambi_unit_LED_only(
-                        colour=unit.colour,
-                        physical_led_pos=unit.physical_led_pos))
-                    
-                #TODO all these conditions are not good code
-                # probably take it all out
-                if action is None: #  not running in container (which doesn't like queues)
-                    scambiunits_led_info += proc_scambis.done_queue.get(block=True)
-                    proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
+            # get next image buffer 
+            cam.release_next_image()
+            prev: np.ndarray = np.ndarray(
+                curr_img.shape,
+                dtype=curr_img.dtype,
+                buffer=cam.get_img_buffer())
+            
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()
                 time.sleep(0.1)
@@ -325,8 +307,30 @@ def main(action = None):
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
     
-            # with time_it_sparse(f"subsampled {subsampled}/{len(scambi_units)}"):
-            #     pass
+
+
+
+            # put this here incase we can grab an image if everyhthing is messed up
+            scambiunits_led_info = []
+            with time_it_sparse(f"get {len(scambi_units)} colours"):
+                for index, unit in enumerate(scambi_units):
+                    # if flipflop is True:
+                    #     if index%2 == 0:
+                    #         continue
+                    # if flipflop is False:
+                    #     if index%2 == 1:
+                    #         continue
+                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
+                    scambiunits_led_info.append(Scambi_unit_LED_only(
+                        colour=unit.colour,
+                        physical_led_pos=unit.physical_led_pos))
+                    
+                #TODO all these conditions are not good code
+                # probably take it all out
+                if action is None: #  not running in container (which doesn't like queues)
+                    scambiunits_led_info += proc_scambis.done_queue.get(block=True)
+                    proc_scambis.handshake_queue.put("done", block=True, timeout=None)
+
 
             with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambiunits_led_info)

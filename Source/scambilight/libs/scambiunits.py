@@ -286,12 +286,15 @@ class Scambi_unit():
         return self.colour
 
     def get_dom_colour_with_auto_subsample(self, img, cut_off):
-        min_edge = min([self.fishwarp.bb_height, self.fishwarp.bb_width])
-        subsampling = math.ceil(min_edge/cut_off)
-        if subsampling < 1:
-            raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
-        col =  self.get_dominant_colour_flat(img, subsampling)
-        return self.lerp_color (col)
+        try:
+            min_edge = min([self.fishwarp.bb_height, self.fishwarp.bb_width])
+            subsampling = math.ceil(min_edge/cut_off)
+            if subsampling < 1:
+                raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
+            col =  self.get_dominant_colour_flat(img, subsampling)
+            return self.lerp_color (col)
+        except:
+            return self.colour
 
     def lerp_color(self, input_color: tuple[float,float,float]):
         # lerp colors using f(t) = t.t.t
