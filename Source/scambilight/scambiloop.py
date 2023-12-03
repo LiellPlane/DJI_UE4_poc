@@ -56,10 +56,10 @@ def get_cam(system: _OS, action: str):
         return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     if system == _OS.WINDOWS:
-        return async_cam_lib.Synth_Camera_Async_run4ever(
+        return async_cam_lib.Synth_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.RASPBERRY:
-        return async_cam_lib.Scamblight_Camera_Async_run4ever(
+        return async_cam_lib.Scamblight_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.LINUX:
         return async_cam_lib.Synth_Camera_Async(
@@ -90,7 +90,7 @@ def main(action = None):
         cores = 8
     elif system == _OS.RASPBERRY:
         led_subsystem = ws281Leds(DaisybankLedSpacing)
-        cores = 2
+        cores = 4
     elif system == _OS.LINUX:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cores = 8
@@ -199,10 +199,7 @@ def main(action = None):
 
     # this is being updated constantly by the camera class
     # and luckily we can read frrom it without mem errors
-    prev: np.ndarray = np.ndarray(
-        curr_img.shape,
-        dtype=curr_img.dtype,
-        buffer=cam.shared_mem_handler.mem_ids["0"].buf)
+
 
     # things with queues can break the AWS lambda container images
     if action is None:
@@ -224,7 +221,15 @@ def main(action = None):
 
             # with time_it_sparse("get img"):
             #     prev = next(cam)
-                
+
+            # get next image buffer 
+            cam.release_next_image()
+            prev: np.ndarray = np.ndarray(
+                curr_img.shape,
+                dtype=curr_img.dtype,
+                buffer=cam.get_img_buffer())
+            
+
             flipflop = not flipflop
             scambiunits_led_info = []
             with time_it_sparse(f"get {len(scambi_units)} colours"):

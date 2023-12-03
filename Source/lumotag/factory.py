@@ -717,10 +717,19 @@ class Camera_async(Camera):
             myqueue.put("image_ready", block=True, timeout=None)
 
 
-class Camera_async_alwaysloop(Camera_async):
+class Camera_async_buffer(Camera_async):
 
     def __init__(self, video_modes, imagegen_cls) -> None:
         super().__init__(video_modes, imagegen_cls)
+
+    def get_img_buffer(self):
+        return self.shared_mem_handler.mem_ids["0"].buf
+
+    def release_next_image(self):
+        _ = self.handshake_queue.get(
+                block=True,
+                timeout=None
+                )
 
     def async_img_loop(
         self,
@@ -733,7 +742,6 @@ class Camera_async_alwaysloop(Camera_async):
 
         shared_mem = None
 
-        first_image = False
         while True:
             img = _img_gen.get_image()
             # one-time initialise buffer
@@ -745,10 +753,8 @@ class Camera_async_alwaysloop(Camera_async):
             )
 
             shared_mem[:] = img[:]
-            if first_image == False:
-                print("forever loop cam needs one image removed first using NEXT")
-                myqueue.put("image_ready", block=True, timeout=None)
-                first_image = True
+
+            myqueue.put("image_ready", block=True, timeout=None)
 
 
 class Relay(ABC):
