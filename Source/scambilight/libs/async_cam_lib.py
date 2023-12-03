@@ -2,7 +2,12 @@
 import os
 
 # factory is imported from another directory by module load
-from factory import Camera_async, Camera_synchronous, ImageGenerator, Camera_async_alwaysloop
+from factory import (
+    Camera_async,
+    Camera_synchronous,
+    ImageGenerator,
+    Camera_async_buffer)
+
 import numpy as np
 import time
 import os
@@ -73,11 +78,12 @@ class RunScambisWithAsyncImage():
 
         while True:
             scambiunits_led_info = []
-            for unit in self.scambiunits:
-                unit.get_dom_colour_with_auto_subsample(prev, cut_off = self.subsample_cutoff)
-                scambiunits_led_info.append(self.Scambi_unit_LED_only(
-                    colour=unit.colour,
-                        physical_led_pos=unit.physical_led_pos))
+            with time_it_sparse("extra process scambis"):
+                for unit in self.scambiunits:
+                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = self.subsample_cutoff)
+                    scambiunits_led_info.append(self.Scambi_unit_LED_only(
+                        colour=unit.colour,
+                            physical_led_pos=unit.physical_led_pos))
             done_q.put(scambiunits_led_info, block=True, timeout=None)
             _ = handshake_queue.get(block=True,timeout=None)
 
@@ -210,13 +216,13 @@ class Scamblight_Camera_Async(Camera_async):
         super().__init__(video_modes, ScambilightCamImageGen)
 
 
-class Scamblight_Camera_Async_run4ever(Camera_async_alwaysloop):
+class Scamblight_Camera_Async_buffer(Camera_async_buffer):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ScambilightCamImageGen)
 
 
-class Synth_Camera_Async_run4ever(Camera_async_alwaysloop):
+class Synth_Camera_Async_buffer(Camera_async_buffer):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
