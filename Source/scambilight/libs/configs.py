@@ -25,16 +25,17 @@ class UploadImageTypes(enum.Enum):
 
 class ScambiLight_Cam_vidmodes(enum.Enum):
     """scambilight fisheye ov5647"""
-    _1 = ImagingMode(
-        camera_model="fisheye ov5647",
-        res_width_height=(972, 1296 , 3),
-        doc_description="1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",
-        shared_mem_reversed=False,special_notes="dimensions are reversed (h, w) due to quirk of ov5647")
     _2 = ImagingMode(
         camera_model="fisheye ov5647",
         res_width_height=(480, 640 , 3),
         doc_description="640x480 [58.92 fps - (16, 0)/2560x1920 crop]",
         shared_mem_reversed=False,special_notes="dimensions are reversed (h, w) due to quirk of ov5647")
+    _1 = ImagingMode(
+        camera_model="fisheye ov5647",
+        res_width_height=(972, 1296 , 3),
+        doc_description="1296x972 [43.25 fps - (0, 0)/2592x1944 crop]",
+        shared_mem_reversed=False,special_notes="dimensions are reversed (h, w) due to quirk of ov5647")
+
     _3 = ImagingMode(
         camera_model="fisheye ov5647",
         res_width_height=(1080, 1920 , 3),
