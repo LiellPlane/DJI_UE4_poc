@@ -23,7 +23,8 @@ from libs.utils import (
 from libs.scambiunits import (
     HomographyTool,
     generate_scambis,
-    Scambi_unit_LED_only)
+    Scambi_unit_LED_only,
+    AnalyseRefreshRate)
 from libs.collections import (
     LensConfigs,
     LEDColours)
@@ -65,7 +66,7 @@ def get_cam(system: _OS, action: str):
         return async_cam_lib.Synth_Camera_Async(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.MAC_OS:
-        return async_cam_lib.Synth_Camera_Async_run4ever(
+        return async_cam_lib.Synth_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     else:
         raise Exception(system + " not supported")
@@ -212,6 +213,11 @@ def main(action = None):
         # half scambis to parallel process half to main proces
         scambi_units = scambi_units[len(scambi_units)//2:]
 
+
+
+    # start analyser tool
+    diagnose_flicker = AnalyseRefreshRate(scambi_units)
+
     while True:
         event = ActionChecker.check_for_action()
         #subsampled = 0
@@ -331,12 +337,11 @@ def main(action = None):
                     scambiunits_led_info += proc_scambis.done_queue.get(block=True)
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
-
             with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambiunits_led_info)
                 led_subsystem.execute_LEDS()
             
-
+        #diagnose_flicker.sample()
 if __name__ == "__main__":
     main()
 

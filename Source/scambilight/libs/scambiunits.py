@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 import math
+import uuid
+import numpy 
 
 from dataclasses import dataclass
 import random
@@ -75,6 +77,7 @@ class Scambi_unit():
         self.initobj = init_object
         self.perpwarp = ScambiWarp()
         self.fishwarp = ScambiWarp()
+        self.ID = str(uuid.uuid4())
         #self.roi = []
         #self.warped_led_pos = None
         #self.warped_bounding_rect = None
@@ -507,6 +510,31 @@ def draw_rectangle(left, right, top, down, img):
     rec = cv2.rectangle(img,
                   (left, top),
                   (right, down),
-                  (0,100,255),
+                  (0, 100, 255),
                   8)
     return rec
+
+
+class AnalyseRefreshRate():
+    def __init__(self, scambiunits: list[Scambi_unit]) -> None:
+        """Analyse and diagnose errors with scambiunit sampling, such
+        as refresh rate of TV, by grabbing a timeslice of samples
+        
+        Will sample from one randomly selected sambiunit for N seconds
+        then move to next one"""
+
+        self.sampledict = dict()
+        self.current_sample = None
+        self.scambunits = scambiunits
+
+    def sample(self):
+        """grab a sample of colour from scambiunit
+        
+        this function will handle organising sampling schedule, 
+        therefore keep calling it every event loop"""
+        if self.current_sample is None:
+            scambi_to_sample = random.choice(self.scambunits)
+            self.current_sample = dict()
+            self.current_sample[scambi_to_sample.ID] = np.array((3, 2000))
+            plo=1
+            raise Exception("to be done")

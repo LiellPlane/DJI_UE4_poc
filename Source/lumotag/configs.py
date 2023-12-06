@@ -23,7 +23,7 @@ def get_lumofind_config(platform):
             SAVE_IMAGES_PATH=r"D:/lumodebug/")
     elif platform == _OS.MAC_OS:
         return base_find_lumotag_config(
-            SAVE_IMAGES_DEBUG=False,
+            SAVE_IMAGES_DEBUG=True,
             SAVE_IMAGES_PATH=r"/Users/liell_p/lumodebug/")
     else:
         raise Exception(f"Platform {platform} not supported")
