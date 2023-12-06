@@ -526,15 +526,18 @@ class AnalyseRefreshRate():
         self.sampledict = dict()
         self.current_sample = None
         self.scambunits = scambiunits
-
+        self._samp_counter = 0
+        self._samp_scambiunit = 0
     def sample(self):
         """grab a sample of colour from scambiunit
         
         this function will handle organising sampling schedule, 
         therefore keep calling it every event loop"""
-        if self.current_sample is None:
-            scambi_to_sample = random.choice(self.scambunits)
-            self.current_sample = dict()
-            self.current_sample[scambi_to_sample.ID] = np.array((3, 2000))
-            plo=1
-            raise Exception("to be done")
+        scambi_to_sample = self.scambunits[self._samp_scambiunit]
+        if self._samp_scambiunit not in self.sampledict:
+            self.sampledict[self._samp_scambiunit] = np.zeros((2000, 3), dtype=int)
+            self._samp_counter = 0
+        self.sampledict[self._samp_scambiunit][self._samp_counter] = np.array(scambi_to_sample.colour)
+        self._samp_counter += 1
+        if self._samp_counter > 2000:
+            self._samp_scambiunit += 1
