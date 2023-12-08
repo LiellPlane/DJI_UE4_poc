@@ -216,7 +216,7 @@ def main(action = None):
 
 
     # start analyser tool
-    #diagnose_flicker = AnalyseRefreshRate(scambi_units)
+    diagnose_flicker = AnalyseRefreshRate(scambi_units)
 
     while True:
         event = ActionChecker.check_for_action()
@@ -341,7 +341,7 @@ def main(action = None):
                 led_subsystem.set_LED_values(scambiunits_led_info)
                 led_subsystem.execute_LEDS()
             
-        diagnose_flicker.sample()
+        #diagnose_flicker.sample()
 if __name__ == "__main__":
     main()
 

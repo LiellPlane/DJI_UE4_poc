@@ -2,7 +2,8 @@ import numpy as np
 import cv2
 import math
 import uuid
-import numpy 
+import datetime
+import time
 
 from dataclasses import dataclass
 import random
@@ -523,21 +524,36 @@ class AnalyseRefreshRate():
         Will sample from one randomly selected sambiunit for N seconds
         then move to next one"""
 
+        self.samples = 10
         self.sampledict = dict()
         self.current_sample = None
         self.scambunits = scambiunits
         self._samp_counter = 0
         self._samp_scambiunit = 0
+
     def sample(self):
         """grab a sample of colour from scambiunit
-        
         this function will handle organising sampling schedule, 
         therefore keep calling it every event loop"""
+        if self._samp_scambiunit == len(self.scambunits):
+            plop=1
+            outputdict = {}
+            for record in self.sampledict.keys():
+                
+                outputdict
         scambi_to_sample = self.scambunits[self._samp_scambiunit]
+        # initialise np array
         if self._samp_scambiunit not in self.sampledict:
-            self.sampledict[self._samp_scambiunit] = np.zeros((2000, 3), dtype=int)
+            self.sampledict[self._samp_scambiunit] = {}
+            self.sampledict[self._samp_scambiunit]["timestamp"] = []
+            self.sampledict[self._samp_scambiunit]["samples"] = np.zeros((self.samples + 1, 3), dtype=int)
             self._samp_counter = 0
-        self.sampledict[self._samp_scambiunit][self._samp_counter] = np.array(scambi_to_sample.colour)
+        # add sample
+        self.sampledict[self._samp_scambiunit]["samples"][self._samp_counter]  = np.array(scambi_to_sample.colour)
+        self.sampledict[self._samp_scambiunit]["timestamp"].append(time.time())
+
         self._samp_counter += 1
-        if self._samp_counter > 2000:
+
+        if self._samp_counter > self.samples:
             self._samp_scambiunit += 1
+        
