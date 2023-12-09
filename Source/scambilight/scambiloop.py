@@ -340,15 +340,15 @@ def main(action = None):
                 led_subsystem.set_LED_values(scambiunits_led_info)
                 led_subsystem.execute_LEDS()
 
-        output = diagnose_flicker.sample()
-        if PLATFORM == _OS.RASPBERRY and output is not None:
-            file_folder = "/home/scambilight/samples/"
-            if not os.path.isdir(file_folder):
-                os.mkdir(file_folder)
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            with open(file_folder  + "/" + timestamp + ".json", "w") as outfile:
-                outfile.write(output)
-            print("saved scambiunit sample")
+        # output = diagnose_flicker.sample()
+        # if PLATFORM == _OS.RASPBERRY and output is not None:
+        #     file_folder = "/home/scambilight/samples/"
+        #     if not os.path.isdir(file_folder):
+        #         os.mkdir(file_folder)
+        #     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        #     with open(file_folder  + "/" + timestamp + ".json", "w") as outfile:
+        #         outfile.write(output)
+        #     print("saved scambiunit sample")
 
 
 if __name__ == "__main__":
