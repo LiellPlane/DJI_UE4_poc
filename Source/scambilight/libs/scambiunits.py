@@ -328,7 +328,14 @@ class Scambi_unit():
             flags=flags)
         dom_col = centers[0].astype(np.int32)
         dom_col = [int(i) for i in dom_col]
-        self.colour = tuple(dom_col)
+
+        col = tuple(dom_col)
+
+        plop = (
+            int((col[0] + self.colour[0])/2),
+            int((col[1] + self.colour[1])/2),
+            int((col[2] + self.colour[2])/2))
+        self.colour = plop
 
         return self.colour
 
