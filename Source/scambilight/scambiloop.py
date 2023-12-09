@@ -13,7 +13,7 @@ import time
 import json
 from collections import deque
 from math import floor
-
+from datetime import datetime
 from libs.utils import (
     get_platform,
     _OS,
@@ -345,7 +345,8 @@ def main(action = None):
             file_folder = "/home/scambilight/samples/"
             if not os.path.isdir(file_folder):
                 os.mkdir(file_folder)
-            with open(file_folder  + "/" + "sample.json", "w") as outfile:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            with open(file_folder  + "/" + timestamp + ".json", "w") as outfile:
                 outfile.write(output)
             print("saved scambiunit sample")
 
