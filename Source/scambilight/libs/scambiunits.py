@@ -4,6 +4,7 @@ import math
 import uuid
 import datetime
 import time
+import json
 
 from dataclasses import dataclass
 import random
@@ -524,7 +525,7 @@ class AnalyseRefreshRate():
         Will sample from one randomly selected sambiunit for N seconds
         then move to next one"""
 
-        self.samples = 10
+        self.samples = 3
         self.sampledict = dict()
         self.current_sample = None
         self.scambunits = scambiunits
@@ -535,12 +536,8 @@ class AnalyseRefreshRate():
         """grab a sample of colour from scambiunit
         this function will handle organising sampling schedule, 
         therefore keep calling it every event loop"""
-        if self._samp_scambiunit == len(self.scambunits):
-            plop=1
-            outputdict = {}
-            for record in self.sampledict.keys():
-                
-                outputdict
+        if self._samp_scambiunit ==len(self.scambunits)-1:
+            return None
         scambi_to_sample = self.scambunits[self._samp_scambiunit]
         # initialise np array
         if self._samp_scambiunit not in self.sampledict:
@@ -555,5 +552,12 @@ class AnalyseRefreshRate():
         self._samp_counter += 1
 
         if self._samp_counter > self.samples:
+            # scambiunit samping done - convert np array to list for jsonability
+            self.sampledict[self._samp_scambiunit]["samples"] = self.sampledict[self._samp_scambiunit]["samples"].tolist()
+            output = json.dumps(self.sampledict[self._samp_scambiunit])
+            # be careful with raspberry pi memory
+            self.sampledict[self._samp_scambiunit] = None
             self._samp_scambiunit += 1
-        
+            return output
+
+        return None

@@ -46,8 +46,7 @@ from libs.external_data import (
     get_image_from_aws,
     ExternalDataWorker,
     ExternalDataWorker_dummy,
-    cors_headers,
-    send_sim_progress_update_to_AWS)
+    cors_headers)
 import os
 PLATFORM = get_platform()
 
@@ -340,8 +339,17 @@ def main(action = None):
             with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambiunits_led_info)
                 led_subsystem.execute_LEDS()
-            
-        #diagnose_flicker.sample()
+
+        output = diagnose_flicker.sample()
+        if PLATFORM == _OS.RASPBERRY and output is not None:
+            file_folder = "/home/scambilight/samples/"
+            if not os.path.isdir(file_folder):
+                os.mkdir(file_folder)
+            with open(file_folder  + "/" + "sample.json", "w") as outfile:
+                outfile.write(output)
+            print("saved scambiunit sample")
+
+
 if __name__ == "__main__":
     main()
 
