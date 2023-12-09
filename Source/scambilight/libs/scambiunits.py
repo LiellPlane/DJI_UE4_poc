@@ -525,7 +525,7 @@ class AnalyseRefreshRate():
         Will sample from one randomly selected sambiunit for N seconds
         then move to next one"""
 
-        self.samples = 30
+        self.samples = 2500
         self.sampledict = dict()
         self.current_sample = None
         self.scambunits = scambiunits
