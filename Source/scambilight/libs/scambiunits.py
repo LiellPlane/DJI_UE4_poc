@@ -286,14 +286,17 @@ class Scambi_unit():
             [int(i) for i in sample_area.mean(axis=0).mean(axis=0)])
         return self.colour
 
-    def get_dom_colour_with_auto_subsample(self, img, cut_off):
+    def set_dom_colour_with_auto_subsample(self, img, cut_off):
         try:
             min_edge = min([self.fishwarp.bb_height, self.fishwarp.bb_width])
             subsampling = math.ceil(min_edge/cut_off)
             if subsampling < 1:
                 raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
-            col =  self.get_dominant_colour_flat(img, subsampling)
-            return self.lerp_color (col)
+            col = self.get_dominant_colour_flat(img, subsampling)
+            col = self.average_colour(col, self.colour)
+            col = self.lerp_color(col)
+            self.colour = col
+            #return self.lerp_color(col)
         except:
             return self.colour
 
@@ -327,14 +330,22 @@ class Scambi_unit():
 
         col = tuple(dom_col)
 
+        # plop = (
+        #     int((col[0] + self.colour[0])/2),
+        #     int((col[1] + self.colour[1])/2),
+        #     int((col[2] + self.colour[2])/2))
+        #self.colour = plop
+
+        return col
+
+    @staticmethod
+    def average_colour(col1, col2):
         plop = (
-            int((col[0] + self.colour[0])/2),
-            int((col[1] + self.colour[1])/2),
-            int((col[2] + self.colour[2])/2))
-        self.colour = plop
-
-        return self.colour
-
+            int((col1[0] + col2[0])/2),
+            int((col1[1] + col2[1])/2),
+            int((col1[2] + col2[2])/2))
+        return plop
+    
     def is_sample_area_smaller(self, cut_off: int):
         tp = self.fishwarp
         if (abs(tp.bb_right - tp.bb_left)) < cut_off or (abs(tp.bb_lower-tp.bb_top)) < cut_off:

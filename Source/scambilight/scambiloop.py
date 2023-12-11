@@ -170,7 +170,7 @@ def main(action = None):
         for index, unit in enumerate(scambi_units):
             unit.draw_warped_boundingbox(prev)
             prev = unit.draw_lerp_contour(prev)
-            unit.get_dom_colour_with_auto_subsample(
+            unit.set_dom_colour_with_auto_subsample(
                 prev, cut_off = img_sample_controller.subsample_cut)
             prev = unit.draw_warped_led_pos(
                 prev,
@@ -322,7 +322,7 @@ def main(action = None):
                     # if flipflop is False:
                     #     if index%2 == 1:
                     #         continue
-                    unit.get_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
+                    unit.set_dom_colour_with_auto_subsample(prev, cut_off = img_sample_controller.subsample_cut)
                     scambiunits_led_info.append(Scambi_unit_LED_only(
                         colour=unit.colour,
                         physical_led_pos=unit.physical_led_pos))
