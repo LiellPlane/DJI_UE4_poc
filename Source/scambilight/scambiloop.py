@@ -23,8 +23,7 @@ from libs.utils import (
 from libs.scambiunits import (
     HomographyTool,
     generate_scambis,
-    Scambi_unit_LED_only,
-    AnalyseRefreshRate)
+    Scambi_unit_LED_only)
 from libs.collections import (
     LensConfigs,
     LEDColours)
