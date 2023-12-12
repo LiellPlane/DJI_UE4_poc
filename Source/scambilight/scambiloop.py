@@ -1,6 +1,7 @@
 import os
 import sys
 import copy
+sss
 #abs_path = os.path.dirname(os.path.abspath(__file__))
 #scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
 print( os.path.dirname(os.path.abspath(__file__)))
