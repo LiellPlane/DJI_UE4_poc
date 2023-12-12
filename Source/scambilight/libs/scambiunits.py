@@ -295,7 +295,7 @@ class Scambi_unit():
             col = self.get_dominant_colour_flat(img, subsampling)
             col = self.average_colour(col, self.colour)
             col = self.lerp_color(col)
-            self.colour = col
+            self.colour = tuple(int(i) for i in col)
             #return self.lerp_color(col)
         except:
             return self.colour
