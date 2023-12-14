@@ -644,7 +644,12 @@ def get_approx_shape_and_bbox2(
 
                     #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
 
-            
+            # TODO put here the code to 
+            # change the bresenham lines from the bounding box corners
+            # to the corners of the approximated shape
+            # 
+
+
             sample_line1 = img_pro.bresenham_line_ski(
                 x1=min_bbox[0][0],
                 y1=min_bbox[0][1],
