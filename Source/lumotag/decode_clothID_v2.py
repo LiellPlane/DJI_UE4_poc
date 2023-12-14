@@ -18,7 +18,7 @@ from my_collections import (
     ShapeInfo_BulkProcess)
 import img_processing as img_pro
 
-
+from sklearn.neighbors import KDTree
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -130,6 +130,7 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
     cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
     cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
     cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
+
 
     # centre of pattern
     cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
@@ -648,7 +649,17 @@ def get_approx_shape_and_bbox2(
             # change the bresenham lines from the bounding box corners
             # to the corners of the approximated shape
             # 
-
+            #  Get corners of 
+            approx_flat =approx.reshape(-1, 2).tolist()
+            kdtree = KDTree(approx_flat)
+            # Perform KNN search for each point in points2
+            k_nearest_neighbors = kdtree.query(min_bbox, k=1)  # k=1 for finding the single closest match
+            # k_nearest_neighbors is a tuple containing distances and indices
+            nearest_points = []
+            for i, (distance, index) in enumerate(zip(*k_nearest_neighbors)):
+                closest_match = approx_flat[int(index)]
+                nearest_points.append(closest_match)
+                print(f"Closest match for point {i+1} in points2 is {closest_match} with distance {distance}")
 
             sample_line1 = img_pro.bresenham_line_ski(
                 x1=min_bbox[0][0],
@@ -738,7 +749,7 @@ def get_approx_shape_and_bbox2(
                 boundingbox=None,
                 boundingbox_min=min_bbox,
                 boundingbox_ellipse=None,
-                img_cut=None,
+                img_cut=nearest_points,
                 sum_int_angles=None,
                 size=contour_pxl_cnt,
                 min_bbx_size = cv2.contourArea(min_bbox),
@@ -846,6 +857,21 @@ def has_child_contour(hierarchy: np.array):
     if hierarchy[2] < 1:
         return False
     return True
+
+def euclidean_distance(point1, point2):
+    x1, y1 = point1
+    x2, y2 = point2
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2)
+
+def closest_point(target_point, points):
+    min_distance = float('inf')
+    closest = None
+    for point in points:
+        distance = euclidean_distance(target_point, point)
+        if distance < min_distance:
+            min_distance = distance
+            closest = point
+    return closest
 
 def analyse_candidates_shapematch(
         original_img,
@@ -996,6 +1022,13 @@ def analyse_candidates_shapematch(
             x = c.centre_x_y[0]
             y = c.centre_x_y[1]
             draw_pattern_output(debug_img, c)
+            
+            # closest corners
+            cv2.circle(debug_img, tuple(c.img_cut[0]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.img_cut[2]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.img_cut[1]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.img_cut[3]), 3, img_pro.BLUE, 1)
+        
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
             crop_img =  debug_img[max(0,y-h):y+h, max(0,x-w):x+w]
             if len([True for i in crop_img.shape if i == 0]) > 0:

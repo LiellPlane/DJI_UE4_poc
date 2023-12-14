@@ -11,6 +11,7 @@ from skimage.draw import line
 from my_collections import CropSlicing
 
 RED = (0, 0, 255)
+BLUE = (255, 0, 0)
 
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
