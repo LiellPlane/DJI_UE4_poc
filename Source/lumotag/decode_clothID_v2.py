@@ -124,7 +124,7 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
     will eventually need a user registry"""
     min_bbox = patterndetails.boundingbox_min
     cX, cY = patterndetails.centre_x_y
-
+    closest_corners = patterndetails.closest_corners
     # corners of square
     cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
     cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
@@ -140,8 +140,8 @@ def draw_pattern_output(image, patterndetails: ShapeItem):
 
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
-    cv2.line(image, tuple(min_bbox[0]), tuple(min_bbox[2]), img_pro.RED, 1) 
-    cv2.line(image, tuple(min_bbox[1]), tuple(min_bbox[3]), img_pro.RED, 1) 
+    cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), img_pro.RED, 1) 
+    cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), img_pro.RED, 1) 
 
 
 def get_approx_shape_and_bbox_bulk(
@@ -219,7 +219,7 @@ def get_approx_shape_and_bbox(
                     boundingbox=None,
                     boundingbox_min=min_bbox,
                     boundingbox_ellipse=None,
-                    img_cut=None,
+                    closest_corners=None,
                     sum_int_angles=None,
                     size=contour_pxl_cnt,
                     min_bbx_size=cv2.contourArea(min_bbox),
@@ -244,7 +244,7 @@ def get_approx_shape_and_bbox(
             boundingbox=None,
             boundingbox_min=min_bbox,
             boundingbox_ellipse=None,
-            img_cut=None,
+            closest_corners=None,
             sum_int_angles=None,
             size=contour_pxl_cnt,
             min_bbx_size=cv2.contourArea(min_bbox),
@@ -283,7 +283,7 @@ def get_approx_shape_and_bbox(
                     boundingbox=None,
                     boundingbox_min=min_bbox,
                     boundingbox_ellipse=None,
-                    img_cut=None,
+                    closest_corners=None,
                     sum_int_angles=None,
                     size=contour_pxl_cnt,
                     min_bbx_size=cv2.contourArea(min_bbox),
@@ -356,7 +356,7 @@ def get_approx_shape_and_bbox(
                 boundingbox=None,
                 boundingbox_min=min_bbox,
                 boundingbox_ellipse=None,
-                img_cut=None,
+                closest_corners=None,
                 sum_int_angles=None,
                 size=contour_pxl_cnt,
                 min_bbx_size=cv2.contourArea(min_bbox),
@@ -448,7 +448,7 @@ def get_approx_shape_and_bbox(
                 boundingbox=None,
                 boundingbox_min=min_bbox,
                 boundingbox_ellipse=None,
-                img_cut=None,
+                closest_corners=None,
                 sum_int_angles=None,
                 size=contour_pxl_cnt,
                 min_bbx_size = cv2.contourArea(min_bbox),
@@ -489,7 +489,7 @@ def get_approx_shape_and_bbox2(
                     boundingbox=None,
                     boundingbox_min=min_bbox,
                     boundingbox_ellipse=None,
-                    img_cut=None,
+                    closest_corners=None,
                     sum_int_angles=None,
                     size=contour_pxl_cnt,
                     min_bbx_size=cv2.contourArea(min_bbox),
@@ -509,7 +509,7 @@ def get_approx_shape_and_bbox2(
             boundingbox=None,
             boundingbox_min=min_bbox,
             boundingbox_ellipse=None,
-            img_cut=None,
+            closest_corners=None,
             sum_int_angles=None,
             size=contour_pxl_cnt,
             min_bbx_size=cv2.contourArea(min_bbox),
@@ -548,7 +548,7 @@ def get_approx_shape_and_bbox2(
                     boundingbox=None,
                     boundingbox_min=min_bbox,
                     boundingbox_ellipse=None,
-                    img_cut=None,
+                    closest_corners=None,
                     sum_int_angles=None,
                     size=contour_pxl_cnt,
                     min_bbx_size=cv2.contourArea(min_bbox),
@@ -621,7 +621,7 @@ def get_approx_shape_and_bbox2(
                 boundingbox=None,
                 boundingbox_min=min_bbox,
                 boundingbox_ellipse=None,
-                img_cut=None,
+                closest_corners=None,
                 sum_int_angles=None,
                 size=contour_pxl_cnt,
                 min_bbx_size=cv2.contourArea(min_bbox),
@@ -650,28 +650,35 @@ def get_approx_shape_and_bbox2(
             # to the corners of the approximated shape
             # 
             #  Get corners of 
-            approx_flat =approx.reshape(-1, 2).tolist()
-            kdtree = KDTree(approx_flat)
-            # Perform KNN search for each point in points2
-            k_nearest_neighbors = kdtree.query(min_bbox, k=1)  # k=1 for finding the single closest match
-            # k_nearest_neighbors is a tuple containing distances and indices
             nearest_points = []
-            for i, (distance, index) in enumerate(zip(*k_nearest_neighbors)):
-                closest_match = approx_flat[int(index)]
-                nearest_points.append(closest_match)
-                print(f"Closest match for point {i+1} in points2 is {closest_match} with distance {distance}")
 
+            for pt in min_bbox:
+                nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
+
+            # takes 10 ms
+            # approx_flat =approx.reshape(-1, 2).tolist()
+            # kdtree = KDTree(approx_flat)
+            # # Perform KNN search for each point in points2
+            # k_nearest_neighbors = kdtree.query(min_bbox, k=1)  # k=1 for finding the single closest match
+            # # k_nearest_neighbors is a tuple containing distances and indices
+
+            # for i, (distance, index) in enumerate(zip(*k_nearest_neighbors)):
+            #     closest_match = approx_flat[int(index)]
+            #     nearest_points.append(closest_match)
+
+    
+            
             sample_line1 = img_pro.bresenham_line_ski(
-                x1=min_bbox[0][0],
-                y1=min_bbox[0][1],
-                x2 = min_bbox[2][0],
-                y2 = min_bbox[2][1])
+                x1=nearest_points[0][0],
+                y1=nearest_points[0][1],
+                x2 = nearest_points[2][0],
+                y2 = nearest_points[2][1])
 
             sample_line2 = img_pro.bresenham_line_ski(
-                x1=min_bbox[1][0],
-                y1=min_bbox[1][1],
-                x2 = min_bbox[3][0],
-                y2 = min_bbox[3][1])
+                x1=nearest_points[1][0],
+                y1=nearest_points[1][1],
+                x2 = nearest_points[3][0],
+                y2 = nearest_points[3][1])
 
        
             averages = []
@@ -749,7 +756,7 @@ def get_approx_shape_and_bbox2(
                 boundingbox=None,
                 boundingbox_min=min_bbox,
                 boundingbox_ellipse=None,
-                img_cut=nearest_points,
+                closest_corners=nearest_points,
                 sum_int_angles=None,
                 size=contour_pxl_cnt,
                 min_bbx_size = cv2.contourArea(min_bbox),
@@ -1024,10 +1031,10 @@ def analyse_candidates_shapematch(
             draw_pattern_output(debug_img, c)
             
             # closest corners
-            cv2.circle(debug_img, tuple(c.img_cut[0]), 3, img_pro.BLUE, 1)
-            cv2.circle(debug_img, tuple(c.img_cut[2]), 3, img_pro.BLUE, 1)
-            cv2.circle(debug_img, tuple(c.img_cut[1]), 3, img_pro.BLUE, 1)
-            cv2.circle(debug_img, tuple(c.img_cut[3]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.closest_corners[0]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.closest_corners[2]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.closest_corners[1]), 3, img_pro.BLUE, 1)
+            cv2.circle(debug_img, tuple(c.closest_corners[3]), 3, img_pro.BLUE, 1)
         
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
             crop_img =  debug_img[max(0,y-h):y+h, max(0,x-w):x+w]

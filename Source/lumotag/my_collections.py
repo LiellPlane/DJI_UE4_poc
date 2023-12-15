@@ -60,7 +60,7 @@ class ShapeItem:
     boundingbox: np.array
     boundingbox_min: np.array
     boundingbox_ellipse: np.array
-    img_cut: np.array
+    closest_corners: np.array
     sum_int_angles: float
     size: int
     min_bbx_size: int
