@@ -10,15 +10,15 @@ import math
 import math_utils
 import random
 import time
-from utils import time_it
+from utils import time_it, custom_print
 from dataclasses import dataclass
 from my_collections import (
     ShapeItem,
     Shapes,
     ShapeInfo_BulkProcess)
 import img_processing as img_pro
-
-from sklearn.neighbors import KDTree
+from configs import base_find_lumotag_config
+#from sklearn.neighbors import KDTree
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -75,11 +75,17 @@ class Debug_Images(AutoStrEnum):
 
 
 class WorkingData():
-    def __init__(self, debug=False, debugimgs=r"D:/lumodebug/") -> None:
+    def __init__(
+            self,
+            debug=False,
+            debugimgs=r"D:/lumodebug/",
+            debugdetails=base_find_lumotag_config) -> None:
+
         self.debugimgs = debugimgs
         self.debug = debug
         self.debug_img_cnt = 0
         self.debug_subfldr = None
+        self.debug_details = debugdetails
         if self.debug is True:
             DeleteFiles_RecreateFolder(self.debugimgs)
         self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
@@ -797,7 +803,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
     #  get all contours, 
     with time_it("get possible candidates: find contours"):
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(f"get possible candidates: {len(contours)} contours found")
+    custom_print(f"get possible candidates: {len(contours)} contours found")
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
 
 
@@ -837,7 +843,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
         if len(contours_cirles) != len(hierarchy_cirles):
             raise Exception("bad unzip - use python 3.10 for strict=true")
     debug_save_images(img, contours_cirles, Debug_Images.filtered_circularity_contours.value, dataobject)
-    print(f"get possible candidates: {len(contours_cirles)} contours postfilter")
+    custom_print(f"get possible candidates: {len(contours_cirles)} contours postfilter")
 
     if dataobject.debug is True:
         out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
@@ -947,10 +953,11 @@ def analyse_candidates_shapematch(
                 flat_list.append(i)
         return flat_list
     samples_all = eb34([x._2d_samples for x in squrs_found])
-    print(f"Sample points: {len(samples_all)/2}")
+    custom_print(f"Sample points: {len(samples_all)/2}")
     #tote_samples [x in i._2d_samples for i in squrs_found]
 
-    print("total samples: ", len(tote_samples))
+    custom_print(f"total samples: {len(tote_samples)}")
+
     if dataobject.debug == True:
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)

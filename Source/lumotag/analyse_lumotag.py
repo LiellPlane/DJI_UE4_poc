@@ -24,8 +24,10 @@ class ImageAnalyser_shared_mem():
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
         self.img_crop = slice_details
+        self.debug_config = config
         self.debug_mode = config.SAVE_IMAGES_DEBUG
         self.debug_img_path = config.SAVE_IMAGES_PATH
+        self.debug_print = config.PRINT_DEBUG
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -38,7 +40,7 @@ class ImageAnalyser_shared_mem():
         process.start()
 
     def trigger_analysis(self, mapped_details: SharedMem_ImgTicket):
-        print("putting record for analyis", mapped_details)
+        #print("putting record for analyis", mapped_details)
         self.input_shared_mem_index_q.put(
             mapped_details,
             block=True,
@@ -50,7 +52,8 @@ class ImageAnalyser_shared_mem():
             analysis_output_q):
         workingdata = decode_clothID.WorkingData(
             debug=self.debug_mode,
-            debugimgs=self.debug_img_path)
+            debugimgs=self.debug_img_path,
+            debugdetails=self.debug_config)
         # workingdata = decode_clothID.WorkingData(
         #     debug=True,
         #     debugimgs=r"D:/lumodebug/")
@@ -81,7 +84,6 @@ class ImageAnalyser_shared_mem():
                 img_buff = img_buff[
                         self.img_crop.top:self.img_crop.lower,
                         self.img_crop.left:self.img_crop.right]
-                print(f"analysing img_buff shape {img_buff.shape}")
 
            # with time_it("analyse lumotag: find lumotag"):
 

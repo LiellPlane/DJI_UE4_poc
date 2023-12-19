@@ -21,7 +21,7 @@ from my_collections import AffinePoints, ShapeItem, CropSlicing
 try:
     from my_collections import SharedMem_ImgTicket
     import decode_clothID_v2 as decode_clothID
-except Exception:
+except Exception as e:
     # TODO
     print("this must be scambilight - bad solution please fix TODO")
 
