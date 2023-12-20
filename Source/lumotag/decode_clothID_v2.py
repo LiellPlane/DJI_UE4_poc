@@ -7,9 +7,7 @@ import numpy as np
 #sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 #from matplotlib import pyplot as plt
 import math
-import math_utils
 import random
-import time
 from utils import time_it, custom_print
 from dataclasses import dataclass
 from my_collections import (
@@ -124,30 +122,30 @@ class WorkingData():
 
 
 
-def draw_pattern_output(image, patterndetails: ShapeItem):
-    """draw graphics for user if a pattern is found
-    TODO: maybe want floating numbers etc above this which
-    will eventually need a user registry"""
-    min_bbox = patterndetails.boundingbox_min
-    cX, cY = patterndetails.centre_x_y
-    closest_corners = patterndetails.closest_corners
-    # corners of square
-    cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
-    cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
-    cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
-    cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
+# def draw_pattern_output(image, patterndetails: ShapeItem):
+#     """draw graphics for user if a pattern is found
+#     TODO: maybe want floating numbers etc above this which
+#     will eventually need a user registry"""
+#     min_bbox = patterndetails.boundingbox_min
+#     cX, cY = patterndetails.centre_x_y
+#     closest_corners = patterndetails.closest_corners
+#     # corners of square
+#     cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
+#     cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
+#     cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
+#     cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
 
 
-    # centre of pattern
-    cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
+#     # centre of pattern
+#     cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
    
-    # bounding box of contour - this does not handle perspective
-    cv2.drawContours(image, [min_bbox], 0, img_pro.RED)
+#     # bounding box of contour - this does not handle perspective
+#     cv2.drawContours(image, [min_bbox], 0, img_pro.RED)
 
-    #draw barcode sampling lines - for illustration only
-    # may not match exactly with generated sampled lines
-    cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), img_pro.RED, 1) 
-    cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), img_pro.RED, 1) 
+#     #draw barcode sampling lines - for illustration only
+#     # may not match exactly with generated sampled lines
+#     cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), img_pro.RED, 1) 
+#     cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), img_pro.RED, 1) 
 
 
 def get_approx_shape_and_bbox_bulk(
@@ -1035,7 +1033,7 @@ def analyse_candidates_shapematch(
             h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
             x = c.centre_x_y[0]
             y = c.centre_x_y[1]
-            draw_pattern_output(debug_img, c)
+            img_pro.draw_pattern_output(debug_img, c)
             
             # closest corners
             cv2.circle(debug_img, tuple(c.closest_corners[0]), 3, img_pro.BLUE, 1)
