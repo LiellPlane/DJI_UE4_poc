@@ -941,22 +941,23 @@ def analyse_candidates_shapematch(
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
-    def eb34(list1):
-        flat_list = []
-        for i in list1:
-            if isinstance(i, list):
-                for j in eb34(i):
-                    flat_list.append(j)
-            else:
-                flat_list.append(i)
-        return flat_list
-    samples_all = eb34([x._2d_samples for x in squrs_found])
-    custom_print(f"Sample points: {len(samples_all)/2}")
-    #tote_samples [x in i._2d_samples for i in squrs_found]
-
-    custom_print(f"total samples: {len(tote_samples)}")
-
     if dataobject.debug == True:
+        def eb34(list1):
+            flat_list = []
+            for i in list1:
+                if isinstance(i, list):
+                    for j in eb34(i):
+                        flat_list.append(j)
+                else:
+                    flat_list.append(i)
+            return flat_list
+        samples_all = eb34([x._2d_samples for x in squrs_found])
+        custom_print(f"Sample points: {len(samples_all)/2}")
+        #tote_samples [x in i._2d_samples for i in squrs_found]
+
+        custom_print(f"total samples: {len(tote_samples)}")
+
+
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
