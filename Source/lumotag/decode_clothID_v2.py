@@ -7,18 +7,16 @@ import numpy as np
 #sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 #from matplotlib import pyplot as plt
 import math
-import math_utils
 import random
-import time
-from utils import time_it
+from utils import time_it, custom_print
 from dataclasses import dataclass
 from my_collections import (
     ShapeItem,
     Shapes,
     ShapeInfo_BulkProcess)
 import img_processing as img_pro
-
-from sklearn.neighbors import KDTree
+from configs import base_find_lumotag_config
+#from sklearn.neighbors import KDTree
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -75,13 +73,17 @@ class Debug_Images(AutoStrEnum):
 
 
 class WorkingData():
-    def __init__(self, debug=False, debugimgs=r"D:/lumodebug/") -> None:
-        self.debugimgs = debugimgs
-        self.debug = debug
+    def __init__(
+            self,
+            debugdetails=base_find_lumotag_config) -> None:
+
+        #self.debugimgs = debugimgs
+        #self.debug = debug
         self.debug_img_cnt = 0
         self.debug_subfldr = None
-        if self.debug is True:
-            DeleteFiles_RecreateFolder(self.debugimgs)
+        self.debug_details = debugdetails
+        if self.debug_details.SAVE_IMAGES_DEBUG is True:
+            DeleteFiles_RecreateFolder(self.debug_details.SAVE_IMAGES_PATH)
         self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
         self.approx_epsilon = 0.02
     @staticmethod
@@ -100,48 +102,48 @@ class WorkingData():
 
     def img_view_or_save_if_debug(self, img, description, resize = True):
         
-        if self.debug is True:
+        if self.debug_details.SAVE_IMAGES_DEBUG is True:
             out_img = img.copy()
             if resize is True:
-                resize_x =  int(img.shape[1]*(1000/img.shape[1]))
-                resize_y =  int(img.shape[0]*(1000/img.shape[1]))
+                resize_x = int(img.shape[1]*(1000/img.shape[1]))
+                resize_y = int(img.shape[0]*(1000/img.shape[1]))
                 out_img = cv2.resize(out_img, (resize_x,resize_y), interpolation = cv2.INTER_AREA)
             if self.debug_subfldr is None:
-                filename = f"{self.debugimgs}\\0{self.debug_img_cnt}_{description}.jpg"
+                filename = f"{self.debug_details.SAVE_IMAGES_PATH}\\0{self.debug_img_cnt}_{description}.jpg"
             else:
-                if not os.path.exists(f"{self.debugimgs}\\{self.debug_subfldr}"):
-                    os.mkdir(f"{self.debugimgs}\\{self.debug_subfldr}")
-                filename = f"{self.debugimgs}\\{self.debug_subfldr}\\0{self.debug_img_cnt}_{description}.jpg"
-            cv2.imwrite(filename,out_img)
+                if not os.path.exists(f"{self.debug_details.SAVE_IMAGES_PATH}\\{self.debug_subfldr}"):
+                    os.mkdir(f"{self.debug_details.SAVE_IMAGES_PATH}\\{self.debug_subfldr}")
+                filename = f"{self.debug_details.SAVE_IMAGES_PATH}\\{self.debug_subfldr}\\0{self.debug_img_cnt}_{description}.jpg"
+            cv2.imwrite(filename, out_img)
             print(f"DEBUG = TRUE: saving debug file to {filename}")
             self.debug_img_cnt += 1
 
 
 
-def draw_pattern_output(image, patterndetails: ShapeItem):
-    """draw graphics for user if a pattern is found
-    TODO: maybe want floating numbers etc above this which
-    will eventually need a user registry"""
-    min_bbox = patterndetails.boundingbox_min
-    cX, cY = patterndetails.centre_x_y
-    closest_corners = patterndetails.closest_corners
-    # corners of square
-    cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
-    cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
-    cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
-    cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
+# def draw_pattern_output(image, patterndetails: ShapeItem):
+#     """draw graphics for user if a pattern is found
+#     TODO: maybe want floating numbers etc above this which
+#     will eventually need a user registry"""
+#     min_bbox = patterndetails.boundingbox_min
+#     cX, cY = patterndetails.centre_x_y
+#     closest_corners = patterndetails.closest_corners
+#     # corners of square
+#     cv2.circle(image, tuple(min_bbox[0]), 3, img_pro.RED, 1)
+#     cv2.circle(image, tuple(min_bbox[2]), 3, img_pro.RED, 1)
+#     cv2.circle(image, tuple(min_bbox[1]), 3, img_pro.RED, 1)
+#     cv2.circle(image, tuple(min_bbox[3]), 3, img_pro.RED, 1)
 
 
-    # centre of pattern
-    cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
+#     # centre of pattern
+#     cv2.circle(image, (cX, cY), 5, img_pro.RED, 1)
    
-    # bounding box of contour - this does not handle perspective
-    cv2.drawContours(image, [min_bbox], 0, img_pro.RED)
+#     # bounding box of contour - this does not handle perspective
+#     cv2.drawContours(image, [min_bbox], 0, img_pro.RED)
 
-    #draw barcode sampling lines - for illustration only
-    # may not match exactly with generated sampled lines
-    cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), img_pro.RED, 1) 
-    cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), img_pro.RED, 1) 
+#     #draw barcode sampling lines - for illustration only
+#     # may not match exactly with generated sampled lines
+#     cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), img_pro.RED, 1) 
+#     cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), img_pro.RED, 1) 
 
 
 def get_approx_shape_and_bbox_bulk(
@@ -267,7 +269,7 @@ def get_approx_shape_and_bbox(
     
 
     if w/h < 0.1 or w/h > 9:
-        if dataobject.debug is True:
+        if dataobject.debug_details.PRINT_DEBUG is True:
             #img_debug = img.copy()
             #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -475,7 +477,7 @@ def get_approx_shape_and_bbox2(
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.50):
         # try and repair it
         
-        if dataobject.debug is True:
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
             #img_debug = img.copy()
             #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -532,7 +534,7 @@ def get_approx_shape_and_bbox2(
     
 
     if w/h < 0.1 or w/h > 9:
-        if dataobject.debug is True:
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
             #img_debug = img.copy()
             #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -769,7 +771,7 @@ def get_approx_shape_and_bbox2(
 
 
 def debug_save_images(img, contours, text : str, dataobject: WorkingData):
-    if dataobject.debug is True:
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
         img_check_contours = img.copy()
         img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
         for i, cnt in enumerate([i for i in contours]):
@@ -797,7 +799,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
     #  get all contours, 
     with time_it("get possible candidates: find contours"):
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    print(f"get possible candidates: {len(contours)} contours found")
+    custom_print(f"get possible candidates: {len(contours)} contours found")
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
 
 
@@ -837,9 +839,9 @@ def get_possible_candidates(img, dataobject : WorkingData):
         if len(contours_cirles) != len(hierarchy_cirles):
             raise Exception("bad unzip - use python 3.10 for strict=true")
     debug_save_images(img, contours_cirles, Debug_Images.filtered_circularity_contours.value, dataobject)
-    print(f"get possible candidates: {len(contours_cirles)} contours postfilter")
+    custom_print(f"get possible candidates: {len(contours_cirles)} contours postfilter")
 
-    if dataobject.debug is True:
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
         out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
         cv2.drawContours(image=out, contours=contours_cirles, contourIdx=-1, color=(0, 255, 0), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
         dataobject.img_view_or_save_if_debug(out, Debug_Images.macro_candidates.value)
@@ -937,21 +939,23 @@ def analyse_candidates_shapematch(
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
-    def eb34(list1):
-        flat_list = []
-        for i in list1:
-            if isinstance(i, list):
-                for j in eb34(i):
-                    flat_list.append(j)
-            else:
-                flat_list.append(i)
-        return flat_list
-    samples_all = eb34([x._2d_samples for x in squrs_found])
-    print(f"Sample points: {len(samples_all)/2}")
-    #tote_samples [x in i._2d_samples for i in squrs_found]
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+        def eb34(list1):
+            flat_list = []
+            for i in list1:
+                if isinstance(i, list):
+                    for j in eb34(i):
+                        flat_list.append(j)
+                else:
+                    flat_list.append(i)
+            return flat_list
+        samples_all = eb34([x._2d_samples for x in squrs_found])
+        custom_print(f"Sample points: {len(samples_all)/2}")
+        #tote_samples [x in i._2d_samples for i in squrs_found]
 
-    print("total samples: ", len(tote_samples))
-    if dataobject.debug == True:
+        custom_print(f"total samples: {len(tote_samples)}")
+
+
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_2 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
         #img_bbxoes_3 = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
@@ -1028,7 +1032,7 @@ def analyse_candidates_shapematch(
             h = int(np.linalg.norm(c.boundingbox_min[1]-c.boundingbox_min[2]))
             x = c.centre_x_y[0]
             y = c.centre_x_y[1]
-            draw_pattern_output(debug_img, c)
+            img_pro.draw_pattern_output(debug_img, c)
             
             # closest corners
             cv2.circle(debug_img, tuple(c.closest_corners[0]), 3, img_pro.BLUE, 1)
@@ -1038,14 +1042,21 @@ def analyse_candidates_shapematch(
         
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
             crop_img =  debug_img[max(0,y-h):y+h, max(0,x-w):x+w]
-            if len([True for i in crop_img.shape if i == 0]) > 0:
-                plop=1
-                pass
+            # if len([True for i in crop_img.shape if i == 0]) > 0:
+            #     plop=1
+            #     pass
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
-            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
-            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
-            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
+            #dataobject.img_view_or_save_if_debug(out_img1, "squarecode")
+            out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
+            #dataobject.img_view_or_save_if_debug(out_img2, "squarecode")
+
+            stacked_img = np.hstack((
+                out_img1,
+                np.zeros(out_img1.shape, np.uint8),
+                out_img2))
+        
+            dataobject.img_view_or_save_if_debug(stacked_img, "stacked_img")
             #except Exception:
              #   print("error with debug contour outputs")
         # if  len(squrs_found) > 0:

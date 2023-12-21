@@ -55,24 +55,29 @@ def get_platform():
 def get_epoch_timestamp():
     return str(time.time()).replace(".", "_")
 
+def custom_print(comment, debug=False):
+    if debug is False: return
+    print(comment)
+
 @contextmanager
-def time_it(comment) -> Iterator[None]:
+def time_it(comment, debug=False) -> Iterator[None]:
     tic: float = time.perf_counter()
     try:
         yield
     finally:
-        pass
-        toc: float = time.perf_counter()
-        output = f"{comment}:Computation time"
-        time_ = f"{1000*(toc - tic):.3f}ms"
-        if "total" in comment.lower():
-            buff = 65
-        else:
-            buff = 60
-        buffer = ''.join(["="] * (buff-len(output)))
-        shiftbuff = len(str(int((1000*(toc - tic))//1)))
-        buffer = buffer[0:-shiftbuff]
-        print(output + buffer + time_)
+        if debug is True:
+            toc: float = time.perf_counter()
+            output = f"{comment}:Computation time"
+            time_ = f"{1000*(toc - tic):.3f}ms"
+            if "total" in comment.lower():
+                buff = 65
+            else:
+                buff = 60
+            buffer = ''.join(["="] * (buff-len(output)))
+            shiftbuff = len(str(int((1000*(toc - tic))//1)))
+            buffer = buffer[0:-shiftbuff]
+            print(output + buffer + time_)
+
 class TimeDiffObject:
     """stopwatch function"""
     def __init__(self) -> None:

@@ -4,8 +4,6 @@ import time
 from enum import Enum
 from functools import lru_cache
 import cv2
-from contextlib import contextmanager
-from dataclasses import dataclass
 import threading
 import random
 #from queue import Queue
@@ -18,10 +16,12 @@ import img_processing
 from math import floor
 from functools import reduce
 from my_collections import AffinePoints, ShapeItem, CropSlicing
+
+from my_collections import SharedMem_ImgTicket
+
 try:
-    from my_collections import SharedMem_ImgTicket
-    import decode_clothID_v2 as decode_clothID
-except Exception:
+    pass
+except Exception as e:
     # TODO
     print("this must be scambilight - bad solution please fix TODO")
 
@@ -269,7 +269,7 @@ class display(ABC):
             adapt=True)
         for c in graphics:
             c.transform_points(self._affine_transform)
-            decode_clothID.draw_pattern_output(
+            img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)
 

@@ -328,3 +328,29 @@ def rotate_pt_around_origin(point, origin, degrees):
     qx = offset_x + (cos_rad * adjusted_x) + (sin_rad * adjusted_y)
     qy = offset_y + (-sin_rad * adjusted_x) + (cos_rad * adjusted_y)
     return qx, qy
+
+
+def draw_pattern_output(image, patterndetails): # ShapeItem - TODO 
+    """draw graphics for user if a pattern is found
+    TODO: maybe want floating numbers etc above this which
+    will eventually need a user registry"""
+    min_bbox = patterndetails.boundingbox_min
+    cX, cY = patterndetails.centre_x_y
+    closest_corners = patterndetails.closest_corners
+    # corners of square
+    cv2.circle(image, tuple(min_bbox[0]), 3, RED, 1)
+    cv2.circle(image, tuple(min_bbox[2]), 3, RED, 1)
+    cv2.circle(image, tuple(min_bbox[1]), 3, RED, 1)
+    cv2.circle(image, tuple(min_bbox[3]), 3, RED, 1)
+
+
+    # centre of pattern
+    cv2.circle(image, (cX, cY), 5, RED, 1)
+   
+    # bounding box of contour - this does not handle perspective
+    cv2.drawContours(image, [min_bbox], 0, RED)
+
+    #draw barcode sampling lines - for illustration only
+    # may not match exactly with generated sampled lines
+    cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), RED, 1) 
+    cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), RED, 1) 

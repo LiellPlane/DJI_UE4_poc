@@ -6,7 +6,7 @@ import factory
 from functools import partial
 import msgs
 import time
-import decode_clothID_v2 as decode_clothID
+#import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
 import img_processing
 from utils import time_it, get_platform
