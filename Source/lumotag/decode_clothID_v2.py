@@ -75,17 +75,15 @@ class Debug_Images(AutoStrEnum):
 class WorkingData():
     def __init__(
             self,
-            debug=False,
-            debugimgs=r"D:/lumodebug/",
             debugdetails=base_find_lumotag_config) -> None:
 
-        self.debugimgs = debugimgs
-        self.debug = debug
+        #self.debugimgs = debugimgs
+        #self.debug = debug
         self.debug_img_cnt = 0
         self.debug_subfldr = None
         self.debug_details = debugdetails
-        if self.debug is True:
-            DeleteFiles_RecreateFolder(self.debugimgs)
+        if self.debug_details.SAVE_IMAGES_DEBUG is True:
+            DeleteFiles_RecreateFolder(self.debug_details.SAVE_IMAGES_PATH)
         self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
         self.approx_epsilon = 0.02
     @staticmethod
@@ -104,19 +102,19 @@ class WorkingData():
 
     def img_view_or_save_if_debug(self, img, description, resize = True):
         
-        if self.debug is True:
+        if self.debug_details.SAVE_IMAGES_DEBUG is True:
             out_img = img.copy()
             if resize is True:
-                resize_x =  int(img.shape[1]*(1000/img.shape[1]))
-                resize_y =  int(img.shape[0]*(1000/img.shape[1]))
+                resize_x = int(img.shape[1]*(1000/img.shape[1]))
+                resize_y = int(img.shape[0]*(1000/img.shape[1]))
                 out_img = cv2.resize(out_img, (resize_x,resize_y), interpolation = cv2.INTER_AREA)
             if self.debug_subfldr is None:
-                filename = f"{self.debugimgs}\\0{self.debug_img_cnt}_{description}.jpg"
+                filename = f"{self.debug_details.SAVE_IMAGES_PATH}\\0{self.debug_img_cnt}_{description}.jpg"
             else:
-                if not os.path.exists(f"{self.debugimgs}\\{self.debug_subfldr}"):
-                    os.mkdir(f"{self.debugimgs}\\{self.debug_subfldr}")
-                filename = f"{self.debugimgs}\\{self.debug_subfldr}\\0{self.debug_img_cnt}_{description}.jpg"
-            cv2.imwrite(filename,out_img)
+                if not os.path.exists(f"{self.debug_details.SAVE_IMAGES_PATH}\\{self.debug_subfldr}"):
+                    os.mkdir(f"{self.debug_details.SAVE_IMAGES_PATH}\\{self.debug_subfldr}")
+                filename = f"{self.debug_details.SAVE_IMAGES_PATH}\\{self.debug_subfldr}\\0{self.debug_img_cnt}_{description}.jpg"
+            cv2.imwrite(filename, out_img)
             print(f"DEBUG = TRUE: saving debug file to {filename}")
             self.debug_img_cnt += 1
 
@@ -271,7 +269,7 @@ def get_approx_shape_and_bbox(
     
 
     if w/h < 0.1 or w/h > 9:
-        if dataobject.debug is True:
+        if dataobject.debug_details.PRINT_DEBUG is True:
             #img_debug = img.copy()
             #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -479,7 +477,7 @@ def get_approx_shape_and_bbox2(
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.50):
         # try and repair it
         
-        if dataobject.debug is True:
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
             #img_debug = img.copy()
             #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -536,7 +534,7 @@ def get_approx_shape_and_bbox2(
     
 
     if w/h < 0.1 or w/h > 9:
-        if dataobject.debug is True:
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
             #img_debug = img.copy()
             #img_debug = cv2.cvtColor(img_debug, cv2.COLOR_GRAY2BGR)
             #cv2.drawContours(img_debug, [contour, min_bbox], 0, (0,0,255))
@@ -773,7 +771,7 @@ def get_approx_shape_and_bbox2(
 
 
 def debug_save_images(img, contours, text : str, dataobject: WorkingData):
-    if dataobject.debug is True:
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
         img_check_contours = img.copy()
         img_check_contours = np.zeros_like(cv2.cvtColor(img_check_contours, cv2.COLOR_GRAY2RGB))
         for i, cnt in enumerate([i for i in contours]):
@@ -843,7 +841,7 @@ def get_possible_candidates(img, dataobject : WorkingData):
     debug_save_images(img, contours_cirles, Debug_Images.filtered_circularity_contours.value, dataobject)
     custom_print(f"get possible candidates: {len(contours_cirles)} contours postfilter")
 
-    if dataobject.debug is True:
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
         out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
         cv2.drawContours(image=out, contours=contours_cirles, contourIdx=-1, color=(0, 255, 0), thickness=cv2.FILLED, lineType=cv2.LINE_AA)
         dataobject.img_view_or_save_if_debug(out, Debug_Images.macro_candidates.value)
@@ -941,7 +939,7 @@ def analyse_candidates_shapematch(
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
-    if dataobject.debug == True:
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
         def eb34(list1):
             flat_list = []
             for i in list1:
@@ -1044,14 +1042,21 @@ def analyse_candidates_shapematch(
         
             cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
             crop_img =  debug_img[max(0,y-h):y+h, max(0,x-w):x+w]
-            if len([True for i in crop_img.shape if i == 0]) > 0:
-                plop=1
-                pass
+            # if len([True for i in crop_img.shape if i == 0]) > 0:
+            #     plop=1
+            #     pass
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-            out_img = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
-            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
-            out_img = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
-            dataobject.img_view_or_save_if_debug(out_img, "squarecode")
+            out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
+            #dataobject.img_view_or_save_if_debug(out_img1, "squarecode")
+            out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
+            #dataobject.img_view_or_save_if_debug(out_img2, "squarecode")
+
+            stacked_img = np.hstack((
+                out_img1,
+                np.zeros(out_img1.shape, np.uint8),
+                out_img2))
+        
+            dataobject.img_view_or_save_if_debug(stacked_img, "stacked_img")
             #except Exception:
              #   print("error with debug contour outputs")
         # if  len(squrs_found) > 0:

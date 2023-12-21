@@ -25,9 +25,9 @@ class ImageAnalyser_shared_mem():
         self.analysis_output_q = Queue(maxsize=1)
         self.img_crop = slice_details
         self.debug_config = config
-        self.debug_mode = config.SAVE_IMAGES_DEBUG
-        self.debug_img_path = config.SAVE_IMAGES_PATH
-        self.debug_print = config.PRINT_DEBUG
+        #self.debug_mode = config.SAVE_IMAGES_DEBUG
+        #self.debug_img_path = config.SAVE_IMAGES_PATH
+        #self.debug_print = config.PRINT_DEBUG
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -51,8 +51,6 @@ class ImageAnalyser_shared_mem():
             input_shared_mem_index_q,
             analysis_output_q):
         workingdata = decode_clothID.WorkingData(
-            debug=self.debug_mode,
-            debugimgs=self.debug_img_path,
             debugdetails=self.debug_config)
         # workingdata = decode_clothID.WorkingData(
         #     debug=True,
