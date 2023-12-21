@@ -59,7 +59,7 @@ class ShapeItem:
     filtered_contour: np.array
     boundingbox: np.array
     boundingbox_min: np.array
-    boundingbox_ellipse: np.array
+    sample_positions: np.array
     closest_corners: np.array
     sum_int_angles: float
     size: int

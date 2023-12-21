@@ -330,7 +330,7 @@ def rotate_pt_around_origin(point, origin, degrees):
     return qx, qy
 
 
-def draw_pattern_output(image, patterndetails): # ShapeItem - TODO 
+def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO 
     """draw graphics for user if a pattern is found
     TODO: maybe want floating numbers etc above this which
     will eventually need a user registry"""
@@ -352,5 +352,10 @@ def draw_pattern_output(image, patterndetails): # ShapeItem - TODO
 
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
-    cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), RED, 1) 
-    cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), RED, 1) 
+    if debug is False:
+        cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), RED, 1) 
+        cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), RED, 1)
+    else:
+        for pos in patterndetails.sample_positions:
+
+            cv2.circle(image, (pos[0],pos[1]), radius=0, color=RED, thickness=-1)
