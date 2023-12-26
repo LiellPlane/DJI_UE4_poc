@@ -3,8 +3,9 @@
 # run this on raspberry pi in user folder (~/)
 # do not run from within repo so copy the file out into ~/
 sudo apt update
-sudo apt upgrade -y
-sudo rpi-update -y
+sudo apt full-upgrade -y
+#sudo apt upgrade -y
+#sudo rpi-update -y
 sudo apt-get update
 sudo apt-get install python3-numpy -y
 sudo apt-get install python3-opencv -y
@@ -24,7 +25,8 @@ sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/bootstrap.py /boot/bootst
 sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /boot/MY_INFO.txt
 
 # currently this is to modify the HDMI hot plug/safe mode so it actually turns on
-sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/config.txt /boot/config.txt
+# WARNING! This breaks when updating raspberry pi
+#sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/config.txt /boot/config.txt
 
 
 sudo apt install espeak -y
@@ -41,4 +43,7 @@ xset s noblank;
 xset s off;
 xset -dpms
 
- 
+#libcamera-hello -t 0
+#echo "disable legacy support to get cameras working"
+echo turn on hdmi_force_hotplug in /boot/config.txt
+echo /boot/MY_INFO.txt
