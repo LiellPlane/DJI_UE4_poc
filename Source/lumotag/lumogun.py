@@ -193,8 +193,8 @@ def main():
                     )
 
                     # debugging code to capture images
-                    if cap_img is not None:
-                        file_system.save_image(cap_img)
+                    #if cap_img is not None:
+                    file_system.save_image(cap_img)
                         # central_img, _ = img_processing.get_internal_section(
                         #             image_capture.last_img,
                         #             GUN_CONFIGURATION.internal_img_crop)

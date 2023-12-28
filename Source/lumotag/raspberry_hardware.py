@@ -49,7 +49,7 @@ class filesystem(factory.filesystem):
     def save_image(self, img):
         ts = utils.get_epoch_timestamp()
         cv2.imwrite(
-            self.images_folder + ts + ".jpg",
+            self.images_folder + "/" + ts + ".jpg",
             img)
             
 
