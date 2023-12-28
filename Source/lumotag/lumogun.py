@@ -114,8 +114,8 @@ def main():
                 cap_img = next(image_capture)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
-            #with time_it("start analysis"):
-            #    image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
+            with time_it("start analysis"):
+                image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
 
 
             with time_it("check messaging"):
@@ -210,11 +210,10 @@ def main():
                 with time_it("execute affine transform"):
                     img = display.generate_output_affine(cap_img)
 
-                # with time_it("wait for image analysis"):
-                #     graphics, _ = image_analysis.analysis_output_q.get(
-                #         block=True,
-                #         timeout=None)
-                graphics = []
+                with time_it("wait for image analysis"):
+                    graphics, _ = image_analysis.analysis_output_q.get(
+                        block=True,
+                        timeout=None)
                 with time_it("add internal section"):
                     display.add_internal_section_region(img, slice_details)
 
