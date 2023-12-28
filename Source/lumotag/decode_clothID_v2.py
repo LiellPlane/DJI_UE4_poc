@@ -762,13 +762,13 @@ def get_possible_candidates(img, dataobject : WorkingData):
 
     dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
-    with time_it("get possible candidates: find contours"):
+    with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     custom_print(f"get possible candidates: {len(contours)} contours found")
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
 
 
-    with time_it("get possible candidates: filter"):
+    with time_it("get possible candidates: filter", dataobject.debug_details.PRINT_DEBUG):
         # filter by area
         contours_area = []
         hierarchy_area = []
@@ -866,7 +866,7 @@ def analyse_candidates_shapematch(
     #         hierarchy_nochild.append(hier)
 
     # debug_save_images(original_img, contours_nochild, "no_childs", dataobject)
-
+    
     contour_stats = []
     # with time_it("AC: get approx shape"):
     #     for index, c in enumerate(contours):
@@ -876,7 +876,7 @@ def analyse_candidates_shapematch(
     #             dataobject,
     #             index))
 
-    with time_it("AC: get approx shape 2"):
+    with time_it("AC: get approx shape 2", dataobject.debug_details.PRINT_DEBUG):
         bulk_process = get_approx_shape_and_bbox_bulk(
                     contours,
                     dataobject)
@@ -1058,8 +1058,8 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
     #~2ms
-    with time_it("pre-processing: total"):
-        with time_it("grayscale"):
+    with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
+        with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
                 img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
             else:
@@ -1071,9 +1071,9 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         #~3ms for grayscale
     
         #print("equalisation")
-        with time_it("pre-processing: blur"):
+        with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
             #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            img_op = cv2.medianBlur(img_grayscale, 7)
+            img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
 
         # with time_it("pre-processing/filtering: clahe_equalisation"):
@@ -1102,7 +1102,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
 
         #squr_img=edge_img(gray_orig)
-        with time_it("pre-processing: threshold_img"):
+        with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
             #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
             img_op=img_pro.threshold_img(img_op,low=40,high=255)
             # squr_img=img_pro.simple_canny(
@@ -1115,24 +1115,24 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         #print("invert_img")
         #squr_img=invert_img(squr_img)
         #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
-        with time_it("pre-processing: blur again"):
+        with time_it("pre-processing: blur again",dataobject.debug_details.PRINT_DEBUG):
             #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
             img_op = cv2.medianBlur(img_op, 3)
             dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
 
-        with time_it("pre-processing: blur orig for sampler"):
+        with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
             #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
             org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
-    with time_it("get_possible_candidates total"):
+    with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
         contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
     # if len(contours) == 0:
     #     print("no results found for image")
     #     return []
 
-    with time_it("analyse_candidates TOTAL"):
+    with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
         output_contour_data = analyse_candidates_shapematch(
                                                 original_img=inputimg,
                                                 original_blurred_image=org_img_grayscale_blur,
