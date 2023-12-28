@@ -42,7 +42,7 @@ class filesystem(factory.filesystem):
     
 
     def __init__(self) -> None:
-        self.images_folder = "/home/lumotag/debugimages/"
+        self.images_folder = "/home/lumotag/"
         if not os.path.isdir(self.images_folder):
             os.mkdir(self.images_folder)
 
