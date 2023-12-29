@@ -1,0 +1,13 @@
+
+grayscale:Computation time=================================0.011ms
+pre-processing: blur:Computation time=====================20.876ms
+pre-processing: threshold_img:Computation time=============7.503ms
+pre-processing: blur again:Computation time===============12.176ms
+pre-processing: blur orig for sampler:Computation time====20.271ms
+pre-processing: total:Computation time=========================61.958ms
+get possible candidates: find contours:Computation time===14.244ms
+get possible candidates: filter:Computation time==========11.580ms
+get_possible_candidates total:Computation time=================27.400ms
+AC: get approx shape 2:Computation time===================22.679ms
+analyse_candidates TOTAL:Computation time======================23.164ms
+analyse lumotag: total:Computation time=======================113.389ms
