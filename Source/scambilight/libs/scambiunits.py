@@ -443,10 +443,14 @@ def generate_scambis(
         #cv2.circle(prev,tuple(mid_screen),16,(255,0,100),-1)
         if led.edge  not in [Edges.TOP, Edges.LOWER, Edges.LEFT, Edges.RIGHT]:
             raise Exception("edge name " + led.edge + "not valid")
+
         if led.edge  in [Edges.TOP, Edges.LOWER]:
             new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_vert)).astype(int))
+            #new_pos = tuple([new_pos[0], np.asarray(centre_)[1].astype(int)])
         if led.edge  in [Edges.LEFT, Edges.RIGHT]:
             new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_horiz)).astype(int))
+            #new_pos = tuple([np.asarray(centre_)[0].astype(int), new_pos[1]])
+        
         left, right, top, lower = create_rectangle_from_centrepoint(new_pos, edge=regions.sample_area_edge)
         init = ScambiInit(led_positionxy=centre_,
             sample_area_left=left,
