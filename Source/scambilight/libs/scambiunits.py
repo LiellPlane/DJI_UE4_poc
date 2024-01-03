@@ -441,14 +441,29 @@ def generate_scambis(
         mid_screen = (np.array(tuple(reversed(img_shape[:2])))/2).astype(int)[:2]
         vec_to_midscreen = mid_screen-np.asarray(centre_)
         #cv2.circle(prev,tuple(mid_screen),16,(255,0,100),-1)
+        #regions.move_in_vert = -0.4
+        #regions.move_in_horiz = 0.6
         if led.edge  not in [Edges.TOP, Edges.LOWER, Edges.LEFT, Edges.RIGHT]:
             raise Exception("edge name " + led.edge + "not valid")
 
+
+        # we have the rectangular positions (ideal) before warping 
+        # this adjustment allows us to move the positions, but
+        # if we use both X and Y of vector then the positions shrink together, 
+        # we just want them to keep their length but change vertical/horiz positions
+        # so remove the dimension we want to keep static
         if led.edge  in [Edges.TOP, Edges.LOWER]:
-            new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_vert)).astype(int))
+            vec = vec_to_midscreen * regions.move_in_vert
+            vec[0] = 0
+            new_pos =  tuple((np.asarray(centre_) + vec).astype(int))
+            #new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_vert)).astype(int))
+
             #new_pos = tuple([new_pos[0], np.asarray(centre_)[1].astype(int)])
         if led.edge  in [Edges.LEFT, Edges.RIGHT]:
-            new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_horiz)).astype(int))
+            vec = vec_to_midscreen * regions.move_in_horiz
+            vec[1] = 0
+            new_pos =  tuple((np.asarray(centre_) + vec).astype(int))
+            #new_pos = tuple((np.asarray(centre_) + (vec_to_midscreen * regions.move_in_horiz)).astype(int))
             #new_pos = tuple([np.asarray(centre_)[0].astype(int), new_pos[1]])
         
         left, right, top, lower = create_rectangle_from_centrepoint(new_pos, edge=regions.sample_area_edge)
