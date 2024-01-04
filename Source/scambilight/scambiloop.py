@@ -170,15 +170,19 @@ def main(action = None):
         for index, unit in enumerate(scambi_units):
             unit.draw_warped_boundingbox(prev)
             prev = unit.draw_lerp_contour(prev)
-            # for any averaging
-            for i in range(0, 4):
-                unit.set_dom_colour_with_auto_subsample(
-                    prev, cut_off = img_sample_controller.subsample_cut)
+            # grab colour first or averaging gives 
+            # a non useful colour
+            colour = unit.get_dominant_colour_flat(prev, subsample=1)
+            unit.colour = tuple(int(i) for i in colour)
+            # now grab colour as its done in the main loop
+            unit.set_dom_colour_with_auto_subsample(
+                prev, cut_off = img_sample_controller.subsample_cut)
             prev = unit.draw_warped_led_pos(
                 prev,
                 unit.colour,
                 offset=(0, 0),
                 size=10)
+
         upload_img_to_aws(
             prev,
             SCAMILIGHT_API,
@@ -311,9 +315,6 @@ def main(action = None):
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 ImageViewer_Quick_no_resize(display_img,0,False,False)
     
-
-
-
             # put this here incase we can grab an image if everyhthing is messed up
             scambiunits_led_info = []
             with time_it_sparse(f"get {len(scambi_units)} colours"):

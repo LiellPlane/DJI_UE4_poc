@@ -252,6 +252,7 @@ def resize_centre_img(inputimage, screensize):
 
 def add_cross_hair(image, adapt):
     thick = 3
+    vis_block = 30
     midx = image.shape[0] // 2
     midy = image.shape[1] // 2
     # TODO another potential lag point
@@ -260,12 +261,17 @@ def add_cross_hair(image, adapt):
             image[midx-50:midx+50:4, midy-50:midy+50:4, :].mean())
     else:
         col = 255
-    image[midx-thick : midx+thick,:,:] = 0 
-    image[midx-thick : midx+thick,:,1] = max(col, 50)
-    image[:, midy-thick : midy+thick ,:] = 0 
-    image[:, midy-thick : midy+thick ,1] = max(col, 50)
 
+    image[midx - thick : midx + thick, 0:midy-vis_block, 2] = 0
+    image[midx - thick : midx + thick, 0:midy-vis_block, 1] = max(col, 50)
+    image[midx - thick : midx + thick, midy+vis_block:-1, 2] = 0
+    image[midx - thick : midx + thick, midy+vis_block:-1, 1] = max(col, 50)
 
+    image[0:midx-vis_block, midy - thick : midy + thick, 2] = 0
+    image[0:midx-vis_block, midy - thick : midy + thick, 1] = max(col, 50)
+    image[midx+vis_block:-1, midy - thick : midy + thick, 2] = 0
+    image[midx+vis_block:-1, midy - thick : midy + thick, 1] = max(col, 50)
+ 
 def get_internal_section(imgshape, size: tuple[int, int]):
     midx = imgshape[0] // 2
     midy = imgshape[1] // 2
