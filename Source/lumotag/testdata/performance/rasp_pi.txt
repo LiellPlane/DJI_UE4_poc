@@ -1,4 +1,7 @@
 
+*with 2A power source,3.7v-5v converter
+
+
 grayscale:Computation time=================================0.011ms
 pre-processing: blur:Computation time=====================20.876ms
 pre-processing: threshold_img:Computation time=============7.503ms
@@ -11,3 +14,5 @@ get_possible_candidates total:Computation time=================27.400ms
 AC: get approx shape 2:Computation time===================22.679ms
 analyse_candidates TOTAL:Computation time======================23.164ms
 analyse lumotag: total:Computation time=======================113.389ms
+
+*with 5A official power adapter

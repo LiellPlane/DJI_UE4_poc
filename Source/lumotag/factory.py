@@ -4,6 +4,7 @@ import time
 from enum import Enum
 from functools import lru_cache
 import cv2
+import os
 import threading
 import random
 #from queue import Queue
@@ -978,7 +979,38 @@ class SharedMemory():
             # except FileExistsError:
             #     print(f"Warning: shared memory {my_id} has not been cleaned up")
 
+class ImageLibrary(ImageGenerator):
+    
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        #imgfoler = r"D:\OutputImages"
+        self.images = jpgs_in_folder(imgfoler)
+        #self.images = [i for i in self.images if "0290" in i]#0290
+        self.images = [i for i in self.images if "1704456110_7327957" in i]
+        self.res = res
+        if len(self.images) < 1:
+            raise Exception("could not find images in folder")
 
+
+    def get_image(self):
+        img_to_load = random.choice(self.images)
+        
+        img = cv2.imread(img_to_load)
+        print(f"img {img_to_load}")
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        #img = cv2.resize(img, tuple(self.res[0:2]))
+        self.blank_image[:] = img
+        return self.blank_image
+
+def jpgs_in_folder(directory):
+    allFiles = []
+    for root, dirs, files in os.walk(directory):
+        for name in files:
+            if name[-4:len(name)] == '.jpg':
+                allFiles.append(os.path.join(root, name))
+    return allFiles
 
 class VoiceBase(ABC):
 

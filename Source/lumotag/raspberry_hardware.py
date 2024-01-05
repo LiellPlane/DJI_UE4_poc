@@ -303,7 +303,9 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         #   DO NOT MODIFY
         #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
         # return self.picam2.capture_array("main")[0: x, 0: y] VVVV MUST BE THE SAME!!
+        # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
         return self.picam2.capture_array("main")[0: x, 0: y] # DO not change!!
+        # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
         # comes in at shape = (1080, 2020)
         # return self.picam2.capture_array("main")[0: x, 0: y] ^^^ MUST BE THE SAME
         #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
@@ -319,9 +321,9 @@ class CSI_Camera_Async(factory.Camera_async):
     
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_HQ)
+            super().__init__(video_modes, factory.ImageLibrary)#CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS)
+            super().__init__(video_modes, factory.ImageLibrary)#CsiCameraImageGen_GS)
         else:
             raise Exception("no match for video mode input")
 
