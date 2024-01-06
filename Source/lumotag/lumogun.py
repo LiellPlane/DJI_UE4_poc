@@ -23,8 +23,8 @@ if PLATFORM == [_OS.WINDOWS]:
     import sound as sound
 elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
-    import fake_raspberry_hardware as lumogun
-    import sound_fake as sound
+    import raspberry_hardware as lumogun
+    import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
     import fake_raspberry_hardware as lumogun
@@ -48,15 +48,15 @@ def main():
     # initialise components of lumogun
     voice = sound.Voice()
 
-    # if get_platform() == _OS.RASPBERRY:
-    #     for _ in range(0, 2):
-    #         voice.speak("cancel")
-    #         results_trig_positions = (triggers.test_states())
-    #         if any([True for i in results_trig_positions.values() if i is True]):
-    #             voice.speak("bye")
-    #             time.sleep(3)
-    #             raise Exception("Trigger detected on boot-up - exit app")
-    #         time.sleep(2)
+    if get_platform() == _OS.RASPBERRY:
+        for _ in range(0, 2):
+            voice.speak("cancel")
+            results_trig_positions = (triggers.test_states())
+            if any([True for i in results_trig_positions.values() if i is True]):
+                voice.speak("bye")
+                time.sleep(3)
+                raise Exception("Trigger detected on boot-up - exit app")
+            time.sleep(2)
 
     voice.speak(f"{GUN_CONFIGURATION.model}")
     relay = lumogun.Relay(GUN_CONFIGURATION)
