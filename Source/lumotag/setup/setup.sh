@@ -2,6 +2,13 @@
 #!/bin/bash
 # run this on raspberry pi in user folder (~/)
 # do not run from within repo so copy the file out into ~/
+
+# for raspberry pi 5
+sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
+sudo apt remove python3-rpi.gpio
+pip3 install rpi-lgpio
+# end raspberry pi 5 
+
 sudo apt update
 sudo apt full-upgrade -y
 #sudo apt upgrade -y
@@ -38,10 +45,10 @@ pip install imutils
 sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
 
 # these instructions for stopping the screen blanking might be temporary only
-export DISPLAY=:0;
-xset s noblank;
-xset s off;
-xset -dpms
+#export DISPLAY=:0;
+#xset s noblank;
+#xset s off;
+#xset -dpms
 
 #libcamera-hello -t 0
 #echo "disable legacy support to get cameras working"
