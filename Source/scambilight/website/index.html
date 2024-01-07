@@ -2,14 +2,14 @@
 <b>Instructions:</b><br><br>
 
 <i>Type password in text field</i><br>
-<i>Click corners of screen: WARNING! Scroll-bars in browsers adds offsets!!</i><br>
-<i>Click FINISH to finish calibration. Device needs to be reset after</i><br><br>
-<b>WARNING: password transmission not secure in HTTP!! </b><br>
+<i>Click corners of rectangular corrected image, ensure scroll bars haven't added offset!</i><br>
+<i>Click SUBMIT to finish calibration. Device needs to be reset after</i><br><br>
+<b>Password is transmitted in https api call </b><br>
 <i>to crash device - click in same place to create singular matrix</i><br>
 <i>then SSH and debug issue</i><br><br><br><br>
 <form action="/action_page.php"><input type="text" id="lname" name="password" placeholder="type pass here" > </form>
 <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
-<img class="image" id="perp_image" width="1296" height="972" src="perp_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="perp_image" src="perp_image.jpg?" + new Date().getTime()><br>
 <img class="image" id="raw_image" width="1296" height="972" src="raw_image.jpg?" + new Date().getTime()><br>
 <img class="image" id="overlay_image" src="overlay_image.jpg?" + new Date().getTime()><br>
 <button style="height:30;width:300" onclick="finish();">SUBMIT CORNER CLICKS</button><br>
