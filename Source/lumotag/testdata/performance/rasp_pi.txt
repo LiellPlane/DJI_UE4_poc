@@ -1,7 +1,10 @@
 
+with image 1704456110_7327957
+
+
 *with 2A power source,3.7v-5v converter
 
-with image 1704456110_7327957
+
 
 grayscale:Computation time=================================0.009ms
 pre-processing: blur:Computation time=====================19.513ms
@@ -18,3 +21,39 @@ analyse lumotag: total:Computation time========================99.368ms
 
 
 *with 5A official power adapter
+
+grayscale:Computation time=================================0.009ms
+pre-processing: blur:Computation time=====================18.186ms
+pre-processing: threshold_img:Computation time=============7.543ms
+pre-processing: blur again:Computation time===============12.352ms
+pre-processing: blur orig for sampler:Computation time====17.694ms
+pre-processing: total:Computation time=========================56.706ms
+get possible candidates: find contours:Computation time===16.520ms
+get possible candidates: filter:Computation time==========12.084ms
+get_possible_candidates total:Computation time=================30.064ms
+AC: get approx shape 2:Computation time===================11.163ms
+analyse_candidates TOTAL:Computation time======================11.426ms
+analyse lumotag: total:Computation time========================98.739ms
+
+diagnosis: 2A is fine for raspberry pi 4
+only option is to upgrade to raspberry pi 5
+
+
+RASPBERRY PI 5
+5A powwer supply
+new analysis
+grayscale:Computation time=================================0.015ms
+pre-processing: blur:Computation time======================2.076ms
+pre-processing: threshold_img:Computation time=============2.046ms
+pre-processing: blur again:Computation time================0.284ms
+pre-processing: blur orig for sampler:Computation time=====1.785ms
+pre-processing: total:Computation time==========================7.273ms
+img /home/lumotag/DJI_UE4_poc/Source/lumotag/testdata/wearable/1704456110_7327957.jpg
+get possible candidates: find contours:Computation time===15.047ms
+get possible candidates: filter:Computation time===========2.551ms
+get_possible_candidates total:Computation time=================18.240ms
+AC: get approx shape 2:Computation time===================10.636ms
+analyse_candidates TOTAL:Computation time======================10.943ms
+analyse lumotag: total:Computation time========================37.397ms
+
+need to test with 2A
