@@ -757,14 +757,14 @@ def get_possible_candidates(img, dataobject : WorkingData):
     on edge of image being classed as external), will filter contours for circularity"""
     # https://docs.opencv.org/4.x/d9/d8b/tutorial_py_contours_hierarchy.html
 
-    smallest_area = (img.shape[0]*0.01) *  (img.shape[1]*0.01)
+    smallest_area = max((img.shape[0]*0.01) *  (img.shape[1]*0.01), 100)
     largest_area = (img.shape[0]*0.9) *  (img.shape[1]*0.9)
 
     dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
     with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
         contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    custom_print(f"get possible candidates: {len(contours)} contours found")
+    custom_print(f"get possible candidates: {len(contours)} contours found", dataobject.debug_details.PRINT_DEBUG)
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
 
 
@@ -798,13 +798,13 @@ def get_possible_candidates(img, dataobject : WorkingData):
             if perimeter == 0:
                 break
             circularity = 4*math.pi*(area/(perimeter*perimeter))
-            if circularity > 0.2:
+            if circularity > 0.5:
                 contours_cirles.append(con)
                 hierarchy_cirles.append(hier)
         if len(contours_cirles) != len(hierarchy_cirles):
             raise Exception("bad unzip - use python 3.10 for strict=true")
     debug_save_images(img, contours_cirles, Debug_Images.filtered_circularity_contours.value, dataobject)
-    custom_print(f"get possible candidates: {len(contours_cirles)} contours postfilter")
+    custom_print(f"get possible candidates: {len(contours_cirles)} contours postfilter", dataobject.debug_details.PRINT_DEBUG)
 
     if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
         out = np.zeros_like(cv2.cvtColor(img, cv2.COLOR_GRAY2RGB))
@@ -876,11 +876,12 @@ def analyse_candidates_shapematch(
     #             dataobject,
     #             index))
 
-    with time_it("AC: get approx shape 2", dataobject.debug_details.PRINT_DEBUG):
+    with time_it("AC: check barcode bulk", dataobject.debug_details.PRINT_DEBUG):
         bulk_process = get_approx_shape_and_bbox_bulk(
                     contours,
                     dataobject)
 
+    with time_it("AC: check barcode final", dataobject.debug_details.PRINT_DEBUG):
         for index, c in enumerate(contours):
             contour_stats.append(get_approx_shape_and_bbox2(
                 original_img,
@@ -904,7 +905,7 @@ def analyse_candidates_shapematch(
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
 
-    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+    if dataobject.debug_details.SAVE_IMAGES_DEBUG is True or dataobject.debug_details.PRINT_DEBUG is True:
         def eb34(list1):
             flat_list = []
             for i in list1:
@@ -915,10 +916,10 @@ def analyse_candidates_shapematch(
                     flat_list.append(i)
             return flat_list
         samples_all = eb34([x._2d_samples for x in squrs_found])
-        custom_print(f"Sample points: {len(samples_all)/2}")
+        custom_print(f"Sample points: {len(samples_all)/2}", dataobject.debug_details.PRINT_DEBUG)
         #tote_samples [x in i._2d_samples for i in squrs_found]
 
-        custom_print(f"total samples: {len(tote_samples)}")
+        custom_print(f"total samples: {len(tote_samples)}", dataobject.debug_details.PRINT_DEBUG)
 
 
         #img_bbxoes = cv2.cvtColor(original_img,cv2.COLOR_GRAY2BGR)
