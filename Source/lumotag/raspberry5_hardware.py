@@ -8,7 +8,8 @@ import numpy as np
 import enum
 import functools
 # for finding pinout, type pinout in terminal
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO # raspberry pi 4 GPIO
+import gpiod # raspberry pi 5 GPIO
 import time
 import factory
 import rabbit_mq

@@ -23,7 +23,7 @@ if PLATFORM == [_OS.WINDOWS]:
     import sound as sound
 elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
-    import raspberry_hardware as lumogun
+    import raspberry5_hardware as lumogun
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")

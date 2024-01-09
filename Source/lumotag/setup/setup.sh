@@ -3,11 +3,13 @@
 # run this on raspberry pi in user folder (~/)
 # do not run from within repo so copy the file out into ~/
 
-# for raspberry pi 5
+###### for raspberry pi 5 ######
+# this is to stop it complaining about not using env manager
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-sudo apt remove python3-rpi.gpio
-pip3 install rpi-lgpio
-# end raspberry pi 5 
+#sudo apt remove python3-rpi.gpio
+#pip3 install rpi-lgpio
+#sudo apt install python3-gpiozero
+###### END raspberry pi 5 ######
 
 sudo apt update
 sudo apt full-upgrade -y
