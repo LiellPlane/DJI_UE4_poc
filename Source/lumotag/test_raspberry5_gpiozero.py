@@ -1,3 +1,5 @@
+# works fine! tgested on raspberry pi 5 no problemos
+
 #https://gpiozero.readthedocs.io/en/latest/recipes.html
 # sudo apt install python-gpiozero
 import gpiozero
