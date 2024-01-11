@@ -98,7 +98,7 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["laser"])
 
-    set_trigger= partial(
+    set_trigger = partial(
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
     
