@@ -41,19 +41,49 @@ only option is to upgrade to raspberry pi 5
 
 RASPBERRY PI 5
 5A powwer supply
-new analysis
-grayscale:Computation time=================================0.015ms
-pre-processing: blur:Computation time======================2.076ms
-pre-processing: threshold_img:Computation time=============2.046ms
-pre-processing: blur again:Computation time================0.284ms
-pre-processing: blur orig for sampler:Computation time=====1.785ms
-pre-processing: total:Computation time==========================7.273ms
-img /home/lumotag/DJI_UE4_poc/Source/lumotag/testdata/wearable/1704456110_7327957.jpg
-get possible candidates: find contours:Computation time===15.047ms
-get possible candidates: filter:Computation time===========2.551ms
-get_possible_candidates total:Computation time=================18.240ms
-AC: get approx shape 2:Computation time===================10.636ms
-analyse_candidates TOTAL:Computation time======================10.943ms
-analyse lumotag: total:Computation time========================37.397ms
+no camera attached, no display attached
 
-need to test with 2A
+
+new analysis
+grayscale:Computation time=================================0.004ms
+pre-processing: blur:Computation time======================1.408ms
+pre-processing: threshold_img:Computation time=============1.609ms
+pre-processing: blur again:Computation time================0.230ms
+pre-processing: blur orig for sampler:Computation time=====1.368ms
+pre-processing: total:Computation time==========================4.871ms
+get possible candidates: find contours:Computation time====6.156ms
+get possible candidates: 2029 contours found
+get possible candidates: filter:Computation time===========2.247ms
+get possible candidates: 9 contours postfilter
+get_possible_candidates total:Computation time==================8.947ms
+AC: check barcode bulk:Computation time====================0.446ms
+AC: check barcode final:Computation time===================0.434ms
+Sample points: 19.0
+total samples: 0
+img /home/lumotag/DJI_UE4_poc/Source/lumotag/testdata/highviz/1704404023_3112135.jpg
+analyse_candidates TOTAL:Computation time=======================8.677ms
+analyse lumotag: total:Computation time========================22.796ms
+
+RASPBERRY PI 5
+2A power supply
+no camera attached, no display attached
+
+new analysis
+grayscale:Computation time=================================0.004ms
+pre-processing: blur:Computation time======================1.844ms
+pre-processing: threshold_img:Computation time=============1.337ms
+pre-processing: blur again:Computation time================0.290ms
+pre-processing: blur orig for sampler:Computation time=====1.447ms
+pre-processing: total:Computation time==========================5.340ms
+get possible candidates: find contours:Computation time====6.093ms
+get possible candidates: 2029 contours found
+get possible candidates: filter:Computation time===========2.681ms
+get possible candidates: 9 contours postfilter
+get_possible_candidates total:Computation time=================10.712ms
+img /home/lumotag/DJI_UE4_poc/Source/lumotag/testdata/highviz/1704404023_3112135.jpg
+AC: check barcode bulk:Computation time====================1.526ms
+AC: check barcode final:Computation time===================2.400ms
+Sample points: 19.0
+total samples: 0
+analyse_candidates TOTAL:Computation time=======================6.135ms
+analyse lumotag: total:Computation time========================23.880ms
