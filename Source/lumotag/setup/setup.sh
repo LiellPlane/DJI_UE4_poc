@@ -1,15 +1,9 @@
 
 #!/bin/bash
 # run this on raspberry pi in user folder (~/)
+# maybe use sudo bash -c  if any permission problems
 # do not run from within repo so copy the file out into ~/
 
-###### for raspberry pi 5 ######
-# this is to stop it complaining about not using env manager
-#sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-#sudo apt remove python3-rpi.gpio
-#pip3 install rpi-lgpio
-#sudo apt install python3-gpiozero
-###### END raspberry pi 5 ######
 
 sudo apt update
 sudo apt full-upgrade -y
@@ -62,7 +56,8 @@ sudo apt-get install imutils
 #pip install imutils
 
 # this is for autostart- works for raspberry pi 4 only!
-#sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
+sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
+#sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
 
 # these instructions for stopping the screen blanking might be temporary only
 #export DISPLAY=:0;
