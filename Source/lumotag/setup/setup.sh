@@ -25,7 +25,7 @@ sudo apt-get install python3-opencv -y
 # fukkin bullshit fuk you I won't use an env manager
 # if I don't need one you cunts, stop disabling this, shove your shitty
 # externally managed error up your arse
-#sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
+sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 sudo pip3 install adafruit-circuitpython-lis3dh
 #sudo apt-get install adafruit-circuitpython-lis3dh
 #sudo pip3 install adafruit-circuitpython-neopixel
@@ -47,6 +47,7 @@ sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /boot/MY_INFO
 
 
 sudo apt install espeak -y
+sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 pip install pyttsx3
 
 
@@ -54,7 +55,6 @@ pip install pyttsx3
 # hey lets make everything more complicated for zero
 # added value, idiots
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-# 
 python3 -m pip install pika
 #-----------------------------
 

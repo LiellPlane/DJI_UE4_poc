@@ -3,12 +3,7 @@
 
 import factory
 from functools import partial
-import msgs
-import time
 from utils import time_it, get_platform
-from my_collections import _OS
-# need this import to detect lumogun types (subclasses)
-import configs
 
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 PLATFORM = get_platform()
@@ -16,7 +11,6 @@ PLATFORM = get_platform()
 
 print("raspberry presence detected, loading hardware libraries")
 import raspberry5_hardware as lumogun
-import sound as sound
 
 
 # load config depending on if simulated, or if on hardware,
