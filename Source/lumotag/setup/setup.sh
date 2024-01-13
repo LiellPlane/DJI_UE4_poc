@@ -26,9 +26,9 @@ sudo apt-get install python3-opencv -y
 # if I don't need one you cunts, stop disabling this, shove your shitty
 # externally managed error up your arse
 #sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-#sudo pip3 install adafruit-circuitpython-lis3dh
-sudo apt-get install adafruit-circuitpython-lis3dh
-
+sudo pip3 install adafruit-circuitpython-lis3dh
+#sudo apt-get install adafruit-circuitpython-lis3dh
+#sudo pip3 install adafruit-circuitpython-neopixel
 
 sudo apt-get install git
 sudo apt-get install python3-skimage -y
@@ -47,8 +47,7 @@ sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /boot/MY_INFO
 
 
 sudo apt install espeak -y
-sudo apt-get install pyttsx3
-#pip install pyttsx3
+pip install pyttsx3
 
 
 # rabbit MQ - seem to need this disabled again because 
@@ -56,8 +55,7 @@ sudo apt-get install pyttsx3
 # added value, idiots
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 # 
-#python3 -m pip install pika
-sudo apt-get install python-pika
+python3 -m pip install pika
 #-----------------------------
 
 sudo apt-get install imutils

@@ -37,7 +37,7 @@ class Relay(factory.Relay):
         super().__init__(_gun_config)
         self.relays = {}
         for relay, gpio in self.gun_config.RELAY_IO.items():
-            self.IO[relay] = gpiozero.OutputDevice(
+            self.relays[relay] = gpiozero.OutputDevice(
                 f"BCM{gpio}",
                 active_high=True,
                 initial_value=False)
@@ -59,11 +59,11 @@ class Relay(factory.Relay):
         #  GPIO.setup(port_or_pin, GPIO.OUT)
         debounce_on = functools.partial(
                     debouncer.trigger,
-                    self.IO[relaypos].on)
+                    self.relays[relaypos].on)
 
         debounce_off = functools.partial(
                     debouncer.trigger,
-                    self.IO[relaypos].off)
+                    self.relays[relaypos].off)
 
         if (strobe_cnt == 0) or (state is False):
             if state:
