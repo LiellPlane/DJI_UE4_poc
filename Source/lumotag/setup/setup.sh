@@ -5,7 +5,7 @@
 
 ###### for raspberry pi 5 ######
 # this is to stop it complaining about not using env manager
-sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
+#sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 #sudo apt remove python3-rpi.gpio
 #pip3 install rpi-lgpio
 #sudo apt install python3-gpiozero
@@ -21,7 +21,15 @@ sudo apt-get install python3-opencv -y
 sudo apt install ffmpeg -y
 sudo apt-get install build-essential cmake pkg-config libjpeg-dev libtiff5-dev libjasper-dev libpng-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libfontconfig1-dev libcairo2-dev libgdk-pixbuf2.0-dev libpango1.0-dev libgtk2.0-dev libgtk-3-dev libatlas-base-dev gfortran libhdf5-dev libhdf5-serial-dev libhdf5-103 python3-pyqt5 python3-dev -y
 sudo apt-get install python3-opencv -y
-sudo pip3 install adafruit-circuitpython-lis3dh
+
+# fukkin bullshit fuk you I won't use an env manager
+# if I don't need one you cunts, stop disabling this, shove your shitty
+# externally managed error up your arse
+#sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
+#sudo pip3 install adafruit-circuitpython-lis3dh
+sudo apt-get install adafruit-circuitpython-lis3dh
+
+
 sudo apt-get install git
 sudo apt-get install python3-skimage -y
 
@@ -39,12 +47,24 @@ sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /boot/MY_INFO
 
 
 sudo apt install espeak -y
-pip install pyttsx3
-python3 -m pip install pika
-pip install imutils
+sudo apt-get install pyttsx3
+#pip install pyttsx3
+
+
+# rabbit MQ - seem to need this disabled again because 
+# hey lets make everything more complicated for zero
+# added value, idiots
+sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
+# 
+#python3 -m pip install pika
+sudo apt-get install python-pika
+#-----------------------------
+
+sudo apt-get install imutils
+#pip install imutils
 
 # this is for autostart- works for raspberry pi 4 only!
-sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
+#sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
 
 # these instructions for stopping the screen blanking might be temporary only
 #export DISPLAY=:0;
