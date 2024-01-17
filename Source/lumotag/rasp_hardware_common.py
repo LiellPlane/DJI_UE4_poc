@@ -239,9 +239,9 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
     
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:
-            super().__init__(video_modes, factory.ImageLibrary)
+            super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, factory.ImageLibrary)
+            super().__init__(video_modes, CsiCameraImageGen_GS)
         else:
             raise Exception("no match for video mode input")
 
