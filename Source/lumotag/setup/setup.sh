@@ -74,5 +74,9 @@ sudo echo '1 = python3 /boot/bootstrap.py' >>  ~/.config/wayfire.ini
 
 #libcamera-hello -t 0
 #echo "disable legacy support to get cameras working"
-echo turn on hdmi_force_hotplug in /boot/config.txt
+
+# raspberry pi 4
+#echo turn on hdmi_force_hotplug in /boot/config.txt
+
+
 echo /boot/MY_INFO.txt
