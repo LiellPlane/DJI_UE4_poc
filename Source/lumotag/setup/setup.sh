@@ -56,7 +56,14 @@ sudo apt-get install imutils
 #pip install imutils
 
 # this is for autostart- works for raspberry pi 4 only!
-sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
+#sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
+
+# raspberry pi 5 only!!
+sudo echo '[autostart]' >>  ~/.config/wayfire.ini
+sudo echo '1 = python3 /boot/bootstrap.py' >>  ~/.config/wayfire.ini
+
+
+
 #sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
 
 # these instructions for stopping the screen blanking might be temporary only
