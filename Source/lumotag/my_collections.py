@@ -133,6 +133,13 @@ class ShapeItem:
             np.matmul(concat_affine, extra_element)
             self.centre_x_y = list(np.matmul(concat_affine, extra_element)[0:2].astype(np.int64))
 
+        if self.closest_corners is not None:
+            output = np.array(self.closest_corners)
+            # add column of 1s
+            output = np.hstack((output, np.ones((4,1))))
+            output = np.matmul(concat_affine, output.transpose())[0:2]
+            self.closest_corners = list(output[0:2].transpose().astype(np.int64))
+
 @dataclass
 class ImagingMode():
     camera_model: str

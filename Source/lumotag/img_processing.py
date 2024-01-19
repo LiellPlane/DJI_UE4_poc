@@ -359,8 +359,8 @@ def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
     if debug is False:
-        cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), RED, 1) 
-        cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), RED, 1)
+        cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), BLUE, 1) 
+        cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), BLUE, 1)
     else:
         for pos in patterndetails.sample_positions:
 
