@@ -23,12 +23,12 @@ def get_lumofind_config(platform):
         return base_find_lumotag_config(
             SAVE_IMAGES_DEBUG=False,
             SAVE_IMAGES_PATH=r"D:/lumodebug/",
-            PRINT_DEBUG=True)
+            PRINT_DEBUG=False)
     elif platform == _OS.MAC_OS:
         return base_find_lumotag_config(
             SAVE_IMAGES_DEBUG=False,
             SAVE_IMAGES_PATH=r"/Users/liell_p/lumodebug/",
-            PRINT_DEBUG=True)
+            PRINT_DEBUG=False)
     else:
         raise Exception(f"Platform {platform} not supported")
 
@@ -136,8 +136,8 @@ class stryker_config(gun_config):
         return((500,500))
 
     @property
-    def img_shrink_pc(self):
-        return 0.25
+    def img_subsmple_factor(self):
+        return 2
 
     @property
     def opencv_window_pos(self):
@@ -198,8 +198,8 @@ class TZAR_config(gun_config):
         return((500,500))
 
     @property
-    def img_shrink_pc(self):
-        return 0.25
+    def img_subsmple_factor(self):
+        return 4
 
     @property
     def opencv_window_pos(self):
@@ -256,8 +256,8 @@ class simitzar_config(gun_config):
         return((500,600))
 
     @property
-    def img_shrink_pc(self):
-        return 0.25
+    def img_subsmple_factor(self):
+        return 4
 
     @property
     def opencv_window_pos(self):

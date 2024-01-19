@@ -87,6 +87,17 @@ class ShapeItem:
             self.centre_x_y[0] += offset[0]
             self.centre_x_y[1] += offset[1]
 
+    def add_resize_offset(self, offset: int):
+        """mutating function is used when a subsampled image has
+        been used, and we want to print graphics on original size"""
+        if self.approx_contour is not None:
+            self.approx_contour *= offset
+        if self.boundingbox_min is not None:
+            self.boundingbox_min *= offset
+        if self.centre_x_y is not None:
+            self.centre_x_y[0] *= offset
+            self.centre_x_y[1] *= offset
+
     def transform_points(self, affine_transform):
         """Transform points to fit transformed video feedback
         https://stackoverflow.com/questions/53569897/affine-transformation-in-image-processing

@@ -91,11 +91,13 @@ class ImageAnalyser_shared_mem():
                             self.img_crop.left:self.img_crop.right]
 
                 if self.img_shrink_factor is not None:
-                    dim = (
-                        int(img_buff.shape[0] * self.img_shrink_factor),
-                        int(img_buff.shape[0] * self.img_shrink_factor)
-                        )
+                    # keep this handy incase we want more flexible resizing
+                    # dim = (
+                    #     int(img_buff.shape[0] * self.img_shrink_factor),
+                    #     int(img_buff.shape[0] * self.img_shrink_factor)
+                    #     )
                     #img_buff = resize(img_buff.copy(), dim, interpolation=INTER_NEAREST)
+                    # might not be optimal putting this here rather than when grabbing the array
                     img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
 
@@ -103,11 +105,11 @@ class ImageAnalyser_shared_mem():
                     img_buff, workingdata)
             #with time_it("analyse lumotag: prepare graphics"):
                 for contour in contour_data:
-                    # TODO check xy orientation correct
+                    if self.img_shrink_factor is not None:
+                        contour.add_resize_offset(self.img_shrink_factor)
                     if self.img_crop is not None:
                         contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
-                    else:
-                        contour_data = []
+
                 # correct contour data here? not sure if correct place
                 
             #print("ANALOL waiting to put response")

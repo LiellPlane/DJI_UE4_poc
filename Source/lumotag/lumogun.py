@@ -76,14 +76,14 @@ def main():
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture.get_mem_buffers(),
         slice_details=None,
-        img_shrink_factor=GUN_CONFIGURATION.img_shrink_pc,
+        img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
 
-    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture.get_mem_buffers(),
-        slice_details=slice_details,
-        img_shrink_factor=GUN_CONFIGURATION.img_shrink_pc,
-        config=configs.get_lumofind_config(PLATFORM)))
+    # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+    #     sharedmem_buffs=image_capture.get_mem_buffers(),
+    #     slice_details=slice_details,
+    #     img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
+    #     config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
     voice.speak("cam")
@@ -228,7 +228,7 @@ def main():
                 with time_it("wait for image analysis"):
                     analysis = []
                     for img_analyser in image_analysis:
-                        analysis.append(img_analyser.analysis_output_q.get(
+                        analysis.extend(img_analyser.analysis_output_q.get(
                             block=True,
                             timeout=None))
                 #graphics = []
@@ -236,7 +236,7 @@ def main():
                     display.add_internal_section_region(img, slice_details)
 
                 with time_it("add graphics and display image"):
-                    display.display_output_with_graphics(img, analysis[2])
+                    display.display_output_with_graphics(img, analysis)
 
     raise RuntimeError("something broke out of loop")
 
