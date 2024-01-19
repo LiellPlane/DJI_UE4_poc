@@ -136,6 +136,10 @@ class stryker_config(gun_config):
         return((500,500))
 
     @property
+    def img_shrink_pc(self):
+        return 0.25
+
+    @property
     def opencv_window_pos(self):
         return(0, 0)
 
@@ -194,6 +198,10 @@ class TZAR_config(gun_config):
         return((500,500))
 
     @property
+    def img_shrink_pc(self):
+        return 0.25
+
+    @property
     def opencv_window_pos(self):
         return(640, 0)
 
@@ -246,6 +254,10 @@ class simitzar_config(gun_config):
     @property
     def internal_img_crop(self):
         return((500,600))
+
+    @property
+    def img_shrink_pc(self):
+        return 0.25
 
     @property
     def opencv_window_pos(self):

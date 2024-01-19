@@ -96,7 +96,10 @@ class gun_config(ABC):
     @abstractmethod
     def loop_wait(self):
         ...
-
+    @property
+    @abstractmethod
+    def img_shrink_pc(self):
+        ...
     # UNIQUEFIRE T65 IR light has 3 modes
     # need to cycle through them each time
     @abstractmethod
@@ -273,7 +276,7 @@ class display(ABC):
             img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)
-
+        
         self.display_method(output)
  
 
@@ -987,8 +990,8 @@ class ImageLibrary(ImageGenerator):
         #imgfoler = r"D:\OutputImages"
         self.images = jpgs_in_folder(imgfoler)
         #self.images = [i for i in self.images if "0290" in i]#0290
-        self.images = [i for i in self.images if "1704404023_3112135" in i] # testing standard
-        #self.images = [i for i in self.images if "wearable" in i]
+        #self.images = [i for i in self.images if "1704404023_3112135" in i] # testing standard
+        self.images = [i for i in self.images if "wearable" in i]
         self.res = res
         if len(self.images) < 1:
             raise Exception("could not find images in folder")

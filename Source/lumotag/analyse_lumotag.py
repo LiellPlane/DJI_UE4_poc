@@ -7,9 +7,12 @@ from functools import reduce
 from utils import time_it
 import time
 import random
-from my_collections import SharedMem_ImgTicket, CropSlicing
-import configs
+from my_collections import (
+    SharedMem_ImgTicket,
+    CropSlicing)
 
+import configs
+from cv2 import resize, INTER_NEAREST
 
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
@@ -18,12 +21,14 @@ class ImageAnalyser_shared_mem():
             self,
             sharedmem_buffs: dict,
             slice_details: CropSlicing,
+            img_shrink_factor: int,
             config: configs.base_find_lumotag_config) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
         self.img_crop = slice_details
+        self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
         #self.debug_mode = config.SAVE_IMAGES_DEBUG
         #self.debug_img_path = config.SAVE_IMAGES_PATH
@@ -80,10 +85,18 @@ class ImageAnalyser_shared_mem():
                         )[0:bytesize].reshape(shared_details.res)
             #with time_it("analyse lumotag:crop"):
                 # add any cropping
-                img_buff = img_buff[
-                        self.img_crop.top:self.img_crop.lower,
-                        self.img_crop.left:self.img_crop.right]
+                if self.img_crop is not None:
+                    img_buff = img_buff[
+                            self.img_crop.top:self.img_crop.lower,
+                            self.img_crop.left:self.img_crop.right]
 
+                if self.img_shrink_factor is not None:
+                    dim = (
+                        int(img_buff.shape[0] * self.img_shrink_factor),
+                        int(img_buff.shape[0] * self.img_shrink_factor)
+                        )
+                    #img_buff = resize(img_buff.copy(), dim, interpolation=INTER_NEAREST)
+                    img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
 
                 contour_data = decode_clothID.find_lumotag(
@@ -91,10 +104,12 @@ class ImageAnalyser_shared_mem():
             #with time_it("analyse lumotag: prepare graphics"):
                 for contour in contour_data:
                     # TODO check xy orientation correct
-                    contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
-                        
+                    if self.img_crop is not None:
+                        contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
+                    else:
+                        contour_data = []
                 # correct contour data here? not sure if correct place
                 
             #print("ANALOL waiting to put response")
 
-            analysis_output_q.put((contour_data, self.img_crop), block=True, timeout=None)
+            analysis_output_q.put(contour_data, block=True, timeout=None)

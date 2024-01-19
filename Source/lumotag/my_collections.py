@@ -32,6 +32,13 @@ class Shapes(AutoStrEnum):
     BAD_APPROX_LEN = auto()
     BAD_APPROX_PXL = auto()
 
+# @dataclass
+# class Analysis_Results:
+#     """Package of image analysis results"""
+#     contourdata: list = None
+#     crop_details: list = None
+#     shrink_img_percent: float = None
+
 
 @dataclass
 class ShapeInfo_BulkProcess:

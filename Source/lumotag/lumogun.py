@@ -13,7 +13,6 @@ from utils import time_it, get_platform
 from my_collections import _OS
 # need this import to detect lumogun types (subclasses)
 import configs
-
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 PLATFORM = get_platform()
 
@@ -68,20 +67,24 @@ def main():
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
 
-    image_analysis = analyse_lumotag.ImageAnalyser_shared_mem(
+    image_analysis = [(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture.get_mem_buffers(),
         slice_details=slice_details,
-        config=configs.get_lumofind_config(PLATFORM))
+        img_shrink_factor=None,
+        config=configs.get_lumofind_config(PLATFORM)))]
 
-    image_analysis2 = analyse_lumotag.ImageAnalyser_shared_mem(
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture.get_mem_buffers(),
-        slice_details=slice_details,
-        config=configs.get_lumofind_config(PLATFORM))
+        slice_details=None,
+        img_shrink_factor=GUN_CONFIGURATION.img_shrink_pc,
+        config=configs.get_lumofind_config(PLATFORM)))
 
-    image_analysis3 = analyse_lumotag.ImageAnalyser_shared_mem(
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture.get_mem_buffers(),
         slice_details=slice_details,
-        config=configs.get_lumofind_config(PLATFORM))
+        img_shrink_factor=GUN_CONFIGURATION.img_shrink_pc,
+        config=configs.get_lumofind_config(PLATFORM)))
+    
     #time.sleep(100000)
     voice.speak("cam")
     # img = next(image_capture)
@@ -126,9 +129,8 @@ def main():
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis"):
-               image_analysis.trigger_analysis(image_capture.get_safe_mem_details)
-               image_analysis2.trigger_analysis(image_capture.get_safe_mem_details)
-               image_analysis3.trigger_analysis(image_capture.get_safe_mem_details)
+                for img_analyser in image_analysis:
+                    img_analyser.trigger_analysis(image_capture.get_safe_mem_details)
 
 
             with time_it("check messaging"):
@@ -224,21 +226,17 @@ def main():
                     img = display.generate_output_affine(cap_img)
 
                 with time_it("wait for image analysis"):
-                    graphics, _ = image_analysis.analysis_output_q.get(
-                        block=True,
-                        timeout=None)
-                    graphics2, _ = image_analysis2.analysis_output_q.get(
-                        block=True,
-                        timeout=None)
-                    graphics23, _ = image_analysis3.analysis_output_q.get(
-                        block=True,
-                        timeout=None)
+                    analysis = []
+                    for img_analyser in image_analysis:
+                        analysis.append(img_analyser.analysis_output_q.get(
+                            block=True,
+                            timeout=None))
                 #graphics = []
                 with time_it("add internal section"):
                     display.add_internal_section_region(img, slice_details)
 
-                # with time_it("add graphics and display image"):
-                #     display.display_output_with_graphics(img, graphics)
+                with time_it("add graphics and display image"):
+                    display.display_output_with_graphics(img, analysis[2])
 
     raise RuntimeError("something broke out of loop")
 
