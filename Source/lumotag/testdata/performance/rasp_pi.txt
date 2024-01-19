@@ -87,3 +87,67 @@ Sample points: 19.0
 total samples: 0
 analyse_candidates TOTAL:Computation time=======================6.135ms
 analyse lumotag: total:Computation time========================23.880ms
+
+
+
+
+
+
+raspberry pi 5 with 5a supply and 3 image processors:
+
+
+new analysis
+new analysis
+new analysis
+grayscale:Computation time=================================0.004ms
+grayscale:Computation time=================================0.004ms
+grayscale:Computation time=================================0.003ms
+pre-processing: blur:Computation time======================1.363ms
+pre-processing: blur:Computation time======================1.351ms
+pre-processing: blur:Computation time======================1.477ms
+pre-processing: threshold_img:Computation time=============2.048ms
+pre-processing: threshold_img:Computation time=============2.145ms
+pre-processing: blur again:Computation time================0.311ms
+pre-processing: blur again:Computation time================0.326ms
+pre-processing: threshold_img:Computation time=============2.384ms
+pre-processing: blur again:Computation time================0.236ms
+pre-processing: blur orig for sampler:Computation time=====1.385ms
+pre-processing: total:Computation time==========================5.460ms
+pre-processing: blur orig for sampler:Computation time=====1.475ms
+pre-processing: total:Computation time==========================5.583ms
+get possible candidates: find contours:Computation time====0.602ms
+get possible candidates: 29 contours found
+get possible candidates: find contours:Computation time====0.509ms
+get possible candidates: 29 contours found
+get possible candidates: filter:Computation time===========0.051ms
+get possible candidates: 0 contours postfilter
+get_possible_candidates total:Computation time==================0.778ms
+get possible candidates: filter:Computation time===========0.050ms
+get possible candidates: 0 contours postfilter
+get_possible_candidates total:Computation time==================0.679ms
+AC: check barcode bulk:Computation time====================0.103ms
+AC: check barcode final:Computation time===================0.001ms
+Sample points: 0.0
+total samples: 0
+AC: check barcode bulk:Computation time====================0.077ms
+AC: check barcode final:Computation time===================0.002ms
+Sample points: 0.0
+total samples: 0
+pre-processing: blur orig for sampler:Computation time=====3.090ms
+pre-processing: total:Computation time==========================7.765ms
+analyse_candidates TOTAL:Computation time=======================1.748ms
+analyse lumotag: total:Computation time=========================8.172ms
+analyse_candidates TOTAL:Computation time=======================2.985ms
+analyse lumotag: total:Computation time=========================9.430ms
+get possible candidates: find contours:Computation time====1.529ms
+get possible candidates: 29 contours found
+get possible candidates: filter:Computation time===========0.053ms
+get possible candidates: 0 contours postfilter
+get_possible_candidates total:Computation time==================1.702ms
+AC: check barcode bulk:Computation time====================0.083ms
+AC: check barcode final:Computation time===================0.001ms
+Sample points: 0.0
+total samples: 0
+analyse_candidates TOTAL:Computation time=======================2.859ms
+analyse lumotag: total:Computation time========================12.582ms
+TOTAL TIME FOR EVERYTHING:Computation time=====================34.052ms
