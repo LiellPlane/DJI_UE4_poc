@@ -119,7 +119,7 @@ def main():
 
     cnt = 0 
     while True:
-        with time_it("TOTAL TIME FOR EVERYTHING"):
+        with time_it("TOTAL TIME FOR EVERYTHING", debug=True):
             cnt += 1
             with time_it("get next image"):
                 cap_img = next(image_capture)
