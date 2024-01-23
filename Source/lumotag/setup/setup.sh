@@ -59,8 +59,8 @@ sudo apt-get install imutils
 #sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
 
 # raspberry pi 5 only!!
-sudo echo '[autostart]' >>  ~/.config/wayfire.ini
-sudo echo '1 = python3 /boot/bootstrap.py' >>  ~/.config/wayfire.ini
+sudo echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini
+sudo echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini
 
 
 
