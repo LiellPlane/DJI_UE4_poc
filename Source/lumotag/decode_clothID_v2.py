@@ -1,6 +1,6 @@
 import sys
 import cv2
-import shutil
+
 from enum import Enum, auto
 import os
 import numpy as np
@@ -8,7 +8,11 @@ import numpy as np
 #from matplotlib import pyplot as plt
 import math
 import random
-from utils import time_it, custom_print
+from utils import (
+    time_it,
+    custom_print,
+    DeleteFiles_RecreateFolder
+)
 from dataclasses import dataclass
 from my_collections import (
     ShapeItem,
@@ -18,6 +22,7 @@ import img_processing as img_pro
 from configs import base_find_lumotag_config
 #from sklearn.neighbors import KDTree
 
+
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
     for path, subdirs, files in os.walk(root):
@@ -26,24 +31,6 @@ def GetAllFilesInFolder_Recursive(root):
             ListOfFiles.append(FullpathOfFile)
     return ListOfFiles
 
-def DeleteFiles_RecreateFolder(FolderPath):
-    Deltree(FolderPath)
-    os.mkdir(FolderPath)
-
-def Deltree(Folderpath):
-      # check if folder exists
-    if len(Folderpath)<6:
-        raise("Input:" + str(Folderpath),"too short - danger")
-        raise ValueError("Deltree error - path too short warning might be root!")
-        return
-    if os.path.exists(Folderpath):
-         # remove if exists
-         shutil.rmtree(Folderpath)
-    else:
-         # throw your exception to handle this special scenario
-         #raise Exception("Unknown Error trying to Deltree: " + Folderpath)
-         pass
-    return
 
 class AutoStrEnum(str, Enum):
     """
@@ -53,6 +40,7 @@ class AutoStrEnum(str, Enum):
     @staticmethod
     def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
         return name
+
 
 class Debug_Images(AutoStrEnum):
     ERROR_no_contours = auto()
@@ -75,20 +63,25 @@ class Debug_Images(AutoStrEnum):
 class WorkingData():
     def __init__(
             self,
-            debugdetails=base_find_lumotag_config) -> None:
+            OS_friendly_name: str,
+            debugdetails: base_find_lumotag_config) -> None:
 
-        #self.debugimgs = debugimgs
-        #self.debug = debug
         self.debug_img_cnt = 0
         self.debug_subfldr = None
         self.debug_details = debugdetails
+        # TODO potential error assuming that file system can handle forward slashes
+        # as the config file is meant for different OS's
+        self.debug_details.SAVE_IMAGES_PATH += f"{OS_friendly_name}/"
         if self.debug_details.SAVE_IMAGES_DEBUG is True:
             DeleteFiles_RecreateFolder(self.debug_details.SAVE_IMAGES_PATH)
-        self.claheprocessor = cv2.createCLAHE(clipLimit=1.0, tileGridSize=(32,32))
+        self.claheprocessor = cv2.createCLAHE(
+            clipLimit=1.0, tileGridSize=(32, 32)
+            )
         self.approx_epsilon = 0.02
+
     @staticmethod
     def get_blob_params():
-        DefaultBlobParams= cv2.SimpleBlobDetector_Params()
+        DefaultBlobParams = cv2.SimpleBlobDetector_Params()
         DefaultBlobParams.filterByArea = True
         DefaultBlobParams.minArea = 40
         DefaultBlobParams.maxArea = 30000

@@ -1,18 +1,17 @@
 
 import decode_clothID_v2 as decode_clothID
-from multiprocessing import Process, Queue, shared_memory
+from multiprocessing import Process, Queue
 from dataclasses import dataclass
 import numpy as np
 from functools import reduce
 from utils import time_it
-import time
-import random
 from my_collections import (
     SharedMem_ImgTicket,
     CropSlicing)
 
 import configs
 from cv2 import resize, INTER_NEAREST
+
 
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
@@ -22,17 +21,16 @@ class ImageAnalyser_shared_mem():
             sharedmem_buffs: dict,
             slice_details: CropSlicing,
             img_shrink_factor: int,
+            OS_friendly_name: str,
             config: configs.base_find_lumotag_config) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
+        self.OS_friendly_name = OS_friendly_name
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
         self.img_crop = slice_details
         self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
-        #self.debug_mode = config.SAVE_IMAGES_DEBUG
-        #self.debug_img_path = config.SAVE_IMAGES_PATH
-        #self.debug_print = config.PRINT_DEBUG
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -55,11 +53,11 @@ class ImageAnalyser_shared_mem():
             self,
             input_shared_mem_index_q,
             analysis_output_q):
+
         workingdata = decode_clothID.WorkingData(
+            OS_friendly_name=self.OS_friendly_name,
             debugdetails=self.debug_config)
-        # workingdata = decode_clothID.WorkingData(
-        #     debug=True,
-        #     debugimgs=r"D:/lumodebug/")
+
         while True:
             # get index of last image buffer - this will be safe
             # until two conditions are met:

@@ -71,11 +71,13 @@ def main():
         sharedmem_buffs=image_capture.get_mem_buffers(),
         slice_details=slice_details,
         img_shrink_factor=None,
+        OS_friendly_name="cam1inner",
         config=configs.get_lumofind_config(PLATFORM)))]
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture.get_mem_buffers(),
         slice_details=None,
+        OS_friendly_name="cam1macro",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
 

@@ -5,7 +5,28 @@ import enum
 import os
 import platform
 from my_collections import _OS
+import shutil
 
+
+def DeleteFiles_RecreateFolder(FolderPath):
+    Deltree(FolderPath)
+    os.mkdir(FolderPath)
+
+
+def Deltree(Folderpath):
+      # check if folder exists
+    if len(Folderpath)<6:
+        raise("Input:" + str(Folderpath),"too short - danger")
+        raise ValueError("Deltree error - path too short warning might be root!")
+        return
+    if os.path.exists(Folderpath):
+         # remove if exists
+         shutil.rmtree(Folderpath)
+    else:
+         # throw your exception to handle this special scenario
+         #raise Exception("Unknown Error trying to Deltree: " + Folderpath)
+         pass
+    return
 
 def get_platform():
     #  detect what OS we are on - test environment (Windows) or production (pi hardware)
