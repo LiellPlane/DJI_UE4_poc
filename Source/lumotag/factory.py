@@ -1027,7 +1027,7 @@ class VoiceBase(ABC):
     def __init__(self) -> None:
         """Class to provide synthetic
         voice prompts or alerts"""
-        self.in_box = Queue(maxsize=4)
+        self.in_box = Queue(maxsize=10)
         self.t = threading.Thread(
             target=self.speaker,
             args=(self.in_box,))
