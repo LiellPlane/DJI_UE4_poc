@@ -99,14 +99,17 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
 
     def display_method(self, image):
-        lumo_viewer(
-            inputimage=image,
-            move_windowx=self.opencv_win_pos[0],
-            move_windowy=self.opencv_win_pos[1],
-            pausetime_Secs=0,
-            presskey=False,
-            destroyWindow=False)
-        
+        try:
+            lumo_viewer(
+                inputimage=image,
+                move_windowx=self.opencv_win_pos[0],
+                move_windowy=self.opencv_win_pos[1],
+                pausetime_Secs=0,
+                presskey=False,
+                destroyWindow=False)
+        except Exception as e:
+            # when SSHing
+            pass
 
     def display_output_with_implant(self, main_img, img_to_implant):
             """avoid performing higher workload by resizing images to

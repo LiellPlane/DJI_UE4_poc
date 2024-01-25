@@ -235,13 +235,10 @@ def main():
                             timeout=None))
                 #graphics = []
                 with time_it("add internal section"):
-                    display.add_internal_section_region(img, slice_details)
 
-            try:
                 with time_it("add graphics and display image", debug=True):
                     display.display_output_with_graphics(img, analysis)
-            except Exception as e:
-                pass 
+
                 # if running from SSH we can ignore error
     raise RuntimeError("something broke out of loop")
 
