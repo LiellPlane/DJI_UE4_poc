@@ -431,7 +431,7 @@ def get_approx_shape_and_bbox(
 def get_approx_shape_and_bbox2(
         img,
         img_blurred,
-        dataobject : WorkingData,
+        dataobject: WorkingData,
         index: int,
         bulk_process: ShapeInfo_BulkProcess) -> ShapeItem:
 
@@ -700,6 +700,8 @@ def get_approx_shape_and_bbox2(
                     print("out of range")
 
 
+            # cheesy way to test for pattern
+            is_pattern_detected([averages, averages2])
             shape_ = Shapes.SQUARE
 
 
@@ -840,6 +842,42 @@ def closest_point(target_point, points):
             closest = point
     return closest
 
+def is_pattern_detected(samples: list[list[int]]) -> bool:
+    """Cheesy way to test if pattern is present
+#%%%%%%%#%%%%%%%%%#////(((////////////////////(%%###################%##################%#######%%%%%#(((################
+%%%%######%#%%%%%#((//((/(//////////////////////(#%#############%##%###########%###################%##%%##(#############
+%%%%%%%%%%%%%%%%##(((###((((((//////////(//////(((#**#%%########%%##%%##%####################################(((########
+%%%%%%%%%%%%%%%%(((###((((((/////////////////((///.   ../#%%###%%########################%%###############%%%###########
+%%%%%%%&%%%%%%&#(####((((((((/////////////((((/(*  ... .  ..,#%%%################%###%##########%####%###########%###(((
+%%%%&%%%%%%%%%%#####((((((((((((/////(((/((((/#,   *%%#*.     ..*#%%%##%#########%######%##########################%%%%#
+%%%%%%%%%%%%%%#((##(((((((((((((///////((((/((.  ./%%%%%%%#*.  .   .*#%%#####%%%%#%%####################%###%##%########
+%%%%%#%%%%%%%#(###(((((((((((////((////((((((.  .(%%%%%%%%%%%%#/..    ..,(#%#(######%%###############%##################
+%%%%%%%%%%%%%(###(((((((((((((///(/(((##(((/. .,#%%%%%%%%%%%%%%%%%#/,.     .,/%%############%###########################
+%%%%%%%%%%%%#(##(((((((((((((((////(((#((#/   *%%%%%%%%%%%%%%%%%%%%%%%%#,.  .  ..(%%%#####################%%%###########
+%%%%%%%%%%%%####((((((((((((((((//((##((#, ../%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(..  ./%##########%##########################
+%%%%%%%%%%%#(###(((((((((((#(((((((##(((. ..#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%,  ..#%###(##################################
+%%%%%%&%%%%#(###((((((((((#%%((((##((((.  ,%%%%%%%%%%%%,  .,#%%%%%%%%%%%%#.  .*%%#((######################%#############
+%%%%%%%%%%#(#####((((((((%%%%#((##(((/   *%%%%%%%%%%%(.. . .*%%%%%%%%%%%/.  ./%%####(###################################
+%%%%%%%%%%#(##((((((((((%%%#%%####((,   /%%%%%%%%%%%%#,. ..(%%%%%%%%%%%*.  .(%####(####(##########((##%################(
+##%%%%%%%%#(##(((#((#(#%%%%%####(#(.  .#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%.  ..#%%##((#%################(((##%%%#########(/(
+###%%%%%%%###(#######%%%%######%%(.  .,#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%.   ,%%###((#%#(#############(##(((((((######((((((
+#%%%%%%%%#(#####(#%%%%%%#%%##%%%%%*.      ./%%%%%%%%%%%%%%%%%%%%%%%#.   *%####(#%%#(##########(((#((((((((((((((((((((((
+%%%%%%%%%#(#####(#%%%#%%%%%%%%%%#%%%%#/..  .. .*#%%%%%%%%%%%%%%%%%/. ..(%###((#%##################(#(#################((
+%%%%%%%%%(######%%##%%#%%%%%%%%%%%%%%%%%%%#*..    .*#%%%%%%%%%%%%*   ,#%##(#(%%################(####(###################
+%%%%%%%%%#(#####%%%####%%%%%%%%%%%%%%%%%%%%%%%#*..  . .*%%%%%%%&,. .,%%###(#%###################(##################(####
+%%%%%%%%%#(###(((##%%##%%%%%%%%%%%%%%%%%%%%%%%%%%%%/,.   ..*#%&,  ./%%##((############################################((
+%%%%%%%%######((((((#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(,..  .. . ,#%%##(#%##############################################
+%%%%%%%%(####(((((((((#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(,..  ,%%###(##############################################(#(
+#%%%%%%#((###((((((((((/(%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##%%%####%##########################################((((##
+%%%%%%%#(###(((((((((###((#%%%%%%%%%%%%%%%##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%###################################(#######
+##%%%%%((##((((#############(##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%###(#####################((#(##(####
+###%%%((##((##############(######%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%%%%%%%%%%%%%%%%%%%%%%%#((####################(#######
+##%%%%#(#((##############(###########%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%####%%%%%%%##%#%%%%%%%##((#############((#((#####    
+    """
+    for sample in samples:
+        centre = int(len(sample))
+        
+
 def analyse_candidates_shapematch(
         original_img,
         original_blurred_image,
@@ -882,18 +920,6 @@ def analyse_candidates_shapematch(
                 dataobject,
                 index,
                 bulk_process))
-    plop=1
-    # if dataobject.debug == True:
-    #     debug_img = original_img.copy()
-    #     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
-    #     for c in contour_stats:
-    #         cv2.drawContours(debug_img, [c.approx_contour], -1, (0,0,255), 1)
-    #         x,y,w,h = c.boundingbox
-    #         ROI = debug_img[y:y+h, x:x+w]
-    #         dataobject.img_view_or_save_if_debug(
-    #             ROI,
-    #             f"check_shape_extract_{c.sum_int_angles}d_{c.id}")
-
 
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
@@ -937,7 +963,7 @@ def analyse_candidates_shapematch(
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
         for c in squrs_found:
-            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 2)
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0, 255, 0), 2)
         dataobject.img_view_or_save_if_debug(
             debug_img,
             f"squares_found")
@@ -1002,15 +1028,15 @@ def analyse_candidates_shapematch(
             cv2.circle(debug_img, tuple(c.closest_corners[1]), 3, img_pro.BLUE, 1)
             cv2.circle(debug_img, tuple(c.closest_corners[3]), 3, img_pro.BLUE, 1)
         
-            cv2.drawContours(debug_img, [c.approx_contour], -1, (0,255,0), 1)
-            crop_img =  debug_img[max(0,y-h):y+h, max(0,x-w):x+w]
+            cv2.drawContours(debug_img, [c.approx_contour], -1, (0, 255, 0), 1)
+            crop_img = debug_img[max(0,y-h):y+h, max(0,x-w):x+w]
             # if len([True for i in crop_img.shape if i == 0]) > 0:
             #     plop=1
             #     pass
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-            out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200,500), interpolation=cv2.INTER_NEAREST)
+            out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200, 500), interpolation=cv2.INTER_NEAREST)
             #dataobject.img_view_or_save_if_debug(out_img1, "squarecode")
-            out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200,500), interpolation=cv2.INTER_NEAREST)
+            out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200, 500), interpolation=cv2.INTER_NEAREST)
             #dataobject.img_view_or_save_if_debug(out_img2, "squarecode")
 
             stacked_img = np.hstack((
