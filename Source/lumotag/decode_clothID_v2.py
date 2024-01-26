@@ -701,8 +701,8 @@ def get_approx_shape_and_bbox2(
 
 
             # cheesy way to test for pattern
-            is_pattern_detected([averages, averages2])
-            shape_ = Shapes.SQUARE
+            if is_pattern_detected([averages, averages2]):
+                shape_ = Shapes.SQUARE
 
 
             if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
@@ -874,9 +874,26 @@ def is_pattern_detected(samples: list[list[int]]) -> bool:
 ###%%%((##((##############(######%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%%%%%%%%%%%%%%%%%%%%%%%#((####################(#######
 ##%%%%#(#((##############(###########%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%####%%%%%%%##%#%%%%%%%##((#############((#((#####    
     """
+    judgement = []
     for sample in samples:
-        centre = int(len(sample))
-        
+        centre = int(len(sample)/2)
+        np_sample = np.array(sample)
+        # numpy doesn't like this line with uints - truncates value
+        midpt = int((int(np_sample.max()) + int(np_sample.min())) / 2)
+        bright = int((int(np_sample.max()) + midpt)/2)
+        if np_sample[centre-2: centre+2].mean() < bright:
+            continue
+        if np_sample[1:4].mean() > midpt:
+            continue
+        if np_sample[-4:-1].mean() > midpt:
+            continue
+        judgement.append(True)
+
+    if len(samples) ==  len(judgement):
+        if all(judgement):
+            return True
+
+    return False
 
 def analyse_candidates_shapematch(
         original_img,
