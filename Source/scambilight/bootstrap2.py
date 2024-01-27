@@ -4,7 +4,7 @@ import subprocess
 import os
 import sys
 
-raise Exception("unfinished")
+raise Exception("unfinished, see lumotag for example")
 
 with open('/boot/MY_INFO.txt', 'r') as file:
     data = json.load(file)
