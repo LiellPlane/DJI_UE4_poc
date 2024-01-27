@@ -65,8 +65,6 @@ sudo apt-get install imutils
 #shell does not output redirection so need sh -c with command in quotes
 sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
 sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
-
-
 #sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
 
 # these instructions for stopping the screen blanking might be temporary only
