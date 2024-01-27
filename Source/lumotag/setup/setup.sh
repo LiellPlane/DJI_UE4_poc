@@ -59,9 +59,12 @@ sudo apt-get install imutils
 #sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
 
 # raspberry pi 5 only!!
-sudo echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini
-sudo echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini
+#sudo echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini
+#sudo echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini
 
+#shell does not output redirection so need sh -c with command in quotes
+sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
+sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
 
 
 #sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
@@ -78,5 +81,5 @@ sudo echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini
 # raspberry pi 4
 #echo turn on hdmi_force_hotplug in /boot/config.txt
 
-
 echo /boot/MY_INFO.txt
+echo 'please check info is correct, such as lumotag gun model"

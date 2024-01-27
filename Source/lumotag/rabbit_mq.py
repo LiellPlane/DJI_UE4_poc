@@ -20,10 +20,12 @@ class RabbitMQ_Obj():
             username=mc["username"],
             password=mc["password"])
 
-        parameters = pika.ConnectionParameters(host=mc["host"],
-                                            port=mc["port"],
-                                            virtual_host=mc["virtual_host"],
-                                            credentials=credentials)
+        parameters = pika.ConnectionParameters(
+            host=mc["host"],
+            port=mc["port"],
+            virtual_host=mc["virtual_host"],
+            credentials=credentials
+            )
 
         while True:
             try:
