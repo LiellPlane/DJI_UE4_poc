@@ -13,16 +13,22 @@ with open('/boot/MY_INFO.txt', 'r') as file:
     codepath = data["CODEPATH"]
 
 print(f"MY_ID: {MY_ID} url: {url}")
-
+#raise Exception("probably need to connect commands with && or shell state might be discarded")
 if os.path.exists(codepath):
     # run is blocking
-    subprocess.run(['cd', codepath])
+    #subprocess.run(['cd', codepath])
     # update local repo to remote
-    subprocess.run(['git', 'fetch'])
+    fetch_result = subprocess.run(['git', 'fetch'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(fetch_result)
+    #subprocess.run(['git', 'fetch'])
     # sync from remote repo
-    subprocess.run(['git', 'pull', '--ff-only'])
+    #subprocess.run(['git', 'pull', '--ff-only'])
+    fetch_result = subprocess.run(['git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(fetch_result)
     # not sure what working directory we should return to
-    subprocess.run(['cd', '/home/lumotag/'])
+    #subprocess.run(['cd', '/home/lumotag/'])
+    #fetch_result = subprocess.run(['ls'], cwd='/home/lumotag/', text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #print(fetch_result)
 else:
     print(
         "trying to clone repo from web - this is incorrect state- should exist already")
