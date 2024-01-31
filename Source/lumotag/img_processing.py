@@ -365,3 +365,8 @@ def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO
         for pos in patterndetails.sample_positions:
 
             cv2.circle(image, (pos[0],pos[1]), radius=0, color=RED, thickness=-1)
+
+
+# def load_img_set_transparency():
+#     imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+#     im = cv2.imread("image.png", cv2.IMREAD_UNCHANGED)

@@ -128,17 +128,17 @@ class display(ABC):
         self.opencv_win_pos = _gun_config.opencv_window_pos
         self.emptyscreen = np.zeros(
             ( _gun_config.screen_size + (3,)), np.uint8)
-        self.draw_test_rect()
+        #self.draw_test_rect()
         self._affine_transform = None
 
-    def draw_test_rect(self):
-        buffer = int(self.emptyscreen.shape[0]/100)
-        self.emptyscreen = cv2.rectangle(
-            self.emptyscreen,
-            (buffer, buffer),
-            tuple(np.asarray(list(reversed(self.emptyscreen.shape[0:2]))) - np.asarray([buffer, buffer])),
-            (255,255,255),
-            min(int(buffer/2),2))
+    # def draw_test_rect(self):
+    #     buffer = int(self.emptyscreen.shape[0]/100)
+    #     self.emptyscreen = cv2.rectangle(
+    #         self.emptyscreen,
+    #         (buffer, buffer),
+    #         tuple(np.asarray(list(reversed(self.emptyscreen.shape[0:2]))) - np.asarray([buffer, buffer])),
+    #         (255,255,255),
+    #         min(int(buffer/2),2))
 
     @abstractmethod
     def display_method(image, self):
@@ -284,6 +284,36 @@ class display(ABC):
     def display_output_with_implant(self):
         pass
 
+
+class PlayerInfoBox:
+    def __init__(
+            self,
+            playername,
+            playergraphic,
+            screen_rotation,
+            screen_dims,
+            internalregion
+            ) -> None:
+        """object to persist player name and graphic
+        
+        params:
+        screen_rotation: mounting of LCD screen
+        internalregion: the white rectangle which is used
+        for the high-res image analysis"""
+
+        self.timer = TimeDiffObject()
+        self.playername = playername
+        self.playergraphic = playergraphic
+        self.screen_rotation = screen_rotation
+        self.screen_dims = screen_dims
+        self.internalregion = internalregion
+
+    def create_player_text(self):
+        """we need to create the player name/ID/handle
+        but to a specific size so it looks OK, then
+        rotate it"""
+
+        cv.getTextSize() 
 
 class Accelerometer(ABC):
 
@@ -988,7 +1018,7 @@ class ImageLibrary(ImageGenerator):
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         #imgfoler = r"D:\OutputImages"
-        self.images = jpgs_in_folder(imgfoler)
+        self.images = images_in_folder(imgfoler, [".jpg"])
         #self.images = [i for i in self.images if "0290" in i]#0290
         #self.images = [i for i in self.images if "1704404023_3112135" in i] # testing standard
         
@@ -1014,13 +1044,14 @@ class ImageLibrary(ImageGenerator):
         self.blank_image[:] = img
         return self.blank_image
 
-def jpgs_in_folder(directory):
+def images_in_folder(directory, imgtypes: list[str]):
     allFiles = []
     for root, dirs, files in os.walk(directory):
         for name in files:
-            if name[-4:len(name)] == '.jpg':
+            if name[-4:len(name)] in imgtypes:
                 allFiles.append(os.path.join(root, name))
     return allFiles
+
 
 class VoiceBase(ABC):
 
