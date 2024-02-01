@@ -307,13 +307,18 @@ class PlayerInfoBox:
         self.screen_rotation = screen_rotation
         self.screen_dims = screen_dims
         self.internalregion = internalregion
+        self.display_graphic = self.create_player_image()
 
     def create_player_text(self):
         """we need to create the player name/ID/handle
         but to a specific size so it looks OK, then
         rotate it"""
+        pass
 
-        cv.getTextSize() 
+    def create_player_image(self):
+        """get the transparent player custom graphic"""
+        img_processing.load_img_set_transparency()
+
 
 class Accelerometer(ABC):
 

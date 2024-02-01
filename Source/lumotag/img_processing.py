@@ -367,6 +367,9 @@ def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO
             cv2.circle(image, (pos[0],pos[1]), radius=0, color=RED, thickness=-1)
 
 
-# def load_img_set_transparency():
-#     imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-#     im = cv2.imread("image.png", cv2.IMREAD_UNCHANGED)
+def load_img_set_transparency():
+    #  Debug code until we have a user avatar delivery system
+    imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    imgfoler = imgfoler[:imgfoler.index("Source")]
+    imgsource = f"{imgfoler}Source/lumotag/avatars/chick.png"
+    im = cv2.imread(imgsource, cv2.IMREAD_UNCHANGED)
