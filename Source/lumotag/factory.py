@@ -307,7 +307,8 @@ class PlayerInfoBox:
         self.screen_rotation = screen_rotation
         self.screen_dims = screen_dims
         self.internalregion = internalregion
-        self.display_graphic = self.create_player_image()
+        self.create_player_image()
+
 
     def create_player_text(self):
         """we need to create the player name/ID/handle
@@ -315,9 +316,22 @@ class PlayerInfoBox:
         rotate it"""
         pass
 
+    def rotate_input(self, image):
+
+        if self.screen_rotation == 90:
+            output = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+        elif self.screen_rotation in [-90, 270]:
+            output = cv2.rotate(image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        elif self.screen_rotation == 180:
+            output = cv2.rotate(image, cv2.ROTATE_180)
+            
+        return output
+
     def create_player_image(self):
         """get the transparent player custom graphic"""
-        img_processing.load_img_set_transparency()
+        img = img_processing.load_img_set_transparency()
+        self.rotate_input(img)
+        img_rotated = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
 
 
 class Accelerometer(ABC):

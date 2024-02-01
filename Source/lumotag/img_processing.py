@@ -372,4 +372,4 @@ def load_img_set_transparency():
     imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
     imgfoler = imgfoler[:imgfoler.index("Source")]
     imgsource = f"{imgfoler}Source/lumotag/avatars/chick.png"
-    im = cv2.imread(imgsource, cv2.IMREAD_UNCHANGED)
+    return cv2.imread(imgsource, cv2.IMREAD_UNCHANGED)
