@@ -88,18 +88,21 @@ def main():
     #     config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
+    img = next(image_capture)
+    if img is None:
+        raise Exception("broken image source")
     voice.speak("cam")
     # img = next(image_capture)
 
     # if img is None:
     #     raise Exception("Error with camera")
-    voice.speak("ok display")
+    
     display = lumogun.display(GUN_CONFIGURATION)
+    voice.speak("ok display")
     # display.display_output(img)
     # while True:
     #     display.display_output(next(image_capture2))
 
-    voice.speak("ok")
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     #workingdata = decode_clothID.WorkingData()
     file_system = lumogun.filesystem()
