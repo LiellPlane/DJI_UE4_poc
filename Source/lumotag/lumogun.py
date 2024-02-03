@@ -106,15 +106,15 @@ def main():
     voice.speak("all devices healthy")
 
     # create demo player
-    players = {
-        "demoplayer":
-        factory.PlayerInfoBox(
-            playername="demoplayer",
-            playergraphic=None,
-            screen_rotation=GUN_CONFIGURATION.screen_rotation,
-            screen_dims=GUN_CONFIGURATION.screen_size,
-            internalregion=GUN_CONFIGURATION.internal_img_crop
-        )}
+    # players = {
+    #     "demoplayer":
+    #     factory.PlayerInfoBox(
+    #         playername="demoplayer",
+    #         playergraphic=None,
+    #         screen_rotation=GUN_CONFIGURATION.screen_rotation,
+    #         screen_dims=GUN_CONFIGURATION.screen_size,
+    #         internalregion=GUN_CONFIGURATION.internal_img_crop
+    #     )}
 
     # set partial functions
     set_torch = partial(
