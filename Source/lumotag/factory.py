@@ -217,7 +217,7 @@ class display(ABC):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
-        if self._affine_transform is None:        
+        if self._affine_transform is None:       
             if self.display_rotate in [90, -90, 270]:
                 reverse_output_shape = tuple(reversed(self.emptyscreen.shape[0:2]))
                 # if planning for 90 degrees, swap image dims

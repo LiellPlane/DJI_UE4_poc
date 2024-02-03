@@ -8,7 +8,8 @@ from contextlib import contextmanager
 from typing import Iterator, Literal
 from dataclasses import dataclass
 from skimage.draw import line
-from my_collections import CropSlicing
+from my_collections import CropSlicing, AffinePoints
+from math import floor
 
 RED = (0, 0, 255)
 BLUE = (255, 0, 0)
@@ -381,7 +382,7 @@ def get_fitted_affine_transform(
     rotation: Literal[0, -90, 90, 270, 180]
     ):
     """Get the matrix transform to rotate and scale a camera image to fit
-    in a display image space, maintaining aspect ratio
+    in a display image space, maintaining aspect ratio.
     
     cam image:
     
@@ -393,14 +394,14 @@ def get_fitted_affine_transform(
     display LCD image:
     
     |-------------------|
-    |                   |  <------- UP vector
+    |                   |  <------- UP vector (user POV)
     |-------------------|
 
     and we want to rotate the cam image 90 degrees (so its correct for viewer)
     then scale and centralise to fit in display image
 
     |------|<-<-<-|------|
-    |      |< < < |      |  <------- UP vector
+    |      |< < < |      |  <------- UP vector (user POV)
     |------|<-<-<-|------|
 
     Note the implanted camera image has been rotated to fit.
@@ -408,3 +409,53 @@ def get_fitted_affine_transform(
     this function only works for 90 degree angles
     """
     pass
+
+
+def get_affine_points(incoming_img_dims, outgoing_img_dims) -> AffinePoints:
+    """Return the corresponding points to fit the incoming image central to the
+    view screen maintaining the aspect ratio, to be used to calculate affine
+    transform
+    
+    inputs:
+    incoming_img_dims: numpy array .shape
+    outcoming_img_dims: numpy array .shape
+
+    return source points, target points
+    """
+    incoming_w = incoming_img_dims[1]
+    incoming_h = incoming_img_dims[0]
+    outgoing_w = outgoing_img_dims[1]
+    outgoing_h = outgoing_img_dims[0]
+    incoming_pts = AffinePoints(
+        top_left_w_h=(0, 0),
+        top_right_w_h=(incoming_w, 0),
+        lower_right_w_h=(incoming_w, incoming_h))
+    # pick any ratio
+    ratio = outgoing_h / incoming_h
+    # if resizing with aspect ratio doesn't fit, do the other way
+    if floor(incoming_w * ratio) > outgoing_w:
+        ratio = outgoing_w / incoming_w
+    output_fit_h = floor(incoming_h * ratio)
+    output_fit_w = floor(incoming_w * ratio)
+    # test to make sure aspect ratio is 
+    if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 2:
+        raise ValueError("error calculating output image dimensions")
+    # get 3 corresponding points from the output view - keeping in mind
+    # any rotation
+    w_crop_in = (outgoing_w - output_fit_w) // 2
+    h_crop_in = (outgoing_h - output_fit_h) // 2
+    view_pts = AffinePoints(
+        top_left_w_h=(w_crop_in, h_crop_in),
+        top_right_w_h=(w_crop_in + output_fit_w, h_crop_in),
+        lower_right_w_h=(w_crop_in + output_fit_w, h_crop_in + output_fit_h))
+
+    return incoming_pts, view_pts
+
+
+def rotate_affine_targets(targets, degrees, outputscreen_shape):
+    mid_img = [int(x/2) for x in outputscreen_shape[0:2][::-1]] # get reversed dims
+    new_target = AffinePoints(
+                top_left_w_h=rotate_pt_around_origin(targets.top_left_w_h, mid_img, degrees),
+                top_right_w_h=rotate_pt_around_origin(targets.top_right_w_h, mid_img, degrees),
+                lower_right_w_h=rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
+    return new_target
