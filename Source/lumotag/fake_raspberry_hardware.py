@@ -197,24 +197,24 @@ class display(factory.display):
     #     img = img_processing.add_cross_hair(img, adapt=True)
     #     lumo_viewer(output,self.opencv_win_pos[0], self.opencv_win_pos[1],False,False)
 
-    def display_output_with_implant(self, main_img, img_to_implant):
-        """resize both images before implantating central graphic as
-        this can be a significant contribution to update latency"""
-        img, scale_factor = img_processing.resize_centre_img(
-             main_img,
-             self.screen_size)
-        imp_size_x = int(img_to_implant.shape[0] * scale_factor)
-        imp_size_y = int(img_to_implant.shape[1] * scale_factor)
-        img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
-        output = img_processing.implant_internal_section(img, img_to_implant)
-        output = img_processing.add_cross_hair(output, adapt=True)
-        lumo_viewer(
-            inputimage=output,
-            move_windowx=self.opencv_win_pos[0],
-            move_windowy=self.opencv_win_pos[1],
-            pausetime_Secs=0,
-            presskey=False,
-            destroyWindow=False)
+    # def display_output_with_implant(self, main_img, img_to_implant):
+    #     """resize both images before implantating central graphic as
+    #     this can be a significant contribution to update latency"""
+    #     img, scale_factor = img_processing.resize_centre_img(
+    #          main_img,
+    #          self.screen_size)
+    #     imp_size_x = int(img_to_implant.shape[0] * scale_factor)
+    #     imp_size_y = int(img_to_implant.shape[1] * scale_factor)
+    #     img_to_implant = cv2.resize(img_to_implant, dsize=(imp_size_x, imp_size_y))
+    #     output = img_processing.implant_internal_section(img, img_to_implant)
+    #     output = img_processing.add_cross_hair(output, adapt=True)
+    #     lumo_viewer(
+    #         inputimage=output,
+    #         move_windowx=self.opencv_win_pos[0],
+    #         move_windowy=self.opencv_win_pos[1],
+    #         pausetime_Secs=0,
+    #         presskey=False,
+    #         destroyWindow=False)
         
 
 class KillProcess(factory.KillProcess):

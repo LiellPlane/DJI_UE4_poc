@@ -280,9 +280,9 @@ class display(ABC):
         self.display_method(output)
  
 
-    @abstractmethod
-    def display_output_with_implant(self):
-        pass
+    # @abstractmethod
+    # def display_output_with_implant(self):
+    #     pass
 
 
 class PlayerInfoBox:
