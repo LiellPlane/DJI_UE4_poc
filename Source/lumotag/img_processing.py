@@ -5,7 +5,7 @@ from enum import Enum, auto
 import os
 import numpy as np
 from contextlib import contextmanager
-from typing import Iterator
+from typing import Iterator, Literal
 from dataclasses import dataclass
 from skimage.draw import line
 from my_collections import CropSlicing
@@ -373,3 +373,38 @@ def load_img_set_transparency():
     imgfoler = imgfoler[:imgfoler.index("Source")]
     imgsource = f"{imgfoler}Source/lumotag/avatars/chick.png"
     return cv2.imread(imgsource, cv2.IMREAD_UNCHANGED)
+
+
+def get_fitted_affine_transform(
+    cam_image_shape,
+    display_image_shape,
+    rotation: Literal[0, -90, 90, 270, 180]
+    ):
+    """Get the matrix transform to rotate and scale a camera image to fit
+    in a display image space, maintaining aspect ratio
+    
+    cam image:
+    
+    _______    ^
+    |^ ^ ^|    |
+    |^ ^ ^|    | up vector
+    |^_^_^|    |
+    
+    display LCD image:
+    
+    |-------------------|
+    |                   |  <------- UP vector
+    |-------------------|
+
+    and we want to rotate the cam image 90 degrees (so its correct for viewer)
+    then scale and centralise to fit in display image
+
+    |------|<-<-<-|------|
+    |      |< < < |      |  <------- UP vector
+    |------|<-<-<-|------|
+
+    Note the implanted camera image has been rotated to fit.
+
+    this function only works for 90 degree angles
+    """
+    pass

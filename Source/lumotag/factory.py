@@ -218,7 +218,7 @@ class display(ABC):
         need 2 sets of 3 corresponding points to create calculation"""
 
         if self._affine_transform is None:        
-            if self.display_rotate == 90 or self.display_rotate == -90 or self.display_rotate == 270:
+            if self.display_rotate in [90, -90, 270]:
                 reverse_output_shape = tuple(reversed(self.emptyscreen.shape[0:2]))
                 # if planning for 90 degrees, swap image dims
                 input_targets, output_targets = self.get_affine_points(
