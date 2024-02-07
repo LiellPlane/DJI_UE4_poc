@@ -7,12 +7,16 @@ import random
 import copy
 import queue
 import re
+import shutil
+
+
 current_file_path = os.path.abspath(__file__)
 # Get the directory containing the current file
 directory_of_current_file = os.path.dirname(current_file_path)
 
 PROCESSED = "processed"
 IMAGES_FOLDER = r"D:\temp_phoneimgs"
+SORTED_IMAGES_FOLDER = r"D:\temp_phoneimgs_sorted"
 OPERATION_JSON = f"{directory_of_current_file}\\all_images.json"
 PROCESSED_JSON = f"{directory_of_current_file}\\{PROCESSED}.json"
 IMAGETYPES = [
@@ -70,6 +74,26 @@ def json_in_folder(directory):
                     allFiles.append(os.path.join(root, name))
     return allFiles
 
+def DeleteFiles_RecreateFolder(FolderPath):
+    Deltree(FolderPath)
+    os.mkdir(FolderPath)
+
+
+def Deltree(Folderpath):
+      # check if folder exists
+    if len(Folderpath)<6:
+        raise("Input:" + str(Folderpath),"too short - danger")
+        raise ValueError("Deltree error - path too short warning might be root!")
+        return
+    if os.path.exists(Folderpath):
+         # remove if exists
+         shutil.rmtree(Folderpath)
+    else:
+         # throw your exception to handle this special scenario
+         #raise Exception("Unknown Error trying to Deltree: " + Folderpath)
+         pass
+    return
+
 def main():
     # get all images in a folder
     jpgs = {x: None for x in jpgs_in_folder(IMAGES_FOLDER)}
@@ -100,16 +124,20 @@ def main():
 
     list_batch_jsons  = {x: None for x in json_in_folder(directory_of_current_file)}
     print("total img len", len(all_images_list))
+    all_processed_files = []
     for batch_file in list_batch_jsons:
+        print(batch_file)
         with open(batch_file, 'r') as file:
             proceseed_imgs = json.load(file)
             for img in proceseed_imgs.keys():
+                all_processed_files.append(img)
                 del all_images_list[img]
     print("total img len after removing processed", len(all_images_list))
-
+    assert len(set(all_processed_files)) == len(all_processed_files)
     pattern = re.compile(r'processed_(\d+)\.json')
     max_number = -1
     file_with_max_number = None
+    
     for filename in list_batch_jsons:
         basename = os.path.basename(filename)
         match = pattern.match(basename)
@@ -122,9 +150,9 @@ def main():
                 max_number = number
                 file_with_max_number = filename
 
-    batch_id = max_number
+    batch_id = max_number + 1
     while len(all_images_list) > 0:
-        print("total img len", len(all_images_list))
+        
         newfile = random.choice(list(all_images_list.keys()))
         img = cv2.imread(newfile)
         ratio = 1000/img.shape[0]
@@ -146,8 +174,7 @@ def main():
             del all_images_list[newfile]
             undo_fifo.put(newfile)
 
-        
-        if len(processed_list) > 30:
+        if len(processed_list) > 30 or len(all_images_list) < 1:
             # save batched file process
             batch_file = PROCESSED_JSON.replace(PROCESSED, f"{PROCESSED}_{batch_id}")
             with open(batch_file, 'w') as file:
@@ -155,6 +182,28 @@ def main():
             batch_id += 1
             processed_list = {}
 
-        print(processed_list)
+        print(batch_id)
+        print("total to_be_processed len", len(all_images_list))
+        print("total processed_list len", len(processed_list))
+
+    fart = input("press y to distribute into folders")
+    if fart == "y":
+        DeleteFiles_RecreateFolder(SORTED_IMAGES_FOLDER)
+        #os.mkdir(f"{SORTED_IMAGES_FOLDER}\\BACKUP")
+        list_batch_jsons  = {x: None for x in json_in_folder(directory_of_current_file)}
+        all_processed_files = {}
+        for batch_file in list_batch_jsons:
+            with open(batch_file, 'r') as file:
+                proceseed_imgs = json.load(file)
+                for img, folder in proceseed_imgs.items():
+                    all_processed_files[img] = folder
+
+        for folder in list(set(list(all_processed_files.values()))):
+            os.mkdir(f"{SORTED_IMAGES_FOLDER}\\{folder}")
+        for img_file, folder in all_processed_files.items():
+            print("copying", img_file, "to", folder)
+            destination_directory = f"{SORTED_IMAGES_FOLDER}\\{folder}"
+            shutil.move(img_file, destination_directory)
+
 if __name__ == '__main__':
     main()
