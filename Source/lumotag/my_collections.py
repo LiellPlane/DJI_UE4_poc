@@ -41,6 +41,21 @@ class Shapes(AutoStrEnum):
 
 
 @dataclass
+class ScreenNormalisedPositions:
+    top: float
+    lower: float
+    left: float
+    right: float
+
+
+@dataclass
+class UI_playerInfo:
+    photo: ScreenNormalisedPositions
+    user_tagname: ScreenNormalisedPositions
+    user_info: ScreenNormalisedPositions
+
+
+@dataclass
 class ShapeInfo_BulkProcess:
     """If processing shape candidates in a bulk
     process to vectorise operations

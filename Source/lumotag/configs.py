@@ -1,9 +1,14 @@
 from enum import Enum
 from factory import gun_config
-from my_collections import ImagingMode
+from my_collections import (
+    ImagingMode,
+    _OS,
+    ScreenNormalisedPositions,
+    UI_playerInfo
+)
 from dataclasses import dataclass
 import time
-from my_collections import _OS
+
 
 
 @dataclass
@@ -88,6 +93,13 @@ class screensizes(Enum):
     tzar = (800 - title_bar_pxls, 480)
     windows_laptop = (900, 900)
     stryker = (480, 620)
+
+
+test_UI_elements_pos =  UI_playerInfo(
+    photo=ScreenNormalisedPositions(top=10, lower=20, left=10, right=10),
+    user_tagname=ScreenNormalisedPositions(top=10, lower=20, left=10, right=10),
+    user_info=ScreenNormalisedPositions(top=10, lower=20, left=10, right=10)
+)
 
 
 class stryker_config(gun_config):

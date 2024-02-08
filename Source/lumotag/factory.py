@@ -194,7 +194,7 @@ class PlayerInfoBox:
         self.playername = playername
         self.playergraphic = playergraphic
         self.gun_config: gun_config = _gun_config
-        self.create_player_image()
+        #self.create_player_image()
 
 
     def create_player_text(self):
