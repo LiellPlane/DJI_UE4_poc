@@ -131,130 +131,25 @@ class display(ABC):
         #self.draw_test_rect()
         self._affine_transform = None
 
-    # def draw_test_rect(self):
-    #     buffer = int(self.emptyscreen.shape[0]/100)
-    #     self.emptyscreen = cv2.rectangle(
-    #         self.emptyscreen,
-    #         (buffer, buffer),
-    #         tuple(np.asarray(list(reversed(self.emptyscreen.shape[0:2]))) - np.asarray([buffer, buffer])),
-    #         (255,255,255),
-    #         min(int(buffer/2),2))
 
     @abstractmethod
     def display_method(image, self):
         pass
 
-    # def set_image_in_centre(self, inputimg):
-    #     if inputimg.shape[0] == self.emptyscreen.shape[0]:
-    #         offset = floor((self.emptyscreen.shape[1] - inputimg.shape[1]) /2)
-    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 0] = inputimg
-    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 1] = inputimg
-    #         self.emptyscreen[:, offset:inputimg.shape[1]+offset, 2] = inputimg
-    #     elif inputimg.shape[1] == self.emptyscreen.shape[1]:
-    #         offset = floor((self.emptyscreen.shape[0] - inputimg.shape[0]) / 2)
-    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 0] = inputimg
-    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 1] = inputimg
-    #         self.emptyscreen[offset:inputimg.shape[0]+offset, :, 2] = inputimg
-    #     else:
-    #         raise Exception(
-    #             "Warning, bad resized image shapes",
-    #             inputimg.shape,
-    #             self.emptyscreen.shape)
 
-    @staticmethod
-    @lru_cache
-    def get_affine_points(incoming_img_dims, outgoing_img_dims) -> AffinePoints:
-        """Return the corresponding points to fit the incoming image central to the
-        view screen maintaining the aspect ratio, to be used to calculate affine
-        transform
-        
-        inputs:
-        incoming_img_dims: numpy array .shape
-        outcoming_img_dims: numpy array .shape
-
-        return source points, target points
-        """
-        incoming_w = incoming_img_dims[1]
-        incoming_h = incoming_img_dims[0]
-        outgoing_w = outgoing_img_dims[1]
-        outgoing_h = outgoing_img_dims[0]
-        incoming_pts = AffinePoints(
-            top_left_w_h=(0,0),
-            top_right_w_h=(incoming_w , 0),
-            lower_right_w_h=(incoming_w , incoming_h))
-        # pick any ratio
-        ratio = outgoing_h / incoming_h
-        # if resizing with aspect ratio doesn't fit, do the other way
-        if floor(incoming_w * ratio) > outgoing_w:
-            ratio = outgoing_w / incoming_w
-        output_fit_h = floor(incoming_h * ratio)
-        output_fit_w = floor(incoming_w * ratio)
-        # test to make sure aspect ratio is 
-        if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 2:
-            raise ValueError("error calculating output image dimensions")
-        # get 3 corresponding points from the output view - keeping in mind
-        # any rotation
-        w_crop_in = (outgoing_w - output_fit_w) // 2
-        h_crop_in = (outgoing_h - output_fit_h) // 2
-        view_pts = AffinePoints(
-            top_left_w_h=(w_crop_in, h_crop_in),
-            top_right_w_h=(w_crop_in + output_fit_w, h_crop_in),
-            lower_right_w_h=(w_crop_in + output_fit_w, h_crop_in + output_fit_h))
-
-        return incoming_pts, view_pts 
-
-    @staticmethod
-    def rotate_affine_targets(targets, degrees, outputscreen_shape):
-        mid_img = [int(x/2) for x in outputscreen_shape[0:2][::-1]] # get reversed dims
-        new_target = AffinePoints(
-                    top_left_w_h=img_processing.rotate_pt_around_origin(targets.top_left_w_h, mid_img, degrees),
-                    top_right_w_h=img_processing.rotate_pt_around_origin(targets.top_right_w_h, mid_img, degrees),
-                    lower_right_w_h=img_processing.rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
-        return new_target
-
-
-    def generate_output_affine(self, output):
+    def generate_output_affine(self, cam_capture):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
-        if self._affine_transform is None:       
-            if self.display_rotate in [90, -90, 270]:
-                reverse_output_shape = tuple(reversed(self.emptyscreen.shape[0:2]))
-                # if planning for 90 degrees, swap image dims
-                input_targets, output_targets = self.get_affine_points(
-                    output.shape,
-                    reverse_output_shape)
-                output_targets = self.rotate_affine_targets(
-                    output_targets,
-                    self.display_rotate,
-                    reverse_output_shape)
-
-                diffs = (np.asarray(reverse_output_shape) - np.asarray(self.emptyscreen.shape[0:2]))/2
-                output_targets.add_offset_h(diffs[1])
-                output_targets.add_offset_w(diffs[0])
-
-            elif self.display_rotate == 180:
-                input_targets, output_targets = self.get_affine_points(
-                    output.shape,
-                    self.emptyscreen.shape)
-                # have to flip output targets
-                output_targets = self.rotate_affine_targets(
-                    output_targets,
-                    self.display_rotate,
-                    self.emptyscreen.shape)
-
-            elif self.display_rotate == 0:
-                input_targets, output_targets = self.get_affine_points(
-                    output.shape,
-                    (self.emptyscreen.shape))
-
-            self._affine_transform = img_processing.get_affine_transform(
-                pts1=np.asarray(input_targets.as_array(), dtype="float32"),
-                pts2=np.asarray(output_targets.as_array(), dtype="float32"))
-        # get matrix multiplication here to transform graphics to fit image
+        if self._affine_transform is None:
+            self._affine_transform = img_processing.get_fitted_affine_transform(
+                cam_image_shape=cam_capture.shape,
+                display_image_shape=self.emptyscreen.shape,
+                rotation=self.display_rotate
+            )
 
         row_cols = self.emptyscreen.shape[0:2][::-1]
-        outptu_img = img_processing.do_affine(output, self._affine_transform, row_cols)
+        outptu_img = img_processing.do_affine(cam_capture, self._affine_transform, row_cols)
         outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
         return outptu_img
 
@@ -280,19 +175,13 @@ class display(ABC):
         self.display_method(output)
  
 
-    # @abstractmethod
-    # def display_output_with_implant(self):
-    #     pass
-
 
 class PlayerInfoBox:
     def __init__(
             self,
             playername,
             playergraphic,
-            screen_rotation,
-            screen_dims,
-            internalregion
+            _gun_config: gun_config
             ) -> None:
         """object to persist player name and graphic
         
@@ -304,9 +193,7 @@ class PlayerInfoBox:
         self.timer = TimeDiffObject()
         self.playername = playername
         self.playergraphic = playergraphic
-        self.screen_rotation = screen_rotation
-        self.screen_dims = screen_dims
-        self.internalregion = internalregion
+        self.gun_config: gun_config = _gun_config
         self.create_player_image()
 
 

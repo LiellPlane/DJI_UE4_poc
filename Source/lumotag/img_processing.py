@@ -408,7 +408,39 @@ def get_fitted_affine_transform(
 
     this function only works for 90 degree angles
     """
-    pass
+    if rotation in [90, -90, 270]:
+        reverse_output_shape = tuple(reversed(display_image_shape[0:2]))
+        # if planning for 90 degrees, swap image dims
+        input_targets, output_targets = get_affine_points(
+            cam_image_shape,
+            reverse_output_shape)
+        output_targets = rotate_affine_targets(
+            output_targets,
+            rotation,
+            reverse_output_shape)
+
+        diffs = (np.asarray(reverse_output_shape) - np.asarray(display_image_shape[0:2]))/2
+        output_targets.add_offset_h(diffs[1])
+        output_targets.add_offset_w(diffs[0])
+
+    elif rotation == 180:
+        input_targets, output_targets = get_affine_points(
+            cam_image_shape,
+            display_image_shape)
+        # have to flip output targets
+        output_targets = rotate_affine_targets(
+            output_targets,
+            rotation,
+            display_image_shape)
+
+    elif rotation == 0:
+        input_targets, output_targets = get_affine_points(
+            cam_image_shape,
+            (display_image_shape))
+
+    return get_affine_transform(
+        pts1=np.asarray(input_targets.as_array(), dtype="float32"),
+        pts2=np.asarray(output_targets.as_array(), dtype="float32"))
 
 
 def get_affine_points(incoming_img_dims, outgoing_img_dims) -> AffinePoints:
