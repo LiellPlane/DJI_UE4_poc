@@ -116,8 +116,7 @@ def main():
             playergraphic=None,
             _gun_config=GUN_CONFIGURATION
         )}
-    
-    plop = configs.test_UI_elements_pos
+
 
     # set partial functions
     set_torch = partial(

@@ -4,10 +4,12 @@ from my_collections import (
     ImagingMode,
     _OS,
     ScreenNormalisedPositions,
-    UI_playerInfo
+    UI_Element
 )
 from dataclasses import dataclass
 import time
+
+
 
 
 
@@ -91,15 +93,8 @@ class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (900, 900)
+    windows_laptop = (500, 1200)
     stryker = (480, 620)
-
-
-test_UI_elements_pos =  UI_playerInfo(
-    photo=ScreenNormalisedPositions(top=10, lower=20, left=10, right=10),
-    user_tagname=ScreenNormalisedPositions(top=10, lower=20, left=10, right=10),
-    user_info=ScreenNormalisedPositions(top=10, lower=20, left=10, right=10)
-)
 
 
 class stryker_config(gun_config):
@@ -158,6 +153,17 @@ class stryker_config(gun_config):
     @property
     def video_modes(self):
         return HQ_Cam_vidmodes
+
+    @property
+    def ui_overlay(self) -> dict:
+        if self._UI_overlay is None:
+            self._UI_overlay = {
+                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.4, lower=0.9, left=0.1, right=0.2),
+                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.1, lower=0.2, left=0.1, right=0.4),
+                UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
+            }
+
+        return self._UI_overlay
 
 
 class TZAR_config(gun_config):
@@ -221,6 +227,16 @@ class TZAR_config(gun_config):
     def video_modes(self):
         return HQ_GS_Cam_vidmodes
 
+    @property
+    def ui_overlay(self) -> dict:
+        if self._UI_overlay is None:
+            self._UI_overlay = {
+                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.4, lower=0.9, left=0.1, right=0.2),
+                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.1, lower=0.2, left=0.1, right=0.4),
+                UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
+            }
+
+        return self._UI_overlay
 
 class simitzar_config(gun_config):
     model = "SIMITZAR"
@@ -278,3 +294,14 @@ class simitzar_config(gun_config):
     @property
     def video_modes(self):
         return Fake_Cam_vidmodes
+
+    @property
+    def ui_overlay(self) -> dict:
+        if self._UI_overlay is None:
+            self._UI_overlay = {
+                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.4, lower=0.9, left=0.1, right=0.2),
+                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.1, lower=0.2, left=0.1, right=0.4),
+                UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
+            }
+
+        return self._UI_overlay

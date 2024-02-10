@@ -22,6 +22,12 @@ class _OS(str, Enum):
     MAC_OS = "disgusting mac os"
 
 
+class UI_Element(Enum):
+    PHOTO = "PHOTO"
+    USER_ID = "USER_ID"
+    USER_INFO = "USER_INFO"
+
+
 class Shapes(AutoStrEnum):
     SQUARE = auto()
     TRIANGLE = auto()
@@ -41,18 +47,46 @@ class Shapes(AutoStrEnum):
 
 
 @dataclass
+class ScreenPixelPositions:
+    top: int
+    lower: int
+    left: int
+    right: int
+
+
+@dataclass
 class ScreenNormalisedPositions:
     top: float
     lower: float
     left: float
     right: float
+    
+    def get_pixel_positions(self, img_shape):
 
+        #input_img_ratio = img_shape[0]/img_shape[1] 
+        #requested_ratio = abs(self.top-self.lower)/abs(self.left-self.right)
+        print("put something here to correct aspect ratio: get_pixel_positions")
+        return ScreenPixelPositions(
+            top=int(self.top * img_shape[0]),
+            lower=int(self.lower * img_shape[0]),
+            left=int(self.left * img_shape[1]),
+            right=int(self.right * img_shape[1])
+        )
 
 @dataclass
-class UI_playerInfo:
-    photo: ScreenNormalisedPositions
-    user_tagname: ScreenNormalisedPositions
-    user_info: ScreenNormalisedPositions
+class UI_ready_element:
+    """UI element with positions to inject into an image"""
+    name: str
+    position: ScreenPixelPositions
+    image: any # np array
+    transform: any # affine matrix to transform element to position in output display NB element has to be rotated correctly first
+
+
+# @dataclass
+# class UI_playerInfo:
+#     photo: ScreenNormalisedPositions
+#     user_tagname: ScreenNormalisedPositions
+#     user_info: ScreenNormalisedPositions
 
 
 @dataclass

@@ -4,6 +4,7 @@ import shutil
 from enum import Enum, auto
 import os
 import numpy as np
+import time
 from contextlib import contextmanager
 from typing import Iterator, Literal
 from dataclasses import dataclass
@@ -491,3 +492,33 @@ def rotate_affine_targets(targets, degrees, outputscreen_shape):
                 top_right_w_h=rotate_pt_around_origin(targets.top_right_w_h, mid_img, degrees),
                 lower_right_w_h=rotate_pt_around_origin(targets.lower_right_w_h, mid_img, degrees))
     return new_target
+
+
+def test_viewer(
+        inputimage,
+        pausetime_Secs=0,
+        presskey=False,
+        destroyWindow=True):
+
+    cv2.imshow("img", inputimage)
+    if presskey==True:
+        cv2.waitKey(0); #any key
+
+    if presskey==False:
+        if cv2.waitKey(20) & 0xFF == 27:
+                pass
+    if pausetime_Secs>0:
+        time.sleep(pausetime_Secs)
+    if destroyWindow==True: cv2.destroyAllWindows()
+
+
+def rotate_img_orthogonal(img, rotation: Literal[0, 90, -90, 180, 270]):
+    if rotation in [0, 360]:
+        return img
+    if rotation in [90]:
+        return cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE)
+    if rotation in [-90, 270]:
+        return cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    if rotation in [180]:
+        return cv2.rotate(img, cv2.ROTATE_180)
+    raise ValueError("bad rotation req", rotation)
