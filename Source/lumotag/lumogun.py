@@ -254,6 +254,6 @@ def main():
                 with time_it("display image", debug=True):
                     display.display_method(img)
 
-  
+
 if __name__ == '__main__':
     main()

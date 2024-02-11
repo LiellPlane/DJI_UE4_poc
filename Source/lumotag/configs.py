@@ -299,8 +299,8 @@ class simitzar_config(gun_config):
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:
             self._UI_overlay = {
-                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.2, lower=0.45, left=0.1, right=0.3),
-                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.05, lower=0.19, left=0.5, right=0.8),
+                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.2, lower=0.45, left=0.01, right=0.2),
+                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.05, lower=0.19, left=0.01, right=0.2),
                 UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
             }
 

@@ -184,7 +184,7 @@ class display(ABC):
             img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)
-     
+
 
     def add_playerinfo_graphics(self, output, players: dict, analysis: ShapeItem):
         if len(analysis) > 0:
@@ -238,7 +238,7 @@ class PlayerInfoBox:
             self.playername,
             grayscale=True
             )
-        
+
         return id_img
 
     def create_player_image_and_mask(self):
