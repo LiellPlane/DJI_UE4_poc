@@ -1,0 +1,20 @@
+sessionStorage.setItem("cartItems", JSON.stringify(cartData))
+
+const cartItems = JSON.parse(sessionStorage.getItem("cartItems"));;
+
+
+sessionStorage.setItem('username', 'codedamn');
+var user = sessionStorage.getItem('username');
+console.log(user); // Outputs: codedamn
+
+sessionStorage.removeItem('username');
+
+
+might want to use client header response "set cookie" which commands the browser to save a cookie
+then I think its automatically sent by the browser for each request
+
+but can that mess up? what if I delete the backend memory, if no authenticated can we ask
+browser to delete cookie? Or can set cookie session to be in past
+
+
+see youtube "how do server side authentication sessions work (express & cookies)

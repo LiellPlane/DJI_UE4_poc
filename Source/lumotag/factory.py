@@ -1025,7 +1025,7 @@ class ImageLibrary(ImageGenerator):
         #self.images = [i for i in self.images if "0290" in i]#0290
         #self.images = [i for i in self.images if "1704404023_3112135" in i] # testing standard
         
-        self.images = [i for i in self.images if "wearable" in i]
+        self.images = [i for i in self.images if "unique_id" in i]
 
 
         

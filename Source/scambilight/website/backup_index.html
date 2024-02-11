@@ -1,78 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Calibration Page</title>
-    <style>
-        .button {
-            height: 30px;
-            width: 300px;
-            margin-bottom: 10px; /* Add space between buttons */
-        }
-        .big-button {
-            height: 100px;
-            width: 300px;
-            margin-bottom: 10px; /* Add space between buttons */
-        }
-        .image {
-            display: block; /* Ensure images don't have inline spacing */
-            margin-bottom: 10px; /* Add space between images and next elements */
-        }
-        #lname, #infobox, #configbox {
-            display: block; /* Better control of layout */
-            margin-bottom: 10px; /* Add space between form elements */
-            width: 300px; /* Match button width for consistency */
-        }
-        #configbox {
-            margin-top: 20px; /* Extra space before the config box for clarity */
-        }
-    </style>
-</head>
-<body>
 
-    <!-- Instructions -->
-    <div>
-        <b>Instructions:</b><br>
-        <i>Type password in text field</i><br>
-        <i>Click corners of rectangular corrected image, ensure scroll bars haven't added offset!</i><br>
-        <i>Click SUBMIT to finish calibration. Device needs to be reset after</i><br>
-        <b>Password is transmitted in https api call </b><br>
-        <i>to crash device - click in same place to create singular matrix then SSH and debug issue</i><br>
-        <i>note: move_in_vert moves the horizontal lines vertically.. im so sorry</i><br>
-    </div>
+<b>Instructions:</b><br><br>
 
-    <!-- Input Fields -->
-    <form action="/action_page.php" style="margin-top: 20px;">
-        <input type="text" id="lname" name="password" placeholder="type pass here">
-    </form>
-    <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
-    
-    <!-- Images -->
-    <img class="image" id="perp_image" src="perp_image.jpg?">
-    <img class="image" id="raw_image" src="raw_image.jpg?" width="1296" height="972">
-    <img class="image" id="overlay_image" src="overlay_image.jpg?">
-
-    <!-- Buttons -->
-    <button class="button" onclick="finish();">SUBMIT CORNER CLICKS</button>
-    <button class="button" onclick="reset();">RESET DEVICE</button>
-    <button class="button" onclick="req_new_image();">REQUEST REGIONS CHECK IMAGE</button>
-    <button class="button" onclick="req_new_image_all();">REQUEST ALL VISUALISATION IMAGES</button>
-    <button class="button" onclick="req_sample_config();">REQUEST REGION CONFIG JSON</button>
-    <button class="button" onclick="submit_sample_config();">SUBMIT REGION CONFIG JSON</button>
-    <button class="button" onclick="sim_regions();">SIMULATE REGIONS</button>
-    <button class="big-button" onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button>
-    <button class="big-button" onclick="api_refresh_images();">TEST API IMAGE</button>
-
-    <!-- Configuration Box and Default Configuration -->
-    <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
-    <b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
-
-    <form id="form" action="/" method="POST" style="display: none;">
-        <input id="imageId" type="hidden" name="imageId">
+<i>Type password in text field</i><br>
+<i>Click corners of rectangular corrected image, ensure scroll bars haven't added offset!</i><br>
+<i>Click SUBMIT to finish calibration. Device needs to be reset after</i><br><br>
+<b>Password is transmitted in https api call </b><br>
+<i>to crash device - click in same place to create singular matrix</i><br>
+<i>then SSH and debug issue</i><br><br><br><br>
+<form action="/action_page.php"><input type="text" id="lname" name="password" placeholder="type pass here" > </form>
+<textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
+<img class="image" id="perp_image" src="perp_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="raw_image" width="1296" height="972" src="raw_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="overlay_image" src="overlay_image.jpg?" + new Date().getTime()><br>
+<button style="height:30;width:300" onclick="finish();">SUBMIT CORNER CLICKS</button><br>
+<button style="height:30;width:300" onclick="reset();">RESET_DEVICE</button><br>
+<button style="height:30;width:300" onclick="req_new_image();">REQUEST_REGIONS_CHECK_IMAGE</button><br>
+<button style="height:30;width:300" onclick="req_new_image_all();">REQUEST_ALL_VISUALISATION_IMAGES</button><br>
+<button style="height:30;width:300" onclick="req_sample_config();">REQUEST_REGION_CONFIG_JSON</button><br>
+<button style="height:30;width:300" onclick="submit_sample_config();">SUBMIT_REGION_CONFIG_JSON</button><br>
+<button style="height:30;width:300" onclick="sim_regions();">SIMULATE REGIONS</button><br>
+<button style="height:100;width:300" onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button><br>
+<button style="height:100;width:300" onclick="api_refresh_images();">TEST API IMAGE</button><br>
+<i>note: move_in_vert moves the horizontal lines vertically.. im so sorry</i><br>
+<textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
+<b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
+    <form id="form" action="/" method="POST">
+        <input id="imageId" type="hidden" name="imageId" value="{{imageID}}">
         <input id="positionX" type="hidden" name="positionX" value="0">
         <input id="positionY" type="hidden" name="positionY" value="0">
     </form>
-
     <script>
         const proxyUrl  = 'https://corsproxy.io/?';
         const targetUrl   = 'https://api.scambilight.com/hello';
@@ -362,6 +318,3 @@
         }
 
     </script>
-
-</body>
-</html>
