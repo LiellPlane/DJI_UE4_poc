@@ -540,3 +540,31 @@ def rotate_img_orthogonal(img, rotation: Literal[0, 90, -90, 180, 270]):
 def get_empty_lumodisplay_img(imgshape: tuple[int, int]):
     return np.zeros(
             (imgshape + (3,)), np.uint8)
+
+
+def print_text_in_boundingbox(text: str, grayscale: bool):
+    FONT = cv2.FONT_HERSHEY_SIMPLEX
+    FONT_SCALE = 1.0
+    FONT_THICKNESS = 2
+
+    (label_width, label_height), baseline = cv2.getTextSize(
+        text,
+        FONT,
+        FONT_SCALE,
+        FONT_THICKNESS)
+
+    label_patch = np.zeros((label_height + baseline, label_width, 3), np.uint8)
+
+    cv2.putText(
+        label_patch,
+        text,
+        (0, label_height),
+        FONT,
+        FONT_SCALE,
+        (255, 255, 255),
+        FONT_THICKNESS)
+    
+    if grayscale is True:
+        label_patch = cv2.cvtColor(label_patch, cv2.COLOR_BGR2GRAY)
+
+    return label_patch

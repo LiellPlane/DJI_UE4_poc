@@ -216,33 +216,36 @@ class PlayerInfoBox:
 
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
 
-        self.ui_elements = [self.get_affine_transform(
-            self.gray_image,
-            element_name=UI_Element.PHOTO.value)]
+        self.ui_elements = []
 
+        self.ui_elements.append(self.get_affine_transform(
+            self.gray_image,
+            element_name=UI_Element.PHOTO.value)
+            )
+
+        self.ui_elements.append(self.get_affine_transform(
+            self.create_player_text(),
+            element_name=UI_Element.USER_ID.value)
+            )
 
     def create_player_text(self):
         """we need to create the player name/ID/handle
         but to a specific size so it looks OK, then
         rotate it"""
-        blackboard = img_processing.get_empty_lumodisplay_img(
-            (1000, 1000)
-            )
 
+        id_img =  img_processing.print_text_in_boundingbox(
+            self.playername,
+            grayscale=True
+            )
+        
+        return id_img
 
     def create_player_image_and_mask(self):
         """get the transparent player custom graphic"""
         img = img_processing.load_img_set_transparency()
         gray_image = cv2.cvtColor(img[:,:,0:3], cv2.COLOR_BGR2GRAY)
         alpha_mask = img[:,:,3]
-        gray_image = img_processing.rotate_img_orthogonal(
-            gray_image,
-            (360-self.gun_config.screen_rotation)
-            )
-        alpha_mask = img_processing.rotate_img_orthogonal(
-            alpha_mask,
-            (360-self.gun_config.screen_rotation)
-            )
+
         #img_processing.test_viewer(gray_image, 0, True, True)
         return gray_image, alpha_mask
 
@@ -252,6 +255,12 @@ class PlayerInfoBox:
             ui_element,
             element_name: UI_Element):
 
+
+        ui_element = img_processing.rotate_img_orthogonal(
+            ui_element,
+            (360-self.gun_config.screen_rotation)
+            )
+
         input_pts = img_processing.AffinePoints(
             top_left_w_h=[0, 0],
             top_right_w_h=[ui_element.shape[1], 0],
@@ -259,7 +268,7 @@ class PlayerInfoBox:
         )
 
         # get pixel positions for display output
-        pixel_pos = self.gun_config.ui_overlay[UI_Element.PHOTO.value].get_pixel_positions(
+        pixel_pos = self.gun_config.ui_overlay[element_name].get_pixel_positions(
             self.output_display_shape
             )
 
@@ -279,7 +288,7 @@ class PlayerInfoBox:
         #img_processing.test_viewer(outptu_img, 0, True, True)
 
         resized_element = img_processing.resize_image(
-            self.gray_image,
+            ui_element,
             abs(pixel_pos.left-pixel_pos.right),
             abs(pixel_pos.top-pixel_pos.lower)
             )
