@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from typing import Iterator, Literal
 from dataclasses import dataclass
 from skimage.draw import line
-from my_collections import CropSlicing, AffinePoints
+from my_collections import CropSlicing, AffinePoints, UI_ready_element
 from math import floor
 
 RED = (0, 0, 255)
@@ -338,16 +338,17 @@ def rotate_pt_around_origin(point, origin, degrees):
     return qx, qy
 
 
-def add_ui_elements(image, element_package):
+def add_ui_elements(image, element_package: UI_ready_element) -> None:
     image[
+        element_package.position.top:element_package.position.lower,
           element_package.position.left:element_package.position.right,
-          element_package.position.top:element_package.position.lower,
+          
           0
           ] = element_package.image
 
 
-def resize_image(inputimage, height, width):
-    return cv2.resize(inputimage, (height, width), interpolation = cv2.INTER_NEAREST)
+def resize_image(inputimage, width, height):
+    return cv2.resize(inputimage, (width, height), interpolation = cv2.INTER_NEAREST)
 
 
 def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO 
@@ -534,3 +535,8 @@ def rotate_img_orthogonal(img, rotation: Literal[0, 90, -90, 180, 270]):
     if rotation in [180]:
         return cv2.rotate(img, cv2.ROTATE_180)
     raise ValueError("bad rotation req", rotation)
+
+
+def get_empty_lumodisplay_img(imgshape: tuple[int, int]):
+    return np.zeros(
+            (imgshape + (3,)), np.uint8)

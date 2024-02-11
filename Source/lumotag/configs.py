@@ -273,7 +273,7 @@ class simitzar_config(gun_config):
         return(screensizes.windows_laptop.value)
 
     def loop_wait(self):
-        time.sleep(0.3)
+        time.sleep(0.05)
 
     @property
     def light_strobe_cnt(self):
@@ -299,7 +299,7 @@ class simitzar_config(gun_config):
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:
             self._UI_overlay = {
-                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.4, lower=0.9, left=0.1, right=0.2),
+                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.1, lower=0.4, left=0.1, right=0.3),
                 UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.1, lower=0.2, left=0.1, right=0.4),
                 UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
             }

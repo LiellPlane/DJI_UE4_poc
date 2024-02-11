@@ -137,8 +137,9 @@ class display(ABC):
         self.display_rotate = _gun_config.screen_rotation
         self.screen_size = _gun_config.screen_size
         self.opencv_win_pos = _gun_config.opencv_window_pos
-        self.emptyscreen = np.zeros(
-            ( _gun_config.screen_size + (3,)), np.uint8)
+        self.emptyscreen = img_processing.get_empty_lumodisplay_img(_gun_config.screen_size)
+        # np.zeros(
+        #     ( _gun_config.screen_size + (3,)), np.uint8)
         #self.draw_test_rect()
         self._affine_transform = None
 
@@ -173,7 +174,8 @@ class display(ABC):
         inputimg = cv2.rectangle(inputimg, left_top, right_low, (255,255,255), 2)
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
-    def display_output_with_graphics(self, output, graphics: ShapeItem, players: dict):
+
+    def add_crosshair_and_analytics_graphics(self, output, graphics: ShapeItem):
         img_processing.add_cross_hair(
             output,
             adapt=True)
@@ -182,11 +184,12 @@ class display(ABC):
             img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)
+     
+
+    def add_playerinfo_graphics(self, output, players: dict):
         for player in players.values():
             for element in player.ui_elements:
                 img_processing.add_ui_elements(output, element)
-        self.display_method(output)
- 
 
 
 class PlayerInfoBox:
@@ -207,8 +210,10 @@ class PlayerInfoBox:
         self.playername = playername
         self.playergraphic = playergraphic
         self.gun_config: gun_config = _gun_config
-        self.output_display_shape = np.zeros(
-            ( _gun_config.screen_size + (3,)), np.uint8).shape
+        self.output_display_shape = img_processing.get_empty_lumodisplay_img(
+            _gun_config.screen_size
+            ).shape
+
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
 
         self.ui_elements = [self.get_affine_transform(
@@ -220,7 +225,9 @@ class PlayerInfoBox:
         """we need to create the player name/ID/handle
         but to a specific size so it looks OK, then
         rotate it"""
-        pass
+        blackboard = img_processing.get_empty_lumodisplay_img(
+            (1000, 1000)
+            )
 
 
     def create_player_image_and_mask(self):
@@ -246,9 +253,9 @@ class PlayerInfoBox:
             element_name: UI_Element):
 
         input_pts = img_processing.AffinePoints(
-            top_left_w_h=[0,0],
-            top_right_w_h=[0,ui_element.shape[1]],
-            lower_right_w_h=[ui_element.shape[0],ui_element.shape[1]]
+            top_left_w_h=[0, 0],
+            top_right_w_h=[ui_element.shape[1], 0],
+            lower_right_w_h=[ui_element.shape[1], ui_element.shape[0]]
         )
 
         # get pixel positions for display output
@@ -257,24 +264,41 @@ class PlayerInfoBox:
             )
 
         output_pts = img_processing.AffinePoints(
-            top_left_w_h=[pixel_pos.top,pixel_pos.left],
-            top_right_w_h=[pixel_pos.top, pixel_pos.right],
-            lower_right_w_h=[pixel_pos.lower,pixel_pos.right]
+            top_left_w_h=[pixel_pos.left, pixel_pos.top],
+            top_right_w_h=[pixel_pos.right, pixel_pos.top],
+            lower_right_w_h=[pixel_pos.right, pixel_pos.lower]
         )
 
         transfrm = img_processing.get_affine_transform(
             pts1=np.asarray(input_pts.as_array(), dtype="float32"),
             pts2=np.asarray(output_pts.as_array(), dtype="float32"))
 
-        row_cols = self.output_display_shape[0:2][::-1]
-        outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
-        #outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
-        img_processing.test_viewer(outptu_img, 0, True, True)
+        #row_cols = self.output_display_shape[0:2][::-1]
+        #outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
+
+        #img_processing.test_viewer(outptu_img, 0, True, True)
 
         resized_element = img_processing.resize_image(
-            self.gray_image,abs(pixel_pos.top-pixel_pos.lower),
-            abs(pixel_pos.left-pixel_pos.right)
+            self.gray_image,
+            abs(pixel_pos.left-pixel_pos.right),
+            abs(pixel_pos.top-pixel_pos.lower)
             )
+        #img_processing.test_viewer(resized_element, 0, True, True)
+        #test_grab = outptu_img[pixel_pos.top:pixel_pos.lower, pixel_pos.left:pixel_pos.right]
+        #print("test grab")
+        #img_processing.test_viewer(test_grab, 0, True, True)
+        #img_processing.test_viewer(resized_element, 0, True, True)
+
+        # plops = UI_ready_element(
+        #     name=element_name,
+        #     position=pixel_pos,
+        #     image=resized_element,
+        #     transform=transfrm
+        # )
+
+        # testempty = img_processing.get_empty_lumodisplay_img(self.gun_config.screen_size)
+        # img_processing.add_ui_elements(testempty, plops)
+        # img_processing.test_viewer(testempty, 0, True, True)
 
         return UI_ready_element(
             name=element_name,

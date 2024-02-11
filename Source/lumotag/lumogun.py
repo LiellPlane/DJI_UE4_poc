@@ -225,12 +225,7 @@ def main():
                     # debugging code to capture images
                     #if cap_img is not None:
                     file_system.save_image(cap_img)
-                        # central_img, _ = img_processing.get_internal_section(
-                        #             image_capture.last_img,
-                        #             GUN_CONFIGURATION.internal_img_crop)
-                        # file_system.save_image(central_img)
-                # trigger is held on by debouncer even if user releases
-                # trigger
+
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0) # click noise from relay only
@@ -246,16 +241,19 @@ def main():
                         analysis.extend(img_analyser.analysis_output_q.get(
                             block=True,
                             timeout=None))
-                #graphics = []
+
                 with time_it("add internal section"):
                     display.add_internal_section_region(img, slice_details)
 
-                with time_it("add graphics and display image", debug=True):
-                    display.display_output_with_graphics(img, analysis, players)
+                with time_it("add graphics: crosshair/analyics", debug=True):
+                    display.add_crosshair_and_analytics_graphics(img, analysis)
 
-                # if running from SSH we can ignore error
-    raise RuntimeError("something broke out of loop")
+                with time_it("add graphics: player info", debug=True):
+                    display.add_playerinfo_graphics(img, players)
 
+                with time_it("display image", debug=True):
+                    display.display_method(img)
 
+  
 if __name__ == '__main__':
     main()
