@@ -338,6 +338,18 @@ def rotate_pt_around_origin(point, origin, degrees):
     return qx, qy
 
 
+def add_ui_elements(image, element_package):
+    image[
+          element_package.position.left:element_package.position.right,
+          element_package.position.top:element_package.position.lower,
+          0
+          ] = element_package.image
+
+
+def resize_image(inputimage, height, width):
+    return cv2.resize(inputimage, (height, width), interpolation = cv2.INTER_NEAREST)
+
+
 def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO 
     """draw graphics for user if a pattern is found
     TODO: maybe want floating numbers etc above this which

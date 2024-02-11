@@ -251,7 +251,7 @@ def main():
                     display.add_internal_section_region(img, slice_details)
 
                 with time_it("add graphics and display image", debug=True):
-                    display.display_output_with_graphics(img, analysis)
+                    display.display_output_with_graphics(img, analysis, players)
 
                 # if running from SSH we can ignore error
     raise RuntimeError("something broke out of loop")

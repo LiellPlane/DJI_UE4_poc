@@ -16,9 +16,14 @@ from functools import reduce
 import img_processing
 from math import floor
 from functools import reduce
-from my_collections import AffinePoints, ShapeItem, CropSlicing, UI_ready_element, UI_Element
+from my_collections import (
+    ShapeItem,
+    CropSlicing,
+    UI_ready_element,
+    UI_Element,
+    SharedMem_ImgTicket
+    )
 
-from my_collections import SharedMem_ImgTicket, ScreenNormalisedPositions
 
 try:
     pass
@@ -168,7 +173,7 @@ class display(ABC):
         inputimg = cv2.rectangle(inputimg, left_top, right_low, (255,255,255), 2)
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
-    def display_output_with_graphics(self, output, graphics: ShapeItem):
+    def display_output_with_graphics(self, output, graphics: ShapeItem, players: dict):
         img_processing.add_cross_hair(
             output,
             adapt=True)
@@ -177,7 +182,9 @@ class display(ABC):
             img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)
-        
+        for player in players.values():
+            for element in player.ui_elements:
+                img_processing.add_ui_elements(output, element)
         self.display_method(output)
  
 
@@ -204,7 +211,9 @@ class PlayerInfoBox:
             ( _gun_config.screen_size + (3,)), np.uint8).shape
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
 
-        self.get_affine_transform(self.gray_image)
+        self.ui_elements = [self.get_affine_transform(
+            self.gray_image,
+            element_name=UI_Element.PHOTO.value)]
 
 
     def create_player_text(self):
@@ -231,7 +240,10 @@ class PlayerInfoBox:
         return gray_image, alpha_mask
 
 
-    def get_affine_transform(self, ui_element):
+    def get_affine_transform(
+            self,
+            ui_element,
+            element_name: UI_Element):
 
         input_pts = img_processing.AffinePoints(
             top_left_w_h=[0,0],
@@ -257,12 +269,18 @@ class PlayerInfoBox:
         row_cols = self.output_display_shape[0:2][::-1]
         outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
         #outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
-        #img_processing.test_viewer(outptu_img, 0, True, True)
+        img_processing.test_viewer(outptu_img, 0, True, True)
+
+        resized_element = img_processing.resize_image(
+            self.gray_image,abs(pixel_pos.top-pixel_pos.lower),
+            abs(pixel_pos.left-pixel_pos.right)
+            )
+
         return UI_ready_element(
-            name="photo",
+            name=element_name,
             position=pixel_pos,
-            image=outptu_img,
-            transfrm=transfrm
+            image=resized_element,
+            transform=transfrm
         )
 
 
