@@ -186,10 +186,11 @@ class display(ABC):
                 patterndetails=c)
      
 
-    def add_playerinfo_graphics(self, output, players: dict):
-        for player in players.values():
-            for element in player.ui_elements:
-                img_processing.add_ui_elements(output, element)
+    def add_playerinfo_graphics(self, output, players: dict, analysis: ShapeItem):
+        if len(analysis) > 0:
+            for player in players.values():
+                for element in player.ui_elements:
+                    img_processing.add_ui_elements(output, element)
 
 
 class PlayerInfoBox:

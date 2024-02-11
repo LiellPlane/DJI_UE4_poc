@@ -249,7 +249,7 @@ def main():
                     display.add_crosshair_and_analytics_graphics(img, analysis)
 
                 with time_it("add graphics: player info", debug=True):
-                    display.add_playerinfo_graphics(img, players)
+                    display.add_playerinfo_graphics(img, players, analysis)
 
                 with time_it("display image", debug=True):
                     display.display_method(img)
