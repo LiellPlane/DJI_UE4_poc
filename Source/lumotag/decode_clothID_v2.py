@@ -880,7 +880,7 @@ def is_pattern_detected(samples: list[list[int]]) -> bool:
 
     judgement = []
     for sample in samples:
-        peaks, _ = find_peaks(sample, height=30, prominence=None)
+        
         centre = int(len(sample)/2)
         np_sample = np.array(sample)
         # numpy doesn't like this line with uints - truncates value
@@ -957,6 +957,7 @@ def analyse_candidates_shapematch(
                     flat_list.append(i)
             return flat_list
         samples_all = eb34([x._2d_samples for x in squrs_found])
+        
         custom_print(f"Sample points: {len(samples_all)/2}", dataobject.debug_details.PRINT_DEBUG)
         #tote_samples [x in i._2d_samples for i in squrs_found]
 
@@ -1057,9 +1058,22 @@ def analyse_candidates_shapematch(
             #     plop=1
             #     pass
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
-            out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200, 500), interpolation=cv2.INTER_NEAREST)
+            
+            height = 500
+            ratio = height/len(c._2d_samples[0])
+
+            peaks1 = get_peaks(c._2d_samples[0])
+            peaks2 = get_peaks(c._2d_samples[1])
+            out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200, height), interpolation=cv2.INTER_NEAREST)
+            out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
+            for peak in peaks1:
+                cv2.circle(out_img1, (100, int(peak*ratio)), 5, (0,0,255), -1)
+            for peak in peaks2:
+                cv2.circle(out_img2, (100, int(peak*ratio)), 5, (0,0,255), -1)
+                #out_img1[int(peak*ratio), 100] = (0,0,255)
             #dataobject.img_view_or_save_if_debug(out_img1, "squarecode")
-            out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200, 500), interpolation=cv2.INTER_NEAREST)
+            out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200, height), interpolation=cv2.INTER_NEAREST)
+            out_img2 = cv2.cvtColor(out_img2, cv2.COLOR_GRAY2BGR)
             #dataobject.img_view_or_save_if_debug(out_img2, "squarecode")
 
             stacked_img = np.hstack((
@@ -1071,6 +1085,9 @@ def analyse_candidates_shapematch(
 
     return squrs_found
 
+def get_peaks(sample):
+    peaks, _ = find_peaks(sample, height=10, prominence=None)
+    return peaks
 
 def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):
     """expects a canny image or whatever results in edges (high frequencies)"""
