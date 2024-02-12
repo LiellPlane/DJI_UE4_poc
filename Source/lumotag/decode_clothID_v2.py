@@ -1,6 +1,6 @@
 import sys
 import cv2
-
+from scipy.signal import find_peaks
 from enum import Enum, auto
 import os
 import numpy as np
@@ -703,7 +703,8 @@ def get_approx_shape_and_bbox2(
             # cheesy way to test for pattern
             if is_pattern_detected([averages, averages2]):
                 shape_ = Shapes.SQUARE
-
+            else:
+                shape_ = Shapes.SQUARE
 
             if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
                 samplepos = sample_line1 + sample_line2
@@ -874,8 +875,12 @@ def is_pattern_detected(samples: list[list[int]]) -> bool:
 ###%%%((##((##############(######%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%%%%%%%%%%%%%%%%%%%%%%%#((####################(#######
 ##%%%%#(#((##############(###########%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%####%%%%%%%##%#%%%%%%%##((#############((#((#####    
     """
+
+    
+
     judgement = []
     for sample in samples:
+        peaks, _ = find_peaks(sample, height=30, prominence=None)
         centre = int(len(sample)/2)
         np_sample = np.array(sample)
         # numpy doesn't like this line with uints - truncates value
@@ -889,7 +894,7 @@ def is_pattern_detected(samples: list[list[int]]) -> bool:
             continue
         judgement.append(True)
 
-    if len(samples) ==  len(judgement):
+    if len(samples) == len(judgement):
         if all(judgement):
             return True
 
@@ -954,6 +959,7 @@ def analyse_candidates_shapematch(
         samples_all = eb34([x._2d_samples for x in squrs_found])
         custom_print(f"Sample points: {len(samples_all)/2}", dataobject.debug_details.PRINT_DEBUG)
         #tote_samples [x in i._2d_samples for i in squrs_found]
+
 
         custom_print(f"total samples: {len(tote_samples)}", dataobject.debug_details.PRINT_DEBUG)
 
