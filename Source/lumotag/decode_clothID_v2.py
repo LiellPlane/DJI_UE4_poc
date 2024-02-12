@@ -1068,12 +1068,13 @@ def analyse_candidates_shapematch(
             out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
             for peak in peaks1:
                 cv2.circle(out_img1, (100, int(peak*ratio)), 5, (0,0,255), -1)
-            for peak in peaks2:
-                cv2.circle(out_img2, (100, int(peak*ratio)), 5, (0,0,255), -1)
+
                 #out_img1[int(peak*ratio), 100] = (0,0,255)
             #dataobject.img_view_or_save_if_debug(out_img1, "squarecode")
             out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200, height), interpolation=cv2.INTER_NEAREST)
             out_img2 = cv2.cvtColor(out_img2, cv2.COLOR_GRAY2BGR)
+            for peak in peaks2:
+                cv2.circle(out_img2, (100, int(peak*ratio)), 5, (0,0,255), -1)
             #dataobject.img_view_or_save_if_debug(out_img2, "squarecode")
 
             stacked_img = np.hstack((
@@ -1086,7 +1087,9 @@ def analyse_candidates_shapematch(
     return squrs_found
 
 def get_peaks(sample):
-    peaks, _ = find_peaks(sample, height=10, prominence=None)
+    #std_dev = np.std(sample)
+    normalized_data = (sample - np.min(sample)) / (np.max(sample) - np.min(sample))
+    peaks, _ = find_peaks(normalized_data, height=0.5, prominence=None)
     return peaks
 
 def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):
