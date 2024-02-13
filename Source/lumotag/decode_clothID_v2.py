@@ -22,6 +22,7 @@ import img_processing as img_pro
 from configs import base_find_lumotag_config
 #from sklearn.neighbors import KDTree
 
+MIN_TAG_VARIANCE = 25 #max-min for grayscale values of lumotag
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -1087,10 +1088,15 @@ def analyse_candidates_shapematch(
     return squrs_found
 
 def get_peaks(sample):
-    #std_dev = np.std(sample)
+    #  std_dev = np.std(sample)
+    _range = max(sample)-min(sample)
+    if _range < MIN_TAG_VARIANCE: # arbitrary threshold
+        return []
     normalized_data = (sample - np.min(sample)) / (np.max(sample) - np.min(sample))
+    #prominence = int(_range / 3)  # arbitrary way to filter out low prominence peaks
     peaks, _ = find_peaks(normalized_data, height=0.5, prominence=None)
     return peaks
+
 
 def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):
     """expects a canny image or whatever results in edges (high frequencies)"""
