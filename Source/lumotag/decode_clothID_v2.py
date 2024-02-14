@@ -22,7 +22,8 @@ import img_processing as img_pro
 from configs import base_find_lumotag_config
 #from sklearn.neighbors import KDTree
 
-MIN_TAG_VARIANCE = 25 #max-min for grayscale values of lumotag
+MIN_TAG_VARIANCE = 25 # max-min for grayscale values of lumotag
+
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -702,10 +703,10 @@ def get_approx_shape_and_bbox2(
 
 
             # cheesy way to test for pattern
-            if is_pattern_detected([averages, averages2]):
+            if check_for_pattern([averages, averages2]):
                 shape_ = Shapes.SQUARE
             else:
-                shape_ = Shapes.SQUARE
+                shape_ = Shapes.UNKNOWN
 
             if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
                 samplepos = sample_line1 + sample_line2
@@ -1065,6 +1066,7 @@ def analyse_candidates_shapematch(
 
             peaks1 = get_peaks(c._2d_samples[0])
             peaks2 = get_peaks(c._2d_samples[1])
+            
             out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200, height), interpolation=cv2.INTER_NEAREST)
             out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
             for peak in peaks1:
@@ -1087,6 +1089,17 @@ def analyse_candidates_shapematch(
 
     return squrs_found
 
+
+
+def check_for_pattern(samples):
+    peaks = []
+    for sample in samples:
+        peaks.append(get_peaks(sample))
+    # for now check that we have one sample line with no peaks and one with 2
+    # later we can make sure peaks are in the positions we expect
+    return set([len(x) for x in peaks]) == set([2, 0])
+ 
+
 def get_peaks(sample):
     #  std_dev = np.std(sample)
     _range = max(sample)-min(sample)
@@ -1094,7 +1107,8 @@ def get_peaks(sample):
         return []
     normalized_data = (sample - np.min(sample)) / (np.max(sample) - np.min(sample))
     #prominence = int(_range / 3)  # arbitrary way to filter out low prominence peaks
-    peaks, _ = find_peaks(normalized_data, height=0.5, prominence=None)
+    peaks, _ = find_peaks(normalized_data, height=0.4, prominence=0.2, width=2, distance=4)
+
     return peaks
 
 
