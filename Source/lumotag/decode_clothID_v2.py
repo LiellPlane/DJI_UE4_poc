@@ -8,6 +8,7 @@ import numpy as np
 #from matplotlib import pyplot as plt
 import math
 import random
+import functools 
 from utils import (
     time_it,
     custom_print,
@@ -1095,9 +1096,16 @@ def check_for_pattern(samples):
     peaks = []
     for sample in samples:
         peaks.append(get_peaks(sample))
+        if len(peaks[-1]) > 0:
+            symmetric_err = functools.reduce(lambda a, b: abs(a + b), [abs((len(sample)/2)-x) for x in peaks[-1]])
     # for now check that we have one sample line with no peaks and one with 2
     # later we can make sure peaks are in the positions we expect
-    return set([len(x) for x in peaks]) == set([2, 0])
+    if set([len(x) for x in peaks]) == set([2, 0]):
+        plop=1
+        return True
+    else:
+
+        return False
  
 
 def get_peaks(sample):
