@@ -3,6 +3,7 @@ import numpy as np
 import time
 from enum import Enum
 from functools import lru_cache
+from typing import Literal
 import cv2
 import os
 import threading
@@ -189,6 +190,7 @@ class display(ABC):
     def add_playerinfo_graphics(self, output, players: dict, analysis: ShapeItem):
         if len(analysis) > 0:
             for player in players.values():
+                player.elements_fadein()
                 for element in player.ui_elements:
                     img_processing.add_ui_elements(output, element)
 
@@ -233,26 +235,25 @@ class PlayerInfoBox:
             )
 
     def elements_fadein(self):
-        self.fade_direction = 1
+        return self.calculate_fade(direction=1)
 
     def elements_fadeout(self):
-        self.fade_direction = -1
+        return self.calculate_fade(direction=-1)
 
-    def calculate_fade(self):
+    def calculate_fade(self, direction: Literal[-1, 1]):
+        if direction not in [-1, 1]:
+            raise Exception("bad input to calculate fade", direction)
         time_diff = self.timer.get_dt()
         self.timer.reset()
         self.current_fade_ms += (time_diff * self.fade_direction)
         # get normalised value
         norm = self.current_fade_ms / self.fade_ms
-        lerp_fade = self.lerp(norm)
-        #self.
+        return self.lerp(norm)
 
-
-
+    @staticmethod
     def lerp(x):
-        if not 0 <= x <= 1:
-            raise Exception("please normalise lerp input")
-        return 1 - (1 - x) * (1 - x)
+        lerpation = 1 - (1 - x) * (1 - x)
+        return max(0, min(lerpation, 1))
 
     def create_player_text(self):
         """we need to create the player name/ID/handle
