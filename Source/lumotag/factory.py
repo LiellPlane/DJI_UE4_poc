@@ -186,13 +186,23 @@ class display(ABC):
                 image=output,
                 patterndetails=c)
 
+    @staticmethod
+    def set_fade(player, analysis):
+        if len(analysis) > 0:
+            return player.elements_fadein()
+        else:
+            return player.elements_fadeout()
 
     def add_playerinfo_graphics(self, output, players: dict, analysis: ShapeItem):
-        if len(analysis) > 0:
-            for player in players.values():
-                player.elements_fadein()
-                for element in player.ui_elements:
-                    img_processing.add_ui_elements(output, element)
+
+        for player in players.values():
+            fade_norm = self.set_fade(player, analysis)
+            for element in player.ui_elements:
+                img_processing.add_ui_elements(
+                    output,
+                    element,
+                    fade_norm
+                    )
 
 
 class PlayerInfoBox:
@@ -218,7 +228,7 @@ class PlayerInfoBox:
             ).shape
 
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
-        self.fade_ms = 300
+        self.fade_ms = 600
         self.current_fade_ms = 0
         self.fade_direction = 1
 
@@ -243,9 +253,11 @@ class PlayerInfoBox:
     def calculate_fade(self, direction: Literal[-1, 1]):
         if direction not in [-1, 1]:
             raise Exception("bad input to calculate fade", direction)
-        time_diff = self.timer.get_dt()
+        time_diff_ms = self.timer.get_dt() * 1000
         self.timer.reset()
-        self.current_fade_ms += (time_diff * self.fade_direction)
+        self.current_fade_ms += (time_diff_ms * self.fade_direction)
+        # limit working fade value
+        self.current_fade_ms = min(max(self.current_fade_ms, 0), self.fade_ms)
         # get normalised value
         norm = self.current_fade_ms / self.fade_ms
         return self.lerp(norm)
@@ -930,8 +942,8 @@ class TimeDiffObject:
     def get_dt(self) -> float:
         """gets time in seconds since last reset/init"""
         self._stop_time = time.perf_counter()
-        difference_ms = self._stop_time-self._start_time
-        return difference_ms
+        difference_secs = self._stop_time-self._start_time
+        return difference_secs
 
     def reset(self):
         self._start_time = time.perf_counter()

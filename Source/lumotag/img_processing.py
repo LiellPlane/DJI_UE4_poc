@@ -338,13 +338,16 @@ def rotate_pt_around_origin(point, origin, degrees):
     return qx, qy
 
 
-def add_ui_elements(image, element_package: UI_ready_element) -> None:
+def add_ui_elements(
+        image,
+        element_package: UI_ready_element,
+        fade_norm: float
+        ) -> None:
     image[
-        element_package.position.top:element_package.position.lower,
-          element_package.position.left:element_package.position.right,
-          
-          0
-          ] = element_package.image
+            element_package.position.top:element_package.position.lower,
+            element_package.position.left:element_package.position.right,
+            0
+        ] = (element_package.image * fade_norm).astype(np.uint8)
 
 
 def resize_image(inputimage, width, height):
