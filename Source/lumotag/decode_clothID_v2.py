@@ -1097,7 +1097,7 @@ def check_for_pattern(samples):
     for sample in samples:
         peaks.append(get_peaks(sample))
         if len(peaks[-1]) > 0:
-            symmetric_err = functools.reduce(lambda a, b: abs(a - b), [abs((len(sample)/2)-x) for x in peaks[-1]])
+            symmetric_err = abs(functools.reduce(lambda a, b: a + b, [(len(sample)/2)-x for x in peaks[-1]]))
     # for now check that we have one sample line with no peaks and one with 2
     # later we can make sure peaks are in the positions we expect
     if set([len(x) for x in peaks]) != set([2, 0]):
@@ -1105,7 +1105,7 @@ def check_for_pattern(samples):
     if symmetric_err > MAX_PATTERN_SYMMETRY_ERROR:
         return False
     return True
- 
+
 
 def get_peaks(sample):
     #  std_dev = np.std(sample)
