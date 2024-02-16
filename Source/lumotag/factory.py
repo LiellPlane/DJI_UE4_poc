@@ -216,6 +216,9 @@ class PlayerInfoBox:
             ).shape
 
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
+        self.fade_ms = 300
+        self.current_fade_ms = 0
+        self.fade_direction = 1
 
         self.ui_elements = []
 
@@ -229,12 +232,34 @@ class PlayerInfoBox:
             element_name=UI_Element.USER_ID.value)
             )
 
+    def elements_fadein(self):
+        self.fade_direction = 1
+
+    def elements_fadeout(self):
+        self.fade_direction = -1
+
+    def calculate_fade(self):
+        time_diff = self.timer.get_dt()
+        self.timer.reset()
+        self.current_fade_ms += (time_diff * self.fade_direction)
+        # get normalised value
+        norm = self.current_fade_ms / self.fade_ms
+        lerp_fade = self.lerp(norm)
+        #self.
+
+
+
+    def lerp(x):
+        if not 0 <= x <= 1:
+            raise Exception("please normalise lerp input")
+        return 1 - (1 - x) * (1 - x)
+
     def create_player_text(self):
         """we need to create the player name/ID/handle
         but to a specific size so it looks OK, then
         rotate it"""
 
-        id_img =  img_processing.print_text_in_boundingbox(
+        id_img = img_processing.print_text_in_boundingbox(
             self.playername,
             grayscale=True
             )
