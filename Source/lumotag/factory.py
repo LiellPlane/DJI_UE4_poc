@@ -230,7 +230,7 @@ class PlayerInfoBox:
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
         self.fade_ms = 600
         self.current_fade_ms = 0
-        self.fade_direction = 1
+        #self.fade_direction = 1
 
         self.ui_elements = []
 
@@ -248,16 +248,19 @@ class PlayerInfoBox:
         return self.calculate_fade(direction=1)
 
     def elements_fadeout(self):
-        return self.calculate_fade(direction=-1)
+         return self.calculate_fade(direction=-1)
 
     def calculate_fade(self, direction: Literal[-1, 1]):
         if direction not in [-1, 1]:
             raise Exception("bad input to calculate fade", direction)
         time_diff_ms = self.timer.get_dt() * 1000
         self.timer.reset()
-        self.current_fade_ms += (time_diff_ms * self.fade_direction)
+        self.current_fade_ms += (time_diff_ms * direction)
         # limit working fade value
-        self.current_fade_ms = min(max(self.current_fade_ms, 0), self.fade_ms)
+        self.current_fade_ms = min(
+            max(self.current_fade_ms, 0),
+            self.fade_ms
+            )
         # get normalised value
         norm = self.current_fade_ms / self.fade_ms
         return self.lerp(norm)
@@ -1017,8 +1020,6 @@ def get_config(model) -> gun_config:
     raise Exception("No config found for model ID ", str(model))
 
 
-
-
 class SharedMemory():
     def __init__(self, obj_bytesize: int,
                  discrete_ids: list[str]
@@ -1053,6 +1054,7 @@ class SharedMemory():
             # except FileExistsError:
             #     print(f"Warning: shared memory {my_id} has not been cleaned up")
 
+
 class ImageLibrary(ImageGenerator):
     
     def __init__(self, res) -> None:
@@ -1085,6 +1087,43 @@ class ImageLibrary(ImageGenerator):
         self.blank_image[:] = img
         return self.blank_image
 
+
+class test_ui_elements(ImageGenerator):
+   
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        self.images = images_in_folder(imgfoler, [".jpg"])
+        self.images = [i for i in self.images if "1707668418_4650779" in i]
+        self.image_freq = 30
+        self.res = res
+        if len(self.images) < 1:
+            raise Exception("could not find images in folder")
+
+
+    def get_image(self):
+        self.image_freq -= 1
+        print(self.image_freq)
+        if self.image_freq == 0:
+            self.image_freq = 30
+        img_to_load = random.choice(self.images)
+
+        img = cv2.imread(img_to_load)
+
+        print(f"img {img_to_load}")
+    
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        self.blank_image[:] = img
+        #if random.randint(0,100) > 5:
+        if self.image_freq < 15:
+            self.blank_image[:] = 0
+        return self.blank_image
+
+
+
+    
 def images_in_folder(directory, imgtypes: list[str]):
     allFiles = []
     for root, dirs, files in os.walk(directory):
