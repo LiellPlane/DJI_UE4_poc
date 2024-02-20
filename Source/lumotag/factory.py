@@ -228,7 +228,7 @@ class PlayerInfoBox:
             ).shape
 
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
-        self.fade_ms = 600
+        self.fade_ms = 250
         self.current_fade_ms = 0
         #self.fade_direction = 1
 
@@ -1094,7 +1094,7 @@ class test_ui_elements(ImageGenerator):
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.images = images_in_folder(imgfoler, [".jpg"])
-        self.images = [i for i in self.images if "1707668418_4650779" in i]
+        self.images = [i for i in self.images if "unique" in i]
         self.image_freq = 30
         self.res = res
         if len(self.images) < 1:
@@ -1117,8 +1117,10 @@ class test_ui_elements(ImageGenerator):
 
         self.blank_image[:] = img
         #if random.randint(0,100) > 5:
-        if self.image_freq < 15:
+        if self.image_freq < 15 or random.randint(0, 20) == 1:
             self.blank_image[:] = 0
+        if random.randint(0, 6) == 1:
+            self.blank_image[:] = img
         return self.blank_image
 
 

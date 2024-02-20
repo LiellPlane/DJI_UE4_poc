@@ -15,6 +15,7 @@ from my_collections import _OS
 import configs
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 PLATFORM = get_platform()
+PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 
 if PLATFORM == [_OS.WINDOWS]:
     print("raspberry presence failed, loading test libraries")
@@ -137,18 +138,18 @@ def main():
 
     cnt = 0 
     while True:
-        with time_it("TOTAL TIME FOR EVERYTHING", debug=True):
+        with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
-            with time_it("get next image"):
+            with time_it("get next image", debug=PRINT_DEBUG):
                 cap_img = next(image_capture)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
-            with time_it("start analysis"):
+            with time_it("start analysis", debug=PRINT_DEBUG):
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis(image_capture.get_safe_mem_details)
 
 
-            with time_it("check messaging"):
+            with time_it("check messaging", debug=PRINT_DEBUG):
                 for msg in messenger.check_in_box():
                     in_msg = msgs.parse_input_msg(msg)
                     if in_msg.success is False:
@@ -186,7 +187,7 @@ def main():
 
             GUN_CONFIGURATION.loop_wait()
 
-            with time_it("gun states set"):
+            with time_it("gun states set", debug=PRINT_DEBUG):
                 #accelerometer.update_vel()
                 results_trig_positions = (triggers.test_states())
 
@@ -230,28 +231,28 @@ def main():
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0) # click noise from relay only
 
-            with time_it("gun image stuff"):
+            with time_it("gun image stuff", debug=PRINT_DEBUG):
 
-                with time_it("execute affine transform"):
+                with time_it("execute affine transform", debug=PRINT_DEBUG):
                     img = display.generate_output_affine(cap_img)
 
-                with time_it("wait for image analysis"):
+                with time_it("wait for image analysis", debug=PRINT_DEBUG):
                     analysis = []
                     for img_analyser in image_analysis:
                         analysis.extend(img_analyser.analysis_output_q.get(
                             block=True,
                             timeout=None))
 
-                with time_it("add internal section"):
+                with time_it("add internal section", debug=PRINT_DEBUG):
                     display.add_internal_section_region(img, slice_details)
 
-                with time_it("add graphics: crosshair/analyics", debug=True):
+                with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                     display.add_crosshair_and_analytics_graphics(img, analysis)
 
-                with time_it("add graphics: player info", debug=True):
+                with time_it("add graphics: player info", debug=PRINT_DEBUG):
                     display.add_playerinfo_graphics(img, players, analysis)
 
-                with time_it("display image", debug=True):
+                with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(img)
 
 
