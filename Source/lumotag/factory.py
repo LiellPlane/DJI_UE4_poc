@@ -187,7 +187,7 @@ class display(ABC):
                 patterndetails=c)
 
     @staticmethod
-    def set_fade(player, analysis):
+    def get_norm_fade_val(player, analysis):
         if len(analysis) > 0:
             return player.elements_fadein()
         else:
@@ -196,7 +196,7 @@ class display(ABC):
     def add_playerinfo_graphics(self, output, players: dict, analysis: ShapeItem):
 
         for player in players.values():
-            fade_norm = self.set_fade(player, analysis)
+            fade_norm = self.get_norm_fade_val(player, analysis)
             for element in player.ui_elements:
                 img_processing.add_ui_elements(
                     output,
