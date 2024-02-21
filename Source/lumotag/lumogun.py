@@ -255,6 +255,8 @@ def main():
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(img)
 
+                if len(analysis) > 0:
+                    file_system.save_image(cap_img)
 
 if __name__ == '__main__':
     main()
