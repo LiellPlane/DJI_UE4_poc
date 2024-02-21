@@ -1111,7 +1111,7 @@ def check_for_pattern(samples):
             sample_sans_peaks = index
             # we expect black here - so have to normalise this sample with the
             # limits of the peaked sample
-            normalized_data_should_be_black = (sample - np.min(normed_samples[0])) / (np.max(normed_samples[0]) - np.min(normed_samples[0]))
+            #normalized_data_should_be_black = (sample - np.min(normed_samples[0])) / (np.max(normed_samples[0]) - np.min(normed_samples[0]))
     # for now check that we have one sample line with no peaks and one with 2
     # later we can make sure peaks are in the positions we expect
 
@@ -1119,11 +1119,11 @@ def check_for_pattern(samples):
         return False
     if symmetric_err > MAX_PATTERN_SYMMETRY_ERROR:
         return False
-    Y_true = normalized_data_should_be_black
-    Y_predicated = [min_val] * len(samples[sample_sans_peaks])
-    MSE = np.square(np.subtract(Y_true, Y_predicated)).mean()
-    if MSE > 505555:
-        return False
+    # Y_true = normalized_data_should_be_black
+    # Y_predicated = [min_val] * len(samples[sample_sans_peaks])
+    # MSE = np.square(np.subtract(Y_true, Y_predicated)).mean()
+    # if MSE > 505555:
+    #     return False
     return True
 
 
