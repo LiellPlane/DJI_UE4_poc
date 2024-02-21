@@ -1131,7 +1131,7 @@ def get_peaks(sample):
     #  std_dev = np.std(sample)
     _range = max(sample)-min(sample)
     if _range < MIN_TAG_VARIANCE: # arbitrary threshold
-        return []
+        return [], []
     normalized_data = (sample - np.min(sample)) / (np.max(sample) - np.min(sample))
     #prominence = int(_range / 3)  # arbitrary way to filter out low prominence peaks
     peaks, _ = find_peaks(normalized_data, height=0.4, prominence=0.2, width=2, distance=4)
