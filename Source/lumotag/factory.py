@@ -1065,9 +1065,13 @@ class ImageLibrary(ImageGenerator):
         #self.images = [i for i in self.images if "0290" in i]#0290
         #self.images = [i for i in self.images if "1704404023_3112135" in i] # testing standard
         
-        self.images = [i for i in self.images if "unique_id" in i]
-
-
+        self.images = [i for i in self.images if "1707668423_9392278.jpg" in i]
+        #self.a = [i for i in self.images if "1708541761_5248816" in i]
+        #self.b = [i for i in self.images if "1708541763_1052542" in i]
+        self.c = [i for i in self.images if "1708541757_3840954" in i]
+        #self.images = self.c #+ self.b + self.c
+        #self.images = [i for i in self.images if i in ["1708541761_5248816", "1708541763_1052542", "1708541757_3840954"]]
+        
         
         #self.images = [i for i in self.images if "sim_pattern" in i]
         #self.images = [i for i in self.images if "0245" in i]

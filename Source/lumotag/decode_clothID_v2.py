@@ -1063,22 +1063,22 @@ def analyse_candidates_shapematch(
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
             
             height = 500
-            ratio = height/len(c._2d_samples[0])
-
-            peaks1 = get_peaks(c._2d_samples[0])
-            peaks2 = get_peaks(c._2d_samples[1])
+            ratio1 = height/len(c._2d_samples[0])
+            ratio2 = height/len(c._2d_samples[1])
+            peaks1, _ = get_peaks(c._2d_samples[0])
+            peaks2, _ = get_peaks(c._2d_samples[1])
             
             out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200, height), interpolation=cv2.INTER_NEAREST)
             out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
             for peak in peaks1:
-                cv2.circle(out_img1, (100, int(peak*ratio)), 5, (0,0,255), -1)
+                cv2.circle(out_img1, (100, int(peak*ratio1)), 5, (0,0,255), -1)
 
                 #out_img1[int(peak*ratio), 100] = (0,0,255)
             #dataobject.img_view_or_save_if_debug(out_img1, "squarecode")
             out_img2 = cv2.resize(np.asarray(c._2d_samples[1]), (200, height), interpolation=cv2.INTER_NEAREST)
             out_img2 = cv2.cvtColor(out_img2, cv2.COLOR_GRAY2BGR)
             for peak in peaks2:
-                cv2.circle(out_img2, (100, int(peak*ratio)), 5, (0,0,255), -1)
+                cv2.circle(out_img2, (100, int(peak*ratio2)), 5, (0,0,255), -1)
             #dataobject.img_view_or_save_if_debug(out_img2, "squarecode")
 
             stacked_img = np.hstack((
@@ -1094,15 +1094,35 @@ def analyse_candidates_shapematch(
 
 def check_for_pattern(samples):
     peaks = []
-    for sample in samples:
-        peaks.append(get_peaks(sample))
+    normed_samples = []
+    min_val = None
+    raise Exception("fix me")
+    sample_with_peaks = None
+    sample_sans_peaks = None
+    for index, sample in enumerate(samples):
+        peaks_, normed_sample = get_peaks(sample)
+        normed_samples.append(normed_sample)
+        peaks.append(peaks_)
         if len(peaks[-1]) > 0:
             symmetric_err = abs(functools.reduce(lambda a, b: a + b, [(len(sample)/2)-x for x in peaks[-1]]))
+            min_val = min(normed_sample)
+            sample_with_peaks = index
+        else:
+            sample_sans_peaks = index
+            # we expect black here - so have to normalise this sample with the
+            # limits of the peaked sample
+            normalized_data_should_be_black = (sample - np.min(normed_samples[0])) / (np.max(normed_samples[0]) - np.min(normed_samples[0]))
     # for now check that we have one sample line with no peaks and one with 2
     # later we can make sure peaks are in the positions we expect
+
     if set([len(x) for x in peaks]) != set([2, 0]):
         return False
     if symmetric_err > MAX_PATTERN_SYMMETRY_ERROR:
+        return False
+    Y_true = normalized_data_should_be_black
+    Y_predicated = [min_val] * len(samples[sample_sans_peaks])
+    MSE = np.square(np.subtract(Y_true, Y_predicated)).mean()
+    if MSE > 50:
         return False
     return True
 
@@ -1116,7 +1136,7 @@ def get_peaks(sample):
     #prominence = int(_range / 3)  # arbitrary way to filter out low prominence peaks
     peaks, _ = find_peaks(normalized_data, height=0.4, prominence=0.2, width=2, distance=4)
 
-    return peaks
+    return peaks, normalized_data
 
 
 def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, original_image):
