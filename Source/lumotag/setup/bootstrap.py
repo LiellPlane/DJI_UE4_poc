@@ -4,7 +4,6 @@ import subprocess
 import os
 import sys
 
-
 with open('/boot/MY_INFO.txt', 'r') as file:
     data = json.load(file)
     MY_ID = data["MY_ID"]
@@ -15,9 +14,7 @@ with open('/boot/MY_INFO.txt', 'r') as file:
 print(f"MY_ID: {MY_ID} url: {url}")
 #raise Exception("probably need to connect commands with && or shell state might be discarded")
 if os.path.exists(codepath):
-    fetch_result = subprocess.run(['git', 'fetch'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(fetch_result)
-    fetch_result = subprocess.run(['git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    fetch_result = subprocess.run(['bash', '/home/lumotag/DJI_UE4_poc/Source/lumotag/setup/update_repo.sh'], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(fetch_result)
 else:
     print(
