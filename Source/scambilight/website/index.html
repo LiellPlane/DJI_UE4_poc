@@ -42,8 +42,12 @@
     </div>
 
     <!-- Input Fields -->
-    <form action="/action_page.php" style="margin-top: 20px;">
-        <input type="text" id="lname" name="password" placeholder="type pass here">
+    <input type="text" id="lname" name="password" placeholder="type pass here">
+    <form id="passwordform" action="/action_page.php" style="margin-top: 20px;">
+        
+        <input type="text" id="lname2" name="email" placeholder="test email">
+        <input type="text" id="lname3" name="password" placeholder="test password">
+        <button type="button" onclick="submitForm()">Submit</button>
     </form>
     <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
     
@@ -84,12 +88,35 @@
         var form = document.getElementById('form');
         imageElement.addEventListener("click", submitPosition);
         //buttonElement.addEventListener("click", userFinished);
+        function submitForm() {
+            // Get form data
+            var form = document.getElementById("passwordform");
+            var formData = new FormData(form);
+
+            // Convert formData to JSON
+            var jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            // Nest the JSON object under "login" key
+            let requestData = { "login": jsonData };
+
+            fetch(targetUrl, {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(requestData)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+            }
         let finish = () => {
             var inputPassword = document.getElementById("lname").value;
             let data = {
                 "authentication": inputPassword,
                 "action": "sendposfinish",
-		"data":clicks
+		        "data":clicks
             };
 
             fetch(targetUrl, {

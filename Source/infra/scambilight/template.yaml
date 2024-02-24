@@ -34,11 +34,14 @@ Globals:
         SCAMBICONFIG: "config"
         OVERLAY_IMAGE: "overlay_image.jpg"
         RAW_IMAGE: "raw_image.jpg"
+        PERPWARP_IMAGE: "perp_image.jpg"
         CONFIG_FILE: "config.json"
         SIM_LAMBDA: "scambilight-sim"
         SAMPLE_CONFIG_FILE: "config_regions.json"
         EVENT_QUEUE_URL: !Ref SqsQueueEvents # Gets SQS Queue URL
         EVENTS_TABLE: !Ref MyEventTable
+        USERS_TABLE: !Ref UsersTable
+        SESSION_TABLE: !Ref SessionTable
     Tracing: Active
   #Api:
   #  TracingEnabled: true
@@ -97,6 +100,10 @@ Resources:
               !GetAtt SqsQueueEvents.QueueName
         - DynamoDBCrudPolicy:
             TableName: !Ref MyEventTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionTable
         - LambdaInvokePolicy:
             FunctionName:
               scambilight-sim
@@ -134,3 +141,54 @@ Resources:
 #   CreateOrdersAPI:
 #     Description: "API Gatseway endpoint url for creating orders"
 #     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: usertable
+      AttributeDefinitions:
+        - AttributeName: useremail
+          AttributeType: S
+      KeySchema:
+        - AttributeName: useremail
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+
+# example schema
+# {
+#   "useremail": {
+#     "S": "liellplane@googlemail.com"
+#   },
+#   "password": {
+#     "S": "hashed output, can run the script which generates this manually"
+#   },
+#   "salt": {
+#     "S": "0eb8da33cb4bdb213c8bfb158ec76972"
+#   },
+#   "notes": {
+#     "S": "twat"
+#   },
+#   "api_calls": {
+#     "N": "0"
+#   }
+# }
+
+  SessionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: sessiontable
+      AttributeDefinitions:
+        - AttributeName: sessionid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: sessionid
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE

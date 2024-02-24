@@ -8,7 +8,9 @@ import io
 from botocore.exceptions import ClientError  # type: ignore[import]
 import base64
 import copy
-
+import hashlib
+import hmac
+import uuid
 from common import cors_headers
 
 logger = logging.getLogger('scambiupload')
@@ -27,6 +29,8 @@ OVERLAY_IMAGE = os.environ.get('OVERLAY_IMAGE')
 SCAMBIWEB = os.environ.get('SCAMBIWEB')
 _EVENT_QUEUE_URL = os.environ.get('EVENT_QUEUE_URL')
 EVENTS_TABLE = os.environ.get('EVENTS_TABLE')
+USERS_TABLE = os.environ.get('USERS_TABLE')
+SESSION_TABLE = os.environ.get('SESSION_TABLE')
 
 s3_client = boto3.resource('s3')
 sqs_client = boto3.client('sqs')
@@ -36,6 +40,27 @@ sqs_client = boto3.client('sqs')
 dynamodb = boto3.resource('dynamodb')
 db_table_client = dynamodb.Table(EVENTS_TABLE)
 lambda_client = boto3.client('lambda')
+
+
+def hash_new_password(password: str):# -> Tuple[bytes, bytes]:
+    """
+    Hash the provided password with a randomly-generated salt and return the
+    salt and hash to store in the database.
+    """
+    salt = os.urandom(16)
+    pw_hash = hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
+    return salt, pw_hash
+
+
+def is_correct_password(salt: bytes, pw_hash: bytes, password: str) -> bool:
+    """
+    Given a previously-stored salt and hash, and a password provided by a user
+    trying to log in, check whether the password is correct.
+    """
+    return hmac.compare_digest(
+        pw_hash,
+        hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100000)
+    )
 
 def purge_queue(_sqs_client, queue_url):
     """
@@ -214,6 +239,68 @@ def lambda_handler(event, context):
 
 
     order = json.loads(event['body'])
+    print(order)
+
+    # new session token thing
+    if "session" in event['body']:
+        session_table_client = dynamodb.Table(SESSION_TABLE)
+        response = session_table_client.get_item(
+            Key={
+                'sessionid ': order["session"]["token"]
+            }
+        )
+        print("session token success:", response)
+
+
+    if "login" in event['body']:
+        event_log = ""
+        print("user attemping to log in")
+        # look up dynamodb
+        users_table_client = dynamodb.Table(USERS_TABLE)
+        print("email", order["login"]["email"])
+        response = users_table_client.get_item(
+            Key={
+                'useremail': order["login"]["email"].lower()
+            }
+        )
+        # example response
+        #response {'Item': {'api_calls': Decimal('0'), 'password': 'hashed output, can run the script which generates this manually', 'salt': '0eb8da33cb4bdb213c8bfb158ec76972', 'notes': 'twat', 'useremail': 'liellplane@googlemail.com'}, 'ResponseMetadata': {'RequestId': 'LEIC3BPPQNPTD5I5GORU19G5GBVV4KQNSO5AEMVJF66Q9ASUAAJG', 'HTTPStatusCode': 200, 'HTTPHeaders': {'server': 'Server', 'date': 'Sat, 24 Feb 2024 22:50:03 GMT', 'content-type': 'application/x-amz-json-1.0', 'content-length': '230', 'connection': 'keep-alive', 'x-amzn-requestid': 'LEIC3BPPQNPTD5I5GORU19G5GBVV4KQNSO5AEMVJF66Q9ASUAAJG', 'x-amz-crc32': '4063661280'}, 'RetryAttempts': 0}}
+        if 'Item' in response:
+            passres = is_correct_password(
+                bytes.fromhex(response['Item']['salt']),
+                bytes.fromhex(response['Item']['password']),
+                order["login"]["password"])
+            if passres is True:
+                # create new sesh token
+                sessiontoken = str(uuid.uuid4())
+                session_table_client = dynamodb.Table(SESSION_TABLE)
+                new_item_data = {
+                    'sessionid': sessiontoken,
+                    'useremail': order["login"]["email"].lower(),
+                    'expiry': 12345678
+                }
+
+                # Use put_item to create the new item
+                session_table_client.put_item(Item=new_item_data)
+                print("password ok, authenticating")
+                return{
+                    'statusCode': 200,
+                    'headers': cors_headers,
+                    'body': json.dumps({
+                        'message': 'session authentication OK',
+                        'sessiontoken': sessiontoken,
+                        'email': order["login"]["email"].lower()})
+                }
+            else:
+                login_log = "email ok password fail"
+        else:
+            login_log = "cannot find user email"
+        return{
+            'statusCode': 401,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': f'log-in failed, {login_log}'})
+        }
     # this is the dynamic reference in template.yaml
     authentication_code = order['authentication']
 
