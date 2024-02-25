@@ -42,11 +42,11 @@
     </div>
 
     <!-- Input Fields -->
-    <input type="text" id="lname" name="password" placeholder="type pass here">
+    
     <form id="passwordform" action="/action_page.php" style="margin-top: 20px;">
         
         <input type="text" id="lname2" name="email" placeholder="test email">
-        <input type="text" id="lname3" name="password" placeholder="test password">
+        <input type="password" id="lname3" name="password" placeholder="test password">
         <button type="button" onclick="submitForm()">Submit</button>
     </form>
     <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
@@ -88,11 +88,33 @@
         var form = document.getElementById('form');
         imageElement.addEventListener("click", submitPosition);
         //buttonElement.addEventListener("click", userFinished);
+
+        function addSessionTokenIfExists(inputDictionary) {
+            const sessionToken = sessionStorage.getItem("sessiontoken");
+
+            if (sessionToken !== null) {
+                inputDictionary["sessiontoken"] = sessionToken;
+                console.log("session token added to request body")
+            }
+            
+            return inputDictionary;
+        }
+
         function submitForm() {
             // Get form data
             var form = document.getElementById("passwordform");
             var formData = new FormData(form);
+            let valuesValid = true;
 
+            formData.forEach((value) => {
+                if (value === null || (typeof value === "string" && value.trim() === "")) {
+                    valuesValid = false;
+                }
+            });
+
+            if (!valuesValid) {
+                alert("One or more values in the FormData are null or empty.");
+            }
             // Convert formData to JSON
             var jsonData = {};
             formData.forEach((value, key) => {
@@ -109,16 +131,23 @@
             }).then(response => response.json())
                 .then(json => {console.log(JSON.stringify(json));
                 alert(JSON.stringify(json));
+                // Check if "sessionbody" key exists in the JSON response
+                if (json.hasOwnProperty("sessiontoken")) {
+                    // Store the value of "sessionbody" in sessionStorage
+                    sessionStorage.setItem("sessiontoken", JSON.stringify(json.sessiontoken));
+                }
                 });
             }
+
+            
         let finish = () => {
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "sendposfinish",
 		        "data":clicks
             };
-
+            data = addSessionTokenIfExists(data)
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
@@ -130,12 +159,13 @@
         }
 
         let reset = () => {
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "reset",
 		"data":"empty"
             };
+            data = addSessionTokenIfExists(data)
 
             fetch(targetUrl, {
             method: "POST",
@@ -148,14 +178,14 @@
         }
         let req_sample_config = () => {
             document.getElementById('configbox').value = "attempt to load sample region configuration"
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "request_sample_config",
 		"data":"empty"
             };
 
-
+            data = addSessionTokenIfExists(data)
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
@@ -166,12 +196,13 @@
                 });
         }
         let req_new_image = () => {
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "update_image",
 		"data":"empty"
             };
+            data = addSessionTokenIfExists(data)
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
@@ -184,12 +215,13 @@
 	}
         let sim_regions = () => {
 	    document.getElementById('configbox').value = "attempting to generate sim region image - this can take up to 30 seconds, use decache button to see update. CORS can cause problems here"
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "get_region_sim",
 		"data":"empty"
             };
+            data = addSessionTokenIfExists(data)
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
@@ -201,12 +233,13 @@
         decache_images_maybe();
         }
         let req_new_image_all = () => {
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "update_image_all",
 		"data":"empty"
             };
+            data = addSessionTokenIfExists(data)
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
@@ -228,13 +261,13 @@
         };
 
         let submit_sample_config = () => {
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             let data = {
-                "authentication": inputPassword,
+                //"authentication": inputPassword,
                 "action": "send_sample_config",
                 "data": JSON.parse(document.getElementById('configbox').value)
                 };
-                
+            data = addSessionTokenIfExists(data)
             fetch(targetUrl, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
@@ -314,12 +347,13 @@
             return new Promise((resolve, reject) => { // Wrap the fetch call in a Promise
                 var display_area = document.getElementById(img_id);
                 display_area.src = "";
-                var inputPassword = document.getElementById("lname").value;
+                //var inputPassword = document.getElementById("lname").value;
                 let data = {
-                    "authentication": inputPassword,
+                    //"authentication": inputPassword,
                     "action": img_action,
                     "data": "empty"
                 }; 
+                data = addSessionTokenIfExists(data)
                 fetch(targetUrl, {
                     method: 'POST',
                     headers: {
@@ -349,7 +383,7 @@
 
         function submitPosition(e) {
 	    
-            var inputPassword = document.getElementById("lname").value;
+            //var inputPassword = document.getElementById("lname").value;
             clickX = e.pageX - imageElement.getBoundingClientRect().left;
             clickY = e.pageY - imageElement.getBoundingClientRect().top;
             positionX.value = Math.floor(clickX / (imageElement.width / imageElement.naturalWidth));

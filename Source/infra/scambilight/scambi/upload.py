@@ -240,17 +240,23 @@ def lambda_handler(event, context):
 
     order = json.loads(event['body'])
     print(order)
-
+    user_email = None
+    order['authentication'] = "fail"
     # new session token thing
-    if "session" in event['body']:
+    if "sessiontoken" in event['body']:
         session_table_client = dynamodb.Table(SESSION_TABLE)
-        response = session_table_client.get_item(
-            Key={
-                'sessionid ': order["session"]["token"]
-            }
-        )
-        print("session token success:", response)
-
+        _Key = {
+            'sessionid': json.loads(order["sessiontoken"])
+        }
+        print("looking up", _Key)
+        response = session_table_client.get_item(Key=_Key)
+        print(response)
+        if 'Item' in response:
+            # terrible code to satisfy old login
+            # do this nicely once we have got rid of it
+            order['authentication'] = "farts"
+            print("session token success:", response)
+            user_email = response["Item"]["useremail"]
 
     if "login" in event['body']:
         event_log = ""
