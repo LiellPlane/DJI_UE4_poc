@@ -29,6 +29,7 @@ from common import cors_headers
 def send_sim_progress_update_to_AWS(progress_im):
     print("aws", progress)
 
+
 def get_corners_from_remote_config(config, img):
     """find corners from disorder of inputs in format:
     {
@@ -58,29 +59,17 @@ def find_closest(testpt: list [int, int], input_pts:list):
     return pt, [i for i in input_pts if i != pt]
 
 
-
-
-# class Aws_Camera_sync(Camera_synchronous):
-    
-#     def __init__(self, video_modes) -> None:
-#         super().__init__(video_modes, ImageLibrary)
-
-
-# class ImageLibrary(ImageGenerator):
-    
-#     def __init__(self, res) -> None:
-#         pass
-
-
-#     def get_image(self):
-#         return get_image_from_aws()
+def get_session_id():
+    # has to match the form from the website
+    # probably should fix this
+    return json.dumps("daisybankscambi")
 
 
 def get_image_from_aws(url):
     print("getting raw image from aws")
     myobj = {
-        "authentication": "farts",
-        "action": "getimage_raw"
+        "action": "getimage_raw",
+        "sessiontoken": get_session_id()
         }
     try:
         response = requests.post(url, json=myobj)
@@ -100,9 +89,9 @@ def upload_img_to_aws(img, url, action):
     #img = clahe_equalisation(img, None)
     img_bytes = encode_img_to_str(img)
     myobj = {
-        "authentication": "farts",
         "action": action,
-        "payload": img_bytes
+        "payload": img_bytes,
+        "sessiontoken": get_session_id()
         }
     try:
         response = requests.post(url, json=myobj)
@@ -111,14 +100,16 @@ def upload_img_to_aws(img, url, action):
         print(e)
         print("could not connect first image upload to ", url)
 
+
 def check_event_validity(event: str):
     if event.lower() not in ["reset", "update_image", "none", "update_image_all"]:
         raise Exception("event malformed")
 
+
 def check_events_from_aws(url):
     myobj = {
-        "authentication": "farts",
-        "action": "check_event"
+        "action": "check_event",
+        "sessiontoken": get_session_id()
         }
     try:
         response = requests.post(url, json=myobj)
@@ -188,8 +179,8 @@ class ExternalDataWorker():
 def get_config_from_aws(url):
     print("getting config from aws")
     myobj = {
-        "authentication": "farts",
-        "action": "request_config"
+        "action": "request_config",
+        "sessiontoken": get_session_id()
         }
     positions = []
     ext_config_pos = []
@@ -214,8 +205,8 @@ def get_config_from_aws(url):
 def get_region_config_from_aws(url):
     print("getting config from aws")
     myobj = {
-        "authentication": "farts",
-        "action": "request_sample_config"
+        "action": "request_sample_config",
+        "sessiontoken": get_session_id()
         }
     positions = []
     ext_config_pos = []
