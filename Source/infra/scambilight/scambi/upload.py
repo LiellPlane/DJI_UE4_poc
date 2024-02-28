@@ -43,13 +43,13 @@ dynamodb = boto3.resource('dynamodb')
 db_table_client = dynamodb.Table(EVENTS_TABLE)
 lambda_client = boto3.client('lambda')
 
-def get_future_epoch():
+def get_future_epoch(min: int):
     current_time = datetime.datetime.now(datetime.timezone.utc)
     unix_timestamp = current_time.timestamp() # works if Python >= 3.3
 
-    unix_timestamp_plus_5_min = str(unix_timestamp + (5 * 60))  # 5 min * 60 seconds
+    unix_timestamp_plus_n_min = str(unix_timestamp + (min * 60))  # 5 min * 60 seconds
 
-    return unix_timestamp_plus_5_min
+    return unix_timestamp_plus_n_min
 
 
 def hash_new_password(password: str):# -> Tuple[bytes, bytes]:
@@ -293,7 +293,8 @@ def lambda_handler(event, context):
                 new_item_data = {
                     'sessionid': sessiontoken,
                     'useremail': order["login"]["email"].lower(),
-                    'expiry': 12345678
+                    'expiry': 12345678,
+                    'ttl': get_future_epoch(min=10080)
                 }
 
                 # Use put_item to create the new item
@@ -463,7 +464,7 @@ def lambda_handler(event, context):
                 Item={
                     'useremail': user_email,
                     'event': "",
-                    'ttl': get_future_epoch()
+                    'ttl': get_future_epoch(5)
                 }
             )
         #print("getting event", scan['Items'])
@@ -503,7 +504,7 @@ def lambda_handler(event, context):
             Item={
                 'useremail': user_email,
                 'event': action,
-                'ttl': get_future_epoch()
+                'ttl': get_future_epoch(5)
             }
         )
         
