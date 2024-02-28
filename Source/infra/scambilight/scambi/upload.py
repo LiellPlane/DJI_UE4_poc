@@ -249,7 +249,7 @@ def lambda_handler(event, context):
 
 
     order = json.loads(event['body'])
-    print(order)
+    #print(order)
     user_email = None
     order['authentication'] = "fail"
     # new session token thing
@@ -258,22 +258,22 @@ def lambda_handler(event, context):
         _Key = {
             'sessionid': json.loads(order["sessiontoken"])
         }
-        print("looking up", _Key)
+        #print("looking up", _Key)
         response = session_table_client.get_item(Key=_Key)
-        print(response)
+        #print(response)
         if 'Item' in response:
             # terrible code to satisfy old login
             # do this nicely once we have got rid of it
             order['authentication'] = "farts"
-            print("session token success:", response)
+            #print("session token success:", response)
             user_email = response["Item"]["useremail"]
 
     if "login" in event['body']:
         event_log = ""
-        print("user attemping to log in")
+        #print("user attemping to log in")
         # look up dynamodb
         users_table_client = dynamodb.Table(USERS_TABLE)
-        print("email", order["login"]["email"])
+        #print("email", order["login"]["email"])
         response = users_table_client.get_item(
             Key={
                 'useremail': order["login"]["email"].lower()
@@ -299,7 +299,7 @@ def lambda_handler(event, context):
 
                 # Use put_item to create the new item
                 session_table_client.put_item(Item=new_item_data)
-                print("password ok, authenticating")
+                #print("password ok, authenticating")
                 return{
                     'statusCode': 200,
                     'headers': cors_headers,
@@ -322,7 +322,7 @@ def lambda_handler(event, context):
     authentication_code = order['authentication']
 
     if authentication_code not in ["farts", "teehee"]:
-        print("bad log in")
+        #print("bad log in")
         return{
             'statusCode': 201,
             'headers': cors_headers,
@@ -455,9 +455,9 @@ def lambda_handler(event, context):
         _Key={
             'useremail': user_email
         }
-        print("looking up", _Key)
+        #print("looking up", _Key)
         response = db_table_client.get_item(Key=_Key)
-        print(response)
+        #print(response)
         if 'Item' in response:
             output = response["Item"]["event"]
             db_table_client.put_item(
@@ -509,7 +509,7 @@ def lambda_handler(event, context):
         )
         
         status_code = response['ResponseMetadata']['HTTPStatusCode']
-        print("WRITE TO DB", status_code)
+        #print("WRITE TO DB", status_code)
 
         # need this for CORS
         return{
@@ -522,7 +522,7 @@ def lambda_handler(event, context):
     if action == "send_sample_config":
         click_data = (order['data'])
         messages_bytes = str_to_bytes(json.dumps(click_data))
-        print(messages_bytes)
+        #print(messages_bytes)
 
         # now load existing one
         curr_config_bytes = s3_custom.read(
@@ -532,10 +532,10 @@ def lambda_handler(event, context):
 
         curr_config_str = bytes_to_str(curr_config_bytes)
         curr_config_json = json.loads(curr_config_str)
-        print("curr_config_json", curr_config_json)
-        print("type curr_config_json", type(curr_config_json))
-        print("click_data", click_data)
-        print("type click_data", type(click_data))
+        #print("curr_config_json", curr_config_json)
+        #print("type curr_config_json", type(curr_config_json))
+        #print("click_data", click_data)
+        #print("type click_data", type(click_data))
         
         # check both have same keys
         if not set(curr_config_json.keys()) == set(click_data.keys()):
@@ -560,13 +560,13 @@ def lambda_handler(event, context):
         }
 
     if action == "get_region_sim":
-        print("get region sim")
+        #print("get region sim")
         lambda_payload = json.dumps({}).encode('utf-8') # doesnt matter for now - but add action in here later
-        print("get region sim created json")
+        #print("get region sim created json")
         response = lambda_client.invoke(FunctionName=SIM_LAMBDA,
                      InvocationType='RequestResponse',
                      Payload=lambda_payload)
-        print("region sim response", response)
+        #print("region sim response", response)
         return{
             'statusCode': 201,
             'headers': cors_headers,
@@ -581,7 +581,7 @@ def lambda_handler(event, context):
             bucket_name=SCAMBIFOLDER,
             folder_name=SCAMBICONFIG,
             object_name=CONFIG_FILE)
-        print("req", config_bytes)
+        #print("req", config_bytes)
         return{
             'statusCode': 201,
             'headers': cors_headers,
@@ -595,7 +595,7 @@ def lambda_handler(event, context):
             bucket_name=SCAMBIFOLDER,
             folder_name=SCAMBICONFIG,
             object_name=SAMPLE_CONFIG_FILE)
-        print("req", config_bytes)
+        #print("req", config_bytes)
         return{
             'statusCode': 201,
             'headers': cors_headers,
@@ -639,7 +639,7 @@ def lambda_handler(event, context):
         #     )
 
         messages_bytes = str_to_bytes(json.dumps(click_data))
-        print(messages_bytes)
+        #print(messages_bytes)
         s3_custom.write(
             input_bytes=messages_bytes,
             bucket_name=SCAMBIFOLDER,
