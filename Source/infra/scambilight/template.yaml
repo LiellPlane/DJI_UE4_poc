@@ -39,8 +39,8 @@ Globals:
         SIM_LAMBDA: "scambilight-sim"
         SAMPLE_CONFIG_FILE: "config_regions.json"
         EVENT_QUEUE_URL: !Ref SqsQueueEvents # Gets SQS Queue URL
-        EVENTS_TABLE: !Ref MyEventTable
-        USERS_TABLE: !Ref UsersTable
+        EVENTS_TABLE: !Ref MyEventTable3
+        USERS_TABLE: !Ref UsersTable2
         SESSION_TABLE: !Ref SessionTable
     Tracing: Active
   #Api:
@@ -99,9 +99,9 @@ Resources:
             QueueName:
               !GetAtt SqsQueueEvents.QueueName
         - DynamoDBCrudPolicy:
-            TableName: !Ref MyEventTable
+            TableName: !Ref MyEventTable3
         - DynamoDBCrudPolicy:
-            TableName: !Ref UsersTable
+            TableName: !Ref UsersTable2
         - DynamoDBCrudPolicy:
             TableName: !Ref SessionTable
         - LambdaInvokePolicy:
@@ -130,22 +130,46 @@ Resources:
         Ref: ApplicationResourceGroup
       AutoConfigurationEnabled: 'true'
   
-  MyEventTable:
-    Type: 'AWS::Serverless::SimpleTable'
+  # MyEventTable2:
+  #   Type: 'AWS::Serverless::SimpleTable'
+  #   Properties:
+  #     TableName: eventtable2
+  #     PrimaryKey:
+  #       Name: user_email
+  #       Type: String
+  #     # TimeToLiveSpecification:
+  #     #   AttributeName: ttl
+  #     #   Enabled: 'TRUE'
+
+
+  MyEventTable3:
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: event
-        Type: String
+      TableName: eventtable
+      AttributeDefinitions:
+        - AttributeName: useremail
+          AttributeType: S
+      KeySchema:
+        - AttributeName: useremail
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: 'TRUE'
 
 # Outputs:
 #   CreateOrdersAPI:
 #     Description: "API Gatseway endpoint url for creating orders"
 #     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
 
-  UsersTable:
+  UsersTable2:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: usertable
+      TableName: usertable2
       AttributeDefinitions:
         - AttributeName: useremail
           AttributeType: S

@@ -102,7 +102,8 @@ def upload_img_to_aws(img, url, action):
 
 
 def check_event_validity(event: str):
-    if event.lower() not in ["reset", "update_image", "none", "update_image_all"]:
+    # todo, should be made common somehow
+    if event.lower() not in ["reset", "update_image", "none", "update_image_all", ""]:
         raise Exception("event malformed")
 
 

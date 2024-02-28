@@ -12,6 +12,8 @@ import hashlib
 import hmac
 import uuid
 from common import cors_headers
+import datetime
+
 
 logger = logging.getLogger('scambiupload')
 logger.setLevel(logging.INFO)
@@ -40,6 +42,14 @@ sqs_client = boto3.client('sqs')
 dynamodb = boto3.resource('dynamodb')
 db_table_client = dynamodb.Table(EVENTS_TABLE)
 lambda_client = boto3.client('lambda')
+
+def get_future_epoch():
+    current_time = datetime.datetime.now(datetime.timezone.utc)
+    unix_timestamp = current_time.timestamp() # works if Python >= 3.3
+
+    unix_timestamp_plus_5_min = str(unix_timestamp + (5 * 60))  # 5 min * 60 seconds
+
+    return unix_timestamp_plus_5_min
 
 
 def hash_new_password(password: str):# -> Tuple[bytes, bytes]:
@@ -439,13 +449,28 @@ def lambda_handler(event, context):
 
     if action in ["check_event"]:
         # check for event and then remove all
-        scan = db_table_client.scan()# do not use on big tables!!
-
-        print("getting event", scan['Items'])
-        output = copy.deepcopy(scan['Items'])
-        with db_table_client.batch_writer() as batch:
-            for each in scan['Items']:
-                batch.delete_item(Key=each)
+        #scan = db_table_client.scan()# do not use on big tables!!
+        output = ""
+        _Key={
+            'useremail': user_email
+        }
+        print("looking up", _Key)
+        response = db_table_client.get_item(Key=_Key)
+        print(response)
+        if 'Item' in response:
+            output = response["Item"]["event"]
+            db_table_client.put_item(
+                Item={
+                    'useremail': user_email,
+                    'event': "",
+                    'ttl': get_future_epoch()
+                }
+            )
+        #print("getting event", scan['Items'])
+        # output = copy.deepcopy(scan['Items'])
+        # with db_table_client.batch_writer() as batch:
+        #     for each in scan['Items']:
+        #         batch.delete_item(Key=each)
         return{
             'statusCode': 200,
             'headers': cors_headers,
@@ -468,15 +493,17 @@ def lambda_handler(event, context):
                 object_name=RAW_IMAGE)
         # we onlyt want one action at a time
 
-        scan = db_table_client.scan()# do not use on big tables!!
-        print(scan['Items'])
-        with db_table_client.batch_writer() as batch:
-            for each in scan['Items']:
-                batch.delete_item(Key=each)
+        # scan = db_table_client.scan()# do not use on big tables!!
+        # print(scan['Items'])
+        # with db_table_client.batch_writer() as batch:
+        #     for each in scan['Items']:
+        #         batch.delete_item(Key=each)
 
         response = db_table_client.put_item(
             Item={
-                'event': action
+                'useremail': user_email,
+                'event': action,
+                'ttl': get_future_epoch()
             }
         )
         
