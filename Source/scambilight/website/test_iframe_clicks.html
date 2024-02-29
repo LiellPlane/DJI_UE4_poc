@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Click Recorder</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scrolling */
+        }
+
+        #image-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            touch-action: none; /* Disable browser touch gestures on the iframe */
+        }
+    </style>
+</head>
+<body>
+    <div id="image-container">
+        <iframe id="image" src="raw_image.jpg" framebo  rder="0" sandbox="allow-scripts"></iframe>
+    </div>
+
+    <script>
+        var isTouchDevice = 'ontouchstart' in document.documentElement;
+
+        function handleEvent(event) {
+            var iframe = document.getElementById("image");
+            var rect = iframe.getBoundingClientRect();
+            var scaleX = iframe.contentDocument.width / iframe.width;
+            var scaleY = iframe.contentDocument.height / iframe.height;
+
+            var x, y;
+
+            if (isTouchDevice && event.touches) {
+                var touch = event.touches[0]; // Assuming the first touch for simplicity
+                x = (touch.clientX - rect.left) * scaleX;
+                y = (touch.clientY - rect.top) * scaleY;
+            } else {
+                x = (event.clientX - rect.left) * scaleX;
+                y = (event.clientY - rect.top) * scaleY;
+            }
+
+            console.log("Event at:", x, y);
+            // You can send x, y coordinates to your backend or perform any other action here
+        }
+
+        // Add event listeners directly to the iframe
+        document.getElementById("image").addEventListener("mousedown", handleEvent);
+        document.getElementById("image").addEventListener("touchstart", handleEvent);
+        console.log("helo fuk off");
+    </script>
+</body>
+</html>
