@@ -257,6 +257,6 @@ def main():
                 
                 # if len(analysis) > 0:
                 #     file_system.save_image(cap_img)
-                plop
+
 if __name__ == '__main__':
     main()
