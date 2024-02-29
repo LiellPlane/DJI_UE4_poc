@@ -120,7 +120,7 @@ def check_events_from_aws(url):
         return "Error connecting"
     events = json.loads(response.content)
     if len(events) > 0:
-        event = list(events[0].values())[0]
+        event = events#list(events[0].values())[0]
     else:
         event="None"
 
@@ -160,7 +160,10 @@ class ExternalDataWorker():
 
     def _run(self):
         while True:
-            event = check_events_from_aws(self.url)
+            try:
+                event = check_events_from_aws(self.url)
+            except Exception as e:
+                event = f"ERROR{e}"
             time.sleep(10)
             self.msg_queue.put(
                 event, block=True, timeout=None)

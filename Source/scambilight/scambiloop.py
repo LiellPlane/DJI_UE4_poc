@@ -305,6 +305,8 @@ def main(action = None):
                     SCAMILIGHT_API,
                     action = UploadImageTypes.OVERLAY.value)
                 
+            if event.startswith("ERROR"):
+                raise Exception(event)
 
             if event == "reset":
                 led_subsystem.display_info_colours(LEDColours.Red.value)

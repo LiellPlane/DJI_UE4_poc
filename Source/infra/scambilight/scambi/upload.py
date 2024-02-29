@@ -21,13 +21,13 @@ logger.setLevel(logging.INFO)
 SCAMBIFOLDER = os.environ.get('SCAMBIFOLDER')
 SCAMBIIMAGES = os.environ.get('SCAMBIIMAGES')
 SCAMBICONFIG = os.environ.get('SCAMBICONFIG')
-CONFIG_FILE = os.environ.get('CONFIG_FILE')
-SAMPLE_CONFIG_FILE = os.environ.get('SAMPLE_CONFIG_FILE')
+#CONFIG_FILE = os.environ.get('CONFIG_FILE')
+#SAMPLE_CONFIG_FILE = os.environ.get('SAMPLE_CONFIG_FILE')
 SIM_LAMBDA = os.environ.get('SIM_LAMBDA')
-RAW_IMAGE = os.environ.get('RAW_IMAGE')
-PERPWARP_IMAGE = os.environ.get('PERPWARP_IMAGE')
+#RAW_IMAGE = os.environ.get('RAW_IMAGE')
+#PERPWARP_IMAGE = os.environ.get('PERPWARP_IMAGE')
 
-OVERLAY_IMAGE = os.environ.get('OVERLAY_IMAGE')
+#OVERLAY_IMAGE = os.environ.get('OVERLAY_IMAGE')
 SCAMBIWEB = os.environ.get('SCAMBIWEB')
 _EVENT_QUEUE_URL = os.environ.get('EVENT_QUEUE_URL')
 EVENTS_TABLE = os.environ.get('EVENTS_TABLE')
@@ -245,6 +245,11 @@ def bytes_to_str(bytes_: bytes):
     return bytes_.decode()
 
 
+def get_user_resource_name_OUTGOING(user_id, static_resource_name):
+    """Return whatever encoding we may need for userid such as email"""
+    return f"{user_id}{static_resource_name}"
+
+
 def lambda_handler(event, context):
 
 
@@ -267,6 +272,14 @@ def lambda_handler(event, context):
             order['authentication'] = "farts"
             #print("session token success:", response)
             user_email = response["Item"]["useremail"]
+
+            # update globals - this is not nice? TODO
+            CONFIG_FILE = get_user_resource_name_OUTGOING(user_email, os.environ.get('CONFIG_FILE'))
+            RAW_IMAGE = get_user_resource_name_OUTGOING(user_email, os.environ.get('RAW_IMAGE'))
+            PERPWARP_IMAGE = get_user_resource_name_OUTGOING(user_email, os.environ.get('PERPWARP_IMAGE'))
+            OVERLAY_IMAGE = get_user_resource_name_OUTGOING(user_email, os.environ.get('OVERLAY_IMAGE'))
+            SAMPLE_CONFIG_FILE = get_user_resource_name_OUTGOING(user_email, os.environ.get('SAMPLE_CONFIG_FILE'))
+
 
     if "login" in event['body']:
         event_log = ""
@@ -318,6 +331,9 @@ def lambda_handler(event, context):
             'body': json.dumps({
                 'message': f'log-in failed, {login_log}'})
         }
+    
+
+    
     # this is the dynamic reference in template.yaml
     authentication_code = order['authentication']
 
