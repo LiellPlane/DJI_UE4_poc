@@ -182,6 +182,26 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_IMAGE
 
+
+  ConfigTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: configtable
+      AttributeDefinitions: 
+        - AttributeName: "useremail"
+          AttributeType: "S"
+        - AttributeName: "configid"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "useremail"
+          KeyType: "HASH"
+        - AttributeName: "configid"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
 # example schema
 # {
 #   "useremail": {

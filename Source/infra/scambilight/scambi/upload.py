@@ -340,7 +340,7 @@ def lambda_handler(event, context):
     if authentication_code not in ["farts", "teehee"]:
         #print("bad log in")
         return{
-            'statusCode': 201,
+            'statusCode': 401,
             'headers': cors_headers,
             'body': json.dumps({'message': 'stranger danger'})
         }
@@ -356,11 +356,11 @@ def lambda_handler(event, context):
             folder_name=SCAMBIIMAGES,
             object_name=PERPWARP_IMAGE)
 
-        s3_custom.write_img(
-            img=img_jpg,
-            bucket_name=SCAMBIWEB,
-            folder_name=None,
-            object_name=PERPWARP_IMAGE)
+        # s3_custom.write_img(
+        #     img=img_jpg,
+        #     bucket_name=SCAMBIWEB,
+        #     folder_name=None,
+        #     object_name=PERPWARP_IMAGE)
 
         return{
             'statusCode': 201,
@@ -379,11 +379,11 @@ def lambda_handler(event, context):
             folder_name=SCAMBIIMAGES,
             object_name=RAW_IMAGE)
 
-        s3_custom.write_img(
-            img=img_jpg,
-            bucket_name=SCAMBIWEB,
-            folder_name=None,
-            object_name=RAW_IMAGE)
+        # s3_custom.write_img(
+        #     img=img_jpg,
+        #     bucket_name=SCAMBIWEB,
+        #     folder_name=None,
+        #     object_name=RAW_IMAGE)
 
         return{
             'statusCode': 201,
@@ -405,11 +405,11 @@ def lambda_handler(event, context):
             folder_name=SCAMBIIMAGES,
             object_name=OVERLAY_IMAGE)
 
-        s3_custom.write_img(
-            img=img_jpg,
-            bucket_name=SCAMBIWEB,
-            folder_name=None,
-            object_name=OVERLAY_IMAGE)
+        # s3_custom.write_img(
+        #     img=img_jpg,
+        #     bucket_name=SCAMBIWEB,
+        #     folder_name=None,
+        #     object_name=OVERLAY_IMAGE)
 
         return{
             'statusCode': 201,
@@ -499,15 +499,15 @@ def lambda_handler(event, context):
                     "update_image_all"]:
 
 
-        if action in ["update_image", "update_image_all"]:
-            s3_custom.delete(
-                bucket_name=SCAMBIWEB,
-                folder_name=None,
-                object_name=OVERLAY_IMAGE)
-            s3_custom.delete(
-                bucket_name=SCAMBIWEB,
-                folder_name=None,
-                object_name=RAW_IMAGE)
+        # if action in ["update_image", "update_image_all"]:
+        #     s3_custom.delete(
+        #         bucket_name=SCAMBIWEB,
+        #         folder_name=None,
+        #         object_name=OVERLAY_IMAGE)
+        #     s3_custom.delete(
+        #         bucket_name=SCAMBIWEB,
+        #         folder_name=None,
+        #         object_name=RAW_IMAGE)
         # we onlyt want one action at a time
 
         # scan = db_table_client.scan()# do not use on big tables!!
@@ -587,8 +587,7 @@ def lambda_handler(event, context):
             'statusCode': 201,
             'headers': cors_headers,
             'body': json.dumps({
-                'message': 'request_config ok',
-                'config': bytes_to_str(config_bytes)})
+                'message': 'sim lambda invoked please wait'})
         }
 
     if action == "request_config":
