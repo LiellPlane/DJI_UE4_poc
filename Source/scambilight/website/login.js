@@ -44,25 +44,47 @@ function submitForm() {
             }
             });
     }
-    window.onload = test_logged_in = () => {
-        console.log("testing if logged in")
-        let data = {
-            //"authentication": inputPassword,
-            "action": "NONE",
-        };
-        fetch(targetUrl, {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify(data)
-        }).then(response => response.json())
-            .then(json => {
-                console.log(JSON.stringify(json));
-                if (json.success && json.message !== "stranger danger") { 
-                    window.location.href = 'index.html'; // Replace 'success_page.html' with the actual URL of the page you want to redirect to
-                } else {
-                    alert(JSON.stringify(json));
-                }
-            });
+    window.onload = () => {
+        test_logged_in();
+    };
     
-        return true;
+    function test_logged_in() {
+        console.log("testing if logged in");
+        let data = {
+            "action": "check_logged_in",
+        };
+        data = addSessionTokenIfExists(data);
+    
+        fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (response.ok) {
+                // If the status code is 200, redirect to a new page
+                window.location.href = 'index.html';
+            } else {
+                return response.json();
+            }
+        })
+        .then(json => {
+            // Handle the JSON response as needed
+            console.log(json);
+        })
+        .catch(error => {
+            // Handle any fetch errors
+            console.error('Fetch error:', error);
+        });
     }
+
+function addSessionTokenIfExists(inputDictionary) {
+    const sessionToken = sessionStorage.getItem("sessiontoken");
+
+    if (sessionToken !== null) {
+        inputDictionary["sessiontoken"] = sessionToken;
+        console.log("session token added to request body")
+    }
+    
+    return inputDictionary;
+}

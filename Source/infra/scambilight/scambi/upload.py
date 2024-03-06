@@ -669,6 +669,15 @@ def lambda_handler(event, context):
                 'message': "processed OK"})
         }
 
+
+    if action == "check_logged_in":
+        return {
+            'statusCode': 200,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': "logged in OK"})
+        }
+
     return{
         'statusCode': 201,
         'headers': cors_headers,
