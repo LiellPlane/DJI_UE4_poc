@@ -42,7 +42,7 @@ sqs_client = boto3.client('sqs')
 #         QueueName="positions",
 #     )
 dynamodb = boto3.resource('dynamodb')
-db_table_client = dynamodb.Table(EVENTS_TABLE)
+event_table_client = dynamodb.Table(EVENTS_TABLE)
 lambda_client = boto3.client('lambda')
 
 def get_future_epoch(min: int):
@@ -352,12 +352,12 @@ def lambda_handler(event, context):
 
     if action == "newuser":
         print("order[data]",  order['data'])
-        new_email = order['data']
-        db_table_client = dynamodb.Table(CONFIG_TABLE)
+        new_email = str(order['data']).lower()
+        config__table_client = dynamodb.Table(CONFIG_TABLE)
         users_table_client = dynamodb.Table(USERS_TABLE)
         response = users_table_client.get_item(
             Key={
-                'useremail': new_email.lower()
+                'useremail': new_email
             }
         )
         if 'Item' in response:
@@ -368,16 +368,10 @@ def lambda_handler(event, context):
                 }
         salt, pw_hash = hash_new_password('password')
         demo_user = demo_data.demo_user
-        demo_user["useremail"] = {
-            "S": new_email
-        }
-        demo_user["password"] = {
-            "S": pw_hash.hex()
-        }
-        demo_user["salt"] = {
-            "S": salt.hex()
-        }
-        db_table_client.put_item(
+        demo_user["useremail"] = new_email
+        demo_user["password"] = pw_hash.hex()
+        demo_user["salt"] = salt.hex()
+        users_table_client.put_item(
             Item=demo_user
         )
 
@@ -507,11 +501,11 @@ def lambda_handler(event, context):
             'useremail': user_email
         }
         #print("looking up", _Key)
-        response = db_table_client.get_item(Key=_Key)
+        response = event_table_client.get_item(Key=_Key)
         #print(response)
         if 'Item' in response:
             output = response["Item"]["event"]
-            db_table_client.put_item(
+            event_table_client.put_item(
                 Item={
                     'useremail': user_email,
                     'event': "",
@@ -551,7 +545,7 @@ def lambda_handler(event, context):
         #     for each in scan['Items']:
         #         batch.delete_item(Key=each)
 
-        response = db_table_client.put_item(
+        response = event_table_client.put_item(
             Item={
                 'useremail': user_email,
                 'event': action,
