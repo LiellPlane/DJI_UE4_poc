@@ -52,9 +52,9 @@
     <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
     
     <!-- Images -->
-    <img class="image" id="perp_image" src="perp_image.jpg?">
-    <img class="image" id="raw_image" src="raw_image.jpg?" width="1296" height="972">
-    <img class="image" id="overlay_image" src="overlay_image.jpg?">
+    <img class="image" id="perp_image" src="">
+    <img class="image" id="raw_image" src="">
+    <img class="image" id="overlay_image" src="">
 
     <!-- Buttons -->
     <button class="button" onclick="finish();">SUBMIT CORNER CLICKS</button>
@@ -64,8 +64,7 @@
     <button class="button" onclick="req_sample_config();">REQUEST REGION CONFIG JSON</button>
     <button class="button" onclick="submit_sample_config();">SUBMIT REGION CONFIG JSON</button>
     <button class="button" onclick="sim_regions();">SIMULATE REGIONS</button>
-    <button class="big-button" onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button>
-    <button class="big-button" onclick="api_refresh_images();">TEST API IMAGE</button>
+    <button class="button" onclick="api_refresh_images();">TEST API IMAGE</button>
 
     <!-- Configuration Box and Default Configuration -->
     <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
@@ -80,7 +79,7 @@
     <script>
         const proxyUrl  = 'https://corsproxy.io/?';
         const targetUrl   = 'https://api.scambilight.com/hello';
-
+        
         var clicks = [];
         var imageElement = document.getElementById('perp_image');
         var imageIdInput = document.getElementById('imageId');
@@ -230,9 +229,9 @@
             body: JSON.stringify(data)
             }).then(response => response.json())
                 .then(json => {console.log(JSON.stringify(json));
-                alert(JSON.stringify(json));
+                api_refresh_images();
                 });
-        decache_images_maybe();
+        //decache_images_maybe();
         }
         let req_new_image_all = () => {
             //var inputPassword = document.getElementById("lname").value;
@@ -423,7 +422,7 @@
             //alert("coord complete! response:", res)
             //});
         }
-
+    api_refresh_images();
     </script>
 
 </body>
