@@ -77,6 +77,7 @@
     </form>
 
     <script>
+        let intervalId;
         const proxyUrl  = 'https://corsproxy.io/?';
         const targetUrl   = 'https://api.scambilight.com/hello';
         
@@ -99,46 +100,6 @@
             
             return inputDictionary;
         }
-
-        // function submitForm() {
-        //     // Get form data
-        //     var form = document.getElementById("passwordform");
-        //     var formData = new FormData(form);
-        //     let valuesValid = true;
-
-        //     formData.forEach((value) => {
-        //         if (value === null || (typeof value === "string" && value.trim() === "")) {
-        //             valuesValid = false;
-        //         }
-        //     });
-
-        //     if (!valuesValid) {
-        //         alert("One or more values in the FormData are null or empty.");
-        //     }
-        //     // Convert formData to JSON
-        //     var jsonData = {};
-        //     formData.forEach((value, key) => {
-        //         jsonData[key] = value;
-        //     });
-
-        //     // Nest the JSON object under "login" key
-        //     let requestData = { "login": jsonData };
-
-        //     fetch(targetUrl, {
-        //         method: "POST",
-        //         headers: {'Content-Type': 'application/json'}, 
-        //         body: JSON.stringify(requestData)
-        //     }).then(response => response.json())
-        //         .then(json => {console.log(JSON.stringify(json));
-        //         alert(JSON.stringify(json));
-        //         // Check if "sessionbody" key exists in the JSON response
-        //         if (json.hasOwnProperty("sessiontoken")) {
-        //             // Store the value of "sessionbody" in sessionStorage
-        //             sessionStorage.setItem("sessiontoken", JSON.stringify(json.sessiontoken));
-        //         }
-        //         });
-        //     }
-
 
 
         let finish = () => {
@@ -229,9 +190,13 @@
             body: JSON.stringify(data)
             }).then(response => response.json())
                 .then(json => {console.log(JSON.stringify(json));
+                clearInterval(intervalId);
                 api_refresh_images();
+                document.getElementById('configbox').value = "";
                 });
         //decache_images_maybe();
+        //start timer function that reloads image to show sim progress
+        startInterval();
         }
         let req_new_image_all = () => {
             //var inputPassword = document.getElementById("lname").value;
@@ -279,52 +244,6 @@
             });
         };
 
-        // let api_refresh_images = () => {
-            
-        //     test_api_image('getimage_raw', 'raw_image');
-        //     test_api_image('getimage_perpwarp', 'perp_image');
-        //     test_api_image('getimage_overlay', 'overlay_image');
-        // };
-
-        // let test_api_image = (img_action, img_id) => {
-        //     var display_area = document.getElementById(img_id);
-        //     display_area.src = "";
-        //     var inputPassword = document.getElementById("lname").value;
-        //     let data = {
-        //         "authentication": inputPassword,
-        //         "action": img_action,
-        //         "data": "empty"
-        //         }; 
-        //     fetch(targetUrl, {
-        //         method: 'POST',
-        //         headers: {
-        //         'Content-Type': 'application/json',
-        //         // Add any other headers as needed
-        //         },
-        //         body: JSON.stringify(data)
-        //     })
-        //         .then(response => {
-        //         // Check if the response is successful (status code 200-299)
-        //         if (!response.ok) {
-        //             throw new Error('Network response was not ok');
-        //         }
-        //         // Parse JSON response
-        //         return response.json();
-        //         })
-        //         .then(data => {
-        //         // Assuming the JSON has an 'encodedImage' property containing the base64-encoded image
-        //         const encodedImage = data.image;
-
-        //         // Display the image
-                
-        //         display_area.src = `data:image/png;base64,${encodedImage}`;
-        //         })
-        //         .catch(error => {
-        //         console.error('Error fetching data:', error);
-        //         });
-        // };
-
-
         
         let api_refresh_images = () => {
     // Create an array of promises using the test_api_image function calls
@@ -347,7 +266,8 @@
         let test_api_image = (img_action, img_id) => {
             return new Promise((resolve, reject) => { // Wrap the fetch call in a Promise
                 var display_area = document.getElementById(img_id);
-                display_area.src = "";
+                //this isn't nice to have the site jump up and down when killing the image
+                //display_area.src = "";
                 //var inputPassword = document.getElementById("lname").value;
                 let data = {
                     //"authentication": inputPassword,
@@ -392,36 +312,21 @@
 	        clicks.push({"clickX": positionX.value,"clickY": positionY.value});
             console.log(clicks);
 	        document.getElementById('infobox').value = JSON.stringify(clicks);
-            // need cors proxy for some reason
 
-            // var xhr = new XMLHttpRequest();
-            // xhr.open("POST", targetUrl, false);
-            // xhr.setRequestHeader('Content-Type', 'application/json');
-            // xhr.send(JSON.stringify({
-            //     "authentication": inputPassword,
-            //     "action": "sendpos",
-            //     "clickX": positionX.value,
-            //     "clickY": positionY.value,
-            // }));
-            // console.log("sent value maybe?");
-
-            //let data = {
-            //    "authentication": inputPassword,
-            //    "action": "sendpos",
-            //    "clickX": positionX.value,
-            //    "clickY": positionY.value,
-            //    
-            //};
-
-            //fetch(targetUrl, {
-            //method: "POST",
-            //headers: {'Content-Type': 'application/json'}, 
-            //body: JSON.stringify(data)
-            //}).then(res => {
-            //console.log("coord complete! response:", res);
-            //alert("coord complete! response:", res)
-            //});
         }
+
+        function startInterval() {
+            let counter = 30; // 60 seconds / 10 seconds = 6 times
+            intervalId = setInterval(() => {
+                test_api_image('getimage_overlay', 'overlay_image');
+                console.log("getting progress image");
+                counter--;
+                if (counter === 0) {
+                    clearInterval(intervalId);
+                }
+            }, 2000); // 2000 milliseconds = 2 seconds
+        }
+
     api_refresh_images();
     </script>
 
