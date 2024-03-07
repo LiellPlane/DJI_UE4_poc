@@ -65,6 +65,7 @@
     <button class="button" onclick="submit_sample_config();">SUBMIT REGION CONFIG JSON</button>
     <button class="button" onclick="sim_regions();">SIMULATE REGIONS</button>
     <button class="button" onclick="api_refresh_images();">TEST API IMAGE</button>
+    <button class="button" onclick="test_new_user();">TEST NEW USER</button>
 
     <!-- Configuration Box and Default Configuration -->
     <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
@@ -225,6 +226,24 @@
         var refresh_image = document.getElementById("perp_image");  
         refresh_image.src = "perp_image.jpg?" + new Date().getTime();
         };
+
+        let test_new_user = () => {
+        let data = {
+            //"authentication": inputPassword,
+            "action": "newuser",
+            "data": "guest"
+            };   
+        
+        data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+            });
+        }
 
         let submit_sample_config = () => {
             //var inputPassword = document.getElementById("lname").value;

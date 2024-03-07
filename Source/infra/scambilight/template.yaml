@@ -42,6 +42,7 @@ Globals:
         EVENTS_TABLE: !Ref MyEventTable3
         USERS_TABLE: !Ref UsersTable2
         SESSION_TABLE: !Ref SessionTable
+        CONFIG_TABLE: !Ref ConfigTable
     Tracing: Active
   #Api:
   #  TracingEnabled: true
@@ -104,6 +105,8 @@ Resources:
             TableName: !Ref UsersTable2
         - DynamoDBCrudPolicy:
             TableName: !Ref SessionTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConfigTable
         - LambdaInvokePolicy:
             FunctionName:
               scambilight-sim

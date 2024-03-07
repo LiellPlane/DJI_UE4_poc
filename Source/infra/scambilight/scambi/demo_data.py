@@ -1,4 +1,53 @@
-{
+demo_user = {
+  "useremail": {
+    "S": "@googlemail.com"
+  },
+  "api_calls": {
+    "N": "0"
+  },
+  "config_id": {
+    "S": "0"
+  },
+  "notes": {
+    "S": "twat"
+  },
+  "password": {
+    "S": ""
+  },
+  "salt": {
+    "S": ""
+  }
+}
+
+
+demo_session = {
+  "sessionid": {
+    "S": "daisybankscambi"
+  },
+  "expiry": {
+    "N": "0"
+  },
+  "notes": {
+    "S": "deployed scambisystem"
+  },
+  "useremail": {
+    "S": "liellplane@googlemail.com"
+  }
+}
+
+demo_event = {
+ "useremail": {
+  "S": "liellplane@googlemail.com"
+ },
+ "event": {
+  "S": ""
+ },
+ "ttl": {
+  "S": "1709753882.258437"
+ }
+}
+
+demo_config = {
   "useremail": {
     "S": "farts"
   },

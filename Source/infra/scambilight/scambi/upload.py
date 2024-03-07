@@ -13,7 +13,8 @@ import hmac
 import uuid
 from common import cors_headers
 import datetime
-
+import generate_hash_salt
+import demo_data
 
 logger = logging.getLogger('scambiupload')
 logger.setLevel(logging.INFO)
@@ -33,6 +34,7 @@ _EVENT_QUEUE_URL = os.environ.get('EVENT_QUEUE_URL')
 EVENTS_TABLE = os.environ.get('EVENTS_TABLE')
 USERS_TABLE = os.environ.get('USERS_TABLE')
 SESSION_TABLE = os.environ.get('SESSION_TABLE')
+CONFIG_TABLE = os.environ.get('CONFIG_TABLE')
 
 s3_client = boto3.resource('s3')
 sqs_client = boto3.client('sqs')
@@ -345,7 +347,40 @@ def lambda_handler(event, context):
             'body': json.dumps({'message': 'stranger danger'})
         }
 
-    action = order['action']
+    action = order['action'].lower()
+
+
+    if action == "newuser":
+        print("order[data]",  order['data'])
+        new_email = order['data']
+        db_table_client = dynamodb.Table(CONFIG_TABLE)
+        users_table_client = dynamodb.Table(USERS_TABLE)
+        response = users_table_client.get_item(
+            Key={
+                'useremail': new_email.lower()
+            }
+        )
+        if 'Item' in response:
+            return{
+                'statusCode': 400,
+                'headers': cors_headers,
+                'body': json.dumps({'message': f'user{new_email}exists'})
+                }
+        salt, pw_hash = hash_new_password('password')
+        demo_user = demo_data.demo_user
+        demo_user["useremail"] = {
+            "S": new_email
+        }
+        demo_user["password"] = {
+            "S": pw_hash.hex()
+        }
+        demo_user["salt"] = {
+            "S": salt.hex()
+        }
+        db_table_client.put_item(
+            Item=demo_user
+        )
+
     if action == "perpwarp":
 
         image_bytes = str_to_bytes(order['payload'])
