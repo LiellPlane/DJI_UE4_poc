@@ -375,6 +375,42 @@ def lambda_handler(event, context):
             Item=demo_user
         )
 
+        demo_config = demo_data.demo_config
+        demo_config["useremail"] = new_email
+        config__table_client.put_item(
+            Item=demo_config
+        )
+
+        return{
+            'statusCode': 201,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'message': 'new user created ok'})
+        }
+
+
+    if action == "getconfig":
+        config_table_client = dynamodb.Table(CONFIG_TABLE)
+        response = config_table_client.get_item(
+            Key={
+                'useremail': user_email,
+                'configid': 0
+            }
+        )
+        if 'Item' in response:
+            return{
+                'statusCode': 201,
+                'headers': cors_headers,
+                'body': json.dumps(response['Item'])
+                }
+        return{
+            'statusCode': 401,
+            'headers': cors_headers,
+            'body': json.dumps({
+                'ERROR': f'could not find user config for{user_email} config {0} '})
+        }
+    
+
     if action == "perpwarp":
 
         image_bytes = str_to_bytes(order['payload'])

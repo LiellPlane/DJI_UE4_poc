@@ -66,6 +66,7 @@
     <button class="button" onclick="sim_regions();">SIMULATE REGIONS</button>
     <button class="button" onclick="api_refresh_images();">TEST API IMAGE</button>
     <button class="button" onclick="test_new_user();">TEST NEW USER</button>
+    <button class="button" onclick="test_get_config();">TEST GET INFRA2 CONFIG</button>
 
     <!-- Configuration Box and Default Configuration -->
     <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
@@ -226,6 +227,24 @@
         var refresh_image = document.getElementById("perp_image");  
         refresh_image.src = "perp_image.jpg?" + new Date().getTime();
         };
+
+        let test_get_config = () => {
+        let data = {
+            //"authentication": inputPassword,
+            "action": "getconfig",
+            "data": "doesnt matter for now but needs config id and maybe user"
+            };   
+        
+        data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+            });
+        }
 
         let test_new_user = () => {
         let data = {
