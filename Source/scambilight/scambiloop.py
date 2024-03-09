@@ -45,7 +45,8 @@ from libs.external_data import (
     get_image_from_aws,
     ExternalDataWorker,
     ExternalDataWorker_dummy,
-    cors_headers)
+    cors_headers,
+    get_all_config_from_aws)
 import os
 PLATFORM = get_platform()
 
@@ -76,7 +77,7 @@ def get_external_data_workr(action):
 
 
 def main(action = None):
-    
+    get_all_config_from_aws(SCAMILIGHT_API)
     optical_details = get_lens_details(
         LensConfigs.DAISYBANK_LQ)
     fisheye_compute = fisheye_lib.fisheye_tool(
@@ -112,6 +113,7 @@ def main(action = None):
     # upload image before anything crashes 
  
     aws_config = get_config_from_aws(SCAMILIGHT_API)
+    
     led_subsystem.display_info_colours(LEDColours.Cyan.value)
     fish_img_corners = get_ext_corners_or_use_default(
         ext_click_data=aws_config.fish_eye_clicked_corners,

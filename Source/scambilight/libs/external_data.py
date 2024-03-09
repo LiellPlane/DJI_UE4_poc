@@ -179,7 +179,45 @@ class ExternalDataWorker():
                 pass
         return "None"
     
-    
+
+def get_all_config_from_aws(url):
+    """ get all config simultaneously then
+    cache result for future calls.
+    this should only be updated on reset"""
+    print("getting all config from aws")
+    myobj = {
+        "action": "getconfig",
+        "sessiontoken": get_session_id()
+        }
+    positions = []
+    ext_config_pos = []
+    try:
+        response = requests.post(url, json=myobj)
+
+        body = json.loads(response.content)
+
+        # Get clicked positions
+        clicked_positions = json.loads(body['corners'])
+        for elem in clicked_positions:
+            # sorry
+            positions.append({i:int((elem)[i]) for i in elem})
+            
+            ext_config_pos.append(clicked_xy(**elem))
+        output_corners = External_Config(
+            fish_eye_clicked_corners=ext_config_pos
+            )
+
+        # get sampling region configuration
+        
+
+        print(f"from AWS {clicked_positions}")
+    except (requests.exceptions.RequestException, KeyError) as e:
+        print(e)
+        print("could not connect get config or find key from", url)
+    return External_Config(
+        fish_eye_clicked_corners=ext_config_pos)
+
+
 def get_config_from_aws(url):
     print("getting config from aws")
     myobj = {

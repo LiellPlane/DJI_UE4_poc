@@ -347,7 +347,7 @@
             clickY = e.pageY - imageElement.getBoundingClientRect().top;
             positionX.value = Math.floor(clickX / (imageElement.width / imageElement.naturalWidth));
             positionY.value = Math.floor(clickY / (imageElement.height / imageElement.naturalHeight));
-	        clicks.push({"clickX": positionX.value,"clickY": positionY.value});
+	        clicks.push({"clickX": parseInt(positionX.value),"clickY": parseInt(positionY.value)});
             console.log(clicks);
 	        document.getElementById('infobox').value = JSON.stringify(clicks);
 

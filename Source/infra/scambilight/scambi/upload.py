@@ -15,6 +15,7 @@ from common import cors_headers
 import datetime
 import generate_hash_salt
 import demo_data
+import dynamodb_ops
 
 logger = logging.getLogger('scambiupload')
 logger.setLevel(logging.INFO)
@@ -394,10 +395,18 @@ def lambda_handler(event, context):
         response = config_table_client.get_item(
             Key={
                 'useremail': user_email,
-                'configid': 0
+                'configid': "0"
             }
         )
+
         if 'Item' in response:
+
+            dynamodb_ops.update_item_exiting_attribute(
+                table=config_table_client,
+                _key={'useremail': 'guest','configid': "0"},
+                attribute_to_update="lens",
+                value_to_update=json.dumps({"id": "something", "width": 640, "height": 480, "fish_eye_circle": 700})
+            )
             return{
                 'statusCode': 201,
                 'headers': cors_headers,
@@ -618,19 +627,56 @@ def lambda_handler(event, context):
         #print("click_data", click_data)
         #print("type click_data", type(click_data))
         
-        # check both have same keys
-        if not set(curr_config_json.keys()) == set(click_data.keys()):
+        # check both have same keys and same keyvalue types
+        if not all(
+            set(curr_config_json.keys()) == set(click_data.keys()),
+            all(isinstance(curr_config_json[key], type(click_data[key])) for key in curr_config_json.keys()),
+            len(click_data)==len(curr_config_json)):
             return {
-                'statusCode': 201,
+                'statusCode': 400,
                 'headers': cors_headers,
                 'body': json.dumps({
-                    'message': "ERROR - CONFIG KEYS DO NOT MATCH - RELOAD DEFAULTS"})
+                    'message': f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type"})
             }
         s3_custom.write(
             input_bytes=messages_bytes,
             bucket_name=SCAMBIFOLDER,
             folder_name=SCAMBICONFIG,
             object_name=SAMPLE_CONFIG_FILE)
+
+
+
+        # transitional dynamodb datasource
+        config_table_client = dynamodb.Table(CONFIG_TABLE)
+        response = config_table_client.get_item(
+            Key={
+                'useremail': user_email,
+                'configid': "0"
+            }
+        )
+        curr_config_json = json.loads(response['Item']['regions'])
+        print(curr_config_json)
+        if not all(
+            set(curr_config_json.keys()) == set(click_data.keys()),
+            all(isinstance(curr_config_json[key], type(click_data[key])) for key in curr_config_json.keys()),
+            len(click_data)==len(curr_config_json)):
+            return {
+                'statusCode': 400,
+                'headers': cors_headers,
+                'body': json.dumps({
+                    'message': f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type"})
+            }
+        dynamodb_ops.update_item_exiting_attribute(
+            table=config_table_client,
+            _key={'useremail': user_email,'configid': "0"},
+            attribute_to_update="regions",
+            value_to_update=json.dumps(click_data)
+        )
+
+
+
+
+
 
         # need this for CORS
         return {
@@ -725,6 +771,38 @@ def lambda_handler(event, context):
             bucket_name=SCAMBIFOLDER,
             folder_name=SCAMBICONFIG,
             object_name=CONFIG_FILE)
+
+
+        # this bit is for the new dynamodb method
+        # click_data should already be in LIST as we
+        # json loaded it earlier
+        config_table_client = dynamodb.Table(CONFIG_TABLE)
+        response = config_table_client.get_item(
+            Key={
+                'useremail': user_email,
+                'configid': "0"
+            }
+        )
+        curr_config_json = json.loads(response['Item']['corners'])
+        print(curr_config_json)
+        if not all([
+            set(curr_config_json.keys()) == set(click_data.keys()),
+            all(isinstance(curr_config_json[key], type(click_data[key])) for key in curr_config_json.keys()),
+            len(click_data)==len(curr_config_json)]):
+            return {
+                'statusCode': 400,
+                'headers': cors_headers,
+                'body': json.dumps({
+                    'message': f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type"})
+            }
+
+        dynamodb_ops.update_item_exiting_attribute(
+            table=config_table_client,
+            _key={'useremail': user_email,'configid': "0"},
+            attribute_to_update="corners",
+            value_to_update=json.dumps(click_data)
+        )
+
 
         # need this for CORS
         return {
