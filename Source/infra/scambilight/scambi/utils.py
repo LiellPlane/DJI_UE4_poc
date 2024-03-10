@@ -16,7 +16,7 @@ import datetime
 import generate_hash_salt
 import demo_data
 import dynamodb_ops
-
+from functools import lru_cache
 # sqs_url = sqs_client.get_queue_url(
 #         QueueName="positions",
 #     )
@@ -126,6 +126,7 @@ def get_return_dict(
     }
 
 
+#@lru_cache(maxsize=16)
 def authenticate_session(event_body: dict, session_table_client) -> str:
     """assumes session token exists, so wrap in a try """
     _Key = {
