@@ -1,0 +1,1 @@
+event_getconfig = {'body': '{"action":"getconfig","data":"doesnt matter for now but needs config id and maybe user","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1esc\\""}'}
