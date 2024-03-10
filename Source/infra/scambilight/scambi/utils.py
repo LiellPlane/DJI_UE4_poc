@@ -138,3 +138,38 @@ def authenticate_session(event_body: dict, session_table_client) -> str:
     #print("session token success:", response)
     user_email = response["Item"]["useremail"]
     return user_email
+
+
+def log_in_user(
+        event_body: dict,
+        users_table_client: any,
+        session_table_client: any
+        ) -> dict:
+    response = users_table_client.get_item(
+        Key={
+            'useremail': event_body["login"]["email"].lower()
+        }
+    )
+    if 'Item' in response:
+        passres = is_correct_password(
+            bytes.fromhex(response['Item']['salt']),
+            bytes.fromhex(response['Item']['password']),
+            event_body["login"]["password"])
+        if passres is True:
+            # create new sesh token
+            sessiontoken = str(uuid.uuid4())
+            new_item_data = {
+                'sessionid': sessiontoken,
+                'useremail': event_body["login"]["email"].lower(),
+                'expiry': 12345678,
+                'ttl': get_future_epoch(min=10080)
+            }
+
+            # Use put_item to create the new item
+            session_table_client.put_item(Item=new_item_data)
+            #print("password ok, authenticating")
+            return None
+        else:
+            raise Exception("email ok password fail")
+    else:
+        raise Exception("cannot find user email")

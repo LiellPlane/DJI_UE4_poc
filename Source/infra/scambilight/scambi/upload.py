@@ -54,77 +54,41 @@ def set_globals(prefix: str):
 
 
 
-def log_in_user(
-        event_body: dict,
-        users_table_client: any,
-        session_table_client: any
-        ) -> dict:
-    login_log = ""
-    response = users_table_client.get_item(
-        Key={
-            'useremail': event_body["login"]["email"].lower()
-        }
-    )
-    if 'Item' in response:
-        passres = utils.is_correct_password(
-            bytes.fromhex(response['Item']['salt']),
-            bytes.fromhex(response['Item']['password']),
-            event_body["login"]["password"])
-        if passres is True:
-            # create new sesh token
-            sessiontoken = str(uuid.uuid4())
-            new_item_data = {
-                'sessionid': sessiontoken,
-                'useremail': order["login"]["email"].lower(),
-                'expiry': 12345678,
-                'ttl': utils.get_future_epoch(min=10080)
-            }
-
-            # Use put_item to create the new item
-            session_table_client.put_item(Item=new_item_data)
-            #print("password ok, authenticating")
-            return{
-                'statusCode': 200,
-                'headers': cors_headers,
-                'body': json.dumps({
-                    'message': 'session authentication OK',
-                    'sessiontoken': sessiontoken,
-                    'email': order["login"]["email"].lower()})
-            }
-        else:
-            login_log = "email ok password fail"
-    else:
-        login_log = "cannot find user email"
-    return{
-        'statusCode': 401,
-        'headers': cors_headers,
-        'body': json.dumps({
-            'message': f'log-in failed, {login_log}'})
-    }
-
-
 def lambda_handler(event, _):
 
     incoming_request = json.loads(event['body'])
 
     if "login" in incoming_request:
-        log_in_user(
-            event_body=incoming_request,
-            users_table_client=dynamodb.Table(USERS_TABLE),
-            session_table_client=dynamodb.Table(SESSION_TABLE))
+        try:
+            utils.log_in_user(
+                event_body=incoming_request,
+                users_table_client=dynamodb.Table(USERS_TABLE),
+                session_table_client=dynamodb.Table(SESSION_TABLE))
+        except Exception as e:
+            return utils.get_return_dict(
+                httpstatus=401,
+                body=json.dumps({'message': f'log-in failed, {str(e)}'}),
+                _logger=logger
+                )
+        return utils.get_return_dict(
+            httpstatus=201,
+            body=json.dumps({
+                'message': 'user log in OK'}),
+            _logger=logger
+            )
 
 
     # now we assume session tokens are present for all actions bar log-in
     try:
-            user_email = utils.authenticate_session(
-                event_body=incoming_request,
-                session_table_client=dynamodb.Table(SESSION_TABLE)
-                )
+        user_email = utils.authenticate_session(
+            event_body=incoming_request,
+            session_table_client=dynamodb.Table(SESSION_TABLE)
+            )
 
     except Exception as e:
         return utils.get_return_dict(
             httpstatus=401,
-            body=json.dumps({'message': f'session token authentication failed, {str(e)}'}),
+            body=json.dumps({'message': f'session token authentication failed, {e}'}),
             _logger=logger
             )
 
@@ -132,6 +96,24 @@ def lambda_handler(event, _):
 
     return utils.get_return_dict(
         httpstatus=200,
-        body=json.dumps({'message': 'logged in ok'}),
+        body=json.dumps({'message': 'session ok'}),
         _logger=logger
         )
+
+
+
+
+    # return utils.get_return_dict(
+    #     httpstatus=401,
+    #     body=json.dumps({'message': f'log-in failed, {login_log}'}),
+    #     _logger=logger
+    #     )
+
+    #         return utils.get_return_dict(
+    #             httpstatus=200,
+    #             body=json.dumps({
+    #                 'message': 'session authentication OK',
+    #                 'sessiontoken': sessiontoken,
+    #                 'email': event_body["login"]["email"].lower()}),
+    #             _logger=logger
+    #             )

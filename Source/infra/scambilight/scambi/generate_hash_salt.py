@@ -23,12 +23,13 @@ def is_correct_password(salt: bytes, pw_hash: bytes, password: str) -> bool:
     )
 
 # # Example usage:
-# salt, pw_hash = hash_new_password('farts')
+salt, pw_hash = hash_new_password('secretshh')
 
-# str_salt = salt.hex()
+str_salt = salt.hex()
 
-# str_pwhash = pw_hash.hex()
+str_pwhash = pw_hash.hex()
 
+plop=1
 # salt_bytes_again = bytes.fromhex(str_salt)
 
 # hash_pw_bytes_again = bytes.fromhex(str_pwhash)

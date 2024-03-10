@@ -16,6 +16,16 @@ import datetime
 import generate_hash_salt
 import demo_data
 import dynamodb_ops
+import utils
+
+def is_test_env():
+    if (os.environ.get('ENV') == "LOCALTEST") is True:
+        return True
+    else:
+        return False
+
+if is_test_env() is False:
+    import boto3
 
 
 class Boto3S3Client():
@@ -139,19 +149,26 @@ class FakeDynamodbClient:
     def Table(self):
         class NoopClient:
             def __init__(self, *args, **kwargs):
-                pass
+                self.args = args
+                self.kwargs = kwargs
             @staticmethod
             def put_item(*args, **kwargs):
                 pass
             @staticmethod
             def query(*args, **kwargs):
                 pass
-            @staticmethod
-            def get_item(*args, **kwargs):
-                if (au:=kwargs["Key"].get("sessionid")) is not None:
-                    if au == 'fb1e6ead-e6b5-4dea-8921-f60e4c40b1ec':
-                        return{"Item": {"useremail": "test@testytest.test"}}
-                return None
+            #@staticmethod
+            def get_item(self, *args, **kwargs):
+                if 'SESSION_TABLE' in self.args:
+                    if (au:=kwargs["Key"].get("sessionid")) is not None:
+                        if au == 'fb1e6ead-e6b5-4dea-8921-f60e4c40b1es':
+                            return{"Item": {"useremail": "test@testytest.test"}}
+                if 'USERS_TABLE' in self.args:
+                    if (au:=kwargs["Key"].get("useremail")) is not None:
+                        if au == 'test@email.tet':
+                            salt, password = utils.hash_new_password("secretshh")
+                            return{"Item": {"salt": salt.hex(), "password": password.hex()}}
+                return {}
     
         return NoopClient
     
@@ -174,6 +191,5 @@ def is_test_env():
     if (os.environ.get('ENV') == "LOCALTEST") is True:
         return True
     else:
-        import boto3 #kinda dirty
         return False
 
