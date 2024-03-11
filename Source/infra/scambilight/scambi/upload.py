@@ -64,7 +64,7 @@ def lambda_handler(event, _):
                 event_body=incoming_request,
                 users_table_client=dynamodb.Table(USERS_TABLE),
                 session_table_client=dynamodb.Table(SESSION_TABLE))
-        except Exception as e:
+        except utils.ScambiError as e:
             return utils.get_return_dict(
                 httpstatus=401,
                 body=json.dumps({'message': f'log-in failed, {str(e)}'}),
@@ -85,7 +85,7 @@ def lambda_handler(event, _):
             session_table_client=dynamodb.Table(SESSION_TABLE)
             )
 
-    except Exception as e:
+    except utils.ScambiError as e:
         return utils.get_return_dict(
             httpstatus=401,
             body=json.dumps({'message': f'session token authentication failed, {e}'}),
@@ -93,6 +93,45 @@ def lambda_handler(event, _):
             )
 
     set_globals(prefix=user_email)
+
+
+    # get incoming action - not sure if I like this
+    action = incoming_request['action'].lower()
+
+
+    if action == "newuser":
+        try:
+            utils.create_new_user(
+                event_body=incoming_request,
+                users_table_client=dynamodb.Table(USERS_TABLE),
+                config_table_client=dynamodb.Table(CONFIG_TABLE)
+                )
+        except utils.ScambiError as e:
+            return utils.get_return_dict(
+                httpstatus=400,
+                body=json.dumps({'message': f"{e}"}),
+                _logger=logger
+                )
+        return utils.get_return_dict(
+            httpstatus=201,
+            body=json.dumps({'message': "created new user OK"}),
+            _logger=logger
+            )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     return utils.get_return_dict(
         httpstatus=200,

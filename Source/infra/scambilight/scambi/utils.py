@@ -22,6 +22,10 @@ from functools import lru_cache
 #     )
 
 
+class ScambiError(Exception):
+    pass
+
+
 def decode_image_from_str(encoded_image: str):
     """decodes image from string. Expects base64 encoding
 
@@ -137,7 +141,10 @@ def authenticate_session(event_body: dict, session_table_client) -> str:
     #print(response)
 
     #print("session token success:", response)
-    user_email = response["Item"]["useremail"]
+    try:
+        user_email = response["Item"]["useremail"]
+    except KeyError as e:
+        raise ScambiError(e) from e
     return user_email
 
 
@@ -171,6 +178,35 @@ def log_in_user(
             #print("password ok, authenticating")
             return None
         else:
-            raise Exception("email ok password fail")
+            raise ScambiError("email ok password fail")
     else:
-        raise Exception("cannot find user email")
+        raise ScambiError("cannot find user email")
+
+
+def create_new_user(
+        event_body: dict,
+        users_table_client: any,
+        config_table_client: any
+        ) -> dict:
+    new_email = str(event_body['data']).lower()
+    response = users_table_client.get_item(
+        Key={
+            'useremail': new_email
+        }
+    )
+    if 'Item' in response:
+        raise ScambiError(f'user {new_email} exists, cannot make new user')
+    salt, pw_hash = hash_new_password('password')
+    demo_user = demo_data.demo_user
+    demo_user["useremail"] = new_email
+    demo_user["password"] = pw_hash.hex()
+    demo_user["salt"] = salt.hex()
+    users_table_client.put_item(
+        Item=demo_user
+    )
+
+    demo_config = demo_data.demo_config
+    demo_config["useremail"] = new_email
+    config_table_client.put_item(
+        Item=demo_config
+    )

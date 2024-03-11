@@ -19,5 +19,9 @@ if __name__ == '__main__':
     assert res == {'statusCode': 401, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "log-in failed, email ok password fail"}'}
     res = upload.lambda_handler(test_data.event_bad_login_no_user, None)
     assert res == {'statusCode': 401, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "log-in failed, cannot find user email"}'}
+    res = upload.lambda_handler(test_data.event_newuser_exists, None)
+    assert res == {'statusCode': 400, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "user already@exists exists, cannot make new user"}'}
+    res = upload.lambda_handler(test_data.event_newuser, None)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "created new user OK"}'}
 
     

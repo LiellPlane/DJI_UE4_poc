@@ -168,6 +168,13 @@ class FakeDynamodbClient:
                         if au == 'test@email.tet':
                             salt, password = utils.hash_new_password("secretshh")
                             return{"Item": {"salt": salt.hex(), "password": password.hex()}}
+                        if au == 'already@exists':
+                            return{"Item": {"doesn't" : "matter"}}
+                if 'CONFIG_TABLE' in self.args:
+                    if (au:=kwargs["Key"].get("useremail")) is not None:
+                        if au == 'test@email.tet':
+                            salt, password = utils.hash_new_password("secretshh")
+                            return{"Item": {"salt": salt.hex(), "password": password.hex()}}
                 return {}
     
         return NoopClient
