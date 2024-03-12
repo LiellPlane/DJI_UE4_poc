@@ -24,6 +24,11 @@ import registry
 logger = logging.getLogger('scambiupload')
 logger.setLevel(logging.INFO)
 
+# these get populated later
+RAW_IMAGE = None
+PERPWARP_IMAGE = None
+OVERLAY_IMAGE = None
+
 SCAMBIFOLDER = os.environ.get('SCAMBIFOLDER')
 SCAMBIIMAGES = os.environ.get('SCAMBIIMAGES')
 SCAMBICONFIG = os.environ.get('SCAMBICONFIG')
@@ -40,12 +45,19 @@ CONFIG_TABLE = os.environ.get('CONFIG_TABLE')
 #sqs_client = boto3.client('sqs')
 logger = logging.getLogger("scambilight-lambda")
 dynamodb = registry.get_dynamodb_client()
+s3client = registry.get_s3_client()
 lambda_client = boto3.client('lambda')
 #s3_custom = registry.get_s3_client()
 
 event_table_client = dynamodb.Table(EVENTS_TABLE)
 
+
 def set_globals(prefix: str):
+    global CONFIG_FILE
+    global RAW_IMAGE
+    global PERPWARP_IMAGE
+    global OVERLAY_IMAGE
+    global SAMPLE_CONFIG_FILE
     CONFIG_FILE = utils.get_user_resource_name_OUTGOING(prefix, os.environ.get('CONFIG_FILE'))
     RAW_IMAGE = utils.get_user_resource_name_OUTGOING(prefix, os.environ.get('RAW_IMAGE'))
     PERPWARP_IMAGE = utils.get_user_resource_name_OUTGOING(prefix, os.environ.get('PERPWARP_IMAGE'))
@@ -141,14 +153,20 @@ def lambda_handler(event, _):
             _logger=logger
             )
 
+    if (au := {
+        "perpwarp" : PERPWARP_IMAGE,
+        "image_raw":RAW_IMAGE,
+        "image_overlay":OVERLAY_IMAGE
+        }.get(action)) is not None:
 
-
-
-
-
-
-
-
+        
+        utils.write_image_s3(
+            s3client=s3client,
+            img_payload=incoming_request['payload'],
+            scambifolder=SCAMBIFOLDER,
+            scambiimages=SCAMBIIMAGES,
+            objectname=au
+        )
 
 
 

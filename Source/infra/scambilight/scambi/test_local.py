@@ -8,7 +8,6 @@ import test_data
 import upload
 if __name__ == '__main__':
     
-    good session cookie
     res = upload.lambda_handler(test_data.event_good_session, None)
     assert res == {'statusCode': 200, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session ok"}'}
     res = upload.lambda_handler(test_data.event_bad_session, None)

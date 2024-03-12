@@ -111,6 +111,7 @@ def send_message(queue, message_body, message_attributes=None):
     else:
         return response
 
+
 class Boto3S3Client():
 
     def __init__(self, aws_region):

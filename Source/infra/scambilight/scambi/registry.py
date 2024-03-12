@@ -28,14 +28,25 @@ if is_test_env() is False:
     import boto3
 
 
+class FakeBotoClient():
+
+    def put_object(*args, **kwargs):
+        pass
+
+    def delete_object(*args, **kwargs):
+        pass
+
+    def upload_fileobj(*args, **kwargs):
+        pass
+
+    def download_fileobj(*args, **kwargs) -> bytes:
+        return bytes("I dunno lol")
+
+
 class Boto3S3Client():
     
-    def __init__(self, aws_region):
-        self._aws_region = aws_region
-        self._s3_client = boto3.client(  # type: ignore[attr-defined]
-            's3',
-            region_name=aws_region
-            )
+    def __init__(self, s3_client):
+        self._s3_client = s3_client
 
     def write_img(
         self,
@@ -193,9 +204,13 @@ def get_dynamodb_client():
 
 def get_s3_client():
     if is_test_env():
-        return Boto3S3Client("us-east-1")
+        return Boto3S3Client(FakeBotoClient())
     else:
-        return Boto3S3Client("us-east-1")
+        # boto3.client(  # type: ignore[attr-defined]
+        #     's3',
+        #     region_name=aws_region
+        #     )
+        return Boto3S3Client(boto3.client('s3'))
 
 
 def is_test_env():
