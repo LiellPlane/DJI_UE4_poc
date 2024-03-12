@@ -95,7 +95,7 @@ def lambda_handler(event, _):
     set_globals(prefix=user_email)
 
 
-    # get incoming action - not sure if I like this
+    # get incoming action - not sure if I like this here
     action = incoming_request['action'].lower()
 
 
@@ -119,7 +119,27 @@ def lambda_handler(event, _):
             )
 
 
-
+    if action == "getconfig":
+        """get all config, let clients sort it out"""
+        config_table_client = dynamodb.Table(CONFIG_TABLE)
+        response = config_table_client.get_item(
+            Key={
+                'useremail': user_email,
+                'configid': "0"
+            }
+        )
+        if 'Item' in response:
+            return utils.get_return_dict(
+                httpstatus=201,
+                body=json.dumps(response['Item']),
+                _logger=logger
+                )
+        return utils.get_return_dict(
+            httpstatus=401,
+             body= json.dumps({
+                'ERROR': f'could not find user config for{user_email} config {0} '}),
+            _logger=logger
+            )
 
 
 

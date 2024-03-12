@@ -8,7 +8,7 @@ import test_data
 import upload
 if __name__ == '__main__':
     
-    # good session cookie
+    good session cookie
     res = upload.lambda_handler(test_data.event_good_session, None)
     assert res == {'statusCode': 200, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session ok"}'}
     res = upload.lambda_handler(test_data.event_bad_session, None)
@@ -23,5 +23,8 @@ if __name__ == '__main__':
     assert res == {'statusCode': 400, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "user already@exists exists, cannot make new user"}'}
     res = upload.lambda_handler(test_data.event_newuser, None)
     assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "created new user OK"}'}
+    res = upload.lambda_handler(test_data.event_get_config, None)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"salt": 123456, "password": 1234567}'}
 
-    
+
+    plop=1

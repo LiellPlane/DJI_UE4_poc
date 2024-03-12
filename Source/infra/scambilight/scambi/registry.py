@@ -171,10 +171,14 @@ class FakeDynamodbClient:
                         if au == 'already@exists':
                             return{"Item": {"doesn't" : "matter"}}
                 if 'CONFIG_TABLE' in self.args:
+                    if kwargs["Key"].keys() != {'useremail': None, 'configid': None}.keys():
+                        raise KeyError("bad key input, requires useremail and configid partition keys")
                     if (au:=kwargs["Key"].get("useremail")) is not None:
                         if au == 'test@email.tet':
                             salt, password = utils.hash_new_password("secretshh")
                             return{"Item": {"salt": salt.hex(), "password": password.hex()}}
+                        if au == 'test@testytest.test':
+                            return{"Item": {"salt": 123456, "password":1234567}}
                 return {}
     
         return NoopClient
