@@ -220,24 +220,24 @@ def write_image_s3(
         objectname: str
         ):
 
-        image_bytes = str_to_bytes(img_payload)
-        img_jpg = decode_image_from_str(img_payload)
+    image_bytes = str_to_bytes(img_payload)
+    #img_jpg = decode_image_from_str(img_payload)
 
-        s3client.write(
-            input_bytes=image_bytes,
+    s3client.write(
+        input_bytes=image_bytes,
+        bucket_name=scambifolder,
+        folder_name=scambiimages,
+        object_name=objectname)
+
+
+def read_image_s3(
+        s3client: any,
+        scambifolder: str,
+        scambiimages: str,
+        objectname: str
+        ):
+
+        return s3client.read(
             bucket_name=scambifolder,
             folder_name=scambiimages,
             object_name=objectname)
-
-        # s3_custom.write_img(
-        #     img=img_jpg,
-        #     bucket_name=SCAMBIWEB,
-        #     folder_name=None,
-        #     object_name=PERPWARP_IMAGE)
-        return{
-            'statusCode': 201,
-            'headers': cors_headers,
-            'body': json.dumps({
-                'message': action,
-                'bucketfiles': ""})
-        }

@@ -130,7 +130,6 @@ def lambda_handler(event, _):
             _logger=logger
             )
 
-
     if action == "getconfig":
         """get all config, let clients sort it out"""
         config_table_client = dynamodb.Table(CONFIG_TABLE)
@@ -155,29 +154,51 @@ def lambda_handler(event, _):
 
     if (au := {
         "perpwarp" : PERPWARP_IMAGE,
-        "image_raw":RAW_IMAGE,
-        "image_overlay":OVERLAY_IMAGE
+        "image_raw" : RAW_IMAGE,
+        "image_overlay" : OVERLAY_IMAGE
         }.get(action)) is not None:
 
-        
-        utils.write_image_s3(
-            s3client=s3client,
-            img_payload=incoming_request['payload'],
-            scambifolder=SCAMBIFOLDER,
-            scambiimages=SCAMBIIMAGES,
-            objectname=au
-        )
+        try:
+            utils.write_image_s3(
+                s3client=s3client,
+                img_payload=incoming_request['payload'],
+                scambifolder=SCAMBIFOLDER,
+                scambiimages=SCAMBIIMAGES,
+                objectname=au
+            )
+        except Exception as e:  # find the exception from this
+            return utils.get_return_dict(
+                httpstatus=500,
+                body=json.dumps({
+                    'message': f"{action} failed {e}",
+                    'bucketfiles': ""}),
+                _logger=logger
+                )
 
+        return utils.get_return_dict(
+            httpstatus=201,
+            body=json.dumps({
+                'message': f"{action} OK",
+                'bucketfiles': ""}),
+            _logger=logger
+            )
 
+    if (au := {
+        "getimage_perpwarp" : PERPWARP_IMAGE,
+        "getimage_raw" : RAW_IMAGE,
+        "getimage_overlay" : OVERLAY_IMAGE
+        }.get(action)) is not None:
 
+        obj = utils.read_image_s3(
+            bucket_name=SCAMBIFOLDER,
+            folder_name=SCAMBIIMAGES,
+            object_name=RAW_IMAGE)
 
     return utils.get_return_dict(
         httpstatus=200,
         body=json.dumps({'message': 'session ok'}),
         _logger=logger
         )
-
-
 
 
     # return utils.get_return_dict(
