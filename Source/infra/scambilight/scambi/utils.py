@@ -237,7 +237,7 @@ def read_image_s3(
         objectname: str
         ):
 
-        return s3client.read(
-            bucket_name=scambifolder,
-            folder_name=scambiimages,
-            object_name=objectname)
+    return s3client.read(
+        bucket_name=scambifolder,
+        folder_name=scambiimages,
+        object_name=objectname)

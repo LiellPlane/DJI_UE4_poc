@@ -152,6 +152,7 @@ def lambda_handler(event, _):
             _logger=logger
             )
 
+    # UPLOAD IMAGE
     if (au := {
         "perpwarp" : PERPWARP_IMAGE,
         "image_raw" : RAW_IMAGE,
@@ -183,16 +184,39 @@ def lambda_handler(event, _):
             _logger=logger
             )
 
+    #  REQUEST IMAGES
     if (au := {
         "getimage_perpwarp" : PERPWARP_IMAGE,
         "getimage_raw" : RAW_IMAGE,
         "getimage_overlay" : OVERLAY_IMAGE
         }.get(action)) is not None:
 
-        obj = utils.read_image_s3(
-            bucket_name=SCAMBIFOLDER,
-            folder_name=SCAMBIIMAGES,
-            object_name=RAW_IMAGE)
+
+        try:
+
+            obj = utils.read_image_s3(
+                bucket_name=SCAMBIFOLDER,
+                folder_name=SCAMBIIMAGES,
+                object_name=RAW_IMAGE)
+
+        except Exception as e:
+
+            return utils.get_return_dict(
+                httpstatus=401,
+                body=json.dumps({
+                    'ERROR': f"{action} failed {e}"}),
+                _logger=logger
+                )
+
+        return utils.get_return_dict(
+            httpstatus=201,
+            body=json.dumps({
+                'message': f"{action} OK",
+                'image': utils.bytes_to_str(obj)}),
+            _logger=logger
+            )
+
+
 
     return utils.get_return_dict(
         httpstatus=200,
