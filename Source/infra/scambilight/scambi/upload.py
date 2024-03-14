@@ -191,13 +191,13 @@ def lambda_handler(event, _):
         "getimage_overlay" : OVERLAY_IMAGE
         }.get(action)) is not None:
 
-
         try:
 
             obj = utils.read_image_s3(
-                bucket_name=SCAMBIFOLDER,
-                folder_name=SCAMBIIMAGES,
-                object_name=RAW_IMAGE)
+                s3client=s3client,
+                scambiimages=SCAMBIFOLDER,
+                scambifolder=SCAMBIIMAGES,
+                objectname=RAW_IMAGE)
 
         except Exception as e:
 

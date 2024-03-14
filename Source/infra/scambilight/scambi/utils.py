@@ -221,6 +221,7 @@ def write_image_s3(
         ):
 
     image_bytes = str_to_bytes(img_payload)
+    # TODO - don't use raw image data you sausage - make it worth with jpg
     #img_jpg = decode_image_from_str(img_payload)
 
     s3client.write(
@@ -241,3 +242,29 @@ def read_image_s3(
         bucket_name=scambifolder,
         folder_name=scambiimages,
         object_name=objectname)
+
+
+def check_event(
+        user_email: str,
+        event_table_client: any
+        ):
+    output = "No event"
+    _Key={
+        'useremail': user_email
+    }
+    response = event_table_client.get_item(Key=_Key)
+    if 'Item' in response:
+        output = response["Item"]["event"]
+        event_table_client.put_item( # TODO - should we not just be deleting this record??
+            Item={
+                'useremail': user_email,
+                'event': "",
+                'ttl': get_future_epoch(5)
+            }
+        )
+
+    return{
+        'statusCode': 200,
+        'headers': cors_headers,
+        'body': json.dumps(output)
+    }

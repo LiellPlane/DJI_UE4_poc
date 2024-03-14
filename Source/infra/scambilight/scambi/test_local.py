@@ -5,6 +5,9 @@ os.environ["EVENTS_TABLE"] = "EVENTS_TABLE"
 os.environ["USERS_TABLE"] = "USERS_TABLE"
 os.environ["SESSION_TABLE"] = "SESSION_TABLE"
 os.environ["CONFIG_TABLE"] = "CONFIG_TABLE"
+os.environ["SCAMBIFOLDER"] = "SCAMBIFOLDER"
+os.environ["SCAMBIIMAGES"] = "SCAMBIIMAGES"
+
 import test_data
 import upload
 
@@ -96,5 +99,14 @@ if __name__ == "__main__":
     assert res['statusCode'] == 201
     res = upload.lambda_handler(test_data.event_upload_image_image_overlay, None)
     assert res['statusCode'] == 201
+
+
+    res = upload.lambda_handler(test_data.event_upload_upload_image_perpwarp, None)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "getimage_perpwarp OK", "image": ""}'}
+    res = upload.lambda_handler(test_data.event_upload_upload_image_raw, None)
+    assert res['statusCode'] == 201
+    res = upload.lambda_handler(test_data.event_upload_upload_image_overlay, None)
+    assert res['statusCode'] == 201
+
 
     plop=1

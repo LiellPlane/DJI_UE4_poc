@@ -10,3 +10,8 @@ event_get_config = {'body': '{"action":"getconfig","data":"existinguser@wantscon
 event_upload_image_perpwarp = {'body': '{"action":"perpwarp","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
 event_upload_image_image_raw = {'body': '{"action":"image_raw","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
 event_upload_image_image_overlay = {'body': '{"action":"image_overlay","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+
+event_upload_upload_image_perpwarp = {'body': '{"action":"getimage_perpwarp","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+event_upload_upload_image_raw = {'body': '{"action":"getimage_raw","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+event_upload_upload_image_overlay = {'body': '{"action":"getimage_overlay","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+

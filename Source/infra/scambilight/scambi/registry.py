@@ -40,7 +40,7 @@ class FakeBotoClient():
         pass
 
     def download_fileobj(*args, **kwargs) -> bytes:
-        return bytes("I dunno lol")
+        return bytes("I dunno lol", 'utf-8')
 
 
 class Boto3S3Client():
