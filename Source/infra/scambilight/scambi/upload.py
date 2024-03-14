@@ -216,6 +216,77 @@ def lambda_handler(event, _):
             _logger=logger
             )
 
+    if action == "check_event":
+        try:
+            output = utils.check_event(
+                user_email=user_email,
+                event_table_client=event_table_client
+            )
+            return utils.get_return_dict(
+                httpstatus=201,
+                body=json.dumps(output),
+                _logger=logger
+                )
+        except Exception as e:
+            return utils.get_return_dict(
+                httpstatus=500,
+                body=json.dumps({"ERROR": f"issue getting event for {user_email}{e}"}),
+                _logger=logger
+                )
+
+
+
+    if action in [
+                "reset",
+                "update_image",
+                "update_image_all"]:
+        try:
+            response = event_table_client.put_item(
+                Item={
+                    'useremail': user_email,
+                    'event': action,
+                    'ttl': utils.get_future_epoch(5)
+                }
+            )
+            
+            status_code = response['ResponseMetadata']['HTTPStatusCode']
+            #print("WRITE TO DB", status_code)
+            return utils.get_return_dict(
+                httpstatus=201,
+                body=json.dumps({
+                    'message': f'{action} ok'}),
+                _logger=logger
+                )
+        except Exception as e:
+            return utils.get_return_dict(
+                httpstatus=500,
+                body=json.dumps({"ERROR": f"issue setting action for {user_email}{e}"}),
+                _logger=logger
+                )
+    
+    if (au := {
+        "send_sample_config" : 'regions',
+        "sendposfinish" : 'corners'
+        }.get(action)) is not None:
+
+        try:
+            utils.update_config(
+                event_body=incoming_request,
+                config_table_client=dynamodb.Table(CONFIG_TABLE),
+                user_email=user_email,
+                config_attribute_name=au
+                )
+        except utils.ScambiError as e:
+            return utils.get_return_dict(
+                httpstatus=500,
+                body=json.dumps({"ERROR": f"issue updating {au} config for {user_email} {e}"}),
+                _logger=logger
+                )
+        return utils.get_return_dict(
+            httpstatus=201,
+            body=json.dumps(output),
+            _logger=logger
+            )
 
 
     return utils.get_return_dict(

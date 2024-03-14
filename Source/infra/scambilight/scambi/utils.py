@@ -248,7 +248,7 @@ def check_event(
         user_email: str,
         event_table_client: any
         ):
-    output = "No event"
+    output = ""
     _Key={
         'useremail': user_email
     }
@@ -262,9 +262,40 @@ def check_event(
                 'ttl': get_future_epoch(5)
             }
         )
+    return output
 
-    return{
-        'statusCode': 200,
-        'headers': cors_headers,
-        'body': json.dumps(output)
-    }
+
+def validate_dictionaries(dict1, dict2):
+    """Check both dictionaries have same keys and same value types"""
+    return all(
+        set(dict1.keys()) == set(dict2.keys()),
+        all(isinstance(dict1[key], type(dict2[key])) for key in dict1.keys()),
+        len(dict2)==len(dict1))
+
+
+def update_config(
+                event_body: dict,
+                config_table_client: any,
+                user_email: str,
+                config_attribute_name: str
+                ):
+
+    click_data = (event_body['data'])
+
+    response = config_table_client.get_item(
+        Key={
+            'useremail': user_email,
+            'configid': "0"
+        }
+    )
+
+    curr_config_json = json.loads(response['Item'][config_attribute_name])
+    if not validate_dictionaries(curr_config_json, click_data):
+        raise ScambiError(f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type")
+
+    dynamodb_ops.update_item_exiting_attribute(
+        table=config_table_client,
+        _key={'useremail': user_email,'configid': "0"},
+        attribute_to_update=config_attribute_name,
+        value_to_update=json.dumps(click_data)
+    )

@@ -83,16 +83,8 @@ if __name__ == "__main__":
         "body": '{"message": "created new user OK"}',
     }
     res = upload.lambda_handler(test_data.event_get_config, None)
-    assert res == {
-        "statusCode": 201,
-        "headers": {
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-        },
-        "body": '{"salt": 123456, "password": 1234567}',
-    }
-
+    expected = {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"useremail": "sss@googlemail.com", "configid": "0", "corners": "[{\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}]", "lens": "{\\"id\\": \\"something\\", \\"width\\": 640, \\"height\\": 480, \\"fish_eye_circle\\": 600}", "regions": "{\\"no_leds_vert\\": 1, \\"no_leds_horiz\\": 100, \\"move_in_horiz\\": 11, \\"move_in_vert\\": 0.12, \\"sample_area_edge\\": 40, \\"subsample_cut\\": 1}"}'}
+    assert res == expected
     res = upload.lambda_handler(test_data.event_upload_image_perpwarp, None)
     assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "perpwarp OK", "bucketfiles": ""}'}
     res = upload.lambda_handler(test_data.event_upload_image_image_raw, None)
@@ -107,6 +99,14 @@ if __name__ == "__main__":
     assert res['statusCode'] == 201
     res = upload.lambda_handler(test_data.event_upload_upload_image_overlay, None)
     assert res['statusCode'] == 201
+    res = upload.lambda_handler(test_data.event_get_event, None)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '"plop"'}
+    res = upload.lambda_handler(test_data.event_set_event, None)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "reset ok"}'}
+    res = upload.lambda_handler(test_data.event_set_event, None)
+    assert res['statusCode']== 201
+    res = upload.lambda_handler(test_data.event_set_event, None)
+    assert res['statusCode']== 201
 
-
+    res = upload.lambda_handler(test_data.event_update_config_samples, None)
     plop=1

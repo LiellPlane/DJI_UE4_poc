@@ -613,39 +613,6 @@ def lambda_handler(event, context):
     if action == "send_sample_config":
         click_data = (order['data'])
         messages_bytes = str_to_bytes(json.dumps(click_data))
-        #print(messages_bytes)
-
-        # now load existing one
-        curr_config_bytes = s3_custom.read(
-            bucket_name=SCAMBIFOLDER,
-            folder_name=SCAMBICONFIG,
-            object_name=SAMPLE_CONFIG_FILE)
-
-        curr_config_str = bytes_to_str(curr_config_bytes)
-        curr_config_json = json.loads(curr_config_str)
-        #print("curr_config_json", curr_config_json)
-        #print("type curr_config_json", type(curr_config_json))
-        #print("click_data", click_data)
-        #print("type click_data", type(click_data))
-        
-        # check both have same keys and same keyvalue types
-        if not all(
-            set(curr_config_json.keys()) == set(click_data.keys()),
-            all(isinstance(curr_config_json[key], type(click_data[key])) for key in curr_config_json.keys()),
-            len(click_data)==len(curr_config_json)):
-            return {
-                'statusCode': 400,
-                'headers': cors_headers,
-                'body': json.dumps({
-                    'message': f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type"})
-            }
-        s3_custom.write(
-            input_bytes=messages_bytes,
-            bucket_name=SCAMBIFOLDER,
-            folder_name=SCAMBICONFIG,
-            object_name=SAMPLE_CONFIG_FILE)
-
-
 
         # transitional dynamodb datasource
         config_table_client = dynamodb.Table(CONFIG_TABLE)
@@ -702,34 +669,34 @@ def lambda_handler(event, context):
                 'message': 'sim lambda invoked please wait'})
         }
 
-    if action == "request_config":
+    # if action == "request_config":
 
-        config_bytes = s3_custom.read(
-            bucket_name=SCAMBIFOLDER,
-            folder_name=SCAMBICONFIG,
-            object_name=CONFIG_FILE)
-        #print("req", config_bytes)
-        return{
-            'statusCode': 201,
-            'headers': cors_headers,
-            'body': json.dumps({
-                'message': 'request_config ok',
-                'config': bytes_to_str(config_bytes)})
-        }
-    if action == "request_sample_config":
+    #     config_bytes = s3_custom.read(
+    #         bucket_name=SCAMBIFOLDER,
+    #         folder_name=SCAMBICONFIG,
+    #         object_name=CONFIG_FILE)
+    #     #print("req", config_bytes)
+    #     return{
+    #         'statusCode': 201,
+    #         'headers': cors_headers,
+    #         'body': json.dumps({
+    #             'message': 'request_config ok',
+    #             'config': bytes_to_str(config_bytes)})
+    #     }
+    # if action == "request_sample_config":
 
-        config_bytes = s3_custom.read(
-            bucket_name=SCAMBIFOLDER,
-            folder_name=SCAMBICONFIG,
-            object_name=SAMPLE_CONFIG_FILE)
-        #print("req", config_bytes)
-        return{
-            'statusCode': 201,
-            'headers': cors_headers,
-            'body': json.dumps({
-                'message': 'request_sample_config ok',
-                'config': bytes_to_str(config_bytes)})
-        }
+    #     config_bytes = s3_custom.read(
+    #         bucket_name=SCAMBIFOLDER,
+    #         folder_name=SCAMBICONFIG,
+    #         object_name=SAMPLE_CONFIG_FILE)
+    #     #print("req", config_bytes)
+    #     return{
+    #         'statusCode': 201,
+    #         'headers': cors_headers,
+    #         'body': json.dumps({
+    #             'message': 'request_sample_config ok',
+    #             'config': bytes_to_str(config_bytes)})
+    #     }
     if action == "sendposfinish":
         # should be a list of dictionaries
         click_data = (order['data'])

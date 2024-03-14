@@ -15,3 +15,10 @@ event_upload_upload_image_perpwarp = {'body': '{"action":"getimage_perpwarp","pa
 event_upload_upload_image_raw = {'body': '{"action":"getimage_raw","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
 event_upload_upload_image_overlay = {'body': '{"action":"getimage_overlay","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
 
+event_get_event = {'body': '{"action":"check_event","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+
+event_set_event = {'body': '{"action":"reset","payload":"existinguser@wantsconfig","sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+
+'[{"clickX": 176, "clickY": 116}, {"clickX": 176, "clickY": 116}, {"clickX": 176, "clickY": 116}]'
+event_update_config_samples = {'body': '{"action":"sendposfinish","data":1,"sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
+
