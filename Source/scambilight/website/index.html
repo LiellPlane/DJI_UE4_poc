@@ -145,7 +145,7 @@
             //var inputPassword = document.getElementById("lname").value;
             let data = {
                 //"authentication": inputPassword,
-                "action": "request_sample_config",
+                "action": "getconfig",
 		"data":"empty"
             };
 
@@ -156,7 +156,7 @@
             body: JSON.stringify(data)
             }).then(response => response.json())
                 .then(json => {console.log(JSON.stringify(json));
-                document.getElementById('configbox').value = json['config'];
+                document.getElementById('configbox').value = json['regions'];
                 });
         }
         let req_new_image = () => {

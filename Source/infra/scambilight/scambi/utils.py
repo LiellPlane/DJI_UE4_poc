@@ -121,7 +121,7 @@ def get_return_dict(
         body: str,
         _logger: any):
     
-    _logger.info(body)
+    _logger.debug(body)
 
     return{
         'statusCode': httpstatus,
@@ -176,7 +176,7 @@ def log_in_user(
             # Use put_item to create the new item
             session_table_client.put_item(Item=new_item_data)
             #print("password ok, authenticating")
-            return None
+            return sessiontoken
         else:
             raise ScambiError("email ok password fail")
     else:

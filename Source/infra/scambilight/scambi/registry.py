@@ -17,6 +17,7 @@ import generate_hash_salt
 import demo_data
 import dynamodb_ops
 import utils
+import boto3
 
 def is_test_env():
     if (os.environ.get('ENV') == "LOCALTEST") is True:

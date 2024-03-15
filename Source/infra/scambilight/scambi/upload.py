@@ -69,10 +69,11 @@ def set_globals(prefix: str):
 def lambda_handler(event, _):
 
     incoming_request = json.loads(event['body'])
-
+    print(event)
+    print(incoming_request)
     if "login" in incoming_request:
         try:
-            utils.log_in_user(
+            sessiontoken = utils.log_in_user(
                 event_body=incoming_request,
                 users_table_client=dynamodb.Table(USERS_TABLE),
                 session_table_client=dynamodb.Table(SESSION_TABLE))
@@ -84,8 +85,10 @@ def lambda_handler(event, _):
                 )
         return utils.get_return_dict(
             httpstatus=201,
-            body=json.dumps({
-                'message': 'user log in OK'}),
+            body= json.dumps({
+                        'message': 'session authentication OK',
+                        'sessiontoken': sessiontoken,
+                        'email': incoming_request["login"]["email"].lower()}),
             _logger=logger
             )
 
@@ -248,7 +251,7 @@ def lambda_handler(event, _):
                     'ttl': utils.get_future_epoch(5)
                 }
             )
-            
+
             status_code = response['ResponseMetadata']['HTTPStatusCode']
             #print("WRITE TO DB", status_code)
             return utils.get_return_dict(
@@ -257,13 +260,13 @@ def lambda_handler(event, _):
                     'message': f'{action} ok'}),
                 _logger=logger
                 )
-        except Exception as e:
+        except ClientError as e:
             return utils.get_return_dict(
                 httpstatus=500,
                 body=json.dumps({"ERROR": f"issue setting action for {user_email}{e}"}),
                 _logger=logger
                 )
-    
+
     if (au := {
         "send_sample_config" : 'regions',
         "sendposfinish" : 'corners'
@@ -288,25 +291,17 @@ def lambda_handler(event, _):
             _logger=logger
             )
 
+    if action == "check_logged_in":
+
+        return utils.get_return_dict(
+            httpstatus=200,
+            body=json.dumps({'message': 'logged in OK'}),
+            _logger=logger
+            ) 
+
 
     return utils.get_return_dict(
         httpstatus=200,
         body=json.dumps({'message': 'session ok'}),
         _logger=logger
         )
-
-
-    # return utils.get_return_dict(
-    #     httpstatus=401,
-    #     body=json.dumps({'message': f'log-in failed, {login_log}'}),
-    #     _logger=logger
-    #     )
-
-    #         return utils.get_return_dict(
-    #             httpstatus=200,
-    #             body=json.dumps({
-    #                 'message': 'session authentication OK',
-    #                 'sessiontoken': sessiontoken,
-    #                 'email': event_body["login"]["email"].lower()}),
-    #             _logger=logger
-    #             )

@@ -35,15 +35,10 @@ if __name__ == "__main__":
         "body": '{"message": "session token authentication failed, \'Item\'"}',
     }
     res = upload.lambda_handler(test_data.event_good_login, None)
-    assert res == {
-        "statusCode": 201,
-        "headers": {
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-        },
-        "body": '{"message": "user log in OK"}',
-    }
+    modbody = json.loads(res['body'])
+    modbody['sessiontoken'] = "plop"
+    res['body'] = json.dumps(modbody)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session authentication OK", "sessiontoken": "plop", "email": "test@email.tet"}'}
     res = upload.lambda_handler(test_data.event_bad_login_bad_password, None)
     assert res == {
         "statusCode": 401,
