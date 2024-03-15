@@ -284,7 +284,7 @@ def lambda_handler(event, _):
                 )
         return utils.get_return_dict(
             httpstatus=201,
-            body=json.dumps(output),
+            body=json.dumps(f"{action} ok"),
             _logger=logger
             )
 

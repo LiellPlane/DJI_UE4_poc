@@ -1,4 +1,5 @@
 import os
+import json
 
 os.environ["ENV"] = "LOCALTEST"
 os.environ["EVENTS_TABLE"] = "EVENTS_TABLE"
@@ -10,6 +11,7 @@ os.environ["SCAMBIIMAGES"] = "SCAMBIIMAGES"
 
 import test_data
 import upload
+import registry
 
 if __name__ == "__main__":
     res = upload.lambda_handler(test_data.event_good_session, None)
@@ -108,5 +110,30 @@ if __name__ == "__main__":
     res = upload.lambda_handler(test_data.event_set_event, None)
     assert res['statusCode']== 201
 
+
+    # test send corner clicks
+    manual_update = test_data.event_update_config_samples
+    update_body = json.loads(manual_update["body"])
+    update_body["data"] = json.loads(registry.get_fake_config_data()["corners"])
+    test_data.event_update_config_samples["body"] = json.dumps(update_body)
     res = upload.lambda_handler(test_data.event_update_config_samples, None)
-    plop=1
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '"sendposfinish ok"'}
+
+
+    # test send regions config - mutate the event
+    manual_update = test_data.event_update_config_samples
+    update_body = json.loads(manual_update["body"])
+    update_body["action"] = "send_sample_config"
+    update_body["data"] = json.loads(registry.get_fake_config_data()["regions"])
+    test_data.event_update_config_samples["body"] = json.dumps(update_body)
+    res = upload.lambda_handler(test_data.event_update_config_samples, None)
+    assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '"send_sample_config ok"'}
+
+    # test send mismatch update to configuration
+    manual_update = test_data.event_update_config_samples
+    update_body = json.loads(manual_update["body"])
+    update_body["action"] = "sendposfinish"
+    update_body["data"] = json.loads(registry.get_fake_config_data()["regions"])
+    test_data.event_update_config_samples["body"] = json.dumps(update_body)
+    res = upload.lambda_handler(test_data.event_update_config_samples, None)
+    assert res["body"] == '{"ERROR": "issue updating corners config for test@testytest.test ERROR - CONFIG MALFORMED, REJECTED. Expects in form: [{\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}]. Check data is correct size, keys, type.. {\\"no_leds_vert\\": 1, \\"no_leds_horiz\\": 100, \\"move_in_horiz\\": 11, \\"move_in_vert\\": 0.12, \\"sample_area_edge\\": 40, \\"subsample_cut\\": 1}"}'

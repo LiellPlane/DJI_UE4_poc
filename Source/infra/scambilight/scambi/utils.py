@@ -265,12 +265,24 @@ def check_event(
     return output
 
 
-def validate_dictionaries(dict1, dict2):
-    """Check both dictionaries have same keys and same value types"""
-    return all(
-        set(dict1.keys()) == set(dict2.keys()),
-        all(isinstance(dict1[key], type(dict2[key])) for key in dict1.keys()),
-        len(dict2)==len(dict1))
+def validate_similarity(dict1, dict2):
+    """if dictL Check both dictionaries have same keys and same value types
+    
+    if list: check something else"""
+    if not isinstance(dict1, type(dict2)):
+        return False
+    
+    if isinstance(dict1, dict):
+        return all([
+            set(dict1.keys()) == set(dict2.keys()),
+            all(isinstance(dict1[key], type(dict2[key])) for key in dict1.keys()),
+            len(dict2)==len(dict1)])
+    
+    if isinstance(dict1, list):
+        return all([
+            len(dict1)==len(dict2),
+            all(isinstance(dict1[i], type(dict2[i])) for i in range(len(dict1)))
+        ])
 
 
 def update_config(
@@ -290,8 +302,8 @@ def update_config(
     )
 
     curr_config_json = json.loads(response['Item'][config_attribute_name])
-    if not validate_dictionaries(curr_config_json, click_data):
-        raise ScambiError(f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type")
+    if not validate_similarity(curr_config_json, click_data):
+        raise ScambiError(f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type.. {json.dumps(click_data)}")
 
     dynamodb_ops.update_item_exiting_attribute(
         table=config_table_client,

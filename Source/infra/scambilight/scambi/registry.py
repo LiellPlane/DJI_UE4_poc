@@ -162,7 +162,13 @@ class FakeDynamodbClient:
             def __init__(self, *args, **kwargs):
                 self.args = args
                 self.kwargs = kwargs
-            
+            def update_item(self, *args, **kwargs):
+                if 'CONFIG_TABLE' in self.args:
+                    if kwargs["Key"].keys() != {'useremail': None, 'configid': None}.keys():
+                        raise KeyError("bad key input, requires useremail and configid partition keys")
+                    if (au:=kwargs["Key"].get("useremail")) is not None:
+                        if au == 'test@testytest.test':
+                            return{"Attributes": {"Attributes": "doesn't matter"}}
             def put_item(self, *args, **kwargs):
                 if 'EVENTS_TABLE' in self.args:
                     if "useremail" in kwargs["Item"].keys():
