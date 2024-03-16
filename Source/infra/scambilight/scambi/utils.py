@@ -215,8 +215,8 @@ def create_new_user(
 def write_image_s3(
         s3client: any,
         img_payload: bytes,
-        scambifolder: str,
-        scambiimages: str,
+        bucket_name: str,
+        folder_name: str,
         objectname: str
         ):
 
@@ -226,21 +226,21 @@ def write_image_s3(
 
     s3client.write(
         input_bytes=image_bytes,
-        bucket_name=scambifolder,
-        folder_name=scambiimages,
+        bucket_name=bucket_name,
+        folder_name=folder_name,
         object_name=objectname)
 
 
 def read_image_s3(
         s3client: any,
-        scambifolder: str,
-        scambiimages: str,
+        bucket_name: str,
+        folder_name: str,
         objectname: str
         ):
 
     return s3client.read(
-        bucket_name=scambifolder,
-        folder_name=scambiimages,
+        bucket_name=bucket_name,
+        folder_name=folder_name,
         object_name=objectname)
 
 

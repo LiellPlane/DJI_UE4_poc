@@ -22,7 +22,7 @@ import registry
 
 
 logger = logging.getLogger('scambiupload')
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 
 # these get populated later
 RAW_IMAGE = None
@@ -43,7 +43,6 @@ CONFIG_TABLE = os.environ.get('CONFIG_TABLE')
 
 #s3_client = boto3.resource('s3')
 #sqs_client = boto3.client('sqs')
-logger = logging.getLogger("scambilight-lambda")
 dynamodb = registry.get_dynamodb_client()
 s3client = registry.get_s3_client()
 lambda_client = boto3.client('lambda')
@@ -58,6 +57,7 @@ def set_globals(prefix: str):
     global PERPWARP_IMAGE
     global OVERLAY_IMAGE
     global SAMPLE_CONFIG_FILE
+    logger.debug(f"setting globals to {prefix}")
     CONFIG_FILE = utils.get_user_resource_name_OUTGOING(prefix, os.environ.get('CONFIG_FILE'))
     RAW_IMAGE = utils.get_user_resource_name_OUTGOING(prefix, os.environ.get('RAW_IMAGE'))
     PERPWARP_IMAGE = utils.get_user_resource_name_OUTGOING(prefix, os.environ.get('PERPWARP_IMAGE'))
@@ -69,9 +69,10 @@ def set_globals(prefix: str):
 def lambda_handler(event, _):
 
     incoming_request = json.loads(event['body'])
-    print(event)
-    print(incoming_request)
+    logger.debug(f"incoming request json loaded {incoming_request}")
+
     if "login" in incoming_request:
+        logger.debug(f"log in")
         try:
             sessiontoken = utils.log_in_user(
                 event_body=incoming_request,
@@ -79,7 +80,7 @@ def lambda_handler(event, _):
                 session_table_client=dynamodb.Table(SESSION_TABLE))
         except utils.ScambiError as e:
             return utils.get_return_dict(
-                httpstatus=401,
+                httpstatus=500,
                 body=json.dumps({'message': f'log-in failed, {str(e)}'}),
                 _logger=logger
                 )
@@ -102,7 +103,7 @@ def lambda_handler(event, _):
 
     except utils.ScambiError as e:
         return utils.get_return_dict(
-            httpstatus=401,
+            httpstatus=500,
             body=json.dumps({'message': f'session token authentication failed, {e}'}),
             _logger=logger
             )
@@ -115,6 +116,7 @@ def lambda_handler(event, _):
 
 
     if action == "newuser":
+        logger.debug(f"newuser")
         try:
             utils.create_new_user(
                 event_body=incoming_request,
@@ -123,7 +125,7 @@ def lambda_handler(event, _):
                 )
         except utils.ScambiError as e:
             return utils.get_return_dict(
-                httpstatus=400,
+                httpstatus=500,
                 body=json.dumps({'message': f"{e}"}),
                 _logger=logger
                 )
@@ -134,6 +136,7 @@ def lambda_handler(event, _):
             )
 
     if action == "getconfig":
+        logger.debug(f"get config{user_email}")
         """get all config, let clients sort it out"""
         config_table_client = dynamodb.Table(CONFIG_TABLE)
         response = config_table_client.get_item(
@@ -149,7 +152,7 @@ def lambda_handler(event, _):
                 _logger=logger
                 )
         return utils.get_return_dict(
-            httpstatus=401,
+            httpstatus=500,
              body= json.dumps({
                 'ERROR': f'could not find user config for{user_email} config {0} '}),
             _logger=logger
@@ -162,12 +165,13 @@ def lambda_handler(event, _):
         "image_overlay" : OVERLAY_IMAGE
         }.get(action)) is not None:
 
+        logger.debug(f"upload uimage {au}{user_email}")
         try:
             utils.write_image_s3(
                 s3client=s3client,
                 img_payload=incoming_request['payload'],
-                scambifolder=SCAMBIFOLDER,
-                scambiimages=SCAMBIIMAGES,
+                bucket_name=SCAMBIFOLDER,
+                folder_name=SCAMBIIMAGES,
                 objectname=au
             )
         except Exception as e:  # find the exception from this
@@ -194,18 +198,19 @@ def lambda_handler(event, _):
         "getimage_overlay" : OVERLAY_IMAGE
         }.get(action)) is not None:
 
+        logger.debug(f"requesting image objname{au} {SCAMBIFOLDER} {SCAMBIIMAGES}")
         try:
 
             obj = utils.read_image_s3(
                 s3client=s3client,
-                scambiimages=SCAMBIFOLDER,
-                scambifolder=SCAMBIIMAGES,
-                objectname=RAW_IMAGE)
+                bucket_name=SCAMBIFOLDER,
+                folder_name=SCAMBIIMAGES,
+                objectname=au)
 
         except Exception as e:
 
             return utils.get_return_dict(
-                httpstatus=401,
+                httpstatus=500,
                 body=json.dumps({
                     'ERROR': f"{action} failed {e}"}),
                 _logger=logger

@@ -18,6 +18,8 @@ import demo_data
 import dynamodb_ops
 import utils
 import boto3
+logger = logging.getLogger('scambiupload')
+logger.setLevel(logging.DEBUG)
 
 def is_test_env():
     if (os.environ.get('ENV') == "LOCALTEST") is True:
@@ -56,6 +58,7 @@ class Boto3S3Client():
         folder_name: str,
         object_name: str
     ):
+        logger.debug(f"{bucket_name}/{folder_name}/{object_name}")
         if folder_name is None:
             self._s3_client.put_object(
                 Bucket=bucket_name,
@@ -99,13 +102,15 @@ class Boto3S3Client():
             self._s3_client.upload_fileobj(
                 bytes_io,
                 bucket_name,
-                object_name
+                object_name,
+                ExtraArgs={'ACL':'bucket-owner-full-control'}
                 )
         else:
             self._s3_client.upload_fileobj(
                 bytes_io,
                 bucket_name,
-                f"{folder_name}/{object_name}"
+                f"{folder_name}/{object_name}",
+                ExtraArgs={'ACL':'bucket-owner-full-control'}
                 )
 
     def read(
@@ -117,6 +122,7 @@ class Boto3S3Client():
     ):
 
         obj = io.BytesIO()
+        logger.debug(f"{bucket_name}/{folder_name}/{object_name}")
         try:
             self._s3_client.download_fileobj(
                 bucket_name,
@@ -228,7 +234,7 @@ def get_s3_client():
         #     's3',
         #     region_name=aws_region
         #     )
-        return Boto3S3Client(boto3.client('s3'))
+        return Boto3S3Client(boto3.client('s3', region_name="us-east-1")) # TODO need to change region at some point
 
 
 def is_test_env():
