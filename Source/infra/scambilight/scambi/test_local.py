@@ -25,7 +25,7 @@ if __name__ == "__main__":
         "body": '{"message": "session ok"}',
     }
     res = upload.lambda_handler(test_data.event_bad_session, None)
-    assert res == {'statusCode': 500, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session token authentication failed, \'Item\'"}'}
+    assert res == {'statusCode': 400, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session token authentication failed, \'Item\'"}'}
     res = upload.lambda_handler(test_data.event_good_login, None)
     modbody = json.loads(res['body'])
     modbody['sessiontoken'] = "plop"
@@ -131,3 +131,12 @@ if __name__ == "__main__":
     res = upload.lambda_handler(test_data.event_update_config_samples, None)
     assert res["body"] ==  '{"ERROR": "issue updating corners config for test@testytest.test ERROR - CONFIG MALFORMED, VALIDATE EXCEPTION list index out of range. Expects in form: [{\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}]. Check data is correct size, keys, type.. [{\\"clickX\\": 243, \\"clickY\\": 195}]"}'
     
+    res = upload.lambda_handler(test_data.event_test_logged_in, None)
+    assert res == {'statusCode': 200, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "logged in OK"}'}
+
+    # test bad session token
+    plop = json.loads(test_data.event_test_logged_in["body"])
+    plop["sessiontoken"]  = "brokensession"
+    test_data.event_test_logged_in["body"] = json.dumps(plop)
+    res = upload.lambda_handler(test_data.event_test_logged_in, None)
+    assert res == {'statusCode': 500, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session token authentication BROKEN, Expecting value: line 1 column 1 (char 0)"}'}

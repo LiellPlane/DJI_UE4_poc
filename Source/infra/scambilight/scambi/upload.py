@@ -103,8 +103,14 @@ def lambda_handler(event, _):
 
     except utils.ScambiError as e:
         return utils.get_return_dict(
-            httpstatus=500,
+            httpstatus=400,
             body=json.dumps({'message': f'session token authentication failed, {e}'}),
+            _logger=logger
+            )
+    except Exception as e:
+        return utils.get_return_dict(
+            httpstatus=500,
+            body=json.dumps({'message': f'session token authentication BROKEN, {e}'}),
             _logger=logger
             )
 
