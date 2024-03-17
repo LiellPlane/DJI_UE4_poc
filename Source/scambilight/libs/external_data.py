@@ -13,7 +13,8 @@ from libs.utils import (
     str_to_bytes,
     bytes_to_str,
     img_height,
-    img_width)
+    img_width,
+    get_platform)
 
 from libs.collections import (
     config_corner,
@@ -63,7 +64,7 @@ def find_closest(testpt: list [int, int], input_pts:list):
 def get_session_id():
     # has to match the form from the website
     # probably should fix this
-    return json.dumps("daisybankscambi")
+    return json.dumps("admin")
 
 
 def get_image_from_aws(url):
