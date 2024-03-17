@@ -22,3 +22,4 @@ event_set_event = {'body': '{"action":"reset","payload":"existinguser@wantsconfi
 '[{"clickX": 176, "clickY": 116}, {"clickX": 176, "clickY": 116}, {"clickX": 176, "clickY": 116}]'
 event_update_config_samples = {'body': '{"action":"sendposfinish","data":1,"sessiontoken":"\\"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es\\""}'}
 
+body_bad_pos_send = {'action': 'sendposfinish', 'data': [{'clickX': 243, 'clickY': 195}], 'sessiontoken': '"fb1e6ead-e6b5-4dea-8921-f60e4c40b1es"'}

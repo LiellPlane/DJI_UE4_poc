@@ -1,4 +1,18 @@
 let targetUrl   = 'https://api.scambilight.com/hello';
+
+document.getElementById("lname3").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        submitForm();
+    }
+});
+
+document.getElementById("lname2").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        var inputField = document.getElementById("lname3");
+        inputField.focus();
+    }
+});
+
 function submitForm() {
     // Get form data
     

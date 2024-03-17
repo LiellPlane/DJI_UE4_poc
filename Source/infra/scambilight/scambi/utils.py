@@ -285,6 +285,17 @@ def validate_similarity(dict1, dict2):
         ])
 
 
+def validate_config(curr_config_json, click_data):
+    try:
+        res = validate_similarity(curr_config_json, click_data)
+        if res:
+            return True
+        else:
+            raise ValueError("Configuration validation failed.")
+    except Exception as e:
+        raise ScambiError(f"ERROR - CONFIG MALFORMED: {str(e)}. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type.. {json.dumps(click_data)}")
+
+
 def update_config(
                 event_body: dict,
                 config_table_client: any,
@@ -302,8 +313,25 @@ def update_config(
     )
 
     curr_config_json = json.loads(response['Item'][config_attribute_name])
-    if not validate_similarity(curr_config_json, click_data):
+
+    try:
+        res = validate_similarity(curr_config_json, click_data)
+    except Exception as e:
+        raise ScambiError(f"ERROR - CONFIG MALFORMED, VALIDATE EXCEPTION {e}. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type.. {json.dumps(click_data)}")
+
+    if not res:
         raise ScambiError(f"ERROR - CONFIG MALFORMED, REJECTED. Expects in form: {json.dumps(curr_config_json)}. Check data is correct size, keys, type.. {json.dumps(click_data)}")
+
+
+
+
+    try:
+        if not validate_config(curr_config_json, click_data):
+            raise ScambiError("ERROR - CONFIG MALFORMED: Validation returned False.")
+    except ScambiError as se:
+        raise se
+    except Exception as e:
+        raise ScambiError(f"ERROR - CONFIG MALFORMED: Unexpected error occurred - {str(e)}.")
 
     dynamodb_ops.update_item_exiting_attribute(
         table=config_table_client,

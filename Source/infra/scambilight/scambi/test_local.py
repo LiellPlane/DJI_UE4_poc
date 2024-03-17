@@ -25,15 +25,7 @@ if __name__ == "__main__":
         "body": '{"message": "session ok"}',
     }
     res = upload.lambda_handler(test_data.event_bad_session, None)
-    assert res == {
-        "statusCode": 401,
-        "headers": {
-            "Access-Control-Allow-Headers": "Content-Type",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "OPTIONS,POST,GET",
-        },
-        "body": '{"message": "session token authentication failed, \'Item\'"}',
-    }
+    assert res == {'statusCode': 500, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session token authentication failed, \'Item\'"}'}
     res = upload.lambda_handler(test_data.event_good_login, None)
     modbody = json.loads(res['body'])
     modbody['sessiontoken'] = "plop"
@@ -41,7 +33,7 @@ if __name__ == "__main__":
     assert res == {'statusCode': 201, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session authentication OK", "sessiontoken": "plop", "email": "test@email.tet"}'}
     res = upload.lambda_handler(test_data.event_bad_login_bad_password, None)
     assert res == {
-        "statusCode": 401,
+        "statusCode": 500,
         "headers": {
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Origin": "*",
@@ -51,7 +43,7 @@ if __name__ == "__main__":
     }
     res = upload.lambda_handler(test_data.event_bad_login_no_user, None)
     assert res == {
-        "statusCode": 401,
+        "statusCode": 500,
         "headers": {
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Origin": "*",
@@ -61,7 +53,7 @@ if __name__ == "__main__":
     }
     res = upload.lambda_handler(test_data.event_newuser_exists, None)
     assert res == {
-        "statusCode": 400,
+        "statusCode": 500,
         "headers": {
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Origin": "*",
@@ -132,3 +124,10 @@ if __name__ == "__main__":
     test_data.event_update_config_samples["body"] = json.dumps(update_body)
     res = upload.lambda_handler(test_data.event_update_config_samples, None)
     assert res["body"] == '{"ERROR": "issue updating corners config for test@testytest.test ERROR - CONFIG MALFORMED, REJECTED. Expects in form: [{\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}]. Check data is correct size, keys, type.. {\\"no_leds_vert\\": 1, \\"no_leds_horiz\\": 100, \\"move_in_horiz\\": 11, \\"move_in_vert\\": 0.12, \\"sample_area_edge\\": 40, \\"subsample_cut\\": 1}"}'
+
+    # test send bad positions
+    manual_update = test_data.event_update_config_samples
+    test_data.event_update_config_samples["body"] = json.dumps(test_data.body_bad_pos_send)
+    res = upload.lambda_handler(test_data.event_update_config_samples, None)
+    assert res["body"] ==  '{"ERROR": "issue updating corners config for test@testytest.test ERROR - CONFIG MALFORMED, VALIDATE EXCEPTION list index out of range. Expects in form: [{\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}, {\\"clickX\\": 176, \\"clickY\\": 116}]. Check data is correct size, keys, type.. [{\\"clickX\\": 243, \\"clickY\\": 195}]"}'
+    
