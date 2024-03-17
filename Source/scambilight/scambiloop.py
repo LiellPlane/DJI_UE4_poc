@@ -43,10 +43,10 @@ from libs.external_data import (
     get_region_config_from_aws,
     get_ext_corners_or_use_default,
     get_image_from_aws,
+    get_lens_details_external,
     ExternalDataWorker,
     ExternalDataWorker_dummy,
-    cors_headers,
-    get_all_config_from_aws)
+    cors_headers)
 import os
 PLATFORM = get_platform()
 
@@ -77,9 +77,9 @@ def get_external_data_workr(action):
 
 
 def main(action = None):
-    get_all_config_from_aws(SCAMILIGHT_API)
-    optical_details = get_lens_details(
-        LensConfigs.DAISYBANK_LQ)
+    optical_details = get_lens_details_external(SCAMILIGHT_API)
+    # optical_details = get_lens_details(
+    #     LensConfigs.DAISYBANK_LQ)
     fisheye_compute = fisheye_lib.fisheye_tool(
         img_width_height=(optical_details.width, optical_details.height),
         image_circle_size=optical_details.fish_eye_circle)
