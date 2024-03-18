@@ -44,7 +44,7 @@ class lens_details():
     width: int
     height: int
     fish_eye_circle: int
-    corners: list[int]
+    #corners: list[int]
     targets: list[int] = None
     def __post_init__(self):
         self.targets = [
@@ -96,3 +96,10 @@ class clicked_xy():
 class External_Config():
     # user can click in any order
     fish_eye_clicked_corners: list[clicked_xy]
+
+
+@dataclass
+class AllConfiguration():
+    lens_details: lens_details
+    clicked_corners: External_Config
+    sample_regions: config_regions

@@ -21,7 +21,8 @@ from libs.collections import (
     clicked_xy,
     lens_details,
     External_Config,
-    config_regions)
+    config_regions,
+    AllConfiguration)
 
 from img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
@@ -216,7 +217,40 @@ class ExternalDataWorker():
         return "None"
     
 
-def get_lens_details_external(url):
+def get_corners(body)->External_Config:
+    positions = []
+    clicked_positions = json.loads(body['corners'])
+    ext_config_pos = []
+    for elem in clicked_positions:
+        # sorry
+        positions.append({i:int((elem)[i]) for i in elem})
+        
+        ext_config_pos.append(clicked_xy(**elem))
+
+    return External_Config(fish_eye_clicked_corners=ext_config_pos)
+
+
+def get_lens_details(body)->lens_details:
+    lens_config = json.loads(body['lens'])
+    #lens_config.update({"corners": []})
+    return lens_details(**lens_config)
+
+
+def get_sample_region_details(body)->config_regions:
+    ext_regions_config = json.loads(body['regions'])
+    
+    expected_keys = list(config_regions.__dataclass_fields__.keys())
+    incoming_keys = list(ext_regions_config.keys())
+
+    if not set(expected_keys) == set(incoming_keys):
+        print("expected_keys", expected_keys)
+        print("incoming_keys", incoming_keys)
+        raise Exception("incoming region config does not match")
+    return  config_regions(**{k: float(v) for k, v in ext_regions_config.items()})
+ 
+
+
+def get_lens_details_external(url)->AllConfiguration:
     """ get all config simultaneously then
     cache result for future calls.
     this should only be updated on reset"""
@@ -225,25 +259,20 @@ def get_lens_details_external(url):
         "action": "getconfig",
         "sessiontoken": get_session_id()
         }
-    positions = []
-    ext_config_pos = []
-    # try:
+
     response = requests.post(url, json=myobj)
 
     body = json.loads(response.content)
 
-    lens_config = json.loads(body['lens'])
-    lens_config.update({"corners": []})
+    corners = get_corners(body)
+    sample_regions = get_sample_region_details(body)
+    lens_details = get_lens_details(body)
 
-
-    clicked_positions = json.loads(body['corners'])
-    ext_config_pos = []
-    for elem in clicked_positions:
-        # sorry
-        positions.append({i:int((elem)[i]) for i in elem})
-        
-        ext_config_pos.append(clicked_xy(**elem))
-    return lens_details(**lens_config), External_Config(fish_eye_clicked_corners=ext_config_pos)
+    return AllConfiguration(
+        lens_details=lens_details,
+        clicked_corners=corners,
+        sample_regions=sample_regions
+        )
 
 
     
@@ -310,19 +339,20 @@ def get_region_config_from_aws(url):
     
     return None
 
-def get_ext_corners_or_use_default(
-        ext_click_data: External_Config,
-        default_corners,
-        imgshape: any):
-    if len(ext_click_data) > 3:
-        real_corners = get_corners_from_remote_config(
-            ext_click_data,
-            imgshape)
-        real_corners = [real_corners['top_left'].real_corner,
+def calculate_which_corner(
+    ext_click_data: External_Config,
+    imgshape: any):
+    """pass in corners clicked by user, and transform
+    them to the format used here, also need to 
+    discover what corner is the top left, top right 
+    etc as currently this is not known"""
+    real_corners = get_corners_from_remote_config(
+        ext_click_data,
+        imgshape)
+    real_corners = [
+        real_corners['top_left'].real_corner,
         real_corners['top_right'].real_corner,
         real_corners['lower_right'].real_corner,
-        real_corners['lower_left'].real_corner]
-        return real_corners
-    else:
-        print("not enough positions in remote config ", ext_click_data)
-    return default_corners
+        real_corners['lower_left'].real_corner
+        ]
+    return real_corners
