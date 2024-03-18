@@ -232,23 +232,21 @@ def get_lens_details_external(url):
 
     body = json.loads(response.content)
 
-    # # Get clicked positions
-    # clicked_positions = json.loads(body['corners'])
-    # for elem in clicked_positions:
-    #     # sorry
-    #     positions.append({i:int((elem)[i]) for i in elem})
-        
-    #     ext_config_pos.append(clicked_xy(**elem))
-    # output_corners = External_Config(
-    #     fish_eye_clicked_corners=ext_config_pos
-    #     )
-
-    # get sampling region configuration
-    # corners will be updated in another call
-    # I am sorry this is pretty bad
     lens_config = json.loads(body['lens'])
     lens_config.update({"corners": []})
-    return lens_details(**lens_config)
+
+
+    clicked_positions = json.loads(body['corners'])
+    ext_config_pos = []
+    for elem in clicked_positions:
+        # sorry
+        positions.append({i:int((elem)[i]) for i in elem})
+        
+        ext_config_pos.append(clicked_xy(**elem))
+    return lens_details(**lens_config), External_Config(fish_eye_clicked_corners=ext_config_pos)
+
+
+    
 
     print(f"from AWS {clicked_positions}")
     # except (requests.exceptions.RequestException, KeyError) as e:
