@@ -5,7 +5,7 @@ import numpy as np
 import time
 import random
 
-from factory import Camera_synchronous, ImageGenerator
+from factory import filesystem_scambilight
 
 from libs.utils import (
     encode_img_to_str,
@@ -27,6 +27,40 @@ from img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
 from common import cors_headers
 
+
+
+class sim_file_system(filesystem_scambilight):
+    def __init__(self) -> None:
+        super().__init__()
+        self.configmemory = None
+        self.session_memory = json.dumps("admin")
+    def read_jsonfile(self, path: str)->dict:
+        if "config" in path:
+            return json.loads(self.session_memory)
+        if "session" in path:
+            return json.loads(self.configmemory)
+    def write_jsonfile(self, path:str, object_dict:dict)->None:
+        if "config" in path:
+            self.configmemory = json.dumps(object_dict)
+        if "session" in path:
+            self.session_memory = json.dumps(object_dict)
+
+
+class raspberry_file_system(filesystem_scambilight):
+    def __init__(self) -> None:
+        super().__init__()
+        self.configmemory = None
+        self.session_memory = json.dumps("admin")
+    def read_jsonfile(self, path: str)->dict:
+        if "config" in path:
+            return json.loads(self.session_memory)
+        if "session" in path:
+            return json.loads(self.session_memory)
+    def write_jsonfile(self, path:str, object_dict:dict)->None:
+        if "config" in path:
+            self.configmemory = json.dumps(object_dict)
+        if "session" in path:
+            self.session_memory = json.dumps(object_dict)
 
 def send_sim_progress_update_to_AWS(progress_im):
     print("aws", progress)

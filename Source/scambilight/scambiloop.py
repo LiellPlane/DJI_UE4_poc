@@ -46,7 +46,9 @@ from libs.external_data import (
     get_lens_details_external,
     ExternalDataWorker,
     ExternalDataWorker_dummy,
-    cors_headers)
+    cors_headers,
+    sim_file_system,
+    raspberry_file_system)
 import os
 PLATFORM = get_platform()
 
@@ -76,6 +78,13 @@ def get_external_data_workr(action):
     return ExternalDataWorker(SCAMILIGHT_API)
 
 
+def get_file_system(system: _OS):
+    if system == _OS.RASPBERRY:
+        return sim_file_system()
+    else:
+        return raspberry_file_system()
+
+
 def main(action = None):
     optical_details = get_lens_details_external(SCAMILIGHT_API)
     # optical_details = get_lens_details(
@@ -85,6 +94,11 @@ def main(action = None):
         image_circle_size=optical_details.fish_eye_circle)
     system = get_platform()
     cam = get_cam(system=system, action=action)
+
+
+    file_system =get_file_system(system=system)
+    plop = file_system.get_session_token_file
+
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
         cores = 8

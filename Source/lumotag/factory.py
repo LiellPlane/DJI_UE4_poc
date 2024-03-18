@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
+import json
 import time
 from enum import Enum
 from functools import lru_cache
@@ -131,6 +132,47 @@ class filesystem(ABC):
     def save_image(self):
         pass
 
+
+class filesystem_scambilight(ABC):
+    def __init__(self) -> None:
+        """file system specific to scambilight"""
+        self.rootdir = "/Idunno/"
+        self.configfile = "configfile.json"
+        self.session_token = "session_token.json"
+
+    @abstractmethod
+    def read_jsonfile(self, path: str)->dict:
+        pass
+    @abstractmethod
+    def write_jsonfile(self, path:str, object_dict:dict)->None:
+        pass
+
+    def get_filepath(self, input_filename: str)->str:
+        return f"{self.rootdir}{input_filename}"
+    
+    @property
+    def get_config_file(self):
+        return self.read_jsonfile(self.get_filepath(self.configfile))
+    
+    @property
+    def get_session_token_file(self):
+        return self.read_jsonfile(self.get_filepath(self.session_token))
+
+    @property
+    def save_config_file(self, input_dict: dict):
+        json_dict = json.dumps(input_dict)
+        return self.write_jsonfile(
+            self.get_filepath(self.configfile),
+            object_dict=json_dict
+            )
+
+    @property
+    def save_session_file(self, input_dict: dict):
+        json_dict = json.dumps(input_dict)
+        return self.write_jsonfile(
+            self.get_filepath(self.session_token),
+            object_dict=json_dict
+            )
 
 class display(ABC):
     
