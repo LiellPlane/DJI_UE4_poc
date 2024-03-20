@@ -133,8 +133,9 @@ def get_return_dict(
 #@lru_cache(maxsize=16)
 def authenticate_session(event_body: dict, session_table_client) -> str:
     """assumes session token exists, so wrap in a try """
+    sessiontoken = json.loads(event_body["sessiontoken"])
     _Key = {
-        'sessionid': json.loads(event_body["sessiontoken"])
+        'sessionid': sessiontoken
     }
     #print("looking up", _Key)
     response = session_table_client.get_item(Key=_Key)
@@ -145,7 +146,7 @@ def authenticate_session(event_body: dict, session_table_client) -> str:
         user_email = response["Item"]["useremail"]
     except KeyError as e:
         raise ScambiError(e) from e
-    return user_email
+    return user_email, sessiontoken
 
 
 def log_in_user(

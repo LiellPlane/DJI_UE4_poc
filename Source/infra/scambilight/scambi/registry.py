@@ -219,11 +219,33 @@ def get_fake_config_data():
         "regions": "{\"no_leds_vert\": 1, \"no_leds_horiz\": 100, \"move_in_horiz\": 11, \"move_in_vert\": 0.12, \"sample_area_edge\": 40, \"subsample_cut\": 1}"
         }
 
+
+class FakeLambdaClient():
+    def __init__(self) -> None:
+        pass
+    def invoke(self, FunctionName, InvocationType, Payload):
+        input = json.loads(Payload)
+        body = json.loads(input["body"])
+        if "action" not in body.keys():
+            raise Exception("bad input")
+        if "sessiontoken" not in body.keys():
+            raise Exception("bad input")
+        if body["sessiontoken"] != "fb1e6ead-e6b5-4dea-8921-f60e4c40b1es":
+            raise Exception("bad sessiontoken or needs updating to match test data")
+
+
 def get_dynamodb_client():
     if is_test_env():
        return FakeDynamodbClient()
     else:
         return boto3.resource('dynamodb')
+
+
+def get_lambda_client():
+    if is_test_env():
+       return FakeLambdaClient()
+    else:
+        return boto3.client('lambda')
 
 
 def get_s3_client():

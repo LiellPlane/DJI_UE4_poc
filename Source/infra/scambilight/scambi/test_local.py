@@ -140,3 +140,5 @@ if __name__ == "__main__":
     test_data.event_test_logged_in["body"] = json.dumps(plop)
     res = upload.lambda_handler(test_data.event_test_logged_in, None)
     assert res == {'statusCode': 500, 'headers': {'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'}, 'body': '{"message": "session token authentication BROKEN, Expecting value: line 1 column 1 (char 0)"}'}
+    
+    res = upload.lambda_handler(test_data.event_test_get_sim, None)

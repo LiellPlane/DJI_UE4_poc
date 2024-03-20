@@ -379,8 +379,9 @@ def main(action = None, sessiontoken = None):
 
 def handler(event, context):
     print("boom")
+    print(event)
     event_body = json.loads(event['body'])
-
+    print(event_body)
     main(
         action=event_body['action'],
         sessiontoken=event_body['sessiontoken']
@@ -388,20 +389,15 @@ def handler(event, context):
 
 if __name__ == "__main__":
 
-    #main()
+    main()
     
-    body = json.dumps({
-        'sessiontoken': "admin",
-        'action': "do_something"
-        })
-    event = {"body": body}
-    handler(event, None)
-    # event_body = json.loads(event['body'])
+    # body = json.dumps({
+    #     'sessiontoken': "admin",
+    #     'action': "do_something"
+    #     })
+    # event = {"body": body}
+    # handler(event, None)
 
-    # main(
-    #     action=event_body['action'],
-    #     sessiontoken=event_body['sessiontoken']
-    # )
 
 
 

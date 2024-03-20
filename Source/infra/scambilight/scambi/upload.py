@@ -45,7 +45,7 @@ CONFIG_TABLE = os.environ.get('CONFIG_TABLE')
 #sqs_client = boto3.client('sqs')
 dynamodb = registry.get_dynamodb_client()
 s3client = registry.get_s3_client()
-lambda_client = boto3.client('lambda')
+lambda_client = registry.get_lambda_client()
 #s3_custom = registry.get_s3_client()
 
 event_table_client = dynamodb.Table(EVENTS_TABLE)
@@ -96,7 +96,7 @@ def lambda_handler(event, _):
 
     # now we assume session tokens are present for all actions bar log-in
     try:
-        user_email = utils.authenticate_session(
+        user_email, sessiontoken = utils.authenticate_session(
             event_body=incoming_request,
             session_table_client=dynamodb.Table(SESSION_TABLE)
             )
@@ -301,6 +301,21 @@ def lambda_handler(event, _):
             body=json.dumps(f"{action} ok"),
             _logger=logger
             )
+
+    if action == "get_region_sim":
+        lambda_payload = {"body": json.dumps({"action": "plops", "sessiontoken": sessiontoken})}
+        response = lambda_client.invoke(
+                    FunctionName=SIM_LAMBDA,
+                     InvocationType='RequestResponse',
+                     Payload=json.dumps(lambda_payload).encode('utf-8')
+                     )
+
+        return utils.get_return_dict(
+            httpstatus=201,
+            body=json.dumps({'message': 'sim lambda invoked please wait'}),
+            _logger=logger
+            )
+
 
     if action == "check_logged_in":
 
