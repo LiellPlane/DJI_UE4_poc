@@ -96,17 +96,17 @@ def find_closest(testpt: list [int, int], input_pts:list):
     return pt, [i for i in input_pts if i != pt]
 
 
-def get_session_id():
-    # has to match the form from the website
-    # probably should fix this
-    return json.dumps("admin")
+# def get_session_id():
+#     # has to match the form from the website
+#     # probably should fix this
+#     return json.dumps("admin")
 
 
-def get_image_from_aws(url):
+def get_image_from_aws(url, sessiontoken):
     print("getting raw image from aws")
     myobj = {
         "action": "getimage_raw",
-        "sessiontoken": get_session_id()
+        "sessiontoken": json.dumps(sessiontoken)
         }
     try:
         response = requests.post(url, json=myobj)
@@ -119,7 +119,7 @@ def get_image_from_aws(url):
     return decode_image_from_str(encoded_img)
 
 
-def upload_img_to_aws(img, url, action):
+def upload_img_to_aws(img, url, action, sessiontoken):
     
     print("uploading image")
 
@@ -128,7 +128,7 @@ def upload_img_to_aws(img, url, action):
     myobj = {
         "action": action,
         "payload": img_bytes,
-        "sessiontoken": get_session_id()
+        "sessiontoken": json.dumps(sessiontoken)
         }
     try:
         response = requests.post(url, json=myobj)
@@ -144,10 +144,10 @@ def check_event_validity(event: str):
         raise Exception("event malformed")
 
 
-def check_events_from_aws(url):
+def check_events_from_aws(url, sessiontoken):
     myobj = {
         "action": "check_event",
-        "sessiontoken": get_session_id()
+        "sessiontoken": json.dumps(sessiontoken)
         }
     try:
         response = requests.post(url, json=myobj)
@@ -250,14 +250,14 @@ def get_sample_region_details(body)->config_regions:
  
 
 
-def get_lens_details_external(url)->AllConfiguration:
+def get_all_config_external(url, sessiontoken)->AllConfiguration:
     """ get all config simultaneously then
     cache result for future calls.
     this should only be updated on reset"""
     print("getting all config from aws")
     myobj = {
         "action": "getconfig",
-        "sessiontoken": get_session_id()
+        "sessiontoken": json.dumps(sessiontoken)
         }
 
     response = requests.post(url, json=myobj)
@@ -285,59 +285,59 @@ def get_lens_details_external(url)->AllConfiguration:
     #     fish_eye_clicked_corners=ext_config_pos)
 
 
-def get_config_from_aws(url):
-    print("getting config from aws")
-    myobj = {
-        "action": "getconfig",
-        "sessiontoken": get_session_id()
-        }
-    positions = []
-    ext_config_pos = []
-    try:
-        response = requests.post(url, json=myobj)
-        #TODO not good - why is this so arduous - can't be right
-        clicked_positions = json.loads(json.loads(response.content)['corners'])
+# def get_config_from_aws(url, sessiontoken):
+#     print("getting config from aws")
+#     myobj = {
+#         "action": "getconfig",
+#         "sessiontoken": json.dumps(sessiontoken)
+#         }
+#     positions = []
+#     ext_config_pos = []
+#     try:
+#         response = requests.post(url, json=myobj)
+#         #TODO not good - why is this so arduous - can't be right
+#         clicked_positions = json.loads(json.loads(response.content)['corners'])
 
-        for elem in clicked_positions:
-            # sorry
-            positions.append({i:int((elem)[i]) for i in elem})
+#         for elem in clicked_positions:
+#             # sorry
+#             positions.append({i:int((elem)[i]) for i in elem})
             
-            ext_config_pos.append(clicked_xy(**elem))
-        print(f"from AWS {clicked_positions}")
-    except (requests.exceptions.RequestException, KeyError) as e:
-        print(e)
-        print("could not connect get config or find key from", url)
-    return External_Config(
-        fish_eye_clicked_corners=ext_config_pos)
+#             ext_config_pos.append(clicked_xy(**elem))
+#         print(f"from AWS {clicked_positions}")
+#     except (requests.exceptions.RequestException, KeyError) as e:
+#         print(e)
+#         print("could not connect get config or find key from", url)
+#     return External_Config(
+#         fish_eye_clicked_corners=ext_config_pos)
 
 
-def get_region_config_from_aws(url):
-    print("getting config from aws")
-    myobj = {
-        "action": "getconfig",
-        "sessiontoken": get_session_id()
-        }
-    positions = []
-    ext_config_pos = []
-    try:
-        response = requests.post(url, json=myobj)
-        #TODO not good - why is this so arduous - can't be right
-        ext_regions_config = json.loads(json.loads(response.content)['regions'])
+# def get_region_config_from_aws(url):
+#     print("getting config from aws")
+#     myobj = {
+#         "action": "getconfig",
+#         "sessiontoken": get_session_id()
+#         }
+#     positions = []
+#     ext_config_pos = []
+#     try:
+#         response = requests.post(url, json=myobj)
+#         #TODO not good - why is this so arduous - can't be right
+#         ext_regions_config = json.loads(json.loads(response.content)['regions'])
         
-        expected_keys = list(config_regions.__dataclass_fields__.keys())
-        incoming_keys = list(ext_regions_config.keys())
+#         expected_keys = list(config_regions.__dataclass_fields__.keys())
+#         incoming_keys = list(ext_regions_config.keys())
 
-        if not set(expected_keys) == set(incoming_keys):
-            print("expected_keys", expected_keys)
-            print("incoming_keys", incoming_keys)
-            raise Exception("incoming region config does not match")
-        configured_regions = config_regions(**{k: float(v) for k, v in ext_regions_config.items()})
-        return configured_regions
-    except (requests.exceptions.RequestException, KeyError) as e:
-        print(e)
-        print("could not connect get config or find key from", url)
+#         if not set(expected_keys) == set(incoming_keys):
+#             print("expected_keys", expected_keys)
+#             print("incoming_keys", incoming_keys)
+#             raise Exception("incoming region config does not match")
+#         configured_regions = config_regions(**{k: float(v) for k, v in ext_regions_config.items()})
+#         return configured_regions
+#     except (requests.exceptions.RequestException, KeyError) as e:
+#         print(e)
+#         print("could not connect get config or find key from", url)
     
-    return None
+#     return None
 
 def calculate_which_corner(
     ext_click_data: External_Config,

@@ -40,7 +40,6 @@ from libs.configs import (
 from libs.external_data import (
     upload_img_to_aws,
     get_config_from_aws,
-    get_region_config_from_aws,
     get_ext_corners_or_use_default,
     get_image_from_aws,
     get_lens_details_external,
