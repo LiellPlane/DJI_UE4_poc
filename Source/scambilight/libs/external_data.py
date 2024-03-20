@@ -51,7 +51,7 @@ class raspberry_file_system(filesystem_scambilight):
     def __init__(self) -> None:
         super().__init__()
         self.configmemory = None
-        self.session_memory = json.dumps("admin")
+        self.session_memory = json.dumps("daisybankscambi")
     def read_jsonfile(self, path: str)->dict:
         if "config" in path:
             return json.loads(self.session_memory)
@@ -187,9 +187,8 @@ class ExternalDataWorker():
             sessiontoken):
         self.in_queue = Queue(maxsize=1)
         self.msg_queue = Queue(maxsize=1)
-        self.url = url,
-        self.sessiontoken = json.dumps(sessiontoken)
-
+        self.url = url
+        self.sessiontoken = sessiontoken
     def _start(self):
     
         process = Process(
