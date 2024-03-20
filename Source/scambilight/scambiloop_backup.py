@@ -24,20 +24,25 @@ from libs.scambiunits import (
     HomographyTool,
     generate_scambis,
     Scambi_unit_LED_only)
-from libs.collections import LEDColours
+from libs.collections import (
+    LensConfigs,
+    LEDColours)
 import libs.async_cam_lib as async_cam_lib
 import libs.fisheye_lib as fisheye_lib
 from libs.lighting import SimLeds, ws281Leds
 from libs.configs import (
     DaisybankLedSpacing,
+    get_sample_regions_config,
+    get_lens_details,
     ScambiLight_Cam_vidmodes,
     SCAMILIGHT_API,
     UploadImageTypes)
 from libs.external_data import (
     upload_img_to_aws,
-    calculate_which_corner,
+    get_config_from_aws,
+    get_ext_corners_or_use_default,
     get_image_from_aws,
-    get_all_config_external,
+    get_lens_details_external,
     ExternalDataWorker,
     ExternalDataWorker_dummy,
     cors_headers,
@@ -79,40 +84,37 @@ def get_file_system(system: _OS):
         return raspberry_file_system()
 
 
-
 def main(action = None):
-    system = get_platform()
-    file_system =get_file_system(system=system)
-    sessiontoken = file_system.get_session_token_file
-
-    optical_details = get_all_config_external(SCAMILIGHT_API, sessiontoken)
-
+    optical_details = get_lens_details_external(SCAMILIGHT_API)
+    # optical_details = get_lens_details(
+    #     LensConfigs.DAISYBANK_LQ)
     fisheye_compute = fisheye_lib.fisheye_tool(
-        img_width_height=(optical_details.lens_details.width,optical_details.lens_details.height),
-        image_circle_size=optical_details.lens_details.fish_eye_circle)
-    
+        img_width_height=(optical_details.width, optical_details.height),
+        image_circle_size=optical_details.fish_eye_circle)
+    system = get_platform()
     cam = get_cam(system=system, action=action)
 
 
-
+    file_system =get_file_system(system=system)
+    plop = file_system.get_session_token_file
 
     if system == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        cores_for_col_dect = 8
+        cores = 8
     elif system == _OS.RASPBERRY:
         led_subsystem = ws281Leds(DaisybankLedSpacing)
-        cores_for_col_dect = 2 # tends to crash higher than 2
+        cores = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        cores_for_col_dect = 8 
+        cores = 8
     elif system == _OS.MAC_OS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
-        cores_for_col_dect = 8
+        cores = 8
     else:
         raise Exception(system + " not supported")
 
     led_subsystem.display_info_colours(LEDColours.Red.value)
-
+    cores_for_col_dect = cores
 
     # for incoming action, don't use external worker 
     ActionChecker = get_external_data_workr(action=action)
@@ -123,31 +125,33 @@ def main(action = None):
     curr_img = next(cam)
     # upload image before anything crashes 
  
+    aws_config = get_config_from_aws(SCAMILIGHT_API)
+    
     led_subsystem.display_info_colours(LEDColours.Cyan.value)
-
-    fish_img_corners = calculate_which_corner(
-        ext_click_data=optical_details.clicked_corners.fish_eye_clicked_corners,
-        imgshape=curr_img.shape
-        )
-
+    fish_img_corners = get_ext_corners_or_use_default(
+        ext_click_data=aws_config.fish_eye_clicked_corners,
+        default_corners=optical_details.corners,
+        imgshape=curr_img.shape)
     led_subsystem.display_info_colours(LEDColours.Magenta.value)
-
     homography_tool = HomographyTool(
-        img_height_=optical_details.lens_details.height,
-        img_width_=optical_details.lens_details.width,
+        img_height_=optical_details.height,
+        img_width_=optical_details.width,
         corners=fish_img_corners,
-        target_corners=optical_details.lens_details.targets)
+        target_corners=optical_details.targets)
 
     led_subsystem.display_info_colours(LEDColours.Yellow.value)
 
-    img_sample_controller = optical_details.sample_regions
+    if (img_sample_controller := get_region_config_from_aws(SCAMILIGHT_API)) is None:
+        print("Could not get sample region data - using default")
+        time.sleep(2)
+        img_sample_controller = get_sample_regions_config()
 
     print(f"Requested action: {action}")
     if action is None:
         scambi_units = generate_scambis(
             img_shape=curr_img.shape,
             regions=img_sample_controller,
-            optical_details=optical_details.lens_details,
+            optical_details=optical_details,
             homography_tool=homography_tool,
             led_subsystem=led_subsystem,
             initialise=True,
@@ -157,7 +161,7 @@ def main(action = None):
         scambi_units = generate_scambis(
             img_shape=curr_img.shape,
             regions=img_sample_controller,
-            optical_details=optical_details.lens_details,
+            optical_details=optical_details,
             homography_tool=homography_tool,
             led_subsystem=led_subsystem,
             initialise=False,
@@ -218,28 +222,16 @@ def main(action = None):
 
     # things with queues can break the AWS lambda container images
     if action is None:
-        # for the raspberry pi we want optimal parallism
-        if PLATFORM == _OS.RASPBERRY:
-            proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
-                scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
-                curr_img=curr_img,
-                async_image_buf=cam.shared_mem_handler.mem_ids["0"],
-                Scambi_unit_LED_only=Scambi_unit_LED_only,
-                subsample_cutoff=img_sample_controller.subsample_cut
-            )
-            # half scambis to parallel process half to main proces
-            scambi_units = scambi_units[len(scambi_units)//2:]
-        else:# if we are running locally we want to see all the regions - but at least make sure
-            # parallel processing is working, so give the parallel process 1 region to process
-            proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
-                scambiunits=copy.deepcopy(scambi_units[0:1]),
-                curr_img=curr_img,
-                async_image_buf=cam.shared_mem_handler.mem_ids["0"],
-                Scambi_unit_LED_only=Scambi_unit_LED_only,
-                subsample_cutoff=img_sample_controller.subsample_cut
-            )
-            # half scambis to parallel process half to main proces
-            scambi_units = scambi_units[1:]
+        proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
+            scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
+            curr_img=curr_img,
+            async_image_buf=cam.shared_mem_handler.mem_ids["0"],
+            Scambi_unit_LED_only=Scambi_unit_LED_only,
+            subsample_cutoff=img_sample_controller.subsample_cut
+        )
+        # half scambis to parallel process half to main proces
+        scambi_units = scambi_units[len(scambi_units)//2:]
+
 
 
 

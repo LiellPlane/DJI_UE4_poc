@@ -168,8 +168,10 @@ def check_events_from_aws(url, sessiontoken):
 class ExternalDataWorker_dummy():
     def __init__(
             self,
-            url):
+            url,
+            sessiontoken):
         self.url = url
+        self.sessiontoken = sessiontoken
 
     def _start(self):
         pass
@@ -181,10 +183,12 @@ class ExternalDataWorker_dummy():
 class ExternalDataWorker():
     def __init__(
             self,
-            url):
+            url,
+            sessiontoken):
         self.in_queue = Queue(maxsize=1)
         self.msg_queue = Queue(maxsize=1)
-        self.url = url
+        self.url = url,
+        self.sessiontoken = json.dumps(sessiontoken)
 
     def _start(self):
     
@@ -198,7 +202,7 @@ class ExternalDataWorker():
     def _run(self):
         while True:
             try:
-                event = check_events_from_aws(self.url)
+                event = check_events_from_aws(self.url, self.sessiontoken)
             except Exception as e:
                 event = f"ERROR{e}"
             time.sleep(10)
