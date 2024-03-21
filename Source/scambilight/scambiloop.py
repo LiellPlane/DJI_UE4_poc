@@ -81,9 +81,9 @@ def get_external_data_workr(action, sessiontoken):
 
 def get_file_system(system: _OS):
     if system == _OS.RASPBERRY:
-        return sim_file_system()
-    else:
         return raspberry_file_system()
+    else:
+        return sim_file_system()
 
 
 

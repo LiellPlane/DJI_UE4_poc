@@ -34,12 +34,12 @@ class sim_file_system(filesystem_scambilight):
     def __init__(self) -> None:
         super().__init__()
         self.configmemory = None
-        self.session_memory = json.dumps("admin")
+        self.session_memory = json.dumps({self.sessiontoken_key: "admin"})
     def read_jsonfile(self, path: str)->dict:
         if "config" in path:
-            return json.loads(self.session_memory)
-        if "session" in path:
             return json.loads(self.configmemory)
+        if "session" in path:
+            return json.loads(self.session_memory)
     def write_jsonfile(self, path:str, object_dict:dict)->None:
         if "config" in path:
             self.configmemory = json.dumps(object_dict)
@@ -50,18 +50,30 @@ class sim_file_system(filesystem_scambilight):
 class raspberry_file_system(filesystem_scambilight):
     def __init__(self) -> None:
         super().__init__()
-        self.configmemory = None
-        self.session_memory = json.dumps("daisybankscambi")
-    def read_jsonfile(self, path: str)->dict:
-        if "config" in path:
-            return json.loads(self.session_memory)
-        if "session" in path:
-            return json.loads(self.session_memory)
+        # override rootdir class member
+        self.rootdir = "/home/scambilight/"
+        #self.configmemory = None
+        #self.session_memory = json.dumps("daisybankscambi")
+        # do this in the meantime until we have a comissioning system
+        self.save_config_file(input_dict={"config": "TBC"})
+        self.save_session_file(input_dict={"session": "daisybankscambi"})
+
+    def read_jsonfile(self, path: str) -> dict:
+        # if "config" in path:
+        #     return json.loads(self.configmemory)
+        # if "session" in path:
+        #     return json.loads(self.session_memory)
+        with open(path, 'r') as file:
+            data = json.load(file)
+            return data
+
     def write_jsonfile(self, path:str, object_dict:dict)->None:
-        if "config" in path:
-            self.configmemory = json.dumps(object_dict)
-        if "session" in path:
-            self.session_memory = json.dumps(object_dict)
+        with open(path, 'w') as file:
+            file.write(json.dumps(object_dict))
+        # if "config" in path:
+        #     self.configmemory = json.dumps(object_dict)
+        # if "session" in path:
+        #     self.session_memory = json.dumps(object_dict)
 
 def send_sim_progress_update_to_AWS(progress_im):
     print("aws", progress)
