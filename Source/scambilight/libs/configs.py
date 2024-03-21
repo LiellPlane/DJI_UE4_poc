@@ -14,6 +14,9 @@ from my_collections import ImagingMode
 #4k background
 
 SCAMILIGHT_API = "https://api.scambilight.com/hello"
+RPI_ROOTDIR = "/home/scambilight/"
+CONFIG_FILENAME = "configfile.json"
+SESSIONTOKEN_FILENAME = "session_token.json"
 
 
 class UploadImageTypes(enum.Enum):

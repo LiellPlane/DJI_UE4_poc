@@ -4,8 +4,8 @@ import json
 import numpy as np
 import time
 import random
-
-from factory import filesystem_scambilight
+from abc import ABC, abstractmethod
+#from factory import filesystem_scambilight
 
 from libs.utils import (
     encode_img_to_str,
@@ -27,8 +27,58 @@ from libs.collections import (
 from img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
 from common import cors_headers
+import libs.configs as configs
 
 
+class filesystem_scambilight(ABC):
+    def __init__(self) -> None:
+        """file system specific to scambilight"""
+        self.rootdir =  configs.RPI_ROOTDIR # probably should be in config
+        self.configfile = "configfile.json"
+        self.session_token = "session_token.json"
+        self.sessiontoken_key = configs.CONFIG_FILENAME
+        self.config_key = configs.SESSIONTOKEN_FILENAME
+
+    @abstractmethod
+    def read_jsonfile(self, path: str)->dict:
+        pass
+
+    @abstractmethod
+    def write_jsonfile(self, path:str, object_dict:dict)->None:
+        pass
+
+    def get_filepath(self, input_filename: str)->str:
+        return f"{self.rootdir}{input_filename}"
+    
+    @property
+    def get_config_file(self):
+        return self.read_jsonfile(self.get_filepath(self.configfile))[self.config_key]
+    
+    @property
+    def get_session_token_file(self):
+        return self.read_jsonfile(self.get_filepath(self.session_token))[self.sessiontoken_key]
+
+    def save_config_file(self, input_dict: dict):
+        """save the config file to the filesystem
+        provide the input dictionary, this function will
+        handle the particulars of the filesystem"""
+        to_save = {self.config_key: input_dict}
+        json_dict = json.dumps(to_save)
+        return self.write_jsonfile(
+            self.get_filepath(self.configfile),
+            object_dict=json_dict
+            )
+
+    def save_session_file(self, input_str: dict):
+        """save the config file to the filesystem
+        provide the input dictionary, this function will
+        handle the particulars of the filesystem"""
+        to_save = {self.sessiontoken_key: input_str}
+        json_dict = json.dumps(to_save)
+        return self.write_jsonfile(
+            self.get_filepath(self.session_token),
+            object_dict=json_dict
+            )
 
 class sim_file_system(filesystem_scambilight):
     def __init__(self) -> None:
@@ -51,7 +101,7 @@ class raspberry_file_system(filesystem_scambilight):
     def __init__(self) -> None:
         super().__init__()
         # override rootdir class member
-        self.rootdir = "/home/scambilight/"
+        
         #self.configmemory = None
         #self.session_memory = json.dumps("daisybankscambi")
         # do this in the meantime until we have a comissioning system

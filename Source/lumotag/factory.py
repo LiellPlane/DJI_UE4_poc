@@ -132,57 +132,6 @@ class filesystem(ABC):
     def save_image(self):
         pass
 
-
-class filesystem_scambilight(ABC):
-    def __init__(self) -> None:
-        """file system specific to scambilight"""
-        self.rootdir = "/Idunno/"
-        self.configfile = "configfile.json"
-        self.session_token = "session_token.json"
-        self.sessiontoken_key = "sessiontoken"
-        self.config_key = "config"
-
-    @abstractmethod
-    def read_jsonfile(self, path: str)->dict:
-        pass
-
-    @abstractmethod
-    def write_jsonfile(self, path:str, object_dict:dict)->None:
-        pass
-
-    def get_filepath(self, input_filename: str)->str:
-        return f"{self.rootdir}{input_filename}"
-    
-    @property
-    def get_config_file(self):
-        return self.read_jsonfile(self.get_filepath(self.configfile))[self.config_key]
-    
-    @property
-    def get_session_token_file(self):
-        return self.read_jsonfile(self.get_filepath(self.session_token))[self.sessiontoken_key]
-
-    def save_config_file(self, input_dict: dict):
-        """save the config file to the filesystem
-        provide the input dictionary, this function will
-        handle the particulars of the filesystem"""
-        to_save = {self.config_key: input_dict}
-        json_dict = json.dumps(to_save)
-        return self.write_jsonfile(
-            self.get_filepath(self.configfile),
-            object_dict=json_dict
-            )
-
-    def save_session_file(self, input_str: dict):
-        """save the config file to the filesystem
-        provide the input dictionary, this function will
-        handle the particulars of the filesystem"""
-        to_save = {self.sessiontoken_key: input_str}
-        json_dict = json.dumps(to_save)
-        return self.write_jsonfile(
-            self.get_filepath(self.session_token),
-            object_dict=json_dict
-            )
-
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
