@@ -106,7 +106,7 @@ class raspberry_file_system(filesystem_scambilight):
         #self.session_memory = json.dumps("daisybankscambi")
         # do this in the meantime until we have a comissioning system
         self.save_config_file(input_dict={"config": "TBC"})
-        self.save_session_file(input_dict={"session": "daisybankscambi"})
+        self.save_session_file(input_str={"session": "daisybankscambi"})
 
     def read_jsonfile(self, path: str) -> dict:
         # if "config" in path:
