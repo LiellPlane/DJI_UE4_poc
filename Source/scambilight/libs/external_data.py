@@ -34,8 +34,8 @@ class filesystem_scambilight(ABC):
     def __init__(self) -> None:
         """file system specific to scambilight"""
         self.rootdir =  configs.RPI_ROOTDIR # probably should be in config
-        self.configfile = "configfile.json"
-        self.session_token = "session_token.json"
+        self.configfile = configs.CONFIG_FILENAME
+        self.session_token_file = configs.SESSIONTOKEN_FILENAME
         self.sessiontoken_key = configs.CONFIG_FILENAME
         self.config_key = configs.SESSIONTOKEN_FILENAME
 
@@ -44,7 +44,7 @@ class filesystem_scambilight(ABC):
         pass
 
     @abstractmethod
-    def write_jsonfile(self, path:str, object_dict:dict)->None:
+    def write_jsonfile(self, path:str, object_dict:json)->None:
         pass
 
     def get_filepath(self, input_filename: str)->str:
@@ -56,7 +56,7 @@ class filesystem_scambilight(ABC):
     
     @property
     def get_session_token_file(self):
-        return self.read_jsonfile(self.get_filepath(self.session_token))[self.sessiontoken_key]
+        return self.read_jsonfile(self.get_filepath(self.session_token_file))[self.sessiontoken_key]
 
     def save_config_file(self, input_dict: dict):
         """save the config file to the filesystem
@@ -76,7 +76,7 @@ class filesystem_scambilight(ABC):
         to_save = {self.sessiontoken_key: input_str}
         json_dict = json.dumps(to_save)
         return self.write_jsonfile(
-            self.get_filepath(self.session_token),
+            self.get_filepath(self.session_token_file),
             object_dict=json_dict
             )
 
@@ -84,17 +84,22 @@ class sim_file_system(filesystem_scambilight):
     def __init__(self) -> None:
         super().__init__()
         self.configmemory = None
-        self.session_memory = json.dumps({self.sessiontoken_key: "admin"})
+        self.session_memory = None
+        self.save_session_file("admin")
+        self.save_config_file(input_dict={"config": "TBC"})
+        testconfig = self.get_config_file
+        testsession = self.get_session_token_file
+        plop=1
     def read_jsonfile(self, path: str)->dict:
         if "config" in path:
             return json.loads(self.configmemory)
         if "session" in path:
             return json.loads(self.session_memory)
-    def write_jsonfile(self, path:str, object_dict:dict)->None:
+    def write_jsonfile(self, path:str, object_dict:json)->None:
         if "config" in path:
-            self.configmemory = json.dumps(object_dict)
+            self.configmemory = object_dict
         if "session" in path:
-            self.session_memory = json.dumps(object_dict)
+            self.session_memory = object_dict
 
 
 class raspberry_file_system(filesystem_scambilight):
@@ -106,7 +111,7 @@ class raspberry_file_system(filesystem_scambilight):
         #self.session_memory = json.dumps("daisybankscambi")
         # do this in the meantime until we have a comissioning system
         self.save_config_file(input_dict={"config": "TBC"})
-        self.save_session_file(input_str={"session": "daisybankscambi"})
+        self.save_session_file("daisybankscambi")
 
     def read_jsonfile(self, path: str) -> dict:
         # if "config" in path:
@@ -117,9 +122,9 @@ class raspberry_file_system(filesystem_scambilight):
             data = json.load(file)
             return data
 
-    def write_jsonfile(self, path:str, object_dict:dict)->None:
+    def write_jsonfile(self, path:str, object_dict:json)->None:
         with open(path, 'w') as file:
-            file.write(json.dumps(object_dict))
+            file.write(object_dict)
         # if "config" in path:
         #     self.configmemory = json.dumps(object_dict)
         # if "session" in path:
