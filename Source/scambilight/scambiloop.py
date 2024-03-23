@@ -291,9 +291,9 @@ def main(action = None, sessiontoken = None):
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = UploadImageTypes.RAW.value)
+                    action = UploadImageTypes.RAW.value,sessiontoken=sessiontoken)
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = UploadImageTypes.PERPWARPED.value)
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = UploadImageTypes.PERPWARPED.value,sessiontoken=sessiontoken)
                 display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                         unit.draw_warped_boundingbox(display_img)
@@ -315,15 +315,17 @@ def main(action = None, sessiontoken = None):
                 upload_img_to_aws(
                     np.vstack((before_warp, display_img, perp_warped)),
                     SCAMILIGHT_API,
-                    action = UploadImageTypes.OVERLAY.value)
+                    action = UploadImageTypes.OVERLAY.value,
+                    sessiontoken=sessiontoken)
             if event == "update_image":
                 display_img = prev.copy()
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = UploadImageTypes.RAW.value)
+                    action = UploadImageTypes.RAW.value,
+                    sessiontoken=sessiontoken)
                 perp_warped = fisheye_compute.fish_eye_image(display_img.copy(), reverse=True)
-                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = UploadImageTypes.PERPWARPED.value)
+                upload_img_to_aws(perp_warped, SCAMILIGHT_API, action = UploadImageTypes.PERPWARPED.value, sessiontoken=sessiontoken)
                 display_img = prev.copy()
                 for index, unit in enumerate(scambi_units):
                     #display_img = unit.draw_warped_roi(display_img)
@@ -337,7 +339,8 @@ def main(action = None, sessiontoken = None):
                 upload_img_to_aws(
                     display_img,
                     SCAMILIGHT_API,
-                    action = UploadImageTypes.OVERLAY.value)
+                    action = UploadImageTypes.OVERLAY.value,
+                    sessiontoken=sessiontoken)
                 
             if event.startswith("ERROR"):
                 raise Exception(event)

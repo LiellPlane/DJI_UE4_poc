@@ -89,7 +89,7 @@ class sim_file_system(filesystem_scambilight):
         self.save_config_file(input_dict={"config": "TBC"})
         testconfig = self.get_config_file
         testsession = self.get_session_token_file
-        plop=1
+
     def read_jsonfile(self, path: str)->dict:
         if "config" in path:
             return json.loads(self.configmemory)
