@@ -122,7 +122,26 @@ class SimLeds(Leds):
     #    ImageViewer_Quick_no_resize(*args, **kwargs)
 
 
+class RemoteLeds(Leds):
+    
+    def set_LED_values(self, scambi_units: list):
+        # don't do anything
+        #if len(scambi_units) > self.led_count:
+        #    raise Exception("Too many leds for configured strip")
+        for index, scambiunit in enumerate(scambi_units):
+            pos = scambiunit.physical_led_pos
+            col = tuple(reversed(scambiunit.colour))
+            for p in pos:
+                pass
 
+    def execute_LEDS(self):
+        pass
+
+    def display_info_colours(self, colour):
+        print("progress colour", colour)
+
+    def display_info_bar(self, pc_done, scambi_units):
+        print("progress bar", min(1, round(pc_done, 2)))
 
 class ws281Leds(Leds):
     
