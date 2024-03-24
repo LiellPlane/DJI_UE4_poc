@@ -13,30 +13,42 @@ with open('/boot/MY_INFO.txt', 'r') as file:
 
 print(f"MY_ID: {MY_ID} url: {url}")
 #raise Exception("probably need to connect commands with && or shell state might be discarded")
-
-
-commands = [
-    'cd',
-    '/home/lumotag/DJI_UE4_poc/',
-    '&&',
-    'git',
-    'fetch',
-    '&&',
-    'git',
-    'pull',
-    '&&',
-    'cd',
-    '/home/lumotag/'
-]
-
-
+#repo = 'https://github.com/LiellPlane/DJI_UE4_poc.git'
+#codepath = "/home/scambilight/DJI_UE4_poc"
+# **** might need sudo git config --global --add safe.directory /home/scambilight/DJI_UE4_poc
 if os.path.exists(codepath):
-    fetch_result = subprocess.run(commands, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    fetch_result = subprocess.run(['sudo', 'git', 'fetch'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print(fetch_result)
+    fetch_result = subprocess.run(['sudo', 'git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(fetch_result)
 else:
     print(
-        "trying to clone repo from web - this is incorrect state- should exist already")
-    subprocess.run(['git', 'clone', repo])
+        "trying to clone repo from web - this is impossible state- should exist already")
+    subprocess.run(['sudo', 'git', 'clone', repo])
+
+
+# commands = [
+#     'cd',
+#     '/home/lumotag/DJI_UE4_poc/',
+#     '&&',
+#     'git',
+#     'fetch',
+#     '&&',
+#     'git',
+#     'pull',
+#     '&&',
+#     'cd',
+#     '/home/lumotag/'
+# ]
+
+
+# if os.path.exists(codepath):
+#     fetch_result = subprocess.run(commands, shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#     print(fetch_result)
+# else:
+#     print(
+#         "trying to clone repo from web - this is incorrect state- should exist already")
+#     subprocess.run(['git', 'clone', repo])
 
 sys.path.append(os.path.abspath(f"{codepath}/Source/lumotag/"))
 

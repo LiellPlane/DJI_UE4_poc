@@ -36,6 +36,9 @@ git clone https://github.com/LiellPlane/DJI_UE4_poc.git
 sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/bootstrap.py /boot/bootstrap.py
 sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /boot/MY_INFO.txt
 
+# some more linux retarded shit
+sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
+
 # currently this is to modify the HDMI hot plug/safe mode so it actually turns on
 # WARNING! This breaks when updating raspberry pi
 #sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/config.txt /boot/config.txt

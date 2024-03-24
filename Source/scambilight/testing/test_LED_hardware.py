@@ -115,10 +115,11 @@ if __name__ == '__main__':
         print('Use "-c" argument to clear LEDs on exit')
 
     while True:
-        #test_set_all_LEDS(strip)
-        
-        for i in range(0, strip.numPixels()):
-            print("led", i)
-            strip.setPixelColor(i, Color(255, 255, 255))
-            strip.show()
-            input("press return for next LED")
+        test_set_all_LEDS(strip)
+        time.sleep(1)
+        print("plop")
+        # for i in range(0, strip.numPixels()):
+        #     print("led", i)
+        #     strip.setPixelColor(i, Color(random.randint(100,255), random.randint(100,255), random.randint(100,255)))
+        #     strip.show()
+        #     input("press return for next LED")

@@ -2,8 +2,9 @@
 
 
 
-
-
+sudo pip3 install adafruit-circuitpython-neopixel
+sudo python3 -m pip install --force-reinstall adafruit-blinka
+sudo pip3 install rpi_ws281x
 #https://core-electronics.com.au/guides/raspberry-pi/fully-addressable-rgb-raspberry-pi/
 #!/usr/bin/env python3
 # NeoPixel library strandtest example
