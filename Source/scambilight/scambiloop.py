@@ -27,7 +27,7 @@ from libs.scambiunits import (
 from libs.collections import LEDColours
 import libs.async_cam_lib as async_cam_lib
 import libs.fisheye_lib as fisheye_lib
-from libs.lighting import SimLeds, ws281Leds
+from libs.lighting import SimLeds, ws281Leds, RemoteLeds
 from libs.configs import (
     DaisybankLedSpacing,
     ScambiLight_Cam_vidmodes,
@@ -104,10 +104,10 @@ def main(action = None, sessiontoken = None):
 
 
     if system == _OS.WINDOWS:
-        led_subsystem = SimLeds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     elif system == _OS.RASPBERRY:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)# ws281Leds(DaisybankLedSpacing)
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = SimLeds(DaisybankLedSpacing)
@@ -377,6 +377,7 @@ def main(action = None, sessiontoken = None):
 
             with time_it_sparse("set leds"):
                 led_subsystem.set_LED_values(scambiunits_led_info)
+            with time_it_sparse("execute leds"):
                 led_subsystem.execute_LEDS()
 
 

@@ -31,7 +31,7 @@ if __name__ == "__main__":
     leds_per_packet = udp_payload_bytes // single_Led_size_bytes
 
 
-    import time
+    from time import perf_counter
     # Send the message
     while True:
         senddic_list = []
@@ -43,8 +43,12 @@ if __name__ == "__main__":
                 random.randint(0,200),
                 random.randint(0,200)
             )
+        t1_start = perf_counter() 
         for led_packt in senddic_list:
             sender.send_message(json.dumps(led_packt))
+        t1_stop = perf_counter()
+        print("Elapsed time during the whole program in seconds:",
+                                        t1_stop-t1_start)
         pause = input("press enter to blast UDP")
     # Close the socket
     sender.close()

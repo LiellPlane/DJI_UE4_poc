@@ -169,6 +169,7 @@ class RemoteLeds(Leds):
             host=self.LED_layout.receiver_hostname,
             port=self.LED_layout.port
         )
+        self.leds_to_send = []
 
     def set_LED_values(self, scambi_units: list):
 
@@ -178,14 +179,20 @@ class RemoteLeds(Leds):
         leds_per_packet = udp_payload_bytes // single_Led_size_bytes
 
 
-        senddic_list = []
-        for index, scambiunit in enumerate(scambi_units):
+        self.leds_to_send = []
+        cnt = 0
+        for scambiunit in scambi_units:
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             for p in pos:
-                pass
+                if cnt%leds_per_packet == 0:
+                    self.leds_to_send.append({})
+                self.leds_to_send[-1][p] = col
+                cnt+=1
+
     def execute_LEDS(self):
-        pass
+        #for led_packt in self.leds_to_send:
+        self.sender.send_message(json.dumps(self.leds_to_send))
 
     def display_info_colours(self, colour):
         print("progress colour", colour)
