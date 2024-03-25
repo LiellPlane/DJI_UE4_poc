@@ -3,10 +3,12 @@ from abc import ABC, abstractmethod
 import cv2
 import time
 import math
+import socket
 from dataclasses import dataclass, asdict
 from time import perf_counter
 from contextlib import contextmanager
 import random
+import sys
 import enum
 from typing import Optional
 import requests
@@ -122,18 +124,66 @@ class SimLeds(Leds):
     #    ImageViewer_Quick_no_resize(*args, **kwargs)
 
 
-class RemoteLeds(Leds):
+# class RemoteLeds(Leds):
     
+#     def set_LED_values(self, scambi_units: list):
+#         # don't do anything
+#         #if len(scambi_units) > self.led_count:
+#         #    raise Exception("Too many leds for configured strip")
+#         for index, scambiunit in enumerate(scambi_units):
+#             pos = scambiunit.physical_led_pos
+#             col = tuple(reversed(scambiunit.colour))
+#             for p in pos:
+#                 pass
+
+#     def execute_LEDS(self):
+#         pass
+
+#     def display_info_colours(self, colour):
+#         print("progress colour", colour)
+
+#     def display_info_bar(self, pc_done, scambi_units):
+#         print("progress bar", min(1, round(pc_done, 2)))
+
+class UDPMessageSender:
+    def __init__(self, host='scambilightled.broadband', port=12345):
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+    def send_message(self, message):
+        try:
+            self.socket.sendto(message.encode(), (self.host, self.port))
+        except Exception as e:
+            print(f"Error sending message: {e}")
+
+    def close(self):
+        self.socket.close()
+
+
+class RemoteLeds(Leds):
+
+    def __init__(self, site_led_layout):
+        super().__init__(site_led_layout)
+        self.sender = UDPMessageSender(
+            host=self.LED_layout.receiver_hostname,
+            port=self.LED_layout.port
+        )
+
     def set_LED_values(self, scambi_units: list):
-        # don't do anything
-        #if len(scambi_units) > self.led_count:
-        #    raise Exception("Too many leds for configured strip")
+
+        # calculate size of LED so we know how many to send in a packet (MTU)
+        single_Led_size_bytes = sys.getsizeof(json.dumps({300:(255,255,255)}))
+        udp_payload_bytes = 700
+        leds_per_packet = udp_payload_bytes // single_Led_size_bytes
+
+
+        senddic_list = []
         for index, scambiunit in enumerate(scambi_units):
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             for p in pos:
                 pass
-
     def execute_LEDS(self):
         pass
 

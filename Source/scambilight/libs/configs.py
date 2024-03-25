@@ -71,6 +71,8 @@ class DaisybankLedSpacing():
                 clockwise_start=185, clockwise_end=223),
             Edges.LOWER: LedsLayout(
                 clockwise_start=229, clockwise_end=296)}
+        self.receiver_hostname = 'scambilightled.broadband'
+        self.port = 12345
 
 
 def get_lens_details(lens: LensConfigs) -> lens_details:
