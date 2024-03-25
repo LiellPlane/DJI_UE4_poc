@@ -17,7 +17,7 @@ class UDPMessageReceiver:
         self.socket.bind((self.host, self.port))
         atexit.register(self.close)
 
-    def receive_message(self, buffer_size=1024):
+    def receive_message(self, buffer_size=6000):
         try:
             data, addr = self.socket.recvfrom(buffer_size)
             return data.decode(), addr
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     # Intialize the library (must be called once before other functions).
     strip.begin()
-
+    test_set_all_LEDS(strip)
     print ('Press Ctrl-C to quit.')
     if not args.clear:
         print('Use "-c" argument to clear LEDs on exit')
@@ -73,8 +73,9 @@ if __name__ == '__main__':
         while True:
             message, address = receiver.receive_message()
             message = json.loads(message)
-            for _pos, _rgb in message.items():
-                color =  Color(*_rgb,)
-                strip.setPixelColor(int(_pos), color)
-            if "150" in message:
-                strip.show()
+            for fart in message:
+                for _pos, _rgb in fart:
+                    color =  Color(*_rgb,)
+                    strip.setPixelColor(int(_pos), color)
+                if "150" in message:
+                    strip.show()
