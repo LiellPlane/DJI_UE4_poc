@@ -44,8 +44,8 @@ if __name__ == "__main__":
                 random.randint(0,200)
             )
         t1_start = perf_counter() 
-        for led_packt in senddic_list:
-            sender.send_message(json.dumps(led_packt))
+        #for led_packt in senddic_list:
+        sender.send_message(json.dumps(senddic_list))
         t1_stop = perf_counter()
         print("Elapsed time during the whole program in seconds:",
                                         t1_stop-t1_start)

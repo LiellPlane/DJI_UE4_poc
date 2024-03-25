@@ -17,7 +17,7 @@ class UDPMessageReceiver:
         self.socket.bind((self.host, self.port))
         atexit.register(self.close)
 
-    def receive_message(self, buffer_size=6000):
+    def receive_message(self, buffer_size=10000):
         try:
             data, addr = self.socket.recvfrom(buffer_size)
             return data.decode(), addr
@@ -73,9 +73,10 @@ if __name__ == '__main__':
         while True:
             message, address = receiver.receive_message()
             message = json.loads(message)
+            print(message)
             for fart in message:
-                for _pos, _rgb in fart:
+                for _pos, _rgb in fart.items():
                     color =  Color(*_rgb,)
                     strip.setPixelColor(int(_pos), color)
-                if "150" in message:
+                if "150" in fart.keys():
                     strip.show()
