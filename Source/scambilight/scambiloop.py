@@ -263,8 +263,9 @@ def main(action = None, sessiontoken = None):
             # with time_it_sparse("get img"):
             #     prev = next(cam)
 
-            # get next image buffer 
-            cam.release_next_image()
+            # get next image buffer
+            with time_it_sparse("get img"):
+                cam.release_next_image()
             prev: np.ndarray = np.ndarray(
                 curr_img.shape,
                 dtype=curr_img.dtype,
@@ -369,7 +370,7 @@ def main(action = None, sessiontoken = None):
                         colour=unit.colour,
                         physical_led_pos=unit.physical_led_pos))
                     
-                #TODO all these conditions are not good code
+                # TODO all these conditions are not good code
                 # probably take it all out
                 if action is None: #  not running in container (which doesn't like queues)
                     scambiunits_led_info += proc_scambis.done_queue.get(block=True)

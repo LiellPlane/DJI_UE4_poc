@@ -188,7 +188,7 @@ class RemoteLeds(Leds):
                 if cnt%leds_per_packet == 0:
                     self.leds_to_send.append({})
                 self.leds_to_send[-1][p] = col
-                cnt+=1
+                cnt += 1
 
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
@@ -199,6 +199,7 @@ class RemoteLeds(Leds):
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
+
 
 class ws281Leds(Leds):
     
