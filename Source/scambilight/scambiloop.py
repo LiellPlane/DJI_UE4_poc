@@ -342,7 +342,7 @@ def main(action = None, sessiontoken = None):
                     SCAMILIGHT_API,
                     action = UploadImageTypes.OVERLAY.value,
                     sessiontoken=sessiontoken)
-                
+
             if event.startswith("ERROR"):
                 raise Exception(event)
 
