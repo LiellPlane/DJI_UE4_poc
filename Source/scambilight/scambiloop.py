@@ -132,11 +132,8 @@ def main(action = None, sessiontoken = None):
     curr_img = next(cam)
     # upload image before anything crashes 
  
-    while True:
-        led_subsystem.display_info_colours(LEDColours.Cyan.value)
-        time.sleep(0.5)
-        led_subsystem.display_info_colours(LEDColours.Magenta.value)
-        time.sleep(0.5)
+    led_subsystem.display_info_colours(LEDColours.Cyan.value)
+
     fish_img_corners = calculate_which_corner(
         ext_click_data=optical_details.clicked_corners.fish_eye_clicked_corners,
         imgshape=curr_img.shape
