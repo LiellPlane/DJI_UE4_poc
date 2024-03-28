@@ -118,8 +118,12 @@ def main(action = None, sessiontoken = None):
     else:
         raise Exception(system + " not supported")
 
-    led_subsystem.display_info_colours(LEDColours.Red.value)
-
+    while True:
+            
+        led_subsystem.display_info_colours(LEDColours.Red.value)
+        time.sleep(0.1)
+        led_subsystem.display_info_colours(LEDColours.Cyan.value)
+        time.sleep(0.1)
 
     # for incoming action, don't use external worker 
     ActionChecker = get_external_data_workr(

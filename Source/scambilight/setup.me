@@ -47,11 +47,13 @@ sudo git config --global --add safe.directory /home/scambilight/DJI_UE4_poc
 
 
 autostart:
-
+**REMEMBER - DELETE THE REPO THEN LET THE UPDATE_REPO SCRIPT CREATE it
+***THIS IS TO ENSURE THE SAME USER OR WHATEVVER THE FUCK IS GOING ON IN 
+***LINUXES RETARDED BRAIN IS THE SAME ONE THAT PULLS IT
 
 sudo nano /etc/rc.local
 Scroll down, and just before the exit 0 line, enter the following:
-
+bash /home/scambilight/update_repo.sh
 sudo python3 /boot/bootstrap.py &
 
 
