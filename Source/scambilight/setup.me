@@ -17,6 +17,9 @@ sudo pip3 install adafruit-circuitpython-neopixel
 sudo python3 -m pip install --force-reinstall adafruit-blinka
 sudo apt-get install git
 
+# raspberry pis are retarded cunts
+git config --global --add safe.directory '*'
+sudo git config --global --add safe.directory '*'
 
 #overclock
 sudo apt update && sudo apt dist-upgrade
@@ -48,6 +51,7 @@ autostart:
 
 sudo nano /etc/rc.local
 Scroll down, and just before the exit 0 line, enter the following:
+
 sudo python3 /boot/bootstrap.py &
 
 
