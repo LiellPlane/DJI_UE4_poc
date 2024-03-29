@@ -17,8 +17,6 @@ print(f"MY_ID: {MY_ID} url: {url}")
 #codepath = "/home/scambilight/DJI_UE4_poc"
 # **** might need sudo git config --global --add safe.directory /home/scambilight/DJI_UE4_poc
 if os.path.exists(codepath):
-    fetch_result = subprocess.run(['sudo', 'git', 'fetch'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(fetch_result)
     fetch_result = subprocess.run(['sudo', 'git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(fetch_result)
 else:
