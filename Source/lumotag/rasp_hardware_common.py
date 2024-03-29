@@ -99,7 +99,7 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
 
     def display_method(self, image):
-        #git statimage[30:50,30:50,:] = 255
+        image[30:50,30:50,:] = 255
         try:
             lumo_viewer(
                 inputimage=image,

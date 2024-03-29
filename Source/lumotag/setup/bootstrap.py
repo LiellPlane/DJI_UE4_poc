@@ -19,7 +19,12 @@ print(f"MY_ID: {MY_ID} url: {url}")
 if os.path.exists(codepath):
     fetch_result = subprocess.run(['sudo', 'git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(fetch_result)
+    with open('/home/lumotag/retardedlinuxpull.cunt', 'w') as file:
+        file.write(str(fetch_result))
+
 else:
+    with open('/home/lumotag/retardedlinuxclone.cunt', 'w') as file:
+        file.write("trying to clone this cunt of a thing")
     print(
         "trying to clone repo from web - this is impossible state- should exist already")
     subprocess.run(['sudo', 'git', 'clone', repo])
