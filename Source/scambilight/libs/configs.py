@@ -71,7 +71,7 @@ DaisybankLedSpacing = PhysicalTV_details(
             Edges.LEFT: LedsLayout(
                 clockwise_start=73, clockwise_end=110, EDGE=Edges.LEFT.value),
             Edges.TOP: LedsLayout(
-                clockwise_start=114, clockwise_end=181, EDGE=Edges.TOP.value),
+                clockwise_start=114, clockwise_end=184, EDGE=Edges.TOP.value),
             Edges.RIGHT: LedsLayout(
                 clockwise_start=185, clockwise_end=223, EDGE=Edges.RIGHT.value),
             Edges.LOWER: LedsLayout(
