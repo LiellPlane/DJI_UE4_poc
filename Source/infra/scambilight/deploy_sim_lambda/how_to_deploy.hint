@@ -1,6 +1,8 @@
 this creates the lambda which runs the scambilight simulation website function
 
-you have to copy the latest repo (DJI_UE4_POC) entire folder into "app" in here. 
+you have to copy the latest repo (DJI_UE4_POC) entire folder into "app" in here, or recursively clone/initilaise it
+as its a github submodule
+
 The dockerfile shows what has to be copied
 The dockerfile also shows that it needs to install requirements.txt, which would be better being the target
 inside the repo but at the moment it exists outside
