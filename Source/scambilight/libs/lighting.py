@@ -44,7 +44,7 @@ class Leds(ABC):
         self.led_brightness = 255      # set to 0 for darkest and 255 for brightest
         self.led_invert     = False   # true to invert the signal (when using npn transistor level shift)
         self.led_channel    = 0
-        self.LED_layout = site_led_layout()
+        self.LED_layout = site_led_layout
         #self.req_led_cols = [(0, 0, 0)] * self.led_count
 
     @abstractmethod

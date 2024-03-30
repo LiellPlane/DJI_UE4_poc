@@ -59,13 +59,15 @@ class ScambiLight_Cam_vidmodes(enum.Enum):
 #     _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
 #     _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
 
-# @dataclass
-# class DaisybankLedSpacing():
-#     self.edges = 
+@dataclass
+class PhysicalTV_details():
+    edges: dict[str:LedsLayout]
+    receiver_hostname = 'scambilightled.broadband'
+    port = 12345
 
-class DaisybankLedSpacing():
-    def __init__(self) -> None:
-        self.edges = {
+
+DaisybankLedSpacing = PhysicalTV_details(
+        edges = {
             Edges.LEFT: LedsLayout(
                 clockwise_start=73, clockwise_end=110, EDGE=Edges.LEFT.value),
             Edges.TOP: LedsLayout(
@@ -74,8 +76,21 @@ class DaisybankLedSpacing():
                 clockwise_start=185, clockwise_end=223, EDGE=Edges.RIGHT.value),
             Edges.LOWER: LedsLayout(
                 clockwise_start=229, clockwise_end=296, EDGE=Edges.LOWER.value)}
-        self.receiver_hostname = 'scambilightled.broadband'
-        self.port = 12345
+)
+
+# class DaisybankLedSpacing():
+#     def __init__(self) -> None:
+#         self.edges = {
+#             Edges.LEFT: LedsLayout(
+#                 clockwise_start=73, clockwise_end=110, EDGE=Edges.LEFT.value),
+#             Edges.TOP: LedsLayout(
+#                 clockwise_start=114, clockwise_end=181, EDGE=Edges.TOP.value),
+#             Edges.RIGHT: LedsLayout(
+#                 clockwise_start=185, clockwise_end=223, EDGE=Edges.RIGHT.value),
+#             Edges.LOWER: LedsLayout(
+#                 clockwise_start=229, clockwise_end=296, EDGE=Edges.LOWER.value)}
+#         self.receiver_hostname = 'scambilightled.broadband'
+#         self.port = 12345
 
 # class DaisybankLedSpacing():
 #     def __init__(self) -> None:
