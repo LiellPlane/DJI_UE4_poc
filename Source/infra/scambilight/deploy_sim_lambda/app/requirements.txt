@@ -1,0 +1,10 @@
+pika
+pylint
+pycodestyle
+black
+numpy<=1.19.4
+opencv-python-headless
+boto3<=1.17.64
+Flask
+requests
+scikit-image

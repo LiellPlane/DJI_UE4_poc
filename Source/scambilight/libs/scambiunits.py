@@ -95,7 +95,7 @@ class Scambi_unit():
     def initialise(self):
         self.warp_rois_homograpy()
         self.fisheye_rois()
-        print(f"scambiunit {self.initobj.id} initialised")
+        #print(f"scambiunit {self.initobj.id} initialised")
 
     def assign_physical_LED_pos(self, pos: int):
         self.physical_led_pos = pos
@@ -433,9 +433,9 @@ def generate_scambis(
         progress_bar_func: Optional[callable]):
     scambi_units = []
     led_positions = get_led_perimeter_pos(img_shape, regions.no_leds_vert, regions.no_leds_horiz)
-    print("got get_led_perimeter_pos")
+    #print("got get_led_perimeter_pos")
     for index,  led in enumerate(led_positions):
-        print(f"calculating scambiunit {index}/{regions.no_leds_vert+regions.no_leds_vert+regions.no_leds_horiz+regions.no_leds_horiz}")
+        #print(f"calculating scambiunit {index}/{regions.no_leds_vert+regions.no_leds_vert+regions.no_leds_horiz+regions.no_leds_horiz}")
         centre_ = tuple((np.asarray(led.positionxy)).astype(int))
         #cv2.circle(prev,plop,16,(255,0,100),-1)
         mid_screen = (np.array(tuple(reversed(img_shape[:2])))/2).astype(int)[:2]

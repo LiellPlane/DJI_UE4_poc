@@ -88,3 +88,6 @@ sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayf
 
 echo /boot/MY_INFO.txt
 echo 'please check info is correct, such as lumotag gun model"
+
+# this will intsall repo using autorun permissions
+sudo reboot
