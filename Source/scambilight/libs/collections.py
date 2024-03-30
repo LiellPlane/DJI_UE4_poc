@@ -59,6 +59,7 @@ class LedsLayout():
     """position facing viewer"""
     clockwise_start: int
     clockwise_end: int
+    EDGE: str
 
 
 @dataclass

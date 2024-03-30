@@ -5,7 +5,7 @@ from libs.collections import (
     LedsLayout,
     config_regions,
     LensConfigs)
-
+from dataclasses import dataclass
 from my_collections import ImagingMode
 
 # good youtube videos to try:
@@ -59,21 +59,37 @@ class ScambiLight_Cam_vidmodes(enum.Enum):
 #     _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
 #     _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
 
+# @dataclass
+# class DaisybankLedSpacing():
+#     self.edges = 
 
 class DaisybankLedSpacing():
     def __init__(self) -> None:
         self.edges = {
             Edges.LEFT: LedsLayout(
-                clockwise_start=73, clockwise_end=110),
+                clockwise_start=73, clockwise_end=110, EDGE=Edges.LEFT.value),
             Edges.TOP: LedsLayout(
-                clockwise_start=114, clockwise_end=181),
+                clockwise_start=114, clockwise_end=181, EDGE=Edges.TOP.value),
             Edges.RIGHT: LedsLayout(
-                clockwise_start=185, clockwise_end=223),
+                clockwise_start=185, clockwise_end=223, EDGE=Edges.RIGHT.value),
             Edges.LOWER: LedsLayout(
-                clockwise_start=229, clockwise_end=296)}
+                clockwise_start=229, clockwise_end=296, EDGE=Edges.LOWER.value)}
         self.receiver_hostname = 'scambilightled.broadband'
         self.port = 12345
 
+# class DaisybankLedSpacing():
+#     def __init__(self) -> None:
+#         self.edges = {
+#             Edges.LEFT: LedsLayout(
+#                 clockwise_start=73, clockwise_end=110),
+#             Edges.TOP: LedsLayout(
+#                 clockwise_start=114, clockwise_end=181),
+#             Edges.RIGHT: LedsLayout(
+#                 clockwise_start=185, clockwise_end=223),
+#             Edges.LOWER: LedsLayout(
+#                 clockwise_start=229, clockwise_end=296)}
+#         self.receiver_hostname = 'scambilightled.broadband'
+#         self.port = 12345
 
 def get_lens_details(lens: LensConfigs) -> lens_details:
     if lens == LensConfigs.DAISYBANK_HQ:

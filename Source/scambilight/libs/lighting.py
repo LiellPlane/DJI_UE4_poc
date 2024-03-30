@@ -70,7 +70,11 @@ class Leds(ABC):
         we normalise each edge, and have 0 starting as moving clockwise
         and encountering the edge"""
         print("calculating pos for ", scambiunit.edge)
-        led_pos_for_edge = self.LED_layout.edges[scambiunit.edge]
+        #led_pos_for_edge = self.LED_layout.edges[scambiunit.edge]
+        led_pos_for_edge = [
+            v for i, v
+            in self.LED_layout.edges.items()
+            if scambiunit.edge.value in i][0]# should just be one result
         pos = led_pos_for_edge
         nm = np.clip(scambiunit.position_normed, 0, 1)
         nm_start = np.clip(scambiunit.position_norm_start, 0, 1)
@@ -95,7 +99,7 @@ class Leds(ABC):
             output = list(set([final_pos_start, final_pos_mid, final_pos_end]))
             if len(output) < 1:
                 raise Exception("invalid - no LED position")
-        print(output)
+        #print(output)
         return output
     
 
