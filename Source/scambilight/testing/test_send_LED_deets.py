@@ -26,6 +26,8 @@ if __name__ == "__main__":
 
     senddic_list = []
 
+
+
     single_Led_size_bytes = sys.getsizeof(json.dumps({300:(255,255,255)}))
     udp_payload_bytes = 700
     leds_per_packet = udp_payload_bytes // single_Led_size_bytes
