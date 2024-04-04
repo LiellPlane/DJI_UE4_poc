@@ -10,7 +10,7 @@ class UDPMessageReceiver:
         self.socket.bind((self.host, self.port))
         atexit.register(self.close)
 
-    def receive_message(self, buffer_size=1024):
+    def receive_message(self, buffer_size=10000):
         try:
             data, addr = self.socket.recvfrom(buffer_size)
             return data.decode(), addr
