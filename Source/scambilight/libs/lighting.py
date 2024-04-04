@@ -13,6 +13,7 @@ import enum
 from typing import Optional
 import requests
 import base64
+import struct
 import json
 from typing import Literal
 from libs.utils import img_height, img_width
@@ -185,6 +186,7 @@ class RemoteLeds(Leds):
 
         self.leds_to_send = []
         cnt = 0
+
         for scambiunit in scambi_units:
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
@@ -193,6 +195,17 @@ class RemoteLeds(Leds):
                     self.leds_to_send.append({})
                 self.leds_to_send[-1][p] = col
                 cnt += 1
+
+        for scambiunit in scambi_units:
+            pos = scambiunit.physical_led_pos
+            col = tuple(reversed(scambiunit.colour))
+            pos_array = np.asarray(pos, dtype="uint16")
+            col_array = np.asarray(col, dtype="uint8")
+            pos_bytes = pos_array.tobytes()
+            col_bytes = col_array.tobytes()
+            packed_uint8_data = struct.pack('{}H'.format(len(pos_bytes)), *pos_bytes)
+            packed_uint16_data = struct.pack('{}B'.format(len(col_bytes) // 2), *col_bytes)
+            plop=1
 
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
