@@ -51,6 +51,16 @@ def test_set_all_LEDS(strip):
     strip.show()
 
 
+def blank_all_leds(strip):
+    """test response time"""
+    for i in range(strip.numPixels()):
+        color =  Color(
+            0,
+            0,
+            0)
+        strip.setPixelColor(i, color)
+    strip.show()
+
 # Main program logic follows:
 if __name__ == '__main__':
     # Process arguments
@@ -63,6 +73,8 @@ if __name__ == '__main__':
     # Intialize the library (must be called once before other functions).
     strip.begin()
     test_set_all_LEDS(strip)
+    time.sleep(1)
+    blank_all_leds(strip)
     print ('Press Ctrl-C to quit.')
     if not args.clear:
         print('Use "-c" argument to clear LEDs on exit')
@@ -73,7 +85,7 @@ if __name__ == '__main__':
         while True:
             message, address = receiver.receive_message()
             message = json.loads(message)
-            print(message)
+            #print(message)
             for fart in message:
                 for _pos, _rgb in fart.items():
                     color =  Color(*_rgb,)
