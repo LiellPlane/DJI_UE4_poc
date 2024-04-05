@@ -26,7 +26,8 @@ from libs.collections import (
 
 from libs.utils import (
     get_platform,
-    _OS)
+    _OS,
+    time_it_sparse)
 
 PLATFORM = get_platform()
 if PLATFORM == _OS.RASPBERRY:
@@ -196,17 +197,25 @@ class RemoteLeds(Leds):
                 self.leds_to_send[-1][p] = col
                 cnt += 1
 
+
+        delimiter = b'|'
+        output_payload = []
         for scambiunit in scambi_units:
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             pos_array = np.asarray(pos, dtype="uint16")
             col_array = np.asarray(col, dtype="uint8")
-            pos_bytes = pos_array.tobytes()
-            col_bytes = col_array.tobytes()
-            packed_uint8_data = struct.pack('{}H'.format(len(pos_bytes)), *pos_bytes)
-            packed_uint16_data = struct.pack('{}B'.format(len(col_bytes) // 2), *col_bytes)
-            plop=1
-
+            # pos_bytes = pos_array.tobytes()
+            # col_bytes = col_array.tobytes()
+            pos_packed_data = struct.pack('{}H'.format(len(pos_array)), *pos_array)
+            col_packed_data = struct.pack('{}B'.format(len(col_array)), *col_array)
+            
+            #pos_array_unpacked = np.array(struct.unpack('{}H'.format(len(pos_packed_data)//2), pos_packed_data), dtype=np.uint16)
+            #col_array_unpacked = np.array(struct.unpack('{}B'.format(len(col_packed_data)), col_packed_data), dtype=np.uint8)
+            output_payload.append(pos_packed_data)
+            output_payload.append(col_packed_data)
+        fart = delimiter.join(output_payload)
+        plop=1
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
         self.sender.send_message(json.dumps(self.leds_to_send))
