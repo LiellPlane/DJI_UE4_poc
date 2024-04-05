@@ -1,4 +1,5 @@
 import numpy as np
+import struct
 import cv2
 import time
 from contextlib import contextmanager

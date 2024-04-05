@@ -102,7 +102,6 @@ def main(action = None, sessiontoken = None):
     cam = get_cam(system=system, action=action)
 
 
-
     if system == _OS.WINDOWS:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8

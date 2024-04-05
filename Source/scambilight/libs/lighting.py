@@ -157,9 +157,9 @@ class UDPMessageSender:
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    def send_message(self, message):
+    def send_message(self, message:bytes):
         try:
-            self.socket.sendto(message.encode(), (self.host, self.port))
+            self.socket.sendto(message, (self.host, self.port))
         except Exception as e:
             print(f"Error sending message: {e}")
 
@@ -180,22 +180,22 @@ class RemoteLeds(Leds):
     def set_LED_values(self, scambi_units: list):
 
         # calculate size of LED so we know how many to send in a packet (MTU)
-        single_Led_size_bytes = sys.getsizeof(json.dumps({300:(255,255,255)}))
-        udp_payload_bytes = 700
-        leds_per_packet = udp_payload_bytes // single_Led_size_bytes
+        #single_Led_size_bytes = sys.getsizeof(json.dumps({300:(255,255,255)}))
+        #udp_payload_bytes = 700
+        #leds_per_packet = udp_payload_bytes // single_Led_size_bytes
 
 
-        self.leds_to_send = []
-        cnt = 0
+        # self.leds_to_send = []
+        # cnt = 0
 
-        for scambiunit in scambi_units:
-            pos = scambiunit.physical_led_pos
-            col = tuple(reversed(scambiunit.colour))
-            for p in pos:
-                if cnt%leds_per_packet == 0:
-                    self.leds_to_send.append({})
-                self.leds_to_send[-1][p] = col
-                cnt += 1
+        # for scambiunit in scambi_units:
+        #     pos = scambiunit.physical_led_pos
+        #     col = tuple(reversed(scambiunit.colour))
+        #     for p in pos:
+        #         if cnt%leds_per_packet == 0:
+        #             self.leds_to_send.append({})
+        #         self.leds_to_send[-1][p] = col
+        #         cnt += 1
 
 
         delimiter = b'|'
@@ -214,11 +214,12 @@ class RemoteLeds(Leds):
             #col_array_unpacked = np.array(struct.unpack('{}B'.format(len(col_packed_data)), col_packed_data), dtype=np.uint8)
             output_payload.append(pos_packed_data)
             output_payload.append(col_packed_data)
-        fart = delimiter.join(output_payload)
+        self.leds_to_send = delimiter.join(output_payload)
         plop=1
+
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
-        self.sender.send_message(json.dumps(self.leds_to_send))
+        self.sender.send_message(self.leds_to_send)
 
     def display_info_colours(self, colour):
         print("progress colour", colour)
