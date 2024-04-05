@@ -3,7 +3,8 @@ import sys
 import copy
 #abs_path = os.path.dirname(os.path.abspath(__file__))
 #scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
-print( os.path.dirname(os.path.abspath(__file__)))
+#
+# print( os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -22,9 +23,8 @@ from libs.utils import (
     create_progress_image)
 from libs.scambiunits import (
     HomographyTool,
-    generate_scambis,
-    Scambi_unit_LED_only)
-from libs.collections import LEDColours
+    generate_scambis)
+from libs.collections import LEDColours, Scambi_unit_LED_only
 import libs.async_cam_lib as async_cam_lib
 import libs.fisheye_lib as fisheye_lib
 from libs.lighting import SimLeds, ws281Leds, RemoteLeds

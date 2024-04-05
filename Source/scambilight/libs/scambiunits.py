@@ -12,7 +12,7 @@ from libs.utils import  convert_pts_to_convex_hull
 from libs.collections import lens_details, config_regions, Edges
 from libs.lighting import get_led_perimeter_pos
 
-UDP_DELIMITER:bytes = b'|'
+
 
 @dataclass
 class ScambiInit():
@@ -50,43 +50,6 @@ class ScambiWarp():
          # error here can mean not initialised
         return abs(self.bb_right-self.bb_left)
 
-
-@dataclass
-class Scambi_unit_LED_only():
-    """cheat class so we don't have to pass the whole
-    object to a class which expects these members"""
-    colour: any
-    physical_led_pos: any
-
-
-def transform_scambits_for_UDP(scambis: list[Scambi_unit_LED_only])->bytes:
-    """pack data for efficient delivery across network"""
-    output_payload = []
-    for scambiunit in scambis:
-        pos = scambiunit.physical_led_pos
-        col = tuple(reversed(scambiunit.colour))
-        pos_array = np.asarray(pos, dtype="uint16")
-        col_array = np.asarray(col, dtype="uint8")
-        pos_packed_data = struct.pack(
-            '{}H'.format(len(pos_array)), *pos_array)
-        col_packed_data = struct.pack(
-            '{}B'.format(len(col_array)), *col_array)
-        
-        #pos_array_unpacked = np.array(struct.unpack('{}H'.format(len(pos_packed_data)//2), pos_packed_data), dtype=np.uint16)
-        #col_array_unpacked = np.array(struct.unpack('{}B'.format(len(col_packed_data)), col_packed_data), dtype=np.uint8)
-        output_payload.append(pos_packed_data)
-        output_payload.append(col_packed_data)
-
-    return UDP_DELIMITER.join(output_payload)
-
-
-def transform_UDP_message_to_scambis(message: bytes)->list[Scambi_unit_LED_only]:
-    """transform received UDP message to scambi LED information"""
-    data = data.split(UDP_DELIMITER)
-
-    posyes = [np.array(struct.unpack('{}H'.format(len(i)//2), i), dtype=np.uint16) for i in data[::2]]
-    colours = [np.array(struct.unpack('{}B'.format(len(i)), i), dtype=np.uint8) for i in data[1::2]]
-    plop=1
 
 
 class Scambi_unit():

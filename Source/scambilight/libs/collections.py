@@ -2,8 +2,10 @@ import enum
 from dataclasses import dataclass
 from typing import Union
 
+
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
+
 
 class Edges(str, enum.Enum):
     TOP = "TOP"
@@ -11,9 +13,11 @@ class Edges(str, enum.Enum):
     LEFT = "LEFT"
     RIGHT = "RIGHT"
 
+
 class LensConfigs(str, enum.Enum):
     DAISYBANK_HQ = "DAISYBANK_HQ",
     DAISYBANK_LQ =  "DAISYBANK_LQ"
+
 
 class LEDColours(tuple, enum.Enum):
     Black = (0,0,0)
@@ -26,7 +30,14 @@ class LEDColours(tuple, enum.Enum):
     Cyan = (255,255,0)
 
 
-
+@dataclass
+class Scambi_unit_LED_only():
+    """cheat class so we don't have to pass the whole
+    object to a class which expects these members
+    
+    not the best place for this but had to avoid circular imports"""
+    colour: any
+    physical_led_pos: any
 
 
 @dataclass
