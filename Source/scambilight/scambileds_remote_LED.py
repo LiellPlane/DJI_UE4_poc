@@ -94,7 +94,7 @@ def main():
         led_subsystem.set_LED_values(scambiunits)
         led_subsystem.execute_LEDS()
         if PLATFORM == _OS.WINDOWS:
-            time.sleep(1)
+            time.sleep(0.1)
             print("LED receiver scambiunit:", scambiunits[0])
 
 if __name__ == "__main__":
