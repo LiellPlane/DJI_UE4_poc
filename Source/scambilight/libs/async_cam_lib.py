@@ -87,6 +87,7 @@ class RunScambisWithAsyncImage():
             done_q.put(scambiunits_led_info, block=True, timeout=None)
             _ = handshake_queue.get(block=True,timeout=None)
 
+
 class Process_Scambiunits():
 
     def __init__(
@@ -174,13 +175,19 @@ class ImageLibrary(ImageGenerator):
         if len(self.images) < 1:
             raise Exception("could not find images in folder")
 
+        self.img_to_load = random.choice(self.images)
+        self.latch = cv2.imread(self.img_to_load)
+        self.latch = cv2.resize(self.latch, list(reversed(self.res[0:2])))
 
     def get_image(self):
-        img_to_load = random.choice(self.images)
-        latch = cv2.imread(img_to_load)
-        latch = cv2.resize(latch, list(reversed(self.res[0:2])))
+        
+        latch = self.latch.copy()
+        #random.randint(0,255)
         latch[:, :, 0] = latch[:, :, 0] * random.random()
         latch[:, :, 1] = latch[:, :, 1] * random.random()
+        #latch[:, :, 0] = random.randint(0,255)
+        #latch[:, :, 1] = random.randint(0,255)
+        #latch[:, :, 2] = random.randint(0,255)
         return latch
     
 

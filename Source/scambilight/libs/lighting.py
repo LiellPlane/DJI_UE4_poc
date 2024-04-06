@@ -111,7 +111,7 @@ class Leds(ABC):
         return output
     
 
-    
+
 class SimLeds(Leds):
 
     def set_LED_values(self, scambi_units: list):
@@ -205,12 +205,21 @@ class RemoteLeds(Leds):
 
 
         self.leds_to_send = transform_scambits_for_UDP(scambi_units)
-        transform_UDP_message_to_scambis(scambi_units, self.leds_to_send)
-        plop=1
+        # self test
+        #scambounits = transform_UDP_message_to_scambis(self.leds_to_send)
+        # for index, scambiunit in enumerate(scambounits):
+        #     pos = list(scambiunit.physical_led_pos)
+        #     col = tuple(reversed(scambiunit.colour))
+        #     if len(col)!=3:
+        #         raise Exception("bad colour!")
+        #     for p in pos:
+        #         pass
+        #plop=1
 
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
-        self.sender.send_message(self.leds_to_send)
+        with time_it_sparse("send scambis over UDP"):
+            self.sender.send_message(self.leds_to_send)
 
     def display_info_colours(self, colour):
         print("progress colour", colour)
