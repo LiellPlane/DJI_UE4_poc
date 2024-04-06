@@ -5,8 +5,10 @@ import socket
 import atexit
 import json
 import numpy as np
+import time
 from contextlib import contextmanager
 from dataclasses import dataclass
+import multiprocessing
 #abs_path = os.path.dirname(os.path.abspath(__file__))
 #scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
 #
@@ -14,13 +16,35 @@ from dataclasses import dataclass
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-import libs.remote_scambi
+from libs.remote_scambi import transform_UDP_message_to_scambis
 from libs.collections import Scambi_unit_LED_only
 from libs.utils import time_it_sparse, get_platform, _OS
 from libs.lighting import SimLeds, ws281Leds
 from libs.configs import DaisybankLedSpacing
 
 PLATFORM = get_platform()
+
+
+class UDPListenerProcessWrapper:
+    def __init__(self):
+        self.queue = multiprocessing.Queue(maxsize=1)
+        self.process = multiprocessing.Process(target=self.worker_process, args=(self.queue,))
+        # Set daemon to True so that the process will be terminated when the main thread exits
+        self.process.daemon = True
+        self.process.start()
+
+    def get_message(self):
+        return self.queue.get(block=True, timeout=None)
+
+    def worker_process(self, _queue):
+        """we want to pull UDP messages off the buffer as fast as 
+        possible so it doesn't fill up. We can also set a low buffer
+        for the receiver"""
+        receiver = UDPMessageReceiver()
+        while True:
+            message, _ = receiver.receive_bytes_message()
+            if not _queue.full():
+                _queue.put(message)
 
 
 class UDPMessageReceiver:
@@ -58,8 +82,21 @@ def main():
     elif PLATFORM == _OS.MAC_OS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
     else:
-        raise Exception(system + " not supported")
-    plop=1
+        raise Exception(PLATFORM + " not supported")
+    
+
+    udplistener = UDPListenerProcessWrapper()
+
+    while True:
+
+        message = udplistener.get_message()
+        scambiunits = transform_UDP_message_to_scambis(message)
+        led_subsystem.set_LED_values(scambiunits)
+        led_subsystem.execute_LEDS()
+        if PLATFORM == _OS.WINDOWS:
+            time.sleep(1)
+            print("LED receiver scambiunit:", scambiunits[0])
+
 if __name__ == "__main__":
     
     main()
