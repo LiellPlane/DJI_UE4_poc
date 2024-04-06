@@ -54,7 +54,7 @@ def get_cam(system: _OS, action: str):
     if system == _OS.WINDOWS:
         return async_cam_lib.Synth_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
-    elif system == _OS.RASPBERRY:s
+    elif system == _OS.RASPBERRY:
         return async_cam_lib.Scamblight_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.LINUX:
