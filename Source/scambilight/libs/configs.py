@@ -4,7 +4,8 @@ from libs.collections import (
     lens_details,
     LedsLayout,
     config_regions,
-    LensConfigs)
+    LensConfigs,
+    PhysicalTV_details)
 from dataclasses import dataclass
 from my_collections import ImagingMode
 
@@ -59,12 +60,7 @@ class ScambiLight_Cam_vidmodes(enum.Enum):
 #     _3 = ["1920x1080 [30.62 fps - (348, 434)/1928x1080 crop]",(1080, 1920 , 3)]
 #     _4 = ["2592x1944 [15.63 fps - (0, 0)/2592x1944 crop]",(1944, 2592, 3)]
 
-@dataclass
-class PhysicalTV_details():
-    edges: dict[str:LedsLayout]
-    receiver_hostname = 'scambilightled.broadband'
-    #receiver_hostname = '127.0.0.1'
-    port = 12345
+
 
 
 DaisybankLedSpacing = PhysicalTV_details(

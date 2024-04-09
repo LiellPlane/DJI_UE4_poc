@@ -111,7 +111,17 @@ class External_Config():
 
 
 @dataclass
+class PhysicalTV_details():
+    edges: dict[str:LedsLayout]
+    receiver_hostname = 'scambilightled.broadband'
+    #receiver_hostname = '127.0.0.1'
+    port = 12345
+
+
+@dataclass
 class AllConfiguration():
     lens_details: lens_details
     clicked_corners: External_Config
     sample_regions: config_regions
+    physical_tv_details: PhysicalTV_details
+

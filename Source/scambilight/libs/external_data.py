@@ -22,7 +22,8 @@ from libs.collections import (
     lens_details,
     External_Config,
     config_regions,
-    AllConfiguration)
+    AllConfiguration,
+    PhysicalTV_details)
 
 from img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
@@ -305,6 +306,9 @@ def get_lens_details(body)->lens_details:
     #lens_config.update({"corners": []})
     return lens_details(**lens_config)
 
+def get_physical_tv_details(body)->PhysicalTV_details:
+    details = json.loads(body['physical_tv_details'])
+    return PhysicalTV_details(details)
 
 def get_sample_region_details(body)->config_regions:
     ext_regions_config = json.loads(body['regions'])
@@ -337,11 +341,12 @@ def get_all_config_external(url, sessiontoken)->AllConfiguration:
     corners = get_corners(body)
     sample_regions = get_sample_region_details(body)
     lens_details = get_lens_details(body)
-
+    phsyical_tv_details = get_physical_tv_details(body)
     return AllConfiguration(
         lens_details=lens_details,
         clicked_corners=corners,
-        sample_regions=sample_regions
+        sample_regions=sample_regions,
+        physical_tv_details=phsyical_tv_details
         )
 
 

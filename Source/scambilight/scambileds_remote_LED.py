@@ -20,7 +20,7 @@ from libs.remote_scambi import transform_UDP_message_to_scambis
 from libs.collections import Scambi_unit_LED_only
 from libs.utils import time_it_sparse, get_platform, _OS
 from libs.lighting import SimLeds, ws281Leds
-from libs.configs import DaisybankLedSpacing
+from libs.configs import DaisybankLedSpacing, PhysicalTV_details
 
 PLATFORM = get_platform()
 
@@ -71,7 +71,8 @@ class UDPMessageReceiver:
             print(f"Error receiving message: {e}")
             return None, None
         
-
+plop = '{"edges": {"LEFT": {"clockwise_start": 73, "clockwise_end": 110, "EDGE": "LEFT"}, "TOP": {"clockwise_start": 114, "clockwise_end": 184, "EDGE": "TOP"}, "RIGHT": {"clockwise_start": 185, "clockwise_end": 225, "EDGE": "RIGHT"}, "LOWER": {"clockwise_start": 229, "clockwise_end": 296, "EDGE": "LOWER"}}}'
+plop1=2
 def main():
     if PLATFORM == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
