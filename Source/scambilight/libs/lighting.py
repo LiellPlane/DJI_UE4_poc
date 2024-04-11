@@ -23,12 +23,16 @@ from libs.collections import (
     Edges,
     lens_details,
     LedsLayout,
-    config_corner)
+    config_corner,
+    Scambi_unit_LED_only)
 
 from libs.utils import (
     get_platform,
     _OS,
-    time_it_sparse)
+    time_it_sparse,
+    )
+
+from factory import TimeDiffObject
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -114,7 +118,7 @@ class Leds(ABC):
 
 class SimLeds(Leds):
 
-    def set_LED_values(self, scambi_units: list):
+    def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
         # don't do anything
         #if len(scambi_units) > self.led_count:
         #    raise Exception("Too many leds for configured strip")
@@ -162,12 +166,16 @@ class UDPMessageSender:
         self.host = host
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.error_time = TimeDiffObject()
+        self.error_backoff_s = 5
 
     def send_message(self, message:bytes):
         try:
-            self.socket.sendto(message, (self.host, self.port))
+            if self.error_time.get_dt() > self.error_backoff_s:
+                self.socket.sendto(message, (self.host, self.port))
         except Exception as e:
             print(f"Error sending message: {e}")
+            self.error_time.reset()
 
     def close(self):
         self.socket.close()
@@ -183,7 +191,7 @@ class RemoteLeds(Leds):
         )
         self.leds_to_send = []
 
-    def set_LED_values(self, scambi_units: list):
+    def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
 
         # calculate size of LED so we know how many to send in a packet (MTU)
         #single_Led_size_bytes = sys.getsizeof(json.dumps({300:(255,255,255)}))
@@ -222,7 +230,14 @@ class RemoteLeds(Leds):
             self.sender.send_message(self.leds_to_send)
 
     def display_info_colours(self, colour):
-        print("progress colour", colour)
+        scambis = []
+        for led in range(1, self.led_count):
+            scambis.append(Scambi_unit_LED_only(
+                colour=colour,
+                physical_led_pos=led))
+        self.set_LED_values(scambis)
+        self.execute_LEDS()
+        
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
@@ -255,7 +270,7 @@ class ws281Leds(Leds):
         time.sleep(2)
         self.test_leds()
         
-    def set_LED_values(self, scambi_units: list):
+    def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
         #if len(scambi_units) > self.led_count:
         #    raise Exception("Too many leds for configured strip")
         for index, scambiunit in enumerate(scambi_units):

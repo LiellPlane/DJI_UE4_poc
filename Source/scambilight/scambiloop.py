@@ -109,10 +109,10 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
-        led_subsystem = SimLeds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8 
     elif system == _OS.MAC_OS:
-        led_subsystem = SimLeds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     else:
         raise Exception(system + " not supported")
