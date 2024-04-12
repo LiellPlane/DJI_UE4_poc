@@ -23,7 +23,8 @@ from libs.collections import (
     Edges,
     lens_details,
     LedsLayout,
-    config_corner)
+    config_corner,
+    Scambi_unit_LED_only)
 
 from libs.utils import (
     get_platform,
@@ -222,6 +223,24 @@ class RemoteLeds(Leds):
             self.sender.send_message(self.leds_to_send)
 
     def display_info_colours(self, colour):
+        scambis = []
+        for _ in range(0, 10):
+            for led in range(0, self.led_count):
+                scambis.append(Scambi_unit_LED_only(
+                    colour=colour,
+                    physical_led_pos=led))
+            self.leds_to_send = transform_scambits_for_UDP(scambis)
+            self.execute_LEDS()
+            scambis = []
+            time.sleep(0.08)
+            for led in range(0, self.led_count):
+                scambis.append(Scambi_unit_LED_only(
+                    colour=(0,0,0),
+                    physical_led_pos=led))
+            self.leds_to_send = transform_scambits_for_UDP(scambis)
+            self.execute_LEDS()
+            time.sleep(0.08)
+
         print("progress colour", colour)
 
     def display_info_bar(self, pc_done, scambi_units):
