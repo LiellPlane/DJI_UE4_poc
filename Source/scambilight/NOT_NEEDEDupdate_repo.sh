@@ -17,7 +17,7 @@ check_internet() {
 # Wait for internet connection
 echo "Waiting for internet connection..."
 while ! check_internet; do
-    sleep 10  # Adjust the sleep duration as needed
+    sleep 2  # Adjust the sleep duration as needed
 done
 echo "Internet connection established."
 
