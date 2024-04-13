@@ -93,7 +93,6 @@ def main():
         with time_it_sparse("transform message"):
             scambiunits = transform_UDP_message_to_scambis(message)
         with time_it_sparse("set all LEDS"):
-            print(scambiunits)
             led_subsystem.set_LED_values(scambiunits)
         with time_it_sparse("execute LEDS"):
             led_subsystem.execute_LEDS()
