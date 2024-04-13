@@ -301,31 +301,20 @@ class ws281Leds(Leds):
         pass
 
     def test_leds(self):
-        for i in range (1, 50):
-            for i in range(self.strip.numPixels()):
-                color =  leds.Color(
-                    random.randint(0,1)*255,
-                    random.randint(0,1)*255,
-                    random.randint(0,1)*255)
-                self.strip.setPixelColor(i, color)
-            self.execute_LEDS()
-        for i in range (1, 50):
-            for i in range(self.strip.numPixels()):
-                color =  leds.Color(0, 0, 0)
-                self.strip.setPixelColor(i, color)
-            self.execute_LEDS()
+        for i in range(self.strip.numPixels()):
+            color =  leds.Color(
+                random.randint(0,1)*255,
+                random.randint(0,1)*255,
+                random.randint(0,1)*255)
+            self.strip.setPixelColor(i, color)
+
 
     def display_info_colours(self, _colour):
-        for i in range (1, 50):
-            for i in range(self.strip.numPixels()):
-                color =  leds.Color(*_colour)
-                self.strip.setPixelColor(i, color)
-            self.execute_LEDS()
-        for i in range (1, 50):
-            for i in range(self.strip.numPixels()):
-                color =  leds.Color(0, 0, 0)
-                self.strip.setPixelColor(i, color)
-            self.execute_LEDS()
+        for i in range(self.strip.numPixels()):
+            color =  leds.Color(*_colour)
+            self.strip.setPixelColor(i, color)
+        self.execute_LEDS()
+
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))

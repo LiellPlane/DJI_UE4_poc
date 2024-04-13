@@ -101,6 +101,30 @@ def main():
             time.sleep(0.1)
             print("LED receiver scambiunit:", scambiunits[0])
 
+
+def main_test():
+    if PLATFORM == _OS.WINDOWS:
+        led_subsystem = SimLeds(DaisybankLedSpacing)
+    elif PLATFORM == _OS.RASPBERRY:
+        led_subsystem = ws281Leds(DaisybankLedSpacing)
+    elif PLATFORM == _OS.LINUX:
+        led_subsystem = SimLeds(DaisybankLedSpacing)
+    elif PLATFORM == _OS.MAC_OS:
+        led_subsystem = SimLeds(DaisybankLedSpacing)
+    else:
+        raise Exception(PLATFORM + " not supported")
+    
+
+
+    while True:
+        with time_it_sparse("TOTAL remotescambi"):
+            with time_it_sparse("set all LEDS"):
+                led_subsystem.test_leds()
+            with time_it_sparse("execute LEDS"):
+                led_subsystem.execute_LEDS()
+        if PLATFORM == _OS.WINDOWS:
+            time.sleep(0.1)
+
 if __name__ == "__main__":
     
-    main()
+    main_test()
