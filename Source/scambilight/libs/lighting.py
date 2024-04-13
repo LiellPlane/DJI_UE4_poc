@@ -307,24 +307,24 @@ class ws281Leds(Leds):
                     random.randint(0,1)*255,
                     random.randint(0,1)*255,
                     random.randint(0,1)*255)
-                self.strip.setPixelColor(i, color)
+                self.strip.setPixelColor(i, leds.Color(*color))
             self.execute_LEDS()
         for i in range (0, 50):
             for i in range(self.strip.numPixels()):
                 color =  leds.Color(0, 0, 0)
-                self.strip.setPixelColor(i, color)
+                self.strip.setPixelColor(i, leds.Color(*color))
             self.execute_LEDS()
 
     def display_info_colours(self, _colour):
         for i in range (0, 50):
             for i in range(self.strip.numPixels()):
                 color =  leds.Color(*_colour)
-                self.strip.setPixelColor(i, color)
+                self.strip.setPixelColor(i, leds.Color(*_colour))
             self.execute_LEDS()
         for i in range (0, 50):
             for i in range(self.strip.numPixels()):
                 color =  leds.Color(0, 0, 0)
-                self.strip.setPixelColor(i, color)
+                self.strip.setPixelColor(i, leds.Color(*_colour))
             self.execute_LEDS()
 
     def display_info_bar(self, pc_done, scambi_units):
