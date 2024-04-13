@@ -27,6 +27,6 @@ def transform_UDP_message_to_scambis(message: bytes)->list[Scambi_unit_LED_only]
     with time_it_sparse("decode remote scambis"):
         for i in range(0, len(data), 2):
             scambiunits.append(Scambi_unit_LED_only(
-                colour=np.frombuffer(data[i+1], dtype="uint8"),
+                colour=tuple(np.frombuffer(data[i+1], dtype="uint8")),
                 physical_led_pos=np.frombuffer(data[i], dtype="uint16")))
     return scambiunits
