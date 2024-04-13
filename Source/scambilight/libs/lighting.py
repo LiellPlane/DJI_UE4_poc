@@ -288,7 +288,7 @@ class ws281Leds(Leds):
         for index, scambiunit in enumerate(scambi_units):
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
-            print(col, pos, type(pos), type(pos[0], type(col)))
+            print(col, pos, type(pos), type(pos[0]), type(col))
             for p in pos:
                 self.strip.setPixelColor(
                     p,
