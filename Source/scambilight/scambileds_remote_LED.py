@@ -90,12 +90,13 @@ def main():
     while True:
 
         message = udplistener.get_message()
-        with time_it_sparse("transform message"):
-            scambiunits = transform_UDP_message_to_scambis(message)
-        with time_it_sparse("set all LEDS"):
-            led_subsystem.set_LED_values(scambiunits)
-        with time_it_sparse("execute LEDS"):
-            led_subsystem.execute_LEDS()
+        with time_it_sparse("TOTAL remotescambi"):
+            with time_it_sparse("transform message"):
+                scambiunits = transform_UDP_message_to_scambis(message)
+            with time_it_sparse("set all LEDS"):
+                led_subsystem.set_LED_values(scambiunits)
+            with time_it_sparse("execute LEDS"):
+                led_subsystem.execute_LEDS()
         if PLATFORM == _OS.WINDOWS:
             time.sleep(0.1)
             print("LED receiver scambiunit:", scambiunits[0])

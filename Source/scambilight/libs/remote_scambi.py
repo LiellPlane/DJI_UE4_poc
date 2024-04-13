@@ -28,5 +28,5 @@ def transform_UDP_message_to_scambis(message: bytes)->list[Scambi_unit_LED_only]
         for i in range(0, len(data), 2):
             scambiunits.append(Scambi_unit_LED_only(
                 colour=tuple(np.frombuffer(data[i+1], dtype="uint8")),
-                physical_led_pos=list(np.frombuffer(data[i], dtype="uint16"))))
+                physical_led_pos=[int(x) for x in np.frombuffer(data[i], dtype="uint16")]))
     return scambiunits
