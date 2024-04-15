@@ -88,14 +88,20 @@ def main():
     udplistener = UDPListenerProcessWrapper()
 
     led_subsystem.display_info_colours((0,0,0))
+    plop=True
+    num = 0
     while True:
-
+        plop = not plop
+        if plop == 1:
+            num = 1
+        else:
+            num = 0
         message = udplistener.get_message()
         with time_it_sparse("TOTAL remotescambi"):
             with time_it_sparse("transform message"):
                 scambiunits = transform_UDP_message_to_scambis(message)
             with time_it_sparse("set all LEDS"):
-                led_subsystem.set_LED_values(scambiunits)
+                led_subsystem.set_LED_values_alternating(scambiunits, _mod_from2=num)
             with time_it_sparse("execute LEDS"):
                 led_subsystem.execute_LEDS()
         if PLATFORM == _OS.WINDOWS:

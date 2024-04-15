@@ -293,6 +293,20 @@ class ws281Leds(Leds):
                     p,
                     leds.Color(*col))
 
+    def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only], _mod_from_2: Literal[0,1]):
+        #if len(scambi_units) > self.led_count:
+        #    raise Exception("Too many leds for configured strip")
+        total_count = 0
+        for index, scambiunit in enumerate(scambi_units):
+            pos = scambiunit.physical_led_pos
+            col = tuple(reversed(scambiunit.colour))
+            for p in pos:
+                total_count += 1
+                if total_count%2 == _mod_from_2:
+                    self.strip.setPixelColor(
+                        p,
+                        leds.Color(*col))
+
     def execute_LEDS(self):
         self.strip.show()
 
