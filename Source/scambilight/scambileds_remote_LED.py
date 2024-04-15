@@ -87,6 +87,7 @@ def main():
 
     udplistener = UDPListenerProcessWrapper()
 
+    led_subsystem.display_info_colours((0,0,0))
     while True:
 
         message = udplistener.get_message()
