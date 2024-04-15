@@ -101,7 +101,7 @@ def main():
             with time_it_sparse("transform message"):
                 scambiunits = transform_UDP_message_to_scambis(message)
             with time_it_sparse("set all LEDS"):
-                led_subsystem.set_LED_values_alternating(scambiunits, _mod_from2=num)
+                led_subsystem.set_LED_values_alternating(scambiunits, mod_from_2=num)
             with time_it_sparse("execute LEDS"):
                 led_subsystem.execute_LEDS()
         if PLATFORM == _OS.WINDOWS:
