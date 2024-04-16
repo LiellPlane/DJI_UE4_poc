@@ -58,6 +58,7 @@ class Leds(ABC):
         self.led_invert     = False   # true to invert the signal (when using npn transistor level shift)
         self.led_channel    = 0
         self.LED_layout = site_led_layout
+        self.flipflopper = True
         #self.req_led_cols = [(0, 0, 0)] * self.led_count
 
     @abstractmethod
@@ -114,7 +115,17 @@ class Leds(ABC):
                 raise Exception("invalid - no LED position")
         #print(output)
         return output
-    
+
+    def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only]):
+        #if len(scambi_units) > self.led_count:
+        #    raise Exception("Too many leds for configured strip")
+        for index, scambiunit in enumerate(scambi_units):
+            pos = scambiunit.physical_led_pos
+            col = tuple(reversed(scambiunit.colour))
+            for p in pos:
+                self.flipflopper = not self.flipflopper
+                if self.flipflopper is True:
+                    pass
 
 
 class SimLeds(Leds):
@@ -293,16 +304,15 @@ class ws281Leds(Leds):
                     p,
                     leds.Color(*col))
 
-    def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only], mod_from_2: Literal[0,1]):
+    def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only]):
         #if len(scambi_units) > self.led_count:
         #    raise Exception("Too many leds for configured strip")
-        total_count = 0
         for index, scambiunit in enumerate(scambi_units):
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             for p in pos:
-                total_count += 1
-                if total_count%2 == mod_from_2:
+                self.flipflopper = not self.flipflopper
+                if self.flipflopper is True:
                     self.strip.setPixelColor(
                         p,
                         leds.Color(*col))

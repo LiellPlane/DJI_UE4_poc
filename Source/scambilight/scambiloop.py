@@ -103,10 +103,10 @@ def main(action = None, sessiontoken = None):
 
 
     if system == _OS.WINDOWS:
-        led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
+        led_subsystem = SimLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     elif system == _OS.RASPBERRY:
-        led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
+        led_subsystem = ws281Leds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)
@@ -376,7 +376,7 @@ def main(action = None, sessiontoken = None):
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
             with time_it_sparse("set leds"):
-                led_subsystem.set_LED_values(scambiunits_led_info)
+                led_subsystem.set_LED_values_alternating(scambiunits_led_info)
             with time_it_sparse("execute leds"):
                 led_subsystem.execute_LEDS()
 
