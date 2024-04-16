@@ -337,6 +337,10 @@ class ws281Leds(Leds):
         for i in range(self.strip.numPixels()):
             color =  leds.Color(*_colour)
             self.strip.setPixelColor(i, color)
+            self.execute_LEDS()
+        for i in range(self.strip.numPixels()):
+            color =  leds.Color(0,0,0)
+            self.strip.setPixelColor(i, color)
         self.execute_LEDS()
 
 
