@@ -59,6 +59,7 @@ class Leds(ABC):
         self.led_channel    = 0
         self.LED_layout = site_led_layout
         self.flipflopper = True
+
         #self.req_led_cols = [(0, 0, 0)] * self.led_count
 
     @abstractmethod
@@ -119,12 +120,14 @@ class Leds(ABC):
     def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only]):
         #if len(scambi_units) > self.led_count:
         #    raise Exception("Too many leds for configured strip")
+        self.flipflopper = not self.flipflopper
+        total = 0
         for index, scambiunit in enumerate(scambi_units):
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             for p in pos:
-                self.flipflopper = not self.flipflopper
-                if self.flipflopper is True:
+                total += 1
+                if p%2 == int(self.flipflopper):
                     pass
 
 
@@ -307,12 +310,14 @@ class ws281Leds(Leds):
     def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only]):
         #if len(scambi_units) > self.led_count:
         #    raise Exception("Too many leds for configured strip")
-        for index, scambiunit in enumerate(scambi_units):
+        self.flipflopper = not self.flipflopper
+        total = 0
+        for _, scambiunit in enumerate(scambi_units):
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             for p in pos:
-                self.flipflopper = not self.flipflopper
-                if self.flipflopper is True:
+                total += 1
+                if p%2 == int(self.flipflopper):
                     self.strip.setPixelColor(
                         p,
                         leds.Color(*col))
@@ -335,6 +340,10 @@ class ws281Leds(Leds):
 
     def display_info_colours(self, _colour):
         for i in range(self.strip.numPixels()):
+            color =  leds.Color(0,0,0)
+            self.strip.setPixelColor(i, color)
+        self.execute_LEDS()
+        for i in range(1, self.strip.numPixels()):
             color =  leds.Color(*_colour)
             self.strip.setPixelColor(i, color)
             self.execute_LEDS()
