@@ -87,7 +87,7 @@ class Leds(ABC):
             color = leds.Color(*_colour)
             self.set_led_func(i, color)
             self.set_led_func(i-1, black)
-            self.execute_LEDS()
+        self.execute_LEDS()
         for i in range(self.led_count):
             self.set_led_func(i, black)
         self.execute_LEDS()
