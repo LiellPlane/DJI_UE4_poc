@@ -163,6 +163,24 @@ class Leds(ABC):
     def do_nothing_function(self, *args, **kwargs):
         pass
 
+    def test_leds(self):
+        black = leds.Color(0,0,0)
+        for i in range(self.led_count):
+            color = black
+            self.set_led_func(i, color)
+        self.execute_LEDS()
+        for i in range(1, self.led_count):
+            _colour = (
+                random.randint(0,255),
+                random.randint(0,255),
+                random.randint(0,255))
+            color = leds.Color(*_colour)
+            self.set_led_func(i, color)
+            self.set_led_func(i-1, black)
+            self.execute_LEDS()
+        for i in range(self.led_count):
+            self.set_led_func(i, black)
+        self.execute_LEDS()
 
 class SimLeds(Leds):
 
@@ -263,6 +281,7 @@ class ws281Leds(Leds):
         global leds
         import rpi_ws281x as leds
         super().__init__(site_led_layout)
+        
         # Create NeoPixel object with configuration.
         self.strip = leds.Adafruit_NeoPixel(
             self.led_count,
@@ -281,6 +300,7 @@ class ws281Leds(Leds):
             print("**************")
         #print("FUDGE BEING USED!!! FIX PLEASE")
         print("ws281Leds")
+        self.set_led_func = self.strip.setPixelColor
         time.sleep(2)
         self.test_leds()
         
@@ -292,13 +312,13 @@ class ws281Leds(Leds):
         #  no display - pass through
         pass
 
-    def test_leds(self):
-        for i in range(self.strip.numPixels()):
-            color =  leds.Color(
-                random.randint(0,1)*255,
-                random.randint(0,1)*255,
-                random.randint(0,1)*255)
-            self.strip.setPixelColor(i, color)
+    # def test_leds(self):
+    #     for i in range(self.strip.numPixels()):
+    #         color =  leds.Color(
+    #             random.randint(0,1)*255,
+    #             random.randint(0,1)*255,
+    #             random.randint(0,1)*255)
+    #         self.strip.setPixelColor(i, color)
 
 
 
