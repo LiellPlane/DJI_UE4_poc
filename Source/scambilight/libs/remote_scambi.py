@@ -1,7 +1,7 @@
 import numpy as np
 from libs.collections import Scambi_unit_LED_only
 from libs.utils import time_it_sparse
-
+from typing import Literal
 
 UDP_DELIMITER:bytes = b'\xAB\xCD\xEF' # be careful changing this - can mess up delimiting if for instance | or null
 

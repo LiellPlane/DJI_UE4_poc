@@ -9,6 +9,7 @@ from time import perf_counter
 from contextlib import contextmanager
 import random
 import sys
+from functools import partial
 import enum
 from typing import Optional
 import requests
@@ -44,6 +45,12 @@ PLATFORM = get_platform()
 if PLATFORM == _OS.RASPBERRY:
     # sorry not sorry
     import rpi_ws281x as leds
+else:
+    class FakeLedClass():
+        def Color(self, *args, **kwargs):
+            pass
+    leds = FakeLedClass()
+
 
 
 class Leds(ABC):
@@ -59,7 +66,7 @@ class Leds(ABC):
         self.led_channel    = 0
         self.LED_layout = site_led_layout
         self.flipflopper = True
-
+        self.set_led_func = self.do_nothing_function
         #self.req_led_cols = [(0, 0, 0)] * self.led_count
 
     @abstractmethod
@@ -70,9 +77,20 @@ class Leds(ABC):
     def execute_LEDS(self):
         pass
     
-    @abstractmethod
-    def display_info_colours(self):
-        pass
+    def display_info_colours(self, _colour):
+        black = leds.Color(0,0,0)
+        for i in range(self.led_count):
+            color = black
+            self.set_led_func(i, color)
+        self.execute_LEDS()
+        for i in range(1, self.led_count):
+            color = leds.Color(*_colour)
+            self.set_led_func(i, color)
+            self.set_led_func(i-1, black)
+            self.execute_LEDS()
+        for i in range(self.led_count):
+            self.set_led_func(i, black)
+        self.execute_LEDS()
 
     @abstractmethod
     def display_info_bar(self, pc_done, scambi_units):
@@ -122,59 +140,39 @@ class Leds(ABC):
         #    raise Exception("Too many leds for configured strip")
         self.flipflopper = not self.flipflopper
         total = 0
-        for index, scambiunit in enumerate(scambi_units):
+        for _, scambiunit in enumerate(scambi_units):
             pos = scambiunit.physical_led_pos
             col = tuple(reversed(scambiunit.colour))
             for p in pos:
                 total += 1
                 if p%2 == int(self.flipflopper):
-                    pass
+                    self.set_led_func(
+                        p,
+                        leds.Color(*col))
+
+    
+    def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
+        for _, scambiunit in enumerate(scambi_units):
+            pos = scambiunit.physical_led_pos
+            col = tuple(reversed(scambiunit.colour))
+            for p in pos:
+                self.set_led_func(
+                    p,
+                    leds.Color(*col))
+
+    def do_nothing_function(self, *args, **kwargs):
+        pass
 
 
 class SimLeds(Leds):
 
-    def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
-        # don't do anything
-        #if len(scambi_units) > self.led_count:
-        #    raise Exception("Too many leds for configured strip")
-        for index, scambiunit in enumerate(scambi_units):
-            pos = scambiunit.physical_led_pos
-            col = tuple(reversed(scambiunit.colour))
-            for p in pos:
-                pass
 
     def execute_LEDS(self):
         pass
 
-    def display_info_colours(self, colour):
-        print("progress colour", colour)
-
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
-    #def display(self, *args, **kwargs):
-    #    ImageViewer_Quick_no_resize(*args, **kwargs)
 
-
-# class RemoteLeds(Leds):
-    
-#     def set_LED_values(self, scambi_units: list):
-#         # don't do anything
-#         #if len(scambi_units) > self.led_count:
-#         #    raise Exception("Too many leds for configured strip")
-#         for index, scambiunit in enumerate(scambi_units):
-#             pos = scambiunit.physical_led_pos
-#             col = tuple(reversed(scambiunit.colour))
-#             for p in pos:
-#                 pass
-
-#     def execute_LEDS(self):
-#         pass
-
-#     def display_info_colours(self, colour):
-#         print("progress colour", colour)
-
-#     def display_info_bar(self, pc_done, scambi_units):
-#         print("progress bar", min(1, round(pc_done, 2)))
 
 class UDPMessageSender:
     def __init__(self, host='scambilightled.broadband', port=12345):
@@ -205,6 +203,16 @@ class RemoteLeds(Leds):
             port=self.LED_layout.port
         )
         self.leds_to_send = []
+
+
+    def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only]):
+
+        self.flipflopper = not self.flipflopper
+        for scambiunit in scambi_units:
+            scambiunit.physical_led_pos = scambiunit.physical_led_pos[int(self.flipflopper)::2]
+
+        self.leds_to_send = transform_scambits_for_UDP(scambi_units)
+
 
     def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
 
@@ -244,26 +252,6 @@ class RemoteLeds(Leds):
         with time_it_sparse("send scambis over UDP"):
             self.sender.send_message(self.leds_to_send)
 
-    def display_info_colours(self, colour):
-        scambis = []
-        for _ in range(0, 10):
-            for led in range(0, self.led_count):
-                scambis.append(Scambi_unit_LED_only(
-                    colour=colour,
-                    physical_led_pos=led))
-            self.leds_to_send = transform_scambits_for_UDP(scambis)
-            self.execute_LEDS()
-            scambis = []
-            time.sleep(0.08)
-            for led in range(0, self.led_count):
-                scambis.append(Scambi_unit_LED_only(
-                    colour=(0,0,0),
-                    physical_led_pos=led))
-            self.leds_to_send = transform_scambits_for_UDP(scambis)
-            self.execute_LEDS()
-            time.sleep(0.08)
-
-        print("progress colour", colour)
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
@@ -296,31 +284,6 @@ class ws281Leds(Leds):
         time.sleep(2)
         self.test_leds()
         
-    def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
-        #if len(scambi_units) > self.led_count:
-        #    raise Exception("Too many leds for configured strip")
-        for index, scambiunit in enumerate(scambi_units):
-            pos = scambiunit.physical_led_pos
-            col = tuple(reversed(scambiunit.colour))
-            for p in pos:
-                self.strip.setPixelColor(
-                    p,
-                    leds.Color(*col))
-
-    def set_LED_values_alternating(self, scambi_units: list[Scambi_unit_LED_only]):
-        #if len(scambi_units) > self.led_count:
-        #    raise Exception("Too many leds for configured strip")
-        self.flipflopper = not self.flipflopper
-        total = 0
-        for _, scambiunit in enumerate(scambi_units):
-            pos = scambiunit.physical_led_pos
-            col = tuple(reversed(scambiunit.colour))
-            for p in pos:
-                total += 1
-                if p%2 == int(self.flipflopper):
-                    self.strip.setPixelColor(
-                        p,
-                        leds.Color(*col))
 
     def execute_LEDS(self):
         self.strip.show()
@@ -337,20 +300,6 @@ class ws281Leds(Leds):
                 random.randint(0,1)*255)
             self.strip.setPixelColor(i, color)
 
-
-    def display_info_colours(self, _colour):
-        for i in range(self.strip.numPixels()):
-            color =  leds.Color(0,0,0)
-            self.strip.setPixelColor(i, color)
-        self.execute_LEDS()
-        for i in range(1, self.strip.numPixels()):
-            color =  leds.Color(*_colour)
-            self.strip.setPixelColor(i, color)
-            self.execute_LEDS()
-        for i in range(self.strip.numPixels()):
-            color =  leds.Color(0,0,0)
-            self.strip.setPixelColor(i, color)
-        self.execute_LEDS()
 
 
     def display_info_bar(self, pc_done, scambi_units):

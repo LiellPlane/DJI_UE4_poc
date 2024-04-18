@@ -103,7 +103,7 @@ def main(action = None, sessiontoken = None):
 
 
     if system == _OS.WINDOWS:
-        led_subsystem = SimLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     elif system == _OS.RASPBERRY:
         led_subsystem = ws281Leds(DaisybankLedSpacing)#ws281Leds
