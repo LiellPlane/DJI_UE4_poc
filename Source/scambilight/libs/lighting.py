@@ -38,7 +38,12 @@ from factory import TimeDiffObject
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from remote_scambi import transform_scambits_for_UDP, transform_UDP_message_to_scambis
+from remote_scambi import (
+    transform_scambits_for_UDP,
+    transform_UDP_message_to_scambis,
+    UDPMessageSender,
+    UDPTransmitProcessWrapper
+)
 
 
 PLATFORM = get_platform()
@@ -193,31 +198,14 @@ class SimLeds(Leds):
         print("progress bar", min(1, round(pc_done, 2)))
 
 
-class UDPMessageSender:
-    def __init__(self, host='scambilightled.broadband', port=12345):
-        self.host = host
-        self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.error_time = TimeDiffObject()
-        self.error_backoff_s = 0
 
-    def send_message(self, message:bytes):
-        try:
-            if self.error_time.get_dt() > self.error_backoff_s:
-                self.socket.sendto(message, (self.host, self.port))
-        except Exception as e:
-            print(f"Error sending message: {e}")
-            self.error_time.reset()
-
-    def close(self):
-        self.socket.close()
 
 
 class RemoteLeds(Leds):
 
     def __init__(self, site_led_layout):
         super().__init__(site_led_layout)
-        self.sender = UDPMessageSender(
+        self.sender = UDPTransmitProcessWrapper(
             host=self.LED_layout.receiver_hostname,
             port=self.LED_layout.port
         )
@@ -230,7 +218,7 @@ class RemoteLeds(Leds):
         for scambiunit in scambi_units:
             scambiunit.physical_led_pos = scambiunit.physical_led_pos[int(self.flipflopper)::2]
 
-        self.leds_to_send = transform_scambits_for_UDP(scambi_units)
+        self.leds_to_send = scambi_units# transform_scambits_for_UDP(scambi_units)
 
 
     def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
@@ -254,7 +242,7 @@ class RemoteLeds(Leds):
         #         cnt += 1
 
 
-        self.leds_to_send = transform_scambits_for_UDP(scambi_units)
+        self.leds_to_send = scambi_units # transform_scambits_for_UDP(scambi_units)
         # self test
         #scambounits = transform_UDP_message_to_scambis(self.leds_to_send)
         # for index, scambiunit in enumerate(scambounits):
@@ -269,7 +257,7 @@ class RemoteLeds(Leds):
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
         with time_it_sparse("send scambis over UDP"):
-            self.sender.send_message(self.leds_to_send)
+            self.sender.send_scambis(self.leds_to_send)
 
 
     def display_info_bar(self, pc_done, scambi_units):

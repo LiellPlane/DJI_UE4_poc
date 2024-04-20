@@ -1,9 +1,106 @@
 import numpy as np
 from libs.collections import Scambi_unit_LED_only
 from libs.utils import time_it_sparse
+from factory import TimeDiffObject
 from typing import Literal
+import multiprocessing
+import socket
+import atexit
 
 UDP_DELIMITER:bytes = b'\xAB\xCD\xEF' # be careful changing this - can mess up delimiting if for instance | or null
+
+
+
+class UDPMessageReceiver:
+    def __init__(self, host='0.0.0.0', port=12345):
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        buffer_size = 1024
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, buffer_size)
+        self.socket.bind((self.host, self.port))
+        atexit.register(self.socket.close)
+
+    def receive_message(self, buffer_size=10000):
+        try:
+            data, addr = self.socket.recvfrom(buffer_size)
+            return data.decode(), addr
+        except Exception as e:
+            print(f"Error receiving message: {e}")
+            return None, None
+
+    def receive_bytes_message(self, buffer_size=10000):
+        try:
+            data, addr = self.socket.recvfrom(buffer_size)
+            return data, addr
+        except Exception as e:
+            print(f"Error receiving message: {e}")
+            return None, None
+
+class UDPListenerProcessWrapper:
+    def __init__(self):
+        self.queue = multiprocessing.Queue(maxsize=1)
+        self.process = multiprocessing.Process(target=self.worker_process, args=(self.queue,))
+        # Set daemon to True so that the process will be terminated when the main thread exits
+        self.process.daemon = True
+        self.process.start()
+
+    def get_message(self):
+        return self.queue.get(block=True, timeout=None)
+
+    def worker_process(self, _queue):
+        """we want to pull UDP messages off the buffer as fast as 
+        possible so it doesn't fill up. We can also set a low buffer
+        for the receiver"""
+        receiver = UDPMessageReceiver()
+        while True:
+            message, _ = receiver.receive_bytes_message()
+            if not _queue.full():
+                _queue.put(message)
+
+
+class UDPTransmitProcessWrapper:
+    def __init__(self, host, port):
+        self.host=host
+        self.port=port
+        self.queue = multiprocessing.Queue(maxsize=1)
+        self.process = multiprocessing.Process(target=self.worker_process, args=(self.queue,))
+        # Set daemon to True so that the process will be terminated when the main thread exits
+        self.process.daemon = True
+        self.process.start()
+
+    def send_scambis(self, scambis:list[Scambi_unit_LED_only]):
+        return self.queue.put(scambis)
+
+    def worker_process(self, _queue):
+        """we want to pull UDP messages off the buffer as fast as 
+        possible so it doesn't fill up. We can also set a low buffer
+        for the receiver"""
+        transmitter = UDPMessageSender(host=self.host, port=self.port)
+        while True:
+            scambis:list[Scambi_unit_LED_only] = _queue.get(block=True, timeout=None)
+            leds_to_send = transform_scambits_for_UDP(scambis)
+            transmitter.send_message(leds_to_send)
+
+
+class UDPMessageSender:
+    def __init__(self, host='scambilightled.broadband', port=12345):
+        self.host = host
+        self.port = port
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.error_time = TimeDiffObject()
+        self.error_backoff_s = 0
+
+    def send_message(self, message:bytes):
+        try:
+            if self.error_time.get_dt() > self.error_backoff_s:
+                self.socket.sendto(message, (self.host, self.port))
+        except Exception as e:
+            print(f"Error sending message: {e}")
+            self.error_time.reset()
+
+    def close(self):
+        self.socket.close()
 
 def transform_scambits_for_UDP(scambis: list[Scambi_unit_LED_only])->bytes:
     """pack data for efficient delivery across network"""

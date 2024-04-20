@@ -16,7 +16,7 @@ import multiprocessing
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-from libs.remote_scambi import transform_UDP_message_to_scambis
+from libs.remote_scambi import transform_UDP_message_to_scambis, UDPListenerProcessWrapper
 from libs.collections import Scambi_unit_LED_only
 from libs.utils import time_it_sparse, get_platform, _OS
 from libs.lighting import SimLeds, ws281Leds
@@ -25,53 +25,6 @@ from libs.configs import DaisybankLedSpacing, PhysicalTV_details
 PLATFORM = get_platform()
 
 
-class UDPListenerProcessWrapper:
-    def __init__(self):
-        self.queue = multiprocessing.Queue(maxsize=1)
-        self.process = multiprocessing.Process(target=self.worker_process, args=(self.queue,))
-        # Set daemon to True so that the process will be terminated when the main thread exits
-        self.process.daemon = True
-        self.process.start()
-
-    def get_message(self):
-        return self.queue.get(block=True, timeout=None)
-
-    def worker_process(self, _queue):
-        """we want to pull UDP messages off the buffer as fast as 
-        possible so it doesn't fill up. We can also set a low buffer
-        for the receiver"""
-        receiver = UDPMessageReceiver()
-        while True:
-            message, _ = receiver.receive_bytes_message()
-            if not _queue.full():
-                _queue.put(message)
-
-
-class UDPMessageReceiver:
-    def __init__(self, host='0.0.0.0', port=12345):
-        self.host = host
-        self.port = port
-        self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        buffer_size = 1024
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, buffer_size)
-        self.socket.bind((self.host, self.port))
-        atexit.register(self.socket.close)
-
-    def receive_message(self, buffer_size=10000):
-        try:
-            data, addr = self.socket.recvfrom(buffer_size)
-            return data.decode(), addr
-        except Exception as e:
-            print(f"Error receiving message: {e}")
-            return None, None
-
-    def receive_bytes_message(self, buffer_size=10000):
-        try:
-            data, addr = self.socket.recvfrom(buffer_size)
-            return data, addr
-        except Exception as e:
-            print(f"Error receiving message: {e}")
-            return None, None
         
 
 def main():
