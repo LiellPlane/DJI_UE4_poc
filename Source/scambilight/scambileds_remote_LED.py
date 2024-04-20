@@ -58,8 +58,8 @@ def main():
             if PLATFORM == _OS.WINDOWS:
                 time.sleep(0.1)
                 print("LED receiver scambiunit:", scambiunits[0])
-        except AttributeError as e:
-            # probably garbage in - ignore for now
+        except Exception as e:
+            print(e)
             pass
 
 
