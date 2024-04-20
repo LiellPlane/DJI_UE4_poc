@@ -52,6 +52,8 @@ class UDPMessageReceiver:
         self.host = host
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        buffer_size = 1024
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, buffer_size)
         self.socket.bind((self.host, self.port))
         atexit.register(self.socket.close)
 
@@ -91,16 +93,23 @@ def main():
 
     while True:
         message = udplistener.get_message()
-        with time_it_sparse("TOTAL remotescambi"):
-            with time_it_sparse("transform message"):
-                scambiunits = transform_UDP_message_to_scambis(message)
-            with time_it_sparse("set all LEDS"):
-                led_subsystem.set_LED_values(scambiunits)
-            with time_it_sparse("execute LEDS"):
-                led_subsystem.execute_LEDS()
-        if PLATFORM == _OS.WINDOWS:
-            time.sleep(0.1)
-            print("LED receiver scambiunit:", scambiunits[0])
+
+        try:
+            with time_it_sparse("TOTAL remotescambi"):
+                with time_it_sparse("transform message"):
+                    scambiunits = transform_UDP_message_to_scambis(message)
+                with time_it_sparse("set all LEDS"):
+                    led_subsystem.set_LED_values(scambiunits)
+                with time_it_sparse("execute LEDS"):
+                    led_subsystem.execute_LEDS()
+            if PLATFORM == _OS.WINDOWS:
+                time.sleep(0.1)
+                print("LED receiver scambiunit:", scambiunits[0])
+        except AttributeError as e:
+            # probably garbage in - ignore for now
+            pass
+
+
 
 
 def main_test():

@@ -199,7 +199,7 @@ class UDPMessageSender:
         self.port = port
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.error_time = TimeDiffObject()
-        self.error_backoff_s = 5
+        self.error_backoff_s = 0
 
     def send_message(self, message:bytes):
         try:
