@@ -216,7 +216,8 @@ class RemoteLeds(Leds):
 
         self.flipflopper = not self.flipflopper
         for scambiunit in scambi_units:
-            scambiunit.physical_led_pos = scambiunit.physical_led_pos[int(self.flipflopper)::2]
+            if len(scambiunit.physical_led_pos) > 2:
+                scambiunit.physical_led_pos = scambiunit.physical_led_pos[int(self.flipflopper)::2]
 
         self.leds_to_send = scambi_units# transform_scambits_for_UDP(scambi_units)
 
