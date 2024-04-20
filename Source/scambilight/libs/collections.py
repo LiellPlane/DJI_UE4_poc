@@ -114,7 +114,7 @@ class External_Config():
 class PhysicalTV_details():
     edges: dict[str:LedsLayout]
     receiver_hostname = 'scambilightled.broadband'
-    receiver_hostname = '127.0.0.1'
+    #receiver_hostname = '127.0.0.1'
     port = 12345
 
 
