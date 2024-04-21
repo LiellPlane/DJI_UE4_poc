@@ -15,7 +15,7 @@ current_file_path = os.path.abspath(__file__)
 directory_of_current_file = os.path.dirname(current_file_path)
 
 PROCESSED = "processed"
-IMAGES_FOLDER = r"D:\temp_phoneimgs"
+IMAGES_FOLDER = r"D:\temp_phone_images_jpegs"
 SORTED_IMAGES_FOLDER = r"D:\temp_phoneimgs_sorted"
 OPERATION_JSON = f"{directory_of_current_file}\\all_images.json"
 PROCESSED_JSON = f"{directory_of_current_file}\\{PROCESSED}.json"
