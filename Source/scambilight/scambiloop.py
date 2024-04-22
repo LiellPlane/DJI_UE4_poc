@@ -20,6 +20,7 @@ from libs.utils import (
     _OS,
     ImageViewer_Quick_no_resize,
     time_it_sparse,
+    time_it_return_details,
     create_progress_image)
 from libs.scambiunits import (
     HomographyTool,
@@ -86,8 +87,8 @@ def get_file_system(system: _OS):
         return sim_file_system()
 
 
-
 def main(action = None, sessiontoken = None):
+    timings = deque(maxlen=100)
     system = get_platform()
     file_system =get_file_system(system=system)
     if sessiontoken is None:
@@ -256,24 +257,24 @@ def main(action = None, sessiontoken = None):
     while True:
         event = ActionChecker.check_for_action()
         #subsampled = 0
-        with time_it_sparse("main loop"):
+        with time_it_return_details("TOTAL", timings):
             index += 1
 
             # with time_it_sparse("get img"):
             #     prev = next(cam)
 
             # get next image buffer
-            with time_it_sparse("get img"):
+            with time_it_return_details("get img", timings):
                 cam.release_next_image()
-            prev: np.ndarray = np.ndarray(
-                curr_img.shape,
-                dtype=curr_img.dtype,
-                buffer=cam.get_img_buffer())
+                prev: np.ndarray = np.ndarray(
+                    curr_img.shape,
+                    dtype=curr_img.dtype,
+                    buffer=cam.get_img_buffer())
             
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()
                 time.sleep(0.1)
-                with time_it_sparse("overlay"):
+                with time_it_return_details("overlay", timings):
                     for index, unit in enumerate(scambi_units):
                         #display_img = unit.draw_warped_roi(display_img)
                         
@@ -356,7 +357,7 @@ def main(action = None, sessiontoken = None):
     
             # put this here incase we can grab an image if everyhthing is messed up
             scambiunits_led_info = []
-            with time_it_sparse(f"get {len(scambi_units)} colours"):
+            with time_it_return_details(f"get {len(scambi_units)} colours", timings):
                 for index, unit in enumerate(scambi_units):
                     # if flipflop is True:
                     #     if index%2 == 0:
@@ -375,11 +376,12 @@ def main(action = None, sessiontoken = None):
                     scambiunits_led_info += proc_scambis.done_queue.get(block=True)
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
-            with time_it_sparse("set leds"):
+            with time_it_return_details("set leds", timings):
                 led_subsystem.set_LED_values_alternating(scambiunits_led_info)
-            with time_it_sparse("execute leds"):
+            with time_it_return_details("execute leds", timings):
                 led_subsystem.execute_LEDS()
 
+            #print('\n'.join(timings))
 
 def handler(event, context):
     print("boom")

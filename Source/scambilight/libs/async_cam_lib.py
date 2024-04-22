@@ -78,12 +78,11 @@ class RunScambisWithAsyncImage():
 
         while True:
             scambiunits_led_info = []
-            with time_it_sparse("extra process scambis"):
-                for unit in self.scambiunits:
-                    unit.set_dom_colour_with_auto_subsample(prev, cut_off = self.subsample_cutoff)
-                    scambiunits_led_info.append(self.Scambi_unit_LED_only(
-                        colour=unit.colour,
-                            physical_led_pos=unit.physical_led_pos))
+            for unit in self.scambiunits:
+                unit.set_dom_colour_with_auto_subsample(prev, cut_off = self.subsample_cutoff)
+                scambiunits_led_info.append(self.Scambi_unit_LED_only(
+                    colour=unit.colour,
+                        physical_led_pos=unit.physical_led_pos))
             done_q.put(scambiunits_led_info, block=True, timeout=None)
             _ = handshake_queue.get(block=True,timeout=None)
 

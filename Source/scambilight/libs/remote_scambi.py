@@ -106,12 +106,12 @@ def transform_scambits_for_UDP(scambis: list[Scambi_unit_LED_only])->bytes:
     """pack data for efficient delivery across network"""
 
     output_payload = []
-    with time_it_sparse("prep scambis for sending"):
-        for scambiunit in scambis:
-            pos_array = np.asarray(scambiunit.physical_led_pos, dtype="uint16")
-            col_array = np.asarray(tuple(scambiunit.colour), dtype="uint8")
-            output_payload.append(pos_array.tobytes())
-            output_payload.append(col_array.tobytes())
+    #with time_it_sparse("prep scambis for sending"):
+    for scambiunit in scambis:
+        pos_array = np.asarray(scambiunit.physical_led_pos, dtype="uint16")
+        col_array = np.asarray(tuple(scambiunit.colour), dtype="uint8")
+        output_payload.append(pos_array.tobytes())
+        output_payload.append(col_array.tobytes())
 
     return UDP_DELIMITER.join(output_payload)
 

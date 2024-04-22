@@ -257,8 +257,8 @@ class RemoteLeds(Leds):
 
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
-        with time_it_sparse("send scambis over UDP"):
-            self.sender.send_scambis(self.leds_to_send)
+        #with time_it_sparse("send scambis over UDP"):
+        self.sender.send_scambis(self.leds_to_send)
 
 
     def display_info_bar(self, pc_done, scambi_units):

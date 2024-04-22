@@ -18,7 +18,7 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 from libs.remote_scambi import transform_UDP_message_to_scambis, UDPListenerProcessWrapper
 from libs.collections import Scambi_unit_LED_only
-from libs.utils import time_it_sparse, get_platform, _OS
+from libs.utils import time_it_sparse, time_it_return_details, get_platform, _OS
 from libs.lighting import SimLeds, ws281Leds
 from libs.configs import DaisybankLedSpacing, PhysicalTV_details
 

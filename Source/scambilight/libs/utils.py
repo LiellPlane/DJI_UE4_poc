@@ -5,6 +5,8 @@ import time
 from contextlib import contextmanager
 import random
 import base64
+from collections import deque
+from typing import Deque
 # need these for other modules to load
 from lumotag_utils import get_platform, _OS, TimeDiffObject
 
@@ -90,6 +92,16 @@ def time_it_sparse(comment):
         toc: float = time.perf_counter()
         if random.randint(1,100) < 4:
             print(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")
+
+
+@contextmanager
+def time_it_return_details(comment, timinglist: Deque):
+    tic: float = time.perf_counter()
+    try:
+        yield
+    finally:
+        toc: float = time.perf_counter()
+        timinglist.append(f"{comment}:proc time = {1000*(toc - tic):.3f}ms")
 
 
 def decode_image_from_str(incoming_encoded_img: str):
