@@ -199,7 +199,7 @@ class ScambilightCamImageGen(ImageGenerator):
         # have to reverse as quirk of ov5647 camera
         res_xy = tuple(reversed(res[0:2]))
         _config = self.picam2.create_video_configuration(
-                    main={"size": res_xy, "format": "RGB888"})#, controls={"FrameDurationLimits": (233333, 233333)})
+                    main={"size": res_xy, "format": "RGB888"}, controls={'FrameRate': 50})#, controls={"FrameDurationLimits": (233333, 233333)})
         self.picam2.configure(_config)
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
@@ -208,7 +208,7 @@ class ScambilightCamImageGen(ImageGenerator):
         #self.picam2.set_controls({"ExposureTime": 1000000}) # for blurring - but can get over exposed at night
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
         #self.picam2.set_controls({"ExposureTime": 100000000, "AnalogueGain": 1.0})
-        self.picam2.video_configuration.controls.FrameRate = 90
+        #self.picam2.video_configuration.controls.FrameRate = 90
         self.picam2.start()
         time.sleep(0.2)
 
