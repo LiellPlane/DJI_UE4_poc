@@ -6,6 +6,7 @@ import atexit
 import json
 import numpy as np
 import time
+from collections import deque
 from contextlib import contextmanager
 from dataclasses import dataclass
 import multiprocessing
@@ -28,6 +29,8 @@ PLATFORM = get_platform()
         
 
 def main():
+    timings = deque(maxlen=100)
+
     if PLATFORM == _OS.WINDOWS:
         led_subsystem = SimLeds(DaisybankLedSpacing)
     elif PLATFORM == _OS.RASPBERRY:
@@ -45,24 +48,27 @@ def main():
     led_subsystem.display_info_colours((250,90,0))
 
     while True:
-        message = udplistener.get_message()
+        with time_it_return_details("TOTAL remotescambi", timings):
+            with time_it_return_details("get message", timings):
+                message = udplistener.get_message()
 
-        try:
-            with time_it_sparse("TOTAL remotescambi"):
-                with time_it_sparse("transform message"):
+            try:
+                with time_it_return_details("transform message", timings):
                     scambiunits = transform_UDP_message_to_scambis(message)
-                with time_it_sparse("set all LEDS"):
+                with time_it_return_details("set all LEDS", timings):
                     led_subsystem.set_LED_values(scambiunits)
-                with time_it_sparse("execute LEDS"):
+                with time_it_return_details("execute LEDS", timings):
                     led_subsystem.execute_LEDS()
-            if PLATFORM == _OS.WINDOWS:
-                time.sleep(0.1)
-                print("LED receiver scambiunit:", scambiunits[0])
-        except Exception as e:
-            print(e)
-            pass
+                if PLATFORM == _OS.WINDOWS:
+                    time.sleep(0.1)
+                    print("LED receiver scambiunit:", scambiunits[0])
+            except Exception as e:
+                print(e)
+                pass
 
-
+            if len(timings) > timings.maxlen-1:
+                print('\n'.join(timings))
+                timings.clear()
 
 
 def main_test():
