@@ -6,7 +6,8 @@ from factory import (
     Camera_async,
     Camera_synchronous,
     ImageGenerator,
-    Camera_async_buffer)
+    Camera_async_buffer,
+    Camera_synchronous_with_buffer)
 
 import numpy as np
 import time
@@ -240,12 +241,12 @@ class Synth_Camera_Async(Camera_async):
         super().__init__(video_modes, ImageLibrary)
 
 
-class Synth_Camera_sync(Camera_synchronous):
+class Synth_Camera_sync(Camera_synchronous_with_buffer):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
 
-class Scambi_Camera_sync(Camera_synchronous):
+class Scambi_Camera_sync(Camera_synchronous_with_buffer):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ScambilightCamImageGen)

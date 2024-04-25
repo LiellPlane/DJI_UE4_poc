@@ -53,7 +53,7 @@ def get_cam(system: _OS, action: str):
         return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     if system == _OS.WINDOWS:
-        return async_cam_lib.Synth_Camera_sync(
+        return async_cam_lib.Synth_Camera_Async_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.RASPBERRY:
         return async_cam_lib.Scamblight_Camera_Async_buffer(
@@ -247,7 +247,7 @@ def main(action = None, sessiontoken = None):
             proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
                 scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
                 curr_img=curr_img,
-                async_image_buf=cam.get_mem_buffers()[0],
+                async_image_buf=cam.shared_mem_handler.mem_ids["0"],
                 Scambi_unit_LED_only=Scambi_unit_LED_only,
                 subsample_cutoff=img_sample_controller.subsample_cut
             )
@@ -258,7 +258,7 @@ def main(action = None, sessiontoken = None):
             proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
                 scambiunits=copy.deepcopy(scambi_units[0:1]),
                 curr_img=curr_img,
-                async_image_buf=cam.get_mem_buffers()[0],
+                async_image_buf=cam.shared_mem_handler.mem_ids["0"],
                 Scambi_unit_LED_only=Scambi_unit_LED_only,
                 subsample_cutoff=img_sample_controller.subsample_cut
             )
@@ -278,11 +278,11 @@ def main(action = None, sessiontoken = None):
 
             # get next image buffer
             with time_it_return_details("get img", timings):
-                prev = next(cam)
-                # prev: np.ndarray = np.ndarray(
-                #     curr_img.shape,
-                #     dtype=curr_img.dtype,
-                #     buffer=cam.get_img_buffer())
+                cam.release_next_image()
+                prev: np.ndarray = np.ndarray(
+                    curr_img.shape,
+                    dtype=curr_img.dtype,
+                    buffer=cam.get_img_buffer())
             
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()

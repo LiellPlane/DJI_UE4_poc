@@ -521,6 +521,47 @@ class Camera_synchronous(Camera):
         return img
 
 
+class Camera_synchronous_with_buffer(Camera):
+    
+    def __init__(self, video_modes, imagegen_cls) -> None:
+        super().__init__(video_modes)
+        self.imagegen_cls = imagegen_cls(self.get_res())
+        self._store_res = None
+        if not self.get_is_reversed():
+            self._store_res = self.get_res()
+        else:
+            self._store_res = tuple(reversed(self.get_res()))
+        self.shared_mem_handler = []
+        self.configure_shared_memory()
+
+    def gen_image(self):
+        return self.imagegen_cls.get_image()
+
+    def __next__(self):
+        img = self.gen_image()
+        memblock_0 = self.shared_mem_handler[0].mem_ids["0"]
+        shared_mem_1: np.ndarray = np.ndarray(
+                img.shape,
+                dtype=img.dtype,
+                buffer=memblock_0.buf)
+        shared_mem_1[:] = img[:]
+        return img
+
+    def configure_shared_memory(self):
+        img_byte_size = reduce(
+            lambda acc, curr: acc * curr, self.get_res())
+
+
+        # we add more than 1 instance of shared memory
+        self.shared_mem_handler.append(SharedMemory(
+                            obj_bytesize=img_byte_size,
+                            discrete_ids=["0"]
+                                        ))
+
+    def get_mem_buffers(self) -> dict:
+        return (
+            {0: self.shared_mem_handler[0].mem_ids["0"]})
+
 class Camera_async_flipflop(Camera):
     """for each iteration call, the shared memory buffer is
     alternated to give other processes time to analyse
