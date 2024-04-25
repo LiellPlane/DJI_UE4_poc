@@ -381,7 +381,9 @@ def main(action = None, sessiontoken = None):
             with time_it_return_details("execute leds", timings):
                 led_subsystem.execute_LEDS()
 
-            #print('\n'.join(timings))
+            if len(timings) > timings.maxlen:
+                print('\n'.join(timings))
+                timings.clear()
 
 def handler(event, context):
     print("boom")
