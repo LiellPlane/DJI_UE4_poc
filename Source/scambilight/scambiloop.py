@@ -86,6 +86,18 @@ def get_file_system(system: _OS):
     else:
         return sim_file_system()
 
+def main_test():
+    cam = async_cam_lib.Scamblight_Camera_Async(
+            ScambiLight_Cam_vidmodes)
+    timings = deque(maxlen=100)
+    while True:
+        
+        with time_it_return_details("set leds", timings):
+            x = next(cam)
+            print(x[1,1,1])
+        if len(timings) > timings.maxlen-1:
+            print('\n'.join(timings))
+            timings.clear()
 
 def main(action = None, sessiontoken = None):
     timings = deque(maxlen=100)
@@ -397,7 +409,8 @@ def handler(event, context):
 
 if __name__ == "__main__":
 
-    main()
+    #main()
+    main_test()
     
     # body = json.dumps({
     #     'sessiontoken': "admin",
