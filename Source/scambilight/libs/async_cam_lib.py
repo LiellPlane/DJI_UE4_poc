@@ -244,3 +244,8 @@ class Synth_Camera_sync(Camera_synchronous):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
+
+class Scambi_Camera_sync(Camera_synchronous):
+    
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, ScambilightCamImageGen)

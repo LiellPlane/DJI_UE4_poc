@@ -87,7 +87,7 @@ def get_file_system(system: _OS):
         return sim_file_system()
 
 def main_test():
-    cam = async_cam_lib.Scamblight_Camera_Async(
+    cam = async_cam_lib.Scambi_Camera_sync(
             ScambiLight_Cam_vidmodes)
     timings = deque(maxlen=100)
     while True:
@@ -95,6 +95,7 @@ def main_test():
         with time_it_return_details("set leds", timings):
             x = next(cam)
             print(x[1,1,1])
+            print(x.shape)
         if len(timings) > timings.maxlen-1:
             print('\n'.join(timings))
             timings.clear()
