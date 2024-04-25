@@ -381,7 +381,7 @@ def main(action = None, sessiontoken = None):
             with time_it_return_details("execute leds", timings):
                 led_subsystem.execute_LEDS()
 
-            if len(timings) > timings.maxlen:
+            if len(timings) > timings.maxlen-1:
                 print('\n'.join(timings))
                 timings.clear()
 
