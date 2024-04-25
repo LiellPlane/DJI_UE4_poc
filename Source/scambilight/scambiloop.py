@@ -395,7 +395,7 @@ def main(action = None, sessiontoken = None):
                 led_subsystem.execute_LEDS()
 
             if len(timings) > timings.maxlen-1:
-                print('\n'.join(timings))
+                #print('\n'.join(timings))
                 timings.clear()
 
 def handler(event, context):
