@@ -56,13 +56,13 @@ def get_cam(system: _OS, action: str):
         return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.RASPBERRY:
-        return async_cam_lib.Scamblight_Camera_Async_buffer(
+        return async_cam_lib.Scambi_Camera_sync(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.LINUX:
-        return async_cam_lib.Synth_Camera_Async(
+        return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.MAC_OS:
-        return async_cam_lib.Synth_Camera_Async_buffer(
+        return async_cam_lib.Synth_Camera_sync(
             ScambiLight_Cam_vidmodes)
     else:
         raise Exception(system + " not supported")
