@@ -410,8 +410,8 @@ def handler(event, context):
 
 if __name__ == "__main__":
 
-    #main()
-    main_test()
+    main()
+    #main_test()
     
     # body = json.dumps({
     #     'sessiontoken': "admin",
