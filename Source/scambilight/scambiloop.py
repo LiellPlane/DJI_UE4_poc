@@ -390,7 +390,7 @@ def main(action = None, sessiontoken = None):
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
             with time_it_return_details("set leds", timings):
-                led_subsystem.set_LED_values_alternating(scambiunits_led_info)
+                led_subsystem.set_LED_values(scambiunits_led_info)
             with time_it_return_details("execute leds", timings):
                 led_subsystem.execute_LEDS()
 
