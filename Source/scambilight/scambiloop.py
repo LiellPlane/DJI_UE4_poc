@@ -120,7 +120,7 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     elif system == _OS.RASPBERRY:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)#ws281Leds
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)
@@ -394,8 +394,15 @@ def main(action = None, sessiontoken = None):
             with time_it_return_details("execute leds", timings): # 8 ms for 52 when run just thuis and set leds in a tight loop 
                 led_subsystem.execute_LEDS()
 
+            # when running in normal loop, these are timings:
+            # get img:proc time = 2.010ms
+            # get 26 colours:proc time = 17.648ms
+            # set 52 leds:proc time = 3.225ms
+            # execute leds:proc time = 0.245ms
+            # TOTAL:proc time = 23.499ms
+
             if len(timings) > timings.maxlen-1:
-                print('\n'.join(timings))
+                #print('\n'.join(timings))
                 timings.clear()
 
 def handler(event, context):
