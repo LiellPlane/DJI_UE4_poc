@@ -120,7 +120,7 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     elif system == _OS.RASPBERRY:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)#ws281Leds
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)
@@ -395,7 +395,7 @@ def main(action = None, sessiontoken = None):
                 led_subsystem.execute_LEDS()
 
             if len(timings) > timings.maxlen-1:
-                print('\n'.join(timings))
+                #print('\n'.join(timings))
                 timings.clear()
 
 def handler(event, context):
