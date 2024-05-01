@@ -120,7 +120,7 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     elif system == _OS.RASPBERRY:
-        led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
+        led_subsystem = ws281Leds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)
@@ -389,14 +389,15 @@ def main(action = None, sessiontoken = None):
                     scambiunits_led_info += proc_scambis.done_queue.get(block=True)
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
-            with time_it_return_details("set leds", timings):
-                led_subsystem.set_LED_values(scambiunits_led_info)
-            with time_it_return_details("execute leds", timings):
-                led_subsystem.execute_LEDS()
+            while True:
+                with time_it_return_details(f"set {len(scambiunits_led_info)} leds", timings):
+                    led_subsystem.set_LED_values(scambiunits_led_info)
+                with time_it_return_details("execute leds", timings):
+                    led_subsystem.execute_LEDS()
 
-            if len(timings) > timings.maxlen-1:
-                #print('\n'.join(timings))
-                timings.clear()
+                if len(timings) > timings.maxlen-1:
+                    #print('\n'.join(timings))
+                    timings.clear()
 
 def handler(event, context):
     print("boom")

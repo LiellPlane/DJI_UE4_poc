@@ -46,11 +46,11 @@ def main():
     udplistener = UDPListenerProcessWrapper()
 
     led_subsystem.display_info_colours((250,90,0))
-    with time_it_return_details("get message", timings):
-        message = udplistener.get_message()
+
     while True:
         with time_it_return_details("TOTAL remotescambi", timings):
-
+            with time_it_return_details("get message", timings):
+                message = udplistener.get_message()
 
             try:
                 with time_it_return_details("transform message", timings):
@@ -66,9 +66,9 @@ def main():
                 print(e)
                 pass
 
-        if len(timings) > timings.maxlen-1:
-            print('\n'.join(timings))
-            timings.clear()
+            if len(timings) > timings.maxlen-1:
+                print('\n'.join(timings))
+                timings.clear()
 
 
 def main_test():
