@@ -55,7 +55,7 @@ def main():
             try:
                 with time_it_return_details("transform message", timings):
                     scambiunits = transform_UDP_message_to_scambis(message)
-                with time_it_return_details("set all LEDS", timings):
+                with time_it_return_details(f"set {len(scambiunits)} LEDS", timings):
                     led_subsystem.set_LED_values(scambiunits)
                 with time_it_return_details("execute LEDS", timings):
                     led_subsystem.execute_LEDS()
