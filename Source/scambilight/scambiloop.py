@@ -389,15 +389,14 @@ def main(action = None, sessiontoken = None):
                     scambiunits_led_info += proc_scambis.done_queue.get(block=True)
                     proc_scambis.handshake_queue.put("done", block=True, timeout=None)
 
-            while True:
-                with time_it_return_details(f"set {len(scambiunits_led_info)} leds", timings):
-                    led_subsystem.set_LED_values(scambiunits_led_info)
-                with time_it_return_details("execute leds", timings):
-                    led_subsystem.execute_LEDS()
+            with time_it_return_details(f"set {len(scambiunits_led_info)} leds", timings): # 3ms for 52 when run just this and execute in a tight loop
+                led_subsystem.set_LED_values(scambiunits_led_info)
+            with time_it_return_details("execute leds", timings): # 8 ms for 52 when run just thuis and set leds in a tight loop 
+                led_subsystem.execute_LEDS()
 
-                if len(timings) > timings.maxlen-1:
-                    print('\n'.join(timings))
-                    timings.clear()
+            if len(timings) > timings.maxlen-1:
+                print('\n'.join(timings))
+                timings.clear()
 
 def handler(event, context):
     print("boom")
