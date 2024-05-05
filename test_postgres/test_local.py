@@ -2,6 +2,21 @@
 import uuid
 import psycopg2
 from datetime import datetime, timedelta
+
+
+def partition_table_exists(cursor, schema_name, table_name):
+    query = """
+        SELECT EXISTS (
+            SELECT 1
+            FROM information_schema.tables
+            WHERE table_schema = %s
+            AND table_name = %s
+        );
+    """
+    cursor.execute(query, (schema_name, table_name))
+    exists = cursor.fetchone()[0]
+    return exists
+
 # Connect to your PostgreSQL server
 conn = psycopg2.connect(
     dbname="postgres",
@@ -26,7 +41,7 @@ create_table_query = '''
     ) PARTITION BY RANGE (timestamp);
 '''
 cur.execute(create_table_query)
-
+conn.commit()
 
 
 
@@ -40,22 +55,24 @@ start_date = end_date - timedelta(days=7)
 end_date_str = end_date.strftime('%Y-%m-%d')
 start_date_str = start_date.strftime('%Y-%m-%d')
 
-# Check if the partition for the current week already exists
-check_partition_query = f'''
-    SELECT 1 FROM information_schema.tables
-    WHERE table_name = 'user_favorite_{start_date.year}_w{start_date.isocalendar()[1]:02d}'
-'''
-cur.execute(check_partition_query)
-partition_exists = cur.fetchone()
+part_name = f'user_favorite_{start_date.year}_w{start_date.isocalendar()[1]:02d}'
+# # Check if the partition for the current week already exists
+# check_partition_query = f'''
+#     SELECT 1 FROM information_schema.tables
+#     WHERE table_name = {part_name}
+# '''
+print(part_name)
+#cur.execute(check_partition_query)
+#partition_exists = cur.fetchone()
 
 # If the partition does not exist, create it
-if not partition_exists:
-    create_partition_query = f'''
-        CREATE TABLE IF NOT EXISTS user_favorite_{start_date.year}_w{start_date.isocalendar()[1]:02d} PARTITION OF user_favorite
-        FOR VALUES FROM ('{start_date_str}') TO ('{end_date_str}');
-    '''
-    cur.execute(create_partition_query)
-
+#if not partition_exists:
+create_partition_query = f'''
+    CREATE TABLE IF NOT EXISTS {part_name} PARTITION OF user_favorite
+    FOR VALUES FROM ('{start_date_str}') TO ('{end_date_str}');
+'''
+cur.execute(create_partition_query)
+conn.commit()
 
 
 
@@ -85,7 +102,7 @@ insertion = f'''
     VALUES ('{your_session_id_value}', '{your_ip_address_value}', {your_celebrity_id_value});
     '''
 cur.execute(insertion)
-
+conn.commit()
 
 
 cur.execute("SELECT * FROM user_favorite")
