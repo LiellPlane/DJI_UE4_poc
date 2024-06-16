@@ -82,7 +82,6 @@ class UDPTransmitProcessWrapper:
             leds_to_send = transform_scambits_for_UDP(scambis)
             transmitter.send_message(leds_to_send)
 
-
 class UDPMessageSender:
     def __init__(self, host='scambilightled.broadband', port=12345):
         self.host = host
