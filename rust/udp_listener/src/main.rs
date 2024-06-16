@@ -1,18 +1,27 @@
 use std::net::UdpSocket;
+use std::str;
 
 fn main() -> std::io::Result<()> {
-    {
-        let socket = UdpSocket::bind("127.0.0.1:34254")?;
+    // Bind the UDP socket to an address and port
+    let socket = UdpSocket::bind("0.0.0.0:12345")?;
+    println!("Listening on 0.0.0.0:12345");
 
-        // Receives a single datagram message on the socket. If `buf` is too small to hold
-        // the message, it will be cut off.
-        let mut buf = [0; 10];
+    let mut buf = [0; 10000];
+
+    loop {
+        // Receive data from the socket
         let (amt, src) = socket.recv_from(&mut buf)?;
 
-        // Redeclare `buf` as slice of the received data and send reverse data back to origin.
-        //let buf = &mut buf[..amt];
-        //buf.reverse();
-        //socket.send_to(buf, &src)?;
-    } // the socket is closed here
-    Ok(())
+        // Convert the received bytes into a string, if possible
+        let received = match str::from_utf8(&buf[..amt]) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("Invalid UTF-8 sequence: {}", e);
+                continue;
+            }
+        };
+        // Print the received message
+        //println!("plopping on 0.0.0.0:12345");
+        println!("Received from {}: {}", src, received);
+    }
 }

@@ -113,8 +113,8 @@ class External_Config():
 @dataclass
 class PhysicalTV_details():
     edges: dict[str:LedsLayout]
-    receiver_hostname = 'LiellOMEN.broadband'
-    #receiver_hostname = 'scambilightled.broadband'
+    #receiver_hostname = 'LiellOMEN.broadband'
+    receiver_hostname = 'scambilightled.broadband'
     #receiver_hostname = '127.0.0.1'
     port = 12345
 
