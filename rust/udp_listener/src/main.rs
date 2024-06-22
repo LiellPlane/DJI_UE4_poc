@@ -58,20 +58,32 @@ fn main() -> std::io::Result<()> {
 
         let parts = split_message_by_delimiter(&message, &UDP_DELIMITER);
 
-        
-        for i in 0..msg.len() / 4 {
-            let colour_start = i * 4;
-            let physical_led_pos_start = i * 4 + 2;
-        
-        for (i, part) in parts.iter().enumerate() {
-            if i % 2 == 1 {
-                let u8_values: Vec<u8> = part.to_vec();
-                //println!("Part {}: {:?}", i, u8_values);
-            } else {
-                let u16_values = decode_as_u16(part);
-                //println!("Part {}: {:?}", i, u16_values);
-            }
+
+        for i in 0..parts.len() / 2 {
+            let physical_led_pos_start = i * 2;
+            let colour_start = (i * 2) + 1;
+            let u8_values: Vec<u8> = parts[colour_start].to_vec();
+            //println!("Part {}: {:?}", i, u8_values);
+            let unit = ScambiUnitLedOnly {
+                colour:parts[colour_start].to_vec(),
+                physical_led_pos:decode_as_u16(parts[physical_led_pos_start]),
+            };
+    
+            led_units.push(unit);
         }
+
+        // for led_unit in &led_units{
+        //     println!("Unit details: {:?}", led_unit);
+        // }
+        // for (i, part) in parts.iter().enumerate() {
+        //     if i % 2 == 1 {
+        //         let u8_values: Vec<u8> = part.to_vec();
+        //         println!("cols {}: {:?}", i, u8_values);
+        //     } else {
+        //         let u16_values = decode_as_u16(part);
+        //         println!("positions {}: {:?}", i, u16_values);
+        //     }
+        // }
         let duration = start.elapsed();
         println!("Time elapsed in the code section: {:?}", duration);
         println!("Received something whoo");
