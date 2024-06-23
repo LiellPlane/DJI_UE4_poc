@@ -101,7 +101,7 @@ class UDPMessageSender:
     def close(self):
         self.socket.close()
 
-def transform_scambits_for_UDP(scambis: list[Scambi_unit_LED_only])->bytes:
+def  transform_scambits_for_UDP(scambis: list[Scambi_unit_LED_only])->bytes:
     """pack data for efficient delivery across network"""
 
     output_payload = []

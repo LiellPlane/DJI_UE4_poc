@@ -186,7 +186,7 @@ def main():
         print("total to_be_processed len", len(all_images_list))
         print("total processed_list len", len(processed_list))
 
-    fart = input("press y to distribute into folders")
+    fart = input("press y (in termimal) to distribute into folders")
     if fart == "y":
         DeleteFiles_RecreateFolder(SORTED_IMAGES_FOLDER)
         #os.mkdir(f"{SORTED_IMAGES_FOLDER}\\BACKUP")
