@@ -26,7 +26,7 @@ from libs.configs import DaisybankLedSpacing, PhysicalTV_details
 PLATFORM = get_platform()
 
 
-        
+1/0
 
 def main():
     timings = deque(maxlen=100)
