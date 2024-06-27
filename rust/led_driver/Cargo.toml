@@ -1,0 +1,8 @@
+[package]
+name = "led_driver"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ws2818-rgb-led-spi-driver = { path = "../" }
+rand = "0.7.3"
