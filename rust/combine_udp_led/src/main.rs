@@ -1,13 +1,26 @@
-use std::net::UdpSocket;
+
+//! Example that definitely works on Raspberry Pi.
+//! Make sure you have "SPI" on your Pi enabled and that MOSI-Pin is connected
+//! with DIN-Pin. You just need DIN pin, no clock. WS2818 uses one-wire-protocol.
+//! See the specification for detailsuse std::net::UdpSocket;
 use std::str;
 use std::time::Instant;
+use std::net::UdpSocket;
+use ws2818_examples::{get_led_num_from_args, sleep_busy_waiting_ms};
+use ws2818_rgb_led_spi_driver::adapter_gen::WS28xxAdapter;
+use ws2818_rgb_led_spi_driver::adapter_spi::WS28xxSpiAdapter;
+use ws2818_rgb_led_spi_driver::encoding::encode_rgb;
+
+
 #[derive(Debug)]
 struct ScambiUnitLedOnly {
     colour: Vec<u8>,
     physical_led_pos: Vec<u16>,
 }
 const UDP_DELIMITER: [u8; 3] = [0xAB, 0xCD, 0xEF];
+const FREQUENCY: u64 = 15; // in Hz
 
+const FLASH_TIME_MS: u64 = 3;
 
 fn split_message_by_delimiter<'a>(message: &'a [u8], delimiter: &[u8]) -> Vec<&'a [u8]> {
     let mut parts = Vec::new();
@@ -44,11 +57,11 @@ fn main() -> std::io::Result<()> {
     // Bind the UDP socket to an address and port
     let socket = UdpSocket::bind("0.0.0.0:12345")?;
     println!("Listening on 0.0.0.0:12345");
-
+    println!("make sure you have \"SPI\" on your Pi enabled and that MOSI-Pin is connected with DIN-Pin!");
+    let mut adapter = WS28xxSpiAdapter::new("/dev/spidev0.0").unwrap();
+    let num_leds: u32 = 300;
     let mut buf = [0; 10000];
     let mut led_units: Vec<ScambiUnitLedOnly> = Vec::new();
-    //let mut led_output_vec = vec![0; 300];
-    let mut led_output_vec: Vec<Vec<u8>> = Vec::with_capacity(300);
     loop {
         led_units.clear();
         let (amt, src) = socket.recv_from(&mut buf)?;
@@ -74,20 +87,9 @@ fn main() -> std::io::Result<()> {
             led_units.push(unit);
         }
 
-
-        // now write them into the vector
-                
         for led_unit in &led_units{
-            for (i, &pos) in led_unit.physical_led_pos.iter().enumerate() {
-                // if pos as usize >= led_vector.len() {
-                //     continue; // Ignore indices out of bounds (this shouldn't happen in this context)
-                // }
-                //led_output_vec[pos as usize] = led_unit.colour;
-            }
+            println!("Unit details: {:?}", led_unit);
         }
-        // for led_unit in &led_units{
-        //     println!("Unit details: {:?}", led_unit);
-        // }
         // for (i, part) in parts.iter().enumerate() {
         //     if i % 2 == 1 {
         //         let u8_values: Vec<u8> = part.to_vec();
@@ -98,7 +100,7 @@ fn main() -> std::io::Result<()> {
         //     }
         // }
         let duration = start.elapsed();
-        println!("Time elapsed in the code section: {:?}", duration);
+        //println!("Time elapsed in the code section: {:?}", duration);
         println!("Received something whoo");
     }
 }
