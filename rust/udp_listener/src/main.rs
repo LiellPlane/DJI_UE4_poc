@@ -46,11 +46,13 @@ fn main() -> std::io::Result<()> {
     println!("Listening on 0.0.0.0:12345");
 
     let mut buf = [0; 10000];
-    let mut led_units: Vec<ScambiUnitLedOnly> = Vec::new();
+    
     //let mut led_output_vec = vec![0; 300];
-    let mut led_output_vec: Vec<Vec<u8>> = Vec::with_capacity(300);
+    
     loop {
-        led_units.clear();
+        let mut led_units: Vec<ScambiUnitLedOnly> = Vec::new();
+        static DEFAULT_COLOR: [u8; 3] = [0, 0, 0];
+        let mut led_output_vec: Vec<&[u8]> = vec![&DEFAULT_COLOR; 300];
         let (amt, src) = socket.recv_from(&mut buf)?;
         let start = Instant::now();
         // for byte in &buf[..amt] {
@@ -76,14 +78,16 @@ fn main() -> std::io::Result<()> {
 
 
         // now write them into the vector
-                
-        for led_unit in &led_units{
-            for (i, &pos) in led_unit.physical_led_pos.iter().enumerate() {
-                // if pos as usize >= led_vector.len() {
-                //     continue; // Ignore indices out of bounds (this shouldn't happen in this context)
-                // }
-                //led_output_vec[pos as usize] = led_unit.colour;
+        for led_unit in &led_units {
+            for &pos in &led_unit.physical_led_pos {
+                if (pos as usize) < led_output_vec.len() {
+                    led_output_vec[pos as usize] = &led_unit.colour;
+                }
             }
+        }
+
+        for (i, led_unit) in led_output_vec.iter().enumerate(){
+            println!("led_unit details: {:}, {:?}",i, led_unit);
         }
         // for led_unit in &led_units{
         //     println!("Unit details: {:?}", led_unit);
