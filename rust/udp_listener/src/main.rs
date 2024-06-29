@@ -86,9 +86,9 @@ fn main() -> std::io::Result<()> {
             }
         }
 
-        // for (i, led_unit) in led_output_vec.iter().enumerate(){
-        //     println!("led_unit details: {:}, {:?}",i, led_unit);
-        // }
+        for (i, led_unit) in led_output_vec.iter().enumerate(){
+            println!("led_unit details: {:}, {:?}",i, led_unit);
+        }
         // for led_unit in &led_units{
         //     println!("Unit details: {:?}", led_unit);
         // }

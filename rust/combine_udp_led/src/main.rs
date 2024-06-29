@@ -9,6 +9,8 @@ use ws2818_rgb_led_spi_driver::encoding::encode_rgb;
 
 use std::net::UdpSocket;
 use std::str;
+
+use rand::Rng;
 #[derive(Debug)]
 struct ScambiUnitLedOnly {
     colour: Vec<u8>,
@@ -18,16 +20,16 @@ const UDP_DELIMITER: [u8; 3] = [0xAB, 0xCD, 0xEF];
 
 
 
-#[inline(always)]
-pub fn sleep_busy_waiting_ms(ms: u64) {
-    // need to burn CPU cycles or it messes up timings
-    let target_time = Instant::now().add(Duration::from_millis(ms));
-    loop {
-        if Instant::now() >= target_time {
-            break;
-        }
-    }
-}
+// #[inline(always)]
+// pub fn sleep_busy_waiting_ms(ms: u64) {
+//     // need to burn CPU cycles or it messes up timings
+//     let target_time = Instant::now().add(Duration::from_millis(ms));
+//     loop {
+//         if Instant::now() >= target_time {
+//             break;
+//         }
+//     }
+// }
 
 fn split_message_by_delimiter<'a>(message: &'a [u8], delimiter: &[u8]) -> Vec<&'a [u8]> {
     let mut parts = Vec::new();
@@ -58,6 +60,11 @@ fn decode_as_u16(bytes: &[u8]) -> Vec<u16> {
         }
     }).collect()
 }
+
+fn flatten_vec_to_slice(vec: &Vec<&[u8]>) -> Vec<u8> {
+    vec.iter().flat_map(|slice| slice.iter().cloned()).collect()
+}
+
 
 
 fn main() -> std::io::Result<()> {
@@ -109,12 +116,26 @@ fn main() -> std::io::Result<()> {
             }
         }
 
-        for (i, led_unit) in led_output_vec.iter().enumerate(){
-            println!("led_unit details: {:}, {:?}",i, led_unit);
+        let mut rng = rand::thread_rng();
+        //this is bad - but at this point we can't run on windows PC so use this for now
+        let mut display_bytes: Vec<u8> = Vec::new();
+        for (i, led_colour) in led_output_vec.iter().enumerate() {
+            display_bytes.extend_from_slice(&encode_rgb(
+                rng.gen_range(0..=255),
+                rng.gen_range(0..=255),
+                rng.gen_range(0..=255)
+            ));
+
         }
+        // for (i, led_unit) in led_output_vec.iter().enumerate(){
+        //     println!("led_unit details: {:}, {:?}",i, led_unit);
+        // }
         // for led_unit in &led_units{
         //     println!("Unit details: {:?}", led_unit);
         // }
+        for led_unit in &led_units{
+            println!("Unit details: {:?}", led_unit);
+        }
         // for (i, part) in parts.iter().enumerate() {
         //     if i % 2 == 1 {
         //         let u8_values: Vec<u8> = part.to_vec();
@@ -125,7 +146,9 @@ fn main() -> std::io::Result<()> {
         //     }
         // }
         let duration = start.elapsed();
-        println!("Time elapsed in the code section: {:?}", duration);
-        println!("Received something whoo");
+        println!("Time elapsed decoding: {:?}", duration);
+        let duration = start.elapsed();
+        adapter.write_encoded_rgb(&display_bytes).unwrap();
+        println!("Time elapsed setting leds: {:?}", duration);
     }
 }

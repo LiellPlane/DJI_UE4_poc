@@ -5,3 +5,4 @@ edition = "2021"
 
 [dependencies]
 ws2818-rgb-led-spi-driver = "2.0.0"
+rand = "0.8.5"

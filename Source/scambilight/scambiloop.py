@@ -400,7 +400,7 @@ def main(action = None, sessiontoken = None):
             # set 52 leds:proc time = 3.225ms
             # execute leds:proc time = 0.245ms
             # TOTAL:proc time = 23.499ms
-
+            #time.sleep(1)
             if len(timings) > timings.maxlen-1:
                 #print('\n'.join(timings))
                 timings.clear()

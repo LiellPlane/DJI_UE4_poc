@@ -183,11 +183,12 @@ class ImageLibrary(ImageGenerator):
         
         latch = self.latch.copy()
         #random.randint(0,255)
-        latch[:, :, 0] = latch[:, :, 0] * random.random()
-        latch[:, :, 1] = latch[:, :, 1] * random.random()
-        #latch[:, :, 0] = random.randint(0,255)
-        #latch[:, :, 1] = random.randint(0,255)
-        #latch[:, :, 2] = random.randint(0,255)
+        # latch[:, :, 0] = latch[:, :, 0] * random.random()
+        # latch[:, :, 1] = latch[:, :, 1] * random.random()
+        # latch[:, :, 2] = latch[:, :, 2] * random.random()
+        latch[:, :, 0] = random.randint(0,255)
+        latch[:, :, 1] = random.randint(0,255)
+        latch[:, :, 2] = random.randint(0,255)
         return latch
     
 
