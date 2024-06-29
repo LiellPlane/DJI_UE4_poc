@@ -6,10 +6,10 @@
 use std::str;
 use std::time::Instant;
 use std::net::UdpSocket;
-use ws2818_examples::{get_led_num_from_args, sleep_busy_waiting_ms};
-use ws2818_rgb_led_spi_driver::adapter_gen::WS28xxAdapter;
-use ws2818_rgb_led_spi_driver::adapter_spi::WS28xxSpiAdapter;
-use ws2818_rgb_led_spi_driver::encoding::encode_rgb;
+// use ws2818_examples::{get_led_num_from_args, sleep_busy_waiting_ms};
+// use ws2818_rgb_led_spi_driver::adapter_gen::WS28xxAdapter;
+// use ws2818_rgb_led_spi_driver::adapter_spi::WS28xxSpiAdapter;
+// use ws2818_rgb_led_spi_driver::encoding::encode_rgb;
 
 
 #[derive(Debug)]
@@ -58,7 +58,7 @@ fn main() -> std::io::Result<()> {
     let socket = UdpSocket::bind("0.0.0.0:12345")?;
     println!("Listening on 0.0.0.0:12345");
     println!("make sure you have \"SPI\" on your Pi enabled and that MOSI-Pin is connected with DIN-Pin!");
-    let mut adapter = WS28xxSpiAdapter::new("/dev/spidev0.0").unwrap();
+    //let mut adapter = WS28xxSpiAdapter::new("/dev/spidev0.0").unwrap();
     let num_leds: u32 = 300;
     let mut buf = [0; 10000];
     let mut led_units: Vec<ScambiUnitLedOnly> = Vec::new();
@@ -66,9 +66,6 @@ fn main() -> std::io::Result<()> {
         led_units.clear();
         let (amt, src) = socket.recv_from(&mut buf)?;
         let start = Instant::now();
-        // for byte in &buf[..amt] {
-        //     print!("{}  ", byte);
-        // }
         let message = &buf[..amt];
 
         let parts = split_message_by_delimiter(&message, &UDP_DELIMITER);
@@ -87,20 +84,12 @@ fn main() -> std::io::Result<()> {
             led_units.push(unit);
         }
 
-        for led_unit in &led_units{
-            println!("Unit details: {:?}", led_unit);
-        }
-        // for (i, part) in parts.iter().enumerate() {
-        //     if i % 2 == 1 {
-        //         let u8_values: Vec<u8> = part.to_vec();
-        //         println!("cols {}: {:?}", i, u8_values);
-        //     } else {
-        //         let u16_values = decode_as_u16(part);
-        //         println!("positions {}: {:?}", i, u16_values);
-        //     }
+        // for led_unit in &led_units{
+        //     println!("Unit details: {:?}", led_unit);
         // }
+  
         let duration = start.elapsed();
-        //println!("Time elapsed in the code section: {:?}", duration);
-        println!("Received something whoo");
+        println!("Time elapsed in the code section: {:?}", duration);
+        //println!("Received something whoo");
     }
 }
