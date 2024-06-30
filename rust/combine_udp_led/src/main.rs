@@ -75,7 +75,7 @@ fn main() -> std::io::Result<()> {
     let socket = UdpSocket::bind("0.0.0.0:12345")?;
     println!("Listening on 0.0.0.0:12345");
 
-    let mut buf = [0; 10000];
+    let mut buf = [0; 1000];
     
     //let mut led_output_vec = vec![0; 300];
     static DEFAULT_COLOR: [u8; 3] = [0, 0, 0];
