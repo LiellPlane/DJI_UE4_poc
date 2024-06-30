@@ -78,12 +78,13 @@ fn main() -> std::io::Result<()> {
     let mut buf = [0; 10000];
     
     //let mut led_output_vec = vec![0; 300];
-    
+    static DEFAULT_COLOR: [u8; 3] = [0, 0, 0];
     loop {
         let mut led_units: Vec<ScambiUnitLedOnly> = Vec::new();
-        static DEFAULT_COLOR: [u8; 3] = [0, 0, 0];
+        
         let mut led_output_vec: Vec<&[u8]> = vec![&DEFAULT_COLOR; 300];
         let (amt, src) = socket.recv_from(&mut buf)?;
+        println!("Received {} bytes from {}", amt, src);
         let start = Instant::now();
         // for byte in &buf[..amt] {
         //     print!("{}  ", byte);
@@ -116,14 +117,14 @@ fn main() -> std::io::Result<()> {
             }
         }
 
-        let mut rng = rand::thread_rng();
+        //let mut rng = rand::thread_rng();
         //this is bad - but at this point we can't run on windows PC so use this for now
         let mut display_bytes: Vec<u8> = Vec::new();
         for (i, led_colour) in led_output_vec.iter().enumerate() {
             display_bytes.extend_from_slice(&encode_rgb(
-                rng.gen_range(0..=255),
-                rng.gen_range(0..=255),
-                rng.gen_range(0..=255)
+                led_colour[2],
+                led_colour[1],
+                led_colour[0]
             ));
 
         }
@@ -133,9 +134,9 @@ fn main() -> std::io::Result<()> {
         // for led_unit in &led_units{
         //     println!("Unit details: {:?}", led_unit);
         // }
-        for led_unit in &led_units{
-            println!("Unit details: {:?}", led_unit);
-        }
+        // for led_unit in &led_units{
+        //     println!("Unit details: {:?}", led_unit);
+        // }
         // for (i, part) in parts.iter().enumerate() {
         //     if i % 2 == 1 {
         //         let u8_values: Vec<u8> = part.to_vec();

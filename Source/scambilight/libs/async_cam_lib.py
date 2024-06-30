@@ -186,9 +186,11 @@ class ImageLibrary(ImageGenerator):
         # latch[:, :, 0] = latch[:, :, 0] * random.random()
         # latch[:, :, 1] = latch[:, :, 1] * random.random()
         # latch[:, :, 2] = latch[:, :, 2] * random.random()
-        latch[:, :, 0] = random.randint(0,255)
-        latch[:, :, 1] = random.randint(0,255)
-        latch[:, :, 2] = random.randint(0,255)
+        colours = [[255,0,0],[0,255,0],[0,0,255]]
+        latch[:] =random.choice(colours)
+        #latch[:, :, 0] = 0
+        #latch[:, :, 1] = random.randint(0,255)
+        #latch[:, :, 2] = 0
         return latch
     
 
