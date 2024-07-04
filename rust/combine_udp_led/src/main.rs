@@ -85,7 +85,7 @@ fn main() -> std::io::Result<()> {
         
         let mut led_output_vec: Vec<&[u8]> = vec![&DEFAULT_COLOR; 300];
         let (amt, src) = socket.recv_from(&mut buf)?;
-        println!("Received {} bytes from {}", amt, src);
+        //println!("Received {} bytes from {}", amt, src);
         let start = Instant::now();
         // for byte in &buf[..amt] {
         //     print!("{}  ", byte);
@@ -152,10 +152,15 @@ fn main() -> std::io::Result<()> {
         // }
 
         let duration = start.elapsed();
-        println!("Time elapsed decoding: {:?}", duration);
+        if rand::thread_rng().gen_bool(0.001) {
+            println!("Time elapsed decoding: {:?}", duration);
+        }
         let duration = start.elapsed();
         adapter.write_encoded_rgb(&display_bytes).unwrap();
-        println!("Time elapsed setting leds: {:?}", duration);
+        if rand::thread_rng().gen_bool(0.001) {
+            println!("Time elapsed setting leds: {:?}", duration);
+        }
+        
         //thread::sleep(Duration::from_millis(500));
     }
 }
