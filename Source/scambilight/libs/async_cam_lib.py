@@ -197,7 +197,7 @@ class ImageLibrary(ImageGenerator):
 class ScambilightCamImageGen(ImageGenerator):
     
     def __init__(self, res) -> None:
-        
+        from libcamera import controls
         self.cam_res = res
         self.picam2 = Picamera2()
         # have to reverse as quirk of ov5647 camera
@@ -208,6 +208,7 @@ class ScambilightCamImageGen(ImageGenerator):
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
         #self.picam2.set_controls({"AeEnable": 0})
+        self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
         self.picam2.set_controls({"AnalogueGain": 6.0})
         #self.picam2.set_controls({"ExposureTime": 1000000}) # for blurring - but can get over exposed at night
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
