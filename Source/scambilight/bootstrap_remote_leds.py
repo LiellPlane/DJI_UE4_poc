@@ -3,6 +3,8 @@ import json
 import subprocess
 import os
 import sys
+from datetime import datetime
+
 
 repo = 'https://github.com/LiellPlane/DJI_UE4_poc.git'
 codepath = "/home/scambilight/DJI_UE4_poc"
@@ -17,7 +19,49 @@ else:
         "trying to clone repo from web - this is impossible state- should exist already")
     subprocess.run(['sudo', 'git', 'clone', repo])
 
-sys.path.append(os.path.abspath(f"{codepath}/Source/scambilight/"))
+# sys.path.append(os.path.abspath(f"{codepath}/Source/scambilight/"))
 
-import scambileds_remote_LED
-scambileds_remote_LED.main()
+# import scambileds_remote_LED
+# scambileds_remote_LED.main()
+
+# Path to your Rust project directory
+rust_project_dir = f"{codepath}/rust/combine_udp_led/"
+
+# Name of your Rust executable (usually the same as your project name)
+executable_name = "combine_udp_led"
+
+def run_command(command):
+    try:
+        result = subprocess.run(command, check=True, text=True, capture_output=True)
+        print(result.stdout)
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing {' '.join(command)}:")
+        print(f"Exit code: {e.returncode}")
+        print(f"stdout: {e.stdout}")
+        print(f"stderr: {e.stderr}")
+        return False
+
+try:
+    # Change to the Rust project directory
+    os.chdir(rust_project_dir)
+
+    # Build the Rust project
+    print("Building Rust project...")
+    if not run_command(["cargo", "build", "--release"]):
+        sys.exit(1)
+
+    # Verify the executable was created
+    executable_path = os.path.join(rust_project_dir, "target", "release", executable_name)
+    if not os.path.exists(executable_path):
+        print(f"Executable not found at {executable_path}")
+        sys.exit(1)
+
+    # Run the Rust executable
+    print("Running Rust executable...")
+    if not run_command([executable_path]):
+        sys.exit(1)
+
+except Exception as e:
+    print(f"An unexpected error occurred: {e}")
+    sys.exit(1)
