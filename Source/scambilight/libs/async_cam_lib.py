@@ -208,7 +208,7 @@ class ScambilightCamImageGen(ImageGenerator):
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
         #self.picam2.set_controls({"AeEnable": 0})
-        #self.picam2.set_controls({"AnalogueGain": 30.0})
+        self.picam2.set_controls({"AnalogueGain": 6.0})
         #self.picam2.set_controls({"ExposureTime": 1000000}) # for blurring - but can get over exposed at night
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
         #self.picam2.set_controls({"ExposureTime": 100000000, "AnalogueGain": 1.0})

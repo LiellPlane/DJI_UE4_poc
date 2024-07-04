@@ -4,8 +4,6 @@ import subprocess
 import os
 import sys
 from datetime import datetime
-
-
 repo = 'https://github.com/LiellPlane/DJI_UE4_poc.git'
 codepath = "/home/scambilight/DJI_UE4_poc"
 # **** might need sudo git config --global --add safe.directory /home/scambilight/DJI_UE4_poc
@@ -43,13 +41,15 @@ def run_command(command):
         return False
 
 try:
+    cargo_path = "/home/scambilight/.cargo/bin/cargo"
+
     # Change to the Rust project directory
     os.chdir(rust_project_dir)
 
-    # Build the Rust project
-    print("Building Rust project...")
-    if not run_command(["cargo", "build", "--release"]):
-        sys.exit(1)
+    # # Build the Rust project
+    # print("Building Rust project...")
+    # if not run_command([cargo_path, "build", "--release"]):
+    #     sys.exit(1)
 
     # Verify the executable was created
     executable_path = os.path.join(rust_project_dir, "target", "release", executable_name)

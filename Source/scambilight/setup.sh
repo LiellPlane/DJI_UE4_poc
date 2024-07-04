@@ -13,6 +13,7 @@ sudo pip3 install adafruit-circuitpython-neopixel
 sudo python3 -m pip install --force-reinstall adafruit-blinka
 sudo apt-get install git -y
 sudo apt-get install python3-skimage -y
+sudo apt install rustc cargo -y
 
 this needs fixed - hvae to remove EXIT 0 here first, add this
 sudo sh -c "echo 'sudo python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/bootstrap.py &' >>  /etc/rc.local"
