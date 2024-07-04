@@ -12,3 +12,15 @@ then plug MOSI into DIN (pin 19 on raspbnerry pi zero)
 check current SPI buffer size: cat /sys/module/spidev/parameters/bufsiz
 
 ok have to increase SPI buffer or breakup the call
+
+add spidev.bufsiz=xxxx to /boot/cmdline.txt
+
+
+add the following to allow SPI to run faster::
+# 10% overclock
+arm_freq=1100
+over_voltage=8
+sdram_freq=500
+sdram_over_voltage=2
+force_turbo=1
+boot_delay=1

@@ -6,7 +6,8 @@ use std::time::Instant;
 use ws2818_rgb_led_spi_driver::adapter_gen::WS28xxAdapter;
 use ws2818_rgb_led_spi_driver::adapter_spi::WS28xxSpiAdapter;
 use ws2818_rgb_led_spi_driver::encoding::encode_rgb;
-
+use std::thread;
+use std::time::Duration;
 use std::net::UdpSocket;
 use std::str;
 
@@ -84,7 +85,7 @@ fn main() -> std::io::Result<()> {
         
         let mut led_output_vec: Vec<&[u8]> = vec![&DEFAULT_COLOR; 300];
         let (amt, src) = socket.recv_from(&mut buf)?;
-        //println!("Received {} bytes from {}", amt, src);
+        println!("Received {} bytes from {}", amt, src);
         let start = Instant::now();
         // for byte in &buf[..amt] {
         //     print!("{}  ", byte);
@@ -103,10 +104,8 @@ fn main() -> std::io::Result<()> {
                 colour:parts[colour_start].to_vec(),
                 physical_led_pos:decode_as_u16(parts[physical_led_pos_start]),
             };
-            for &pos in &led_unit.physical_led_pos {
-                if (pos as usize) < led_output_vec.len() {
-                    led_output_vec[pos as usize] = &led_unit.colour;
-                }
+    
+            led_units.push(unit);
         }
 
 
@@ -130,11 +129,33 @@ fn main() -> std::io::Result<()> {
             ));
 
         }
+        // for (i, led_unit) in led_output_vec.iter().enumerate(){
+        //     println!("led_unit details: {:}, {:?}",i, led_unit);
+        // }
+        // for (i, led_unit) in display_bytes.iter().enumerate(){
+        //     println!("display_bytes details: {:}, {:?}",i, led_unit);
+        // }
+        // for led_unit in &led_units{
+        //     println!("Unit details: {:?}", led_unit);
+        // }
+        // for led_unit in &led_units{
+        //     println!("Unit details: {:?}", led_unit);
+        // }
+        // for (i, part) in parts.iter().enumerate() {
+        //     if i % 2 == 1 {
+        //         let u8_values: Vec<u8> = part.to_vec();
+        //         println!("cols {}: {:?}", i, u8_values);
+        //     } else {
+        //         let u16_values = decode_as_u16(part);
+        //         println!("positions {}: {:?}", i, u16_values);
+        //     }
+        // }
 
         let duration = start.elapsed();
         println!("Time elapsed decoding: {:?}", duration);
         let duration = start.elapsed();
         adapter.write_encoded_rgb(&display_bytes).unwrap();
         println!("Time elapsed setting leds: {:?}", duration);
+        //thread::sleep(Duration::from_millis(500));
     }
 }
