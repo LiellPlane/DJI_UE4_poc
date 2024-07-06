@@ -194,7 +194,7 @@ class TZAR_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(-90)
+        return(180)
 
     @property
     def screen_size(self):
