@@ -178,11 +178,11 @@ class TZAR_config(gun_config):
 
     @property
     def rly_torch(self):
-        return 1
+        return 2
 
     @property
     def rly_triggerclick(self):
-        return 2
+        return 1
 
     @property
     def RELAY_IO(self):
@@ -194,7 +194,7 @@ class TZAR_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(180)
+        return(270)
 
     @property
     def screen_size(self):
