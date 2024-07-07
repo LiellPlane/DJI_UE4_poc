@@ -1,0 +1,3 @@
+libcamera-hello --camera 0
+
+libcamera-hello --camera 1
