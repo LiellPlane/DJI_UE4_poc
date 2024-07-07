@@ -1,4 +1,4 @@
-$ vcgencmd get_throttled
+$   
 throttled=0x50005
 
 

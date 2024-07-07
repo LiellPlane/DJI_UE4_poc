@@ -22,7 +22,7 @@ import adafruit_lis3dh
 import json
 import img_processing
 import utils
-from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes
+from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv2_Cam_vidmodes
 #import imutils
 
 
@@ -255,6 +255,8 @@ class CSI_Camera_Async(factory.Camera_async):
             super().__init__(video_modes, factory.ImageLibrary)#CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, factory.ImageLibrary)#CsiCameraImageGen_GS)
+        elif video_modes == RPICAMv2_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGenRCAM3)
         else:
             raise Exception("no match for video mode input")
 
@@ -265,6 +267,8 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
+        elif video_modes == RPICAMv2_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGenRCAM3)
         else:
             raise Exception("no match for video mode input")
 
@@ -275,6 +279,8 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS)
+        elif video_modes == RPICAMv2_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGenRCAM3)
         else:
             raise Exception("no match for video mode input")
 
