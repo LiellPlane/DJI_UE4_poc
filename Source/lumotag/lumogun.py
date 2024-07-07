@@ -254,7 +254,7 @@ def main():
                     display.add_playerinfo_graphics(img, players, analysis)
 
                 with time_it("display image", debug=PRINT_DEBUG):
-                    display.display_method(img)
+                    display.display_method(next(image_capture_closerange))
                 
                 # if len(analysis) > 0:
                 #     file_system.save_image(cap_img)
