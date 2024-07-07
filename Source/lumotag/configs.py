@@ -62,6 +62,16 @@ class HQ_Cam_vidmodes(Enum):
 #     _3 = ["1332 × 990p120",(1332, 990)] 
 #     _1 = ["2028 × 1520p40",(2020, 1520)]
 
+
+class RPICAMv2_Cam_vidmodes(Enum):
+    """raspberry pi v2 model"""
+    _1 = ImagingMode(
+        camera_model="raspberry pi v2 model",
+        res_width_height=(1080, 1920),
+        doc_description="1080 x 1920p30",
+        shared_mem_reversed=True,special_notes="")
+
+
 class HQ_GS_Cam_vidmodes(Enum):
     """global shutter model"""
     _1 = ImagingMode(
@@ -153,7 +163,9 @@ class stryker_config(gun_config):
     @property
     def video_modes(self):
         return HQ_Cam_vidmodes
-
+    @property
+    def video_modes_closerange(self):
+        return HQ_Cam_vidmodes
     @property
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:
@@ -228,6 +240,10 @@ class TZAR_config(gun_config):
         return HQ_GS_Cam_vidmodes
 
     @property
+    def video_modes_closerange(self):
+        return RPICAMv2_Cam_vidmodes
+    
+    @property
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:
             self._UI_overlay = {
@@ -294,7 +310,9 @@ class simitzar_config(gun_config):
     @property
     def video_modes(self):
         return Fake_Cam_vidmodes
-
+    @property
+    def video_modes_closerange(self):
+        return Fake_Cam_vidmodes
     @property
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:

@@ -123,6 +123,10 @@ class gun_config(ABC):
         ...
     @property
     @abstractmethod
+    def video_modes_closerange(self):
+        ...
+    @property
+    @abstractmethod
     def ui_overlay(self) -> dict:
         ...
         

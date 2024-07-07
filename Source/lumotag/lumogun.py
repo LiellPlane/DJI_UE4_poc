@@ -64,6 +64,7 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture_closerange = lumogun.CSI_Camera_Synchro(GUN_CONFIGURATION.video_modes_closerange)
     slice_details = img_processing.get_internal_section(
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
@@ -253,7 +254,7 @@ def main():
                     display.add_playerinfo_graphics(img, players, analysis)
 
                 with time_it("display image", debug=PRINT_DEBUG):
-                    display.display_method(img)
+                    display.display_method(image_capture_closerange.gen_image())
                 
                 # if len(analysis) > 0:
                 #     file_system.save_image(cap_img)
