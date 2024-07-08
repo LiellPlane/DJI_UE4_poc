@@ -63,12 +63,22 @@ class HQ_Cam_vidmodes(Enum):
 #     _1 = ["2028 × 1520p40",(2020, 1520)]
 
 
-class RPICAMv2_Cam_vidmodes(Enum):
-    """raspberry pi v2 model"""
+class RPICAMv2Noir_Cam_vidmodes(Enum):
+    """raspberry pi v2 model
+1 : imx219 [3280x2464 10-bit RGGB] (/base/axi/pcie@120000/rp1/i2c@80000/imx219@10)
+    Modes: 'SRGGB10_CSI2P' : 640x480 [206.65 fps - (1000, 752)/1280x960 crop]
+                             1640x1232 [41.85 fps - (0, 0)/3280x2464 crop]
+                             1920x1080 [47.57 fps - (680, 692)/1920x1080 crop]
+                             3280x2464 [21.19 fps - (0, 0)/3280x2464 crop]
+           'SRGGB8' : 640x480 [206.65 fps - (1000, 752)/1280x960 crop]
+                      1640x1232 [83.70 fps - (0, 0)/3280x2464 crop]
+                      1920x1080 [47.57 fps - (680, 692)/1920x1080 crop]
+                      3280x2464 [21.19 fps - (0, 0)/3280x2464 crop]
+                      """
     _1 = ImagingMode(
         camera_model="raspberry pi v2 model",
-        res_width_height=(1080, 1920),
-        doc_description="1080 x 1920p30",
+        res_width_height=(1640, 1232),
+        doc_description="1640x1232 83fps binned",
         shared_mem_reversed=True,special_notes="")
 
 
@@ -165,7 +175,7 @@ class stryker_config(gun_config):
         return HQ_Cam_vidmodes
     @property
     def video_modes_closerange(self):
-        return HQ_Cam_vidmodes
+        return RPICAMv2Noir_Cam_vidmodes
     @property
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:
@@ -241,7 +251,7 @@ class TZAR_config(gun_config):
 
     @property
     def video_modes_closerange(self):
-        return RPICAMv2_Cam_vidmodes
+        return RPICAMv2Noir_Cam_vidmodes
     
     @property
     def ui_overlay(self) -> dict:

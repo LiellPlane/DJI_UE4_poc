@@ -21,8 +21,8 @@ def main():
     image_capture2 = lumogun.CSI_Camera_Synchro(GUN_CONFIGURATION.video_modes_closerange)
     while True:
         cap_img = next(image_capture)
-        print(cap_img[1,1,0])
+        print(cap_img[1,1])
         cap_img2 = next(image_capture2)
-        print(cap_img2[1,1,0])
+        print(cap_img2[1,1])
 if __name__ == '__main__':
     main()
