@@ -65,6 +65,7 @@ def main():
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture2 = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     slice_details = img_processing.get_internal_section(
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)

@@ -486,6 +486,7 @@ class Camera(ABC):
         self.cam_res = video_modes
         self._is_reversed = None
         self._res = None
+        self._id = str(uuid.uuid4())
 
     @abstractmethod
     def gen_image(self):
@@ -543,7 +544,7 @@ class Camera_synchronous_with_buffer(Camera):
 
     def __next__(self):
         img = self.gen_image()
-        memblock_0 = self.shared_mem_handler[0].mem_ids["0"]
+        memblock_0 = self.shared_mem_handler[0].mem_ids[self._id]
         shared_mem_1: np.ndarray = np.ndarray(
                 img.shape,
                 dtype=img.dtype,
@@ -559,12 +560,12 @@ class Camera_synchronous_with_buffer(Camera):
         # we add more than 1 instance of shared memory
         self.shared_mem_handler.append(SharedMemory(
                             obj_bytesize=img_byte_size,
-                            discrete_ids=["0"]
+                            discrete_ids=[self._id]
                                         ))
 
     def get_mem_buffers(self) -> dict:
         return (
-            {0: self.shared_mem_handler[0].mem_ids["0"]})
+            {0: self.shared_mem_handler[0].mem_ids[self._id]})
 
 class Camera_async_flipflop(Camera):
     """for each iteration call, the shared memory buffer is
@@ -582,7 +583,7 @@ class Camera_async_flipflop(Camera):
         self.process = None
         self.shared_mem_handler = []
         self.shared_mem_index = None
-        self._shared_id_index_name = "whatever"
+        self._shared_id_index_name = self._id + "whatever" # oh god this is turning into a mess
         self._store_res = None
         self.get_safe_mem_details = None
         if not self.get_is_reversed():
@@ -599,8 +600,8 @@ class Camera_async_flipflop(Camera):
 
     def get_mem_buffers(self) -> dict:
         return (
-            {0: self.shared_mem_handler[0].mem_ids["0"],
-            1: self.shared_mem_handler[1].mem_ids["1"]})
+            {0: self.shared_mem_handler[0].mem_ids[self._id + "0"],
+            1: self.shared_mem_handler[1].mem_ids[self._id + "1"]})
 
     def configure_shared_memory(self):
         # we need to get shape of image first to
@@ -614,20 +615,20 @@ class Camera_async_flipflop(Camera):
         # we add more than 1 instance of shared memory
         self.shared_mem_handler.append(SharedMemory(
                             obj_bytesize=img_byte_size,
-                            discrete_ids=["0"]
+                            discrete_ids=[self._id + "0"]
                                         ))
 
         self.shared_mem_handler.append(SharedMemory(
                             obj_bytesize=img_byte_size,
-                            discrete_ids=["1"]
+                            discrete_ids=[self._id + "1"]
                                         ))
         self.shared_mem_index = SharedMemory(
                             obj_bytesize=1,
                             discrete_ids=[self._shared_id_index_name]
                                         )
 
-        memblock_0 = self.shared_mem_handler[0].mem_ids["0"]
-        memblock_1 = self.shared_mem_handler[1].mem_ids["1"]
+        memblock_0 = self.shared_mem_handler[0].mem_ids[self._id + "0"]
+        memblock_1 = self.shared_mem_handler[1].mem_ids[self._id + "1"]
         memblock_index = self.shared_mem_index.mem_ids[
             self._shared_id_index_name]
 
@@ -658,7 +659,7 @@ class Camera_async_flipflop(Camera):
         #print("FLIPFLOP Requested Image, NP incoming:", mem_details)
         
         strm_buff = self.shared_mem_handler[
-            int(mem_details.index)].mem_ids[str(mem_details.index)].buf
+            int(mem_details.index)].mem_ids[self._id + str(mem_details.index)].buf
 
         img_byte_size = reduce(
             lambda acc, curr: acc * curr, self._store_res)
@@ -763,10 +764,10 @@ class Camera_async(Camera):
 
         self.shared_mem_handler = SharedMemory(
                             obj_bytesize=img_byte_size,
-                            discrete_ids=[str(self.res_select)]
+                            discrete_ids=[self._id]
                                         )
 
-        memblock = self.shared_mem_handler.mem_ids[str(self.res_select)]
+        memblock = self.shared_mem_handler.mem_ids[self._id]
 
         func_args = (
             self.handshake_queue,
@@ -792,7 +793,7 @@ class Camera_async(Camera):
                         )
         
         
-        strm_buff = self.shared_mem_handler.mem_ids[str(self.res_select)].buf
+        strm_buff = self.shared_mem_handler.mem_ids[self._id].buf
 
         _product = reduce((lambda x, y: x * y), self.get_res())
 
@@ -846,7 +847,7 @@ class Camera_async_buffer(Camera_async):
         super().__init__(video_modes, imagegen_cls)
 
     def get_img_buffer(self):
-        return self.shared_mem_handler.mem_ids["0"].buf
+        return self.shared_mem_handler.mem_ids[self._id].buf
 
     def release_next_image(self):
         _ = self.handshake_queue.get(

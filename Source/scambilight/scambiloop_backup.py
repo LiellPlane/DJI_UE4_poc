@@ -225,7 +225,7 @@ def main(action = None):
         proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
             scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
             curr_img=curr_img,
-            async_image_buf=cam.shared_mem_handler.mem_ids["0"],
+            async_image_buf=cam.shared_mem_handler.mem_ids[cam._id],
             Scambi_unit_LED_only=Scambi_unit_LED_only,
             subsample_cutoff=img_sample_controller.subsample_cut
         )
