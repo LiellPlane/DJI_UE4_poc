@@ -288,7 +288,7 @@ class Scambi_unit():
             if subsampling < 1:
                 raise Exception("problem with subsampling", self.fishwarp.bb_height, self.fishwarp.bb_width)
             col = self.get_dominant_colour_flat(img, subsampling)
-            col = self.average_colour(col, self.colour)
+            #col = self.average_colour(col, self.colour)
             #col = self.lerp_color(col)
             self.colour = tuple(int(i) for i in col)
             #return self.lerp_color(col)
