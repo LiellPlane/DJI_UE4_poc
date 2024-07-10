@@ -5,6 +5,7 @@ use std::time::Duration;
 use std::net::UdpSocket;
 use pyo3::wrap_pyfunction;
 use std::str;
+use byteorder::{ByteOrder, LittleEndian};
 
 /// Formats the sum of two numbers as string.
 #[pyfunction]
@@ -40,6 +41,17 @@ impl UdpSender {
     fn test_custom_obj(&self, scambiunits:Vec<ScambiUnitLedOnly>) -> PyResult<()> {
         for led_unit in &scambiunits{
             println!("Unit details: {:?}", led_unit);
+        }
+        let mut output_payload = Vec::new();
+        let udp_delimiter = b"\xAB\xCD\xEF";
+        for scambiunit in scambiunits {
+            let mut pos_bytes = vec![0u8; scambiunit.physical_led_pos.len() * 2];
+            LittleEndian::write_u16_into(&scambiunit.physical_led_pos, &mut pos_bytes);
+    
+            output_payload.extend_from_slice(&pos_bytes);
+            output_payload.push(udp_delimiter); // Delimiter between pos and colour
+            output_payload.extend_from_slice(&scambiunit.colour);
+            output_payload.push(udp_delimiter); // Delimiter between units
         }
         Ok(())
     }
