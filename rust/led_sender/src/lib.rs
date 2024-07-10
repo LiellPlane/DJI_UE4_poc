@@ -17,6 +17,14 @@ struct UdpSender {
     socket: UdpSocket,
 }
 
+
+#[derive(Debug, FromPyObject)]
+#[pyclass]
+struct ScambiUnitLedOnly {
+    colour: Vec<u8>,
+    physical_led_pos: Vec<u16>,
+}
+
 #[pymethods]
 impl UdpSender {
     #[new]
@@ -29,6 +37,13 @@ impl UdpSender {
         self.socket.send_to(message.as_bytes(), address).map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
         Ok(())
     }
+    fn test_custom_obj(&self, scambiunits:Vec<ScambiUnitLedOnly>) -> PyResult<()> {
+        for led_unit in &scambiunits{
+            println!("Unit details: {:?}", led_unit);
+        }
+        Ok(())
+    }
+
 }
 
 /// A Python module implemented in Rust.
