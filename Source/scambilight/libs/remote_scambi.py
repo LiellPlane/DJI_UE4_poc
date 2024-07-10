@@ -1,3 +1,7 @@
+
+#import led_sender
+#udp_sender = led_sender.UdpSender()
+#udp_sender.send_message("Hello, world!", "127.0.0.1:12345")
 import numpy as np
 from libs.collections import Scambi_unit_LED_only
 from libs.utils import time_it_sparse
@@ -6,10 +10,8 @@ from typing import Literal
 import multiprocessing
 import socket
 import atexit
-
+#import led_sender
 UDP_DELIMITER:bytes = b'\xAB\xCD\xEF' # be careful changing this - can mess up delimiting if for instance | or null
-
-
 
 class UDPMessageReceiver:
     def __init__(self, host='0.0.0.0', port=12345):

@@ -486,7 +486,7 @@ class Camera(ABC):
         self.cam_res = video_modes
         self._is_reversed = None
         self._res = None
-        self._id = str(uuid.uuid4())
+        self._id = str(uuid.uuid4())[:8]
 
     @abstractmethod
     def gen_image(self):

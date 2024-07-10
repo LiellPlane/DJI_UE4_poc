@@ -3,7 +3,7 @@ import sys
 import copy
 #abs_path = os.path.dirname(os.path.abspath(__file__))
 #scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
-#
+#s
 # print( os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -123,10 +123,10 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8 
     elif system == _OS.MAC_OS:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     else:
         raise Exception(system + " not supported")
