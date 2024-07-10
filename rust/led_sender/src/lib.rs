@@ -1,0 +1,41 @@
+use pyo3::prelude::*;
+use std::time::Instant;
+use std::thread;
+use std::time::Duration;
+use std::net::UdpSocket;
+use pyo3::wrap_pyfunction;
+use std::str;
+
+/// Formats the sum of two numbers as string.
+#[pyfunction]
+fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
+    Ok((a + b).to_string())
+}
+
+#[pyclass]
+struct UdpSender {
+    socket: UdpSocket,
+}
+
+#[pymethods]
+impl UdpSender {
+    #[new]
+    fn new() -> PyResult<Self> {
+        let socket = UdpSocket::bind("0.0.0.0:0").map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
+        Ok(UdpSender { socket })
+    }
+
+    fn send_message(&self, message: &str, address: &str) -> PyResult<()> {
+        self.socket.send_to(message.as_bytes(), address).map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
+        Ok(())
+    }
+}
+
+/// A Python module implemented in Rust.
+#[pymodule]
+fn led_sender(m: &Bound<'_, PyModule>) -> PyResult<()> {
+    let _socket = UdpSocket::bind("0.0.0.0:12345").expect("Failed to bind socket");
+    m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
+    m.add_class::<UdpSender>()?;
+    Ok(())
+}
