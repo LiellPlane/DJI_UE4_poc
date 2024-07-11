@@ -3,7 +3,7 @@ import json
 import subprocess
 import os
 import sys
-
+from datetime import datetime
 with open('/boot/MY_INFO.txt', 'r') as file:
     data = json.load(file)
     MY_ID = data["MY_ID"]
@@ -16,19 +16,26 @@ print(f"MY_ID: {MY_ID} url: {url}")
 #repo = 'https://github.com/LiellPlane/DJI_UE4_poc.git'
 #codepath = "/home/scambilight/DJI_UE4_poc"
 # **** might need sudo git config --global --add safe.directory /home/scambilight/DJI_UE4_poc
-if os.path.exists(codepath):
-    fetch_result = subprocess.run(['sudo', 'git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print(fetch_result)
-    with open('/home/lumotag/retardedlinuxpull.cunt', 'w') as file:
-        file.write(str(fetch_result))
+try:
+    # Get the current date and time
+    now = datetime.now()
+    printabletime = now.strftime("%Y-%m-%d_%H-%M-%S")
+    if os.path.exists(codepath):
+        fetch_result = subprocess.run(['sudo', 'git', 'pull', '--ff-only'], cwd=codepath, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        print(fetch_result)
+        with open('/home/lumotag/retardedlinuxpull.cunt', 'w') as file:
+            file.write(f"{printabletime}{str(fetch_result)}")
 
-else:
-    with open('/home/lumotag/retardedlinuxclone.cunt', 'w') as file:
-        file.write("trying to clone this cunt of a thing")
-    print(
-        "trying to clone repo from web - this is impossible state- should exist already")
-    subprocess.run(['sudo', 'git', 'clone', repo])
+    else:
+        with open('/home/lumotag/retardedlinuxclone.cunt', 'w') as file:
+            file.write(f"{printabletime}trying to clone this cunt of a thing")
+        print(
+            "trying to clone repo from web - this is impossible state- should exist already")
+        subprocess.run(['sudo', 'git', 'clone', repo])
 
+except Exception as e:
+    with open('/home/lumotag/retardedlinuxfailedclone.cunt', 'w') as file:
+        file.write(f"{printabletime}linux retarded cunt failure: {e}")
 
 # commands = [
 #     'cd',
