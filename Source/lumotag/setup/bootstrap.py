@@ -7,6 +7,7 @@ from datetime import datetime
 
 import urllib.request
 import time
+import random
 
 def check_internet_connection():
     websites = [
@@ -24,6 +25,11 @@ def check_internet_connection():
         except urllib.request.URLError:
             continue
     return False
+
+while not check_internet_connection():
+    print("No internet connection. Retrying in 5 seconds...")
+    time.sleep(5)
+
 
 
 with open('/boot/MY_INFO.txt', 'r') as file:
@@ -82,7 +88,15 @@ except Exception as e:
 #     subprocess.run(['git', 'clone', repo])
 
 sys.path.append(os.path.abspath(f"{codepath}/Source/lumotag/"))
+try:
+    with open('/home/lumotag/started.cunt', 'w') as file:
+        file.write(f"{printabletime} started script")
+    # Do the import
+    import lumogun
+    plop= lumogun.main()
+except Exception as e:
+    with open('/home/lumotag/retardedlumotagfail.cunt', 'w') as file:
+        file.write(f"{printabletime}linux retarded cunt failure: {e}")
 
-# Do the import
-import lumogun
-lumogun.main()
+with open('/home/lumotag/finished.cunt', 'w') as file:
+    file.write(f"{printabletime} finished script {plop}")
