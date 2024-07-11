@@ -49,14 +49,14 @@ sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
 
 sudo apt install espeak -y
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-pip install pyttsx3
+sudo pip install pyttsx3
 
 
 # rabbit MQ - seem to need this disabled again because 
 # hey lets make everything more complicated for zero
 # added value, idiots
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-python3 -m pip install pika
+sudo python3 -m pip install pika
 #-----------------------------
 
 sudo apt-get install imutils
@@ -71,7 +71,7 @@ sudo apt-get install imutils
 
 #shell does not output redirection so need sh -c with command in quotes
 sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
-sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
+sudo sh -c "echo '1 = sudo python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
 #sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
 
 # these instructions for stopping the screen blanking might be temporary only

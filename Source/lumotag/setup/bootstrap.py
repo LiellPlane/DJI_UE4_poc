@@ -4,6 +4,28 @@ import subprocess
 import os
 import sys
 from datetime import datetime
+
+import urllib.request
+import time
+
+def check_internet_connection():
+    websites = [
+        "http://www.google.com",
+        "http://www.amazon.com",
+        "http://www.microsoft.com",
+        "http://www.apple.com",
+        "http://www.cloudflare.com"
+    ]
+    
+    for site in random.sample(websites, len(websites)):
+        try:
+            urllib.request.urlopen(site, timeout=1)
+            return True
+        except urllib.request.URLError:
+            continue
+    return False
+
+
 with open('/boot/MY_INFO.txt', 'r') as file:
     data = json.load(file)
     MY_ID = data["MY_ID"]
@@ -29,10 +51,9 @@ try:
     else:
         with open('/home/lumotag/retardedlinuxclone.cunt', 'w') as file:
             file.write(f"{printabletime}trying to clone this cunt of a thing")
-        print(
-            "trying to clone repo from web - this is impossible state- should exist already")
-        subprocess.run(['sudo', 'git', 'clone', repo])
-
+        fetch_result = subprocess.run(['sudo', 'git', 'clone', repo], cwd="/home/lumotag/", text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        with open('/home/lumotag/retardedlinuxclone.cunt', 'w') as file:
+            file.write(f"{printabletime}{str(fetch_result)}")
 except Exception as e:
     with open('/home/lumotag/retardedlinuxfailedclone.cunt', 'w') as file:
         file.write(f"{printabletime}linux retarded cunt failure: {e}")
