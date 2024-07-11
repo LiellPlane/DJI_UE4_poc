@@ -38,7 +38,13 @@ impl UdpSender {
         self.socket.send_to(message.as_bytes(), address).map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
         Ok(())
     }
-    fn test_custom_obj(&self, scambiunits:Vec<ScambiUnitLedOnly>) -> PyResult<()> {
+
+    fn send_message_bytes(&self, message: &[u8], address: &str) -> PyResult<()> {
+        self.socket.send_to(message, address).map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
+        Ok(())
+    }
+
+    fn send_udp_scambis(&self, scambiunits:Vec<ScambiUnitLedOnly>, address: &str) -> PyResult<()> {
         for led_unit in &scambiunits{
             println!("Unit details: {:?}", led_unit);
         }
@@ -49,9 +55,11 @@ impl UdpSender {
             LittleEndian::write_u16_into(&scambiunit.physical_led_pos, &mut pos_bytes);
     
             output_payload.extend_from_slice(&pos_bytes);
-            output_payload.push(udp_delimiter); // Delimiter between pos and colour
+            output_payload.extend_from_slice(udp_delimiter);
             output_payload.extend_from_slice(&scambiunit.colour);
-            output_payload.push(udp_delimiter); // Delimiter between units
+            output_payload.extend_from_slice(udp_delimiter);
+            self.socket.send_to(&output_payload[..], address).map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
+
         }
         Ok(())
     }

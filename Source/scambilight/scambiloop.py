@@ -419,7 +419,7 @@ if __name__ == "__main__":
     import led_sender
     udp_sender = led_sender.UdpSender()
     udp_sender.send_message("Hello, world!", "127.0.0.1:12345")
-    udp_sender.test_custom_obj([Scambi_unit_LED_only([1,2,3], [1,2,3])])
+    udp_sender.send_udp_scambis([Scambi_unit_LED_only([1,2,3], [300,400,500])], "127.0.0.1:12345")
     main()
     #main_test()
     
