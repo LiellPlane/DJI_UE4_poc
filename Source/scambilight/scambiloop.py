@@ -417,13 +417,14 @@ def handler(event, context):
 
 if __name__ == "__main__":
     import led_sender
+    udp_sender = led_sender.UdpSender()
     #kill $(lsof -ti :12345)
     timings = deque(maxlen=100)
-    udp_sender = led_sender.UdpSender()
+    
     udp_sender.send_message("Hello, world!", "127.0.0.1:12345")
     for i in range(0, 300):
         with time_it_return_details("execute leds", timings):
-            udp_sender.send_udp_scambis([Scambi_unit_LED_only([1,2,3], [i,i,i])], "127.0.0.1:12345")
+            udp_sender.send_udp_scambis([Scambi_unit_LED_only([200,200,200], [i,i+1,i+2])], "liell-p-macbookpro:12345")
         print(timings)
         timings.clear()
         time.sleep(1)
