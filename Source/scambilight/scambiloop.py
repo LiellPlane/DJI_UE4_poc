@@ -416,20 +416,44 @@ def handler(event, context):
     )
 
 if __name__ == "__main__":
-    main()
-    # import led_sender
-    # udp_sender = led_sender.UdpSender()
-    # #kill $(lsof -ti :12345)
-    # timings = deque(maxlen=100)
+    #main()
+    import led_sender
+    from itertools import permutations
+    from itertools import islice
+    udp_sender = led_sender.UdpSender()
+    #kill $(lsof -ti :12345)
+    timings = deque(maxlen=100)
+    import random
+    udp_sender.send_message("Hello, world!", "127.0.0.1:12345")
+    colours = [
+        [255,0,0],
+        [0,255,0],
+        [0,0,255]
+    ]
+
     
-    # udp_sender.send_message("Hello, world!", "127.0.0.1:12345")
-    # for i in range(0, 300):
-    #     with time_it_return_details("execute leds", timings):
-    #         udp_sender.send_udp_scambis([Scambi_unit_LED_only([200,200,200], [i,i+1,i+2])], "scambilightled.broadband:12345")
-    #     print(timings)
-    #     timings.clear()
-    #     time.sleep(1)
-    # main()
+
+    def chunk_list(lst, chunk_size):
+        it = iter(lst)
+        return list(iter(lambda: list(islice(it, chunk_size)), []))
+
+    colors = [0, 125, 254]
+    color_permutations = list(permutations(colors, 3))
+    positions = chunk_list([i for i in range(1,300)], 5)
+    
+
+    
+    for i in range(0, 300):
+        colour = random.choice(color_permutations)
+        with time_it_return_details("execute leds", timings):
+            udp_sender.send_udp_scambis(
+                [Scambi_unit_LED_only(colour, i ) for i in positions],
+                "scambilightled.broadband:12345"
+                )
+        print(timings)
+        timings.clear()
+        time.sleep(0.03)
+    main()
     #main_test()
     
     # body = json.dumps({
