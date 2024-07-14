@@ -1,7 +1,9 @@
 import enum
 from dataclasses import dataclass
 from typing import Union
-
+from numpy import ndarray
+from typing import Any
+from typing import Annotated
 
 def clamp(n, minn, maxn):
     return max(min(maxn, n), minn)
@@ -29,16 +31,26 @@ class LEDColours(tuple, enum.Enum):
     Magenta = (255,0,255)
     Cyan = (255,255,0)
 
+def u8_validator(value: int) -> bool:
+    return 0 <= value <= 255
 
+def u16_validator(value: int) -> bool:
+    return 0 <= value <= 65535
+
+U8 = Annotated[int, u8_validator]
+U16 = Annotated[int, u16_validator]
 @dataclass
 class Scambi_unit_LED_only():
     """cheat class so we don't have to pass the whole
     object to a class which expects these members
     
     not the best place for this but had to avoid circular imports"""
-    colour: any
-    physical_led_pos: any
-
+    colour:  tuple[U8, U8, U8]
+    physical_led_pos: list[U16]
+# struct ScambiUnitLedOnly {
+#     colour: Vec<u8>,
+#     physical_led_pos: Vec<u16>,
+# }
 
 @dataclass
 class LedSpacing():

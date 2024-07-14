@@ -25,7 +25,7 @@ from libs.configs import DaisybankLedSpacing, PhysicalTV_details
 
 PLATFORM = get_platform()
 
-
+we are using the rust code now!! obsolete. Find it in "RUST" folder
 1/0
 
 def main():

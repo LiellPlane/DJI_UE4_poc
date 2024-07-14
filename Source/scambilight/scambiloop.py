@@ -3,7 +3,7 @@ import sys
 import copy
 #abs_path = os.path.dirname(os.path.abspath(__file__))
 #scambi_path = abs_path + "/DJI_UE4_poc/Source/scambilight"
-#
+#s
 # print( os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -123,10 +123,10 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8 
     elif system == _OS.MAC_OS:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     else:
         raise Exception(system + " not supported")
@@ -416,8 +416,20 @@ def handler(event, context):
     )
 
 if __name__ == "__main__":
-
     main()
+    # import led_sender
+    # udp_sender = led_sender.UdpSender()
+    # #kill $(lsof -ti :12345)
+    # timings = deque(maxlen=100)
+    
+    # udp_sender.send_message("Hello, world!", "127.0.0.1:12345")
+    # for i in range(0, 300):
+    #     with time_it_return_details("execute leds", timings):
+    #         udp_sender.send_udp_scambis([Scambi_unit_LED_only([200,200,200], [i,i+1,i+2])], "scambilightled.broadband:12345")
+    #     print(timings)
+    #     timings.clear()
+    #     time.sleep(1)
+    # main()
     #main_test()
     
     # body = json.dumps({

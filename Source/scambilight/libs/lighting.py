@@ -204,11 +204,14 @@ class SimLeds(Leds):
 class RemoteLeds(Leds):
 
     def __init__(self, site_led_layout):
+        import led_sender
+        udp_sender = led_sender.UdpSender()
         super().__init__(site_led_layout)
-        self.sender = UDPTransmitProcessWrapper(
-            host=self.LED_layout.receiver_hostname,
-            port=self.LED_layout.port
-        )
+        # self.sender = UDPTransmitProcessWrapper(
+        #     host=self.LED_layout.receiver_hostname,
+        #     port=self.LED_layout.port
+        # )
+        self.sender = udp_sender
         self.leds_to_send = []
 
 
@@ -258,8 +261,8 @@ class RemoteLeds(Leds):
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
         #with time_it_sparse("send scambis over UDP"):
-        self.sender.send_scambis(self.leds_to_send)
-
+        self.sender.send_udp_scambis(self.leds_to_send, "scambilightled.broadband:12345")
+        #test_sender.send_udp_scambis(self.leds_to_send, "scambilightled.broadband:12345")
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
