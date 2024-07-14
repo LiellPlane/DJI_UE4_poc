@@ -78,6 +78,7 @@ fn main() -> std::io::Result<()> {
     let num_leds: u32 = 300;
     // Bind the UDP socket to an address and port
     let socket = UdpSocket::bind("0.0.0.0:12345")?;
+    socket.set_send_buffer_size(1)?;
     println!("Listening on 0.0.0.0:12345");
 
     let mut buf = [0; 1000];
