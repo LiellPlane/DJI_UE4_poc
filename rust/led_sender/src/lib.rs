@@ -6,7 +6,7 @@ use std::net::UdpSocket;
 use pyo3::wrap_pyfunction;
 use std::str;
 use byteorder::{ByteOrder, LittleEndian};
-
+use std::io::Write;
 /// Formats the sum of two numbers as string.
 #[pyfunction]
 fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
@@ -44,23 +44,26 @@ impl UdpSender {
         Ok(())
     }
 
-    fn send_udp_scambis(&self, scambiunits:Vec<ScambiUnitLedOnly>, address: &str) -> PyResult<()> {
-        for led_unit in &scambiunits{
-            println!("Unit details: {:?}", led_unit);
-        }
-        let mut output_payload = Vec::new();
+    fn send_udp_scambis(&self, scambiunits: Vec<ScambiUnitLedOnly>, address: &str) -> PyResult<()> {
         let udp_delimiter = b"\xAB\xCD\xEF";
+        let unit_size = scambiunits[0].physical_led_pos.len() * 2 + udp_delimiter.len() * 2 + scambiunits[0].colour.len();
+        let total_size = unit_size * scambiunits.len();
+        
+        let mut output_payload = Vec::with_capacity(total_size);
+        
         for scambiunit in scambiunits {
             let mut pos_bytes = vec![0u8; scambiunit.physical_led_pos.len() * 2];
             LittleEndian::write_u16_into(&scambiunit.physical_led_pos, &mut pos_bytes);
-    
-            output_payload.extend_from_slice(&pos_bytes);
-            output_payload.extend_from_slice(udp_delimiter);
-            output_payload.extend_from_slice(&scambiunit.colour);
-            output_payload.extend_from_slice(udp_delimiter);
-            self.socket.send_to(&output_payload[..], address).map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
-
+            
+            output_payload.write_all(&pos_bytes).unwrap();
+            output_payload.write_all(udp_delimiter).unwrap();
+            output_payload.write_all(&scambiunit.colour).unwrap();
+            output_payload.write_all(udp_delimiter).unwrap();
         }
+
+        self.socket.send_to(&output_payload, address)
+            .map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
+    
         Ok(())
     }
 
