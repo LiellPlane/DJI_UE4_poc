@@ -8,6 +8,8 @@ clone_log="/home/scambilight/retardedlinuxgitclone.cunt"
 
 folder="/home/scambilight/DJI_UE4_poc"
 
+# Delete existing log files if they exist
+rm -f "$pull_log" "$clone_log"
 
 # Function to check if internet connection is available
 check_internet() {
