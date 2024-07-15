@@ -16,4 +16,7 @@ sudo apt-get install python3-skimage -y
 sudo apt install rustc cargo -y
 
 this needs fixed - hvae to remove EXIT 0 here first, add this
-sudo sh -c "echo 'sudo python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/bootstrap.py &' >>  /etc/rc.local"
+
+
+# sudo sh -c "echo 'bash /home/scambilight/update_repo.sh' >>  /etc/rc.local"
+sudo sh -c "echo 'bash /home/scambilight/update_repo.sh && python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/bootstrap_remote_leds.py' >>  /etc/rc.local"
