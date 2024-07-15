@@ -8,6 +8,15 @@ clone_log="/home/scambilight/retardedlinuxgitclone.cunt"
 
 folder="/home/scambilight/DJI_UE4_poc"
 
+
+# Define the user you want to run the script as
+RUN_AS_USER="scambilight"
+
+# Function to run commands as the specified user
+run_as_user() {
+    su - $RUN_AS_USER -c "$1"
+}
+
 # Delete existing log files if they exist
 rm -f "$pull_log" "$clone_log"
 
@@ -23,12 +32,18 @@ while ! check_internet; do
 done
 echo "Internet connection established."
 
+# if [ -d "$folder" ]; then
+#     cd /home/scambilight/DJI_UE4_poc
+#     git pull --ff-only > "$pull_log" 2>&1
+# else
+#     cd /home/scambilight
+#     git clone https://github.com/LiellPlane/DJI_UE4_poc.git > "$clone_log" 2>&1
+# fi
+
 if [ -d "$folder" ]; then
-    cd /home/scambilight/DJI_UE4_poc
-    git pull --ff-only > "$pull_log" 2>&1
+    run_as_user "cd /home/scambilight/DJI_UE4_poc && git pull --ff-only > $pull_log 2>&1"
 else
-    cd /home/scambilight
-    git clone https://github.com/LiellPlane/DJI_UE4_poc.git > "$clone_log" 2>&1
+    run_as_user "cd /home/scambilight && git clone https://github.com/LiellPlane/DJI_UE4_poc.git > $clone_log 2>&1"
 fi
 
 
