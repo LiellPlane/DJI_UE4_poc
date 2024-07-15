@@ -5,7 +5,7 @@
 
 pull_log="/home/scambilight/retardedlinuxgitpull.cunt"
 clone_log="/home/scambilight/retardedlinuxgitclone.cunt"
-
+rust_build_log="/home/scambilight/retardedlinuxrustbuild.cunt"
 folder="/home/scambilight/DJI_UE4_poc"
 
 
@@ -48,4 +48,8 @@ fi
 
 
 cd /home/scambilight/
+
+cd /home/scambilight/DJI_UE4_poc/rust/combine_udp_led/
+
+run_as_user "cd /home/scambilight/DJI_UE4_poc/rust/combine_udp_led/ && cargo build --release > $rust_build_log 2>&1"
 
