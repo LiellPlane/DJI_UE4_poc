@@ -8,10 +8,11 @@ use ws2818_rgb_led_spi_driver::adapter_spi::WS28xxSpiAdapter;
 use ws2818_rgb_led_spi_driver::encoding::encode_rgb;
 use std::thread;
 use std::time::Duration;
-use std::net::UdpSocket;
 use std::str;
-
+use socket2::{Socket, Domain, Type};
+use std::io::Result;
 use rand::Rng;
+use std::net::{UdpSocket, SocketAddr};
 #[derive(Debug)]
 struct ScambiUnitLedOnly {
     colour: Vec<u8>,
@@ -73,9 +74,26 @@ fn main() -> std::io::Result<()> {
     let mut adapter = WS28xxSpiAdapter::new("/dev/spidev0.0").unwrap();
     let num_leds: u32 = 300;
     // Bind the UDP socket to an address and port
-    let socket = UdpSocket::bind("0.0.0.0:12345")?;
-    //socket.set_recv_buffer_size(1)?;
-    println!("Listening on 0.0.0.0:12345");
+    //let socket = UdpSocket::bind("0.0.0.0:12345")?;
+    // Create a socket2::Socket
+    // Create a socket2::Socket
+    let socket = Socket::new(Domain::IPV4, Type::DGRAM, None)?;
+
+    // Set send buffer size to 0
+    socket.set_send_buffer_size(0)?;
+
+    // Set receive buffer size to 0
+    socket.set_recv_buffer_size(0)?;
+
+    // Bind the socket2::Socket
+    let addr: SocketAddr = "0.0.0.0:12345".parse().unwrap();
+    socket.bind(&addr.into())?;
+
+    // Convert socket2::Socket to std::net::UdpSocket
+    let socket: UdpSocket = socket.into();
+
+    // Print the port we're actually listening on
+    println!("Listening on: {}", socket.local_addr()?);
 
     let mut buf = [0; 1000];
     
