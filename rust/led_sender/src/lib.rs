@@ -2,9 +2,10 @@ use pyo3::prelude::*;
 use std::time::Instant;
 use std::thread;
 use std::time::Duration;
-use std::net::UdpSocket;
+use std::net::{UdpSocket, SocketAddr};
 use pyo3::wrap_pyfunction;
 use std::str;
+use socket2::{Socket, Domain, Type};
 use byteorder::{ByteOrder, LittleEndian};
 use std::io::Write;
 /// Formats the sum of two numbers as string.
@@ -30,7 +31,14 @@ struct ScambiUnitLedOnly {
 impl UdpSender {
     #[new]
     fn new() -> PyResult<Self> {
-        let socket = UdpSocket::bind("0.0.0.0:0").map_err(PyErr::new::<pyo3::exceptions::PyOSError, _>)?;
+        let socket = Socket::new(Domain::IPV4, Type::DGRAM, None)?;
+
+        socket.set_send_buffer_size(0)?;
+        socket.set_recv_buffer_size(0)?;
+        let addr: SocketAddr = "0.0.0.0:12345".parse().unwrap();
+        socket.bind(&addr.into())?;
+        let socket: UdpSocket = socket.into();
+        println!("Listening on: {}", socket.local_addr()?);
         Ok(UdpSender { socket })
     }
 
