@@ -20,7 +20,8 @@ from libs.utils import (
     _OS,
     time_it_sparse)
 import random
-
+from itertools import permutations
+from itertools import islice
 
 if get_platform() == _OS.RASPBERRY:
     # sorry not sorry
@@ -187,10 +188,13 @@ class ImageLibrary(ImageGenerator):
         # latch[:, :, 1] = latch[:, :, 1] * random.random()
         # latch[:, :, 2] = latch[:, :, 2] * random.random()
         colours = [[255,0,0],[0,255,0],[0,0,255]]
-        latch[:] =random.choice(colours)
+        colors = [0, 125, 255]
+        color_permutations = list(permutations(colors, 3))
+        latch[:] =random.choice(color_permutations)
         #latch[:, :, 0] = 0
         #latch[:, :, 1] = random.randint(0,255)
         #latch[:, :, 2] = 0
+        time.sleep(1)
         return latch
     
 

@@ -41,15 +41,10 @@ def run_command(command):
         return False
 
 try:
-    cargo_path = "/home/scambilight/.cargo/bin/cargo"
 
     # Change to the Rust project directory
     os.chdir(rust_project_dir)
 
-    # # Build the Rust project
-    # print("Building Rust project...")
-    # if not run_command([cargo_path, "build", "--release"]):
-    #     sys.exit(1)
 
     # Verify the executable was created
     executable_path = os.path.join(rust_project_dir, "target", "release", executable_name)
@@ -63,5 +58,7 @@ try:
         sys.exit(1)
 
 except Exception as e:
-    print(f"An unexpected error occurred: {e}")
-    sys.exit(1)
+    now = datetime.now()
+    printabletime = now.strftime("%Y-%m-%d_%H-%M-%S")
+    with open('/home/lumotag/retardedstartrust.cunt', 'w') as file:
+        file.write(f"{printabletime}linux retarded cunt failure: {e}")
