@@ -42,7 +42,8 @@ from remote_scambi import (
     transform_scambits_for_UDP,
     transform_UDP_message_to_scambis,
     UDPMessageSender,
-    UDPTransmitProcessWrapper
+    UDPTransmitProcessWrapper,
+    UDPTrasmit_RUSTsync
 )
 
 
@@ -188,6 +189,7 @@ class Leds(ABC):
             self.set_led_func(i, black)
         self.execute_LEDS()
 
+
 class SimLeds(Leds):
 
 
@@ -198,9 +200,7 @@ class SimLeds(Leds):
         print("progress bar", min(1, round(pc_done, 2)))
 
 
-
-
-
+   
 class RemoteLeds(Leds):
 
     def __init__(self, site_led_layout):
@@ -224,36 +224,7 @@ class RemoteLeds(Leds):
 
     def set_LED_values(self, scambi_units: list[Scambi_unit_LED_only]):
 
-        # calculate size of LED so we know how many to send in a packet (MTU)
-        #single_Led_size_bytes = sys.getsizeof(json.dumps({300:(255,255,255)}))
-        #udp_payload_bytes = 700
-        #leds_per_packet = udp_payload_bytes // single_Led_size_bytes
-
-
-        # self.leds_to_send = []
-        # cnt = 0
-
-        # for scambiunit in scambi_units:
-        #     pos = scambiunit.physical_led_pos
-        #     col = tuple(reversed(scambiunit.colour))
-        #     for p in pos:
-        #         if cnt%leds_per_packet == 0:
-        #             self.leds_to_send.append({})
-        #         self.leds_to_send[-1][p] = col
-        #         cnt += 1
-
-
         self.leds_to_send = scambi_units # transform_scambits_for_UDP(scambi_units)
-        # self test
-        #scambounits = transform_UDP_message_to_scambis(self.leds_to_send)
-        # for index, scambiunit in enumerate(scambounits):
-        #     pos = list(scambiunit.physical_led_pos)
-        #     col = tuple(reversed(scambiunit.colour))
-        #     if len(col)!=3:
-        #         raise Exception("bad colour!")
-        #     for p in pos:
-        #         pass
-        #plop=1
 
     def execute_LEDS(self):
         #for led_packt in self.leds_to_send:
@@ -265,6 +236,19 @@ class RemoteLeds(Leds):
         print("progress bar", min(1, round(pc_done, 2)))
 
 
+class RemoteLedsRust(RemoteLeds):
+
+    def __init__(self, site_led_layout):
+        # Call the __init__ of the base class of RemoteLeds
+        super(RemoteLeds, self).__init__(site_led_layout)
+        self.sender = UDPTrasmit_RUSTsync(
+            host=self.LED_layout.receiver_hostname,
+            port=self.LED_layout.port
+        )
+        self.leds_to_send = []
+
+
+    
 class ws281Leds(Leds):
     
     def __init__(self, site_led_layout):

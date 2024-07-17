@@ -6,9 +6,9 @@ from typing import Literal
 import multiprocessing
 import socket
 import atexit
+from abc import ABC, abstractmethod
 
 UDP_DELIMITER:bytes = b'\xAB\xCD\xEF' # be careful changing this - can mess up delimiting if for instance | or null
-
 
 
 class UDPMessageReceiver:
@@ -37,6 +37,7 @@ class UDPMessageReceiver:
             print(f"Error receiving message: {e}")
             return None, None
 
+
 class UDPListenerProcessWrapper:
     def __init__(self):
         self.queue = multiprocessing.Queue(maxsize=1)
@@ -59,17 +60,41 @@ class UDPListenerProcessWrapper:
                 _queue.put(message)
 
 
-class UDPTransmitProcessWrapper:
+class UDPTransmitProcess(ABC):
     def __init__(self, host, port):
         self.host=host
         self.port=port
+    @abstractmethod
+    def send_scambis(self, scambis:list[Scambi_unit_LED_only]):
+        ...
+
+
+class UDPTrasmit_RUSTsync(UDPTransmitProcess):
+
+    def __init__(self, *args, **kwargs):
+        """rust implementation to encode the scambis and send them
+        not asynchronous"""
+        super().__init__(*args, **kwargs)
+        import led_sender # this is a pyo3 rust module - import it here rather than top level so its easier to transplant
+        self.sender = led_sender.UdpSender()
+
+    def send_scambis(self, scambis: list[Scambi_unit_LED_only]):
+        self.sender.send_udp_scambis(
+            scambis,
+            f"{self.host}:{self.port}"
+        )
+
+
+class UDPTransmitProcessWrapper(UDPTransmitProcess):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.queue = multiprocessing.Queue(maxsize=1)
         self.process = multiprocessing.Process(target=self.worker_process, args=(self.queue,))
         # Set daemon to True so that the process will be terminated when the main thread exits
         self.process.daemon = True
         self.process.start()
 
-    def send_scambis(self, scambis:list[Scambi_unit_LED_only]):
+    def send_scambis(self, scambis: list[Scambi_unit_LED_only]):
         return self.queue.put(scambis)
 
     def worker_process(self, _queue):
@@ -78,9 +103,10 @@ class UDPTransmitProcessWrapper:
         for the receiver"""
         transmitter = UDPMessageSender(host=self.host, port=self.port)
         while True:
-            scambis:list[Scambi_unit_LED_only] = _queue.get(block=True, timeout=None)
+            scambis: list[Scambi_unit_LED_only] = _queue.get(block=True, timeout=None)
             leds_to_send = transform_scambits_for_UDP(scambis)
             transmitter.send_message(leds_to_send)
+
 
 class UDPMessageSender:
     def __init__(self, host='scambilightled.broadband', port=12345):
