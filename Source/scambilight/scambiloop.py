@@ -28,7 +28,7 @@ from libs.scambiunits import (
 from libs.collections import LEDColours, Scambi_unit_LED_only
 import libs.async_cam_lib as async_cam_lib
 import libs.fisheye_lib as fisheye_lib
-from libs.lighting import SimLeds, ws281Leds, RemoteLeds
+from libs.lighting import SimLeds, ws281Leds, RemoteLeds, RemoteLedsRust, UDPTrasmit_RUSTsync
 from libs.configs import (
     DaisybankLedSpacing,
     ScambiLight_Cam_vidmodes,
@@ -123,10 +123,10 @@ def main(action = None, sessiontoken = None):
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#ws281Leds
         cores_for_col_dect = 2 # tends to crash higher than 2
     elif system == _OS.LINUX:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8 
     elif system == _OS.MAC_OS:
-        led_subsystem = ws281Leds(DaisybankLedSpacing)
+        led_subsystem = RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
     else:
         raise Exception(system + " not supported")
