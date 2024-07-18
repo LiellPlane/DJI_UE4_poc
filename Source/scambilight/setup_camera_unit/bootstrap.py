@@ -19,6 +19,7 @@ codepath = "/home/scambilight/DJI_UE4_poc"
 #     subprocess.run(['sudo', 'git', 'clone', repo])
 
 sys.path.append(os.path.abspath(f"{codepath}/Source/scambilight/"))
+sys.path.append("/home/scambilight/for_rust/lib/python3.9/site-packages")
 
 
 try:

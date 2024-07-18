@@ -20,12 +20,13 @@ sudo apt install rustc cargo -y
 # this stuff is just for rust UDP sender - it needs a venv
 curl https://sh.rustup.rs -sSf | sh
 sudo  apt-get install python3-venv
-python -m venv ~/for_rust
+python -m venv  --system-site-packages ~/for_rust
 source ~/for_rust/bin/activate
-pip install numpy
-pip install install rpi_ws281x
-pip3 install adafruit-circuitpython-neopixel
-python3 -m pip install --force-reinstall adafruit-blinka
+
+# something here breaks numppy
+#pip install install rpi_ws281x
+#pip3 install adafruit-circuitpython-neopixel
+#python3 -m pip install --force-reinstall adafruit-blinka
 pip install maturin
 # end of rust /maturin venv stuff
 
