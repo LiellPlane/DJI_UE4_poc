@@ -28,5 +28,7 @@ try:
 except Exception as e:
     now = datetime.now()
     printabletime = now.strftime("%Y-%m-%d_%H-%M-%S")
+    home_dir = os.path.expanduser("~")
+    error_file = os.path.join(home_dir, "retardedstartrust.cunt")
     with open('/home/lumotag/retardedstartrust.cunt', 'w') as file:
         file.write(f"{printabletime}linux retarded cunt failure: {e}")
