@@ -1,3 +1,8 @@
+//actviate the venv
+//then use maturin develop --release in the project folder
+//if built scucesfully, this module should now be available as a normal
+//pyhon module in the venv context
+
 use pyo3::prelude::*;
 use std::time::Instant;
 use std::thread;
@@ -33,8 +38,8 @@ impl UdpSender {
     fn new() -> PyResult<Self> {
         let socket = Socket::new(Domain::IPV4, Type::DGRAM, None)?;
 
-        socket.set_send_buffer_size(0)?;
-        socket.set_recv_buffer_size(0)?;
+        //socket.set_send_buffer_size(1)?;
+        //socket.set_recv_buffer_size(1)?;
         let addr: SocketAddr = "0.0.0.0:12345".parse().unwrap();
         socket.bind(&addr.into())?;
         let socket: UdpSocket = socket.into();

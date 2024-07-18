@@ -79,10 +79,11 @@ class UDPTrasmit_RUSTsync(UDPTransmitProcess):
         self.sender = led_sender.UdpSender()
 
     def send_scambis(self, scambis: list[Scambi_unit_LED_only]):
-        self.sender.send_udp_scambis(
-            scambis,
-            f"{self.host}:{self.port}"
-        )
+        if scambis is not None and len(scambis)>0:
+            self.sender.send_udp_scambis(
+                scambis,
+                f"{self.host}:{self.port}"
+            )
 
 
 class UDPTransmitProcessWrapper(UDPTransmitProcess):
