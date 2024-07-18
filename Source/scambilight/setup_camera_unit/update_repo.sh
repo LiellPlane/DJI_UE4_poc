@@ -18,7 +18,7 @@ run_as_user() {
 }
 
 # Delete existing log files if they exist
-rm -f "$pull_log" "$clone_log" "$rust_build_log"
+rm -f "$pull_log" "$clone_log"
 
 # Function to check if internet connection is available
 check_internet() {
@@ -45,4 +45,11 @@ if [ -d "$folder" ]; then
 else
     run_as_user "cd /home/scambilight && git clone https://github.com/LiellPlane/DJI_UE4_poc.git > $clone_log 2>&1"
 fi
+
+
+cd /home/scambilight/
+
+#cd /home/scambilight/DJI_UE4_poc/rust/combine_udp_led/
+
+#run_as_user "cd /home/scambilight/DJI_UE4_poc/rust/combine_udp_led/ && cargo build --release > $rust_build_log 2>&1"
 

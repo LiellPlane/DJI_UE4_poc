@@ -16,6 +16,14 @@ sudo apt-get install python3-skimage -y
 sudo apt install rustc cargo -y
 
 
+sudo  apt-get install python3-venv
+
+python -m venv ~/for_rust
+source ~/for_rust/bin/activate
+pip install numpy
+pip install install rpi_ws281x
+pip3 install adafruit-circuitpython-neopixel
+python3 -m pip install --force-reinstall adafruit-blinka
 
 
 !!!! fix add this!!
@@ -27,4 +35,4 @@ this needs fixed - hvae to remove EXIT 0 here first, add this
 
 
 # sudo sh -c "echo 'bash /home/scambilight/update_repo.sh' >>  /etc/rc.local"
-sudo sh -c "echo 'bash /home/scambilight/update_repo.sh && python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/bootstrap.py' >>  /etc/rc.local"
+sudo sh -c "echo 'bash /home/scambilight/update_repo.sh && python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/setup_camera_unit/bootstrap.py' >>  /etc/rc.local"

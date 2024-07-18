@@ -21,4 +21,4 @@ copy update_repo_scambileds file to /home/ so the autostart can pick it up
 
 this needs fixed - hvae to remove EXIT 0 here first, add this
 # sudo sh -c "echo 'bash /home/scambilight/update_repo.sh' >>  /etc/rc.local"
-sudo sh -c "echo 'bash /home/scambilight/update_repo_scambileds.sh && python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/bootstrap_remote_leds.py' >>  /etc/rc.local"
+sudo sh -c "echo 'bash /home/scambilight/update_repo_scambileds.sh && python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/setup_LED_receiver/bootstrap_remote_leds.py' >>  /etc/rc.local"
