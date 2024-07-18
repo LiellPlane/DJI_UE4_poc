@@ -40,4 +40,4 @@ this needs fixed - hvae to remove EXIT 0 here first, add this
 
 
 # sudo sh -c "echo 'bash /home/scambilight/update_repo.sh' >>  /etc/rc.local"
-sudo sh -c "echo 'bash /home/scambilight/update_repo.sh && sudo python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/setup_camera_unit/bootstrap.py' >>  /etc/rc.local"
+sudo sh -c "echo 'bash /home/scambilight/update_repo.sh && source ~/for_rust/bin/activate && sudo python3 /home/scambilight/DJI_UE4_poc/Source/scambilight/setup_camera_unit/bootstrap.py' >>  /etc/rc.local"
