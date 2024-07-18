@@ -53,3 +53,5 @@ cd /home/scambilight/
 
 #run_as_user "cd /home/scambilight/DJI_UE4_poc/rust/combine_udp_led/ && cargo build --release > $rust_build_log 2>&1"
 
+# we have to build the rust module accessible as a standard python import.. but it has to be done with a venv
+run_as_user "source ~/for_rust/bin/activate && cd /home/scambilight/DJI_UE4_poc/rust/led_sender && maturin develop --release > $rust_build_log 2>&1"
