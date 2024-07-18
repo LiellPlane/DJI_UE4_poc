@@ -200,7 +200,7 @@ class ImageLibrary(ImageGenerator):
         #latch[:, :, 0] = 0
         #latch[:, :, 1] = random.randint(0,255)
         #latch[:, :, 2] = 0
-        time.sleep(1)
+        time.sleep(0.02)
         return latch
     
 

@@ -1,3 +1,14 @@
+set up - run the setup file depending on scambilight unit (see folders)
+
+this should modify the autorun file, which then should
+fire off a bash script to clone repo and build rust, and ptoentially
+another command to run a bootstrap file or launch the rust
+care has to be taken to avoid sudo as this causes lots of problems with the cloned
+repo.. note the files to help with problems
+
+
+
+
 https://crates.io/crates/ws2818-rgb-led-spi-driver
 
 example use here - https://github.com/phip1611/ws2818-rgb-led-spi-driver.git
