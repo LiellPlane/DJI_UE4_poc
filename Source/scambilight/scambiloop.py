@@ -425,7 +425,7 @@ def main(action = None, sessiontoken = None):
             # TOTAL:proc time = 23.499ms
             #time.sleep(1)
             if len(timings) > timings.maxlen-1:
-                print('\n'.join(timings))
+                #print('\n'.join(timings))
                 timings.clear()
 
 def handler(event, context):
