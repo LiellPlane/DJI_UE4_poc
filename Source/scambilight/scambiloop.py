@@ -51,19 +51,19 @@ PLATFORM = get_platform()
 
 def get_cam(system: _OS, action: str):
     if action is not None:
-        return async_cam_lib.Synth_Camera_sync(
+        return async_cam_lib.Container_Camera(
             ScambiLight_Cam_vidmodes)
     if system == _OS.WINDOWS:
-        return async_cam_lib.Synth_Camera_Async_buffer(
+        return async_cam_lib.Synth_Camera_sync_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.RASPBERRY:
-        return async_cam_lib.Scamblight_Camera_Async_buffer(
+        return async_cam_lib.Scambi_Camera_sync_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.LINUX:
-        return async_cam_lib.Synth_Camera_Async(
+        return async_cam_lib.Synth_Camera_sync_buffer(
             ScambiLight_Cam_vidmodes)
     elif system == _OS.MAC_OS:
-        return async_cam_lib.Synth_Camera_Async_buffer(
+        return async_cam_lib.Synth_Camera_sync_buffer(
             ScambiLight_Cam_vidmodes)
     else:
         raise Exception(system + " not supported")
@@ -251,18 +251,18 @@ def main(action = None, sessiontoken = None):
             proc_scambis.append(async_cam_lib.RunScambisWithAsyncImage(
                 scambiunits=copy.deepcopy(scambibatch),
                 curr_img=curr_img,
-                async_image_buf=cam.shared_mem_handler.mem_ids[cam._id],
+                async_image_buf=cam.get_mem_buffers()[0],
                 Scambi_unit_LED_only=Scambi_unit_LED_only,
                 subsample_cutoff=img_sample_controller.subsample_cut
             ))
             last_batch = scambibatch
-            # scambi_units here should really be "local scambiunits"
-            # here we remove one of the worker tasks, and give its batch to the local processing
+        # scambi_units here should really be "local scambiunits"
+        # here we remove one of the worker tasks, and give its batch to the local processing
         _ = proc_scambis.pop()
-        scambi_units = last_batch
+        
 
         if PLATFORM == _OS.RASPBERRY:
-            pass
+            scambi_units = last_batch
 
             # this should be set up above - sorry about this :(
 
@@ -278,16 +278,9 @@ def main(action = None, sessiontoken = None):
         else:# if we are running locally we want to see all the regions - but at least make sure
             # parallel processing is working, so give the parallel process 1 region to process
             # so in other words - regenerate the tasks
-            proc_scambis = [async_cam_lib.RunScambisWithAsyncImage(
-                scambiunits=copy.deepcopy(scambi_units[0:1]),
-                curr_img=curr_img,
-                async_image_buf=cam.shared_mem_handler.mem_ids[cam._id],
-                Scambi_unit_LED_only=Scambi_unit_LED_only,
-                subsample_cutoff=img_sample_controller.subsample_cut
-            )]
-            # half scambis to parallel process half to main proces
-            scambi_units = scambi_units[1:]
-
+            proc_scambis = []
+            # just to make it clear we are still using all scambiunits for simulation
+            scambi_units = scambi_units
 
 
     while True:
@@ -301,12 +294,17 @@ def main(action = None, sessiontoken = None):
 
             # get next image buffer
             with time_it_return_details("get img", timings):
-                cam.release_next_image()
+                _ = next(cam)
                 # this debuffering takes microseconds
+                # do this here to test image debuffer works
                 prev: np.ndarray = np.ndarray(
                     curr_img.shape,
                     dtype=curr_img.dtype,
-                    buffer=cam.get_img_buffer())
+                    buffer=cam.get_mem_buffers()[0].buf)
+                # prev: np.ndarray = np.ndarray(
+                #     curr_img.shape,
+                #     dtype=curr_img.dtype,
+                #     buffer=cam.get_mem_buffers()[0])
             
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()

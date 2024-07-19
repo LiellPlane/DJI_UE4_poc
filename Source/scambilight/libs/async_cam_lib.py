@@ -196,9 +196,10 @@ class ImageLibrary(ImageGenerator):
         color_permutations = list(permutations(colors, 3))
         _, width, _ = latch.shape
         # lazy bastard
-        latch[:] =random.choice(color_permutations)
-        latch[:,0:width//2,:] =random.choice(color_permutations)
-
+        #latch[:] =random.choice(color_permutations)
+        #latch[:,0:width//2,:] =random.choice(color_permutations)
+        latch[:,:,0] =random.choice(random.choice(color_permutations))
+        latch[:,0:width//2,0] =random.choice(random.choice(color_permutations))
         #latch[:, :, 0] = 0
         #latch[:, :, 1] = random.randint(0,255)
         #latch[:, :, 2] = 0
@@ -258,13 +259,18 @@ class Synth_Camera_Async(Camera_async):
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
 
-
-class Synth_Camera_sync(Camera_synchronous_with_buffer):
+class Container_Camera(Camera_synchronous):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ImageLibrary)
 
-class Scambi_Camera_sync(Camera_synchronous_with_buffer):
+
+class Synth_Camera_sync_buffer(Camera_synchronous_with_buffer):
+    
+    def __init__(self, video_modes) -> None:
+        super().__init__(video_modes, ImageLibrary)
+
+class Scambi_Camera_sync_buffer(Camera_synchronous_with_buffer):
     
     def __init__(self, video_modes) -> None:
         super().__init__(video_modes, ScambilightCamImageGen)
