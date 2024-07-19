@@ -247,7 +247,7 @@ def main(action = None, sessiontoken = None):
         # run the code here so we can be sure it works when on test hardware (not pi)
         proc_scambis = []
         last_batch = None
-        for scambibatch in batch(scambi_units, len(scambi_units)//8):
+        for scambibatch in batch(scambi_units, len(scambi_units)//5):
             proc_scambis.append(async_cam_lib.RunScambisWithAsyncImage(
                 scambiunits=copy.deepcopy(scambibatch),
                 curr_img=curr_img,
@@ -259,9 +259,7 @@ def main(action = None, sessiontoken = None):
             # scambi_units here should really be "local scambiunits"
             # here we remove one of the worker tasks, and give its batch to the local processing
         _ = proc_scambis.pop()
-        scambi_units = scambi_units # lastbatch
-
-        proc_scambis = []
+        scambi_units = last_batch
 
         if PLATFORM == _OS.RASPBERRY:
             pass
