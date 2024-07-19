@@ -73,6 +73,24 @@ fn main() -> std::io::Result<()> {
     println!("make sure you have \"SPI\" on your Pi enabled and that MOSI-Pin is connected with DIN-Pin!");
     let mut adapter = WS28xxSpiAdapter::new("/dev/spidev0.0").unwrap();
     let num_leds: u32 = 300;
+
+    //first put a colour on the LEDS to indicate this element is operational:
+
+    let mut green_display_bytes = vec![];
+    for _ in 0..num_leds {
+        green_display_bytes.extend_from_slice(&encode_rgb(0, 255, 0));
+    }
+    adapter.write_encoded_rgb(&green_display_bytes).unwrap();
+    //bear in mind sleeps can mess up the SPI
+    thread::sleep(Duration::from_secs(1));
+    let mut blue_display_bytes = vec![];
+    for _ in 0..num_leds {
+        blue_display_bytes.extend_from_slice(&encode_rgb(0, 0, 255));
+    }
+    adapter.write_encoded_rgb(&blue_display_bytes).unwrap();
+
+
+
     // Bind the UDP socket to an address and port
     //let socket = UdpSocket::bind("0.0.0.0:12345")?;
     // Create a socket2::Socket
@@ -171,12 +189,12 @@ fn main() -> std::io::Result<()> {
         // }
 
         let duration = start.elapsed();
-        if rand::thread_rng().gen_bool(0.001) {
+        if rand::thread_rng().gen_bool(0.0001) {
             println!("Time elapsed decoding: {:?}", duration);
         }
         let duration = start.elapsed();
         adapter.write_encoded_rgb(&display_bytes).unwrap();
-        if rand::thread_rng().gen_bool(0.001) {
+        if rand::thread_rng().gen_bool(0.0001) {
             println!("Time elapsed setting leds: {:?}", duration);
         }
         
