@@ -302,11 +302,11 @@ def main(action = None, sessiontoken = None):
             # get next image buffer
             with time_it_return_details("get img", timings):
                 cam.release_next_image()
-                with time_it_return_details("debuffer img", timings):
-                    prev: np.ndarray = np.ndarray(
-                        curr_img.shape,
-                        dtype=curr_img.dtype,
-                        buffer=cam.get_img_buffer())
+                # this debuffering takes microseconds
+                prev: np.ndarray = np.ndarray(
+                    curr_img.shape,
+                    dtype=curr_img.dtype,
+                    buffer=cam.get_img_buffer())
             
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()
@@ -427,7 +427,7 @@ def main(action = None, sessiontoken = None):
             # TOTAL:proc time = 23.499ms
             #time.sleep(1)
             if len(timings) > timings.maxlen-1:
-                print('\n'.join(timings))
+                #print('\n'.join(timings))
                 timings.clear()
 
 def handler(event, context):
