@@ -302,10 +302,11 @@ def main(action = None, sessiontoken = None):
             # get next image buffer
             with time_it_return_details("get img", timings):
                 cam.release_next_image()
-                # prev: np.ndarray = np.ndarray(
-                #     curr_img.shape,
-                #     dtype=curr_img.dtype,
-                #     buffer=cam.get_img_buffer())
+                with time_it_return_details("debuffer img", timings):
+                    prev: np.ndarray = np.ndarray(
+                        curr_img.shape,
+                        dtype=curr_img.dtype,
+                        buffer=cam.get_img_buffer())
             
             if PLATFORM == _OS.WINDOWS or PLATFORM == _OS.MAC_OS:
                 display_img = prev.copy()
