@@ -198,6 +198,8 @@ class SimLeds(Leds):
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
+        self.set_LED_values(scambi_units)
+        self.execute_LEDS()
 
 
    
@@ -234,6 +236,8 @@ class RemoteLeds(Leds):
 
     def display_info_bar(self, pc_done, scambi_units):
         print("progress bar", min(1, round(pc_done, 2)))
+        self.set_LED_values(scambi_units)
+        self.execute_LEDS()
 
 
 class RemoteLedsRust(RemoteLeds):
@@ -246,7 +250,10 @@ class RemoteLedsRust(RemoteLeds):
             port=self.LED_layout.port
         )
         self.leds_to_send = []
-
+    def display_info_bar(self, pc_done, scambi_units):
+        print("progress bar", min(1, round(pc_done, 2)))
+        self.set_LED_values(scambi_units)
+        self.execute_LEDS()
 
     
 class ws281Leds(Leds):
