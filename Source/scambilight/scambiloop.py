@@ -21,7 +21,8 @@ from libs.utils import (
     ImageViewer_Quick_no_resize,
     time_it_sparse,
     time_it_return_details,
-    create_progress_image)
+    create_progress_image,
+    batch)
 from libs.scambiunits import (
     HomographyTool,
     generate_scambis)
@@ -243,25 +244,45 @@ def main(action = None, sessiontoken = None):
     # things with queues can break the AWS lambda container images
     if action is None:
         # for the raspberry pi we want optimal parallism
-        if PLATFORM == _OS.RASPBERRY:
-            proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
-                scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
+        # run the code here so we can be sure it works when on test hardware (not pi)
+        proc_scambis = []
+        for scambibatch in batch(scambi_units, len(scambi_units)//4):
+            proc_scambis.append(async_cam_lib.RunScambisWithAsyncImage(
+                scambiunits=copy.deepcopy(scambibatch),
                 curr_img=curr_img,
                 async_image_buf=cam.shared_mem_handler.mem_ids[cam._id],
                 Scambi_unit_LED_only=Scambi_unit_LED_only,
                 subsample_cutoff=img_sample_controller.subsample_cut
-            )
-            # half scambis to parallel process half to main proces
-            scambi_units = scambi_units[len(scambi_units)//2:]
+            ))
+            # scambi_units here should really be "local scambiunits"
+            # here we remove one of the worker tasks, and give its batch to the local processing
+            _ = proc_scambis.pop()
+            scambi_units = scambibatch
+
+        if PLATFORM == _OS.RASPBERRY:
+            pass
+
+            # this should be set up above - sorry about this :(
+
+            # proc_scambis = [async_cam_lib.RunScambisWithAsyncImage(
+            #     scambiunits=copy.deepcopy(scambi_units[0:len(scambi_units)//2]),
+            #     curr_img=curr_img,
+            #     async_image_buf=cam.shared_mem_handler.mem_ids[cam._id],
+            #     Scambi_unit_LED_only=Scambi_unit_LED_only,
+            #     subsample_cutoff=img_sample_controller.subsample_cut
+            # )]
+            # # half scambis to parallel process half to main proces
+            # scambi_units = scambi_units[len(scambi_units)//2:]
         else:# if we are running locally we want to see all the regions - but at least make sure
             # parallel processing is working, so give the parallel process 1 region to process
-            proc_scambis = async_cam_lib.RunScambisWithAsyncImage(
+            # so in other words - regenerate the tasks
+            proc_scambis = [async_cam_lib.RunScambisWithAsyncImage(
                 scambiunits=copy.deepcopy(scambi_units[0:1]),
                 curr_img=curr_img,
                 async_image_buf=cam.shared_mem_handler.mem_ids[cam._id],
                 Scambi_unit_LED_only=Scambi_unit_LED_only,
                 subsample_cutoff=img_sample_controller.subsample_cut
-            )
+            )]
             # half scambis to parallel process half to main proces
             scambi_units = scambi_units[1:]
 
@@ -386,8 +407,9 @@ def main(action = None, sessiontoken = None):
                 # TODO all these conditions are not good code
                 # probably take it all out
                 if action is None: #  not running in container (which doesn't like queues)
-                    scambiunits_led_info += proc_scambis.done_queue.get(block=True)
-                    proc_scambis.handshake_queue.put("done", block=True, timeout=None)
+                    for proc in proc_scambis:
+                        scambiunits_led_info += proc.done_queue.get(block=True)
+                        proc.handshake_queue.put("done", block=True, timeout=None)
 
             with time_it_return_details(f"set {len(scambiunits_led_info)} leds", timings): # 3ms for 52 when run just this and execute in a tight loop
                 led_subsystem.set_LED_values(scambiunits_led_info)

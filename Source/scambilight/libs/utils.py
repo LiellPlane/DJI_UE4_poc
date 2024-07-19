@@ -7,9 +7,18 @@ import random
 import base64
 from collections import deque
 from typing import Deque
+from itertools import islice
 # need these for other modules to load
 from lumotag_utils import get_platform, _OS, TimeDiffObject
 
+
+def batch(iterable, batch_size):
+    iterator = iter(iterable)
+    while True:
+        batch = list(islice(iterator, batch_size))
+        if not batch:
+            break
+        yield batch
 
 def create_progress_image(progress_percent: int):
     """create lightweight progress image to upload to AWS

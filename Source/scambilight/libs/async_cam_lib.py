@@ -29,8 +29,10 @@ if get_platform() == _OS.RASPBERRY:
 
 
 
+
 class FinishedProcess():
     finished = True
+
 
 
 class RunScambisWithAsyncImage():
