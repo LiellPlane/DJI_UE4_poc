@@ -259,7 +259,9 @@ def main(action = None, sessiontoken = None):
             # scambi_units here should really be "local scambiunits"
             # here we remove one of the worker tasks, and give its batch to the local processing
         _ = proc_scambis.pop()
-        scambi_units = last_batch
+        scambi_units = scambi_units # lastbatch
+
+        proc_scambis = []
 
         if PLATFORM == _OS.RASPBERRY:
             pass
