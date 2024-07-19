@@ -4,7 +4,7 @@ import subprocess
 import os
 import sys
 from datetime import datetime
-x
+
 
 def create_debug_file(message, directory="/home/scambilight/"):
     # Ensure the directory exists
