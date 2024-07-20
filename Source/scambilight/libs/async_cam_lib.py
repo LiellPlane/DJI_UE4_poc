@@ -303,4 +303,4 @@ class Synth_Camera_sync_buffer(Camera_synchronous_with_buffer):
 class Scambi_Camera_sync_buffer(Camera_synchronous_with_buffer):
     
     def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, ScambilightCamImageGen_fps_test)
+        super().__init__(video_modes, ScambilightCamImageGen)
