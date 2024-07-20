@@ -215,16 +215,16 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         self.picam2 = Picamera2()
         # have to reverse as quirk of ov5647 camera
         res_xy = tuple(reversed(res[0:2]))
-        _config = self.picam2.create_video_configuration(
-                    main={"size": res_xy},
-                    controls={'FrameRate': 90},
-                    buffer_count=1)#, controls={"FrameDurationLimits": (233333, 233333)})
-        self.picam2.configure(_config)
+        # _config = self.picam2.create_video_configuration(
+        #             main={"size": res_xy},
+        #             controls={'FrameRate': 90},
+        #             buffer_count=1)#, controls={"FrameDurationLimits": (233333, 233333)})
+        # self.picam2.configure(_config)
         #  set_controls must come after config!!
-        self.picam2.set_controls({"AwbEnable": 0})
+        #self.picam2.set_controls({"AwbEnable": 0})
         #self.picam2.set_controls({"AeEnable": 0})
-        self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
-        self.picam2.set_controls({"AnalogueGain": 6.0})
+        #self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
+        #self.picam2.set_controls({"AnalogueGain": 6.0})
         #self.picam2.set_controls({"ExposureTime": 1000000}) # for blurring - but can get over exposed at night
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
         #self.picam2.set_controls({"ExposureTime": 100000000, "AnalogueGain": 1.0})
