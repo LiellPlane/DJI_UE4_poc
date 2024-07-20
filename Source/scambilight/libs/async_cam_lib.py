@@ -247,7 +247,7 @@ class ScambilightCamImageGen(ImageGenerator):
         res_xy = tuple(reversed(res[0:2]))
         _config = self.picam2.create_video_configuration(
                     main={"size": res_xy, "format": "RGB888"},
-                    controls={'FrameRate': 90},
+                    controls={'FrameRate': 90, "FrameDurationLimits": (22222, 33333)}, # ex FrameDurationLimits:  24fps = 1000000/24 = 41667
                     buffer_count=1)#, controls={"FrameDurationLimits": (233333, 233333)})
         self.picam2.configure(_config)
         #  set_controls must come after config!!
