@@ -216,10 +216,10 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         # have to reverse as quirk of ov5647 camera
         res_xy = tuple(reversed(res[0:2]))
         _config = self.picam2.create_video_configuration(
-                    main={"size": res_xy, "format": "RGB888"},
-                    controls={ "FrameDurationLimits": (33333, 33333)}, # ex FrameDurationLimits:  24fps = 1000000/24 = 41667
+                    main={"size": res_xy, "format": "RGB888"}, # ex FrameDurationLimits:  24fps = 1000000/24 = 41667
                     buffer_count=1)#, controls={"FrameDurationLimits": (22222, 33333)})
         self.picam2.configure(_config)
+        self.picam2.video_configuration.controls.FrameRate = 30
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
         #self.picam2.set_controls({"AeEnable": 0})
