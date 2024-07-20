@@ -116,7 +116,12 @@ def main(action = None, sessiontoken = None):
     
     cam = get_cam(system=system, action=action)
 
-
+    while True:
+        with time_it_return_details("get img", timings):
+            _ = next(cam)
+        if len(timings) > timings.maxlen-1:
+            print('\n'.join(timings))
+            timings.clear()
     if system == _OS.WINDOWS:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8
