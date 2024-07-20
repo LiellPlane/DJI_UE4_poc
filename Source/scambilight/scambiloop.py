@@ -115,15 +115,14 @@ def main(action = None, sessiontoken = None):
         image_circle_size=optical_details.lens_details.fish_eye_circle)
     
 
-    #cam = async_cam_lib.ScambilightCamImageGen()
     cam = get_cam(system=system, action=action)
 
-    while True:
-        with time_it_return_details("get img", timings):
-            _ = cam.imagegen_cls.get_image()
-        if len(timings) > timings.maxlen-1:
-            print('\n'.join(timings))
-            timings.clear()
+    # while True:
+    #     with time_it_return_details("get img", timings):
+    #         _ = cam.imagegen_cls.get_image()
+    #     if len(timings) > timings.maxlen-1:
+    #         print('\n'.join(timings))
+    #         timings.clear()
     if system == _OS.WINDOWS:
         led_subsystem = RemoteLeds(DaisybankLedSpacing)#RemoteLeds(DaisybankLedSpacing)
         cores_for_col_dect = 8

@@ -214,8 +214,8 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         self.cam_res = res
         self.picam2 = Picamera2()
         res_xy = tuple(reversed(res[0:2]))
-        self.picam2.video_configuration.controls.FrameRate = 30.0
-        self.picam2.video_configuration.controls.AnalogueGain = 6.0
+        self.picam2.video_configuration.controls.FrameRate = 40.0
+        self.picam2.video_configuration.controls.AnalogueGain = 10.0
         self.picam2.video_configuration.controls.AwbEnable = False
         self.picam2.video_configuration.controls.AeMeteringMode = controls.AeMeteringModeEnum.Spot
         self.picam2.video_configuration.size = res_xy
