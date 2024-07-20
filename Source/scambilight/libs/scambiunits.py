@@ -302,7 +302,7 @@ class Scambi_unit():
                 # current colour is bright - maybe its catching the TV refresh cycle. So lets try and
                 # smooth it out with the downside of slowing response
                 #average = (np.asarray(self.colour_history[-1]) + np.asarray(self.colour_history[-2])) / 2
-                self.colour = self.colour_history[-2]
+                self.colour = (0,255,0)
             else:
                 self.colour = tuple(int(i) for i in col)
             #return self.lerp_color(col)
