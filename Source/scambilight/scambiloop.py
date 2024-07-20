@@ -114,11 +114,13 @@ def main(action = None, sessiontoken = None):
         img_width_height=(optical_details.lens_details.width,optical_details.lens_details.height),
         image_circle_size=optical_details.lens_details.fish_eye_circle)
     
-    cam = get_cam(system=system, action=action)
+
+    cam = async_cam_lib.ScambilightCamImageGen()
+    #cam = get_cam(system=system, action=action)
 
     while True:
         with time_it_return_details("get img", timings):
-            _ = next(cam)
+            _ = cam.get_image()
         if len(timings) > timings.maxlen-1:
             print('\n'.join(timings))
             timings.clear()
