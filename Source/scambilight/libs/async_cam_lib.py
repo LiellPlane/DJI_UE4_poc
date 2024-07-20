@@ -222,6 +222,8 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
         self.picam2.set_controls({"FrameRate": 30})
+        self.picam2.video_configuration.controls.FrameRate = 30.0
+        self.picam2.start("video")
         #self.picam2.set_controls({"AeEnable": 0})
         #self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
         #self.picam2.set_controls({"AnalogueGain": 6.0})
@@ -229,7 +231,7 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         #self.picam2.set_controls({"FrameDurationLimits": (1000,1000)})
         #self.picam2.set_controls({"ExposureTime": 100000000, "AnalogueGain": 1.0})
         #self.picam2.video_configuration.controls.FrameRate = 90
-        self.picam2.start()
+        #self.picam2.start()
         time.sleep(0.2)
 
     def get_image(self):
