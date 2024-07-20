@@ -11,7 +11,7 @@ import libs.async_cam_lib as async_cam_lib
 from libs.utils import  convert_pts_to_convex_hull
 from libs.collections import lens_details, config_regions, Edges
 from libs.lighting import get_led_perimeter_pos
-
+from collections import deque
 
 
 @dataclass
@@ -86,6 +86,7 @@ class Scambi_unit():
         #self.sample_area_lerp_contour = None
         #self.convex_hulls_lerp_contour = None
         self.physical_led_pos = None
+        self.colour_history = deque(maxlen=5)
         
     def initialise(self):
         self.warp_rois_homograpy()
@@ -290,7 +291,20 @@ class Scambi_unit():
             col = self.get_dominant_colour_flat(img, subsampling)
             #col = self.average_colour(col, self.colour)
             #col = self.lerp_color(col)
-            self.colour = tuple(int(i) for i in col)
+            self.colour_history.append(tuple(int(i) for i in col))
+
+            # lets try and mitigate update rate of TV creating flickering
+            # if the next colour is darker - then average it out
+            # otherwise - use current colour
+            
+            isless = np.all(np.asarray(self.colour_history[-1]) < np.asarray(self.colour_history[-2]))
+            if isless is True:
+                # current colour is bright - maybe its catching the TV refresh cycle. So lets try and
+                # smooth it out with the downside of slowing response
+                average = (np.asarray(self.colour_history[-1]) + np.asarray(self.colour_history[-2])) / 2
+                self.colour = tuple(int(i) for i in average)
+            else:
+                self.colour = tuple(int(i) for i in col)
             #return self.lerp_color(col)
         except:
             return self.colour
