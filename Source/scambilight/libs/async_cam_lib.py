@@ -215,7 +215,6 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         self.picam2 = Picamera2()
         # have to reverse as quirk of ov5647 camera
         res_xy = tuple(reversed(res[0:2]))
-        s
         # _config = self.picam2.create_video_configuration(
         #             main={"size": res_xy},
         #             controls={'FrameRate': 90},
