@@ -219,9 +219,9 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
                     main={"size": res_xy, "format": "RGB888"}, # ex FrameDurationLimits:  24fps = 1000000/24 = 41667
                     buffer_count=1)#, controls={"FrameDurationLimits": (22222, 33333)})
         self.picam2.configure(_config)
-        self.picam2.video_configuration.controls.FrameRate = 30
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
+        self.picam2.set_controls({"FrameRate": 30})
         #self.picam2.set_controls({"AeEnable": 0})
         #self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
         #self.picam2.set_controls({"AnalogueGain": 6.0})
