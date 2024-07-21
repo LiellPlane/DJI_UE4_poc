@@ -32,13 +32,13 @@ class filesystem(factory.filesystem):
     def __init__(self) -> None:
         # have to do it here otherwise permission error 
         # because linux is a retarded cunt
-        self.images_folder = "/home/lumotag/"
+        self.images_folder = "/home/lumotag/debugimages"
         if not os.path.isdir(self.images_folder):
             os.mkdir(self.images_folder)
 
-    def save_image(self, img):
+    def save_image(self, img, message=""):
         ts = utils.get_epoch_timestamp()
-        filename = self.images_folder + "/" + ts + ".jpg"
+        filename = f"{self.images_folder}/{message}{ts}.jpg"
         cv2.imwrite(
             filename,
             img)

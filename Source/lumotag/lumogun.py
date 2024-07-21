@@ -64,8 +64,8 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
-    #image_capture2 = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     slice_details = img_processing.get_internal_section(
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
@@ -93,7 +93,11 @@ def main():
     #time.sleep(100000)
     img = next(image_capture)
     if img is None:
-        raise Exception("broken image source")
+        raise Exception("broken long-range image source")
+    img2 = next(image_capture_closerange)
+    if img2 is None:
+        raise Exception("broken close-range image source")
+        
     voice.speak("cam")
     # img = next(image_capture)
 
@@ -135,7 +139,7 @@ def main():
         GUN_CONFIGURATION.relay_map["clicker"])
     
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
-    torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
+    #torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
 
 
     cnt = 0 
@@ -144,6 +148,7 @@ def main():
             cnt += 1
             with time_it("get next image", debug=PRINT_DEBUG):
                 cap_img = next(image_capture)
+                cap_img_closerange = next(image_capture_closerange)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
@@ -227,8 +232,8 @@ def main():
 
                     # debugging code to capture images
                     #if cap_img is not None:
-                    file_system.save_image(cap_img)
-
+                    file_system.save_image(cap_img,message="_longrange_")
+                    file_system.save_image(cap_img_closerange,message="_closerange_")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0) # click noise from relay only

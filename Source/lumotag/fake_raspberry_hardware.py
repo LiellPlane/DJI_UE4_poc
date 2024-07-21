@@ -35,7 +35,7 @@ def lumo_viewer(
 
 
 class filesystem(factory.filesystem):
-    def save_image(self,img):
+    def save_image(self,img,message=None):
         pass
 
 
