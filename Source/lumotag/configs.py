@@ -77,6 +77,11 @@ class RPICAMv2Noir_Cam_vidmodes(Enum):
                       """
     _1 = ImagingMode(
         camera_model="raspberry pi v2 model",
+        res_width_height=(1920, 1080),
+        doc_description="1920x1080 47fps",
+        shared_mem_reversed=True,special_notes="")
+    _2 = ImagingMode(
+        camera_model="raspberry pi v2 model",
         res_width_height=(1640, 1232),
         doc_description="1640x1232 83fps binned",
         shared_mem_reversed=True,special_notes="")
