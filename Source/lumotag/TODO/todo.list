@@ -1,0 +1,19 @@
+IMMEDIATE:
+Why isn't sound working
+Two cameras at once
+
+MIDIATE:
+Opencv window more efficient - its being created and destroyed constantly which isn't best practise
+
+LONGERTERM:
+
+mouse for touch control
+
+custom insults in payload
+look for IR flash instead of flashlight
+
+MODELLING:
+add battery cover for left side
+
+WIRING:
+draw up new diagram with new boost circuit

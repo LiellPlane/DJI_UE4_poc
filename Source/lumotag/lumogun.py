@@ -143,6 +143,7 @@ def main():
 
 
     cnt = 0 
+    TEMP_DEBUG_trigger_cnt = 0
     while True:
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
@@ -232,8 +233,9 @@ def main():
 
                     # debugging code to capture images
                     #if cap_img is not None:
-                    file_system.save_image(cap_img,message="_longrange_")
-                    file_system.save_image(cap_img_closerange,message="_closerange_")
+                    TEMP_DEBUG_trigger_cnt += 1
+                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0) # click noise from relay only

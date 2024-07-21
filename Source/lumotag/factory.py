@@ -1106,22 +1106,11 @@ class ImageLibrary(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        #imgfoler = r"D:\OutputImages"
+
         self.images = images_in_folder(imgfoler, [".jpg"])
-        #self.images = [i for i in self.images if "0290" in i]#0290
-        #self.images = [i for i in self.images if "1704404023_3112135" in i] # testing standard
-        
-        #self.images = [i for i in self.images if "1707668423_9392278" in i]
+
         self.images = [i for i in self.images if "unique" in i]
-        #self.a = [i for i in self.images if "1708541761_5248816" in i]
-        #self.b = [i for i in self.images if "1708541763_1052542" in i]
-        #self.c = [i for i in self.images if "1708541757_3840954" in i]
-        #self.images = self.b #+ self.b + self.c
-        #self.images = [i for i in self.images if i in ["1708541761_5248816", "1708541763_1052542", "1708541757_3840954"]]
-        
-        
-        #self.images = [i for i in self.images if "sim_pattern" in i]
-        #self.images = [i for i in self.images if "0245" in i]
+
         self.res = res
         if len(self.images) < 1:
             raise Exception("could not find images in folder")
