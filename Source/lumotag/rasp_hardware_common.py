@@ -52,8 +52,15 @@ def lumo_viewer(
         presskey=False,
         destroyWindow=True):
     try:
-        cv2.imshow("img", inputimage)
-        cv2.moveWindow("img", move_windowx, move_windowy)
+
+
+        window_name = "img"
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+        
+        cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+
+        cv2.imshow(window_name, inputimage)
+        cv2.moveWindow(window_name, move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
     
@@ -99,7 +106,6 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
 
     def display_method(self, image):
-        image[30:50,30:50,:] = 255
         try:
             lumo_viewer(
                 inputimage=image,
