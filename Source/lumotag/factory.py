@@ -25,7 +25,8 @@ from my_collections import (
     UI_Element,
     SharedMem_ImgTicket
     )
-
+import re
+import itertools
 
 try:
     pass
@@ -1099,6 +1100,73 @@ class SharedMemory():
 
             # except FileExistsError:
             #     print(f"Warning: shared memory {my_id} has not been cleaned up")
+
+def cycle_files(file_list):
+    while True:
+        for file in file_list:
+            yield file
+
+# Function to extract the number between "cnt" and "cnt"
+def extract_number(file_name):
+    match = re.search(r'cnt(\d+)cnt', file_name)
+    if match:
+        return int(match.group(1))
+    return float('inf')  # Return a large number if the pattern is not found
+
+class ImageLibrary_longrange(ImageGenerator):
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        self.images = images_in_folder(imgfoler, [".jpg"])
+        self.images = [i for i in self.images if "unique" in i]
+        self.images = [i for i in self.images if "long" in i]
+
+        # Sort the list based on the extracted number
+        sorted_files = sorted(self.images, key=extract_number)
+        self.cycled_files_generator = cycle_files(sorted_files)
+        self.res = res
+        if len(self.images) < 1:
+            raise Exception("could not find images in folder")
+
+
+    def get_image(self):
+        img_to_load = next(self.cycled_files_generator)
+        
+        img = cv2.imread(img_to_load)
+        print(f"img {img_to_load}")
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        #img = cv2.resize(img, tuple(self.res[0:2]))
+        self.blank_image[:] = img
+        return self.blank_image
+
+
+class ImageLibrary_closerange(ImageGenerator):
+    def __init__(self, res) -> None:
+        self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+        self.images = images_in_folder(imgfoler, [".jpg"])
+        self.images = [i for i in self.images if "unique" in i]
+        self.images = [i for i in self.images if "close" in i]
+
+        # Sort the list based on the extracted number
+        sorted_files = sorted(self.images, key=extract_number)
+        self.cycled_files_generator = cycle_files(sorted_files)
+        self.res = res
+        if len(self.images) < 1:
+            raise Exception("could not find images in folder")
+
+
+    def get_image(self):
+        img_to_load = next(self.cycled_files_generator)
+        
+        img = cv2.imread(img_to_load)
+        print(f"img {img_to_load}")
+        if len(img.shape) == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        #img = cv2.resize(img, tuple(self.res[0:2]))
+        self.blank_image[:] = img
+        return self.blank_image
 
 
 class ImageLibrary(ImageGenerator):

@@ -9,6 +9,8 @@ import rabbit_mq
 import json
 import img_processing
 import os
+from configs import Fake_Cam_vidmodes_longrangeFILES, Fake_Cam_vidmodes_closerangeFILES
+
 
 def lumo_viewer(
         inputimage,
@@ -177,10 +179,15 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
 
 
 class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
-    
+        
     def __init__(self, video_modes) -> None:
-        super().__init__(video_modes, factory.ImageLibrary)
-
+        if video_modes == Fake_Cam_vidmodes_longrangeFILES:
+            super().__init__(video_modes, factory.ImageLibrary_longrange)
+        elif video_modes == Fake_Cam_vidmodes_closerangeFILES:
+            super().__init__(video_modes, factory.ImageLibrary_closerange)
+        else:
+            raise Exception("no match for video mode input")
+        
 class display(factory.display):
 
 

@@ -109,14 +109,23 @@ class Fake_Cam_vidmodes2(Enum):
 class Fake_Cam_vidmodes(Enum):
     _1 = ImagingMode(
         camera_model="test5005x500",
-        res_width_height=(1920, 1080),
+        res_width_height=(1456, 1088),
         doc_description="500 × 500",
         shared_mem_reversed=True,special_notes="")
 
-class Fake_Cam_vidmodes_closerange(Enum):
+class Fake_Cam_vidmodes_longrangeFILES(Enum):
+    """these have to res match the files we have captured"""
+    _1 = ImagingMode(
+        camera_model="test5005x500",
+        res_width_height=(1456, 1088),
+        doc_description="500 × 500",
+        shared_mem_reversed=True,special_notes="")
+    
+class Fake_Cam_vidmodes_closerangeFILES(Enum):
+    """these have to res match the files we have captured"""
     _1 = ImagingMode(
         camera_model="test1280*1920",
-        res_width_height=(1280, 1920),
+        res_width_height=(1920, 1080),
         doc_description="test1280*1920",
         shared_mem_reversed=True,special_notes="")
     
@@ -331,10 +340,10 @@ class simitzar_config(gun_config):
 
     @property
     def video_modes(self):
-        return Fake_Cam_vidmodes
+        return Fake_Cam_vidmodes_longrangeFILES
     @property
     def video_modes_closerange(self):
-        return Fake_Cam_vidmodes_closerange
+        return Fake_Cam_vidmodes_closerangeFILES
     @property
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:

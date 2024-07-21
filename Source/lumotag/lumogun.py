@@ -64,7 +64,7 @@ def main():
     #accelerometer = lumogun.Accelerometer()
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     slice_details = img_processing.get_internal_section(
                         image_capture.get_res(),
@@ -84,6 +84,13 @@ def main():
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
 
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
+        slice_details=slice_details,
+        OS_friendly_name="cam2inner",
+        img_shrink_factor=None,
+        config=configs.get_lumofind_config(PLATFORM)))
+    
     # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
     #     sharedmem_buffs=image_capture.get_mem_buffers(),
     #     slice_details=slice_details,
@@ -234,8 +241,8 @@ def main():
                     # debugging code to capture images
                     #if cap_img is not None:
                     TEMP_DEBUG_trigger_cnt += 1
-                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0) # click noise from relay only
