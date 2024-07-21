@@ -101,9 +101,9 @@ def main():
     img = next(image_capture)
     if img is None:
         raise Exception("broken long-range image source")
-    img2 = next(image_capture_closerange)
-    if img2 is None:
-        raise Exception("broken close-range image source")
+    # img2 = next(image_capture_closerange)
+    # if img2 is None:
+    #     raise Exception("broken close-range image source")
         
     voice.speak("cam")
     # img = next(image_capture)
