@@ -169,6 +169,9 @@ class display(ABC):
         row_cols = self.emptyscreen.shape[0:2][::-1]
         outptu_img = img_processing.do_affine(cam_capture, self._affine_transform, row_cols)
         outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
+        #height, width = outptu_img.shape
+        #three_channel_image = np.zeros((height, width, 3), dtype=outptu_img.dtype)
+        #three_channel_image[:, :, 2] = outptu_img
         return outptu_img
 
     def add_internal_section_region(self, inputimg, _slice: CropSlicing):

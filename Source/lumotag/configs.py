@@ -134,7 +134,7 @@ class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (500, 1200)
+    windows_laptop = (900, 1200)
     stryker = (480, 620)
 
 
@@ -328,7 +328,7 @@ class simitzar_config(gun_config):
 
     @property
     def internal_img_crop(self):
-        return((500,600))
+        return((500,500))
 
     @property
     def img_subsmple_factor(self):

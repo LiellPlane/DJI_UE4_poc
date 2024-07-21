@@ -1,4 +1,6 @@
 import os
+import cv2
+import numpy as np
 
 def images_in_folder(directory, imgtypes: list[str]):
     allFiles = []
@@ -24,6 +26,24 @@ for trigger in images:
     else:
         trigger_dict_long[matches[0]] = trigger
 
-list(trigger_dict_close.keys()) == list(trigger_dict_long.keys())
+assert list(trigger_dict_close.keys()) == list(trigger_dict_long.keys())
 
+for peepee in list(trigger_dict_close.keys()):
+    closefile = trigger_dict_close[peepee]
+    longfile = trigger_dict_long[peepee]
 
+    image1 = cv2.imread(closefile)
+    image2 = cv2.imread(longfile)
+    height1, width1 = image1.shape[:2]
+    height2, width2 = image2.shape[:2]
+
+    if height1 != height2:
+        # Resize image2 to the same height as image1
+        image2 = cv2.resize(image2, (width2, height1))
+
+    # Stack images horizontally
+    stacked_image = np.hstack((image1, image2))
+    img = cv2.resize(stacked_image, (1800,999))
+    # Display the result
+    cv2.imshow('Stacked Image', img)
+    cv2.waitKey(0)
