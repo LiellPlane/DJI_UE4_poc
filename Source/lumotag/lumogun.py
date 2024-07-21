@@ -65,7 +65,7 @@ def main():
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
-    image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    #image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     slice_details = img_processing.get_internal_section(
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
@@ -84,12 +84,12 @@ def main():
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
 
-    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
-        slice_details=slice_details,
-        OS_friendly_name="cam2inner",
-        img_shrink_factor=None,
-        config=configs.get_lumofind_config(PLATFORM)))
+    # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+    #     sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
+    #     slice_details=slice_details,
+    #     OS_friendly_name="cam2inner",
+    #     img_shrink_factor=None,
+    #     config=configs.get_lumofind_config(PLATFORM)))
     
     # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
     #     sharedmem_buffs=image_capture.get_mem_buffers(),
@@ -156,7 +156,7 @@ def main():
             cnt += 1
             with time_it("get next image", debug=PRINT_DEBUG):
                 cap_img = next(image_capture)
-                cap_img_closerange = next(image_capture_closerange)
+                #cap_img_closerange = next(image_capture_closerange)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
