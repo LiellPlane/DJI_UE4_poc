@@ -210,9 +210,11 @@ def main():
                 is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
                 is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
                 
+
+                is_torch_reqd = TEMP_fake_light
                 if random.randint(0,100) < 2:
                     TEMP_fake_light = not TEMP_fake_light
-                    is_torch_reqd = TEMP_fake_light
+                    
                 if random.randint(0,50) < 2:
                     is_trigger_reqd = True
 
