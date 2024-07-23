@@ -2,7 +2,7 @@
 # its a bad technique but will have to make do
 
 import factory
-
+import random
 from functools import partial
 import msgs
 import time
@@ -151,6 +151,7 @@ def main():
 
     cnt = 0 
     TEMP_DEBUG_trigger_cnt = 0
+    TEMP_fake_light = False
     while True:
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
@@ -208,7 +209,12 @@ def main():
 
                 is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
                 is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
-
+                
+                if random.randint(0,2000) < 2:
+                    TEMP_fake_light = not TEMP_fake_light
+                    is_torch_reqd = TEMP_fake_light
+                if random.randint(0,1000) < 2:
+                    is_trigger_reqd = True
 
                 # in this case 
                 # result = torch_debounce(is_torch_reqd)
