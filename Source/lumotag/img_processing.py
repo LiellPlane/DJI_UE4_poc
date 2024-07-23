@@ -18,6 +18,10 @@ BLUE = (255, 0, 0)
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
 
+def concat_image(img1, img2):
+    img2 = cv2.resize(img2, (img1.shape[1], img1.shape[0]), interpolation = cv2.INTER_NEAREST)
+    return cv2.hconcat([img1,img2 ])
+
 def clahe_equalisation(img, claheprocessor):
     if claheprocessor is None:
         claheprocessor = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(50,50))

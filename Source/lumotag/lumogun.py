@@ -65,7 +65,7 @@ def main():
     #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    #image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     slice_details = img_processing.get_internal_section(
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
@@ -156,7 +156,7 @@ def main():
             cnt += 1
             with time_it("get next image", debug=PRINT_DEBUG):
                 cap_img = next(image_capture)
-                #cap_img_closerange = next(image_capture_closerange)
+                cap_img_closerange = next(image_capture_closerange)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
@@ -249,8 +249,15 @@ def main():
 
             with time_it("gun image stuff", debug=PRINT_DEBUG):
 
+
+                
+                # with time_it("execute affine transform", debug=PRINT_DEBUG):
+                #     img = display.generate_output_affine(cap_img)
+
+
                 with time_it("execute affine transform", debug=PRINT_DEBUG):
-                    img = display.generate_output_affine(cap_img)
+                    img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
+
 
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
                     analysis = []
@@ -259,14 +266,14 @@ def main():
                             block=True,
                             timeout=None))
 
-                with time_it("add internal section", debug=PRINT_DEBUG):
-                    display.add_internal_section_region(img, slice_details)
+                # with time_it("add internal section", debug=PRINT_DEBUG):
+                #     display.add_internal_section_region(img, slice_details)
 
-                with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                    display.add_crosshair_and_analytics_graphics(img, analysis)
+                # with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
+                #     display.add_crosshair_and_analytics_graphics(img, analysis)
 
-                with time_it("add graphics: player info", debug=PRINT_DEBUG):
-                    display.add_playerinfo_graphics(img, players, analysis)
+                # with time_it("add graphics: player info", debug=PRINT_DEBUG):
+                #     display.add_playerinfo_graphics(img, players, analysis)
 
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(img)

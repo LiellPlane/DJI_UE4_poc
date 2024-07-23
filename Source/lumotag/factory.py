@@ -154,7 +154,30 @@ class display(ABC):
     def display_method(image, self):
         pass
 
+    def TESTgenerate_output_affine2cam(self, cam_capture1, cam_2capture):
+        """use affine transform to resize and rotate image in one calculation
+        need 2 sets of 3 corresponding points to create calculation"""
+        crop = 400
+        cam_2capture= cam_2capture[
+            crop:cam_2capture.shape[0]-crop,
+            crop:cam_2capture.shape[1]-crop]
+        concatted = img_processing.concat_image(cam_capture1, cam_2capture)
 
+        if self._affine_transform is None:
+            self._affine_transform = img_processing.get_fitted_affine_transform(
+                cam_image_shape=concatted.shape,
+                display_image_shape=self.emptyscreen.shape,
+                rotation=self.display_rotate
+            )
+
+        row_cols = self.emptyscreen.shape[0:2][::-1]
+        outptu_img = img_processing.do_affine(concatted, self._affine_transform, row_cols)
+        outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
+        #height, width = outptu_img.shape
+        #three_channel_image = np.zeros((height, width, 3), dtype=outptu_img.dtype)
+        #three_channel_image[:, :, 2] = outptu_img
+        return outptu_img
+    
     def generate_output_affine(self, cam_capture):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
