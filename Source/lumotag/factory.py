@@ -27,7 +27,7 @@ from my_collections import (
     )
 import re
 import itertools
-
+from functools import reduce
 try:
     pass
 except Exception as e:
@@ -1149,6 +1149,8 @@ class ImageLibrary_longrange(ImageGenerator):
 
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
+        # create duplicates
+        sorted_files = reduce(lambda acc, s: acc + [s] * 10, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
         if len(self.images) < 1:
@@ -1157,7 +1159,7 @@ class ImageLibrary_longrange(ImageGenerator):
 
     def get_image(self):
         img_to_load = next(self.cycled_files_generator)
-        
+        time.sleep(0.03)
         img = cv2.imread(img_to_load)
         print(f"img {img_to_load}")
         if len(img.shape) == 3:
@@ -1177,6 +1179,8 @@ class ImageLibrary_closerange(ImageGenerator):
 
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
+        # create duplicates
+        sorted_files = reduce(lambda acc, s: acc + [s] * 10, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
         if len(self.images) < 1:
@@ -1192,6 +1196,7 @@ class ImageLibrary_closerange(ImageGenerator):
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #img = cv2.resize(img, tuple(self.res[0:2]))
         self.blank_image[:] = img
+        time.sleep(0.03)
         return self.blank_image
 
 

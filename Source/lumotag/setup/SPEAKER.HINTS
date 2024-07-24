@@ -1,0 +1,8 @@
+don't change the usb thing - YMMV situation
+red one seems to work
+
+use
+speaker-test -c 5 - t wav 
+
+to test with pink noise
+top left USB seems to work

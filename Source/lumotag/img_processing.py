@@ -18,6 +18,35 @@ BLUE = (255, 0, 0)
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
 
+def overlay_warped_image(background, warped):
+    # Ensure the images have the same size and are mono
+    assert background.shape == warped.shape, "Images must have the same dimensions"
+    assert len(background.shape) == 2 and len(warped.shape) == 2, "Images must be mono (single channel)"
+    
+    # Ensure images are 8-bit unsigned integer type
+    background = background.astype(np.uint8)
+    warped = warped.astype(np.uint8)
+
+    # Create a mask based on non-black pixels in the warped image
+    _, mask = cv2.threshold(warped, 1, 255, cv2.THRESH_BINARY)
+
+    # Black-out the area of warped image in background
+    background_masked = cv2.bitwise_and(background, cv2.bitwise_not(mask))
+
+    # Combine the background and warped image
+    result = cv2.add(background_masked, warped)
+
+    return result
+
+def apply_perp_transform(matrix, src_img, dst_img):
+    
+    # Apply the perspective transformation to the source image
+    height, width = dst_img.shape[:2]
+    result = cv2.warpPerspective(src_img, matrix, (width, height))
+
+    return result
+
+
 def concat_image(img1, img2):
     img2 = cv2.resize(img2, (img1.shape[1], img1.shape[0]), interpolation = cv2.INTER_NEAREST)
     return cv2.hconcat([img1,img2 ])

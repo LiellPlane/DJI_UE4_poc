@@ -106,6 +106,7 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
 
     def display_method(self, image):
+        
         try:
             lumo_viewer(
                 inputimage=image,
