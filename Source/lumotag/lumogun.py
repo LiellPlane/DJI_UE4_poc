@@ -106,7 +106,7 @@ def main():
 
 
         interpolated_points = [
-             interpolate_points_eased(start, end, 50)
+             interpolate_points_eased(start, end, 25)
              for start, end
              in zip(
                 original_form,
@@ -119,7 +119,8 @@ def main():
         iterator = ping_pong_manual(0, interpolated_points.shape[1]-1)
         for _ in range(100000):
             i = next(iterator)
-                
+            cap_img = next(image_capture)
+            cap_img_closerange = next(image_capture_closerange)
             # this gets the transformation to slowly stretch the long range pov to full screen dims
             # watch out here - as the two cameras have different dims!
             img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, interpolated_points[:, i])
