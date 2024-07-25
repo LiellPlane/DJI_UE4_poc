@@ -96,7 +96,7 @@ def main():
 
 
         interpolated_points = [
-             interpolate_points_eased(start, end, 15)
+             interpolate_points_eased(start, end, 40)
              for start, end
              in zip(
                 original_form,
@@ -109,8 +109,16 @@ def main():
         while True:
             for i in range(0,interpolated_points.shape[1]):
                 
+                # this gets the transformation to slowly stretch the long range pov to full screen dims
+                # watch out here - as the two cameras have different dims!
                 img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, interpolated_points[:, i])
-                display.display_method(img)
+                # combine the matrices - so we don't have to double up on warps
+                # this is the warp which squahes the long range into the centre of the close rnage, then the
+                # transition matrix above which unwarps the 
+                combined_mat = np.matmul(mat, perp_details["warpmatrix"])
+                wraped_img = img_processing.apply_perp_transform(combined_mat,cap_img,cap_img_closerange)
+                combo_image = img_processing.overlay_warped_image(img, wraped_img)
+                display.display_method(combo_image)
                 time.sleep(0.01)
         # plop = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
         # #cap_img_closerange[:,:] = 255
