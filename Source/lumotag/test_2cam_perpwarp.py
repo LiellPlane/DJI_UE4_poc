@@ -47,23 +47,87 @@ script_path = os.path.abspath(__file__)
 parent_dir = os.path.dirname(script_path)
 pickle_file_path = os.path.join(parent_dir, 'warp_transform.pkl')
 with open(pickle_file_path, 'rb') as f:
-    matrix_perp_transform = pickle.load(f)
+    perp_details = pickle.load(f)
 
+
+import numpy as np
+def interpolate_points(start, end, steps):
+    return np.linspace(start, end, steps)
+
+def ease_in_out_quad(t):
+    return 2 * t**2 if t < 0.5 else 1 - (-2 * t + 2)**2 / 2
+
+def ease_in_out_quart(t):
+    return 8 * t**4 if t < 0.5 else 1 - (-2 * t + 2)**4 / 2
+
+def ease_in_out_sine(t):
+    return -(np.cos(np.pi * t) - 1) / 2
+
+def ease_in_out_cubic(t):
+    return np.where(t < 0.5, 4 * t**3, 1 - (-2 * t + 2)**3 / 2)
+
+def interpolate_points_eased(start, end, steps):
+    t = np.linspace(0, 1, steps)
+    eased_t = ease_in_out_cubic(t)
+    return start + eased_t[:, np.newaxis] * (end - start)
 def main():
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     display = lumogun.display(GUN_CONFIGURATION)
 
     while True:
+        # generate lerp from target positions to corners (zoom in?)
+        
+        # create new transform from original target positions to new lerped ones
+
+        # execute transform for close range
+
+        # execute transform to long range into these new coordinates, so will need to do it twice
+
         cap_img = next(image_capture)
         cap_img_closerange = next(image_capture_closerange)
-        wraped_img = img_processing.apply_perp_transform(matrix_perp_transform,cap_img,cap_img_closerange)
+
+
+        long_range_ppints = np.asarray([(0, cap_img.shape[0]-1), (0,0), (cap_img.shape[1]-1, 0), (cap_img.shape[1]-1, cap_img.shape[0]-1)])
+        homogeneous_points = np.column_stack((long_range_ppints, np.ones(len(long_range_ppints))))
+        transformed_points = np.dot(homogeneous_points, perp_details["warpmatrix"].T)
+        transformed_points_2d = transformed_points[:, :2] / transformed_points[:, 2:]
+        original_form = np.round(transformed_points_2d).astype(int)
+
+
+        interpolated_points = [
+             interpolate_points_eased(start, end, 15)
+             for start, end
+             in zip(
+                original_form,
+                np.asarray([(0, cap_img_closerange.shape[0]-1), (0,0), (cap_img_closerange.shape[1]-1, 0), (cap_img_closerange.shape[1]-1, cap_img_closerange.shape[0]-1)])
+             )
+         ]
+        interpolated_points = np.array(interpolated_points)
+
+
+        while True:
+            for i in range(0,interpolated_points.shape[1]):
+                
+                img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, interpolated_points[:, i])
+                display.display_method(img)
+                time.sleep(0.01)
+        # plop = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
+        # #cap_img_closerange[:,:] = 255
+        # for i in range(0,interpolated_points.shape[0]):
+        #     plop[list(interpolated_points[i][0].astype(int))[1], list(interpolated_points[i][0].astype(int))[0]] =255
+        #     #plop[list(interpolated_points[i][1].astype(int))[1], list(interpolated_points[i][1].astype(int))[0]] =255
+        #     #plop[list(interpolated_points[i][2].astype(int))[1], list(interpolated_points[i][2].astype(int))[0]] =255
+        #     #plop[list(interpolated_points[i][3].astype(int))[1], list(interpolated_points[i][3].astype(int))[0]] =255
+
+        
+        wraped_img = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
         combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
         with time_it("execute affine transform", debug=PRINT_DEBUG):
             img = display.generate_output_affine(combo_image)
 
         with time_it("display image", debug=PRINT_DEBUG):
-            display.display_method(img)
+            display.display_method(plop)
 
 
 if __name__ == '__main__':

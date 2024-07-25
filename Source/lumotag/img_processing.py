@@ -18,6 +18,21 @@ BLUE = (255, 0, 0)
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
 
+
+def compute_and_apply_perpwarp(src_img, dst_img, src_points, dst_points):
+    # Convert points to numpy arrays
+    src_points = np.array(src_points, dtype=np.float32)
+    dst_points = np.array(dst_points, dtype=np.float32)
+
+    # Compute the perspective transform matrix
+    matrix = cv2.getPerspectiveTransform(src_points, dst_points)
+
+    # Apply the perspective transformation to the source image
+    height, width = dst_img.shape[:2]
+    result = cv2.warpPerspective(src_img, matrix, (width, height))
+
+    return result, matrix
+
 def overlay_warped_image(background, warped):
     # Ensure the images have the same size and are mono
     assert background.shape == warped.shape, "Images must have the same dimensions"

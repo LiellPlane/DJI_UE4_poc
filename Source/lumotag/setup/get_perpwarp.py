@@ -71,9 +71,9 @@ def show_image_until_keypress(image, window_name='Image'):
     #cv2.destroyWindow(window_name)
 # load long range then close range
 images = [
-    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\testdata\unique_id_2cam\_longrange_cnt43cnt1721574992_403271.jpg",
-    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\testdata\unique_id_2cam\_closerange_cnt43cnt1721574992_410305.jpg"
-]
+    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\testdata\unique_id_2cam\_longrange_cnt22cnt1721574953_2560034.jpg",
+    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\testdata\unique_id_2cam\_closerange_cnt22cnt1721574953_2629483.jpg"
+    ]
 
 images = [cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2GRAY) for image in images]
 
@@ -110,11 +110,18 @@ warped_img, warpmatrix = compute_and_apply_transform(
 script_path = os.path.abspath(__file__)
 parent_dir = os.path.dirname(os.path.dirname(script_path))
 pickle_file_path = os.path.join(parent_dir, 'warp_transform.pkl')
+
+perp_dic = {}
+perp_dic["warpmatrix"] = warpmatrix
+perp_dic["longrange_positions"] = clicked_positions[0]
+perp_dic["closerange_positions"] = clicked_positions[1]
+perp_dic["info"] = "longrange position clicked in image, and associated closerange positions to create a warp from longrange into closerange"
+
 with open(pickle_file_path, 'wb') as f:
-    pickle.dump(warpmatrix, f)
+    pickle.dump(perp_dic, f)
 # Load the list from the JSON file
 with open(pickle_file_path, 'rb') as f:
-    warp_matrix = pickle.load(f)
+    warp_matrix = pickle.load(f)["warpmatrix"] 
 
 wraped_img = apply_transform(warp_matrix,images[0],images[1])
 show_image_until_keypress(wraped_img,"wraped_img")
