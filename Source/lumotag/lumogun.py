@@ -144,7 +144,7 @@ def main():
         #wraped_img = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
             #combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
             with time_it("execute affine transform", debug=PRINT_DEBUG):
-                img = display.generate_output_affine(combo_image)
+                combo_image = display.generate_output_affine(combo_image)
 
             with time_it("display image", debug=PRINT_DEBUG):
                 display.display_method(combo_image)
