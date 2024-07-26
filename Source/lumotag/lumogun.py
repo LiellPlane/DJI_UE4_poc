@@ -130,7 +130,7 @@ def main():
             combined_mat = np.matmul(mat, perp_details["warpmatrix"])
             wraped_img = img_processing.apply_perp_transform(combined_mat,cap_img,cap_img_closerange)
             combo_image = img_processing.overlay_warped_image(img, wraped_img)
-            display.display_method(combo_image)
+            #display.display_method(combo_image)
             #time.sleep(0.001)
         # plop = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
         # #cap_img_closerange[:,:] = 255
@@ -141,13 +141,13 @@ def main():
         #     #plop[list(interpolated_points[i][3].astype(int))[1], list(interpolated_points[i][3].astype(int))[0]] =255
 
         
-        wraped_img = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
-        combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
-        with time_it("execute affine transform", debug=PRINT_DEBUG):
-            img = display.generate_output_affine(combo_image)
+        #wraped_img = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
+            #combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
+            with time_it("execute affine transform", debug=PRINT_DEBUG):
+                img = display.generate_output_affine(combo_image)
 
-        with time_it("display image", debug=PRINT_DEBUG):
-            display.display_method(plop)
+            with time_it("display image", debug=PRINT_DEBUG):
+                display.display_method(combo_image)
 
 
 if __name__ == '__main__':
