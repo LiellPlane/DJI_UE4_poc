@@ -53,6 +53,66 @@ def overlay_warped_image(background, warped):
 
     return result
 
+def overlay_warped_image_alpha(background, warped, alpha=0.1):
+    # Ensure the images have the same size and are mono
+    assert background.shape == warped.shape, "Images must have the same dimensions"
+    assert len(background.shape) == 2 and len(warped.shape) == 2, "Images must be mono (single channel)"
+    
+    # Ensure images are 8-bit unsigned integer type
+    background = background.astype(np.uint8)
+    warped = warped.astype(np.uint8)
+
+    # Create a mask based on non-black pixels in the warped image
+    _, mask = cv2.threshold(warped, 1, 255, cv2.THRESH_BINARY)
+
+    # Convert mask to float and normalize
+    mask = mask.astype(float) / 255.0
+
+    # Apply alpha to the mask
+    mask *= alpha
+
+    # Invert the mask
+    inv_mask = 1.0 - mask
+
+    # Blend the images
+    result = (background * inv_mask + warped * mask).astype(np.uint8)
+
+    return result
+
+
+import cv2
+import numpy as np
+
+def overlay_warped_image_alpha_feathered(background, warped, alpha=0.1, feather_amount=30):
+    # Ensure the images have the same size and are mono
+    assert background.shape == warped.shape, "Images must have the same dimensions"
+    assert len(background.shape) == 2 and len(warped.shape) == 2, "Images must be mono (single channel)"
+    
+    # Ensure images are 8-bit unsigned integer type
+    background = background.astype(np.uint8)
+    warped = warped.astype(np.uint8)
+
+    # Create a mask based on non-black pixels in the warped image
+    _, mask = cv2.threshold(warped, 1, 255, cv2.THRESH_BINARY)
+
+    # Apply feathering to the mask
+    mask = cv2.GaussianBlur(mask, (feather_amount*2+1, feather_amount*2+1), 0)
+
+    # Convert mask to float and normalize
+    mask = mask.astype(float) / 255.0
+
+    # Apply alpha to the mask
+    mask *= alpha
+
+    # Invert the mask
+    inv_mask = 1.0 - mask
+
+    # Blend the images
+    result = (background * inv_mask + warped * mask).astype(np.uint8)
+
+    return result
+
+
 def apply_perp_transform(matrix, src_img, dst_img):
     
     # Apply the perspective transformation to the source image

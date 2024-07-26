@@ -129,7 +129,8 @@ def main():
             # transition matrix above which unwarps the 
             combined_mat = np.matmul(mat, perp_details["warpmatrix"])
             wraped_img = img_processing.apply_perp_transform(combined_mat,cap_img,cap_img_closerange)
-            combo_image = img_processing.overlay_warped_image(img, wraped_img)
+            percent_done = i/(interpolated_points.shape[1]-1)
+            combo_image = img_processing.overlay_warped_image_alpha_feathered(img, wraped_img, percent_done)
             #display.display_method(combo_image)
             #time.sleep(0.001)
         # plop = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
