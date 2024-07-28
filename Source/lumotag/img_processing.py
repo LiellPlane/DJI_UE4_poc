@@ -16,6 +16,26 @@ RED = (0, 0, 255)
 BLUE = (255, 0, 0)
 
 
+def interpolate_points(start, end, steps):
+    return np.linspace(start, end, steps)
+
+def ease_in_out_quad(t):
+    return 2 * t**2 if t < 0.5 else 1 - (-2 * t + 2)**2 / 2
+
+def ease_in_out_quart(t):
+    return 8 * t**4 if t < 0.5 else 1 - (-2 * t + 2)**4 / 2
+
+def ease_in_out_sine(t):
+    return -(np.cos(np.pi * t) - 1) / 2
+
+def ease_in_out_cubic(t):
+    return np.where(t < 0.5, 4 * t**3, 1 - (-2 * t + 2)**3 / 2)
+
+def interpolate_points_eased(start, end, steps):
+    t = np.linspace(0, 1, steps)
+    eased_t = ease_in_out_cubic(t)
+    return start + eased_t[:, np.newaxis] * (end - start)
+
 @dataclass
 class CamDisplayTransform:
     cam_image_shape: tuple[int]
@@ -33,8 +53,42 @@ class TransformsDetails:
 
 class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
-        self.transformdetails = transformdetails
+        self.transformdetails: TransformsDetails = transformdetails
+        self.LR_2_CR_corners_lerp: list = self._get_close_to_long_transition_points()
+        #self.LR_2_CR_corners_transition: list[Array3x3] = self._get_transition_Matrices()
 
+    def _get_close_to_long_transition_points(self):
+        long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
+        long_range_corners_in_SR_coords = mtransform_array_of_points(long_range_corners,self.transformdetails.longrange_to_shortrange_perwarp )
+        close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
+        lerped = self._get_lerped_points(long_range_corners_in_SR_coords, close_range_corners)
+        return lerped
+
+    def _calc_perp_transform(src_points, dst_points) -> np.ndarray:
+        return cv2.getPerspectiveTransform(src_points, dst_points)
+    
+    def _get_lerped_points(self, startarray, endarray):
+        """lerp between two sets of points, for instance provide 4 corners of one image and 4 corners of another and lerp between them"""
+        interpolated_points = [
+            interpolate_points_eased(start, end, self.transformdetails.transition_steps)
+            for start, end
+            in zip(
+            startarray,
+            endarray
+            )
+        ]
+        return np.array(interpolated_points)
+
+
+def get_imagecorners_as_np_array(imgshape: tuple[int]):
+    return np.asarray([(0, imgshape[0]-1), (0,0), (imgshape[1]-1, 0), (imgshape[1]-1, imgshape[0]-1)])
+
+
+def mtransform_array_of_points(myarray:np.ndarray, mytransform: Array3x3) -> np.ndarray :
+    homogeneous_points = np.column_stack((myarray, np.ones(len(myarray))))
+    transformed_points = np.dot(homogeneous_points, mytransform.T)
+    transformed_points_2d = transformed_points[:, :2] / transformed_points[:, 2:]
+    return transformed_points_2d
 
 
 def read_img(img_filepath):

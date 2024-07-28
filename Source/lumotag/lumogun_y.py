@@ -101,7 +101,7 @@ def main():
         longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
-        transition_steps=20
+        transition_steps=25
     )
 
     transform_manager = img_processing.TransformManager(transformdetails=transform_details)
@@ -145,7 +145,7 @@ def main():
             cap_img_closerange = next(image_capture_closerange)
             # this gets the transformation to slowly stretch the long range pov to full screen dims
             # watch out here - as the two cameras have different dims!
-            img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, interpolated_points[:, i])
+            img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, transform_manager.LR_2_CR_corners_lerp[:, i])
             # combine the matrices - so we don't have to double up on warps
             # this is the warp which squahes the long range into the centre of the close rnage, then the
             # transition matrix above which unwarps the 
