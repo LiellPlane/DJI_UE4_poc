@@ -51,13 +51,13 @@ def ping_pong_manual(start, end):
             step = 1
         current += step
 
-import pickle
-import os
-script_path = os.path.abspath(__file__)
-parent_dir = os.path.dirname(script_path)
-pickle_file_path = os.path.join(parent_dir, 'warp_transform.pkl')
-with open(pickle_file_path, 'rb') as f:
-    perp_details = pickle.load(f)
+# import pickle
+# import os
+# script_path = os.path.abspath(__file__)
+# parent_dir = os.path.dirname(script_path)
+# pickle_file_path = os.path.join(parent_dir, lumogun.get)
+# with open(pickle_file_path, 'rb') as f:
+#     perp_details = pickle.load(f)
 
 
 import numpy as np
@@ -81,9 +81,31 @@ def interpolate_points_eased(start, end, steps):
     eased_t = ease_in_out_cubic(t)
     return start + eased_t[:, np.newaxis] * (end - start)
 def main():
+    file_system = lumogun.filesystem()
+    LR_to_CR_warp_matrix = file_system.get_closerange_to_longrange_transform()
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     display = lumogun.display(GUN_CONFIGURATION)
+
+    longrangedetails = img_processing.CamDisplayTransform(
+        cam_image_shape= next(image_capture).shape,
+        display_image_shape=GUN_CONFIGURATION.screen_size,
+        rotation=GUN_CONFIGURATION.screen_rotation
+    )
+    closerangedetails = img_processing.CamDisplayTransform(
+        cam_image_shape= next(image_capture_closerange).shape,
+        display_image_shape=GUN_CONFIGURATION.screen_size,
+        rotation=GUN_CONFIGURATION.screen_rotation
+    )
+    transform_details = img_processing.TransformsDetails(
+        longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
+        closerange_to_display=closerangedetails,
+        longrange_to_display=longrangedetails,
+        transition_steps=20
+    )
+
+    transform_manager = img_processing.TransformManager(transformdetails=transform_details)
+
 
     while True:
         # generate lerp from target positions to corners (zoom in?)
@@ -100,7 +122,7 @@ def main():
 
         long_range_ppints = np.asarray([(0, cap_img.shape[0]-1), (0,0), (cap_img.shape[1]-1, 0), (cap_img.shape[1]-1, cap_img.shape[0]-1)])
         homogeneous_points = np.column_stack((long_range_ppints, np.ones(len(long_range_ppints))))
-        transformed_points = np.dot(homogeneous_points, perp_details["warpmatrix"].T)
+        transformed_points = np.dot(homogeneous_points, LR_to_CR_warp_matrix.T)
         transformed_points_2d = transformed_points[:, :2] / transformed_points[:, 2:]
         original_form = np.round(transformed_points_2d).astype(int)
 
@@ -127,7 +149,7 @@ def main():
             # combine the matrices - so we don't have to double up on warps
             # this is the warp which squahes the long range into the centre of the close rnage, then the
             # transition matrix above which unwarps the 
-            combined_mat = np.matmul(mat, perp_details["warpmatrix"])
+            combined_mat = np.matmul(mat, LR_to_CR_warp_matrix)
             wraped_img = img_processing.apply_perp_transform(combined_mat,cap_img,cap_img_closerange)
             percent_done = i/(interpolated_points.shape[1]-1)
             combo_image = img_processing.overlay_warped_image_alpha_feathered(img, wraped_img, percent_done)

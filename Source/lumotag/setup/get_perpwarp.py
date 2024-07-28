@@ -1,6 +1,14 @@
 import cv2
 import json
+import sys
 import os
+
+# Get the absolute path of the directory containing the module
+module_parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+
+# Add the module's parent directory to sys.path
+sys.path.insert(0, module_parent_dir)
+import lumotag
 import numpy as np
 # List to store click positions
 import pickle
@@ -109,10 +117,10 @@ warped_img, warpmatrix = compute_and_apply_transform(
 # show_image_until_keypress(warped_img,"warped_img")
 script_path = os.path.abspath(__file__)
 parent_dir = os.path.dirname(os.path.dirname(script_path))
-pickle_file_path = os.path.join(parent_dir, 'warp_transform.pkl')
+pickle_file_path = os.path.join(parent_dir, lumotag.get_perspectivewarp_filename())
 
 perp_dic = {}
-perp_dic["warpmatrix"] = warpmatrix
+perp_dic[lumotag.get_perspectivewarp_dictkey()] = warpmatrix
 perp_dic["longrange_positions"] = clicked_positions[0]
 perp_dic["closerange_positions"] = clicked_positions[1]
 perp_dic["info"] = "longrange position clicked in image, and associated closerange positions to create a warp from longrange into closerange"

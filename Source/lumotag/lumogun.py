@@ -101,9 +101,9 @@ def main():
     img = next(image_capture)
     if img is None:
         raise Exception("broken long-range image source")
-    # img2 = next(image_capture_closerange)
-    # if img2 is None:
-    #     raise Exception("broken close-range image source")
+    img2 = next(image_capture_closerange)
+    if img2 is None:
+        raise Exception("broken close-range image source")
         
     voice.speak("cam")
     # img = next(image_capture)
@@ -115,7 +115,24 @@ def main():
     voice.speak("ok display")
     # display.display_output(img)
     # while True:
-    #     display.display_output(next(image_capture2))
+    #display.display_output(next(image_capture2))
+    longrangedetails = img_processing.CamDisplayTransform(
+        cam_image_shape= next(image_capture).shape,
+        display_image_shape=GUN_CONFIGURATION.screen_size,
+        rotation=GUN_CONFIGURATION.screen_rotation
+    )
+    closerangedetails = img_processing.CamDisplayTransform(
+        cam_image_shape= next(image_capture_closerange).shape,
+        display_image_shape=GUN_CONFIGURATION.screen_size,
+        rotation=GUN_CONFIGURATION.screen_rotation
+    )
+    fart = img_processing.TransformsDetails(
+        longrange_to_shortrange_perwarp=None,
+        closerange_to_display=closerangedetails,
+        longrange_to_display=longrangedetails
+    )
+
+    transform_manager = img_processing.TransformManager(transformdetails=fart)
 
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     #workingdata = decode_clothID.WorkingData()

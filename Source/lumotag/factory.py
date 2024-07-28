@@ -9,6 +9,7 @@ import cv2
 import os
 import threading
 import random
+import pickle
 #from queue import Queue
 import queue
 import uuid
@@ -33,7 +34,9 @@ try:
 except Exception as e:
     # TODO
     print("this must be scambilight - bad solution please fix TODO")
-
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from lumotag import get_perspectivewarp_dictkey, get_perspectivewarp_filename
 
 RELAY_BOUNCE_S = 0.02
 
@@ -136,6 +139,15 @@ class filesystem(ABC):
     @abstractmethod
     def save_image(self):
         pass
+
+    @staticmethod
+    def get_closerange_to_longrange_transform():
+        script_path = os.path.abspath(__file__)
+        parent_dir = os.path.dirname(script_path)
+        pickle_file_path = os.path.join(parent_dir, get_perspectivewarp_filename())
+        with open(pickle_file_path, 'rb') as f:
+            perp_details = pickle.load(f)
+        return perp_details[get_perspectivewarp_dictkey()]
 
 class display(ABC):
     

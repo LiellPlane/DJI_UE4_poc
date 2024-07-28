@@ -20,20 +20,21 @@ BLUE = (255, 0, 0)
 class CamDisplayTransform:
     cam_image_shape: tuple[int]
     display_image_shape: tuple[int]
-    rotation=Literal[0, 90, 180, 270]
+    rotation: Literal[0, 90, 180, 270] # rotation of LCD screen on chassis
 
 
 @dataclass
 class TransformsDetails:
-    longrange_to_shortrange_perwarp: Array3x3
-    closerange_to_display: CamDisplayTransform
-    longrange_to_display: CamDisplayTransform
-
+    longrange_to_shortrange_perwarp: Array3x3 # warp calculated to seamlessly embed longrange image into closerange(quilt)
+    closerange_to_display: CamDisplayTransform # transform to fit output display (with aspect ratio)
+    longrange_to_display: CamDisplayTransform # transform to fit output display (with aspect ratio)
+    transition_steps: int # moving between longe range and close range
 
 
 class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
         self.transformdetails = transformdetails
+
 
 
 def read_img(img_filepath):
