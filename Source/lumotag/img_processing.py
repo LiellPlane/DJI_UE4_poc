@@ -6,14 +6,35 @@ import os
 import numpy as np
 import time
 from contextlib import contextmanager
-from typing import Iterator, Literal
+from typing import Iterator, Literal, Annotated
 from dataclasses import dataclass
 from skimage.draw import line
 from my_collections import CropSlicing, AffinePoints, UI_ready_element
 from math import floor
-
+Array3x3 = Annotated[np.ndarray, (3, 3)]
 RED = (0, 0, 255)
 BLUE = (255, 0, 0)
+
+
+@dataclass
+class CamDisplayTransform:
+    cam_image_shape: tuple[int]
+    display_image_shape: tuple[int]
+    rotation=Literal[0, 90, 180, 270]
+
+
+@dataclass
+class TransformsDetails:
+    longrange_to_shortrange_perwarp: Array3x3
+    closerange_to_display: CamDisplayTransform
+    longrange_to_display: CamDisplayTransform
+
+
+
+class TransformManager:
+    def __init__(self, transformdetails: TransformsDetails):
+        self.transformdetails = transformdetails
+
 
 def read_img(img_filepath):
     return cv2.imread(img_filepath)
