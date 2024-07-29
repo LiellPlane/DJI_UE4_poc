@@ -55,8 +55,24 @@ class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
         self.transformdetails: TransformsDetails = transformdetails
         self.LR_2_CR_corners_lerp: list = self._get_close_to_long_transition_points()
-        #self.LR_2_CR_corners_transition: list[Array3x3] = self._get_transition_Matrices()
+        self.LR_2_CR_corners_transition_m: list[Array3x3] = self._get_transition_Matrices(
+            self.LR_2_CR_corners_lerp,
+            get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
+            )
 
+    def _get_transition_Matrices(
+            self,
+            target_array: list[np.ndarray],
+            source_array: np.ndarray):
+        matrices = []
+        for i in range(0,target_array.shape[1]):
+            matrices.append(
+                cv2.getPerspectiveTransform(
+                    np.array(source_array, dtype=np.float32),
+                    np.array(target_array[:,i], dtype=np.float32))
+                    )
+        return matrices
+    
     def _get_close_to_long_transition_points(self):
         long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
         long_range_corners_in_SR_coords = mtransform_array_of_points(long_range_corners,self.transformdetails.longrange_to_shortrange_perwarp )

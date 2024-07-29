@@ -145,6 +145,7 @@ def main():
             cap_img_closerange = next(image_capture_closerange)
             # this gets the transformation to slowly stretch the long range pov to full screen dims
             # watch out here - as the two cameras have different dims!
+            #mat = transform_manager.LR_2_CR_corners_transition_m[i]
             img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, transform_manager.LR_2_CR_corners_lerp[:, i])
             # combine the matrices - so we don't have to double up on warps
             # this is the warp which squahes the long range into the centre of the close rnage, then the
@@ -168,7 +169,8 @@ def main():
             #combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
             with time_it("execute affine transform", debug=PRINT_DEBUG):
                 combo_image = display.generate_output_affine(combo_image)
-
+            with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
+                display.add_crosshair_and_analytics_graphics(combo_image, [])
             with time_it("display image", debug=PRINT_DEBUG):
                 display.display_method(combo_image)
 
