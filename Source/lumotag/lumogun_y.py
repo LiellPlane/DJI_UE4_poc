@@ -88,20 +88,18 @@ def main():
     display = lumogun.display(GUN_CONFIGURATION)
 
     longrangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape= next(image_capture).shape,
-        display_image_shape=GUN_CONFIGURATION.screen_size,
-        rotation=GUN_CONFIGURATION.screen_rotation
+        cam_image_shape= next(image_capture).shape
     )
     closerangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape= next(image_capture_closerange).shape,
-        display_image_shape=GUN_CONFIGURATION.screen_size,
-        rotation=GUN_CONFIGURATION.screen_rotation
+        cam_image_shape= next(image_capture_closerange).shape
     )
     transform_details = img_processing.TransformsDetails(
         longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
-        transition_steps=25
+        transition_steps=25,
+        display_image_shape=GUN_CONFIGURATION.screen_size,
+        displayrotation=GUN_CONFIGURATION.screen_rotation
     )
 
     transform_manager = img_processing.TransformManager(transformdetails=transform_details)
@@ -145,12 +143,13 @@ def main():
             cap_img_closerange = next(image_capture_closerange)
             # this gets the transformation to slowly stretch the long range pov to full screen dims
             # watch out here - as the two cameras have different dims!
-            #mat = transform_manager.LR_2_CR_corners_transition_m[i]
-            img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,original_form, transform_manager.LR_2_CR_corners_lerp[:, i])
+            mat = transform_manager.CR_transition_m[i]
+            img = img_processing.apply_perp_transform(mat,cap_img_closerange,cap_img_closerange)
+            #img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,transform_manager.LR_2_CR_corners_lerp[:, 0], transform_manager.LR_2_CR_corners_lerp[:, i])
             # combine the matrices - so we don't have to double up on warps
             # this is the warp which squahes the long range into the centre of the close rnage, then the
-            # transition matrix above which unwarps the 
-            combined_mat = np.matmul(mat, LR_to_CR_warp_matrix)
+            # transition matrix above which unwarps the
+            combined_mat = transform_manager.LR_transition_m[i]
             wraped_img = img_processing.apply_perp_transform(combined_mat,cap_img,cap_img_closerange)
             percent_done = i/(interpolated_points.shape[1]-1)
             combo_image = img_processing.overlay_warped_image_alpha_feathered(img, wraped_img, percent_done)

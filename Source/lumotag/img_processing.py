@@ -39,8 +39,7 @@ def interpolate_points_eased(start, end, steps):
 @dataclass
 class CamDisplayTransform:
     cam_image_shape: tuple[int]
-    display_image_shape: tuple[int]
-    rotation: Literal[0, 90, 180, 270] # rotation of LCD screen on chassis
+    
 
 
 @dataclass
@@ -49,28 +48,65 @@ class TransformsDetails:
     closerange_to_display: CamDisplayTransform # transform to fit output display (with aspect ratio)
     longrange_to_display: CamDisplayTransform # transform to fit output display (with aspect ratio)
     transition_steps: int # moving between longe range and close range
+    display_image_shape: tuple[int]
+    displayrotation: Literal[0, 90, 180, 270] # rotation of LCD screen on chassis
 
 
 class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
+        """all transitions assume that index 0 is closerange engated and last index is longrange engaged"""
         self.transformdetails: TransformsDetails = transformdetails
-        self.LR_2_CR_corners_lerp: list = self._get_close_to_long_transition_points()
-        self.LR_2_CR_corners_transition_m: list[Array3x3] = self._get_transition_Matrices(
-            self.LR_2_CR_corners_lerp,
-            get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
+        # CR camera starts as fully engaged, then warps in to engage the LR. 
+        # we need a starting point - so we use the points from the LR mapped to SR space (so embedded in the image)
+        # then this transitions to fully engaged LR. These transforms can be used to warp the CR
+        self.LR_lerp: list = self._get_close_to_long_transition_points()
+        self.CR_transition_m: list[Array3x3] = self._get_transition_Matrices(
+            target_array=self.LR_lerp,
+            source_array=self.LR_lerp[:, 0]
             )
+        # this transition is the LR from embedded in the CR to fully engaged.
+        # we need the static transform of the embedded LR in CR space, and we also need the 
+        # transforms lerping from this embedded to fully engaged. This needs 2 transforms
+        self.LR_transition_m: list[Array3x3] = self._longrange_transition_calc_m(
+            self.CR_transition_m,
+            self.transformdetails.longrange_to_shortrange_perwarp
+            )
+        # there is a final transform which displays these images for the display. These are much smaller
+        # so any blurring operations are best done here
+        # we also have different aspect ratios of LR and CR, so the transition will have to include this
+        # transform as well, so the display field is recalculated each transition with this new output shape
+        self.displaytransition_lerp: list = self._get_display_transition_points()
+        self.display_affine_transition_m = self._get_display_affine_transitions()
+
+    def _get_display_affine_transitions(self):
+        for i in range(0, self.displaytransition_lerp.shape[1]):
+            corners = self.displaytransition_lerp[:,i]
+            raise Exception("convert this to a shape type shape")
+            get_fitted_affine_transform(
+                    cam_image_shape=lerp,
+                    display_image_shape=self.transformdetails.display_image_shape,
+                    rotation=self.transformdetails.displayrotation
+                )
+
+
+    @staticmethod
+    def _longrange_transition_calc_m(cr_transition_m: list[Array3x3], perpwarp: Array3x3):
+        matrices = []
+        for mat in cr_transition_m:
+            matrices.append(np.matmul(mat, perpwarp))
+        return matrices
 
     def _get_transition_Matrices(
             self,
             target_array: list[np.ndarray],
             source_array: np.ndarray):
         matrices = []
-        for i in range(0,target_array.shape[1]):
-            matrices.append(
-                cv2.getPerspectiveTransform(
-                    np.array(source_array, dtype=np.float32),
-                    np.array(target_array[:,i], dtype=np.float32))
-                    )
+        for i in range(0, target_array.shape[1]):
+            matrices.append(self._calc_perp_transform(
+                src_points=source_array,
+                dst_points=target_array[:, i]
+                )
+                )
         return matrices
     
     def _get_close_to_long_transition_points(self):
@@ -79,9 +115,20 @@ class TransformManager:
         close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
         lerped = self._get_lerped_points(long_range_corners_in_SR_coords, close_range_corners)
         return lerped
+    
+    def _get_display_transition_points(self):
+        long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
+        close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
+        lerped = self._get_lerped_points(close_range_corners, long_range_corners)
+        return lerped
 
+    @staticmethod
     def _calc_perp_transform(src_points, dst_points) -> np.ndarray:
-        return cv2.getPerspectiveTransform(src_points, dst_points)
+        
+        return cv2.getPerspectiveTransform(
+            np.array(src_points, dtype=np.float32),
+            np.array(dst_points, dtype=np.float32)
+            )
     
     def _get_lerped_points(self, startarray, endarray):
         """lerp between two sets of points, for instance provide 4 corners of one image and 4 corners of another and lerp between them"""
