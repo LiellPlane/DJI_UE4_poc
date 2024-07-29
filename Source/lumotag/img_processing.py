@@ -79,15 +79,20 @@ class TransformManager:
         self.display_affine_transition_m = self._get_display_affine_transitions()
 
     def _get_display_affine_transitions(self):
+        transforms = []
         for i in range(0, self.displaytransition_lerp.shape[1]):
-            corners = self.displaytransition_lerp[:,i]
-            raise Exception("convert this to a shape type shape")
-            get_fitted_affine_transform(
-                    cam_image_shape=lerp,
+            corners = self.displaytransition_lerp[:, i]
+            shape = (
+                int(corners[:, 1].max()),
+                int(corners[:, 0].max())
+            )
+            transforms.append(get_fitted_affine_transform(
+                    cam_image_shape=shape,
                     display_image_shape=self.transformdetails.display_image_shape,
                     rotation=self.transformdetails.displayrotation
+                    )
                 )
-
+        return transforms
 
     @staticmethod
     def _longrange_transition_calc_m(cr_transition_m: list[Array3x3], perpwarp: Array3x3):
@@ -108,14 +113,14 @@ class TransformManager:
                 )
                 )
         return matrices
-    
+
     def _get_close_to_long_transition_points(self):
         long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
         long_range_corners_in_SR_coords = mtransform_array_of_points(long_range_corners,self.transformdetails.longrange_to_shortrange_perwarp )
         close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
         lerped = self._get_lerped_points(long_range_corners_in_SR_coords, close_range_corners)
         return lerped
-    
+
     def _get_display_transition_points(self):
         long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
         close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
@@ -124,12 +129,12 @@ class TransformManager:
 
     @staticmethod
     def _calc_perp_transform(src_points, dst_points) -> np.ndarray:
-        
+
         return cv2.getPerspectiveTransform(
             np.array(src_points, dtype=np.float32),
             np.array(dst_points, dtype=np.float32)
             )
-    
+
     def _get_lerped_points(self, startarray, endarray):
         """lerp between two sets of points, for instance provide 4 corners of one image and 4 corners of another and lerp between them"""
         interpolated_points = [
@@ -144,7 +149,7 @@ class TransformManager:
 
 
 def get_imagecorners_as_np_array(imgshape: tuple[int]):
-    return np.asarray([(0, imgshape[0]-1), (0,0), (imgshape[1]-1, 0), (imgshape[1]-1, imgshape[0]-1)])
+    return np.asarray([(0, imgshape[0]), (0,0), (imgshape[1], 0), (imgshape[1], imgshape[0])])
 
 
 def mtransform_array_of_points(myarray:np.ndarray, mytransform: Array3x3) -> np.ndarray :
@@ -218,9 +223,6 @@ def overlay_warped_image_alpha(background, warped, alpha=0.1):
 
     return result
 
-
-import cv2
-import numpy as np
 
 def overlay_warped_image_alpha_feathered(background, warped, alpha=0.1, feather_amount=30):
     # Ensure the images have the same size and are mono

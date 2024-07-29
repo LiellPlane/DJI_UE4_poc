@@ -134,7 +134,7 @@ class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (900, 1200)
+    windows_laptop = (600, 1200)
     stryker = (480, 620)
 
 
