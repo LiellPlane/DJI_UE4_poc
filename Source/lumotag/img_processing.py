@@ -80,6 +80,12 @@ class TransformManager:
         self.display_warp_transition_m: list[Array3x3] = self._convert_affine_to_3x3(
             self.display_affine_transition_m
             )
+        # that didnt seem to work - so lets add a lerp between the two camera shapes as well
+        self.shape_transition_m: list[Array3x3] = self._get_transition_Matrices(
+            target_array=self.displaytransition_lerp,
+            source_array=self.displaytransition_lerp[:, 0]
+            )
+ 
         
     def _convert_affine_to_3x3(self, affinetransforms: list) -> list [Array3x3]:
         matrices = []
@@ -129,7 +135,7 @@ class TransformManager:
         long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
         long_range_corners_in_SR_coords = mtransform_array_of_points(long_range_corners,self.transformdetails.longrange_to_shortrange_perwarp )
         close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
-        lerped = self._get_lerped_points(long_range_corners_in_SR_coords, close_range_corners)
+        lerped = self._get_lerped_points(long_range_corners_in_SR_coords, long_range_corners)
         return lerped
 
     def _get_display_transition_points(self):
@@ -748,6 +754,9 @@ def get_affine_points(incoming_img_dims, outgoing_img_dims) -> AffinePoints:
     output_fit_w = floor(incoming_w * ratio)
     # test to make sure aspect ratio is 
     if abs((incoming_h/incoming_w) - (outgoing_h/outgoing_w)) > 2:
+        raise ValueError("error calculating output image dimensions")
+    
+    if abs(output_fit_w-outgoing_w)>1 and abs(output_fit_h-outgoing_h)>1:
         raise ValueError("error calculating output image dimensions")
     # get 3 corresponding points from the output view - keeping in mind
     # any rotation
