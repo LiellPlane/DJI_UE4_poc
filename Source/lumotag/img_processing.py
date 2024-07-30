@@ -77,7 +77,18 @@ class TransformManager:
         # transform as well, so the display field is recalculated each transition with this new output shape
         self.displaytransition_lerp: list = self._get_display_transition_points()
         self.display_affine_transition_m = self._get_display_affine_transitions()
-
+        self.display_warp_transition_m: list[Array3x3] = self._convert_affine_to_3x3(
+            self.display_affine_transition_m
+            )
+        
+    def _convert_affine_to_3x3(self, affinetransforms: list) -> list [Array3x3]:
+        matrices = []
+        for affine_t in affinetransforms:
+            warp_matrix = np.eye(3, dtype=np.float32)
+            warp_matrix[:2, :] = affine_t
+            matrices.append(warp_matrix)
+        return matrices
+    
     def _get_display_affine_transitions(self):
         transforms = []
         for i in range(0, self.displaytransition_lerp.shape[1]):

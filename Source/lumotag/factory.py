@@ -190,6 +190,8 @@ class display(ABC):
         #three_channel_image[:, :, 2] = outptu_img
         return outptu_img
     
+
+    
     def generate_output_affine(self, cam_capture):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
