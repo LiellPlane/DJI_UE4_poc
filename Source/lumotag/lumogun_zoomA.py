@@ -118,25 +118,25 @@ def main():
         cap_img_closerange = next(image_capture_closerange)
 
 
-        long_range_ppints = np.asarray([(0, cap_img.shape[0]-1), (0,0), (cap_img.shape[1]-1, 0), (cap_img.shape[1]-1, cap_img.shape[0]-1)])
-        homogeneous_points = np.column_stack((long_range_ppints, np.ones(len(long_range_ppints))))
-        transformed_points = np.dot(homogeneous_points, LR_to_CR_warp_matrix.T)
-        transformed_points_2d = transformed_points[:, :2] / transformed_points[:, 2:]
-        original_form = np.round(transformed_points_2d).astype(int)
+        # long_range_ppints = np.asarray([(0, cap_img.shape[0]-1), (0,0), (cap_img.shape[1]-1, 0), (cap_img.shape[1]-1, cap_img.shape[0]-1)])
+        # homogeneous_points = np.column_stack((long_range_ppints, np.ones(len(long_range_ppints))))
+        # transformed_points = np.dot(homogeneous_points, LR_to_CR_warp_matrix.T)
+        # transformed_points_2d = transformed_points[:, :2] / transformed_points[:, 2:]
+        # original_form = np.round(transformed_points_2d).astype(int)
 
 
-        interpolated_points = [
-             interpolate_points_eased(start, end, 25)
-             for start, end
-             in zip(
-                original_form,
-                np.asarray([(0, cap_img_closerange.shape[0]-1), (0,0), (cap_img_closerange.shape[1]-1, 0), (cap_img_closerange.shape[1]-1, cap_img_closerange.shape[0]-1)])
-             )
-         ]
-        interpolated_points = np.array(interpolated_points)
+        # interpolated_points = [
+        #      interpolate_points_eased(start, end, 25)
+        #      for start, end
+        #      in zip(
+        #         original_form,
+        #         np.asarray([(0, cap_img_closerange.shape[0]-1), (0,0), (cap_img_closerange.shape[1]-1, 0), (cap_img_closerange.shape[1]-1, cap_img_closerange.shape[0]-1)])
+        #      )
+        #  ]
+        # interpolated_points = np.array(interpolated_points)
 
 
-        iterator = ping_pong_manual(0, interpolated_points.shape[1]-1)
+        iterator = ping_pong_manual(0, transform_manager.transformdetails.transition_steps-1)
         for _ in range(100000):
             i = next(iterator)
             cap_img = next(image_capture)
@@ -144,14 +144,14 @@ def main():
             # this gets the transformation to slowly stretch the long range pov to full screen dims
             # watch out here - as the two cameras have different dims!
             mat = transform_manager.CR_transition_m[i]
-            img = img_processing.apply_perp_transform(mat,cap_img_closerange,cap_img_closerange)
+            img = img_processing.apply_perp_transform(mat, cap_img_closerange, cap_img_closerange)
             #img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,transform_manager.LR_2_CR_corners_lerp[:, 0], transform_manager.LR_2_CR_corners_lerp[:, i])
             # combine the matrices - so we don't have to double up on warps
             # this is the warp which squahes the long range into the centre of the close rnage, then the
             # transition matrix above which unwarps the
             combined_mat = transform_manager.LR_transition_m[i]
-            wraped_img = img_processing.apply_perp_transform(combined_mat,cap_img,cap_img_closerange)
-            percent_done = i/(interpolated_points.shape[1]-1)
+            wraped_img = img_processing.apply_perp_transform(combined_mat, cap_img, cap_img_closerange)
+            percent_done = i/(transform_manager.transformdetails.transition_steps-1)
             combo_image = img_processing.overlay_warped_image_alpha_feathered(img, wraped_img, percent_done)
             #display.display_method(combo_image)
             #time.sleep(0.001)
@@ -164,6 +164,7 @@ def main():
         #     #plop[list(interpolated_points[i][3].astype(int))[1], list(interpolated_points[i][3].astype(int))[0]] =255
 
         
+
         #wraped_img = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
             #combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
             with time_it("execute affine transform", debug=PRINT_DEBUG):

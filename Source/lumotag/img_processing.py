@@ -80,13 +80,19 @@ class TransformManager:
         self.display_warp_transition_m: list[Array3x3] = self._convert_affine_to_3x3(
             self.display_affine_transition_m
             )
-        # that didnt seem to work - so lets add a lerp between the two camera shapes as well
-        self.shape_transition_m: list[Array3x3] = self._get_transition_Matrices(
-            target_array=self.displaytransition_lerp,
-            source_array=self.displaytransition_lerp[:, 0]
+        # # that didnt seem to work - so lets add a lerp between the two camera shapes as well
+        # self.shape_transition_m: list[Array3x3] = self._get_transition_Matrices(
+        #     target_array=self.displaytransition_lerp,
+        #     source_array=self.displaytransition_lerp[:, 0]
+        #     )
+        self.CR_all_transition_m: list[Array3x3] = self._matmul_lists(
+            list1=self.CR_transition_m,
+            list2=self.display_warp_transition_m
             )
- 
-        
+    @staticmethod
+    def _matmul_lists(list1: list[Array3x3], list2: list[Array3x3]) -> list[Array3x3]:
+        assert len(list1) == len(list2)
+
     def _convert_affine_to_3x3(self, affinetransforms: list) -> list [Array3x3]:
         matrices = []
         for affine_t in affinetransforms:
