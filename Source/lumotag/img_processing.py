@@ -41,6 +41,44 @@ class CamDisplayTransform:
     cam_image_shape: tuple[int]
     
 
+def darken_image(img, alpha):
+    return cv2.convertScaleAbs(img, alpha=alpha, beta=0)
+
+def gray2rgb(img):
+    return cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+
+
+
+def radial_motion_blur(image, intensity=100):
+    center = (image.shape[0]//2, image.shape[1]//2)
+    h, w = image.shape
+    y, x = np.ogrid[:h, :w]
+    
+    # Calculate angle and distance from center for each pixel
+    angle = np.arctan2(y - center[1], x - center[0])
+    dist_from_center = np.sqrt((x - center[0])**2 + (y - center[1])**2)
+    
+    # Normalize distances
+    max_dist = np.sqrt(w**2 + h**2)
+    norm_dist = dist_from_center / max_dist
+    
+    # Create motion blur
+    blurred = np.zeros_like(image, dtype=np.float32)
+    for i in range(intensity):
+        offset = i / intensity
+        x_offset = offset * np.cos(angle) * norm_dist * intensity
+        y_offset = offset * np.sin(angle) * norm_dist * intensity
+        
+        x_shift = np.round(x + x_offset).astype(int)
+        y_shift = np.round(y + y_offset).astype(int)
+        
+        # Ensure we don't go out of bounds
+        x_shift = np.clip(x_shift, 0, w-1)
+        y_shift = np.clip(y_shift, 0, h-1)
+        
+        blurred += image[y_shift, x_shift] / intensity
+    
+    return blurred.astype(np.uint8)
 
 @dataclass
 class TransformsDetails:
@@ -88,6 +126,10 @@ class TransformManager:
         self.CR_all_transition_m: list[Array3x3] = self._matmul_lists(
             list1=self.display_warp_transition_m,
             list2=self.CR_transition_m 
+            )
+        self.LR_all_transition_m: list[Array3x3] = self._matmul_lists(
+            list1=self.display_warp_transition_m,
+            list2=self.LR_transition_m 
             )
 
     @staticmethod
@@ -145,7 +187,7 @@ class TransformManager:
     def _get_close_to_long_transition_points(self):
         long_range_corners = get_imagecorners_as_np_array(self.transformdetails.longrange_to_display.cam_image_shape)
         long_range_corners_in_SR_coords = mtransform_array_of_points(long_range_corners,self.transformdetails.longrange_to_shortrange_perwarp )
-        close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
+        #close_range_corners = get_imagecorners_as_np_array(self.transformdetails.closerange_to_display.cam_image_shape)
         lerped = self._get_lerped_points(long_range_corners_in_SR_coords, long_range_corners)
         return lerped
 
@@ -252,7 +294,7 @@ def overlay_warped_image_alpha(background, warped, alpha=0.1):
     return result
 
 
-def overlay_warped_image_alpha_feathered(background, warped, alpha=0.1, feather_amount=30):
+def overlay_warped_image_alpha_feathered(background, warped, alpha=0.1, feather_amount=10):
     # Ensure the images have the same size and are mono
     assert background.shape == warped.shape, "Images must have the same dimensions"
     assert len(background.shape) == 2 and len(warped.shape) == 2, "Images must be mono (single channel)"

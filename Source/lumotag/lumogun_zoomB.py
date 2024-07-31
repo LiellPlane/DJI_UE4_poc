@@ -118,70 +118,27 @@ def main():
         cap_img_closerange = next(image_capture_closerange)
 
 
-        # long_range_ppints = np.asarray([(0, cap_img.shape[0]-1), (0,0), (cap_img.shape[1]-1, 0), (cap_img.shape[1]-1, cap_img.shape[0]-1)])
-        # homogeneous_points = np.column_stack((long_range_ppints, np.ones(len(long_range_ppints))))
-        # transformed_points = np.dot(homogeneous_points, LR_to_CR_warp_matrix.T)
-        # transformed_points_2d = transformed_points[:, :2] / transformed_points[:, 2:]
-        # original_form = np.round(transformed_points_2d).astype(int)
-
-
-        # interpolated_points = [
-        #      interpolate_points_eased(start, end, 25)
-        #      for start, end
-        #      in zip(
-        #         original_form,
-        #         np.asarray([(0, cap_img_closerange.shape[0]-1), (0,0), (cap_img_closerange.shape[1]-1, 0), (cap_img_closerange.shape[1]-1, cap_img_closerange.shape[0]-1)])
-        #      )
-        #  ]
-        # interpolated_points = np.array(interpolated_points)
-
 
         iterator = ping_pong_manual(0, transform_manager.transformdetails.transition_steps-1)
         for _ in range(100000):
             i = next(iterator)
             cap_img = next(image_capture)
             cap_img_closerange = next(image_capture_closerange)
-            # this gets the transformation to slowly stretch the long range pov to full screen dims
-            # watch out here - as the two cameras have different dims!
-            mat = transform_manager.CR_transition_m[i]
-            img = img_processing.apply_perp_transform(mat, cap_img_closerange, cap_img_closerange)
-            #img, mat = img_processing.compute_and_apply_perpwarp(cap_img_closerange, cap_img_closerange,transform_manager.LR_2_CR_corners_lerp[:, 0], transform_manager.LR_2_CR_corners_lerp[:, i])
-            # combine the matrices - so we don't have to double up on warps
-            # this is the warp which squahes the long range into the centre of the close rnage, then the
-            # transition matrix above which unwarps the
-            combined_mat = transform_manager.LR_transition_m[i]
-            wraped_img = img_processing.apply_perp_transform(combined_mat, cap_img, cap_img_closerange)
-            percent_done = i/(transform_manager.transformdetails.transition_steps-1)
-            combo_image = img_processing.overlay_warped_image_alpha_feathered(img, wraped_img, percent_done)
-            #display.display_method(combo_image)
-            #time.sleep(0.001)
-        # plop = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
-        # #cap_img_closerange[:,:] = 255
-        # for i in range(0,interpolated_points.shape[0]):
-        #     plop[list(interpolated_points[i][0].astype(int))[1], list(interpolated_points[i][0].astype(int))[0]] =255
-        #     #plop[list(interpolated_points[i][1].astype(int))[1], list(interpolated_points[i][1].astype(int))[0]] =255
-        #     #plop[list(interpolated_points[i][2].astype(int))[1], list(interpolated_points[i][2].astype(int))[0]] =255
-        #     #plop[list(interpolated_points[i][3].astype(int))[1], list(interpolated_points[i][3].astype(int))[0]] =255
 
-        
-
-        #wraped_img = img_processing.apply_perp_transform(perp_details["warpmatrix"],cap_img,cap_img_closerange)
-            #combo_image = img_processing.overlay_warped_image(cap_img_closerange, wraped_img)
             with time_it("execute affine transform", debug=PRINT_DEBUG):
-                combo_image = img_processing.apply_perp_transform(
-                    transform_manager.display_warp_transition_m[i],
-                    combo_image,
-                    display.emptyscreen
-                    )
-                import cv2
-                combo_image = cv2.cvtColor(combo_image, cv2.COLOR_GRAY2BGR)
-                #display._affine_transform = transform_manager.display_affine_transition_m[i]
-                #combo_image = display.generate_output_affine(combo_image)
 
-            #mat = transform_manager.CR_all_transition_m[i]
-            #combo_image = img_processing.apply_perp_transform(mat, cap_img_closerange, cap_img_closerange)
-            #combo_image = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-            #combo_image = display.generate_output_affine(cap_img)
+                mat = transform_manager.CR_all_transition_m[i]
+                cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
+
+                mat = transform_manager.LR_all_transition_m[i]
+                lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
+
+                percent_done = i/(transform_manager.transformdetails.transition_steps-1)
+                cr_img = img_processing.darken_image(cr_img, 1-percent_done)
+                combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
+                
+                combo_image = img_processing.radial_motion_blur(combo_image)
+                combo_image = img_processing.gray2rgb(combo_image)
             with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                 display.add_crosshair_and_analytics_graphics(combo_image, [])
             with time_it("display image", debug=PRINT_DEBUG):
