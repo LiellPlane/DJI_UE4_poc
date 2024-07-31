@@ -86,12 +86,17 @@ class TransformManager:
         #     source_array=self.displaytransition_lerp[:, 0]
         #     )
         self.CR_all_transition_m: list[Array3x3] = self._matmul_lists(
-            list1=self.CR_transition_m,
-            list2=self.display_warp_transition_m
+            list1=self.display_warp_transition_m,
+            list2=self.CR_transition_m 
             )
+
     @staticmethod
     def _matmul_lists(list1: list[Array3x3], list2: list[Array3x3]) -> list[Array3x3]:
         assert len(list1) == len(list2)
+        matrices = []
+        for mat1, mat2 in zip(list1, list2):
+            matrices.append(np.matmul(mat1, mat2))
+        return matrices
 
     def _convert_affine_to_3x3(self, affinetransforms: list) -> list [Array3x3]:
         matrices = []

@@ -178,8 +178,9 @@ def main():
                 #display._affine_transform = transform_manager.display_affine_transition_m[i]
                 #combo_image = display.generate_output_affine(combo_image)
 
-
-
+            # mat = transform_manager.CR_all_transition_m[i]
+            # combo_image = img_processing.apply_perp_transform(mat, cap_img_closerange, cap_img_closerange)
+            #combo_image = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
             #combo_image = display.generate_output_affine(cap_img)
             with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                 display.add_crosshair_and_analytics_graphics(combo_image, [])
