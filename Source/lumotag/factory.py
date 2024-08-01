@@ -159,7 +159,7 @@ class display(ABC):
         # np.zeros(
         #     ( _gun_config.screen_size + (3,)), np.uint8)
         #self.draw_test_rect()
-        self._affine_transform = None
+        self._affine_transform = {}
 
 
     @abstractmethod
@@ -196,15 +196,15 @@ class display(ABC):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
-        if self._affine_transform is None:
-            self._affine_transform = img_processing.get_fitted_affine_transform(
+        if cam_capture.shape[0:2] not in self._affine_transform:
+            self._affine_transform[cam_capture.shape[0:2]] = img_processing.get_fitted_affine_transform(
                 cam_image_shape=cam_capture.shape,
                 display_image_shape=self.emptyscreen.shape,
                 rotation=self.display_rotate
             )
 
         row_cols = self.emptyscreen.shape[0:2][::-1]
-        outptu_img = img_processing.do_affine(cam_capture, self._affine_transform, row_cols)
+        outptu_img = img_processing.do_affine(cam_capture, self._affine_transform[cam_capture.shape[0:2]], row_cols)
         outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
         #height, width = outptu_img.shape
         #three_channel_image = np.zeros((height, width, 3), dtype=outptu_img.dtype)
@@ -214,9 +214,9 @@ class display(ABC):
     def add_internal_section_region(self, inputimg, _slice: CropSlicing):
 
         left_top = tuple(
-            np.matmul(self._affine_transform, np.array([_slice.left,_slice.top,1])).astype(int))
+            np.matmul(self._affine_transform[inputimg.shape[0:2]], np.array([_slice.left,_slice.top,1])).astype(int))
         right_low = tuple(
-            np.matmul(self._affine_transform, np.array([_slice.right,_slice.lower,1])).astype(int))
+            np.matmul(self._affine_transform[inputimg.shape[0:2]], np.array([_slice.right,_slice.lower,1])).astype(int))
         inputimg = cv2.rectangle(inputimg, left_top, right_low, (255,255,255), 2)
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
@@ -226,7 +226,7 @@ class display(ABC):
             output,
             adapt=True)
         for c in graphics:
-            c.transform_points(self._affine_transform)
+            c.transform_points(self._affine_transform[output.shape[0:2]])
             img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)

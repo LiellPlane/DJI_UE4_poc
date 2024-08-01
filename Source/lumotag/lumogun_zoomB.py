@@ -97,7 +97,8 @@ def main():
         longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
-        transition_steps=25,
+        transition_steps=99,
+        transition_time_secs=2,
         display_image_shape=GUN_CONFIGURATION.screen_size,
         displayrotation=GUN_CONFIGURATION.screen_rotation
     )
@@ -124,25 +125,34 @@ def main():
             i = next(iterator)
             cap_img = next(image_capture)
             cap_img_closerange = next(image_capture_closerange)
+            i = transform_manager.get_deltatime_transition()
+            if random.randint(0,100) < 4:
+                transform_manager.trigger_transition()
+            if i == 0:
+                output_image = display.generate_output_affine(cap_img_closerange)
+                i=0
+            if i > transform_manager.transformdetails.transition_steps-1:
+                output_image = display.generate_output_affine(cap_img)
+                i=transform_manager.transformdetails.transition_steps-1
+            else:
+                with time_it("execute affine transform", debug=PRINT_DEBUG):
 
-            with time_it("execute affine transform", debug=PRINT_DEBUG):
+                    mat = transform_manager.CR_all_transition_m[i]
+                    cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
 
-                mat = transform_manager.CR_all_transition_m[i]
-                cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
+                    mat = transform_manager.LR_all_transition_m[i]
+                    lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
 
-                mat = transform_manager.LR_all_transition_m[i]
-                lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
-
-                percent_done = i/(transform_manager.transformdetails.transition_steps-1)
-                cr_img = img_processing.darken_image(cr_img, 1-percent_done)
-                combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
-                
-                combo_image = img_processing.radial_motion_blur(combo_image)
-                combo_image = img_processing.gray2rgb(combo_image)
+                    percent_done = i/(transform_manager.transformdetails.transition_steps-1)
+                    cr_img = img_processing.darken_image(cr_img, 1-percent_done)
+                    combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
+                    
+                    #combo_image = img_processing.radial_motion_blur(combo_image)
+                    output_image = img_processing.gray2rgb(combo_image)
             with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                display.add_crosshair_and_analytics_graphics(combo_image, [])
+                display.add_crosshair_and_analytics_graphics(output_image, [])
             with time_it("display image", debug=PRINT_DEBUG):
-                display.display_method(combo_image)
+                display.display_method(output_image)
 
             
 

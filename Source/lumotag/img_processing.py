@@ -49,7 +49,7 @@ def gray2rgb(img):
 
 
 
-def radial_motion_blur(image, intensity=100):
+def radial_motion_blur(image, intensity=30):
     center = (image.shape[0]//2, image.shape[1]//2)
     h, w = image.shape
     y, x = np.ogrid[:h, :w]
@@ -86,6 +86,7 @@ class TransformsDetails:
     closerange_to_display: CamDisplayTransform # transform to fit output display (with aspect ratio)
     longrange_to_display: CamDisplayTransform # transform to fit output display (with aspect ratio)
     transition_steps: int # moving between longe range and close range
+    transition_time_secs: float # desired transition time to be LERPED
     display_image_shape: tuple[int]
     displayrotation: Literal[0, 90, 180, 270] # rotation of LCD screen on chassis
 
@@ -93,6 +94,9 @@ class TransformsDetails:
 class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
         """all transitions assume that index 0 is closerange engated and last index is longrange engaged"""
+        self._transitions_direction = 1
+        self._triggered_time = time.perf_counter()
+        self._current_managed_index = 0
         self.transformdetails: TransformsDetails = transformdetails
         # CR camera starts as fully engaged, then warps in to engage the LR. 
         # we need a starting point - so we use the points from the LR mapped to SR space (so embedded in the image)
@@ -131,6 +135,23 @@ class TransformManager:
             list1=self.display_warp_transition_m,
             list2=self.LR_transition_m 
             )
+
+    def trigger_transition(self):
+        '''alert manager that we want to it to generate transform indexes proportional to time delta'''
+        self._transitions_direction *= -1
+        self._triggered_time = time.perf_counter()
+
+    def get_deltatime_transition(self):
+        '''if you have triggered the trigger_transitions, use this to get current index proportional time delta and configured time span'''
+        time_delta_sec = time.perf_counter() - self._triggered_time
+        self.transformdetails.transition_time_secs
+        self.transformdetails.transition_steps
+        percent_done = time_delta_sec/self.transformdetails.transition_time_secs
+        steps_in_timespan = int(self.transformdetails.transition_steps * percent_done) * self._transitions_direction
+        self._current_managed_index += steps_in_timespan
+        self._triggered_time = time.perf_counter()
+        self._current_managed_index = min(max(0, self._current_managed_index), self.transformdetails.transition_steps)
+        return self._current_managed_index
 
     @staticmethod
     def _matmul_lists(list1: list[Array3x3], list2: list[Array3x3]) -> list[Array3x3]:
