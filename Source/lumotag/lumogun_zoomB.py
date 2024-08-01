@@ -98,7 +98,7 @@ def main():
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
         transition_steps=99,
-        transition_time_secs=2,
+        transition_time_secs=0.7,
         display_image_shape=GUN_CONFIGURATION.screen_size,
         displayrotation=GUN_CONFIGURATION.screen_rotation
     )
@@ -128,6 +128,11 @@ def main():
             i = transform_manager.get_deltatime_transition()
             if random.randint(0,100) < 4:
                 transform_manager.trigger_transition()
+
+            # if transition is maxed or mined out - don't use the perspective transform
+            # from the transform manager, instead use the original affine transform which is
+            # a lot faster
+            
             if i == 0:
                 output_image = display.generate_output_affine(cap_img_closerange)
                 i=0

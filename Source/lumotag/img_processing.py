@@ -143,14 +143,24 @@ class TransformManager:
 
     def get_deltatime_transition(self):
         '''if you have triggered the trigger_transitions, use this to get current index proportional time delta and configured time span'''
-        time_delta_sec = time.perf_counter() - self._triggered_time
-        self.transformdetails.transition_time_secs
-        self.transformdetails.transition_steps
-        percent_done = time_delta_sec/self.transformdetails.transition_time_secs
-        steps_in_timespan = int(self.transformdetails.transition_steps * percent_done) * self._transitions_direction
-        self._current_managed_index += steps_in_timespan
+        if any([
+            (self._current_managed_index >= self.transformdetails.transition_steps) and self._transitions_direction == 1,
+            (self._current_managed_index <= 0) and self._transitions_direction == -1
+        ]):
+            "don't bother calculating everything"
+            pass
+        else: 
+            
+            time_delta_sec = time.perf_counter() - self._triggered_time
+            self.transformdetails.transition_time_secs
+            self.transformdetails.transition_steps
+            percent_done = time_delta_sec/self.transformdetails.transition_time_secs
+            steps_in_timespan = int(self.transformdetails.transition_steps * percent_done) * self._transitions_direction
+            self._current_managed_index += steps_in_timespan
+            
+            self._current_managed_index = min(max(0, self._current_managed_index), self.transformdetails.transition_steps)
+        
         self._triggered_time = time.perf_counter()
-        self._current_managed_index = min(max(0, self._current_managed_index), self.transformdetails.transition_steps)
         return self._current_managed_index
 
     @staticmethod
