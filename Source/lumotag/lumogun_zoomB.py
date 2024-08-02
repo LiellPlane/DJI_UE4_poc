@@ -153,7 +153,7 @@ def main():
                     #combo_image = img_processing.radial_motion_blur(combo_image)
                     output_image = img_processing.gray2rgb(combo_image)
             with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                display.add_crosshair_and_analytics_graphics(output_image, [])
+                display.add_crosshair_and_analytics_graphics(cap_img, output_image, [])
             with time_it("display image", debug=PRINT_DEBUG):
                 display.display_method(output_image)
 

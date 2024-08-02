@@ -66,8 +66,8 @@ def main():
     #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
     image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
-    slice_details = img_processing.get_internal_section(
-                        image_capture.get_res(),
+    slice_details_close_range = img_processing.get_internal_section(
+                        image_capture_closerange.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
 
     image_analysis = []
@@ -238,7 +238,8 @@ def main():
                     
                 # if random.randint(0,50) < 2:
                 #     is_trigger_reqd = True
-
+                if random.randint(0, 100) < 4:
+                    transform_manager.trigger_transition()
                 # in this case 
                 # result = torch_debounce(is_torch_reqd)
                 # if result is True:
@@ -274,15 +275,33 @@ def main():
                     #file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
-                    strobe_cnt=0) # click noise from relay only
+                    strobe_cnt=0
+                    ) # click noise from relay only
 
             with time_it("gun image stuff", debug=PRINT_DEBUG):
 
+                transition_i = transform_manager.get_deltatime_transition()
 
-                
-                with time_it("execute affine transform", debug=PRINT_DEBUG):
+                if transition_i == 0:
                     output_image = display.generate_output_affine(cap_img_closerange)
+                    transition_i=0
+                if transition_i > transform_manager.transformdetails.transition_steps-1:
+                    output_image = display.generate_output_affine(cap_img)
+                    transition_i=transform_manager.transformdetails.transition_steps-1
+                else:
+                #with time_it("execute affine transform", debug=PRINT_DEBUG):
+                    mat = transform_manager.CR_all_transition_m[transition_i]
+                    cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
 
+                    mat = transform_manager.LR_all_transition_m[transition_i]
+                    lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
+
+                    percent_done = transition_i/(transform_manager.transformdetails.transition_steps-1)
+                    cr_img = img_processing.darken_image(cr_img, 1-percent_done)
+                    combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
+                    
+                    #combo_image = img_processing.radial_motion_blur(combo_image)
+                    output_image = img_processing.gray2rgb(combo_image)
 
                 # with time_it("execute affine transform", debug=PRINT_DEBUG):
                 #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
@@ -295,8 +314,8 @@ def main():
                             block=True,
                             timeout=None))
 
-                #with time_it("add internal section", debug=PRINT_DEBUG):
-                #    display.add_internal_section_region(output_image, slice_details)
+                # with time_it("add internal section", debug=PRINT_DEBUG):
+                #     display.add_internal_section_region(cap_img_closerange.shape, output_image, slice_details_close_range)
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                     display.add_crosshair_and_analytics_graphics(
