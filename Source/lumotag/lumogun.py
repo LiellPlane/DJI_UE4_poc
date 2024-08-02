@@ -239,7 +239,7 @@ def main():
                 # if random.randint(0,100) < 2:
                 #     TEMP_fake_light = not TEMP_fake_light
                     
-                if random.randint(0,50) < 2:
+                if random.randint(0,3000) < 2:
                     is_trigger_reqd = not is_trigger_reqd
                 # if random.randint(0, 100) < 4:
                 #     transform_manager.trigger_transition()

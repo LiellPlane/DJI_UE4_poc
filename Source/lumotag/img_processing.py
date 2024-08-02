@@ -147,15 +147,15 @@ class TransformManager:
     def lerp_slice_details(self):
         cr_slice_np  = np.asarray(self.transformdetails.slice_details_close_range.get_as_tuple())
         lr_slice_np  = np.asarray(self.transformdetails.slice_details_long_range.get_as_tuple())
+        lerped =  lerp_arrays(cr_slice_np,lr_slice_np,self.transformdetails.transition_steps)
         output = []
-        for i in range (0, self.transformdetails.transition_steps):
-            t = i/self.transformdetails.transition_steps
-            lerp = (1 - t) * cr_slice_np + t * lr_slice_np
+        for i in range(0, lerped.shape[1]):
+
             output.append(CropSlicing(
-                left=lerp[0],
-                right=lerp[1],
-                top=lerp[2],
-                lower=lerp[3]
+                left=lerped[:,i][0],
+                right=lerped[:,i][1],
+                top=lerped[:,i][2],
+                lower=lerped[:,i][3]
                 ))
         return output
 
@@ -274,6 +274,9 @@ class TransformManager:
         ]
         return np.array(interpolated_points)
 
+def lerp_arrays(a, b, num_points):
+    t = np.linspace(0, 1, num_points)
+    return np.array([np.interp(t, [0, 1], [a_i, b_i]) for a_i, b_i in zip(a, b)])
 
 def get_imagecorners_as_np_array(imgshape: tuple[int]):
     return np.asarray([(0, imgshape[0]), (0,0), (imgshape[1], 0), (imgshape[1], imgshape[0])])
