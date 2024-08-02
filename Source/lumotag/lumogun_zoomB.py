@@ -120,19 +120,17 @@ def main():
 
 
 
-        iterator = ping_pong_manual(0, transform_manager.transformdetails.transition_steps-1)
-        for _ in range(100000):
-            i = next(iterator)
+        while True:
             cap_img = next(image_capture)
             cap_img_closerange = next(image_capture_closerange)
             i = transform_manager.get_deltatime_transition()
-            if random.randint(0,100) < 4:
+            if random.randint(0, 100) < 4:
                 transform_manager.trigger_transition()
 
             # if transition is maxed or mined out - don't use the perspective transform
             # from the transform manager, instead use the original affine transform which is
             # a lot faster
-            
+
             if i == 0:
                 output_image = display.generate_output_affine(cap_img_closerange)
                 i=0

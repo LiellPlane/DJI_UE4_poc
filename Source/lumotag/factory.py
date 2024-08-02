@@ -221,12 +221,12 @@ class display(ABC):
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
 
-    def add_crosshair_and_analytics_graphics(self, output, graphics: ShapeItem):
+    def add_crosshair_and_analytics_graphics(self, source_image_shape, output, graphics: ShapeItem):
         img_processing.add_cross_hair(
             output,
             adapt=True)
         for c in graphics:
-            c.transform_points(self._affine_transform[output.shape[0:2]])
+            c.transform_points(self._affine_transform[source_image_shape[0:2]])
             img_processing.draw_pattern_output(
                 image=output,
                 patterndetails=c)

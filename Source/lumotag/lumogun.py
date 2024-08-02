@@ -70,26 +70,27 @@ def main():
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop)
 
-    image_analysis = [(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture.get_mem_buffers(),
-        slice_details=slice_details,
-        img_shrink_factor=None,
-        OS_friendly_name="cam1inner",
-        config=configs.get_lumofind_config(PLATFORM)))]
-
-    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture.get_mem_buffers(),
-        slice_details=None,
-        OS_friendly_name="cam1macro",
-        img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
-        config=configs.get_lumofind_config(PLATFORM)))
+    image_analysis = []
+    # image_analysis = (analyse_lumotag.ImageAnalyser_shared_mem(
+    #     sharedmem_buffs=image_capture.get_mem_buffers(),
+    #     slice_details=slice_details,
+    #     img_shrink_factor=None,
+    #     OS_friendly_name="cam1inner",
+    #     config=configs.get_lumofind_config(PLATFORM)))
 
     # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-    #     sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
-    #     slice_details=slice_details,
-    #     OS_friendly_name="cam2inner",
-    #     img_shrink_factor=None,
+    #     sharedmem_buffs=image_capture.get_mem_buffers(),
+    #     slice_details=None,
+    #     OS_friendly_name="cam1macro",
+    #     img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
     #     config=configs.get_lumofind_config(PLATFORM)))
+
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
+        slice_details=None,
+        OS_friendly_name="cam2inner",
+        img_shrink_factor=None,
+        config=configs.get_lumofind_config(PLATFORM)))
     
     # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
     #     sharedmem_buffs=image_capture.get_mem_buffers(),
@@ -113,31 +114,33 @@ def main():
     
     display = lumogun.display(GUN_CONFIGURATION)
     voice.speak("ok display")
-    # display.display_output(img)
-    # while True:
-    #display.display_output(next(image_capture2))
-    longrangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape= next(image_capture).shape,
-        display_image_shape=GUN_CONFIGURATION.screen_size,
-        rotation=GUN_CONFIGURATION.screen_rotation
-    )
-    closerangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape= next(image_capture_closerange).shape,
-        display_image_shape=GUN_CONFIGURATION.screen_size,
-        rotation=GUN_CONFIGURATION.screen_rotation
-    )
-    fart = img_processing.TransformsDetails(
-        longrange_to_shortrange_perwarp=None,
-        closerange_to_display=closerangedetails,
-        longrange_to_display=longrangedetails
-    )
-
-    transform_manager = img_processing.TransformManager(transformdetails=fart)
 
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     #workingdata = decode_clothID.WorkingData()
     file_system = lumogun.filesystem()
     voice.speak("all devices healthy")
+    # display.display_output(img)
+    # while True:
+    #display.display_output(next(image_capture2))
+    longrangedetails = img_processing.CamDisplayTransform(
+        cam_image_shape= next(image_capture).shape
+    )
+    closerangedetails = img_processing.CamDisplayTransform(
+        cam_image_shape= next(image_capture_closerange).shape
+    )
+    transform_details = img_processing.TransformsDetails(
+        longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
+        closerange_to_display=closerangedetails,
+        longrange_to_display=longrangedetails,
+        transition_steps=99,
+        transition_time_secs=0.7,
+        display_image_shape=GUN_CONFIGURATION.screen_size,
+        displayrotation=GUN_CONFIGURATION.screen_rotation
+    )
+
+    transform_manager = img_processing.TransformManager(transformdetails=transform_details)
+
+
 
     # create demo player
     players = {
@@ -228,12 +231,13 @@ def main():
                 is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
                 
 
-                is_torch_reqd = TEMP_fake_light
-                if random.randint(0,100) < 2:
-                    TEMP_fake_light = not TEMP_fake_light
+                #### testing cycle
+                # is_torch_reqd = TEMP_fake_light
+                # if random.randint(0,100) < 2:
+                #     TEMP_fake_light = not TEMP_fake_light
                     
-                if random.randint(0,50) < 2:
-                    is_trigger_reqd = True
+                # if random.randint(0,50) < 2:
+                #     is_trigger_reqd = True
 
                 # in this case 
                 # result = torch_debounce(is_torch_reqd)
@@ -276,12 +280,12 @@ def main():
 
 
                 
-                # with time_it("execute affine transform", debug=PRINT_DEBUG):
-                #     img = display.generate_output_affine(cap_img)
-
-
                 with time_it("execute affine transform", debug=PRINT_DEBUG):
-                    img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
+                    output_image = display.generate_output_affine(cap_img_closerange)
+
+
+                # with time_it("execute affine transform", debug=PRINT_DEBUG):
+                #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
 
 
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
@@ -291,17 +295,25 @@ def main():
                             block=True,
                             timeout=None))
 
-                # with time_it("add internal section", debug=PRINT_DEBUG):
-                #     display.add_internal_section_region(img, slice_details)
+                #with time_it("add internal section", debug=PRINT_DEBUG):
+                #    display.add_internal_section_region(output_image, slice_details)
 
-                # with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                #     display.add_crosshair_and_analytics_graphics(img, analysis)
+                with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
+                    display.add_crosshair_and_analytics_graphics(
+                        source_image_shape=cap_img_closerange.shape,
+                        output=output_image,
+                        graphics=analysis
+                        )
 
-                # with time_it("add graphics: player info", debug=PRINT_DEBUG):
-                #     display.add_playerinfo_graphics(img, players, analysis)
+                with time_it("add graphics: player info", debug=PRINT_DEBUG):
+                    display.add_playerinfo_graphics(
+                        output=output_image,
+                        players=players,
+                        analysis=analysis
+                        )
 
                 with time_it("display image", debug=PRINT_DEBUG):
-                    display.display_method(img)
+                    display.display_method(output_image)
                 
                 # if len(analysis) > 0:
                 #     file_system.save_image(cap_img)
