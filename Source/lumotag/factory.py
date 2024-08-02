@@ -4,7 +4,7 @@ import json
 import time
 from enum import Enum
 from functools import lru_cache
-from typing import Literal
+from typing import Literal, Optional
 import cv2
 import os
 import threading
@@ -211,12 +211,21 @@ class display(ABC):
         #three_channel_image[:, :, 2] = outptu_img
         return outptu_img
 
-    def add_internal_section_region(self, source_image_shape, inputimg, _slice: CropSlicing):
+    def add_internal_section_region(self, source_image_shape, inputimg, _slice: CropSlicing, affinetransform: Optional):
+        """Draw the white square which is the inner zone for detecting patterns
+        either use the image shape which is used as a dictionary look-up for previously calculated affine transforms
+        or provide the affine transform itself
+        """
+
+        if affinetransform is None:
+            affine_m = self._affine_transform[source_image_shape[0:2]]
+        else:
+            affine_m = affinetransform
 
         left_top = tuple(
-            np.matmul(self._affine_transform[source_image_shape[0:2]], np.array([_slice.left,_slice.top,1])).astype(int))
+            np.matmul(affine_m, np.array([_slice.left,_slice.top,1])).astype(int))
         right_low = tuple(
-            np.matmul(self._affine_transform[source_image_shape[0:2]], np.array([_slice.right,_slice.lower,1])).astype(int))
+            np.matmul(affine_m, np.array([_slice.right,_slice.lower,1])).astype(int))
         inputimg = cv2.rectangle(inputimg, left_top, right_low, (255,255,255), 2)
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 

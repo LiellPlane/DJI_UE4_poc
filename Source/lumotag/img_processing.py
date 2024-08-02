@@ -136,6 +136,9 @@ class TransformManager:
             list2=self.LR_transition_m 
             )
 
+    def get_display_affine_transformation(self, index):
+        return self.display_affine_transition_m[index]
+    
     def trigger_transition(self):
         '''alert manager that we want to it to generate transform indexes proportional to time delta'''
         self._transitions_direction *= -1

@@ -40,7 +40,6 @@ else:
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
 
-
 def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
@@ -238,8 +237,8 @@ def main():
                     
                 # if random.randint(0,50) < 2:
                 #     is_trigger_reqd = True
-                if random.randint(0, 100) < 4:
-                    transform_manager.trigger_transition()
+                # if random.randint(0, 100) < 4:
+                #     transform_manager.trigger_transition()
                 # in this case 
                 # result = torch_debounce(is_torch_reqd)
                 # if result is True:
@@ -281,12 +280,14 @@ def main():
             with time_it("gun image stuff", debug=PRINT_DEBUG):
 
                 transition_i = transform_manager.get_deltatime_transition()
-
+                display_active_image = cap_img_closerange
                 if transition_i == 0:
-                    output_image = display.generate_output_affine(cap_img_closerange)
+                    display_active_image = cap_img_closerange
+                    output_image = display.generate_output_affine(display_active_image)
                     transition_i=0
                 if transition_i > transform_manager.transformdetails.transition_steps-1:
-                    output_image = display.generate_output_affine(cap_img)
+                    display_active_image = cap_img
+                    output_image = display.generate_output_affine(display_active_image)
                     transition_i=transform_manager.transformdetails.transition_steps-1
                 else:
                 #with time_it("execute affine transform", debug=PRINT_DEBUG):
@@ -303,6 +304,7 @@ def main():
                     #combo_image = img_processing.radial_motion_blur(combo_image)
                     output_image = img_processing.gray2rgb(combo_image)
 
+                
                 # with time_it("execute affine transform", debug=PRINT_DEBUG):
                 #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
 
@@ -315,7 +317,11 @@ def main():
                             timeout=None))
 
                 # with time_it("add internal section", debug=PRINT_DEBUG):
-                #     display.add_internal_section_region(cap_img_closerange.shape, output_image, slice_details_close_range)
+                #     display.add_internal_section_region(
+                #         display_active_image.shape,
+                #         output_image, 
+                #         slice_details_close_range,
+                #         None)
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                     display.add_crosshair_and_analytics_graphics(
