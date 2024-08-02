@@ -6,7 +6,7 @@ import os
 import numpy as np
 import time
 from contextlib import contextmanager
-from typing import Iterator, Literal, Annotated
+from typing import Iterator, Literal, Annotated, Optional
 from dataclasses import dataclass
 from skimage.draw import line
 from my_collections import CropSlicing, AffinePoints, UI_ready_element
@@ -89,7 +89,8 @@ class TransformsDetails:
     transition_time_secs: float # desired transition time to be LERPED
     display_image_shape: tuple[int]
     displayrotation: Literal[0, 90, 180, 270] # rotation of LCD screen on chassis
-
+    slice_details_close_range: Optional[CropSlicing]
+    slice_details_long_range: Optional[CropSlicing]
 
 class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
@@ -135,6 +136,28 @@ class TransformManager:
             list1=self.display_warp_transition_m,
             list2=self.LR_transition_m 
             )
+        # this is optional
+        if self.transformdetails.slice_details_close_range and self.transformdetails.slice_details_long_range:
+            self.lerped_slice_details = self.lerp_slice_details()
+
+    def get_lerped_targetzone_slice(self, index):
+        """the slices have to be provided or this will die"""
+        return self.lerped_slice_details[index]
+
+    def lerp_slice_details(self):
+        cr_slice_np  = np.asarray(self.transformdetails.slice_details_close_range.get_as_tuple())
+        lr_slice_np  = np.asarray(self.transformdetails.slice_details_long_range.get_as_tuple())
+        output = []
+        for i in range (0, self.transformdetails.transition_steps):
+            t = i/self.transformdetails.transition_steps
+            lerp = (1 - t) * cr_slice_np + t * lr_slice_np
+            output.append(CropSlicing(
+                left=lerp[0],
+                right=lerp[1],
+                top=lerp[2],
+                lower=lerp[3]
+                ))
+        return output
 
     def get_display_affine_transformation(self, index):
         return self.display_affine_transition_m[index]

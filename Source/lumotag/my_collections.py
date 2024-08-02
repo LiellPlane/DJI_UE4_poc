@@ -210,7 +210,8 @@ class CropSlicing:
     right: int
     top: int
     lower: int
-
+    def get_as_tuple(self):
+        return (self.left, self.right, self.top, self.lower)
 @dataclass
 class AffinePoints:
     top_left_w_h: tuple[int, int]

@@ -134,7 +134,7 @@ class screensizes(Enum):
     title_bar_pxls = 25
     format = ("height", "width")
     tzar = (800 - title_bar_pxls, 480)
-    windows_laptop = (480, 800)
+    windows_laptop = (800, 480)
     stryker = (480, 620)
 
 
@@ -180,9 +180,11 @@ class stryker_config(gun_config):
         return(0)
     
     @property
-    def internal_img_crop(self):
+    def internal_img_crop_lr(self):
         return((500,500))
-
+    @property
+    def internal_img_crop_sr(self):
+        return((500,500))
     @property
     def img_subsmple_factor(self):
         return 2
@@ -255,7 +257,10 @@ class TZAR_config(gun_config):
         return(4)
 
     @property
-    def internal_img_crop(self):
+    def internal_img_crop_lr(self):
+        return((500,500))
+    @property
+    def internal_img_crop_sr(self):
         return((500,500))
 
     @property
@@ -327,8 +332,11 @@ class simitzar_config(gun_config):
         return(0)
 
     @property
-    def internal_img_crop(self):
+    def internal_img_crop_lr(self):
         return((500,500))
+    @property
+    def internal_img_crop_sr(self):
+        return((60,60))
 
     @property
     def img_subsmple_factor(self):

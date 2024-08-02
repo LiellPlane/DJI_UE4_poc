@@ -67,8 +67,10 @@ def main():
     image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     slice_details_close_range = img_processing.get_internal_section(
                         image_capture_closerange.get_res(),
-                        GUN_CONFIGURATION.internal_img_crop)
-
+                        GUN_CONFIGURATION.internal_img_crop_sr)
+    slice_details_long_range = img_processing.get_internal_section(
+                        image_capture.get_res(),
+                        GUN_CONFIGURATION.internal_img_crop_lr)
     image_analysis = []
     # image_analysis = (analyse_lumotag.ImageAnalyser_shared_mem(
     #     sharedmem_buffs=image_capture.get_mem_buffers(),
@@ -134,7 +136,9 @@ def main():
         transition_steps=99,
         transition_time_secs=0.7,
         display_image_shape=GUN_CONFIGURATION.screen_size,
-        displayrotation=GUN_CONFIGURATION.screen_rotation
+        displayrotation=GUN_CONFIGURATION.screen_rotation,
+        slice_details_close_range=slice_details_close_range,
+        slice_details_long_range=slice_details_long_range
     )
 
     transform_manager = img_processing.TransformManager(transformdetails=transform_details)
@@ -235,8 +239,8 @@ def main():
                 # if random.randint(0,100) < 2:
                 #     TEMP_fake_light = not TEMP_fake_light
                     
-                # if random.randint(0,50) < 2:
-                #     is_trigger_reqd = True
+                if random.randint(0,50) < 2:
+                    is_trigger_reqd = not is_trigger_reqd
                 # if random.randint(0, 100) < 4:
                 #     transform_manager.trigger_transition()
                 # in this case 
@@ -255,6 +259,7 @@ def main():
                 # any other behaviour during refractory period is ignored
                 result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if result is True:
+                    transform_manager.trigger_transition()
                     # true will only be available as an impulse after
                     # pulling trigger, then go low again - but
                     # mem state of debouncer will remain high
@@ -316,12 +321,12 @@ def main():
                             block=True,
                             timeout=None))
 
-                # with time_it("add internal section", debug=PRINT_DEBUG):
-                #     display.add_internal_section_region(
-                #         display_active_image.shape,
-                #         output_image, 
-                #         slice_details_close_range,
-                #         None)
+                with time_it("add internal section", debug=PRINT_DEBUG):
+                    display.add_internal_section_region(
+                        display_active_image.shape,
+                        output_image, 
+                        transform_manager.get_lerped_targetzone_slice(transition_i),
+                        transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                     display.add_crosshair_and_analytics_graphics(

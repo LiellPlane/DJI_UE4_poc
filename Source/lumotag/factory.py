@@ -119,7 +119,10 @@ class gun_config(ABC):
     def light_strobe_cnt(self):
         ...
     @abstractmethod
-    def internal_img_crop(self):
+    def internal_img_crop_lr(self):
+        ...
+    @abstractmethod
+    def internal_img_crop_sr(self):
         ...
     @property
     @abstractmethod
