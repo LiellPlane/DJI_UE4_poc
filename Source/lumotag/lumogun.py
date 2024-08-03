@@ -134,7 +134,7 @@ def main():
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
         transition_steps=99,
-        transition_time_secs=0.2,
+        transition_time_secs=0.4,
         display_image_shape=GUN_CONFIGURATION.screen_size,
         displayrotation=GUN_CONFIGURATION.screen_rotation,
         slice_details_close_range=slice_details_close_range,
