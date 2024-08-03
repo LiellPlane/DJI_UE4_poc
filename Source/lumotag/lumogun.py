@@ -183,9 +183,9 @@ def main():
                 cap_img_closerange = next(image_capture_closerange)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
-            with time_it("start analysis", debug=PRINT_DEBUG):
-                for img_analyser in image_analysis:
-                    img_analyser.trigger_analysis(image_capture.get_safe_mem_details)
+            # with time_it("start analysis", debug=PRINT_DEBUG):
+            #     for img_analyser in image_analysis:
+            #         img_analyser.trigger_analysis(image_capture.get_safe_mem_details)
 
 
             with time_it("check messaging", debug=PRINT_DEBUG):
@@ -239,8 +239,8 @@ def main():
                 # if random.randint(0,100) < 2:
                 #     TEMP_fake_light = not TEMP_fake_light
                     
-                if random.randint(0,3000) < 2:
-                    is_trigger_reqd = not is_trigger_reqd
+                # if random.randint(0,3000) < 2:
+                #     is_trigger_reqd = not is_trigger_reqd
                 # if random.randint(0, 100) < 4:
                 #     transform_manager.trigger_transition()
                 # in this case 
@@ -316,17 +316,17 @@ def main():
 
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
                     analysis = []
-                    for img_analyser in image_analysis:
-                        analysis.extend(img_analyser.analysis_output_q.get(
-                            block=True,
-                            timeout=None))
+                    # for img_analyser in image_analysis:
+                    #     analysis.extend(img_analyser.analysis_output_q.get(
+                    #         block=True,
+                    #         timeout=None))
 
-                with time_it("add internal section", debug=PRINT_DEBUG):
-                    display.add_internal_section_region(
-                        display_active_image.shape,
-                        output_image, 
-                        transform_manager.get_lerped_targetzone_slice(transition_i),
-                        transform_manager.get_display_affine_transformation(transition_i))
+                # with time_it("add internal section", debug=PRINT_DEBUG):
+                #     display.add_internal_section_region(
+                #         display_active_image.shape,
+                #         output_image, 
+                #         transform_manager.get_lerped_targetzone_slice(transition_i),
+                #         transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                     display.add_crosshair_and_analytics_graphics(
