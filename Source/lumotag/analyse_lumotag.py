@@ -8,7 +8,7 @@ from utils import time_it
 from my_collections import (
     SharedMem_ImgTicket,
     CropSlicing)
-
+from typing import Callable
 import configs
 from cv2 import resize, INTER_NEAREST
 
@@ -19,6 +19,7 @@ class ImageAnalyser_shared_mem():
     def __init__(
             self,
             sharedmem_buffs: dict,
+            safe_mem_details_func: Callable[[], SharedMem_ImgTicket],
             slice_details: CropSlicing,
             img_shrink_factor: int,
             OS_friendly_name: str,
@@ -26,6 +27,7 @@ class ImageAnalyser_shared_mem():
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
         self.OS_friendly_name = OS_friendly_name
+        self.safe_mem_details_func = safe_mem_details_func
         self.input_shared_mem_index_q = Queue(maxsize=1)
         self.analysis_output_q = Queue(maxsize=1)
         self.img_crop = slice_details
@@ -42,10 +44,10 @@ class ImageAnalyser_shared_mem():
 
         process.start()
 
-    def trigger_analysis(self, mapped_details: SharedMem_ImgTicket):
+    def trigger_analysis(self):
         #print("putting record for analyis", mapped_details)
         self.input_shared_mem_index_q.put(
-            mapped_details,
+            self.safe_mem_details_func(),
             block=True,
             timeout=None)
 

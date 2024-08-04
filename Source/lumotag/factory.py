@@ -638,7 +638,7 @@ class Camera_async_flipflop(Camera):
         self.shared_mem_index = None
         self._shared_id_index_name = self._id + "whatever" # oh god this is turning into a mess
         self._store_res = None
-        self.get_safe_mem_details = None
+        self.safe_mem_details = None
         if not self.get_is_reversed():
             self._store_res = self.get_res()
         else:
@@ -650,6 +650,10 @@ class Camera_async_flipflop(Camera):
         #  hack to get around confusion with different combinations
         #  of screens orientations and camera resolutions
 
+
+    # don't make this a property
+    def get_safe_mem_details(self):
+        return self.safe_mem_details
 
     def get_mem_buffers(self) -> dict:
         return (
@@ -724,12 +728,12 @@ class Camera_async_flipflop(Camera):
 
         self.last_img = img_buff
 
-        self.get_safe_mem_details = SharedMem_ImgTicket(
+        self.safe_mem_details = SharedMem_ImgTicket(
             index=mem_details.index,
             res=mem_details.res,
             buf_size=mem_details.buf_size,
             id = mem_details.id)
-        #print("FLIPFLOP saving record for analyis", self.get_safe_mem_details)
+        #print("FLIPFLOP saving record for analyis", self.safe_mem_details)
         return img_buff
 
     def async_img_loop(

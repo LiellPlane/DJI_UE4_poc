@@ -28,7 +28,7 @@ def get_lumofind_config(platform):
             PRINT_DEBUG=False)
     elif platform == _OS.WINDOWS:
         return base_find_lumotag_config(
-            SAVE_IMAGES_DEBUG=False,
+            SAVE_IMAGES_DEBUG=True,
             SAVE_IMAGES_PATH=r"D:/lumodebug/",
             PRINT_DEBUG=True)
     elif platform == _OS.MAC_OS:
@@ -336,7 +336,7 @@ class simitzar_config(gun_config):
         return((500,500))
     @property
     def internal_img_crop_sr(self):
-        return((60,60))
+        return((600,600))
 
     @property
     def img_subsmple_factor(self):

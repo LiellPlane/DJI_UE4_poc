@@ -5,6 +5,8 @@ import factory
 import random
 from functools import partial
 import msgs
+import queue
+
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
@@ -40,6 +42,9 @@ else:
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
 
+class AnalysisTimeoutException(Exception):
+    pass
+
 def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
@@ -72,32 +77,37 @@ def main():
                         image_capture.get_res(),
                         GUN_CONFIGURATION.internal_img_crop_lr)
     image_analysis = []
-    # image_analysis = (analyse_lumotag.ImageAnalyser_shared_mem(
-    #     sharedmem_buffs=image_capture.get_mem_buffers(),
-    #     slice_details=slice_details,
-    #     img_shrink_factor=None,
-    #     OS_friendly_name="cam1inner",
-    #     config=configs.get_lumofind_config(PLATFORM)))
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture.get_mem_buffers(),
+        safe_mem_details_func = image_capture.get_safe_mem_details,
+        slice_details=slice_details_long_range,
+        img_shrink_factor=None,
+        OS_friendly_name="cam1inner",
+        config=configs.get_lumofind_config(PLATFORM)))
 
-    # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-    #     sharedmem_buffs=image_capture.get_mem_buffers(),
-    #     slice_details=None,
-    #     OS_friendly_name="cam1macro",
-    #     img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
-    #     config=configs.get_lumofind_config(PLATFORM)))
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture.get_mem_buffers(),
+        safe_mem_details_func = image_capture.get_safe_mem_details,
+        slice_details=None,
+        OS_friendly_name="cam1macro",
+        img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
+        config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_closerange.get_safe_mem_details,
         slice_details=None,
         OS_friendly_name="cam2inner",
-        img_shrink_factor=None,
+        img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
     
-    # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-    #     sharedmem_buffs=image_capture.get_mem_buffers(),
-    #     slice_details=slice_details,
-    #     img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
-    #     config=configs.get_lumofind_config(PLATFORM)))
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_closerange.get_safe_mem_details,
+        slice_details=slice_details_close_range,
+        OS_friendly_name="cam2macro",
+        img_shrink_factor=None,
+        config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
     img = next(image_capture)
@@ -183,9 +193,9 @@ def main():
                 cap_img_closerange = next(image_capture_closerange)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
-            # with time_it("start analysis", debug=PRINT_DEBUG):
-            #     for img_analyser in image_analysis:
-            #         img_analyser.trigger_analysis(image_capture.get_safe_mem_details)
+            with time_it("start analysis", debug=PRINT_DEBUG):
+                for img_analyser in image_analysis:
+                    img_analyser.trigger_analysis()
 
 
             with time_it("check messaging", debug=PRINT_DEBUG):
@@ -316,10 +326,12 @@ def main():
 
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
                     analysis = []
-                    # for img_analyser in image_analysis:
-                    #     analysis.extend(img_analyser.analysis_output_q.get(
-                    #         block=True,
-                    #         timeout=None))
+                    for img_analyser in image_analysis:
+                        try:
+                            result = img_analyser.analysis_output_q.get(block=True, timeout=5)
+                            analysis.extend(result)
+                        except queue.Empty:
+                            raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
                 # with time_it("add internal section", debug=PRINT_DEBUG):
                 #     display.add_internal_section_region(
