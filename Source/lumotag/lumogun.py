@@ -66,59 +66,59 @@ def main():
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
     #accelerometer = lumogun.Accelerometer()
-    #image_capture = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
-    #image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    image_capture = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    image_capture_closerange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
+    #image_capture_longrange = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
+    #image_capture_longrange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture_longrange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
+    image_capture_shortrange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes_closerange)
     slice_details_close_range = img_processing.get_internal_section(
-                        image_capture_closerange.get_res(),
+                        image_capture_shortrange.get_res(),
                         GUN_CONFIGURATION.internal_img_crop_sr)
     slice_details_long_range = img_processing.get_internal_section(
-                        image_capture.get_res(),
+                        image_capture_longrange.get_res(),
                         GUN_CONFIGURATION.internal_img_crop_lr)
     image_analysis = []
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture.get_mem_buffers(),
-        safe_mem_details_func = image_capture.get_safe_mem_details,
+        sharedmem_buffs=image_capture_longrange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
         slice_details=slice_details_long_range,
         img_shrink_factor=None,
         OS_friendly_name="cam1inner",
         config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture.get_mem_buffers(),
-        safe_mem_details_func = image_capture.get_safe_mem_details,
+        sharedmem_buffs=image_capture_longrange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
         slice_details=None,
         OS_friendly_name="cam1macro",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
-        safe_mem_details_func = image_capture_closerange.get_safe_mem_details,
+        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_shortrange.get_safe_mem_details,
         slice_details=None,
         OS_friendly_name="cam2inner",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         config=configs.get_lumofind_config(PLATFORM)))
     
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-        sharedmem_buffs=image_capture_closerange.get_mem_buffers(),
-        safe_mem_details_func = image_capture_closerange.get_safe_mem_details,
+        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_shortrange.get_safe_mem_details,
         slice_details=slice_details_close_range,
         OS_friendly_name="cam2macro",
         img_shrink_factor=None,
         config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
-    img = next(image_capture)
+    img = next(image_capture_longrange)
     if img is None:
         raise Exception("broken long-range image source")
-    img2 = next(image_capture_closerange)
+    img2 = next(image_capture_shortrange)
     if img2 is None:
         raise Exception("broken close-range image source")
         
     voice.speak("cam")
-    # img = next(image_capture)
+    # img = next(image_capture_longrange)
 
     # if img is None:
     #     raise Exception("Error with camera")
@@ -134,17 +134,17 @@ def main():
     # while True:
     #display.display_output(next(image_capture2))
     longrangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape= next(image_capture).shape
+        cam_image_shape= next(image_capture_longrange).shape
     )
     closerangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape= next(image_capture_closerange).shape
+        cam_image_shape= next(image_capture_shortrange).shape
     )
     transform_details = img_processing.TransformsDetails(
         longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
         transition_steps=99,
-        transition_time_secs=0.4,
+        transition_time_secs=2,
         display_image_shape=GUN_CONFIGURATION.screen_size,
         displayrotation=GUN_CONFIGURATION.screen_rotation,
         slice_details_close_range=slice_details_close_range,
@@ -189,8 +189,8 @@ def main():
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
             with time_it("get next image", debug=PRINT_DEBUG):
-                cap_img = next(image_capture)
-                cap_img_closerange = next(image_capture_closerange)
+                cap_img = next(image_capture_longrange)
+                cap_img_closerange = next(image_capture_shortrange)
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
@@ -275,7 +275,7 @@ def main():
                     # mem state of debouncer will remain high
                     msgs.package_send_report(
                         type_=msgs.MessageTypes.HIT_REPORT.value,
-                        image=image_capture.last_img,
+                        image=image_capture_longrange.last_img,
                         gun_config=GUN_CONFIGURATION,
                         messenger=messenger,
                         target="some twat",
@@ -305,7 +305,7 @@ def main():
                     output_image = display.generate_output_affine(display_active_image)
                     transition_i=transform_manager.transformdetails.transition_steps-1
                 else:
-                #with time_it("execute affine transform", debug=PRINT_DEBUG):
+                with time_it("execute affine transform", debug=PRINT_DEBUG):
                     mat = transform_manager.CR_all_transition_m[transition_i]
                     cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
 
@@ -333,12 +333,12 @@ def main():
                         except queue.Empty:
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
-                # with time_it("add internal section", debug=PRINT_DEBUG):
-                #     display.add_internal_section_region(
-                #         display_active_image.shape,
-                #         output_image, 
-                #         transform_manager.get_lerped_targetzone_slice(transition_i),
-                #         transform_manager.get_display_affine_transformation(transition_i))
+                with time_it("add internal section", debug=PRINT_DEBUG):
+                    display.add_internal_section_region(
+                        display_active_image.shape,
+                        output_image, 
+                        transform_manager.get_lerped_targetzone_slice(transition_i),
+                        transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
                     display.add_crosshair_and_analytics_graphics(
