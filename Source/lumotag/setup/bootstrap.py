@@ -88,11 +88,11 @@ except Exception as e:
 #     subprocess.run(['git', 'clone', repo])
 
 # the speaker does not like being SUDO 
-original_uid = os.getenv('SUDO_UID')
-original_gid = os.getenv('SUDO_GID')
-os.setgid(int(original_gid))
-# Change the user ID
-os.setuid(int(original_uid))
+# original_uid = os.getenv('SUDO_UID')
+# original_gid = os.getenv('SUDO_GID')
+# os.setgid(int(original_gid))
+# # Change the user ID
+# os.setuid(int(original_uid))
 
 
 
