@@ -11,7 +11,7 @@ class Voice(factory.VoiceBase):
         #  TODO
         """Ideally this should inherit from threading.thread
         and override init and run - but w/e this works for now"""
-        engine = pyttsx3.init()
+        engine = pyttsx3.init(driverName='espeak')
         engine.setProperty('rate', 200)
         engine.setProperty('volume', 10)
         while True:
