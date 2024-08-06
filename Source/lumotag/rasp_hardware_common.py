@@ -178,7 +178,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         self.cam_res = tuple(reversed(res))
         self.picam2 = Picamera2()
         _config = self.picam2.create_video_configuration(
-                    main={"size": res,  "format": "YUV420"}, controls={'FrameRate': 90})#, controls={"FrameDurationLimits": (233333, 233333)})
+                    main={"size": res,  "format": "YUV420"}, controls={'FrameRate': 40})#, controls={"FrameDurationLimits": (233333, 233333)})
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
@@ -207,7 +207,7 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         self.picam2.configure(_config)
         #  set_controls must come after config!!
         self.picam2.set_controls({"AwbEnable": 0})
-        self.picam2.set_controls({"AnalogueGain": 5.0})
+        #self.picam2.set_controls({"AnalogueGain": 5.0})
         self.picam2.start()
         time.sleep(0.2)
 
