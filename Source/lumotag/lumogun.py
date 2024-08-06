@@ -22,7 +22,7 @@ PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 if PLATFORM == [_OS.WINDOWS]:
     print("raspberry presence failed, loading test libraries")
     import fake_raspberry_hardware as lumogun
-    import sound as sound
+    import sound_fake as sound
 elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
     import raspberry5_hardware as lumogun

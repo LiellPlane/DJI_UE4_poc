@@ -1334,21 +1334,24 @@ class VoiceBase(ABC):
             message: str):
         # use  in_box._qsize() to prevent
         # blowing it up
-        if self.in_box.qsize() >= self.in_box._maxsize - 1:
+        try:
+            if self.in_box.qsize() >= self.in_box._maxsize - 1:
 
-            try:
-                for _ in range (0, self.in_box._maxsize):
-                    self.in_box.get(block=False)
-            except queue.Empty: # queue here refers to the module, not a class
-                print('cleared overflowing voice queue')
+                try:
+                    for _ in range (0, self.in_box._maxsize):
+                        self.in_box.get(block=False)
+                except queue.Empty: # queue here refers to the module, not a class
+                    print('cleared overflowing voice queue')
 
-            self.in_box.put(
-                "Voice buffer overflow",
-                block=False)
-        else:
-            self.in_box.put(
-                message,
-                block=False)
+                self.in_box.put(
+                    "Voice buffer overflow",
+                    block=False)
+            else:
+                self.in_box.put(
+                    message,
+                    block=False)
+        except Exception as e:
+            print(f"something nasty happening {e}")
 
     def speaker(self, in_box):
         pass
