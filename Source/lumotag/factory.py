@@ -233,15 +233,29 @@ class display(ABC):
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
 
-    def add_crosshair_and_analytics_graphics(self, source_image_shape, output, graphics: ShapeItem):
+    def add_crosshair(self, output):
         img_processing.add_cross_hair(
             output,
             adapt=True)
-        for c in graphics:
-            c.transform_points(self._affine_transform[source_image_shape[0:2]])
-            img_processing.draw_pattern_output(
-                image=output,
-                patterndetails=c)
+    
+    def add_target_tags(self, source_image_shape, output, graphics: dict[tuple[int,int], list[ShapeItem]]):
+        """ we are using IMAGE SHAPE to find the camera source and corresponding transform"""
+        for _shape, result_package in graphics.items():
+            for result in result_package:
+                result.transform_points(self._affine_transform[_shape])
+                img_processing.draw_pattern_output(
+                    image=output,
+                    patterndetails=result)
+
+    # def add_crosshair_and_analytics_graphics(self, source_image_shape, output, graphics: ShapeItem):
+    #     img_processing.add_cross_hair(
+    #         output,
+    #         adapt=True)
+    #     for c in graphics:
+    #         c.transform_points(self._affine_transform[source_image_shape[0:2]])
+    #         img_processing.draw_pattern_output(
+    #             image=output,
+    #             patterndetails=c)
 
     @staticmethod
     def get_norm_fade_val(player, analysis):
@@ -1176,7 +1190,7 @@ class ImageLibrary_longrange(ImageGenerator):
         self.images = images_in_folder(imgfoler, [".jpg"])
         self.images = [i for i in self.images if "unique" in i]
         self.images = [i for i in self.images if "long" in i]
-        self.images = [i for i in self.images if "cnt22" in i]
+        self.images = [i for i in self.images if "cnt31" in i]
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
         # create duplicates
@@ -1206,7 +1220,7 @@ class ImageLibrary_closerange(ImageGenerator):
         self.images = images_in_folder(imgfoler, [".jpg"])
         self.images = [i for i in self.images if "unique" in i]
         self.images = [i for i in self.images if "close" in i]
-        self.images = [i for i in self.images if "cnt22" in i]
+        self.images = [i for i in self.images if "cnt31" in i]
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
         # create duplicates

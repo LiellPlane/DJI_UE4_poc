@@ -83,6 +83,7 @@ def main():
         slice_details=slice_details_long_range,
         img_shrink_factor=None,
         OS_friendly_name="cam1inner",
+        camera_source_class_ref = image_capture_longrange,
         config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
@@ -91,6 +92,7 @@ def main():
         slice_details=None,
         OS_friendly_name="cam1macro",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
+        camera_source_class_ref = image_capture_longrange,
         config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
@@ -99,6 +101,7 @@ def main():
         slice_details=None,
         OS_friendly_name="cam2inner",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
+        camera_source_class_ref = image_capture_shortrange,
         config=configs.get_lumofind_config(PLATFORM)))
     
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
@@ -107,6 +110,7 @@ def main():
         slice_details=slice_details_close_range,
         OS_friendly_name="cam2macro",
         img_shrink_factor=None,
+        camera_source_class_ref = image_capture_shortrange,
         config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
@@ -124,6 +128,11 @@ def main():
     #     raise Exception("Error with camera")
     
     display = lumogun.display(GUN_CONFIGURATION)
+    # this generates the affine transform dictionary key, which
+    # is used by other processes for annotating the screen such as found targets
+    # so best to do it before any other processes come back with data
+    display.generate_output_affine(next(image_capture_longrange))
+    display.generate_output_affine(next(image_capture_shortrange))
     voice.speak("ok display")
 
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
@@ -144,7 +153,7 @@ def main():
         closerange_to_display=closerangedetails,
         longrange_to_display=longrangedetails,
         transition_steps=99,
-        transition_time_secs=2,
+        transition_time_secs=0.3,
         display_image_shape=GUN_CONFIGURATION.screen_size,
         displayrotation=GUN_CONFIGURATION.screen_rotation,
         slice_details_close_range=slice_details_close_range,
@@ -325,11 +334,17 @@ def main():
 
 
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
-                    analysis = []
+                    analysis = {}
                     for img_analyser in image_analysis:
+                        # TODO: get this properly. Some complexity due to reversed shape so using
+                        # protected member :(
+                        res_for_affine_transform_lookup = img_analyser.camera_source_class_ref._store_res #BAD LIELL!!! 
                         try:
                             result = img_analyser.analysis_output_q.get(block=True, timeout=5)
-                            analysis.extend(result)
+                            if result:
+                                if res_for_affine_transform_lookup not in analysis:
+                                    analysis[res_for_affine_transform_lookup] = []
+                                analysis[res_for_affine_transform_lookup].extend(result)
                         except queue.Empty:
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
@@ -341,7 +356,10 @@ def main():
                         transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                    display.add_crosshair_and_analytics_graphics(
+                    display.add_crosshair(
+                        output=output_image
+                        )
+                    display.add_target_tags(
                         source_image_shape=cap_img_closerange.shape,
                         output=output_image,
                         graphics=analysis

@@ -23,9 +23,11 @@ class ImageAnalyser_shared_mem():
             slice_details: CropSlicing,
             img_shrink_factor: int,
             OS_friendly_name: str,
+            camera_source_class_ref: type,
             config: configs.base_find_lumotag_config) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
+        self.camera_source_class_ref = camera_source_class_ref
         self.OS_friendly_name = OS_friendly_name
         self.safe_mem_details_func = safe_mem_details_func
         self.input_shared_mem_index_q = Queue(maxsize=1)
