@@ -87,6 +87,17 @@ except Exception as e:
 #         "trying to clone repo from web - this is incorrect state- should exist already")
 #     subprocess.run(['git', 'clone', repo])
 
+# the speaker does not like being SUDO 
+original_uid = os.getenv('SUDO_UID')
+original_gid = os.getenv('SUDO_GID')
+os.setgid(int(original_gid))
+# Change the user ID
+os.setuid(int(original_uid))
+
+
+
+
+
 sys.path.append(os.path.abspath(f"{codepath}/Source/lumotag/"))
 try:
     with open('/home/lumotag/started.cunt', 'w') as file:
