@@ -305,19 +305,19 @@ def main():
                     output_image = display.generate_output_affine(display_active_image)
                     transition_i=transform_manager.transformdetails.transition_steps-1
                 else:
-                with time_it("execute affine transform", debug=PRINT_DEBUG):
-                    mat = transform_manager.CR_all_transition_m[transition_i]
-                    cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
+                    with time_it("execute affine transform", debug=PRINT_DEBUG):
+                        mat = transform_manager.CR_all_transition_m[transition_i]
+                        cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
 
-                    mat = transform_manager.LR_all_transition_m[transition_i]
-                    lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
+                        mat = transform_manager.LR_all_transition_m[transition_i]
+                        lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
 
-                    percent_done = transition_i/(transform_manager.transformdetails.transition_steps-1)
-                    cr_img = img_processing.darken_image(cr_img, 1-percent_done)
-                    combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
-                    
-                    #combo_image = img_processing.radial_motion_blur(combo_image)
-                    output_image = img_processing.gray2rgb(combo_image)
+                        percent_done = transition_i/(transform_manager.transformdetails.transition_steps-1)
+                        cr_img = img_processing.darken_image(cr_img, 1-percent_done)
+                        combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
+                        
+                        #combo_image = img_processing.radial_motion_blur(combo_image)
+                        output_image = img_processing.gray2rgb(combo_image)
 
                 
                 # with time_it("execute affine transform", debug=PRINT_DEBUG):
