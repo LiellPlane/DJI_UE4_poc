@@ -1190,7 +1190,7 @@ class ImageLibrary_longrange(ImageGenerator):
         self.images = images_in_folder(imgfoler, [".jpg"])
         self.images = [i for i in self.images if "unique" in i]
         self.images = [i for i in self.images if "long" in i]
-        self.images = [i for i in self.images if "cnt31" in i]
+        self.images = [i for i in self.images if "cnt21" in i]
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
         # create duplicates
@@ -1220,7 +1220,7 @@ class ImageLibrary_closerange(ImageGenerator):
         self.images = images_in_folder(imgfoler, [".jpg"])
         self.images = [i for i in self.images if "unique" in i]
         self.images = [i for i in self.images if "close" in i]
-        self.images = [i for i in self.images if "cnt31" in i]
+        self.images = [i for i in self.images if "cnt21" in i]
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
         # create duplicates
