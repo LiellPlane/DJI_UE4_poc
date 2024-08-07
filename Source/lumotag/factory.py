@@ -233,12 +233,7 @@ class display(ABC):
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
 
-    def add_crosshair(self, output):
-        img_processing.add_cross_hair(
-            output,
-            adapt=True)
-    
-    def add_target_tags(self, source_image_shape, output, graphics: dict[tuple[int,int], list[ShapeItem]]):
+    def add_target_tags(self, output, graphics: dict[tuple[int,int], list[ShapeItem]]):
         """ we are using IMAGE SHAPE to find the camera source and corresponding transform"""
         for _shape, result_package in graphics.items():
             for result in result_package:

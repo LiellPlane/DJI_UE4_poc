@@ -92,6 +92,13 @@ class TransformsDetails:
     slice_details_close_range: Optional[CropSlicing]
     slice_details_long_range: Optional[CropSlicing]
 
+
+class CameraTransitionState(Enum):
+    CLOSERANGE = auto()
+    LONGRANGE = auto()
+    TRANSITIONING = auto()
+
+
 class TransformManager:
     def __init__(self, transformdetails: TransformsDetails):
         """all transitions assume that index 0 is closerange engated and last index is longrange engaged"""
@@ -166,6 +173,16 @@ class TransformManager:
         '''alert manager that we want to it to generate transform indexes proportional to time delta'''
         self._transitions_direction *= -1
         self._triggered_time = time.perf_counter()
+
+
+    def get_transition_state(self) -> CameraTransitionState:
+        if self._current_managed_index <= 0:
+            return CameraTransitionState.CLOSERANGE
+        elif self._current_managed_index >= self.transformdetails.transition_steps-1: # zero based thing
+            return CameraTransitionState.LONGRANGE
+        else:
+            return CameraTransitionState.TRANSITIONING
+        
 
     def get_deltatime_transition(self):
         '''if you have triggered the trigger_transitions, use this to get current index proportional time delta and configured time span'''
@@ -631,7 +648,8 @@ def resize_centre_img(inputimage, screensize):
     scale_factor = (image.shape[0] / inputimage.shape[0])
     return emptyscreen, scale_factor
 
-def add_cross_hair(image, adapt):
+
+def add_cross_hair(image, adapt, target_acquired):
     thick = 3
     vis_block = 30
     midx = image.shape[0] // 2
@@ -643,15 +661,22 @@ def add_cross_hair(image, adapt):
     else:
         col = 255
 
-    image[midx - thick : midx + thick, 0:midy-vis_block, 2] = 0
-    image[midx - thick : midx + thick, 0:midy-vis_block, 1] = max(col, 50)
-    image[midx - thick : midx + thick, midy+vis_block:-1, 2] = 0
-    image[midx - thick : midx + thick, midy+vis_block:-1, 1] = max(col, 50)
+    if target_acquired:
+        red = 255
+        green = 0
+    else:
+        red = 0
+        green = max(col, 50)
 
-    image[0:midx-vis_block, midy - thick : midy + thick, 2] = 0
-    image[0:midx-vis_block, midy - thick : midy + thick, 1] = max(col, 50)
-    image[midx+vis_block:-1, midy - thick : midy + thick, 2] = 0
-    image[midx+vis_block:-1, midy - thick : midy + thick, 1] = max(col, 50)
+    image[midx - thick : midx + thick, 0:midy-vis_block, 2] = red
+    image[midx - thick : midx + thick, 0:midy-vis_block, 1] = green
+    image[midx - thick : midx + thick, midy+vis_block:-1, 2] = red
+    image[midx - thick : midx + thick, midy+vis_block:-1, 1] = green
+
+    image[0:midx-vis_block, midy - thick : midy + thick, 2] = red
+    image[0:midx-vis_block, midy - thick : midy + thick, 1] = green
+    image[midx+vis_block:-1, midy - thick : midy + thick, 2] = red
+    image[midx+vis_block:-1, midy - thick : midy + thick, 1] = green
  
 def get_internal_section(imgshape, size: tuple[int, int]):
     midx = imgshape[0] // 2

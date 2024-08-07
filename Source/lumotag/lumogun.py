@@ -304,12 +304,13 @@ def main():
             with time_it("gun image stuff", debug=PRINT_DEBUG):
 
                 transition_i = transform_manager.get_deltatime_transition()
+                transition_state = transform_manager.get_transition_state()
                 display_active_image = cap_img_closerange
-                if transition_i == 0:
+                if  transition_state == img_processing.CameraTransitionState.CLOSERANGE:
                     display_active_image = cap_img_closerange
                     output_image = display.generate_output_affine(display_active_image)
                     transition_i=0
-                if transition_i > transform_manager.transformdetails.transition_steps-1:
+                if transition_state == img_processing.CameraTransitionState.LONGRANGE:
                     display_active_image = cap_img
                     output_image = display.generate_output_affine(display_active_image)
                     transition_i=transform_manager.transformdetails.transition_steps-1
@@ -356,14 +357,35 @@ def main():
                         transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                    display.add_crosshair(
-                        output=output_image
-                        )
-                    display.add_target_tags(
-                        source_image_shape=cap_img_closerange.shape,
-                        output=output_image,
-                        graphics=analysis
-                        )
+                    # display.add_crosshair(
+                    #     output=output_image
+                    #     )
+                      
+                    img_processing.add_cross_hair(
+                        image=output_image,
+                        adapt=True,
+                        target_acquired=True)
+                    
+
+                    # use the image shape to determine image analysis provenance
+                    # we don't want to draw for instance close-range target graphics
+                    # on long-range active image and vice-versa
+                    # don't draw if we are transitiong (for now)
+                    # might be a nice effect though
+
+                    if transition_state != img_processing.CameraTransitionState.TRANSITIONING:
+                        if transition_state == img_processing.CameraTransitionState.CLOSERANGE:
+                            # filter for close range origin analysis
+                            display.add_target_tags(
+                                output=output_image,
+                                graphics={k: v for k, v in analysis.items() if k == image_capture_shortrange._store_res}
+                                )
+                        if transition_state == img_processing.CameraTransitionState.LONGRANGE:
+                            # filter for long range origin analysis
+                            display.add_target_tags(
+                                output=output_image,
+                                graphics={k: v for k, v in analysis.items() if k == image_capture_longrange._store_res}
+                                )
 
                 with time_it("add graphics: player info", debug=PRINT_DEBUG):
                     display.add_playerinfo_graphics(
