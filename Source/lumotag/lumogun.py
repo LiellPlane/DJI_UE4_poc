@@ -357,10 +357,7 @@ def main():
                         transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-                    # display.add_crosshair(
-                    #     output=output_image
-                    #     )
-                      
+
                     img_processing.add_cross_hair(
                         image=output_image,
                         adapt=True,
@@ -378,13 +375,19 @@ def main():
                             # filter for close range origin analysis
                             display.add_target_tags(
                                 output=output_image,
-                                graphics={k: v for k, v in analysis.items() if k == image_capture_shortrange._store_res}
+                                graphics={
+                                    k: v for k, v in analysis.items()
+                                    if k == image_capture_shortrange._store_res
+                                    }
                                 )
                         if transition_state == img_processing.CameraTransitionState.LONGRANGE:
                             # filter for long range origin analysis
                             display.add_target_tags(
                                 output=output_image,
-                                graphics={k: v for k, v in analysis.items() if k == image_capture_longrange._store_res}
+                                graphics={
+                                    k: v for k, v in analysis.items()
+                                    if k == image_capture_longrange._store_res
+                                    }
                                 )
 
                 with time_it("add graphics: player info", debug=PRINT_DEBUG):

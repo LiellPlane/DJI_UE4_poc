@@ -678,6 +678,9 @@ def add_cross_hair(image, adapt, target_acquired):
     image[midx+vis_block:-1, midy - thick : midy + thick, 2] = red
     image[midx+vis_block:-1, midy - thick : midy + thick, 1] = green
  
+
+class lerped_add_crosshair():
+    
 def get_internal_section(imgshape, size: tuple[int, int]):
     midx = imgshape[0] // 2
     midy = imgshape[1] // 2
