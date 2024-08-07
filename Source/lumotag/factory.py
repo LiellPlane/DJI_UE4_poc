@@ -1200,7 +1200,7 @@ class ImageLibrary_longrange(ImageGenerator):
         img_to_load = next(self.cycled_files_generator)
         time.sleep(0.03)
         img = cv2.imread(img_to_load)
-        print(f"img {img_to_load}")
+        #print(f"img {img_to_load}")
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #img = cv2.resize(img, tuple(self.res[0:2]))
@@ -1230,7 +1230,7 @@ class ImageLibrary_closerange(ImageGenerator):
         img_to_load = next(self.cycled_files_generator)
         
         img = cv2.imread(img_to_load)
-        print(f"img {img_to_load}")
+        #print(f"img {img_to_load}")
         if len(img.shape) == 3:
             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         #img = cv2.resize(img, tuple(self.res[0:2]))

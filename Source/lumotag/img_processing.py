@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from skimage.draw import line
 from my_collections import CropSlicing, AffinePoints, UI_ready_element
 from math import floor
+import utils
 Array3x3 = Annotated[np.ndarray, (3, 3)]
 RED = (0, 0, 255)
 BLUE = (255, 0, 0)
@@ -649,7 +650,7 @@ def resize_centre_img(inputimage, screensize):
     return emptyscreen, scale_factor
 
 
-def add_cross_hair(image, adapt, target_acquired):
+def add_cross_hair(image, adapt, lerp = 0):
     thick = 3
     vis_block = 30
     midx = image.shape[0] // 2
@@ -661,12 +662,8 @@ def add_cross_hair(image, adapt, target_acquired):
     else:
         col = 255
 
-    if target_acquired:
-        red = 255
-        green = 0
-    else:
-        red = 0
-        green = max(col, 50)
+    red = int(255 * lerp)
+    green = int((1- lerp) * max(col, 50))
 
     image[midx - thick : midx + thick, 0:midy-vis_block, 2] = red
     image[midx - thick : midx + thick, 0:midy-vis_block, 1] = green
@@ -680,7 +677,26 @@ def add_cross_hair(image, adapt, target_acquired):
  
 
 class lerped_add_crosshair():
-    
+    def __init__(self) -> None:
+        self.lerper = utils.Lerp(
+            start_value=0,
+            end_value=1,
+            duration=10,
+            easing="ease_in_out_cubic"
+            )
+
+    def add_cross_hair(self, image, adapt, target_acquired=False):
+        """wrap the add cross hair function so we can lerp it easily
+        lerp in when target is acquired and lerp back out when lost"""
+
+        if target_acquired:
+            if not self.lerper.is_running:
+                self.lerper.start()
+        self.lerper.set_reverse_state(not target_acquired)
+        add_cross_hair(image, adapt,self.lerper.get_value())
+
+
+
 def get_internal_section(imgshape, size: tuple[int, int]):
     midx = imgshape[0] // 2
     midy = imgshape[1] // 2

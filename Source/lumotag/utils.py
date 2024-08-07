@@ -178,6 +178,11 @@ class Lerp:
             self.is_reversed = not self.is_reversed
             self.reverse_time = time.time()
 
+    def set_reverse_state(self, state: bool):
+        if self.is_running:
+            self.is_reversed = state
+            self.reverse_time = time.time()
+
     def get_value(self):
         if not self.is_running:
             return self.start_value if self.is_reversed else self.end_value
