@@ -11,7 +11,11 @@ from dataclasses import dataclass
 from skimage.draw import line
 from my_collections import CropSlicing, AffinePoints, UI_ready_element
 from math import floor
-import utils
+try:# TODO FIX
+    import utils
+except:
+    print("this is really bad please fix scambilight import issue")
+
 Array3x3 = Annotated[np.ndarray, (3, 3)]
 RED = (0, 0, 255)
 BLUE = (255, 0, 0)
