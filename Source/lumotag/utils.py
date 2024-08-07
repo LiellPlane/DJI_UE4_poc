@@ -179,13 +179,21 @@ class Lerp:
             self.reverse_time = time.time()
 
     def set_reverse_state(self, state: bool):
-        if self.is_running:
-            self.is_reversed = state
-            self.reverse_time = time.time()
+        self.is_running = True
+        self.is_reversed = state
+        self.reverse_time = time.time()
+
 
     def get_value(self):
-        if not self.is_running:
-            return self.start_value if self.is_reversed else self.end_value
+        val = self._get_value()
+        if self.start_value < self.end_value:
+            return min(max(self.start_value,val),self.end_value)
+        else:
+            return max(min(self.start_value,val),self.end_value)
+    
+    def _get_value(self):
+        # if not self.is_running:
+        #     return self.start_value if self.is_reversed else self.end_value
 
         current_time = time.time()
         if self.is_reversed:
@@ -245,3 +253,21 @@ class Lerp:
 
     def _ease_in_out_sine(self, t):
         return -(math.cos(math.pi * t) - 1) / 2
+
+
+
+
+# import time
+# lerper = Lerp(start_value=0,end_value=10,duration=10)
+# lerper.start()
+# cnt = 0
+# while True:
+    
+#     time.sleep(0.5)
+#     cnt += 1
+#     if cnt == 5:
+#         lerper.set_reverse_state(True)
+#     if cnt == 20:
+#         lerper.set_reverse_state(False)
+#     print(cnt)
+#     print(lerper.get_value())
