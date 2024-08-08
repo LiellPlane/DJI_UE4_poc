@@ -163,6 +163,10 @@ class Lerp:
             self.direction = 1
         
     def _get_value(self):
+        if self.direction == 1 and self.unity_value >=1:
+            return self.unity_value
+        if self.direction == -1 and self.unity_value <=0:
+            return self.unity_value
         time_difference = time.perf_counter() - self.start_time
         step_unity = time_difference / self.duration
         self.unity_value += (step_unity * self.direction)
@@ -171,10 +175,12 @@ class Lerp:
 
     def get_value(self):
         val = self._get_value()
-        if self.start_value < self.end_value:
-            return min(max(self.start_value, val),self.end_value)
-        else:
-            return max(min(self.start_value, val),self.end_value)
+        eased_val = self.easing_functions[self.easing](val)
+        return eased_val
+        # if self.start_value < self.end_value:
+        #     return min(max(self.start_value, val),self.end_value)
+        # else:
+        #     return max(min(self.start_value, val),self.end_value)
 
     # def _get_value_works_properly(self):
 
@@ -236,16 +242,16 @@ class Lerp:
 
 
 
-# import time
-# lerper = Lerp(start_value=0,end_value=2,duration=1)
+import time
+lerper = Lerp(start_value=0,end_value=2,duration=10,easing='ease_in_out_cubic')
 
-# cnt = 0
-# while True:
-#     print(lerper._get_value())
-#     time.sleep(0.1)
-#     cnt += 1
-#     # if cnt == 5:
-#     #     lerper.set_reverse_state(True)
+cnt = 0
+while True:
+    print(lerper.get_value())
+    time.sleep(0.1)
+    cnt += 1
+    if cnt == 5:
+        lerper.set_reverse_state(True)
 
-#     # print(cnt)
-#     # print(lerper.get_value())
+    # print(cnt)
+    # print(lerper.get_value())
