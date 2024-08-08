@@ -136,15 +136,13 @@ class Lerp:
                 lerp.reverse()
 
         """
+        self.start_time = time.perf_counter()
+        self.duration = duration
         self.start_value = start_value
         self.end_value = end_value
-        self.duration = duration
-        self.start_time = None
-        self.is_running = False
         self.easing = easing
-        self.is_reversed = False
-        self.reverse_time = None
-        
+        self.direction = 1
+        self.unity_value = 0
         self.easing_functions = {
             'linear': self._linear,
             'ease_in_quad': self._ease_in_quad,
@@ -158,71 +156,52 @@ class Lerp:
             'ease_in_out_sine': self._ease_in_out_sine,
         }
 
-    def start(self):
-        self.start_time = time.time()
-        self.is_running = True
-        self.is_reversed = False
-        self.reverse_time = None
-
-    def stop(self):
-        self.is_running = False
-
-    def reset(self):
-        self.start_time = None
-        self.is_running = False
-        self.is_reversed = False
-        self.reverse_time = None
-
-    def reverse(self):
-        if self.is_running:
-            self.is_reversed = not self.is_reversed
-            self.reverse_time = time.time()
-
-    def set_reverse_state(self, state: bool):
-        self.is_running = True
-        self.is_reversed = state
-        self.reverse_time = time.time()
-
+    def set_direction_forward(self, state: bool):
+        if state is False:
+            self.direction = -1
+        else:
+            self.direction = 1
+        
+    def _get_value(self):
+        time_difference = time.perf_counter() - self.start_time
+        step_unity = time_difference / self.duration
+        self.unity_value += (step_unity * self.direction)
+        self.start_time = time.perf_counter()
+        return min(1, max(0, self.unity_value))
 
     def get_value(self):
         val = self._get_value()
         if self.start_value < self.end_value:
-            return min(max(self.start_value,val),self.end_value)
+            return min(max(self.start_value, val),self.end_value)
         else:
-            return max(min(self.start_value,val),self.end_value)
-    
-    def _get_value(self):
-        # if not self.is_running:
-        #     return self.start_value if self.is_reversed else self.end_value
+            return max(min(self.start_value, val),self.end_value)
 
-        current_time = time.time()
-        if self.is_reversed:
-            if self.reverse_time is None:
-                self.reverse_time = current_time
-            elapsed_time = self.reverse_time - self.start_time
-            reverse_elapsed = current_time - self.reverse_time
-            t = max(0, (elapsed_time - reverse_elapsed) / self.duration)
-        else:
-            elapsed_time = current_time - self.start_time
-            t = min(1.0, elapsed_time / self.duration)
+    # def _get_value_works_properly(self):
 
-        if (self.is_reversed and t <= 0) or (not self.is_reversed and t >= 1):
-            self.is_running = False
-            return self.start_value if self.is_reversed else self.end_value
+    #     current_time = time.time()
 
-        eased_t = self.easing_functions[self.easing](t)
-        return self.start_value + (self.end_value - self.start_value) * eased_t
+    # def _get_value(self):
+    #     # if not self.is_running:
+    #     #     return self.start_value if self.is_reversed else self.end_value
 
-    def is_complete(self):
-        if not self.is_running:
-            return True
-        current_time = time.time()
-        if self.is_reversed:
-            if self.reverse_time is None:
-                return False
-            return current_time - self.reverse_time >= self.reverse_time - self.start_time
-        else:
-            return current_time - self.start_time >= self.duration
+    #     current_time = time.time()
+    #     if self.is_reversed:
+    #         if self.reverse_time is None:
+    #             self.reverse_time = current_time
+    #         elapsed_time = self.reverse_time - self.start_time
+    #         reverse_elapsed = current_time - self.reverse_time
+    #         t = max(0, (elapsed_time - reverse_elapsed) / self.duration)
+    #     else:
+    #         elapsed_time = current_time - self.start_time
+    #         t = min(1.0, elapsed_time / self.duration)
+
+    #     if (self.is_reversed and t <= 0) or (not self.is_reversed and t >= 1):
+    #         self.is_running = False
+    #         return self.start_value if self.is_reversed else self.end_value
+
+    #     eased_t = self.easing_functions[self.easing](t)
+    #     return self.start_value + (self.end_value - self.start_value) * eased_t
+
 
     def _linear(self, t):
         return t
@@ -258,16 +237,15 @@ class Lerp:
 
 
 # import time
-# lerper = Lerp(start_value=0,end_value=10,duration=10)
-# lerper.start()
+# lerper = Lerp(start_value=0,end_value=2,duration=1)
+
 # cnt = 0
 # while True:
-    
-#     time.sleep(0.5)
+#     print(lerper._get_value())
+#     time.sleep(0.1)
 #     cnt += 1
-#     if cnt == 5:
-#         lerper.set_reverse_state(True)
-#     if cnt == 20:
-#         lerper.set_reverse_state(False)
-#     print(cnt)
-#     print(lerper.get_value())
+#     # if cnt == 5:
+#     #     lerper.set_reverse_state(True)
+
+#     # print(cnt)
+#     # print(lerper.get_value())

@@ -161,7 +161,9 @@ def main():
     )
 
     transform_manager = img_processing.TransformManager(transformdetails=transform_details)
-    crosshair_lerper = img_processing.lerped_add_crosshair()
+
+
+
     # create demo player
     players = {
         "demoplayer":
@@ -356,16 +358,11 @@ def main():
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
 
-                    # img_processing.add_cross_hair(
-                    #     image=output_image,
-                    #     adapt=True
-                    #     )
-
-                    crosshair_lerper.add_cross_hair(
+                    img_processing.add_cross_hair(
                         image=output_image,
                         adapt=True,
-                        target_acquired=(len(analysis) >0 )
-                        )
+                        target_acquired=True)
+                    
 
                     # use the image shape to determine image analysis provenance
                     # we don't want to draw for instance close-range target graphics
