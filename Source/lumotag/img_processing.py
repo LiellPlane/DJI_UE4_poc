@@ -685,19 +685,17 @@ class lerped_add_crosshair():
         self.lerper = utils.Lerp(
             start_value=0,
             end_value=1,
-            duration=10,
+            duration=0.15,
             easing="ease_in_out_cubic"
             )
 
     def add_cross_hair(self, image, adapt, target_acquired=False):
         """wrap the add cross hair function so we can lerp it easily
         lerp in when target is acquired and lerp back out when lost"""
-        pass
-        # if target_acquired:
-        #     if not self.lerper.is_running:
-        #         self.lerper.start()
-        # self.lerper.set_reverse_state(not target_acquired)
-        # add_cross_hair(image, adapt,self.lerper.get_value())
+
+        if target_acquired:
+            self.lerper.set_direction_forward(target_acquired)
+        add_cross_hair(image, adapt, self.lerper.get_value())
 
 
 
