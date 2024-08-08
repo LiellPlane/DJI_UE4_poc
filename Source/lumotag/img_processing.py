@@ -685,7 +685,7 @@ class lerped_add_crosshair():
         self.lerper = utils.Lerp(
             start_value=0,
             end_value=1,
-            duration=5.15,
+            duration=0.15,
             easing="ease_in_out_cubic"
             )
         self.last_target_acquired = False
