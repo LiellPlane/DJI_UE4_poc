@@ -34,7 +34,7 @@ cd /home/lumotag/
 sudo rm -r /home/lumotag/DJI_UE4_poc  || true
 git clone https://github.com/LiellPlane/DJI_UE4_poc.git
 sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/bootstrap.py /boot/bootstrap.py
-sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /boot/MY_INFO.txt
+sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /home/lumotag/MY_INFO.txt
 
 # remove the repo so the autoboot process can recreate it and own the folder
 # otherwise permission issues pulling repo
@@ -71,7 +71,7 @@ sudo apt-get install imutils
 
 #shell does not output redirection so need sh -c with command in quotes
 sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
-sudo sh -c "echo '1 = sudo python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
+sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
 #sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
 
 # these instructions for stopping the screen blanking might be temporary only
@@ -86,7 +86,7 @@ sudo sh -c "echo '1 = sudo python3 /boot/bootstrap.py' >>  /home/lumotag/.config
 # raspberry pi 4
 #echo turn on hdmi_force_hotplug in /boot/config.txt
 
-echo /boot/MY_INFO.txt
+echo '/home/lumotag/MY_INFO.txt'
 echo 'please check info is correct, such as lumotag gun model"
 
 # this will intsall repo using autorun permissions

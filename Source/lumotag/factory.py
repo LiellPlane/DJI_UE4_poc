@@ -51,7 +51,7 @@ def create_id():
 
 class gun_config(ABC):
     model = "NOT OVERRIDDEN!"
-    DETAILS_FILE = '/boot/MY_INFO.txt'
+    DETAILS_FILE = '/home/lumotag/MY_INFO.txt'
     def __init__(self) -> None:
         self.relay_map = {
             "laser" : 2,
