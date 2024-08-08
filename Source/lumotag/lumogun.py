@@ -358,14 +358,10 @@ def main():
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
 
-                    # img_processing.add_cross_hair(
-                    #     image=output_image,
-                    #     adapt=True,
-                    #     target_acquired=True)
                     crosshair_lerper.add_cross_hair(
                         image=output_image,
                         adapt=True,
-                        target_acquired=(len(analysis)>0)
+                        target_acquired=(len(analysis) > 0)
                     )
                     
 

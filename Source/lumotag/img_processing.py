@@ -656,7 +656,7 @@ def resize_centre_img(inputimage, screensize):
 
 def add_cross_hair(image, adapt, lerp = 0):
     thick = 3
-    vis_block = 30
+    vis_block = 30 + int(lerp * 60)
     midx = image.shape[0] // 2
     midy = image.shape[1] // 2
     # TODO another potential lag point
@@ -685,17 +685,19 @@ class lerped_add_crosshair():
         self.lerper = utils.Lerp(
             start_value=0,
             end_value=1,
-            duration=0.15,
+            duration=5.15,
             easing="ease_in_out_cubic"
             )
+        self.last_target_acquired = False
+        self.debouncecheck = utils.SequenceDetector(3,[True,True,True])
 
     def add_cross_hair(self, image, adapt, target_acquired=False):
         """wrap the add cross hair function so we can lerp it easily
         lerp in when target is acquired and lerp back out when lost"""
-
-        if target_acquired:
-            self.lerper.set_direction_forward(target_acquired)
+        target_acquired_ok = self.debouncecheck.add(target_acquired)
+        self.lerper.set_direction_forward(target_acquired_ok)
         add_cross_hair(image, adapt, self.lerper.get_value())
+        self.last_target_acquired = target_acquired
 
 
 

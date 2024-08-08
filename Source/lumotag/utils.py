@@ -7,6 +7,7 @@ import platform
 from my_collections import _OS
 import shutil
 import math
+from collections import deque
 
 def DeleteFiles_RecreateFolder(FolderPath):
     Deltree(FolderPath)
@@ -215,6 +216,17 @@ class Lerp:
         return -(math.cos(math.pi * t) - 1) / 2
 
 
+class SequenceDetector:
+    def __init__(self, max_length, target_sequence):
+        self.buffer = deque(maxlen=max_length)
+        self.target_sequence = target_sequence
+
+    def add(self, value):
+        self.buffer.append(value)
+        return self.check_sequence()
+
+    def check_sequence(self):
+        return len(self.buffer) == self.buffer.maxlen and list(self.buffer) == self.target_sequence
 
 
 # import time
