@@ -218,8 +218,8 @@ class TZAR_config(gun_config):
         #for reference on rasperry pi 4
         self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
         self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
-        self.TRIGGER_IO_BOARD = {1:15, 2:13}
-        self.TRIGGER_IO_BCM = {1:22, 2:27}
+        self.TRIGGER_IO_BOARD = {1:15, 2:13, 3:11}
+        self.TRIGGER_IO_BCM = {1:22, 2:27, 3:17}
 
     @property
     def rly_torch(self):
@@ -297,8 +297,8 @@ class simitzar_config(gun_config):
         #for reference on rasperry pi 4
         self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
         self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
-        self.TRIGGER_IO_BOARD = {1:15, 2:13}
-        self.TRIGGER_IO_BCM = {1:22, 2:27}
+        self.TRIGGER_IO_BOARD = {1:15, 2:13, 3:11}
+        self.TRIGGER_IO_BCM = {1:22, 2:27, 3:17}
 
     @property
     def rly_torch(self):
