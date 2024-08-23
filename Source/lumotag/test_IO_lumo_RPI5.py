@@ -48,9 +48,9 @@ def main():
             #accelerometer.update_vel()
             results_trig_positions = (triggers.test_states())
 
-            is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
-            is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
-
+            is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.button_torch]
+            is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
+            is_rear_reqd = results_trig_positions[GUN_CONFIGURATION.button_rear]
 
             # in this case 
             # result = torch_debounce(is_torch_reqd)

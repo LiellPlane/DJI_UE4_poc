@@ -80,11 +80,15 @@ class gun_config(ABC):
 
     @property
     @abstractmethod
-    def rly_torch(self):
+    def button_torch(self):
         ...
     @property
     @abstractmethod
-    def rly_triggerclick(self):
+    def button_trigger(self):
+        ...
+    @property
+    @abstractmethod
+    def button_rear(self):
         ...
     @property
     @abstractmethod

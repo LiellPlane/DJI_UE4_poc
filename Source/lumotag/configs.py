@@ -138,77 +138,81 @@ class screensizes(Enum):
     stryker = (480, 620)
 
 
-class stryker_config(gun_config):
-    model = "STRYKER"
-    def __init__(self) -> None:
-        super().__init__()
-        #for reference on rasperry pi 4
-        self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
-        self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
-        self.TRIGGER_IO_BOARD = {1:15, 2:13}
-        self.TRIGGER_IO_BCM = {1:22, 2:27}
+# class stryker_config(gun_config):
+#     model = "STRYKER"
+#     def __init__(self) -> None:
+#         super().__init__()
+#         #for reference on rasperry pi 4
+#         self.RELAY_IO_BOARD = {1:29, 3:31, 2:16}
+#         self.RELAY_IO_BCM = {1:5, 3:6, 2:23}
+#         self.TRIGGER_IO_BOARD = {1:15, 2:13}
+#         self.TRIGGER_IO_BCM = {1:22, 2:27}
 
-    @property
-    def rly_torch(self):
-        return 1
+#     @property
+#     def button_torch(self):
+#         return 1
 
-    @property
-    def rly_triggerclick(self):
-        return 2
+#     @property
+#     def button_trigger(self):
+#         return 2
 
-    @property
-    def RELAY_IO(self):
-        return(self.RELAY_IO_BCM)
+#     @property
+#     def button_rear(self):
+#         return 3
+
+#     @property
+#     def RELAY_IO(self):
+#         return(self.RELAY_IO_BCM)
     
-    @property
-    def TRIGGER_IO(self):
-        return (self.TRIGGER_IO_BCM)
+#     @property
+#     def TRIGGER_IO(self):
+#         return (self.TRIGGER_IO_BCM)
     
-    @property
-    def screen_rotation(self):
-        return(270)
+#     @property
+#     def screen_rotation(self):
+#         return(270)
 
-    @property
-    def screen_size(self):
-        return(screensizes.stryker.value)
+#     @property
+#     def screen_size(self):
+#         return(screensizes.stryker.value)
 
-    def loop_wait(self):
-        pass
+#     def loop_wait(self):
+#         pass
     
-    @property
-    def light_strobe_cnt(self):
-        return(0)
+#     @property
+#     def light_strobe_cnt(self):
+#         return(0)
     
-    @property
-    def internal_img_crop_lr(self):
-        return((500,500))
-    @property
-    def internal_img_crop_sr(self):
-        return((500,500))
-    @property
-    def img_subsmple_factor(self):
-        return 2
+#     @property
+#     def internal_img_crop_lr(self):
+#         return((500,500))
+#     @property
+#     def internal_img_crop_sr(self):
+#         return((500,500))
+#     @property
+#     def img_subsmple_factor(self):
+#         return 2
 
-    @property
-    def opencv_window_pos(self):
-        return(0, 0)
+#     @property
+#     def opencv_window_pos(self):
+#         return(0, 0)
 
-    @property
-    def video_modes(self):
-        return HQ_Cam_vidmodes
-    @property
-    def video_modes_closerange(self):
-        return RPICAMv2Noir_Cam_vidmodes
-    @property
-    def ui_overlay(self) -> dict:
-        if self._UI_overlay is None:
-            self._UI_overlay = {
-                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.4, lower=0.9, left=0.1, right=0.2),
-                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.1, lower=0.2, left=0.1, right=0.4),
-                UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
-            }
+#     @property
+#     def video_modes(self):
+#         return HQ_Cam_vidmodes
+#     @property
+#     def video_modes_closerange(self):
+#         return RPICAMv2Noir_Cam_vidmodes
+#     @property
+#     def ui_overlay(self) -> dict:
+#         if self._UI_overlay is None:
+#             self._UI_overlay = {
+#                 UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.4, lower=0.9, left=0.1, right=0.2),
+#                 UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.1, lower=0.2, left=0.1, right=0.4),
+#                 UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.1, lower=0.9, left=0.7, right=0.9)
+#             }
 
-        return self._UI_overlay
+#         return self._UI_overlay
 
 
 class TZAR_config(gun_config):
@@ -222,12 +226,16 @@ class TZAR_config(gun_config):
         self.TRIGGER_IO_BCM = {1:22, 2:27, 3:17}
 
     @property
-    def rly_torch(self):
+    def button_torch(self):
         return 2
 
     @property
-    def rly_triggerclick(self):
+    def button_trigger(self):
         return 1
+
+    @property
+    def button_rear(self):
+        return 3
 
     @property
     def RELAY_IO(self):
@@ -301,13 +309,17 @@ class simitzar_config(gun_config):
         self.TRIGGER_IO_BCM = {1:22, 2:27, 3:17}
 
     @property
-    def rly_torch(self):
+    def button_torch(self):
         return 1
 
     @property
-    def rly_triggerclick(self):
+    def button_trigger(self):
         return 2
-        
+
+    @property
+    def button_rear(self):
+        return 3
+
     @property
     def RELAY_IO(self):
         return(self.RELAY_IO_BCM)

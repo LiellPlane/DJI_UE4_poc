@@ -249,8 +249,9 @@ def main():
                 #accelerometer.update_vel()
                 results_trig_positions = (triggers.test_states())
 
-                is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.rly_torch]
-                is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.rly_triggerclick]
+                is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.button_torch]
+                is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
+                is_zoom_reqd = results_trig_positions[GUN_CONFIGURATION.button_rear]
                 
 
                 #### testing cycle
@@ -271,6 +272,8 @@ def main():
 
                 set_laser(state=is_torch_reqd, strobe_cnt=0)
 
+                if is_zoom_reqd:
+                    transform_manager.trigger_transition()
                 # desired behaviour: 
                 # User presses trigger - gun fires immediately
                 # after 0.N seconds, relay clicks off
@@ -278,7 +281,7 @@ def main():
                 # any other behaviour during refractory period is ignored
                 result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if result is True:
-                    transform_manager.trigger_transition()
+                    
                     # true will only be available as an impulse after
                     # pulling trigger, then go low again - but
                     # mem state of debouncer will remain high
