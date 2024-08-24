@@ -231,11 +231,11 @@ class TZAR_config(gun_config):
 
     @property
     def button_trigger(self):
-        return 1
+        return 3
 
     @property
     def button_rear(self):
-        return 3
+        return 1
 
     @property
     def RELAY_IO(self):

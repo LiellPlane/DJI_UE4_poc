@@ -188,6 +188,7 @@ def main():
         GUN_CONFIGURATION.relay_map["clicker"])
     
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
+    zoom_debounce = GUN_CONFIGURATION.trigger_debounce
     #torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
 
 
@@ -272,7 +273,9 @@ def main():
 
                 set_laser(state=is_torch_reqd, strobe_cnt=0)
 
-                if is_zoom_reqd:
+
+                result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)
+                if result_zoom:
                     transform_manager.trigger_transition()
                 # desired behaviour: 
                 # User presses trigger - gun fires immediately
