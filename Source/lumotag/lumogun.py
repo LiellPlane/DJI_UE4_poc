@@ -368,7 +368,7 @@ def main():
                         cap_img,message=f"_CUNT"
                         )
                     file_system.save_image(
-                        cap_img_closerange,message=f"_FUCKINGCUNT"
+                        cap_img_closerange,message=f"_FUCKINGBICTHCUNT"
                         )
                     
                 with time_it("add internal section", debug=PRINT_DEBUG):
