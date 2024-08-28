@@ -356,7 +356,8 @@ def main():
                         except queue.Empty:
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
-                if len(analysis) > 0:                            # Save out false positives!
+                if len(analysis) > 0:
+                    1/0
                     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                     file_system.save_image(
                         cap_img,message=f"_longrange_cnt{timestamp}cnt"
