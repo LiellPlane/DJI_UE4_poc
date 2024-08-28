@@ -1188,13 +1188,13 @@ class ImageLibrary_longrange(ImageGenerator):
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.images = images_in_folder(imgfoler, [".jpg"])
-        self.images = [i for i in self.images if "unique" in i]
+        self.images = [i for i in self.images if "false_posiez" in i]
         self.images = [i for i in self.images if "long" in i]
-        self.images = [i for i in self.images if "cnt21" in i]
+        #self.images = [i for i in self.images if "cnt21" in i]
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
         # create duplicates
-        sorted_files = reduce(lambda acc, s: acc + [s] * 10, sorted_files, [])
+        sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
         if len(self.images) < 1:
@@ -1218,13 +1218,13 @@ class ImageLibrary_closerange(ImageGenerator):
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
         self.images = images_in_folder(imgfoler, [".jpg"])
-        self.images = [i for i in self.images if "unique" in i]
+        self.images = [i for i in self.images if "false_posiez" in i]
         self.images = [i for i in self.images if "close" in i]
-        self.images = [i for i in self.images if "cnt21" in i]
+        #self.images = [i for i in self.images if "cnt21" in i]
         # Sort the list based on the extracted number
         sorted_files = sorted(self.images, key=extract_number)
         # create duplicates
-        sorted_files = reduce(lambda acc, s: acc + [s] * 10, sorted_files, [])
+        sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
         if len(self.images) < 1:
