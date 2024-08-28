@@ -187,6 +187,17 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
     
+    voice.speak("torch click")
+    set_torch(True,strobe_cnt=0)
+    time.sleep(0.3)
+    voice.speak("laser click")
+    set_laser(True,strobe_cnt=0)
+    time.sleep(0.3)
+    voice.speak("trigger click")
+    set_trigger(True,strobe_cnt=0)
+    time.sleep(0.3)
+
+
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.zoom_debounce
     #torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
