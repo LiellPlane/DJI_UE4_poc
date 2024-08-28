@@ -350,22 +350,20 @@ def main():
                             result = img_analyser.analysis_output_q.get(block=True, timeout=5)
                             if result:
 
-                                # Save out false positives!
-                                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-                                file_system.save_image(
-                                    cap_img,message=f"_longrange_cnt{timestamp}cnt"
-                                    )
-                                file_system.save_image(
-                                    cap_img_closerange,message=f"_closerange_cnt{timestamp}cnt"
-                                    )
-                                # End of save out false positives!
-
                                 if res_for_affine_transform_lookup not in analysis:
                                     analysis[res_for_affine_transform_lookup] = []
                                 analysis[res_for_affine_transform_lookup].extend(result)
                         except queue.Empty:
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
+                if len(analysis) > 0:                            # Save out false positives!
+                    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                    file_system.save_image(
+                        cap_img,message=f"_longrange_cnt{timestamp}cnt"
+                        )
+                    file_system.save_image(
+                        cap_img_closerange,message=f"_closerange_cnt{timestamp}cnt"
+                        )
                 with time_it("add internal section", debug=PRINT_DEBUG):
                     display.add_internal_section_region(
                         display_active_image.shape,
