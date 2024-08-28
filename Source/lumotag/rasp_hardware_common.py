@@ -31,7 +31,7 @@ class filesystem(factory.filesystem):
 
     def __init__(self) -> None:
         # have to do it here otherwise permission error 
-        # because linux is a retarded cunt
+        # because linux is a retarded cunt vvvvvv
         self.images_folder = "/home/lumotag"
         if not os.path.isdir(self.images_folder):
             os.mkdir(self.images_folder)

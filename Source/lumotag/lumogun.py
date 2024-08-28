@@ -376,13 +376,6 @@ def main():
                     file_system.save_image(
                         cap_img_closerange,message=f"_closerange_cnt{timestamp}cnt"
                         )
-                    file_system.save_image(
-                        cap_img,message=f"_CUNT"
-                        )
-                    file_system.save_image(
-                        cap_img_closerange,message=f"_FUCKINGBICTHCUNT"
-                        )
-                    
                 with time_it("add internal section", debug=PRINT_DEBUG):
                     display.add_internal_section_region(
                         display_active_image.shape,
