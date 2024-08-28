@@ -52,8 +52,34 @@ def main():
     # initialise components of lumogun
     voice = sound.Voice()
 
+
+    voice.speak(f"{GUN_CONFIGURATION.model}")
+    relay = lumogun.Relay(GUN_CONFIGURATION)
+    
+    # set partial functions
+    set_torch = partial(
+        relay.set_relay,
+        GUN_CONFIGURATION.relay_map["torch"])
+
+    set_laser = partial(
+        relay.set_relay,
+        GUN_CONFIGURATION.relay_map["laser"])
+
+    set_trigger = partial(
+        relay.set_relay,
+        GUN_CONFIGURATION.relay_map["clicker"])
+    
+    clicktest = False
     if get_platform() == _OS.RASPBERRY:
         for _ in range(0, 2):
+            for click in range (0,3):
+                set_torch(clicktest,strobe_cnt=0)
+                time.sleep(0.1)
+                set_laser(clicktest,strobe_cnt=0)
+                time.sleep(0.1)
+                set_trigger(clicktest,strobe_cnt=0)
+                time.sleep(0.1)
+                clicktest = not clicktest
             voice.speak("cancel")
             results_trig_positions = (triggers.test_states())
             if any([True for i in results_trig_positions.values() if i is True]):
@@ -62,8 +88,7 @@ def main():
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
 
-    voice.speak(f"{GUN_CONFIGURATION.model}")
-    relay = lumogun.Relay(GUN_CONFIGURATION)
+
     
     #accelerometer = lumogun.Accelerometer()
     #image_capture_longrange = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
@@ -174,18 +199,7 @@ def main():
         )}
 
 
-    # set partial functions
-    set_torch = partial(
-        relay.set_relay,
-        GUN_CONFIGURATION.relay_map["torch"])
 
-    set_laser = partial(
-        relay.set_relay,
-        GUN_CONFIGURATION.relay_map["laser"])
-
-    set_trigger = partial(
-        relay.set_relay,
-        GUN_CONFIGURATION.relay_map["clicker"])
     
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.trigger_debounce
