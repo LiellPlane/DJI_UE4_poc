@@ -1329,6 +1329,11 @@ class VoiceBase(ABC):
             args=(self.in_box,))
         self.t.start()
 
+    def wait_for_speak(self):
+        while not self.in_box.empty():
+            time.sleep(0.1)
+        # must be a better way to do this
+
     def speak(
             self,
             message: str):
@@ -1340,7 +1345,8 @@ class VoiceBase(ABC):
                 try:
                     for _ in range (0, self.in_box._maxsize):
                         self.in_box.get(block=False)
-                except queue.Empty: # queue here refers to the module, not a class
+                except Exception: # queue here refers to the module, not a class
+                    # don't trust the queue.empty exception 100% here
                     print('cleared overflowing voice queue')
 
                 self.in_box.put(

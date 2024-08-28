@@ -55,6 +55,7 @@ def main():
     if get_platform() == _OS.RASPBERRY:
         for _ in range(0, 2):
             voice.speak("cancel")
+            voice.wait_for_speak()
             results_trig_positions = (triggers.test_states())
             if any([True for i in results_trig_positions.values() if i is True]):
                 voice.speak("bye")
@@ -122,6 +123,7 @@ def main():
         raise Exception("broken close-range image source")
         
     voice.speak("cam")
+    voice.wait_for_speak()
     # img = next(image_capture_longrange)
 
     # if img is None:
@@ -134,11 +136,13 @@ def main():
     display.generate_output_affine(next(image_capture_longrange))
     display.generate_output_affine(next(image_capture_shortrange))
     voice.speak("ok display")
+    voice.wait_for_speak()
 
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     #workingdata = decode_clothID.WorkingData()
     file_system = lumogun.filesystem()
     voice.speak("all devices healthy")
+    voice.wait_for_speak()
     # display.display_output(img)
     # while True:
     #display.display_output(next(image_capture2))
@@ -187,15 +191,21 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
     
-    voice.speak("torch click")
+    voice.speak("torch relay")
+    voice.speak("test")
+    voice.wait_for_speak()
     set_torch(True,strobe_cnt=0)
-    time.sleep(0.3)
-    voice.speak("laser click")
+   
+    voice.speak("laser relay")
+    voice.speak("test")
+    voice.wait_for_speak()
     set_laser(True,strobe_cnt=0)
-    time.sleep(0.3)
-    voice.speak("trigger click")
+    
+    voice.speak("trigger relay")
+    voice.speak("test")
+    voice.wait_for_speak()
     set_trigger(True,strobe_cnt=0)
-    time.sleep(0.3)
+
 
 
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce

@@ -1,5 +1,5 @@
 import factory
-
+import time
 
 class Voice(factory.VoiceBase):
 
@@ -10,6 +10,5 @@ class Voice(factory.VoiceBase):
         while True:
             message = in_box.get(block=True)
             print(f"Pretending to say {message}")
-
-    def speak(self, message):
-        pass
+            time.sleep(len(message)*0.030)
+            
