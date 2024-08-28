@@ -38,7 +38,12 @@ def lumo_viewer(
 
 class filesystem(factory.filesystem):
     def save_image(self,img,message=None):
-        pass
+        if img is None:
+            raise Exception("save debug; img is None")
+        if not isinstance(img, np.ndarray):
+            raise Exception("save debug; img is not a numpy array")
+        if img.ndim not in (2, 3):
+            raise Exception("save debug; img must be a 2D or 3D numpy array")
 
 
 class Triggers(factory.Triggers):

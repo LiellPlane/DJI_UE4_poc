@@ -674,7 +674,7 @@ def get_approx_shape_and_bbox2(
                 x1=cX,
                 y1=cY)
        
-            averages = []
+            averages1 = []
             averages2 = []
             pixel_div_count = 90
             #_step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
@@ -691,7 +691,7 @@ def get_approx_shape_and_bbox2(
             for i in range (sample_size, len(sample_line1)-sample_size, _step):
                 try:
                 #averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
-                    averages.append(img2use[sample_line1[i][1], sample_line1[i][0]])
+                    averages1.append(img2use[sample_line1[i][1], sample_line1[i][0]])
                 except Exception as e:
                     print("out of range - skip")
 
@@ -714,7 +714,7 @@ def get_approx_shape_and_bbox2(
                     averages1 = np.interp(x_new, x, averages1)
 
             # cheesy way to test for pattern
-            if check_for_pattern([averages, averages2]):
+            if check_for_pattern([averages1, averages2]):
                 shape_ = Shapes.SQUARE
             else:
                 shape_ = Shapes.UNKNOWN
@@ -738,7 +738,7 @@ def get_approx_shape_and_bbox2(
                 min_bbx_size = cv2.contourArea(min_bbox),
                 shape=shape_,
                 centre_x_y=[cX, cY],
-                _2d_samples=[averages, averages2],
+                _2d_samples=[averages1, averages2],
                 notes_for_debug_file=None)
     
     return output

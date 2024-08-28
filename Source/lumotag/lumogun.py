@@ -6,7 +6,7 @@ import random
 from functools import partial
 import msgs
 import queue
-
+import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
@@ -299,9 +299,9 @@ def main():
 
                     # debugging code to capture images
                     #if cap_img is not None:
-                    TEMP_DEBUG_trigger_cnt += 1
-                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    # TEMP_DEBUG_trigger_cnt += 1
+                    # file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    # file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0
@@ -349,6 +349,17 @@ def main():
                         try:
                             result = img_analyser.analysis_output_q.get(block=True, timeout=5)
                             if result:
+
+                                # Save out false positives!
+                                timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+                                file_system.save_image(
+                                    cap_img,message=f"_longrange_cnt{timestamp}cnt"
+                                    )
+                                file_system.save_image(
+                                    cap_img_closerange,message=f"_closerange_cnt{timestamp}cnt"
+                                    )
+                                # End of save out false positives!
+
                                 if res_for_affine_transform_lookup not in analysis:
                                     analysis[res_for_affine_transform_lookup] = []
                                 analysis[res_for_affine_transform_lookup].extend(result)
@@ -358,7 +369,7 @@ def main():
                 with time_it("add internal section", debug=PRINT_DEBUG):
                     display.add_internal_section_region(
                         display_active_image.shape,
-                        output_image, 
+                        output_image,
                         transform_manager.get_lerped_targetzone_slice(transition_i),
                         transform_manager.get_display_affine_transformation(transition_i))
 
@@ -369,7 +380,7 @@ def main():
                         adapt=True,
                         target_acquired=(len(analysis) > 0)
                     )
-                    
+
 
                     # use the image shape to determine image analysis provenance
                     # we don't want to draw for instance close-range target graphics

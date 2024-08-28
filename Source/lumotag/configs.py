@@ -227,11 +227,11 @@ class TZAR_config(gun_config):
 
     @property
     def button_torch(self):
-        return 2
+        return 3
 
     @property
     def button_trigger(self):
-        return 3
+        return 2
 
     @property
     def button_rear(self):
