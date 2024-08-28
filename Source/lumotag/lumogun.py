@@ -188,7 +188,7 @@ def main():
         GUN_CONFIGURATION.relay_map["clicker"])
     
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
-    zoom_debounce = GUN_CONFIGURATION.trigger_debounce
+    zoom_debounce = GUN_CONFIGURATION.zoom_debounce
     #torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
 
 
