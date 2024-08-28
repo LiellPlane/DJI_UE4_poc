@@ -284,7 +284,7 @@ def main():
                 # any other behaviour during refractory period is ignored
                 result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if result is True:
-                    
+                    voice.speak("wut")
                     # true will only be available as an impulse after
                     # pulling trigger, then go low again - but
                     # mem state of debouncer will remain high
@@ -357,6 +357,7 @@ def main():
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
                 if len(analysis) > 0:
+                    voice.speak("cunt")
                     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                     file_system.save_image(
                         cap_img,message=f"_longrange_cnt{timestamp}cnt"
