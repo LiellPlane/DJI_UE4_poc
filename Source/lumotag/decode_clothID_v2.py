@@ -702,6 +702,16 @@ def get_approx_shape_and_bbox2(
                 except Exception:
                     print("out of range")
 
+            # Interpolate only if the lengths are different
+            if len(averages1) != len(averages2):
+                if len(averages1) > len(averages2):
+                    x = np.linspace(0, 1, len(averages2))
+                    x_new = np.linspace(0, 1, len(averages1))
+                    averages2 = np.interp(x_new, x, averages2)
+                else:
+                    x = np.linspace(0, 1, len(averages1))
+                    x_new = np.linspace(0, 1, len(averages2))
+                    averages1 = np.interp(x_new, x, averages1)
 
             # cheesy way to test for pattern
             if check_for_pattern([averages, averages2]):
