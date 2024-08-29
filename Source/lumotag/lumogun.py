@@ -378,7 +378,6 @@ def main():
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
                 if len(analysis) > 0:
-                    voice.speak("cunt")
                     timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
                     file_system.save_image(
                         cap_img,message=f"_longrange_cnt{timestamp}cnt"

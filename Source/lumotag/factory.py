@@ -1183,22 +1183,40 @@ def extract_number(file_name):
         return int(match.group(1))
     return float('inf')  # Return a large number if the pattern is not found
 
+
+def get_images_for_cam_pair(
+        cam_name: Literal["close", "long"],
+        filters: list[str],
+        image_extension: str = ".jpg"
+        ):
+    """Make sure not loading in broken pairs"""
+    imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    all_images = images_in_folder(imgfoler, image_extension)
+    filtered_images = all_images
+    for filter in filters:
+        filtered_images = [i for i in filtered_images if filter in i]
+    this_cam_images = [i for i in filtered_images if cam_name in i]
+    if cam_name == "close":
+        pair_name = "long"
+    else:
+        pair_name = "close"
+    paired_cam_images = [i for i in filtered_images if pair_name in i]
+    # get dictionary of image ID with key = filepath
+    this_cam_with_id = {extract_number(i): i for i in this_cam_images}
+    paired_cam_with_id = {extract_number(i): i for i in paired_cam_images}
+    common_ids = list(set(list(this_cam_with_id.keys())).intersection(set(list(paired_cam_with_id.keys()))))
+    return sorted([y for x, y in this_cam_with_id.items() if x in common_ids], key=extract_number)
+
 class ImageLibrary_longrange(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        self.images = images_in_folder(imgfoler, [".jpg"])
-        self.images = [i for i in self.images if "false_posiez" in i]
-        self.images = [i for i in self.images if "long" in i]
-        #self.images = [i for i in self.images if "cnt21" in i]
-        # Sort the list based on the extracted number
-        sorted_files = sorted(self.images, key=extract_number)
+        sorted_files = get_images_for_cam_pair(cam_name="long",filters=["false_posiez"])
         # create duplicates
         sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
-        if len(self.images) < 1:
-            raise Exception("could not find images in folder")
+        # if len(self.images) < 1:
+        #     raise Exception("could not find images in folder")
 
 
     def get_image(self):
@@ -1216,19 +1234,13 @@ class ImageLibrary_longrange(ImageGenerator):
 class ImageLibrary_closerange(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-        self.images = images_in_folder(imgfoler, [".jpg"])
-        self.images = [i for i in self.images if "false_posiez" in i]
-        self.images = [i for i in self.images if "close" in i]
-        #self.images = [i for i in self.images if "cnt21" in i]
-        # Sort the list based on the extracted number
-        sorted_files = sorted(self.images, key=extract_number)
+        sorted_files = get_images_for_cam_pair(cam_name="close",filters=["false_posiez"])
         # create duplicates
         sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
-        if len(self.images) < 1:
-            raise Exception("could not find images in folder")
+        # if len(self.images) < 1:
+        #     raise Exception("could not find images in folder")
 
 
     def get_image(self):
