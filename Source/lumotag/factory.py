@@ -1342,8 +1342,9 @@ class VoiceBase(ABC):
         self.t.start()
 
     def wait_for_speak(self):
-        while not self.in_box.empty():
-            time.sleep(0.1)
+        pass
+        # while not self.in_box.empty():
+        #     time.sleep(0.1)
         # must be a better way to do this
 
     def speak(
