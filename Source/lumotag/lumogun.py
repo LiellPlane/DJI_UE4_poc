@@ -115,14 +115,18 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
+    voice.speak("test cam 1")
+    voice.wait_for_speak()
     img = next(image_capture_longrange)
     if img is None:
         raise Exception("broken long-range image source")
+    voice.speak("test cam 2")
+    voice.wait_for_speak()
     img2 = next(image_capture_shortrange)
     if img2 is None:
         raise Exception("broken close-range image source")
         
-    voice.speak("cam")
+    voice.speak("cams OK")
     voice.wait_for_speak()
     # img = next(image_capture_longrange)
 
