@@ -195,27 +195,20 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["clicker"])
     
-    voice.speak("torch relay")
-    voice.speak("test")
-    voice.wait_for_speak()
-    time.sleep(1)
-    set_torch(True,strobe_cnt=0)
-    time.sleep(1)
-    voice.speak("laser relay")
-    voice.speak("test")
-    voice.wait_for_speak()
-    time.sleep(1)
-    set_laser(True,strobe_cnt=0)
-    time.sleep(1)
-    voice.speak("trigger relay")
-    voice.speak("test")
-    voice.wait_for_speak()
-    time.sleep(1)
-    set_trigger(True,strobe_cnt=0)
-    time.sleep(1)
-    voice.speak("trigger test finished")
-    voice.wait_for_speak()
-    time.sleep(1)
+
+    test_dict = {}
+    test_dict["torch"] = partial(set_torch, True, 0)
+    test_dict["laser"] = partial(set_laser, True, 0)
+    test_dict["trigger"] = partial(set_trigger, True, 0)
+    test_dict["finished"] = partial(print, "nothing")
+    for devicename, _function in test_dict.items():
+        voice.speak(devicename)
+        voice.speak("relay")
+        voice.speak("test")
+        voice.wait_for_speak()
+        if PLATFORM == _OS.RASPBERRY: time.sleep(0.5)
+        _function()
+        if PLATFORM == _OS.RASPBERRY: time.sleep(0.5)
 
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.zoom_debounce
