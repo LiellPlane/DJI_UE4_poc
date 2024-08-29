@@ -198,19 +198,24 @@ def main():
     voice.speak("torch relay")
     voice.speak("test")
     voice.wait_for_speak()
+    time.sleep(1)
     set_torch(True,strobe_cnt=0)
-   
+    time.sleep(1)
     voice.speak("laser relay")
     voice.speak("test")
     voice.wait_for_speak()
+    time.sleep(1)
     set_laser(True,strobe_cnt=0)
-    
+    time.sleep(1)
     voice.speak("trigger relay")
     voice.speak("test")
     voice.wait_for_speak()
+    time.sleep(1)
     set_trigger(True,strobe_cnt=0)
-
-
+    time.sleep(1)
+    voice.speak("trigger test finished")
+    voice.wait_for_speak()
+    time.sleep(1)
 
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.zoom_debounce
