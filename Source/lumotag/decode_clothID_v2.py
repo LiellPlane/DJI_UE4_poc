@@ -25,6 +25,8 @@ from configs import base_find_lumotag_config
 
 MIN_TAG_VARIANCE = 25 # max-min for grayscale values of lumotag
 MAX_PATTERN_SYMMETRY_ERROR = 5
+SAMPLES_PER_LINE = 25 # this is for how many samples we do along each diagonal of the barcode
+
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -684,8 +686,8 @@ def get_approx_shape_and_bbox2(
             else:
                 img2use = img
 
-            samples_per_line = 25
-            _step = max(math.floor(len(sample_line1)/samples_per_line), 1)
+            
+            _step = max(math.floor(len(sample_line1)/SAMPLES_PER_LINE), 1)
 
         
             for i in range (sample_size, len(sample_line1)-sample_size, _step):

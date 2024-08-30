@@ -1210,9 +1210,9 @@ def get_images_for_cam_pair(
 class ImageLibrary_longrange(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        sorted_files = get_images_for_cam_pair(cam_name="long",filters=["false_posiez"])
+        sorted_files = get_images_for_cam_pair(cam_name="long",filters=["unique_id_2cam"])
         # create duplicates
-        sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
+        #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
         # if len(self.images) < 1:
@@ -1234,9 +1234,9 @@ class ImageLibrary_longrange(ImageGenerator):
 class ImageLibrary_closerange(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        sorted_files = get_images_for_cam_pair(cam_name="close",filters=["false_posiez"])
+        sorted_files = get_images_for_cam_pair(cam_name="close",filters=["unique_id_2cam"])
         # create duplicates
-        sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
+        #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
         self.res = res
         # if len(self.images) < 1:
