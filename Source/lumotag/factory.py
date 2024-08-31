@@ -1187,11 +1187,13 @@ def extract_number(file_name):
 def get_images_for_cam_pair(
         cam_name: Literal["close", "long"],
         filters: list[str],
-        image_extension: str = ".jpg"
+        image_extension: str = ".jpg",
+        imgfolder= None
         ):
     """Make sure not loading in broken pairs"""
-    imgfoler = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-    all_images = images_in_folder(imgfoler, image_extension)
+    if imgfolder is None:
+        imgfolder = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+    all_images = images_in_folder(imgfolder, image_extension)
     filtered_images = all_images
     for filter in filters:
         filtered_images = [i for i in filtered_images if filter in i]
@@ -1207,10 +1209,14 @@ def get_images_for_cam_pair(
     common_ids = list(set(list(this_cam_with_id.keys())).intersection(set(list(paired_cam_with_id.keys()))))
     return sorted([y for x, y in this_cam_with_id.items() if x in common_ids], key=extract_number)
 
+
 class ImageLibrary_longrange(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        sorted_files = get_images_for_cam_pair(cam_name="long",filters=["unique_id_2cam"])
+        sorted_files = get_images_for_cam_pair(
+            cam_name="long",
+            filters=["_player_1"],
+            imgfolder=r"D:\lumotag_training_data\_player_1")
         # create duplicates
         #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
@@ -1234,7 +1240,10 @@ class ImageLibrary_longrange(ImageGenerator):
 class ImageLibrary_closerange(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        sorted_files = get_images_for_cam_pair(cam_name="close",filters=["unique_id_2cam"])
+        sorted_files = get_images_for_cam_pair(
+            cam_name="close",
+            filters=["_player_1"],
+            imgfolder=r"D:\lumotag_training_data\_player_1")
         # create duplicates
         #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = cycle_files(sorted_files)
