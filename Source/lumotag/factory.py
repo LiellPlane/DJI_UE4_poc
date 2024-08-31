@@ -1207,7 +1207,13 @@ def get_images_for_cam_pair(
     this_cam_with_id = {extract_number(i): i for i in this_cam_images}
     paired_cam_with_id = {extract_number(i): i for i in paired_cam_images}
     common_ids = list(set(list(this_cam_with_id.keys())).intersection(set(list(paired_cam_with_id.keys()))))
-    return sorted([y for x, y in this_cam_with_id.items() if x in common_ids], key=extract_number)
+    this_cam_with_id = [(extract_number(i), i) for i in this_cam_images if extract_number(i) in common_ids]
+    paired_cam_with_id = [(extract_number(i), i) for i in paired_cam_images if extract_number(i) in common_ids]
+
+    valid_this_cam =  sorted([y for x, y in this_cam_with_id], key=extract_number)
+    valid_other_cam =  sorted([y for x, y in paired_cam_with_id], key=extract_number)
+    assert len(valid_this_cam) == len(valid_other_cam)
+    return valid_this_cam
 
 
 class ImageLibrary_longrange(ImageGenerator):
@@ -1219,7 +1225,7 @@ class ImageLibrary_longrange(ImageGenerator):
             imgfolder=r"D:\lumotag_training_data\_player_1")
         # create duplicates
         #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
-        self.cycled_files_generator = cycle_files(sorted_files)
+        self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
         self.res = res
         # if len(self.images) < 1:
         #     raise Exception("could not find images in folder")
@@ -1246,7 +1252,7 @@ class ImageLibrary_closerange(ImageGenerator):
             imgfolder=r"D:\lumotag_training_data\_player_1")
         # create duplicates
         #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
-        self.cycled_files_generator = cycle_files(sorted_files)
+        self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
         self.res = res
         # if len(self.images) < 1:
         #     raise Exception("could not find images in folder")

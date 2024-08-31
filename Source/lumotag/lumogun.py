@@ -45,6 +45,30 @@ GUN_CONFIGURATION  = factory.get_config(model)
 class AnalysisTimeoutException(Exception):
     pass
 
+def save_analysis(result):
+    """Debug function"""
+    import pickle
+    timestamp = datetime.datetime.now().strftime("%Y%M%d%H%M%S%f")[:-3]
+    filename = rf"D:\lumotag_training_data\player1barcode{timestamp}.pc"
+    all_results = []
+    for res in result:
+        all_results.append(res._2d_samples)
+    with open(filename, 'wb') as file:
+        pickle.dump(all_results, file)
+    with open(filename, 'rb') as file:
+        check_data= pickle.load(file)
+
+def save_images_if_barcode(analysis, file_system, cap_img, cap_img_closerange):
+    """Debug function"""
+    if len(analysis) > 0:
+        timestamp = datetime.datetime.now().strftime("%H%M%S%f")[:-3]
+        file_system.save_image(
+            cap_img,message=f"_longrange_cnt{timestamp}cnt"
+            )
+        file_system.save_image(
+            cap_img_closerange,message=f"_closerange_cnt{timestamp}cnt"
+            )
+                    
 def main():
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
@@ -219,6 +243,8 @@ def main():
     TEMP_DEBUG_trigger_cnt = 0
     TEMP_fake_light = False
     while True:
+        TEMP_DEBUG_trigger_cnt += 1
+        #print(TEMP_DEBUG_trigger_cnt)
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
             with time_it("get next image", debug=PRINT_DEBUG):
@@ -372,6 +398,8 @@ def main():
                         try:
                             result = img_analyser.analysis_output_q.get(block=True, timeout=5)
                             if result:
+                                
+                                save_analysis(result)
 
                                 if res_for_affine_transform_lookup not in analysis:
                                     analysis[res_for_affine_transform_lookup] = []
@@ -379,14 +407,9 @@ def main():
                         except queue.Empty:
                             raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
-                if len(analysis) > 0:
-                    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-                    file_system.save_image(
-                        cap_img,message=f"_longrange_cnt{timestamp}cnt"
-                        )
-                    file_system.save_image(
-                        cap_img_closerange,message=f"_closerange_cnt{timestamp}cnt"
-                        )
+
+                #save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
+
                 with time_it("add internal section", debug=PRINT_DEBUG):
                     display.add_internal_section_region(
                         display_active_image.shape,
