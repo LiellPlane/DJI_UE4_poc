@@ -1221,8 +1221,8 @@ class ImageLibrary_longrange(ImageGenerator):
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         sorted_files = get_images_for_cam_pair(
             cam_name="long",
-            filters=["_player_1"],
-            imgfolder=r"D:\lumotag_training_data\_player_1")
+            filters=["posiez"]
+            )#mgfolder=r"D:\lumotag_training_data\_player_1"
         # create duplicates
         #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
@@ -1248,8 +1248,9 @@ class ImageLibrary_closerange(ImageGenerator):
         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
         sorted_files = get_images_for_cam_pair(
             cam_name="close",
-            filters=["_player_1"],
-            imgfolder=r"D:\lumotag_training_data\_player_1")
+            filters=["posiez"]
+            )
+            #imgfolder=r"D:\lumotag_training_data\_player_1")
         # create duplicates
         #sorted_files = reduce(lambda acc, s: acc + [s] * 3, sorted_files, [])
         self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)

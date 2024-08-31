@@ -49,7 +49,7 @@ def save_analysis(result):
     """Debug function"""
     import pickle
     timestamp = datetime.datetime.now().strftime("%Y%M%d%H%M%S%f")[:-3]
-    filename = rf"D:\lumotag_training_data\player1barcode{timestamp}.pc"
+    filename = rf"D:\lumotag_training_data\false_positives{timestamp}.pc"
     all_results = []
     for res in result:
         all_results.append(res._2d_samples)

@@ -4,6 +4,9 @@ import pickle
 import cv2
 import random
 
+TAG = "player1"
+player1_path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "player1_pickles")
+false_positive_path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "false_positive_pickles")
 
 def files_in_folder(directory, imgtypes: list[str]):
     allFiles = []
@@ -14,11 +17,13 @@ def files_in_folder(directory, imgtypes: list[str]):
     return allFiles
 
 # load in pickle files and extract data:
-folder = r"D:\lumotag_training_data"
+folder = os.path.dirname(os.path.abspath(__file__))
 
 pickle_files = files_in_folder(folder, [".pc"])
 result_pairs = []
 for picklefile in pickle_files:
+    if TAG not in picklefile:
+        continue
     with open(picklefile, 'rb') as file:
         result_data= pickle.load(file)
     for pair in result_data:
