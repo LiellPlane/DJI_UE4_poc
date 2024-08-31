@@ -26,7 +26,7 @@ def generate_dummy_data(num_samples):
     return X, y
 
 
-def create_noise_proof_non_overfit_model(normalize_input=True):
+def create_noise_proof_non_overfit_model(normalise_input=True):
     inputs = tf.keras.layers.Input(shape=(50, 1))
     
     if normalize_input:
@@ -54,10 +54,75 @@ def create_noise_proof_non_overfit_model(normalize_input=True):
     model = tf.keras.Model(inputs=inputs, outputs=outputs)
     return model
 
-def create_noise_proof_model(normalize_input=True):
+import tensorflow as tf
+
+def create_ultra_fast_barcode_cnn_model(normalise_input=True):
+    model = tf.keras.Sequential([
+        # Normalization layer
+        tf.keras.layers.Input(shape=(50, 1)),
+        tf.keras.layers.Rescaling(1./255),
+
+        # Use a single Separable Conv layer with fewer filters
+        tf.keras.layers.SeparableConv1D(16, kernel_size=3, activation='relu', padding='same'),
+
+        # Increase the pooling size to aggressively reduce the feature map size
+        tf.keras.layers.MaxPooling1D(pool_size=4),
+
+        # Global pooling to flatten the output
+        tf.keras.layers.GlobalAveragePooling1D(),
+
+        # Further reduce the size of the dense layer
+        tf.keras.layers.Dense(8, activation='relu'),
+
+        # Output layer
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+    
+    # Compile the model
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    
+    return model
+
+def create_optimized_barcode_cnn_model(normalise_input=True):
+    model = tf.keras.Sequential([
+        tf.keras.layers.Input(shape=(50, 1)),
+        tf.keras.layers.Rescaling(1./255),
+        tf.keras.layers.SeparableConv1D(32, kernel_size=3, activation='relu', padding='same'),
+        tf.keras.layers.BatchNormalization(),  # Batch Normalization for faster convergence
+        tf.keras.layers.MaxPooling1D(pool_size=2),
+        
+        tf.keras.layers.SeparableConv1D(64, kernel_size=3, activation='relu', padding='same'),
+        tf.keras.layers.BatchNormalization(),
+        tf.keras.layers.MaxPooling1D(pool_size=2),
+        tf.keras.layers.GlobalAveragePooling1D(),
+        tf.keras.layers.Dense(16, activation='relu'),
+        tf.keras.layers.Dense(1, activation='sigmoid')
+    ])
+    
+    # Compile the model
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    
+    return model
+def create_barcode_cnn_model(normalise_input=True):
+    model = tf.keras.Sequential([
+        # Normalization layer to scale input values to the [0, 1] range
+        tf.keras.layers.Input(shape=(50, 1)),  # Input shape matches the length of the barcode
+        tf.keras.layers.Rescaling(1./255),  # Rescale the pixel values from [0, 255] to [0, 1]
+        tf.keras.layers.Conv1D(32, kernel_size=3, activation='relu', padding='same'),
+        tf.keras.layers.MaxPooling1D(pool_size=2),
+        tf.keras.layers.Conv1D(64, kernel_size=3, activation='relu', padding='same'),
+        tf.keras.layers.MaxPooling1D(pool_size=2),
+        tf.keras.layers.GlobalAveragePooling1D(),  # Summarize features from convolutional layers
+        tf.keras.layers.Dense(32, activation='relu'),  # Dense layer to learn more complex features
+        tf.keras.layers.Dense(1, activation='sigmoid')  # Output layer (binary classification or regression)
+    ])
+    
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])  # Assuming classification
+    return model
+def create_noise_proof_model(normalise_input=True):
     inputs = tf.keras.layers.Input(shape=(50, 1))
     
-    if normalize_input:
+    if normalise_input:
         x = tf.keras.layers.Lambda(lambda x: x / 255.0)(inputs)
     else:
         x = inputs
@@ -83,7 +148,7 @@ def create_model():
     return model
 
 # Train the model
-def train_model(model, X, y, epochs=25, batch_size=32):
+def train_model(model, X, y, epochs=6, batch_size=32):
     model.fit(X, y, epochs=epochs, batch_size=batch_size, validation_split=0.2)
 
 # Evaluate the model
@@ -117,7 +182,7 @@ def get_tagged_aggregate_pickle_files(tag: str) -> list:
 
 
 def split_for_training_and_eval(numpyarray):
-    return numpyarray[:int(len(numpyarray)*0.8)], numpyarray[int(len(numpyarray)*0.8):]
+    return numpyarray[:int(len(numpyarray)*0.5)], numpyarray[int(len(numpyarray)*0.5):]
 
 
 
@@ -128,8 +193,8 @@ random.shuffle(result_pairs)
 random.shuffle(false_positives)
 
 
-player1_class =0
-noise_class = 1
+player1_class = 1
+noise_class = 0
 training_vectors = []
 training_vectors_mirrored = []
 
@@ -141,7 +206,7 @@ for pair in result_pairs:
     training_vectors_mirrored.append(np.concatenate((pair[1], pair[0])))
 X_training_player1 = np.asarray(training_vectors + training_vectors_mirrored)
 y_training_player1 = np.full((len(X_training_player1),1),player1_class)
-X_noise_class = np.random.randint(0, 255, size=(len(X_training_player1)//3, 50))
+X_noise_class = np.random.randint(0, 255, size=(len(X_training_player1)*10, 50))
 # add false positives
 for pair in false_positives:
     training_false_positive_augmented.append(np.concatenate((pair[0], pair[1])))
@@ -152,6 +217,9 @@ X_noise_class = np.concatenate((X_noise_class, np.asarray(training_false_positiv
 y_noise_class = np.full((len(X_noise_class),1),noise_class)
 
 
+
+testa, testb = split_for_training_and_eval(np.asarray([i for i in range(0,10)]))
+assert set(testa.tolist()).intersection(set(testb.tolist())) == set()
 
 #splits
 X_player_train, X_player_eval = split_for_training_and_eval(X_training_player1)
@@ -166,12 +234,17 @@ y_player_with_noise_train = np.concatenate((y_player_train, y_noise_train))
 X_player_with_noise_eval = np.concatenate((X_player_eval, X_noise_eval))
 y_player_with_noise_eval = np.concatenate((y_player_eval, y_noise_eval))
 
-model = create_noise_proof_non_overfit_model(normalize_input=True)
+model = create_ultra_fast_barcode_cnn_model(normalise_input=True)
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 #x,y = generate_dummy_data(1000)
 train_model(model, X_player_with_noise_train, y_player_with_noise_train)
+print("evaluate mix")
 evaluate_model(model, X_player_with_noise_eval, y_player_with_noise_eval)
+print("Evaluate player codes")
+evaluate_model(model, X_player_eval, y_player_eval)
+print("evaluate noise and false positives")
+evaluate_model(model, X_noise_eval, y_noise_eval)
 
 model.save(modelpath)
 

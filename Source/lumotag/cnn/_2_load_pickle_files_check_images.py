@@ -4,7 +4,7 @@ import pickle
 import cv2
 import random
 
-TAG = "player1"
+TAG = "false"
 player1_path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "player1_pickles")
 false_positive_path =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "false_positive_pickles")
 
