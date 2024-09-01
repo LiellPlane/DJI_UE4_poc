@@ -399,7 +399,7 @@ def main():
                             result = img_analyser.analysis_output_q.get(block=True, timeout=5)
                             if result:
                                 
-                                save_analysis(result)
+                                #save_analysis(result)
 
                                 if res_for_affine_transform_lookup not in analysis:
                                     analysis[res_for_affine_transform_lookup] = []
