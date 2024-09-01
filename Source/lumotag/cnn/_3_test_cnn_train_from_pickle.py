@@ -148,7 +148,7 @@ def create_model():
     return model
 
 # Train the model
-def train_model(model, X, y, epochs=6, batch_size=32):
+def train_model(model, X, y, epochs=1000, batch_size=1000):
     model.fit(X, y, epochs=epochs, batch_size=batch_size, validation_split=0.2)
 
 # Evaluate the model
@@ -205,18 +205,27 @@ for pair in result_pairs:
     training_vectors.append(np.concatenate((pair[0], pair[1])))
     training_vectors_mirrored.append(np.concatenate((pair[1], pair[0])))
 X_training_player1 = np.asarray(training_vectors + training_vectors_mirrored)
+X_training_player1 = X_training_player1[:300]
 y_training_player1 = np.full((len(X_training_player1),1),player1_class)
-X_noise_class = np.random.randint(0, 255, size=(len(X_training_player1)*10, 50))
+X_noise_class = np.random.randint(0, 255, size=(len(X_training_player1), 50))
+#X_noise_class = X_noise_class[0:10] # temp - try removing all noise
 # add false positives
 for pair in false_positives:
     training_false_positive_augmented.append(np.concatenate((pair[0], pair[1])))
     training_false_positive_augmented.append(np.roll(training_false_positive_augmented[-1], shift=len(pair)//2))
     training_false_positive_augmented.append(np.concatenate((pair[1], pair[0])))
     training_false_positive_augmented.append(np.roll(training_false_positive_augmented[-1], shift=len(pair)//2))
-X_noise_class = np.concatenate((X_noise_class, np.asarray(training_false_positive_augmented)))
+training_false_positive_augmented = np.asarray(training_false_positive_augmented)
+X_noise_class = np.concatenate((X_noise_class, training_false_positive_augmented))
 y_noise_class = np.full((len(X_noise_class),1),noise_class)
 
-
+# convert to uint8 maybs
+X_training_player1 = X_training_player1.astype("uint8")
+y_training_player1 = y_training_player1.astype("uint8")
+assert len(X_training_player1) ==  len(y_training_player1)
+X_noise_class = X_noise_class.astype("uint8")
+y_noise_class = y_noise_class.astype("uint8")
+assert len(X_noise_class) ==  len(y_noise_class)
 
 testa, testb = split_for_training_and_eval(np.asarray([i for i in range(0,10)]))
 assert set(testa.tolist()).intersection(set(testb.tolist())) == set()
@@ -225,30 +234,92 @@ assert set(testa.tolist()).intersection(set(testb.tolist())) == set()
 X_player_train, X_player_eval = split_for_training_and_eval(X_training_player1)
 y_player_train, y_player_eval = split_for_training_and_eval(y_training_player1)
 
+assert len(X_player_train) ==  len(y_player_train)
+assert len(X_player_eval) ==  len(y_player_eval)
+
 X_noise_train, X_noise_eval = split_for_training_and_eval(X_noise_class)
 y_noise_train, y_noise_eval = split_for_training_and_eval(y_noise_class)
+
+assert len(X_noise_train) ==  len(y_noise_train)
+assert len(X_noise_eval) ==  len(y_noise_eval)
 
 X_player_with_noise_train = np.concatenate((X_player_train, X_noise_train))
 y_player_with_noise_train = np.concatenate((y_player_train, y_noise_train))
 
+assert len(X_player_with_noise_train) ==  len(y_player_with_noise_train)
+
 X_player_with_noise_eval = np.concatenate((X_player_eval, X_noise_eval))
 y_player_with_noise_eval = np.concatenate((y_player_eval, y_noise_eval))
 
-model = create_ultra_fast_barcode_cnn_model(normalise_input=True)
+assert len(X_player_with_noise_eval) ==  len(y_player_with_noise_eval)
+
+
+model = create_noise_proof_model(normalise_input=True)
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
-#x,y = generate_dummy_data(1000)
-train_model(model, X_player_with_noise_train, y_player_with_noise_train)
+if not os.path.exists(modelpath):
+    train_model(model, X_player_with_noise_train, y_player_with_noise_train)
+    model.save(modelpath)
+
+model = tf.keras.models.load_model(modelpath)
+
+
 print("evaluate mix")
 evaluate_model(model, X_player_with_noise_eval, y_player_with_noise_eval)
 print("Evaluate player codes")
 evaluate_model(model, X_player_eval, y_player_eval)
 print("evaluate noise and false positives")
 evaluate_model(model, X_noise_eval, y_noise_eval)
+#print("evaluate model with bad classification (should be accuracy of 0)")
+#evaluate_model(model, X_player_eval, y_noise_eval[:len(X_player_eval)])
 
-model.save(modelpath)
+print("noise", model.predict(X_noise_eval[0].reshape(1,len(X_noise_eval[0]))))
 
-loaded_model = tf.keras.models.load_model(modelpath)
+print("more noise", model.predict(X_noise_eval[0].reshape(1,len(X_noise_eval[0]))))
+print("valid P1", model.predict(X_player_eval[0].reshape(1,len(X_player_eval[0]))))
+
+
+
+
+
+
+
+
+
+import cv2
+
+while True:
+    test_pair = random.choice([
+        random.choice(training_false_positive_augmented),
+        random.choice(X_player_eval),
+        random.choice(X_noise_class)
+    ])
+    score = model.predict(test_pair.reshape(1,len(test_pair)))
+    print(score)
+    out_img1 = cv2.resize(np.asarray(test_pair[:len(test_pair)//2].astype("uint8")), (200, 500), interpolation=cv2.INTER_NEAREST)
+    out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
+    out_img2 = cv2.resize(np.asarray(test_pair[len(test_pair)//2:].astype("uint8")), (200, 500), interpolation=cv2.INTER_NEAREST)
+    out_img2 = cv2.cvtColor(out_img2, cv2.COLOR_GRAY2BGR)
+
+
+    midimg = np.zeros(out_img1.shape, np.uint8)
+    if score > 0.95:
+        midimg[:,:,1] = 255
+    else:
+        midimg[:,:,2] = 255 
+
+    stacked_img = np.hstack((
+        out_img1,
+        midimg,
+        out_img2))
+    cv2.imshow('graycsale image',stacked_img)
+    
+
+
+    key=cv2.waitKey(0)
+    if key == 27:#if ESC is pressed, exit loop
+        cv2.destroyAllWindows()
+        break
 
 # # Function to estimate FPS
 # def estimate_fps(model, num_iterations=1000):

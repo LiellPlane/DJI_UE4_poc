@@ -36,9 +36,18 @@ random.shuffle(result_pairs)
 
 loaded_model = tf.keras.models.load_model(modelpath)
 
+# example of valid datatype from training
+# array([[198, 136, 143, 154,  79,  17,  44,   7,   0, 226,  16, 216, 186,
+#         212, 123,  15, 149, 100,  34, 160,   4, 155, 208, 229, 201, 211,
+#         201, 177, 104, 191,  35, 169, 239, 168,  84, 110,  57, 143, 153,
+#         176,  15,  58, 156,  38,  19,  83, 241,  41,  76,  45]],
+#       dtype=uint8)
+# X_noise_eval[0].reshape(1,len(X_noise_eval[0])).shape
+# (1, 50)
+
 while True:
     test_pair = random.choice(result_pairs)
-    np_test_pair = np.concatenate((test_pair[0], test_pair[1]))
+    np_test_pair = np.array(np.concatenate((test_pair[0], test_pair[1]))).astype("uint8")
     score = loaded_model.predict(np_test_pair.reshape(1,50))
     print(score)
     out_img1 = cv2.resize(np.asarray(test_pair[0]), (200, 500), interpolation=cv2.INTER_NEAREST)
@@ -48,10 +57,10 @@ while True:
 
 
     midimg = np.zeros(out_img1.shape, np.uint8)
-    if score > 0.95:
-        midimg[:,:,0] = 255
-    else:
-        midimg[:,:,1] = 255
+    # if score > 0.95:
+    #     midimg[:,:,0] = 255
+    # else:
+    #     midimg[:,:,1] = 255 
 
     stacked_img = np.hstack((
         out_img1,
