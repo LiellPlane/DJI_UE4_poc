@@ -148,7 +148,7 @@ def create_model():
     return model
 
 # Train the model
-def train_model(model, X, y, epochs=1000, batch_size=1000):
+def train_model(model, X, y, epochs=1000, batch_size=100):
     model.fit(X, y, epochs=epochs, batch_size=batch_size, validation_split=0.2)
 
 # Evaluate the model
@@ -205,7 +205,7 @@ for pair in result_pairs:
     training_vectors.append(np.concatenate((pair[0], pair[1])))
     training_vectors_mirrored.append(np.concatenate((pair[1], pair[0])))
 X_training_player1 = np.asarray(training_vectors + training_vectors_mirrored)
-X_training_player1 = X_training_player1[:300]
+X_training_player1 = X_training_player1
 y_training_player1 = np.full((len(X_training_player1),1),player1_class)
 X_noise_class = np.random.randint(0, 255, size=(len(X_training_player1), 50))
 #X_noise_class = X_noise_class[0:10] # temp - try removing all noise
