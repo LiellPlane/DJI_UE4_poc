@@ -221,18 +221,20 @@ def main():
     
 
     test_dict = {}
-    test_dict["torch"] = partial(set_torch, True, 0)
-    test_dict["laser"] = partial(set_laser, True, 0)
-    test_dict["trigger"] = partial(set_trigger, True, 0)
-    test_dict["finished"] = partial(print, "nothing")
-    for devicename, _function in test_dict.items():
-        voice.speak(devicename)
-        voice.speak("relay")
-        voice.speak("test")
-        voice.wait_for_speak()
-        if PLATFORM == _OS.RASPBERRY: time.sleep(0.5)
-        _function()
-        if PLATFORM == _OS.RASPBERRY: time.sleep(0.5)
+    test_dict["torch on"] = [partial(set_torch, (i%2==0), 0) for i in range(1,8)]
+    test_dict["laser"] = [partial(set_laser, (i%2==0), 0) for i in range(1,8)]
+    test_dict["trigger on"] = [partial(set_trigger, (i%2==0), 0) for i in range(1,8)]
+    for devicename, _function_list in test_dict.items():
+        # voice.speak(devicename)
+        # voice.speak("relay")
+        # voice.speak("test")
+        # voice.wait_for_speak()
+        print(f"Testing : {devicename}")
+        for _function in _function_list:
+            if PLATFORM == _OS.RASPBERRY: time.sleep(0.1)
+            _function()
+            if PLATFORM == _OS.RASPBERRY: time.sleep(0.1)
+        if PLATFORM == _OS.RASPBERRY: time.sleep(1)
 
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.zoom_debounce
