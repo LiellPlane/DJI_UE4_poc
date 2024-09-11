@@ -221,9 +221,10 @@ def main():
     
 
     test_dict = {}
-    test_dict["torch on"] = [partial(set_torch, (i%2==0), 0) for i in range(1,8)]
+    test_dict["torch"] = [partial(set_torch, (i%2==0), 0) for i in range(1,8)]
     test_dict["laser"] = [partial(set_laser, (i%2==0), 0) for i in range(1,8)]
-    test_dict["trigger on"] = [partial(set_trigger, (i%2==0), 0) for i in range(1,8)]
+    test_dict["trigger"] = [partial(set_trigger, (i%2==0), 0) for i in range(1,8)]
+    voice.speak(f"testing {len(test_dict)} relays")
     for devicename, _function_list in test_dict.items():
         # voice.speak(devicename)
         # voice.speak("relay")
