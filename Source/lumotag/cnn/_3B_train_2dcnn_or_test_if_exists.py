@@ -202,6 +202,8 @@ training_false_positive_augmented = []
 
 total_training_player1 = []
 for pair in result_pairs:
+    training_vectors.append(np.hstack((pair[0], pair[1])))
+
     training_vectors.append(np.concatenate((pair[0], pair[1])))
     training_vectors_mirrored.append(np.concatenate((pair[1], pair[0])))
 X_training_player1 = np.asarray(training_vectors + training_vectors_mirrored)
