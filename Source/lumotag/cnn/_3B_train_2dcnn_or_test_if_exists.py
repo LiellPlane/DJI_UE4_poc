@@ -202,19 +202,22 @@ training_false_positive_augmented = []
 
 total_training_player1 = []
 for pair in result_pairs:
-    training_vectors.append(np.hstack((pair[0], pair[1])))
+    training_vectors.append(np.vstack((pair[0], pair[1])))
     #training_vectors.append(np.concatenate((pair[0], pair[1])))
-    training_vectors_mirrored.append(np.concatenate((pair[1], pair[0])))
+    training_vectors_mirrored.append(np.vstack((pair[1], pair[0])))
 X_training_player1 = np.asarray(training_vectors + training_vectors_mirrored)
 X_training_player1 = X_training_player1
 y_training_player1 = np.full((len(X_training_player1),1),player1_class)
-X_noise_class = np.random.randint(0, 255, size=(len(X_training_player1), 50))
+X_noise_class = []
+for i in range(0,len(y_training_player1)):
+    X_noise_class.append(np.vstack((np.random.randint(0, 255, 25), np.random.randint(0, 255, 25))))
+
 #X_noise_class = X_noise_class[0:10] # temp - try removing all noise
 # add false positives
 for pair in false_positives:
-    training_false_positive_augmented.append(np.concatenate((pair[0], pair[1])))
+    training_false_positive_augmented.append(np.vstack((pair[0], pair[1])))
     training_false_positive_augmented.append(np.roll(training_false_positive_augmented[-1], shift=len(pair)//2))
-    training_false_positive_augmented.append(np.concatenate((pair[1], pair[0])))
+    training_false_positive_augmented.append(np.vstack((pair[1], pair[0])))
     training_false_positive_augmented.append(np.roll(training_false_positive_augmented[-1], shift=len(pair)//2))
 training_false_positive_augmented = np.asarray(training_false_positive_augmented)
 X_noise_class = np.concatenate((X_noise_class, training_false_positive_augmented))
