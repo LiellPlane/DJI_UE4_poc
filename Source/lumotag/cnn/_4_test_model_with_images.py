@@ -54,7 +54,7 @@ while True:
     out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
     out_img2 = cv2.resize(np.asarray(test_pair[1]), (200, 500), interpolation=cv2.INTER_NEAREST)
     out_img2 = cv2.cvtColor(out_img2, cv2.COLOR_GRAY2BGR)
-
+ 
 
     midimg = np.zeros(out_img1.shape, np.uint8)
     # if score > 0.95:
