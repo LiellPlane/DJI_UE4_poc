@@ -8,7 +8,7 @@ from typing import Union
 
 @dataclass
 class BadRead():
-    pass
+    reason:str
 
 @dataclass
 class WhiteBars():
@@ -28,13 +28,10 @@ def filter_white_bars(whitebars: WhiteBars, length_array: int) ->WhiteBars:
     valid_indices = [
         i for i, white_bar_transitions in enumerate(whitebars.white_bar_positions)
         if 0 not in white_bar_transitions and length_array not in white_bar_transitions
+        and 1 not in white_bar_transitions and length_array-1 not in white_bar_transitions
     ]
 
     
-    # filter for bad widths - this should invalidate the barcode if its full of noise
-    if abs(max(whitebars.white_bar_widths) - min(whitebars.white_bar_widths)) > min(2, length_array//10):
-        return BadRead()
-
 
     # Filter both white_bar_positions and white_bar_widths using the valid indices
     whitebars.white_bar_positions = [
@@ -44,15 +41,33 @@ def filter_white_bars(whitebars: WhiteBars, length_array: int) ->WhiteBars:
         whitebars.white_bar_widths[i] for i in valid_indices
     ]
 
+
+    # filter for bad widths - this should invalidate the barcode if its full of noise
+    # NB - do this after first filter
+    if whitebars.white_bar_widths:
+        if abs(max(whitebars.white_bar_widths) - min(whitebars.white_bar_widths)) > min(2, length_array//10):
+            return BadRead(reason=f"bad widths {whitebars.white_bar_widths}")
+
+
+
     return FilteredWhiteBars(**whitebars.__dict__)
 
 
 def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead]):
-    if isinstance(filter_white_bars, BadRead):
-        return False
+
     for bar in filtered_bars:
+        if isinstance(bar, BadRead):
+            return False
         if len(bar.white_bar_positions) not in [0, 2]:
             return False
+        
+    if len({len(i.white_bar_positions): None for i in filtered_bars}) != 2:
+        return False
+    
+    # check they are symmtericall around centre point - this is for specific pattern
+    for filtered_bar in filtered_bars:
+        midpositions_bars = [sum(i)/len(i) for i in filtered_bar.white_bar_positions]
+        raise Exception("put in symmetrical check here")
     return True
 
 def decode_white_bars(data) -> WhiteBars:
@@ -167,7 +182,7 @@ for picklefile in pickle_files:
     with open(picklefile, 'rb') as file:
         result_data.append((pickle.load(file), picklefile))
 
-result_pairs = result_data[0][0]
+result_pairs = result_data[1][0]
 
 
 random.shuffle(result_pairs)
@@ -181,7 +196,7 @@ def analyse_and_get_image(test_member):
         )
     out_img1 = cv2.resize(np.asarray(test_member), (200, height), interpolation=cv2.INTER_NEAREST)
     out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
-    if isinstance(test_member, FilteredWhiteBars):
+    if isinstance(whitebars, FilteredWhiteBars):
         for white_bar in whitebars.white_bar_positions:
 
             bw = min(white_bar[0] * scale, height-1)
@@ -192,13 +207,15 @@ def analyse_and_get_image(test_member):
     return whitebars, out_img1
 
 
+good = 0
+bad = 0
 for test_pair in result_pairs:
     
     #np_test_pair = np.array(np.concatenate((test_pair[0], test_pair[1]))).astype("uint8")
     whitebars1, out_img1 = analyse_and_get_image(test_pair[0])
     whitebars2, out_img2 = analyse_and_get_image(test_pair[1])
     print(whitebars1, whitebars2)
-    check_pattern_valid([whitebars1, whitebars2])
+    
     # height = 500
     # scale= height/len(test_pair[0])
     # whitebars: FilteredWhiteBars = filter_white_bars(
@@ -219,10 +236,12 @@ for test_pair in result_pairs:
 
 
     midimg = np.zeros(out_img1.shape, np.uint8)
-    # if score > 0.95:
-    #     midimg[:,:,0] = 255
-    # else:
-    #     midimg[:,:,1] = 255 
+    if check_pattern_valid([whitebars1, whitebars2]):
+        midimg[:,:,1] = 255
+        good += 1
+    else:
+        midimg[:,:,2] = 255 
+        bad += 1
 
     stacked_img = np.hstack((
         out_img1,
@@ -231,8 +250,10 @@ for test_pair in result_pairs:
     cv2.imshow('graycsale image',stacked_img)
     
 
-
-    key=cv2.waitKey(0)
-    if key == 27:#if ESC is pressed, exit loop
-        cv2.destroyAllWindows()
-        break
+    if check_pattern_valid([whitebars1, whitebars2]):
+        key=cv2.waitKey(0)
+        if key == 27:#if ESC is pressed, exit loop
+            cv2.destroyAllWindows()
+            break
+total = good + bad
+print((good/total) * 100)
