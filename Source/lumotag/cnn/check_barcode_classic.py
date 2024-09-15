@@ -5,7 +5,7 @@ import cv2
 import random
 from dataclasses import dataclass
 from typing import Union
-
+from functools import reduce
 @dataclass
 class BadRead():
     reason:str
@@ -53,21 +53,31 @@ def filter_white_bars(whitebars: WhiteBars, length_array: int) ->WhiteBars:
     return FilteredWhiteBars(**whitebars.__dict__)
 
 
-def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead]):
+def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead], testlength: int):
+    """This is checking for one sample with 2 peaks and one with none"""
 
+    SYM_ERR_PXLS = 4 # how much symmetrical error can we allow
     for bar in filtered_bars:
         if isinstance(bar, BadRead):
             return False
         if len(bar.white_bar_positions) not in [0, 2]:
             return False
-        
+    
+    # dictionary will overwrite keys, should be left with 2 keys
     if len({len(i.white_bar_positions): None for i in filtered_bars}) != 2:
         return False
     
     # check they are symmtericall around centre point - this is for specific pattern
     for filtered_bar in filtered_bars:
+        if len(filtered_bar.white_bar_positions) == 0 : continue
         midpositions_bars = [sum(i)/len(i) for i in filtered_bar.white_bar_positions]
-        raise Exception("put in symmetrical check here")
+        offsets = [(testlength/2)-i for i in midpositions_bars]
+        if not all([
+            max(offsets) > 0,
+            min(offsets) < 0,
+            reduce(lambda a, b: abs(a - b), [abs(testlength/2-i) for i in midpositions_bars]) < SYM_ERR_PXLS
+        ]):
+            return False
     return True
 
 def decode_white_bars(data) -> WhiteBars:
@@ -82,10 +92,11 @@ def decode_white_bars(data) -> WhiteBars:
     - white_bar_widths: List of widths of the white bars.
     - binary_data: Binarized version of the input data.
     """
+    MIN_VARIANCE = 5 # if the barcode has small intensity range, probably just noise. Set all to zero
     # Normalize data
     data_min = data.min()
     data_max = data.max()
-    if data_max == data_min:
+    if data_max - data_min < MIN_VARIANCE:
         normalized_data = np.zeros_like(data, dtype=float)
     else:
         normalized_data = (data - data_min) / (data_max - data_min)
@@ -182,7 +193,7 @@ for picklefile in pickle_files:
     with open(picklefile, 'rb') as file:
         result_data.append((pickle.load(file), picklefile))
 
-result_pairs = result_data[1][0]
+result_pairs = result_data[0][0]
 
 
 random.shuffle(result_pairs)
@@ -236,7 +247,7 @@ for test_pair in result_pairs:
 
 
     midimg = np.zeros(out_img1.shape, np.uint8)
-    if check_pattern_valid([whitebars1, whitebars2]):
+    if check_pattern_valid([whitebars1, whitebars2], len(test_pair[0])):
         midimg[:,:,1] = 255
         good += 1
     else:
@@ -250,10 +261,10 @@ for test_pair in result_pairs:
     cv2.imshow('graycsale image',stacked_img)
     
 
-    if check_pattern_valid([whitebars1, whitebars2]):
-        key=cv2.waitKey(0)
-        if key == 27:#if ESC is pressed, exit loop
-            cv2.destroyAllWindows()
-            break
+    # if not check_pattern_valid([whitebars1, whitebars2], len(test_pair[0])):
+    #     key=cv2.waitKey(0)
+    #     if key == 27:#if ESC is pressed, exit loop
+    #         cv2.destroyAllWindows()
+    #         break
 total = good + bad
 print((good/total) * 100)
