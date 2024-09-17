@@ -1,4 +1,4 @@
-import sys
+import check_barcode
 import cv2
 from scipy.signal import find_peaks
 from enum import Enum, auto
@@ -717,6 +717,7 @@ def get_approx_shape_and_bbox2(
                 averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
 
             # cheesy way to test for pattern
+            check_for_patternv2([averages1, averages2])
             if check_for_pattern([averages1, averages2]):
                 shape_ = Shapes.SQUARE
             else:
@@ -1143,6 +1144,16 @@ def decode_barcode(data, threshold=0.5):
     
     return transitions, widths.tolist(), binary_data
 
+def check_for_patternv2(samples):
+    whitebars = []
+    for sample in samples:
+        whitebars.append(check_barcode.filter_white_bars(
+            check_barcode.decode_white_bars(np.array(sample)),
+            length_array=len(sample)
+            ))
+    result = check_barcode.check_pattern_valid(whitebars, len(sample))
+    print(result)
+    plop=1
 
 def check_for_pattern(samples):
     peaks = []

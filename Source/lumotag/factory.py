@@ -1385,7 +1385,7 @@ class VoiceBase(ABC):
                     message,
                     block=False)
         except Exception as e:
-            print(f"something nasty happening {e}")
+            print(f"speak: something nasty happening {e}")
 
     def speaker(self, in_box):
         pass
