@@ -717,8 +717,8 @@ def get_approx_shape_and_bbox2(
                 averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
 
             # cheesy way to test for pattern
-            check_for_patternv2([averages1, averages2])
-            if check_for_pattern([averages1, averages2]):
+            #check_for_patternv2([averages1, averages2])
+            if check_for_patternv2([averages1, averages2]):
                 shape_ = Shapes.SQUARE
             else:
                 shape_ = Shapes.UNKNOWN
