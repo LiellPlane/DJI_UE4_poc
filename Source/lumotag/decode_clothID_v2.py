@@ -1,6 +1,7 @@
 import check_barcode
 import cv2
 from scipy.signal import find_peaks
+from typing import Tuple, List
 from enum import Enum, auto
 import os
 import numpy as np
@@ -718,7 +719,8 @@ def get_approx_shape_and_bbox2(
 
             # cheesy way to test for pattern
             #check_for_patternv2([averages1, averages2])
-            if check_for_patternv2([averages1, averages2]):
+            (res, details) = check_for_patternv2([averages1, averages2])
+            if res:
                 shape_ = Shapes.SQUARE
             else:
                 shape_ = Shapes.UNKNOWN
@@ -1077,6 +1079,7 @@ def analyse_candidates_shapematch(
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
             
             height = 500
+            raise Exception("Please update with new barcode analyser")
             ratio1 = height/len(c._2d_samples[0])
             ratio2 = height/len(c._2d_samples[1])
             peaks1, _ = get_peaks(c._2d_samples[0])
@@ -1144,16 +1147,14 @@ def decode_barcode(data, threshold=0.5):
     
     return transitions, widths.tolist(), binary_data
 
-def check_for_patternv2(samples):
+def check_for_patternv2(samples) -> Tuple[bool, List[check_barcode.FilteredWhiteBars]]:
     whitebars = []
     for sample in samples:
         whitebars.append(check_barcode.filter_white_bars(
             check_barcode.decode_white_bars(np.array(sample)),
             length_array=len(sample)
             ))
-    result = check_barcode.check_pattern_valid(whitebars, len(sample))
-    print(result)
-    plop=1
+    return check_barcode.check_pattern_valid(whitebars, len(sample)), whitebars
 
 def check_for_pattern(samples):
     peaks = []
