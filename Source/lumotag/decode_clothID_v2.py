@@ -1079,12 +1079,12 @@ def analyse_candidates_shapematch(
             dataobject.img_view_or_save_if_debug(crop_img, "SquareFound")
             
             height = 500
-            raise Exception("Please update with new barcode analyser")
+            #raise Exception("Please update with new barcode analyser")
             ratio1 = height/len(c._2d_samples[0])
             ratio2 = height/len(c._2d_samples[1])
             peaks1, _ = get_peaks(c._2d_samples[0])
             peaks2, _ = get_peaks(c._2d_samples[1])
-            
+
             out_img1 = cv2.resize(np.asarray(c._2d_samples[0]), (200, height), interpolation=cv2.INTER_NEAREST)
 
             out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)

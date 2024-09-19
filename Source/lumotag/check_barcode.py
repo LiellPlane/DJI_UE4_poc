@@ -4,7 +4,7 @@ import pickle
 import cv2
 import random
 from dataclasses import dataclass
-from typing import Union
+from typing import Union, List
 from functools import reduce
 
 
@@ -173,3 +173,39 @@ def decode_barcode_bw_transitions(data):
 
     return transitions_bw, widths.tolist(), binary_data
 
+
+def analyse_and_get_image(test_member):
+    height = 500
+    scale = height/len(test_member)
+    whitebars = filter_white_bars(
+        decode_white_bars(np.array(test_member)),
+        length_array=len(test_member)
+        )
+    out_img1 = cv2.resize(np.asarray(test_member), (200, height), interpolation=cv2.INTER_NEAREST)
+    out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
+    if isinstance(whitebars, FilteredWhiteBars):
+        for white_bar in whitebars.white_bar_positions:
+
+            bw = min(white_bar[0] * scale, height-1)
+            wb = min(white_bar[1] * scale, height-1)
+            out_img1[int(bw), :, :] = (0,0,255)
+            out_img1[int(wb), :, :] = (0,255,0)
+
+    return whitebars, out_img1
+
+
+def create_debug_imagepair(barcodepair: List):
+    whitebars1, out_img1 = analyse_and_get_image(barcodepair[0])
+    whitebars2, out_img2 = analyse_and_get_image(barcodepair[1])
+    midimg = np.zeros(out_img1.shape, np.uint8)
+    if check_pattern_valid([whitebars1, whitebars2], len(barcodepair[0])):
+        midimg[:, :, 1] = 255
+    else:
+        midimg[:, :, 2] = 255 
+
+    stacked_img = np.hstack((
+        out_img1,
+        midimg,
+        out_img2))
+    
+    return stacked_img
