@@ -16,9 +16,9 @@ def files_in_folder(directory, imgtypes: list[str]):
     return allFiles
 
 # load in pickle files and extract data:
-folder = r"D:\lumotag_training_data"
+folder = r"D:\lumotag_training_data\more_false_positives"
 tag = "false"
-pickle_files = files_in_folder(folder, [".pc"])
+pickle_files = files_in_folder(folder, ["pck"])
 result_pairs = []
 for picklefile in pickle_files:
     if tag not in picklefile:
