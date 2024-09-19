@@ -148,6 +148,10 @@ class filesystem(ABC):
     def save_image(self):
         pass
 
+    @abstractmethod
+    def save_barcodepair(self):
+        pass
+
     @staticmethod
     def get_closerange_to_longrange_transform():
         script_path = os.path.abspath(__file__)

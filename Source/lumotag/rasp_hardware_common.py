@@ -8,7 +8,7 @@ import numpy as np
 import enum
 import functools
 # for finding pinout, type pinout in terminal
-
+import pickle
 import time
 import factory
 import rabbit_mq
@@ -44,6 +44,18 @@ class filesystem(factory.filesystem):
             img)
         print(f"saved image {filename}")
 
+    def save_barcodepair(self, result:list, message = ""):
+        ts = utils.get_epoch_timestamp()
+        filename = f"{self.images_folder}/{message}{ts}.pck"
+        all_results = []
+        for res in result:
+            all_results.append(res._2d_samples)
+        with open(filename, 'wb') as file:
+            pickle.dump(all_results, file)
+        with open(filename, 'rb') as file:
+            check_data= pickle.load(file)
+
+    
 def lumo_viewer(
         inputimage,
         move_windowx,

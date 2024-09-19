@@ -402,6 +402,7 @@ def main():
                             result = img_analyser.analysis_output_q.get(block=True, timeout=5)
                             if result:
                                 
+                                file_system.save_barcodepair(result, message="falsepos")
                                 #save_analysis(result)
 
                                 if res_for_affine_transform_lookup not in analysis:
@@ -465,8 +466,8 @@ def main():
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(output_image)
                 
-                # if len(analysis) > 0:
-                #     file_system.save_image(cap_img)
+                if len(analysis) > 0:
+                    file_system.save_image(cap_img)
 
 if __name__ == '__main__':
     main()

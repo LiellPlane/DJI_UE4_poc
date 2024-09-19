@@ -44,7 +44,8 @@ class filesystem(factory.filesystem):
             raise Exception("save debug; img is not a numpy array")
         if img.ndim not in (2, 3):
             raise Exception("save debug; img must be a 2D or 3D numpy array")
-
+    def save_barcodepair(self, barcodepair:list, message=None):
+        pass
 
 class Triggers(factory.Triggers):
     def __init__(self, _gun_config) -> None:
