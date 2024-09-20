@@ -200,12 +200,16 @@ pickle_files = files_in_folder(folder, [".pc"])
 result_pairs = []
 result_data = []
 for picklefile in pickle_files:
-    #if "false" in picklefile.lower(): continue
     with open(picklefile, 'rb') as file:
         result_data.append((pickle.load(file), picklefile))
 
-result_pairs = result_data[0][0] #+ result_data[1][0]
 
+#result_pairs = [i[0] for i in result_data if "false" in i[1]]
+#result_pairs = result_data[0][0] #+ result_data[1][0]
+result_pairs = []
+for sublist in result_data:
+    if "false" in sublist[1]:
+        result_pairs.extend(sublist[0])
 
 random.shuffle(result_pairs)
 
@@ -271,11 +275,11 @@ for test_pair in result_pairs:
     cv2.imshow('graycsale image',stacked_img)
     
 
-    # if not check_barcode.check_pattern_valid([whitebars1, whitebars2], len(test_pair[0])):
-    key=cv2.waitKey(0)
-    if key == 27:#if ESC is pressed, exit loop
-        cv2.destroyAllWindows()
-        break
+    if  check_barcode.check_pattern_valid([whitebars1, whitebars2], len(test_pair[0])):
+        key=cv2.waitKey(0)
+        if key == 27:#if ESC is pressed, exit loop
+            cv2.destroyAllWindows()
+            break
     # if random.randint(0,200) == 1:
     #     cv2.waitKey(1)
 total = good + bad
