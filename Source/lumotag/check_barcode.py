@@ -53,7 +53,7 @@ def filter_white_bars(whitebars: WhiteBars, length_array: int) ->WhiteBars:
 def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead], testlength: int):
     """Checking for Player1: one sample with 2 peaks and one with none"""
 
-    SYM_ERR_PXLS = 4  # how much symmetrical error can we allow
+    SYM_ERR_PXLS = 3  # how much symmetrical error can we allow
     for bar in filtered_bars:
         if isinstance(bar, BadRead):
             return False
@@ -90,7 +90,7 @@ def decode_white_bars(data) -> WhiteBars:
     - white_bar_widths: List of widths of the white bars.
     - binary_data: Binarized version of the input data.
     """
-    MIN_VARIANCE = 5  # if the barcode has small intensity range, probably just noise. Set all to zero
+    MIN_VARIANCE = 15  # if the barcode has small intensity range, probably just noise. Set all to zero
     # Normalize data
     data_min = data.min()
     data_max = data.max()
