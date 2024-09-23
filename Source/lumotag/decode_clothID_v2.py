@@ -24,8 +24,8 @@ import img_processing as img_pro
 from configs import base_find_lumotag_config
 #from sklearn.neighbors import KDTree
 
-MIN_TAG_VARIANCE = 25 # max-min for grayscale values of lumotag
-MAX_PATTERN_SYMMETRY_ERROR = 5
+MIN_TAG_VARIANCE = 25 # OBSOLETE? max-min for grayscale values of lumotag - peaks so might be
+MAX_PATTERN_SYMMETRY_ERROR = 5 # OBSOLETE?
 SAMPLES_PER_LINE = 25 # this is for how many samples we do along each diagonal of the barcode
 
 
@@ -582,171 +582,170 @@ def get_approx_shape_and_bbox2(
 
 
 
-    if len(approx) in [4, 5, 6, 7, 8]:
 
-        minRect = cv2.minAreaRect(approx)
-        min_bbox = cv2.boxPoints(minRect)
-        min_bbox = np.intp(min_bbox)
-        min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
-        contour_pxl_cnt = cv2.contourArea(contour)
+    minRect = cv2.minAreaRect(approx)
+    min_bbox = cv2.boxPoints(minRect)
+    min_bbox = np.intp(min_bbox)
+    min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
+    contour_pxl_cnt = cv2.contourArea(contour)
 
 
-        if contour_pxl_cnt <= (min_bbox_pxl_cnt * 0.80):
-            return ShapeItem(
-                id=index,
-                approx_contour=approx,
-                default_contour=contour,
-                filtered_contour=None,
-                boundingbox=None,
-                boundingbox_min=min_bbox,
-                sample_positions=None,
-                closest_corners=None,
-                sum_int_angles=None,
-                size=contour_pxl_cnt,
-                min_bbx_size=cv2.contourArea(min_bbox),
-                shape=Shapes.BAD_APPROX_PXL,
-                centre_x_y=None,
-                _2d_samples=None,
-                notes_for_debug_file=f"BAD_APPROX_PXL")
+    if contour_pxl_cnt <= (min_bbox_pxl_cnt * 0.80):
+        return ShapeItem(
+            id=index,
+            approx_contour=approx,
+            default_contour=contour,
+            filtered_contour=None,
+            boundingbox=None,
+            boundingbox_min=min_bbox,
+            sample_positions=None,
+            closest_corners=None,
+            sum_int_angles=None,
+            size=contour_pxl_cnt,
+            min_bbx_size=cv2.contourArea(min_bbox),
+            shape=Shapes.BAD_APPROX_PXL,
+            centre_x_y=None,
+            _2d_samples=None,
+            notes_for_debug_file=f"BAD_APPROX_PXL")
 
-        if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
-            
-            # we know we have a square - lets see if it 
-            # has the internal inverse colour circle pattern
-            
-            moments = cv2.moments(contour)
-            cX = int(moments["m10"] / moments["m00"])
-            cY = int(moments["m01"] / moments["m00"])
-            # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
-            
-            
-                 # arbitrary edge ratio range
+    if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
+        
+        # we know we have a square - lets see if it 
+        # has the internal inverse colour circle pattern
+        
+        moments = cv2.moments(contour)
+        cX = int(moments["m10"] / moments["m00"])
+        cY = int(moments["m01"] / moments["m00"])
+        # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
+        
+        
+                # arbitrary edge ratio range
 
-                    #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
+                #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
 
-            # TODO put here the code to 
-            # change the bresenham lines from the bounding box corners
-            # to the corners of the approximated shape
-            # 
-            #  Get corners of 
-            nearest_points = []
+        # TODO put here the code to 
+        # change the bresenham lines from the bounding box corners
+        # to the corners of the approximated shape
+        # 
+        #  Get corners of 
+        nearest_points = []
 
-            for pt in min_bbox:
-                nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
+        for pt in min_bbox:
+            nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
 
-            # takes 10 ms
-            # approx_flat =approx.reshape(-1, 2).tolist()
-            # kdtree = KDTree(approx_flat)
-            # # Perform KNN search for each point in points2
-            # k_nearest_neighbors = kdtree.query(min_bbox, k=1)  # k=1 for finding the single closest match
-            # # k_nearest_neighbors is a tuple containing distances and indices
+        # takes 10 ms
+        # approx_flat =approx.reshape(-1, 2).tolist()
+        # kdtree = KDTree(approx_flat)
+        # # Perform KNN search for each point in points2
+        # k_nearest_neighbors = kdtree.query(min_bbox, k=1)  # k=1 for finding the single closest match
+        # # k_nearest_neighbors is a tuple containing distances and indices
 
-            # for i, (distance, index) in enumerate(zip(*k_nearest_neighbors)):
-            #     closest_match = approx_flat[int(index)]
-            #     nearest_points.append(closest_match)
+        # for i, (distance, index) in enumerate(zip(*k_nearest_neighbors)):
+        #     closest_match = approx_flat[int(index)]
+        #     nearest_points.append(closest_match)
 
-    
-            
-            # sample_line1 = img_pro.bresenham_line_ski(
-            #     x1=nearest_points[0][0],
-            #     y1=nearest_points[0][1],
-            #     x2=nearest_points[2][0],
-            #     y2=nearest_points[2][1])
-            # sample_line2 = img_pro.bresenham_line_ski(
-            #     x1=nearest_points[1][0],
-            #     y1=nearest_points[1][1],
-            #     x2=nearest_points[3][0],
-            #     y2=nearest_points[3][1])
-
-            sample_line1 = img_pro.bresenham_line_ski(
-                x2=cX,
-                y2=cY,
-                x1=nearest_points[0][0],
-                y1=nearest_points[0][1])
-            
-            sample_line1 += img_pro.bresenham_line_ski(
-                x1=cX,
-                y1=cY,
-                x2=nearest_points[2][0],
-                y2=nearest_points[2][1])
-            
-            sample_line2 = img_pro.bresenham_line_ski(
-                x2=cX,
-                y2=cY,
-                x1=nearest_points[3][0],
-                y1=nearest_points[3][1])
-
-            sample_line2 += img_pro.bresenham_line_ski(
-                x2=nearest_points[1][0],
-                y2=nearest_points[1][1],
-                x1=cX,
-                y1=cY)
-       
-            averages1 = []
-            averages2 = []
-            pixel_div_count = 90
-            #_step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
-            sample_size = 1
-            if contour_pxl_cnt > 1600:
-                img2use = img_blurred
-            else:
-                img2use = img
-
-            
-            _step = max(math.floor(len(sample_line1)/SAMPLES_PER_LINE), 1)
 
         
-            for i in range (sample_size, len(sample_line1)-sample_size, _step):
-                try:
-                #averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
-                    averages1.append(img2use[sample_line1[i][1], sample_line1[i][0]])
-                except Exception as e:
-                    print("out of range - skip")
+        # sample_line1 = img_pro.bresenham_line_ski(
+        #     x1=nearest_points[0][0],
+        #     y1=nearest_points[0][1],
+        #     x2=nearest_points[2][0],
+        #     y2=nearest_points[2][1])
+        # sample_line2 = img_pro.bresenham_line_ski(
+        #     x1=nearest_points[1][0],
+        #     y1=nearest_points[1][1],
+        #     x2=nearest_points[3][0],
+        #     y2=nearest_points[3][1])
 
-            for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                #averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
-                try:
-                    averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
-                except Exception:
-                    print("out of range")
+        sample_line1 = img_pro.bresenham_line_ski(
+            x2=cX,
+            y2=cY,
+            x1=nearest_points[0][0],
+            y1=nearest_points[0][1])
+        
+        sample_line1 += img_pro.bresenham_line_ski(
+            x1=cX,
+            y1=cY,
+            x2=nearest_points[2][0],
+            y2=nearest_points[2][1])
+        
+        sample_line2 = img_pro.bresenham_line_ski(
+            x2=cX,
+            y2=cY,
+            x1=nearest_points[3][0],
+            y1=nearest_points[3][1])
 
-
-
-            if len(averages1) != SAMPLES_PER_LINE:
-                averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
-            if len(averages2) != SAMPLES_PER_LINE:
-                averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
-
-            # cheesy way to test for pattern
-            #check_for_patternv2([averages1, averages2])
-            (res, details) = check_for_patternv2([averages1, averages2])
-            if res:
-                shape_ = Shapes.SQUARE
-            else:
-                shape_ = Shapes.UNKNOWN
-
-            if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-                samplepos = sample_line1 + sample_line2
-            else:
-                samplepos = None
-
-            output = ShapeItem(
-                id=index,
-                approx_contour=approx,
-                default_contour=None,
-                filtered_contour=None,
-                boundingbox=None,
-                boundingbox_min=min_bbox,
-                sample_positions=samplepos,
-                closest_corners=nearest_points,
-                sum_int_angles=None,
-                size=contour_pxl_cnt,
-                min_bbx_size = cv2.contourArea(min_bbox),
-                shape=shape_,
-                centre_x_y=[cX, cY],
-                _2d_samples=[averages1, averages2],
-                notes_for_debug_file=None)
+        sample_line2 += img_pro.bresenham_line_ski(
+            x2=nearest_points[1][0],
+            y2=nearest_points[1][1],
+            x1=cX,
+            y1=cY)
     
+        averages1 = []
+        averages2 = []
+        pixel_div_count = 90
+        #_step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
+        sample_size = 1
+        if contour_pxl_cnt > 1600:
+            img2use = img_blurred
+        else:
+            img2use = img
+
+        
+        _step = max(math.floor(len(sample_line1)/SAMPLES_PER_LINE), 1)
+
+    
+        for i in range (sample_size, len(sample_line1)-sample_size, _step):
+            try:
+            #averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
+                averages1.append(img2use[sample_line1[i][1], sample_line1[i][0]])
+            except Exception as e:
+                print("out of range - skip")
+
+        for i in range (sample_size, len(sample_line2)-sample_size, _step):
+            #averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
+            try:
+                averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
+            except Exception:
+                print("out of range")
+
+
+
+        if len(averages1) != SAMPLES_PER_LINE:
+            averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
+        if len(averages2) != SAMPLES_PER_LINE:
+            averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
+
+        # cheesy way to test for pattern
+        #check_for_patternv2([averages1, averages2])
+        (res, details) = check_for_patternv2([averages1, averages2])
+        if res:
+            shape_ = Shapes.SQUARE
+        else:
+            shape_ = Shapes.UNKNOWN
+
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+            samplepos = sample_line1 + sample_line2
+        else:
+            samplepos = None
+
+        output = ShapeItem(
+            id=index,
+            approx_contour=approx,
+            default_contour=None,
+            filtered_contour=None,
+            boundingbox=None,
+            boundingbox_min=min_bbox,
+            sample_positions=samplepos,
+            closest_corners=nearest_points,
+            sum_int_angles=None,
+            size=contour_pxl_cnt,
+            min_bbx_size = cv2.contourArea(min_bbox),
+            shape=shape_,
+            centre_x_y=[cX, cY],
+            _2d_samples=[averages1, averages2],
+            notes_for_debug_file=None)
+
     return output
 
 
