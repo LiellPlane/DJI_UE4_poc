@@ -382,13 +382,13 @@ def get_approx_shape_and_bbox(
                     #dataobject.img_view_or_save_if_debug(sqr_sample_area, "SQuare_centre")
 
             
-            sample_line1 = img_pro.bresenham_line_ski(
+            sample_line1_diag = img_pro.bresenham_line_ski(
                 x1=min_bbox[0][0],
                 y1=min_bbox[0][1],
                 x2 = min_bbox[2][0],
                 y2 = min_bbox[2][1])
 
-            sample_line2 = img_pro.bresenham_line_ski(
+            sample_line2_diag = img_pro.bresenham_line_ski(
                 x1=min_bbox[1][0],
                 y1=min_bbox[1][1],
                 x2 = min_bbox[3][0],
@@ -398,13 +398,13 @@ def get_approx_shape_and_bbox(
             averages = []
             averages2 = []
             pixel_div_count = 90
-            _step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
+            _step = max(int((math.floor(len(sample_line1_diag)) / pixel_div_count)), 1)
             sample_size = 1
-            for i in range (sample_size, len(sample_line1)-sample_size, _step):
-                sample_area = img[sample_line1[i][1]-sample_size:sample_line1[i][1]+sample_size, sample_line1[i][0]-sample_size: sample_line1[i][0]+sample_size]
+            for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
+                sample_area = img[sample_line1_diag[i][1]-sample_size:sample_line1_diag[i][1]+sample_size, sample_line1_diag[i][0]-sample_size: sample_line1_diag[i][0]+sample_size]
                 averages.append(sample_area.mean())
-            for i in range (sample_size, len(sample_line2)-sample_size, _step):
-                sample_area = img[sample_line2[i][1]-sample_size:sample_line2[i][1]+sample_size, sample_line2[i][0]-sample_size: sample_line2[i][0]+sample_size]
+            for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
+                sample_area = img[sample_line2_diag[i][1]-sample_size:sample_line2_diag[i][1]+sample_size, sample_line2_diag[i][0]-sample_size: sample_line2_diag[i][0]+sample_size]
                 averages2.append(sample_area.mean())
 
             shape_ = Shapes.SQUARE
@@ -628,63 +628,44 @@ def get_approx_shape_and_bbox2(
         # to the corners of the approximated shape
         # 
         #  Get corners of 
-        nearest_points = []
-
+        nearest_points = [] # corners only going clockwise (probably - doesnt matter so much)
+        all_points = [] # all points, so should be corner, half-way to next corner, corner (etc)
         for pt in min_bbox:
             nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
 
-        # takes 10 ms
-        # approx_flat =approx.reshape(-1, 2).tolist()
-        # kdtree = KDTree(approx_flat)
-        # # Perform KNN search for each point in points2
-        # k_nearest_neighbors = kdtree.query(min_bbox, k=1)  # k=1 for finding the single closest match
-        # # k_nearest_neighbors is a tuple containing distances and indices
-
-        # for i, (distance, index) in enumerate(zip(*k_nearest_neighbors)):
-        #     closest_match = approx_flat[int(index)]
-        #     nearest_points.append(closest_match)
-
-
+        for pt in nearest_points:
+            pass
         
-        # sample_line1 = img_pro.bresenham_line_ski(
-        #     x1=nearest_points[0][0],
-        #     y1=nearest_points[0][1],
-        #     x2=nearest_points[2][0],
-        #     y2=nearest_points[2][1])
-        # sample_line2 = img_pro.bresenham_line_ski(
-        #     x1=nearest_points[1][0],
-        #     y1=nearest_points[1][1],
-        #     x2=nearest_points[3][0],
-        #     y2=nearest_points[3][1])
-
-        sample_line1 = img_pro.bresenham_line_ski(
+        # diagonal paths (each composed of 2 lines emanting from centre)
+        sample_line1_diag = img_pro.bresenham_line_ski(
             x2=cX,
             y2=cY,
             x1=nearest_points[0][0],
             y1=nearest_points[0][1])
         
-        sample_line1 += img_pro.bresenham_line_ski(
+        sample_line1_diag += img_pro.bresenham_line_ski(
             x1=cX,
             y1=cY,
             x2=nearest_points[2][0],
             y2=nearest_points[2][1])
         
-        sample_line2 = img_pro.bresenham_line_ski(
+        sample_line2_diag = img_pro.bresenham_line_ski(
             x2=cX,
             y2=cY,
             x1=nearest_points[3][0],
             y1=nearest_points[3][1])
 
-        sample_line2 += img_pro.bresenham_line_ski(
+        sample_line2_diag += img_pro.bresenham_line_ski(
             x2=nearest_points[1][0],
             y2=nearest_points[1][1],
             x1=cX,
             y1=cY)
     
+
         averages1 = []
         averages2 = []
         pixel_div_count = 90
-        #_step = max(int((math.floor(len(sample_line1)) / pixel_div_count)), 1)
+        #_step = max(int((math.floor(len(sample_line1_diag)) / pixel_div_count)), 1)
         sample_size = 1
         if contour_pxl_cnt > 1600:
             img2use = img_blurred
@@ -692,20 +673,20 @@ def get_approx_shape_and_bbox2(
             img2use = img
 
         
-        _step = max(math.floor(len(sample_line1)/SAMPLES_PER_LINE), 1)
+        _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
 
     
-        for i in range (sample_size, len(sample_line1)-sample_size, _step):
+        for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
             try:
-            #averages.append(img2use[np.clip(sample_line1[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1[i][0], 1,img2use.shape[1]-1)])
-                averages1.append(img2use[sample_line1[i][1], sample_line1[i][0]])
+            #averages.append(img2use[np.clip(sample_line1_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1_diag[i][0], 1,img2use.shape[1]-1)])
+                averages1.append(img2use[sample_line1_diag[i][1], sample_line1_diag[i][0]])
             except Exception as e:
                 print("out of range - skip")
 
-        for i in range (sample_size, len(sample_line2)-sample_size, _step):
-            #averages2.append(img2use[np.clip(sample_line2[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2[i][0], 1,img2use.shape[1]-1)])
+        for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
+            #averages2.append(img2use[np.clip(sample_line2_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2_diag[i][0], 1,img2use.shape[1]-1)])
             try:
-                averages2.append(img2use[sample_line2[i][1], sample_line2[i][0]])
+                averages2.append(img2use[sample_line2_diag[i][1], sample_line2_diag[i][0]])
             except Exception:
                 print("out of range")
 
@@ -718,14 +699,14 @@ def get_approx_shape_and_bbox2(
 
         # cheesy way to test for pattern
         #check_for_patternv2([averages1, averages2])
-        (res, details) = check_for_patternv2([averages1, averages2])
+        (res, _) = check_for_patternv2([averages1, averages2])
         if res:
             shape_ = Shapes.SQUARE
         else:
             shape_ = Shapes.UNKNOWN
 
         if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-            samplepos = sample_line1 + sample_line2
+            samplepos = sample_line1_diag + sample_line2_diag
         else:
             samplepos = None
 
