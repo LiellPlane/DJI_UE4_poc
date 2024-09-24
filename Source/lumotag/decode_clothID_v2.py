@@ -633,9 +633,21 @@ def get_approx_shape_and_bbox2(
         for pt in min_bbox:
             nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
 
-        for pt in nearest_points:
-            pass
-        
+        # for index in range (0, len(nearest_points) -1 ):
+        #     all_points.append(nearest_points[index])
+        #     midline = (nearest_points[index] + nearest_points[index+1]) / 2
+        #     all_points.append(midline)
+
+        # all_points = []
+        # midpoint_target = np.array(cX, cY)
+        # all_points.append(nearest_points[0])
+        # all_points.append(midpoint_target)
+        # all_points.append(nearest_points[1])
+        # all_points.append()
+        # all_points.append(nearest_points[2])
+        # all_points.append()
+        # all_points.append(nearest_points[3])
+        # all_points.append()
         # diagonal paths (each composed of 2 lines emanting from centre)
         sample_line1_diag = img_pro.bresenham_line_ski(
             x2=cX,
