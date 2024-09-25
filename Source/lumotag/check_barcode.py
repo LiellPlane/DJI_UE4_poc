@@ -6,6 +6,12 @@ import random
 from dataclasses import dataclass
 from typing import Union, List
 from functools import reduce
+from enum import Enum, auto
+
+
+class CodeSegment(Enum):
+    CORNER: int = 1
+    MIDLINE: int = 1
 
 
 @dataclass

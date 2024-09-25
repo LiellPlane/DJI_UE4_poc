@@ -679,7 +679,7 @@ def get_approx_shape_and_bbox2(
         pixel_div_count = 90
         #_step = max(int((math.floor(len(sample_line1_diag)) / pixel_div_count)), 1)
         sample_size = 1
-        if contour_pxl_cnt > 1600:
+        if use_blurred_image(contour_pxl_cnt):
             img2use = img_blurred
         else:
             img2use = img
@@ -911,6 +911,40 @@ def is_pattern_detected(samples: list[list[int]]) -> bool:
 
     return False
 
+
+def get_barcode_spokes(shape_data: ShapeItem) -> list[tuple[list[np.ndarray, np.ndarray], check_barcode.CodeSegment]]:
+    """get matching points of line start and line end for the 8 spokes moving around the barcode
+    this should start with a top corner then more around 45 degrees
+    
+    we will also label the points as corner or midline as that will help with the ID"""
+    all_points = []
+    # start in middle each time
+    for index, pt in enumerate(shape_data.closest_corners):
+        next_index = (index+1)%4 # index wrap around
+        all_points.append(([shape_data.centre_x_y, pt], check_barcode.CodeSegment.CORNER))
+        midpoint = (shape_data.closest_corners[index] + shape_data.closest_corners[next_index]) / 2
+        all_points.append(([shape_data.centre_x_y, midpoint], check_barcode.CodeSegment.MIDLINE))
+
+    return all_points
+
+
+def draw_barcode_spokes(img, shape_data: ShapeItem):
+    """draw lines emanating from centre of shape"""
+    spoke_point_pairs = get_barcode_spokes(shape_data)
+    colour_gradient = [(255,i,255-5) for i in range(0,255, int(255/8))]
+    for index, spoke in enumerate(spoke_point_pairs):
+       cv2.line(img, tuple(np.array(spoke[0][0]).astype(int)), tuple(np.array(spoke[0][1]).astype(int)), colour_gradient[index], 1) 
+    return img
+
+
+def use_blurred_image(_size: int)->bool:
+    """large captures should use blur (otherwise could sample noise)
+    smaller sizes use unblurred (as could loose all detail)"""
+    if _size > 1600:
+        return True
+    return False
+
+
 def analyse_candidates_shapematch(
         original_img,
         original_blurred_image,
@@ -1040,9 +1074,20 @@ def analyse_candidates_shapematch(
 
         # break out individual squares found:
 
+
         for c in squrs_found:
             #try:
-            if c.size > 1600:
+            if use_blurred_image(c.size):
+                img2use = original_blurred_image
+            else:
+                img2use = original_img
+            debug_img = img2use.copy()
+            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+            debug_img = draw_barcode_spokes(debug_img, c)
+            dataobject.img_view_or_save_if_debug(debug_img, "test_spokes")
+        for c in squrs_found:
+            #try:
+            if use_blurred_image(c.size):
                 img2use = original_blurred_image
             else:
                 img2use = original_img
