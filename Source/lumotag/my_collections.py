@@ -29,6 +29,7 @@ class UI_Element(Enum):
 
 
 class Shapes(AutoStrEnum):
+    TOO_CLOSE = auto()
     SQUARE = auto()
     TRIANGLE = auto()
     CIRCLE = auto()

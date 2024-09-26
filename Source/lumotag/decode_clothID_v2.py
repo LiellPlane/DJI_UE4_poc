@@ -444,11 +444,42 @@ def get_approx_shape_and_bbox2(
         img_blurred,
         dataobject: WorkingData,
         index: int,
-        bulk_process: ShapeInfo_BulkProcess) -> ShapeItem:
+        bulk_process: ShapeInfo_BulkProcess,
+        min_distance: int = 5,
+        last_centres: list[int, int] | None = []) -> ShapeItem:
+
+
+    # get cx and cy early so can drop out
+    contour = bulk_process.contour[index]
+    moments = cv2.moments(contour)
+    cX = int(moments["m10"] / moments["m00"])
+    cY = int(moments["m01"] / moments["m00"])
+
+    for previous_pt in last_centres:
+        if isinstance(previous_pt, list):
+            dist = np.linalg.norm(np.array(previous_pt) - np.array([cX, cY]))
+            if dist < min_distance:
+                return ShapeItem(
+                    id=index,
+                    approx_contour=None,
+                    default_contour=None,
+                    filtered_contour=None,
+                    boundingbox=None,
+                    boundingbox_min=None,
+                    sample_positions=None,
+                    closest_corners=None,
+                    sum_int_angles=None,
+                    size=None,
+                    min_bbx_size=None,
+                    shape=Shapes.TOO_CLOSE,
+                    centre_x_y=None,
+                    _2d_samples=None,
+                    notes_for_debug_file=f"bad_distance")
+
 
     contour_pxl_cnt = bulk_process.contour_pxl_cnt[index]
     min_bbox_pxl_cnt = bulk_process.min_bbox_pxl_cnt[index]
-    contour = bulk_process.contour[index]
+    
     min_bbox = bulk_process.min_bbox[index]
     approx = bulk_process.approx_contour[index]
     if contour_pxl_cnt < (min_bbox_pxl_cnt * 0.50):
@@ -497,7 +528,8 @@ def get_approx_shape_and_bbox2(
             _2d_samples=None,
             notes_for_debug_file=f"bad_approxlen")
     
-    
+
+
     #taking a wild guess for rotated rectangle - can;t be far off
     w = bulk_process.dists_0_to_1[index]
     h = bulk_process.dists_1_to_2[index]
@@ -613,9 +645,7 @@ def get_approx_shape_and_bbox2(
         # we know we have a square - lets see if it 
         # has the internal inverse colour circle pattern
         
-        moments = cv2.moments(contour)
-        cX = int(moments["m10"] / moments["m00"])
-        cY = int(moments["m01"] / moments["m00"])
+
         # perimeter_10pc = cv2.arcLength(contour, True) * 0.1
         
         
@@ -986,7 +1016,9 @@ def analyse_candidates_shapematch(
                 original_blurred_image,
                 dataobject,
                 index,
-                bulk_process))
+                bulk_process,
+                last_centres=[i.centre_x_y for i in contour_stats if i]))
+
 
     tote_samples = []
     squrs_found = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.SQUARE]
