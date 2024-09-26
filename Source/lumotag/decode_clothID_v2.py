@@ -1,7 +1,7 @@
 import check_barcode
 import cv2
 from scipy.signal import find_peaks
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 from enum import Enum, auto
 import os
 import numpy as np
@@ -446,7 +446,7 @@ def get_approx_shape_and_bbox2(
         index: int,
         bulk_process: ShapeInfo_BulkProcess,
         min_distance: int = 5,
-        last_centres: list[int, int] | None = []) -> ShapeItem:
+        last_centres: Optional[list[int, int]] = []) -> ShapeItem:
 
 
     # get cx and cy early so can drop out
@@ -713,8 +713,10 @@ def get_approx_shape_and_bbox2(
             img2use = img_blurred
         else:
             img2use = img
-
+        #spoke_details = get_barcode_spokes(nearest_points,[cX, cY] )
         
+
+
         _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
 
     
@@ -942,25 +944,25 @@ def is_pattern_detected(samples: list[list[int]]) -> bool:
     return False
 
 
-def get_barcode_spokes(shape_data: ShapeItem) -> list[tuple[list[np.ndarray, np.ndarray], check_barcode.CodeSegment]]:
+def get_barcode_spokes(closest_corners: list[int,int],centre_x_y: list[int,int] ) -> list[tuple[list[np.ndarray, np.ndarray], check_barcode.CodeSegment]]:
     """get matching points of line start and line end for the 8 spokes moving around the barcode
     this should start with a top corner then more around 45 degrees
     
     we will also label the points as corner or midline as that will help with the ID"""
     all_points = []
     # start in middle each time
-    for index, pt in enumerate(shape_data.closest_corners):
-        next_index = (index+1)%4 # index wrap around
-        all_points.append(([shape_data.centre_x_y, pt], check_barcode.CodeSegment.CORNER))
-        midpoint = (shape_data.closest_corners[index] + shape_data.closest_corners[next_index]) / 2
-        all_points.append(([shape_data.centre_x_y, midpoint], check_barcode.CodeSegment.MIDLINE))
+    for index, pt in enumerate(closest_corners):
+        next_index = (index+1) % 4 # index wrap around
+        all_points.append(([centre_x_y, pt], check_barcode.CodeSegment.CORNER))
+        midpoint = (closest_corners[index] + closest_corners[next_index]) / 2
+        all_points.append(([centre_x_y, midpoint], check_barcode.CodeSegment.MIDLINE))
 
     return all_points
 
 
 def draw_barcode_spokes(img, shape_data: ShapeItem):
     """draw lines emanating from centre of shape"""
-    spoke_point_pairs = get_barcode_spokes(shape_data)
+    spoke_point_pairs = get_barcode_spokes(shape_data.closest_corners, shape_data.centre_x_y)
     colour_gradient = [(255,i,255-5) for i in range(0,255, int(255/8))]
     for index, spoke in enumerate(spoke_point_pairs):
        cv2.line(img, tuple(np.array(spoke[0][0]).astype(int)), tuple(np.array(spoke[0][1]).astype(int)), colour_gradient[index], 1) 
@@ -1224,6 +1226,7 @@ def check_for_patternv2(samples) -> Tuple[bool, List[check_barcode.FilteredWhite
             length_array=len(sample)
             ))
     return check_barcode.check_pattern_valid(whitebars, len(sample)), whitebars
+
 
 def check_for_pattern(samples):
     peaks = []
