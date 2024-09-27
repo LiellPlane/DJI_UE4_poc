@@ -11,7 +11,7 @@ from enum import Enum, auto
 
 class CodeSegment(Enum):
     CORNER: int = 1
-    MIDLINE: int = 1
+    MIDLINE: int = 2
 
 
 @dataclass

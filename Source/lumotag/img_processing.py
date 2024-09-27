@@ -742,6 +742,33 @@ def bresenham_line_ski(x1,y1,x2, y2):
     return [i for i in zip(rr, cc)]
 
 
+def efficient_line_sampler(x1, y1, x2, y2, num_samples):
+    dx = x2 - x1
+    dy = y2 - y1
+    
+    if dx == 0 and dy == 0:
+        return [(x1, y1)] * num_samples
+
+    steps = max(abs(dx), abs(dy))
+    
+    if steps < num_samples - 1:
+        # For short lines, use linear interpolation
+        x_step = dx / (num_samples - 1)
+        y_step = dy / (num_samples - 1)
+        return [
+            (round(x1 + i * x_step), round(y1 + i * y_step))
+            for i in range(num_samples)
+        ]
+    else:
+        # For longer lines, use step-based approach
+        x_step = dx / steps
+        y_step = dy / steps
+        indices = [round(i * steps / (num_samples - 1)) for i in range(num_samples)]
+        return [
+            (round(x1 + i * x_step), round(y1 + i * y_step))
+            for i in indices
+        ]
+
 def get_affine_transform(pts1, pts2):
     """from 2 sets of 3 corresponding points
     calculate the affine transform"""
