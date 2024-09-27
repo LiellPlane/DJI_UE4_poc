@@ -116,7 +116,9 @@ class Accelerometer(factory.Accelerometer):
 
 
 class display(factory.display):
-
+    def __init__(self, _gun_config: factory.gun_config) -> None:
+        super().__init__(_gun_config)
+        os.system('xrandr --auto')
     def display_method(self, image):
         
         try:
