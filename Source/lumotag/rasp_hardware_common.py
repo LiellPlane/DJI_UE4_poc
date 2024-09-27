@@ -118,7 +118,7 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
     def __init__(self, _gun_config: factory.gun_config) -> None:
         super().__init__(_gun_config)
-        soft_start = 0
+        self.soft_start = 0
     def display_method(self, image):
         
         try:
