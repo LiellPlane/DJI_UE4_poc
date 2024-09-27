@@ -116,25 +116,17 @@ class Accelerometer(factory.Accelerometer):
 
 
 class display(factory.display):
-    def __init__(self, _gun_config: factory.gun_config) -> None:
-        super().__init__(_gun_config)
-        self.soft_start = 0
+
     def display_method(self, image):
         
         try:
-            if self.soft_start < 101:
-                self.soft_start += 1
-            if self.soft_start < 100:
-                reposition_window = True
-            else:
-                reposition_window = False
             lumo_viewer(
                 inputimage=image,
                 move_windowx=self.opencv_win_pos[0],
                 move_windowy=self.opencv_win_pos[1],
                 pausetime_Secs=0,
                 presskey=False,
-                destroyWindow=reposition_window)
+                destroyWindow=False)
         except Exception as e:
             # when SSHing
             pass
