@@ -67,11 +67,11 @@ def lumo_viewer(
 
 
         window_name = "img"
-        cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+        cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
         
         cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-        cv2.imshow(window_name, inputimage)
+        #cv2.imshow(window_name, inputimage)
         cv2.moveWindow(window_name, move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
@@ -118,17 +118,23 @@ class Accelerometer(factory.Accelerometer):
 class display(factory.display):
     def __init__(self, _gun_config: factory.gun_config) -> None:
         super().__init__(_gun_config)
-        os.system('xrandr --auto')
+        soft_start = 0
     def display_method(self, image):
         
         try:
+            if self.soft_start < 101:
+                self.soft_start += 1
+            if self.soft_start < 100:
+                reposition_window = True
+            else:
+                reposition_window = False
             lumo_viewer(
                 inputimage=image,
                 move_windowx=self.opencv_win_pos[0],
                 move_windowy=self.opencv_win_pos[1],
                 pausetime_Secs=0,
                 presskey=False,
-                destroyWindow=False)
+                destroyWindow=reposition_window)
         except Exception as e:
             # when SSHing
             pass
