@@ -71,7 +71,7 @@ def lumo_viewer(
         
         cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
 
-        #cv2.imshow(window_name, inputimage)
+        cv2.imshow(window_name, inputimage)
         cv2.moveWindow(window_name, move_windowx, move_windowy)
         if presskey==True:
             cv2.waitKey(0); #any key
