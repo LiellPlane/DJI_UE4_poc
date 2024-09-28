@@ -180,6 +180,12 @@ def decode_barcode_bw_transitions(data):
     return transitions_bw, widths.tolist(), binary_data
 
 
+def visualise_1d_barcode(_1dbarcode, height):
+    out_img1 = cv2.resize(np.asarray(_1dbarcode), (50, height), interpolation=cv2.INTER_NEAREST)
+    out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
+    return out_img1
+
+
 def analyse_and_get_image(test_member):
     height = 500
     scale = height/len(test_member)
