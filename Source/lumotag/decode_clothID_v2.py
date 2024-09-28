@@ -8,6 +8,7 @@ import numpy as np
 #sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 #from matplotlib import pyplot as plt
 import math
+from itertools import chain
 import random
 import functools 
 from utils import (
@@ -745,7 +746,12 @@ def get_approx_shape_and_bbox2(
             img2use = img
 
         
-        #spoke_details = get_barcode_spokes(nearest_points,[cX, cY] )
+        # spoke_details = get_barcode_spokes(nearest_points, [cX, cY])
+        # sample_lines = get_sample_tracks(spoke_details,samples_per_line=SAMPLES_PER_LINE)
+        # cornersegments = [np.array(i.line_sample_pts) for i in sample_lines if i.barcode_segment is check_barcode.CodeSegment.CORNER]
+        # np.fromiter(chain.from_iterable(cornersegments), dtype=float)
+        
+        # plop=1
 
         _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
 
@@ -990,7 +996,7 @@ def get_barcode_spokes(closest_corners: list[int,int],centre_x_y: list[int,int] 
 
     return all_points
 
-def build_barcode_from_spokes(spokes: list[Spokes], samples_per_line):
+def get_sample_tracks(spokes: list[Spokes], samples_per_line):
     """for the spoke, create samples from centre to outside and attach together"""
     #samples_per_line = (SAMPLES_PER_LINE//2)
     #num_spokes = len(spokes)
@@ -1016,7 +1022,7 @@ def build_barcode_from_spokes(spokes: list[Spokes], samples_per_line):
 def draw_barcode_spokes(img, shape_data: ShapeItem):
     """draw lines emanating from centre of shape"""
     spoke_point_pairs = get_barcode_spokes(shape_data.closest_corners, shape_data.centre_x_y)
-    barcode_array = build_barcode_from_spokes(spoke_point_pairs, samples_per_line=12)
+    barcode_array = get_sample_tracks(spoke_point_pairs, samples_per_line=12)
     colour_gradient = [(255,i,255-5) for i in range(0,255, int(255/8))]
     for index, spoke in enumerate(barcode_array):
        #cv2.line(img, tuple(np.array(spoke.line_pts[0]).astype(int)), tuple(np.array(spoke.line_pts[1]).astype(int)), colour_gradient[index], 1)

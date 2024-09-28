@@ -747,27 +747,22 @@ def efficient_line_sampler(x1, y1, x2, y2, num_samples):
     dy = y2 - y1
     
     if dx == 0 and dy == 0:
-        return [(x1, y1)] * num_samples
+        return np.tile([x1, y1], (num_samples, 1))
 
     steps = max(abs(dx), abs(dy))
     
     if steps < num_samples - 1:
         # For short lines, use linear interpolation
-        x_step = dx / (num_samples - 1)
-        y_step = dy / (num_samples - 1)
-        return [
-            (round(x1 + i * x_step), round(y1 + i * y_step))
-            for i in range(num_samples)
-        ]
+        t = np.linspace(0, 1, num_samples)
+        x = np.round(x1 + t * dx).astype(int)
+        y = np.round(y1 + t * dy).astype(int)
     else:
         # For longer lines, use step-based approach
-        x_step = dx / steps
-        y_step = dy / steps
-        indices = [round(i * steps / (num_samples - 1)) for i in range(num_samples)]
-        return [
-            (round(x1 + i * x_step), round(y1 + i * y_step))
-            for i in indices
-        ]
+        indices = np.round(np.linspace(0, steps, num_samples)).astype(int)
+        x = np.round(x1 + indices * (dx / steps)).astype(int)
+        y = np.round(y1 + indices * (dy / steps)).astype(int)
+    
+    return np.column_stack((x, y))
 
 def get_affine_transform(pts1, pts2):
     """from 2 sets of 3 corresponding points
@@ -1028,3 +1023,10 @@ def print_text_in_boundingbox(text: str, grayscale: bool):
         label_patch = cv2.cvtColor(label_patch, cv2.COLOR_BGR2GRAY)
 
     return label_patch
+
+
+def fast_sample(image, coordinates):
+    coords = np.array(coordinates)
+    y_coords, x_coords = coords[:, 1], coords[:, 0]
+    sampled_pixels = image[y_coords, x_coords]
+    return sampled_pixels
