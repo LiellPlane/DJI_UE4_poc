@@ -706,34 +706,37 @@ def get_approx_shape_and_bbox2(
         # all_points.append(nearest_points[3])
         # all_points.append()
         # diagonal paths (each composed of 2 lines emanting from centre)
-        sample_line1_diag = img_pro.efficient_line_sampler(
+        sample_line1_diagA = img_pro.efficient_line_sampler(
             x2=cX,
             y2=cY,
             x1=nearest_points[0][0],
             y1=nearest_points[0][1],
             num_samples=SAMPLES_PER_LINE//2)
         
-        sample_line1_diag += img_pro.efficient_line_sampler(
+        sample_line1_diagB = img_pro.efficient_line_sampler(
             x1=cX,
             y1=cY,
             x2=nearest_points[2][0],
             y2=nearest_points[2][1],
             num_samples=SAMPLES_PER_LINE//2)
-        
-        sample_line2_diag = img_pro.efficient_line_sampler(
+ 
+        sample_line1_diag = np.vstack([sample_line1_diagA, sample_line1_diagB])
+
+        sample_line2_diagA = img_pro.efficient_line_sampler(
             x2=cX,
             y2=cY,
             x1=nearest_points[3][0],
             y1=nearest_points[3][1],
             num_samples=SAMPLES_PER_LINE//2)
 
-        sample_line2_diag += img_pro.efficient_line_sampler(
+        sample_line2_diagB = img_pro.efficient_line_sampler(
             x2=nearest_points[1][0],
             y2=nearest_points[1][1],
             x1=cX,
             y1=cY,
             num_samples=SAMPLES_PER_LINE//2)
     
+        sample_line2_diag = np.vstack([sample_line2_diagA, sample_line2_diagB])
 
         averages1 = []
         averages2 = []
@@ -748,9 +751,15 @@ def get_approx_shape_and_bbox2(
         
         # spoke_details = get_barcode_spokes(nearest_points, [cX, cY])
         # sample_lines = get_sample_tracks(spoke_details,samples_per_line=SAMPLES_PER_LINE)
-        # cornersegments = [np.array(i.line_sample_pts) for i in sample_lines if i.barcode_segment is check_barcode.CodeSegment.CORNER]
-        # np.fromiter(chain.from_iterable(cornersegments), dtype=float)
-        
+        # cornersegments = [
+        #     i.line_sample_pts
+        #     for i in sample_lines
+        #     if i.barcode_segment is check_barcode.CodeSegment.CORNER
+        #     ]
+        # #np.fromiter(chain.from_iterable(cornersegments))
+        # #COPY - make this use references instead TODO
+        # stacked_corners = np.vstack(cornersegments)
+
         # plop=1
 
         _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
