@@ -748,7 +748,7 @@ def get_approx_shape_and_bbox2(
         else:
             img2use = img
 
-        
+        #get_spokecode_samples(img2use, [cX, cY], nearest_points, samples_per_line=12)
         # spoke_details = get_barcode_spokes(nearest_points, [cX, cY])
         # sample_lines = get_sample_tracks(spoke_details,samples_per_line=SAMPLES_PER_LINE)
         # cornersegments = [
@@ -757,8 +757,8 @@ def get_approx_shape_and_bbox2(
         #     if i.barcode_segment is check_barcode.CodeSegment.CORNER
         #     ]
         # #np.fromiter(chain.from_iterable(cornersegments))
-        # #COPY - make this use references instead TODO
-        # stacked_corners = np.vstack(cornersegments)
+        # #COPY - make this use references instead or numpy buffer TODO
+        # stacked = np.stack(cornersegments).reshape(-1, 2)
 
         # plop=1
 
@@ -1028,10 +1028,46 @@ def get_sample_tracks(spokes: list[Spokes], samples_per_line):
     return all_samples
 
 
+
+def get_spokecode_samples(img, midpoint, nearest_points, samples_per_line):
+    """
+    img: np image array, mono
+    midpoint: centre of object list[int, int] | ndarray
+    nearest_points: 4 sequential coordinates around object centre that defines corners
+    samples_per_line: line is defined as start = centrepoint and end is either a corner
+    or a midpoint (if corners define a square - the midpoint is on edge)
+
+    """
+    # Get all samples, then break up for corners/midpoints at end
+    # more performant to do in a couple vectorised operations
+    spoke_details = get_barcode_spokes(nearest_points, midpoint)
+    sample_lines = get_sample_tracks(
+        spoke_details,
+        samples_per_line=samples_per_line
+        )
+    cornersegments = [
+        i.line_sample_pts
+        for i in sample_lines
+        ]
+    #np.fromiter(chain.from_iterable(cornersegments))
+    #COPY - make this use references instead or numpy buffer TODO
+    stacked = np.stack(cornersegments).reshape(-1, 2)
+    samples = img_pro.fast_sample(image=img,coordinates=stacked)
+    # now we have a mix of both classes. as we know we only have two 
+    # classes, we know what class the samples start with and we know
+    # the pitch, we can seperate them easily from the main array
+    reshaped = samples.reshape(-1, samples_per_line)
+    corner_class_samples = reshaped[::2].flatten()
+    midedge_class_samples = reshaped[1::2].flatten()
+    plop=1
+
+
+
 def draw_barcode_spokes(img, shape_data: ShapeItem):
     """draw lines emanating from centre of shape"""
     spoke_point_pairs = get_barcode_spokes(shape_data.closest_corners, shape_data.centre_x_y)
     barcode_array = get_sample_tracks(spoke_point_pairs, samples_per_line=12)
+    
     colour_gradient = [(255,i,255-5) for i in range(0,255, int(255/8))]
     for index, spoke in enumerate(barcode_array):
        #cv2.line(img, tuple(np.array(spoke.line_pts[0]).astype(int)), tuple(np.array(spoke.line_pts[1]).astype(int)), colour_gradient[index], 1)

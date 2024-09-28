@@ -1026,7 +1026,7 @@ def print_text_in_boundingbox(text: str, grayscale: bool):
 
 
 def fast_sample(image, coordinates):
-    coords = np.array(coordinates)
+    coords = np.array(coordinates, dtype=np.int32)
     y_coords, x_coords = coords[:, 1], coords[:, 0]
     sampled_pixels = image[y_coords, x_coords]
-    return sampled_pixels
+    return sampled_pixels.astype(np.uint8)
