@@ -1030,3 +1030,13 @@ def fast_sample(image, coordinates):
     y_coords, x_coords = coords[:, 1], coords[:, 0]
     sampled_pixels = image[y_coords, x_coords]
     return sampled_pixels.astype(np.uint8)
+
+
+def normalise_np_array(data):
+    data_min = data.min()
+    data_max = data.max()
+    if data_max > data_min:
+        normalized_data = (data - data_min) / (data_max - data_min)
+    else:
+        normalized_data = np.zeros_like(data, dtype=np.float16)
+    return normalized_data

@@ -748,7 +748,15 @@ def get_approx_shape_and_bbox2(
         else:
             img2use = img
 
-        #get_spokecode_samples(img2use, [cX, cY], nearest_points, samples_per_line=12)
+        # spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
+        #     img2use,
+        #     [cX, cY],
+        #     nearest_points,
+        #     samples_per_line=12
+        #     )
+        # spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
+        # spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
+
         # spoke_details = get_barcode_spokes(nearest_points, [cX, cY])
         # sample_lines = get_sample_tracks(spoke_details,samples_per_line=SAMPLES_PER_LINE)
         # cornersegments = [
@@ -1029,7 +1037,7 @@ def get_sample_tracks(spokes: list[Spokes], samples_per_line):
 
 
 
-def get_spokecode_samples(img, midpoint, nearest_points, samples_per_line):
+def get_spokecode_samples(img, midpoint, nearest_points, samples_per_line)->Tuple[list, list]:
     """
     img: np image array, mono
     midpoint: centre of object list[int, int] | ndarray
@@ -1059,21 +1067,36 @@ def get_spokecode_samples(img, midpoint, nearest_points, samples_per_line):
     reshaped = samples.reshape(-1, samples_per_line)
     corner_class_samples = reshaped[::2].flatten()
     midedge_class_samples = reshaped[1::2].flatten()
-    plop=1
-
+    return corner_class_samples, midedge_class_samples
 
 
 def draw_barcode_spokes(img, shape_data: ShapeItem):
     """draw lines emanating from centre of shape"""
     spoke_point_pairs = get_barcode_spokes(shape_data.closest_corners, shape_data.centre_x_y)
     barcode_array = get_sample_tracks(spoke_point_pairs, samples_per_line=12)
-    
+
+    spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
+        img,
+        shape_data.centre_x_y,
+        shape_data.closest_corners,
+        samples_per_line=12
+        )
+    spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
+    spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
+
     colour_gradient = [(255,i,255-5) for i in range(0,255, int(255/8))]
+
     for index, spoke in enumerate(barcode_array):
-       #cv2.line(img, tuple(np.array(spoke.line_pts[0]).astype(int)), tuple(np.array(spoke.line_pts[1]).astype(int)), colour_gradient[index], 1)
-       col = random.randint(0,254)
-       for pt in spoke.line_sample_pts:
-            img[int(pt[1]), int(pt[0])] = colour_gradient[index]
+        #cv2.line(img, tuple(np.array(spoke.line_pts[0]).astype(int)), tuple(np.array(spoke.line_pts[1]).astype(int)), colour_gradient[index], 1)
+        col = list(colour_gradient[index])
+
+        if spoke.barcode_segment == check_barcode.CodeSegment.CORNER:
+            col[0] = 255
+        else:
+            col[0] = 0
+
+        for pt in spoke.line_sample_pts:
+            img[int(pt[1]), int(pt[0])] = col
     return img
 
 
