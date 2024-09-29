@@ -1040,3 +1040,6 @@ def normalise_np_array(data):
     else:
         normalized_data = np.zeros_like(data, dtype=np.float16)
     return normalized_data
+
+def binarize_barcode(normalized_data):
+    return (normalized_data > 0.5).astype(np.int8)

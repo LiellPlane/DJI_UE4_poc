@@ -4,7 +4,7 @@ import pickle
 import cv2
 import random
 from dataclasses import dataclass
-from typing import Union, List
+from typing import Union, List, Optional
 from functools import reduce
 from enum import Enum, auto
 
@@ -180,9 +180,14 @@ def decode_barcode_bw_transitions(data):
     return transitions_bw, widths.tolist(), binary_data
 
 
-def visualise_1d_barcode(_1dbarcode, height):
+def visualise_1d_barcode(_1dbarcode, height, segmentise:Optional[int]=None):
     out_img1 = cv2.resize(np.asarray(_1dbarcode), (50, height), interpolation=cv2.INTER_NEAREST)
     out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
+    if segmentise:
+        for segment_y in [i for i in range(0,height, height//segmentise)]:
+            cv2.line(out_img1, (0, segment_y), (49, segment_y), (255, 0, 0), 3)
+
+
     return out_img1
 
 

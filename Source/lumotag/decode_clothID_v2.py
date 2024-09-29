@@ -939,64 +939,6 @@ def closest_point(target_point, points):
             closest = point
     return closest
 
-def is_pattern_detected(samples: list[list[int]]) -> bool:
-    """Cheesy way to test if pattern is present
-#%%%%%%%#%%%%%%%%%#////(((////////////////////(%%###################%##################%#######%%%%%#(((################
-%%%%######%#%%%%%#((//((/(//////////////////////(#%#############%##%###########%###################%##%%##(#############
-%%%%%%%%%%%%%%%%##(((###((((((//////////(//////(((#**#%%########%%##%%##%####################################(((########
-%%%%%%%%%%%%%%%%(((###((((((/////////////////((///.   ../#%%###%%########################%%###############%%%###########
-%%%%%%%&%%%%%%&#(####((((((((/////////////((((/(*  ... .  ..,#%%%################%###%##########%####%###########%###(((
-%%%%&%%%%%%%%%%#####((((((((((((/////(((/((((/#,   *%%#*.     ..*#%%%##%#########%######%##########################%%%%#
-%%%%%%%%%%%%%%#((##(((((((((((((///////((((/((.  ./%%%%%%%#*.  .   .*#%%#####%%%%#%%####################%###%##%########
-%%%%%#%%%%%%%#(###(((((((((((////((////((((((.  .(%%%%%%%%%%%%#/..    ..,(#%#(######%%###############%##################
-%%%%%%%%%%%%%(###(((((((((((((///(/(((##(((/. .,#%%%%%%%%%%%%%%%%%#/,.     .,/%%############%###########################
-%%%%%%%%%%%%#(##(((((((((((((((////(((#((#/   *%%%%%%%%%%%%%%%%%%%%%%%%#,.  .  ..(%%%#####################%%%###########
-%%%%%%%%%%%%####((((((((((((((((//((##((#, ../%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(..  ./%##########%##########################
-%%%%%%%%%%%#(###(((((((((((#(((((((##(((. ..#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%,  ..#%###(##################################
-%%%%%%&%%%%#(###((((((((((#%%((((##((((.  ,%%%%%%%%%%%%,  .,#%%%%%%%%%%%%#.  .*%%#((######################%#############
-%%%%%%%%%%#(#####((((((((%%%%#((##(((/   *%%%%%%%%%%%(.. . .*%%%%%%%%%%%/.  ./%%####(###################################
-%%%%%%%%%%#(##((((((((((%%%#%%####((,   /%%%%%%%%%%%%#,. ..(%%%%%%%%%%%*.  .(%####(####(##########((##%################(
-##%%%%%%%%#(##(((#((#(#%%%%%####(#(.  .#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%.  ..#%%##((#%################(((##%%%#########(/(
-###%%%%%%%###(#######%%%%######%%(.  .,#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%.   ,%%###((#%#(#############(##(((((((######((((((
-#%%%%%%%%#(#####(#%%%%%%#%%##%%%%%*.      ./%%%%%%%%%%%%%%%%%%%%%%%#.   *%####(#%%#(##########(((#((((((((((((((((((((((
-%%%%%%%%%#(#####(#%%%#%%%%%%%%%%#%%%%#/..  .. .*#%%%%%%%%%%%%%%%%%/. ..(%###((#%##################(#(#################((
-%%%%%%%%%(######%%##%%#%%%%%%%%%%%%%%%%%%%#*..    .*#%%%%%%%%%%%%*   ,#%##(#(%%################(####(###################
-%%%%%%%%%#(#####%%%####%%%%%%%%%%%%%%%%%%%%%%%#*..  . .*%%%%%%%&,. .,%%###(#%###################(##################(####
-%%%%%%%%%#(###(((##%%##%%%%%%%%%%%%%%%%%%%%%%%%%%%%/,.   ..*#%&,  ./%%##((############################################((
-%%%%%%%%######((((((#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(,..  .. . ,#%%##(#%##############################################
-%%%%%%%%(####(((((((((#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%(,..  ,%%###(##############################################(#(
-#%%%%%%#((###((((((((((/(%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%##%%%####%##########################################((((##
-%%%%%%%#(###(((((((((###((#%%%%%%%%%%%%%%%##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%###################################(#######
-##%%%%%((##((((#############(##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%###(#####################((#(##(####
-###%%%((##((##############(######%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%#%%%%%%%%%%%%%%%%%%%%%%%%%#((####################(#######
-##%%%%#(#((##############(###########%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%####%%%%%%%##%#%%%%%%%##((#############((#((#####    
-    """
-
-    
-
-    judgement = []
-    for sample in samples:
-        
-        centre = int(len(sample)/2)
-        np_sample = np.array(sample)
-        # numpy doesn't like this line with uints - truncates value
-        midpt = int((int(np_sample.max()) + int(np_sample.min())) / 2)
-        bright = int((int(np_sample.max()) + midpt)/2)
-        if np_sample[centre-2: centre+2].mean() < bright:
-            continue
-        if np_sample[1:4].mean() > midpt:
-            continue
-        if np_sample[-4:-1].mean() > midpt:
-            continue
-        judgement.append(True)
-
-    if len(samples) == len(judgement):
-        if all(judgement):
-            return True
-
-    return False
-
-
 
 def get_barcode_spokes(closest_corners: list[int,int],centre_x_y: list[int,int] ) -> list[Spokes]:
     """get matching points of line start and line end for the 8 spokes moving around the barcode
@@ -1057,9 +999,8 @@ def get_spokecode_samples(img, midpoint, nearest_points, samples_per_line)->Tupl
         i.line_sample_pts
         for i in sample_lines
         ]
-    #np.fromiter(chain.from_iterable(cornersegments))
-    #COPY - make this use references instead or numpy buffer TODO
     stacked = np.stack(cornersegments).reshape(-1, 2)
+
     samples = img_pro.fast_sample(image=img,coordinates=stacked)
     # now we have a mix of both classes. as we know we only have two 
     # classes, we know what class the samples start with and we know
@@ -1067,6 +1008,7 @@ def get_spokecode_samples(img, midpoint, nearest_points, samples_per_line)->Tupl
     reshaped = samples.reshape(-1, samples_per_line)
     corner_class_samples = reshaped[::2].flatten()
     midedge_class_samples = reshaped[1::2].flatten()
+
     return corner_class_samples, midedge_class_samples
 
 
@@ -1089,8 +1031,10 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     #spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
 
     
-    colour_gradient = [(255, i, 255-5) for i in range(0, 255, int(255/8))]
+    colour_gradient = [(255, i, 255-i) for i in range(0, 255, int(255/8))]
 
+    debug_img = img.copy()
+    debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
     # print out the sample coordinates so we can visualise them,
     # spitting corner points and mid-edge points
     for index, spoke in enumerate(barcode_array):
@@ -1103,20 +1047,29 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
             col[0] = 0
             col[1] = 255
         for pt in spoke.line_sample_pts:
-            img[int(pt[1]), int(pt[0])] = col
+            debug_img[int(pt[1]), int(pt[0])] = col
 
     # visualise the barcodes
+
+    spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
+    spoke_samples_corners = img_pro.binarize_barcode(spoke_samples_corners)
     corner_samples = check_barcode.visualise_1d_barcode(
-        (spoke_samples_corners * 1).astype("uint8"), height=img.shape[0]
+        (spoke_samples_corners * 255).astype("uint8"), height=img.shape[0],
+        segmentise=4
         )
+
     viewing_buffer = check_barcode.visualise_1d_barcode(
         (spoke_samples_middle_edges * 0).astype("uint8"), height=img.shape[0]
         )
+    
+    spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
+    spoke_samples_middle_edges = img_pro.binarize_barcode(spoke_samples_middle_edges)
     midedge_samples = check_barcode.visualise_1d_barcode(
-        (spoke_samples_middle_edges * 1).astype("uint8"), height=img.shape[0]
+        (spoke_samples_middle_edges * 255).astype("uint8"), height=img.shape[0],
+        segmentise=4
         )
-    img = np.hstack([img, corner_samples, viewing_buffer, midedge_samples])
-    return img
+    debug_img = np.hstack([debug_img, corner_samples, viewing_buffer, midedge_samples])
+    return debug_img
 
 
 def use_blurred_image(_size: int)->bool:
@@ -1236,10 +1189,12 @@ def analyse_candidates_shapematch(
 
         if ALMOST_ID:
             for c in ALMOST_ID:
-
+                if use_blurred_image(c.size):
+                    img2use = original_blurred_image
+                else:
+                    img2use = original_img
                 cv2.drawContours(debug_img, [c.approx_contour], -1, (255,0,0), 2)
-                debug_imgx = original_img.copy()
-                debug_imgx = cv2.cvtColor(debug_imgx, cv2.COLOR_GRAY2RGB)
+                debug_imgx = img2use.copy()
                 debug_imgx = draw_barcode_spokes(debug_imgx, c)
                 dataobject.img_view_or_save_if_debug(
                     debug_imgx,
@@ -1312,7 +1267,7 @@ def analyse_candidates_shapematch(
             else:
                 img2use = original_img
             debug_img = img2use.copy()
-            debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
+            #debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
             debug_img = draw_barcode_spokes(debug_img, c)
             dataobject.img_view_or_save_if_debug(debug_img, "test_spokes")
         for c in squrs_found:
