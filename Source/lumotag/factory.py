@@ -1220,61 +1220,99 @@ def get_images_for_cam_pair(
     return valid_this_cam
 
 
-class ImageLibrary_longrange(ImageGenerator):
-    def __init__(self, res) -> None:
-        self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        sorted_files = get_images_for_cam_pair(
-            cam_name="long",
-            filters=["synth"]#filters=["quad", "14877"]
-            )#mgfolder=r"D:\lumotag_training_data\_player_1"
-        # create duplicates
-        sorted_files = reduce(lambda acc, s: acc + [s] * 10, sorted_files, [])
-        self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
-        self.res = res
-        # if len(self.images) < 1:
-        #     raise Exception("could not find images in folder")
+# class ImageLibrary_longrange(ImageGenerator):
+#     def __init__(self, res) -> None:
+#         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+#         sorted_files = get_images_for_cam_pair(
+#             cam_name="long",
+#             filters=["unique"]#filters=["quad", "14877"]
+#             )#mgfolder=r"D:\lumotag_training_data\_player_1"
+#         # create duplicates
+#         sorted_files = reduce(lambda acc, s: acc + [s] * 1, sorted_files, [])
+#         self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
+#         self.res = res
+#         # if len(self.images) < 1:
+#         #     raise Exception("could not find images in folder")
 
 
-    def get_image(self):
-        img_to_load = next(self.cycled_files_generator)
-        time.sleep(0.03)
-        img = cv2.imread(img_to_load)
-        #print(f"img {img_to_load}")
-        if len(img.shape) == 3:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #img = cv2.resize(img, tuple(self.res[0:2]))
-        self.blank_image[:] = img
-        return self.blank_image
+#     def get_image(self):
+#         img_to_load = next(self.cycled_files_generator)
+#         time.sleep(0.03)
+#         img = cv2.imread(img_to_load)
+#         #print(f"img {img_to_load}")
+#         if len(img.shape) == 3:
+#             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#         #img = cv2.resize(img, tuple(self.res[0:2]))
+#         self.blank_image[:] = img
+#         return self.blank_image
 
 
-class ImageLibrary_closerange(ImageGenerator):
-    def __init__(self, res) -> None:
-        self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
-        sorted_files = get_images_for_cam_pair(
-            cam_name="close",
-            filters=["synth"]#filters=["quad", "14877"]
-            )
-            #imgfolder=r"D:\lumotag_training_data\_player_1")
-        # create duplicates
-        sorted_files = reduce(lambda acc, s: acc + [s] * 10, sorted_files, [])
-        self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
-        self.res = res
-        # if len(self.images) < 1:
-        #     raise Exception("could not find images in folder")
+# class ImageLibrary_closerange(ImageGenerator):
+#     def __init__(self, res) -> None:
+#         self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+#         sorted_files = get_images_for_cam_pair(
+#             cam_name="close",
+#             filters=["unique"]#filters=["quad", "14877"]
+#             )
+#             #imgfolder=r"D:\lumotag_training_data\_player_1")
+#         # create duplicates
+#         sorted_files = reduce(lambda acc, s: acc + [s] * 1, sorted_files, [])
+#         self.cycled_files_generator = iter(sorted_files)#cycle_files(sorted_files)
+#         self.res = res
+#         # if len(self.images) < 1:
+#         #     raise Exception("could not find images in folder")
 
 
-    def get_image(self):
-        img_to_load = next(self.cycled_files_generator)
+#     def get_image(self):
+#         img_to_load = next(self.cycled_files_generator)
         
-        img = cv2.imread(img_to_load)
-        #print(f"img {img_to_load}")
-        if len(img.shape) == 3:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #img = cv2.resize(img, tuple(self.res[0:2]))
-        self.blank_image[:] = img
-        time.sleep(0.03)
-        return self.blank_image
+#         img = cv2.imread(img_to_load)
+#         #print(f"img {img_to_load}")
+#         if len(img.shape) == 3:
+#             img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+#         #img = cv2.resize(img, tuple(self.res[0:2]))
+#         self.blank_image[:] = img
+#         time.sleep(0.03)
+#         return self.blank_image
 
+
+class ImageLibraryMeta(type(ImageGenerator)):
+    """Experiment with metaclasses - can we pass the metaclass to a downstream process
+    and it succesfully instances it depending on flavour? would be useful
+    if we have lots of similar classes that have to be passed around"""
+    def __new__(cls, name, bases, attrs):
+        if 'cam_name' not in attrs:
+            raise TypeError(f"Class {name} must define 'cam_name'")
+        
+        def init(self, res):
+            self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+            sorted_files = get_images_for_cam_pair(
+                cam_name=self.cam_name,
+                filters=["quad"]
+            )
+            sorted_files = reduce(lambda acc, s: acc + [s] * 1, sorted_files, [])
+            self.cycled_files_generator = iter(sorted_files)
+            self.res = res
+
+        def get_image(self):
+            img_to_load = next(self.cycled_files_generator)
+            img = cv2.imread(img_to_load)
+            if len(img.shape) == 3:
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            self.blank_image[:] = img
+            time.sleep(0.03)
+            return self.blank_image
+
+        attrs['__init__'] = init
+        attrs['get_image'] = get_image
+        
+        return super().__new__(cls, name, bases, attrs)
+
+class ImageLibrary_longrange(ImageGenerator, metaclass=ImageLibraryMeta):
+    cam_name = "long"
+
+class ImageLibrary_closerange(ImageGenerator, metaclass=ImageLibraryMeta):
+    cam_name = "close"
 
 class ImageLibrary(ImageGenerator):
     
