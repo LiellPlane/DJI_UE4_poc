@@ -1288,7 +1288,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["quad"]
+                filters=["quadrocode_corners"]
             )
             sorted_files = reduce(lambda acc, s: acc + [s] * 1, sorted_files, [])
             self.cycled_files_generator = iter(sorted_files)
@@ -1308,11 +1308,14 @@ class ImageLibraryMeta(type(ImageGenerator)):
         
         return super().__new__(cls, name, bases, attrs)
 
+
 class ImageLibrary_longrange(ImageGenerator, metaclass=ImageLibraryMeta):
     cam_name = "long"
 
+
 class ImageLibrary_closerange(ImageGenerator, metaclass=ImageLibraryMeta):
     cam_name = "close"
+
 
 class ImageLibrary(ImageGenerator):
     
@@ -1322,7 +1325,7 @@ class ImageLibrary(ImageGenerator):
 
         self.images = images_in_folder(imgfoler, [".jpg"])
 
-        self.images = [i for i in self.images if "unique" in i]
+        self.images = [i for i in self.images if "quadrocode_corners" in i]
 
         self.res = res
         if len(self.images) < 1:

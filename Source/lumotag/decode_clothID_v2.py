@@ -1051,10 +1051,14 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
 
     # visualise the barcodes
 
-    spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
-    spoke_samples_corners = img_pro.binarize_barcode(spoke_samples_corners)
+    spoke_samples_corners_normed = img_pro.normalise_np_array(spoke_samples_corners)
+    spoke_samples_corners_normed = img_pro.binarize_barcode(spoke_samples_corners_normed)
     corner_samples = check_barcode.visualise_1d_barcode(
-        (spoke_samples_corners * 255).astype("uint8"), height=img.shape[0],
+        (spoke_samples_corners * 1).astype("uint8"), height=img.shape[0],
+        segmentise=4
+        )
+    corner_samples_norm = check_barcode.visualise_1d_barcode(
+        (spoke_samples_corners_normed * 255).astype("uint8"), height=img.shape[0],
         segmentise=4
         )
 
@@ -1062,13 +1066,26 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
         (spoke_samples_middle_edges * 0).astype("uint8"), height=img.shape[0]
         )
     
-    spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
-    spoke_samples_middle_edges = img_pro.binarize_barcode(spoke_samples_middle_edges)
+    spoke_samples_middle_edges_norm = img_pro.normalise_np_array(spoke_samples_middle_edges)
+    spoke_samples_middle_edges_norm = img_pro.binarize_barcode(spoke_samples_middle_edges_norm)
     midedge_samples = check_barcode.visualise_1d_barcode(
-        (spoke_samples_middle_edges * 255).astype("uint8"), height=img.shape[0],
+        (spoke_samples_middle_edges * 1).astype("uint8"), height=img.shape[0],
         segmentise=4
         )
-    debug_img = np.hstack([debug_img, corner_samples, viewing_buffer, midedge_samples])
+    midedge_samples_norm = check_barcode.visualise_1d_barcode(
+        (spoke_samples_middle_edges_norm * 255).astype("uint8"), height=img.shape[0],
+        segmentise=4
+        )
+
+    debug_img = np.hstack(
+        [
+            debug_img,
+            corner_samples,
+            corner_samples_norm,
+            viewing_buffer,
+            midedge_samples,
+            midedge_samples_norm
+            ])
     return debug_img
 
 

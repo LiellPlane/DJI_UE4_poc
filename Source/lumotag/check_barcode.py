@@ -181,11 +181,12 @@ def decode_barcode_bw_transitions(data):
 
 
 def visualise_1d_barcode(_1dbarcode, height, segmentise:Optional[int]=None):
+    width = 50
     out_img1 = cv2.resize(np.asarray(_1dbarcode), (50, height), interpolation=cv2.INTER_NEAREST)
     out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
     if segmentise:
         for segment_y in [i for i in range(0,height, height//segmentise)]:
-            cv2.line(out_img1, (0, segment_y), (49, segment_y), (255, 0, 0), 3)
+            cv2.line(out_img1, (0, segment_y), (5, segment_y), (0, 0, 255), 3)
 
 
     return out_img1
