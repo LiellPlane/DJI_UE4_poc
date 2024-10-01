@@ -90,6 +90,7 @@ def decode_white_bars(data) -> WhiteBars:
 
     Parameters:
     - data: np.ndarray, 1D array of uint8 values representing the scanned barcode.
+        NOT NORMALIZED!!!
 
     Returns:
     - white_bar_positions: List of (start_index, end_index) tuples for each white bar.
@@ -227,3 +228,7 @@ def create_debug_imagepair(barcodepair: List):
         out_img2))
     
     return stacked_img
+
+
+def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
+    white_bars: WhiteBars = decode_white_bars(spoke_samples_corners)
