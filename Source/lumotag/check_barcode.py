@@ -291,26 +291,27 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
         in range(
             0, len(spoke_samples_corners), len(spoke_samples_corners)//4
             )
-        ]
+        ] + [len(spoke_samples_corners)] # 4 segments will have 5 edges
     segment_ends_copy = segment_ends.copy()
     quad = {}
     for bar_pos in white_bars.white_bar_positions:
-        if bar_pos == (23, 26):
-            plop=1
-        if bar_pos[0] >= segment_ends[0] <= bar_pos[1]:
+        while bar_pos[0] > segment_ends[0]:
             segment_ends.pop(0)
+        # does white bar straddle or touch an edge?
+        if (bar_pos[0] <= segment_ends[0]) and (bar_pos[1] >= segment_ends[0]):
+            pass
         else:
             quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
             if quad_key not in quad:
                 quad[quad_key] = []
-            quad[quad_key].append(bar_pos)
-        if not segment_ends:
-            break
+            quad[quad_key].append(bar_pos)     
+
 
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
-    if len(quad) != 3:
+    # nb - continuous sample is in 4 segments, each segment start is categorised as an edge
+    if not all([(len(whitebar_pos)==1) for _, whitebar_pos in quad.items()]):
         return False
-    
+  
     # now we check that these 3 barcodes are in the quadrants
     plop=1
 

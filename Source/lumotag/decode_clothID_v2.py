@@ -751,13 +751,13 @@ def get_approx_shape_and_bbox2(
 
 
         # quadcode - ID with diagonal as orientation and orthogonal as ID
-        # spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
-        #     img2use,
-        #     [cX, cY],
-        #     nearest_points,
-        #     samples_per_line=12
-        #     )
-        # check_barcode.is_valid_quadro_id(spoke_samples_corners)
+        spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
+            img2use,
+            [cX, cY],
+            nearest_points,
+            samples_per_line=12
+            )
+        check_barcode.is_valid_quadro_id(spoke_samples_corners)
 
 
         # spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
