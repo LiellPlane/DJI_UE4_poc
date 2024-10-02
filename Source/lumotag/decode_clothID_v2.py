@@ -750,7 +750,7 @@ def get_approx_shape_and_bbox2(
 
 
 
-        # # quadcode - ID with diagonal as orientation and orthogonal as ID
+        # quadcode - ID with diagonal as orientation and orthogonal as ID
         # spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
         #     img2use,
         #     [cX, cY],

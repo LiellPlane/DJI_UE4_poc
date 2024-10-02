@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from typing import Union, List, Optional
 from functools import reduce
 from enum import Enum, auto
-
+from math import floor
 
 class CodeSegment(Enum):
     CORNER: int = 1
@@ -292,7 +292,29 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
             0, len(spoke_samples_corners), len(spoke_samples_corners)//4
             )
         ]
+    segment_ends_copy = segment_ends.copy()
+    quad = {}
+    for bar_pos in white_bars.white_bar_positions:
+        if bar_pos == (23, 26):
+            plop=1
+        if bar_pos[0] >= segment_ends[0] <= bar_pos[1]:
+            segment_ends.pop(0)
+        else:
+            quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
+            if quad_key not in quad:
+                quad[quad_key] = []
+            quad[quad_key].append(bar_pos)
+        if not segment_ends:
+            break
+
+    # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
+    if len(quad) != 3:
+        return False
+    
+    # now we check that these 3 barcodes are in the quadrants
     plop=1
+
+
 
     #I am checking a barcode in python. I have 1D array which I scanned and calculated the start and end positions of each white bar, so a list of tuples, where each tuple is the start and end position of the bar. I also have another list of positions, and I have to check that each white bar does not touch this position (IE it does not touch it, nor straddle it). What is an efficient way to calculate this?
 
