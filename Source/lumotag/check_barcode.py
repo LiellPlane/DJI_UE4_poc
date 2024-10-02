@@ -231,4 +231,122 @@ def create_debug_imagepair(barcodepair: List):
 
 
 def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
+    """quadrocode with diagonal orientation and orthogonal ID
+    Check that the diagonal elements are correct
+    &%%#%%@&&&&&%%%%###%#%###&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&%%##%%%%%###%%&&&&&&&&&&&&&&&&&&&&&&&&&&&&%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%, .. #%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%* . ../,. .%%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%#.... ,%&&&&%...*%%&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&&&&&&%%%%&&%/. ..#&&&&&&&&&&(...%%&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&%%%%%%#......(&&&&&&&&&&&&&&&%....%%&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&%&&&%%%%%. ..../%&&&&&&&&&&&&&&&&&&&&%...(%%&%%%%&&&&&&&&&&&&&&&&&
+    &&&&&&&&&%&&%%%%%%%.... .,%&&&&&&&&&&&&&&&&&&&&&&&&&&*.. %%%%%%&%&&&&&&&&&&&&&&&
+    &&&&&&&&&%%%%%%......,%&&&&&&&&#&&&&&&&&&&&&&&&&&&&&&&%....%%%%%&&&&&&&&&&&&&&&&
+    &&&&&&&&%%%, ... .#%&&&&&&&&&&&&&&&&&&&&&&&&&&&&#.,%&&&%#...(%%%%&&&&&&&&&&&&&&&
+    &&&&&&#...   .(%&&&&&&&%%&&&&&&&&&&&&&&&&&&&&&%......%&&&%,.. %%%%%&%%%&&&&&&&&&
+    &&&&&&&,,   .%&&%&&&&#.....&&&&&&&&&#&&%&&&&&&&%. ...,&&&&&%...*%%%%%%%%%&&&&&&&
+    &&&&&&&&%#    (&&&&&%,.   .&&&&&&&&%......./(&&&&%%%%&&&&&&&&/.. #%%%%%%&&&&&&&&
+    &&&&&&&&%&%*.   #&&&&%/...&&&&&&&&%/..,..  .*&&&&&&&&&%%%&&&&&%.  .%%%%%&&%%&&&&
+    &&&&&&&&&%%&%.   .%&&&&&&&&&&&&&&&&%,.. ... %&&&&&&&%,....(&&&&&#. .,%%%%%%&&&&&
+    &&&%%&&&%%%%%%%.  ./&&&&&&#..  #%&&%%%#/,/%&&&&&&&&&% ..  *&&&&&&%, ..,%%%&&&&&&
+    &&&&&%&&&&&&%%&%#.   %&&&%(. ...*%&&&&&&&&&&&&&&&&&&&%*..#&&&&&&&&#... (%%%&&&&&
+    %&&&&&&&&&&&&&%%&%,    %%#%%..  #%&&&&&&&&&&&&&&&&&&&&&&&&&&&%#. ... .#%%%%%%%&&
+    &&%&&&&&&&&&&&&%%&%# . .*%&&&&&&&&&%%%&&&&&&&&&&&&&&&&&&&%%...    .%%%%%%%%%%%%%
+    &&%%&&&&&&&&%%%%%%%%%(  . #%&&&&&#  .*  (&&&&&&&&&&&&&%/.   . .%%%%%%%%%%%%%%%%%
+    &&&&&&&&&&&&%%%%%%%%%%%.  ..%%%%%#      .%&&&&&&&&%/ .     #%%%%%%%%%%%%%%%%%%%%
+    &&&&&&&%%&&&&&&%%%%%%%%%(    *%%%%%%%#%%%&&&&&%#.   .  *#%%%%%%%%%%%%%%%%%%%%%%%
+    &&&&&&&&%%%%%%%&&%%%%%%%%%.  . #%%%%&&&&&%%#, .    ,#%%%%%%%%%%%%%%%%%%%%%%%%&&&
+    &&&&&&&&%%%%%%%%%%%%%%%%%%%#  . .%%%&%%%*      .#%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&
+    &&&&&&&&&&%%%%%%%%%%%%%%%%%%%/    *%(...   .#%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&
+    &&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%.        (%%%%%&%%&&&&&%%%%%%%%%%%%%&&&&&&&&&&&&&
+    %&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%(   ,%%%%%&%&%%%%%%%&&&&&&%%%%%%%&&&&&&&&&&&&&&&
+    %%&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&%%%%%%%%&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    """
+    # get all white bars - with no filtering for bars touching edges
+    # this will normalise the data!
     white_bars: WhiteBars = decode_white_bars(spoke_samples_corners)
+    # 7 and 8 here depends on if sample overlaps/touches boundary or not
+    # see ascii art - we check all diagonal in a clockwise sequence, starting
+    # each time from the centre. When these segments are connected together the
+    # centrepoint and potential outerboundry are continuous (one bar), except for
+    # the last sample which does not hit the outer boundary (bars = 7) or does
+    # bars = 8
+    expectedpeaks_insideboundary = 7
+    expectedpeaks_ousideboundary = 8
+    if len(white_bars.white_bar_positions) not in [
+        expectedpeaks_insideboundary,
+        expectedpeaks_ousideboundary
+    ]:
+        return False
+    # now check it is in the format we expect
+    # the quadroID should have white 1 peak in each segment (not touching edges),
+    # except for one segment which has no peak. This is how we orientate and validate the ID
+   
+    # Filter out any bars touching the edges of each sample (each sample is 1/4 of the array)
+    # calculate the terminus of each sample
+    assert (len(spoke_samples_corners) % 4) == 0, "should be multiple of 4!! QuadroCode alignment is 4 diagonal segments" # make sure 4 samples or something weird going on
+    segment_ends = [
+        i for i
+        in range(
+            0, len(spoke_samples_corners), len(spoke_samples_corners)//4
+            )
+        ]
+    plop=1
+
+    #I am checking a barcode in python. I have 1D array which I scanned and calculated the start and end positions of each white bar, so a list of tuples, where each tuple is the start and end position of the bar. I also have another list of positions, and I have to check that each white bar does not touch this position (IE it does not touch it, nor straddle it). What is an efficient way to calculate this?
+
+    #1. Sort the list of positions.
+# 2. For each white bar (start, end) tuple:
+#    a. Use binary search to find the insertion point for both the start and end in the sorted positions list.
+#    b. Check if any position falls within the bar's range.
+
+# Here's a Python implementation:
+
+# ```python
+# import bisect
+
+# def check_bars_dont_touch_positions(bars, positions):
+#     # Sort the positions
+#     sorted_positions = sorted(positions)
+    
+#     for start, end in bars:
+#         # Find the insertion points for start and end
+#         left = bisect.bisect_left(sorted_positions, start)
+#         right = bisect.bisect_right(sorted_positions, end)
+        
+#         # Check if any position falls within the bar's range
+#         if left != right:
+#             return False  # A position touches or is straddled by the bar
+        
+#         # Check if the bar straddles a position
+#         if left > 0 and sorted_positions[left-1] == start - 1:
+#             return False
+#         if right < len(sorted_positions) and sorted_positions[right] == end + 1:
+#             return False
+    
+#     return True  # No bars touch or straddle any positions
+
+# # Example usage:
+# bars = [(1, 3), (5, 7), (9, 11)]  # List of (start, end) tuples for white bars
+# positions = [0, 4, 8, 12]  # List of positions to check against
+
+# result = check_bars_dont_touch_positions(bars, positions)
+# print(result)  # Should print True for this example
+# ```
+
+# This implementation has the following characteristics:
+
+# 1. Time Complexity: O(n log m + m log m), where n is the number of bars and m is the number of positions.
+#    - Sorting the positions takes O(m log m)
+#    - For each bar, we perform two binary searches, each taking O(log m)
+#    - We do this for all n bars, so n * O(log m) = O(n log m)
+
+# 2. Space Complexity: O(m) for the sorted positions list.
+
+# This approach is efficient because:
+# - We only sort the positions once.
+# - We use binary search to quickly find if any position falls within a bar's range, avoiding the need to check every position for every bar.
+# - We only need to check the positions immediately before and after the bar's range to ensure it doesn't straddle a position.
+
+# This method should be much faster than checking each bar against every position, especially for large datasets.
