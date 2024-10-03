@@ -272,6 +272,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
     # centrepoint and potential outerboundry are continuous (one bar), except for
     # the last sample which does not hit the outer boundary (bars = 7) or does
     # bars = 8
+
     expectedpeaks_insideboundary = 7
     expectedpeaks_ousideboundary = 8
     if len(white_bars.white_bar_positions) not in [
@@ -282,7 +283,8 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
     # now check it is in the format we expect
     # the quadroID should have white 1 peak in each segment (not touching edges),
     # except for one segment which has no peak. This is how we orientate and validate the ID
-   
+    if len(white_bars.white_bar_positions) > 9:
+        plop=1
     # Filter out any bars touching the edges of each sample (each sample is 1/4 of the array)
     # calculate the terminus of each sample
     assert (len(spoke_samples_corners) % 4) == 0, "should be multiple of 4!! QuadroCode alignment is 4 diagonal segments" # make sure 4 samples or something weird going on
@@ -292,7 +294,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
             0, len(spoke_samples_corners), len(spoke_samples_corners)//4
             )
         ] + [len(spoke_samples_corners)] # 4 segments will have 5 edges
-    segment_ends_copy = segment_ends.copy()
+
     quad = {}
     for bar_pos in white_bars.white_bar_positions:
         while bar_pos[0] > segment_ends[0]:
