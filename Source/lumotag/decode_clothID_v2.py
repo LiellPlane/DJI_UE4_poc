@@ -748,66 +748,69 @@ def get_approx_shape_and_bbox2(
         else:
             img2use = img
 
-        # quadcode - ID with diagonal as orientation and orthogonal as ID
-        # spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
-        #     img2use,
-        #     [cX, cY],
-        #     nearest_points,
-        #     samples_per_line=12
-        #     )
-        # res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
 
-        # if res:
-        #     shape_ = Shapes.SQUARE
-        # else:
-        #     shape_ = Shapes.ALMOST_ID
+        use_new_id = False
+        if use_new_id:
+            #quadcode - ID with diagonal as orientation and orthogonal as ID
+            spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
+                img2use,
+                [cX, cY],
+                nearest_points,
+                samples_per_line=12
+                )
+            res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
+
+            if res:
+                shape_ = Shapes.SQUARE
+            else:
+                shape_ = Shapes.ALMOST_ID
 
 
-
-
-        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-            samplepos = sample_line1_diag + sample_line2_diag
         else:
-            samplepos = None
+
+            if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+                samplepos = sample_line1_diag + sample_line2_diag
+            else:
+                samplepos = None
 
 
 
-        _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
+            _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
 
-    
-        for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
-            try:
-            #averages.append(img2use[np.clip(sample_line1_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1_diag[i][0], 1,img2use.shape[1]-1)])
-                averages1.append(img2use[sample_line1_diag[i][1], sample_line1_diag[i][0]])
-            except Exception as e:
-                print("out of range - skip")
+        
+            for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
+                try:
+                #averages.append(img2use[np.clip(sample_line1_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1_diag[i][0], 1,img2use.shape[1]-1)])
+                    averages1.append(img2use[sample_line1_diag[i][1], sample_line1_diag[i][0]])
+                except Exception as e:
+                    print("out of range - skip")
 
-        for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
-            #averages2.append(img2use[np.clip(sample_line2_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2_diag[i][0], 1,img2use.shape[1]-1)])
-            try:
-                averages2.append(img2use[sample_line2_diag[i][1], sample_line2_diag[i][0]])
-            except Exception:
-                print("out of range")
+            for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
+                #averages2.append(img2use[np.clip(sample_line2_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2_diag[i][0], 1,img2use.shape[1]-1)])
+                try:
+                    averages2.append(img2use[sample_line2_diag[i][1], sample_line2_diag[i][0]])
+                except Exception:
+                    print("out of range")
 
 
 
-        if len(averages1) != SAMPLES_PER_LINE:
-            averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
-        if len(averages2) != SAMPLES_PER_LINE:
-            averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
+            if len(averages1) != SAMPLES_PER_LINE:
+                averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
+            if len(averages2) != SAMPLES_PER_LINE:
+                averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
 
-        # cheesy way to test for pattern
-        #check_for_patternv2([averages1, averages2])
-        (res, _) = check_for_patternv2([averages1, averages2])
-        if res:
-            shape_ = Shapes.SQUARE
-        else:
-            shape_ = Shapes.ALMOST_ID
+            # cheesy way to test for pattern
+            #check_for_patternv2([averages1, averages2])
+            (res, _) = check_for_patternv2([averages1, averages2])
+            if res:
+                shape_ = Shapes.SQUARE
+            else:
+                shape_ = Shapes.ALMOST_ID
 
-        if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-            samplepos = sample_line1_diag + sample_line2_diag
-        else:
-            samplepos = None
+            if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+                samplepos = sample_line1_diag + sample_line2_diag
+            else:
+                samplepos = None
 
         output = ShapeItem(
             id=index,
@@ -1060,8 +1063,8 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     #spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
     #spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
 
+    res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
 
-    
     colour_gradient = [(255, i, 255-i) for i in range(0, 255, int(255/8))]
 
     debug_img = img.copy()
@@ -1107,7 +1110,8 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     viewing_buffer = check_barcode.visualise_1d_barcode(
         (spoke_samples_middle_edges * 0).astype("uint8"), height=img.shape[0]
         )
-    
+    if res:
+        viewing_buffer[:] = (0,255,0)
     spoke_samples_middle_edges_norm = img_pro.normalise_np_array(spoke_samples_middle_edges)
     spoke_samples_middle_edges_norm = img_pro.binarize_barcode(spoke_samples_middle_edges_norm)
     midedge_samples = check_barcode.visualise_1d_barcode(
