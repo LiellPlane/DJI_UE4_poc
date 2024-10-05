@@ -11,8 +11,6 @@ import time
 
 
 
-
-
 @dataclass
 class base_find_lumotag_config():
     SAVE_IMAGES_DEBUG: bool

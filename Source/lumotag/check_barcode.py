@@ -295,6 +295,30 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
             )
         ] + [len(spoke_samples_corners)] # 4 segments will have 5 edges
 
+    # check first that each segment starts with a high signal - as 
+    # pattern has the centre dot and each segment spans from centre outwards
+    bar_positions_copy = white_bars.white_bar_positions.copy()
+    segment_end_cnt = 0
+    for segment_index in segment_ends[:-1]: # last segment may not be white due to sample lines not overlapping boundary
+        while bar_positions_copy:
+            test_start_is_white = bar_positions_copy[0]
+            # check if white bar straddles the segment end/start
+            if all([
+                (test_start_is_white[0] <= segment_index),
+                (test_start_is_white[1] >= segment_index)
+            ]):
+                segment_end_cnt += 1
+                break
+            bar_positions_copy.pop(0)
+
+    # if we have detected 4 white bars on the start of each segment (due to starting from white dot in middle)
+    # we can assume is a candidate for valid ID
+    if segment_end_cnt > 4:
+        raise RuntimeError("impossible to happen, logic error")
+    if segment_end_cnt != 4:
+        return False
+    
+
     quad = {}
     for bar_pos in white_bars.white_bar_positions:
         while bar_pos[0] > segment_ends[0]:

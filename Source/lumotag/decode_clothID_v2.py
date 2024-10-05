@@ -765,14 +765,12 @@ def get_approx_shape_and_bbox2(
             else:
                 shape_ = Shapes.ALMOST_ID
 
-
         else:
 
             if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
                 samplepos = sample_line1_diag + sample_line2_diag
             else:
                 samplepos = None
-
 
 
             _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
@@ -1112,6 +1110,8 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
         )
     if res:
         viewing_buffer[:] = (0,255,0)
+    else:
+        viewing_buffer[:] = (0,0,255)
     spoke_samples_middle_edges_norm = img_pro.normalise_np_array(spoke_samples_middle_edges)
     spoke_samples_middle_edges_norm = img_pro.binarize_barcode(spoke_samples_middle_edges_norm)
     midedge_samples = check_barcode.visualise_1d_barcode(
@@ -1256,7 +1256,7 @@ def analyse_candidates_shapematch(
                 debug_imgx = draw_barcode_spokes(debug_imgx, c)
                 dataobject.img_view_or_save_if_debug(
                     debug_imgx,
-                    f"VALID_SPOKES")
+                    f"VALID_SPOKIES")
 
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
