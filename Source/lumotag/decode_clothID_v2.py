@@ -749,7 +749,7 @@ def get_approx_shape_and_bbox2(
             img2use = img
 
 
-        use_new_id = False
+        use_new_id = True
         if use_new_id:
             #quadcode - ID with diagonal as orientation and orthogonal as ID
             spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
@@ -1251,7 +1251,7 @@ def analyse_candidates_shapematch(
                     img2use = original_blurred_image
                 else:
                     img2use = original_img
-                cv2.drawContours(debug_img, [c.approx_contour], -1, (255,0,0), 2)
+                #cv2.drawContours(debug_img, [c.approx_contour], -1, (255,0,0), 2)
                 debug_imgx = img2use.copy()
                 debug_imgx = draw_barcode_spokes(debug_imgx, c)
                 dataobject.img_view_or_save_if_debug(
