@@ -467,7 +467,8 @@ def main():
                     display.display_method(output_image)
                 
                 if len(analysis) > 0:
-                    file_system.save_image(cap_img)
+                    file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
 
 if __name__ == '__main__':
     main()
