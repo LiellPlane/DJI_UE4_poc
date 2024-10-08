@@ -756,14 +756,34 @@ def get_approx_shape_and_bbox2(
                 img2use,
                 [cX, cY],
                 nearest_points,
-                samples_per_line=12
+                samples_per_line=SAMPLES_PER_LINE
                 )
             res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
 
-            if res:
+            if res is True:
                 shape_ = Shapes.SQUARE
+                # if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+                #     # add image here to check it against output one
+                #     plop = ShapeItem(
+                #         id=index,
+                #         approx_contour=approx,
+                #         default_contour=None,
+                #         filtered_contour=None,
+                #         boundingbox=None,
+                #         boundingbox_min=min_bbox,
+                #         sample_positions=None,#samplepos,
+                #         closest_corners=nearest_points,
+                #         sum_int_angles=None,
+                #         size=contour_pxl_cnt,
+                #         min_bbx_size = cv2.contourArea(min_bbox),
+                #         shape=None,
+                #         centre_x_y=[cX, cY],
+                #         _2d_samples=[averages1, averages2],
+                #         notes_for_debug_file=None)
+                   # notes_for_debug_file = [img2use.copy(), draw_barcode_spokes(img2use.copy(), plop)]
             else:
                 shape_ = Shapes.ALMOST_ID
+                #notes_for_debug_file = "defo not a square"
 
         else:
 
@@ -802,8 +822,10 @@ def get_approx_shape_and_bbox2(
             (res, _) = check_for_patternv2([averages1, averages2])
             if res:
                 shape_ = Shapes.SQUARE
+                notes_for_debug_file = "bad wtf"
             else:
                 shape_ = Shapes.ALMOST_ID
+                notes_for_debug_file = "bad not a square"
 
             if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
                 samplepos = sample_line1_diag + sample_line2_diag
@@ -1247,6 +1269,7 @@ def analyse_candidates_shapematch(
                 debug_img,
                 f"squares_found")
             for c in squrs_found:
+                debugname = random.randint(111111, 999999) # sorry, lazy tagging to check 
                 if use_blurred_image(c.size):
                     img2use = original_blurred_image
                 else:
@@ -1256,7 +1279,31 @@ def analyse_candidates_shapematch(
                 debug_imgx = draw_barcode_spokes(debug_imgx, c)
                 dataobject.img_view_or_save_if_debug(
                     debug_imgx,
-                    f"VALID_SPOKIES")
+                    f"VALID_SPOKIES{debugname}")
+
+
+            #     dataobject.img_view_or_save_if_debug(
+            #         draw_barcode_spokes(c.notes_for_debug_file[0], c),
+            #         f"VALID_SPOKIESK{debugname}_CHECK_OG")   
+
+            #     dataobject.img_view_or_save_if_debug(c.notes_for_debug_file[1],
+            #         f"VALID_SPOKIES{debugname}_CHECK_REGEN")
+            # # trying to find out why we are getting some failed images in our results
+            # # at least point every analysis should be green for valid barcode
+            # # but we are getting red analysis which doesnt make any sense
+            # spoke_samples_corners, _ = get_spokecode_samples(
+            #     img2use.copy(),
+            #     c.centre_x_y,
+            #     c.closest_corners,
+            #     samples_per_line=SAMPLES_PER_LINE
+            #     )
+            # res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
+            # if not res:
+            #     plop=1
+
+
+
+
 
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)

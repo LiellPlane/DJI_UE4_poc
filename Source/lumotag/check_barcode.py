@@ -230,7 +230,7 @@ def create_debug_imagepair(barcodepair: List):
     return stacked_img
 
 
-def is_valid_quadro_id(spoke_samples_corners: list[int]) -> True:
+def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     """quadrocode with diagonal orientation and orthogonal ID
     Check that the diagonal elements are correct
     &%%#%%@&&&&&%%%%###%#%###&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
