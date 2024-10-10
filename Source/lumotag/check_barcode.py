@@ -283,8 +283,6 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     # now check it is in the format we expect
     # the quadroID should have white 1 peak in each segment (not touching edges),
     # except for one segment which has no peak. This is how we orientate and validate the ID
-    if len(white_bars.white_bar_positions) > 9:
-        plop=1
     # Filter out any bars touching the edges of each sample (each sample is 1/4 of the array)
     # calculate the terminus of each sample
     assert (len(spoke_samples_corners) % 4) == 0, "should be multiple of 4!! QuadroCode alignment is 4 diagonal segments" # make sure 4 samples or something weird going on
