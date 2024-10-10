@@ -748,6 +748,7 @@ def get_approx_shape_and_bbox2(
         else:
             img2use = img
 
+    
 
         use_new_id = False
         if use_new_id:

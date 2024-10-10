@@ -317,18 +317,25 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
         return False
     
 
+
+    # we extract bars not touching edges of segments, and that straddles
+    # the middle of each segment as expected for this barcode
     quad = {}
     for bar_pos in white_bars.white_bar_positions:
         while bar_pos[0] > segment_ends[0]:
             segment_ends.pop(0)
-        # does white bar straddle or touch an edge?
+        # does white bar straddle or touch an edge? if so - ignore it
         if (bar_pos[0] <= segment_ends[0]) and (bar_pos[1] >= segment_ends[0]):
             pass
         else:
             quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
-            if quad_key not in quad:
-                quad[quad_key] = []
-            quad[quad_key].append(bar_pos)     
+            mid_point_segment = segment_ends[0] - (len(spoke_samples_corners)//8)
+            # check bar position straddles midpoint of segment
+            # TODO testing for thickness here maybe isn't the most intuitive
+            if (bar_pos[0] <= mid_point_segment) and (bar_pos[1] >= mid_point_segment):
+                if quad_key not in quad:
+                    quad[quad_key] = []
+                quad[quad_key].append(bar_pos)     
 
 
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
@@ -339,6 +346,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     # now we check that these 3 barcodes are in the quadrants
     if len(quad) != 3:
         return False
+
 
     return True
 
