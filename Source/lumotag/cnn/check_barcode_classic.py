@@ -45,7 +45,7 @@ def analyse_and_get_image(test_member):
     height = 500
     scale= height/len(test_member)
     whitebars: check_barcode.filteredWhiteBars = check_barcode.filter_white_bars(
-        check_barcode.decode_white_bars(np.array(test_member)),
+        check_barcode.decode_white_bars(np.array(test_member))[0],
         length_array=len(test_member)
         )
     out_img1 = cv2.resize(np.asarray(test_member), (200, height), interpolation=cv2.INTER_NEAREST)

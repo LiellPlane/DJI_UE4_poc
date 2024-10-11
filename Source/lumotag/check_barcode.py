@@ -8,6 +8,7 @@ from typing import Union, List, Optional
 from functools import reduce
 from enum import Enum, auto
 from math import floor
+from functools import lru_cache
 
 class CodeSegment(Enum):
     CORNER: int = 1
@@ -84,7 +85,7 @@ def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead], 
     return True
 
 
-def decode_white_bars(data) -> WhiteBars:
+def decode_white_bars(data) -> tuple[WhiteBars, any]:
     """
     Detects white bars in a barcode by identifying transitions from black to white to black.
 
@@ -130,7 +131,7 @@ def decode_white_bars(data) -> WhiteBars:
     # Calculate widths of the white bars
     white_bar_widths = white_ends - white_starts
 
-    return (WhiteBars(white_bar_positions, white_bar_widths))
+    return (WhiteBars(white_bar_positions, white_bar_widths)), binary_data
 
 
 def decode_barcode_bw_transitions(data):
@@ -196,7 +197,7 @@ def visualise_1d_barcode(_1dbarcode, height, segmentise:Optional[int]=None):
 def analyse_and_get_image(test_member):
     height = 500
     scale = height/len(test_member)
-    whitebars = filter_white_bars(
+    whitebars, _ = filter_white_bars(
         decode_white_bars(np.array(test_member)),
         length_array=len(test_member)
         )
@@ -228,6 +229,76 @@ def create_debug_imagepair(barcodepair: List):
         out_img2))
     
     return stacked_img
+
+@lru_cache(maxsize=None)
+def get_segment_startwhite_mask(segment_length) -> np.ndarray:
+    """for the quadrocode ID
+    
+    input should be length of the diagonal samples stacked horizontally
+    4 diagonals expected, therefore divison by 4 and 8 in this function
+
+    we want the start of every segment (sample/4) to be white - which
+    represents the centre dot
+
+    ex white bars sample:
+    10101|10100|10000|10100|
+    ex mask
+    10000|10000|10000|10000|
+
+    """
+    segment_mask = np.zeros(segment_length//4, dtype=bool)
+    segment_mask[0] = True
+    return np.tile(segment_mask, 4)
+
+
+@lru_cache(maxsize=None)
+def get_segment_middle_mask(segment_length, percent_from_edge = 10) -> np.ndarray:
+    """for the quadrocode ID
+    
+    input should be length of the diagonal samples stacked horizontally
+    4 diagonals expected, therefore divison by 4 and 8 in this function
+
+    for the quadrocode - one middle bar should be missing - this is the orientation bar
+
+    ex white middle bars on sample:
+    00100|00100|00000|00100|
+    ex mask
+    10001|10001|10001|10001|
+
+    OR them together 
+    """
+    segment_mask = np.zeros(segment_length//4, dtype=bool)
+    # how far in is the illegal zone for each segment
+    pc_buffer = int(len(segment_mask) * (percent_from_edge/100))
+    segment_mask[0: pc_buffer] = True
+    segment_mask[-pc_buffer:] = True
+    return np.tile(segment_mask, 4)
+
+
+@lru_cache(maxsize=None)
+def get_segment_edge_mask(segment_length) -> np.ndarray:
+    """for the quadrocode ID
+    
+    input should be length of the diagonal samples stacked horizontally
+    4 diagonals expected, therefore divison by 4 and 8 in this function
+    
+    ex white edge bars on sample:
+    11001|10001|11001|10000|
+    ex mask
+    00100|00100|00100|00100|
+    """
+
+    segment_mask = np.zeros(segment_length//4, dtype=bool)
+    length = len(segment_mask)
+    if length % 2 == 1:
+        middle_index = length // 2
+        segment_mask[middle_index] = True
+    else:
+        middle_left_index = (length // 2) - 1
+        middle_right_index = middle_left_index + 1
+        segment_mask[middle_left_index] = True
+        segment_mask[middle_right_index] = True
+    return np.tile(segment_mask, 4)
 
 
 def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
@@ -265,7 +336,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     """
     # get all white bars - with no filtering for bars touching edges
     # this will normalise the data!
-    white_bars: WhiteBars = decode_white_bars(spoke_samples_corners)
+    white_bars, binary_bars = decode_white_bars(spoke_samples_corners)
     # 7 and 8 here depends on if sample overlaps/touches boundary or not
     # see ascii art - we check all diagonal in a clockwise sequence, starting
     # each time from the centre. When these segments are connected together the
@@ -293,35 +364,22 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
             )
         ] + [len(spoke_samples_corners)] # 4 segments will have 5 edges
 
-    # check first that each segment starts with a high signal - as 
-    # pattern has the centre dot and each segment spans from centre outwards
-    bar_positions_copy = white_bars.white_bar_positions.copy()
-    segment_end_cnt = 0
-    for segment_index in segment_ends[:-1]: # last segment may not be white due to sample lines not overlapping boundary
-        while bar_positions_copy:
-            test_start_is_white = bar_positions_copy[0]
-            # check if white bar straddles the segment end/start
-            if all([
-                (test_start_is_white[0] <= segment_index),
-                (test_start_is_white[1] >= segment_index)
-            ]):
-                segment_end_cnt += 1
-                break
-            bar_positions_copy.pop(0)
 
-    # if we have detected 4 white bars on the start of each segment (due to starting from white dot in middle)
-    # we can assume is a candidate for valid ID
-    if segment_end_cnt > 4:
-        raise RuntimeError("impossible to happen, logic error")
-    if segment_end_cnt != 4:
+    # now test that the edge bars (if we split the total sample into 4 segments each start and 
+    # end is classed as an edge)
+    segment_high_start_mask = get_segment_startwhite_mask(len(spoke_samples_corners))
+    res = np.bitwise_and(segment_high_start_mask, binary_bars.astype(bool))
+    res = res[::len(spoke_samples_corners)//4] # get every Nth sample - here the start of each segment
+    if not np.all(res):
         return False
     
-
-
     # we extract bars not touching edges of segments, and that straddles
     # the middle of each segment as expected for this barcode
     non_edge_bars_per_quad = {}
     edge_bars_per_quad = {}
+    binary_corners = np.zeros(len(spoke_samples_corners), dtype=bool)
+    binary_middle_bars = np.zeros(len(spoke_samples_corners), dtype=bool)
+
     for bar_pos in white_bars.white_bar_positions:
         while bar_pos[0] > segment_ends[0]:
             segment_ends.pop(0)
@@ -333,14 +391,14 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
             if quad_key not in edge_bars_per_quad:
                 edge_bars_per_quad[quad_key] = []
             edge_bars_per_quad[quad_key].append(bar_pos)
+            # also load in the binary representation
+            binary_corners[bar_pos[0]:bar_pos[1]] = True
         else:
-            mid_point_segment = segment_ends[0] - (len(spoke_samples_corners) // 8)
-            # check bar position straddles midpoint of segment
-            # TODO testing for thickness here maybe isn't the most intuitive
-            if (bar_pos[0] <= mid_point_segment) and (bar_pos[1] >= mid_point_segment):
-                if quad_key not in non_edge_bars_per_quad:
-                    non_edge_bars_per_quad[quad_key] = []
-                non_edge_bars_per_quad[quad_key].append(bar_pos)     
+            # also load in the binary representation
+            binary_middle_bars[bar_pos[0]:bar_pos[1]] = True
+            if quad_key not in non_edge_bars_per_quad:
+                non_edge_bars_per_quad[quad_key] = []
+            non_edge_bars_per_quad[quad_key].append(bar_pos)  
 
 
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
@@ -352,17 +410,37 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     if len(non_edge_bars_per_quad) != 3:
         return False
 
-    # for quadkey, edge_bars in edge_bars_per_quad.items():
-    #     for edge_bar in edge_bars:
 
-    #     # if an edge bar is too long - reaching centre of segment - return false
-    #         # we divide samples by 4 to get segments - as always 4 sample lines
-    #         # we divide the samples by 8 to get half of one segment - this will be a midpoint
-    #         # for example a total sample of 40 will have size 10 segments, and size 5 midpoints
-    #         if edge_bar[1] >= ((quadkey * len(spoke_samples_corners)//4) + (len(spoke_samples_corners)//8)):
-    #             # edge segment is too far - middle section of segment should be a 
-    #             # white or black bar - not an extended edge segment
-    #             return False
+    # now check middle bars aren't near the edges of each segment
+    binary_edges_avoid_mask = get_segment_middle_mask(len(spoke_samples_corners))
+    if np.any(np.bitwise_and(binary_edges_avoid_mask, binary_middle_bars)):
+        # ex white middle bars on sample:
+        # 00100|00100|00100|00100|
+        # ex mask
+        # 10001|10001|10001|10001|
+        return False
+
+    # now check middle bars aren't near the edges of each segment
+    binary_straddle_middle = get_segment_edge_mask(len(spoke_samples_corners))
+    if np.any(np.bitwise_and(binary_edges_avoid_mask, binary_middle_bars)):
+        # ex white middle bars on sample:
+        # 00100|00100|00100|00100|
+        # ex mask
+        # 10001|10001|10001|10001|
+        return False
     
+
+    # now test that the edge bars (if we split the total sample into 4 segments each start and 
+    # end is classed as an edge)
+    binary_corners_mask = get_segment_edge_mask(len(spoke_samples_corners))
+    if np.any(np.bitwise_and(binary_corners_mask, binary_corners)):
+        # check our corner edges don't touch the middle of each segment
+        # ex white edge bars on sample:
+        # 11001|10001|11001|10000|
+        # ex mask
+        # 00100|00100|00100|00100|
+        # now OR them together - if any of the edge white bars touch the middle - fail
+        return False
+
     return True
 

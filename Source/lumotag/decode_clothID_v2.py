@@ -1105,7 +1105,7 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
 
     # visualise the barcodes
     # get the whitebars for real
-    white_bars: check_barcode.WhiteBars = check_barcode.decode_white_bars(spoke_samples_corners)
+    white_bars, _ = check_barcode.decode_white_bars(spoke_samples_corners)
     visualise_corners = np.zeros_like(spoke_samples_corners)
     for bar_pos in white_bars.white_bar_positions:
         visualise_corners[bar_pos[0]: bar_pos[1]] = 1
@@ -1256,12 +1256,12 @@ def analyse_candidates_shapematch(
         TOO_CLOSE =  [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TOO_CLOSE]
         ALMOST_ID = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.ALMOST_ID]
         
-        BAD_PIXELS = []
-        BAD_RATIO = []
-        BAD_APPROX_LEN = []
-        BAD_APPROX_PXL =  []
-        TOO_CLOSE =  []
-        ALMOST_ID = []
+        # BAD_PIXELS = []
+        # BAD_RATIO = []
+        # BAD_APPROX_LEN = []
+        # BAD_APPROX_PXL =  []
+        # TOO_CLOSE =  []
+        # ALMOST_ID = []
         
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
@@ -1499,7 +1499,7 @@ def check_for_patternv2(samples) -> Tuple[bool, List[check_barcode.FilteredWhite
     whitebars = []
     for sample in samples:
         whitebars.append(check_barcode.filter_white_bars(
-            check_barcode.decode_white_bars(np.array(sample)),
+            check_barcode.decode_white_bars(np.array(sample))[0],
             length_array=len(sample)
             ))
     return check_barcode.check_pattern_valid(whitebars, len(sample)), whitebars
