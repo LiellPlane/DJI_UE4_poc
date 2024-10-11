@@ -748,7 +748,6 @@ def get_approx_shape_and_bbox2(
         else:
             img2use = img
 
-    
 
         use_new_id = False
         if use_new_id:
@@ -1257,7 +1256,12 @@ def analyse_candidates_shapematch(
         TOO_CLOSE =  [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TOO_CLOSE]
         ALMOST_ID = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.ALMOST_ID]
         
-        
+        BAD_PIXELS = []
+        BAD_RATIO = []
+        BAD_APPROX_LEN = []
+        BAD_APPROX_PXL =  []
+        TOO_CLOSE =  []
+        ALMOST_ID = []
         
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)

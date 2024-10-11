@@ -320,33 +320,49 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
 
     # we extract bars not touching edges of segments, and that straddles
     # the middle of each segment as expected for this barcode
-    quad = {}
+    non_edge_bars_per_quad = {}
+    edge_bars_per_quad = {}
     for bar_pos in white_bars.white_bar_positions:
         while bar_pos[0] > segment_ends[0]:
             segment_ends.pop(0)
+
+        quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
+
         # does white bar straddle or touch an edge? if so - ignore it
         if (bar_pos[0] <= segment_ends[0]) and (bar_pos[1] >= segment_ends[0]):
-            pass
+            if quad_key not in edge_bars_per_quad:
+                edge_bars_per_quad[quad_key] = []
+            edge_bars_per_quad[quad_key].append(bar_pos)
         else:
-            quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
-            mid_point_segment = segment_ends[0] - (len(spoke_samples_corners)//8)
+            mid_point_segment = segment_ends[0] - (len(spoke_samples_corners) // 8)
             # check bar position straddles midpoint of segment
             # TODO testing for thickness here maybe isn't the most intuitive
             if (bar_pos[0] <= mid_point_segment) and (bar_pos[1] >= mid_point_segment):
-                if quad_key not in quad:
-                    quad[quad_key] = []
-                quad[quad_key].append(bar_pos)     
+                if quad_key not in non_edge_bars_per_quad:
+                    non_edge_bars_per_quad[quad_key] = []
+                non_edge_bars_per_quad[quad_key].append(bar_pos)     
 
 
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
     # nb - continuous sample is in 4 segments, each segment start is categorised as an edge
-    if not all([(len(whitebar_pos)==1) for _, whitebar_pos in quad.items()]):
+    if not all([(len(whitebar_pos) == 1) for _, whitebar_pos in non_edge_bars_per_quad.items()]):
         return False
   
     # now we check that these 3 barcodes are in the quadrants
-    if len(quad) != 3:
+    if len(non_edge_bars_per_quad) != 3:
         return False
 
+    # for quadkey, edge_bars in edge_bars_per_quad.items():
+    #     for edge_bar in edge_bars:
 
+    #     # if an edge bar is too long - reaching centre of segment - return false
+    #         # we divide samples by 4 to get segments - as always 4 sample lines
+    #         # we divide the samples by 8 to get half of one segment - this will be a midpoint
+    #         # for example a total sample of 40 will have size 10 segments, and size 5 midpoints
+    #         if edge_bar[1] >= ((quadkey * len(spoke_samples_corners)//4) + (len(spoke_samples_corners)//8)):
+    #             # edge segment is too far - middle section of segment should be a 
+    #             # white or black bar - not an extended edge segment
+    #             return False
+    
     return True
 
