@@ -315,14 +315,19 @@ def get_ID(
         spoke_samples_corners: list[int],
         spoke_samples_middle_edges: list[int]
         ) -> VerifyBarcodeResult:
-    res = is_valid_quadro_id(spoke_samples_corners)
+    res = is_valid_quadro_id(
+        spoke_samples_corners=spoke_samples_corners
+        )
     if res.res is True:
-        res = decode_id(spoke_samples_corners, res)
+        res = decode_id(
+            spoke_samples_middle_edges=spoke_samples_middle_edges,
+            verify_is_barcode_res=res
+            )
     return res
 
 
 def decode_id(
-        spoke_samples_corners: list[int],
+        spoke_samples_middle_edges: list[int],
         verify_is_barcode_res: VerifyBarcodeResult
         ) -> VerifyBarcodeResult:
     """quadrocode with diagonal orientation and orthogonal ID
@@ -357,8 +362,63 @@ def decode_id(
     &&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%.        (%%%%%&%%&&&&&%%%%%%%%%%%%%&&&&&&&&&&&&&
     %&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%(   ,%%%%%&%&%%%%%%%&&&&&&%%%%%%%&&&&&&&&&&&&&&&
     %%&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&%%%%%%%%&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    """
+    
+    same as diagonal quadrants/segments - we expected a high signal for the 
+    start of each segment"""
+
+    # get all white bars - with no filtering for bars touching edges
+    # this will normalise the data!
+    white_bars, binary_bars = decode_white_bars(spoke_samples_middle_edges)
+
+    # now test that the start of each edge bar is white (corresponding to centre dot)
+    segment_high_start_mask = get_10000_mask(len(spoke_samples_middle_edges))
+    res = np.bitwise_and(segment_high_start_mask, binary_bars.astype(bool))
+    res = res[::len(spoke_samples_middle_edges)//4] # get every Nth sample - here the start of each segment
+    if not np.all(res):
+        return VerifyBarcodeResult(
+            res=False,
+            status="check ID: quadrant not starting with high signal")
+    
     return verify_is_barcode_res
+
+
+def breakout_edges_and_middle_bars(samples, white_bars):
+    # we extract bars not touching edges of segments, and which straddles
+    # the middle of each segment as expected for this barcode
+
+    segment_ends = [
+        i for i
+        in range(
+            0, len(samples), len(samples)//4
+            )
+        ] + [len(samples)] # 4 segments will have 5 edges
+
+
+    non_edge_bars_per_quad = {}
+    edge_bars_per_quad = {}
+    _100001_bars = np.zeros(len(samples), dtype=bool)
+    _00100_bars = np.zeros(len(samples), dtype=bool)
+
+    for bar_pos in white_bars.white_bar_positions:
+        while bar_pos[0] > segment_ends[0]:
+            segment_ends.pop(0)
+
+        quad_key = floor(segment_ends[0] / (len(samples)/4))
+
+        # does white bar straddle or touch an edge?
+        if (bar_pos[0] <= segment_ends[0]) and (bar_pos[1] >= segment_ends[0]):
+            if quad_key not in edge_bars_per_quad:
+                edge_bars_per_quad[quad_key] = []
+            edge_bars_per_quad[quad_key].append(bar_pos)
+            # also load in the binary representation
+            _100001_bars[bar_pos[0]:bar_pos[1]] = True
+        else:
+            # also load in the binary representation
+            _00100_bars[bar_pos[0]:bar_pos[1]] = True
+            if quad_key not in non_edge_bars_per_quad:
+                non_edge_bars_per_quad[quad_key] = []
+            non_edge_bars_per_quad[quad_key].append(bar_pos) 
+    return non_edge_bars_per_quad, edge_bars_per_quad
 
 def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     """quadrocode with diagonal orientation and orthogonal ID
@@ -402,7 +462,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     # each time from the centre. When these segments are connected together the
     # centrepoint and potential outerboundry are continuous (one bar), except for
     # the last sample which does not hit the outer boundary (bars = 7) or does
-    # bars = 8
+    # (bars = 8)
 
     expectedpeaks_insideboundary = 7
     expectedpeaks_ousideboundary = 8
@@ -472,7 +532,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
                 non_edge_bars_per_quad[quad_key] = []
             non_edge_bars_per_quad[quad_key].append(bar_pos)  
 
-
+    l,k = breakout_edges_and_middle_bars(spoke_samples_corners, white_bars)
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
     # nb - continuous sample is in 4 segments, each segment start is categorised as an edge
     if not all([(len(whitebar_pos) == 1) for _, whitebar_pos in non_edge_bars_per_quad.items()]):
