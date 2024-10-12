@@ -10,6 +10,9 @@ from enum import Enum, auto
 from math import floor
 from functools import lru_cache
 
+MSE_LIM_BAR_WIDTH = 2
+MSE_LIM_BAR_DISTANCE = 2
+
 class CodeSegment(Enum):
     CORNER: int = 1
     MIDLINE: int = 2
@@ -448,6 +451,19 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
             status="segment internal bar touching edge of segment"
             )
 
+    _00100_mask = get_00100_mask(len(spoke_samples_corners))
+    if np.any(np.bitwise_and(_00100_mask, _100001_bars)):
+        # check our corner edges don't touch the middle of each segment
+        # ex white edge bars on sample:
+        # 11001|10001|11001|10000|
+        # ex mask
+        # 00100|00100|00100|00100|
+        # now OR them together - if any of the edge white bars touch the middle - fail
+        return VerifyBarcodeResult(
+            res=False,
+            status="segment edge bar too large"
+            )
+
 
     ###### ID element sometimes not straddling middle.... keep this incase we need it
     # # now check middle bars straddle the middle
@@ -491,20 +507,12 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     # calculate MSQRERROR
     sqr_err_bardist = round((1/len(non_edge_bars_per_quad)) * sqr_errors_dist, 3) # watch out here - relies on non_edge_bars being cleaned up previously
     sqr_err_barwidth = round((1/len(non_edge_bars_per_quad)) * sqr_errors_width, 3) # watch out here - relies on non_edge_bars being cleaned up previously
-    # now test that the edge bars (if we split the total sample into 4 segments each start and 
-    # end is classed as an edge)
-    _00100_mask = get_00100_mask(len(spoke_samples_corners))
-    if np.any(np.bitwise_and(_00100_mask, _100001_bars)):
-        # check our corner edges don't touch the middle of each segment
-        # ex white edge bars on sample:
-        # 11001|10001|11001|10000|
-        # ex mask
-        # 00100|00100|00100|00100|
-        # now OR them together - if any of the edge white bars touch the middle - fail
-        return VerifyBarcodeResult(
-            res=False,
-            status="segment edge bar too large"
-            )
+
+
+    if sqr_err_bardist > MSE_LIM_BAR_WIDTH:
+        return VerifyBarcodeResult(res=False, sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}", status="bad sqr_err_bardist")
+    if sqr_err_barwidth > MSE_LIM_BAR_DISTANCE:
+        return VerifyBarcodeResult(res=False, sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}", status="bad sqr_err_barwidth")
+    
 
     return VerifyBarcodeResult(res=True, sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}", status="Pass")
-
