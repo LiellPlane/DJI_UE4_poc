@@ -30,11 +30,12 @@ class WhiteBars():
 
 
 class VerifyBarcodeResult:
-    __slots__ = ['res', 'sqr_err', 'status']
-    def __init__(self, res: bool, sqr_err: float = -1,status:str="no status"):
+    __slots__ = ['res', 'sqr_err', 'status', "orientation_offset"]
+    def __init__(self, res: bool, sqr_err: float = -1,status:str="no status", orientation_offset: int=-1):
         self.res = res
         self.sqr_err = sqr_err
         self.status = status
+        self.orientation_offset = orientation_offset
 
 @dataclass
 class FilteredWhiteBars(WhiteBars):
@@ -193,7 +194,6 @@ def decode_barcode_bw_transitions(data):
 
 
 def visualise_1d_barcode(_1dbarcode, height, segmentise:Optional[int]=None):
-    width = 50
     out_img1 = cv2.resize(np.asarray(_1dbarcode), (50, height), interpolation=cv2.INTER_NEAREST)
     out_img1 = cv2.cvtColor(out_img1, cv2.COLOR_GRAY2BGR)
     if segmentise:
@@ -311,9 +311,59 @@ def get_00100_mask(segment_length) -> np.ndarray:
     return np.tile(segment_mask, 4)
 
 
+def get_ID(
+        spoke_samples_corners: list[int],
+        spoke_samples_middle_edges: list[int]
+        ) -> VerifyBarcodeResult:
+    res = is_valid_quadro_id(spoke_samples_corners)
+    if res.res is True:
+        res = decode_id(spoke_samples_corners, res)
+    return res
+
+
+def decode_id(
+        spoke_samples_corners: list[int],
+        verify_is_barcode_res: VerifyBarcodeResult
+        ) -> VerifyBarcodeResult:
+    """quadrocode with diagonal orientation and orthogonal ID
+    Check that the diagonal elements are correct, and get orientation
+    Use orientation to shift orthogonal elements and decode ID
+    &%%#%%@&&&&&%%%%###%#%###&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&%%##%%%%%###%%&&&&&&&&&&&&&&&&&&&&&&&&&&&&%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%, .. #%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%* . ../,. .%%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%#.... ,%&&&&%...*%%&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&&&&&&%%%%&&%/. ..#&&&&&&&&&&(...%%&&&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&&&&&&&%%%%%%#......(&&&&&&&&&&&&&&&%....%%&&&&&&&&&&&&&&&&&&&&&&&&
+    &&&&&&&&&&&&&&%&&&%%%%%. ..../%&&&&&&&&&&&&&&&&&&&&%...(%%&%%%%&&&&&&&&&&&&&&&&&
+    &&&&&&&&&%&&%%%%%%%.... .,%&&&&&&&&&&&&&&&&&&&&&&&&&&*.. %%%%%%&%&&&&&&&&&&&&&&&
+    &&&&&&&&&%%%%%%......,%&&&&&&&&#&&&&&&&&&&&&&&&&&&&&&&%....%%%%%&&&&&&&&&&&&&&&&
+    &&&&&&&&%%%, ... .#%&&&&&&&&&&&&&&&&&&&&&&&&&&&&#.,%&&&%#...(%%%%&&&&&&&&&&&&&&&
+    &&&&&&#...   .(%&&&&&&&%%&&&&&&&&&&&&&&&&&&&&&%......%&&&%,.. %%%%%&%%%&&&&&&&&&
+    &&&&&&&,,   .%&&%&&&&#.....&&&&&&&&&#&&%&&&&&&&%. ...,&&&&&%...*%%%%%%%%%&&&&&&&
+    &&&&&&&&%#    (&&&&&%,.   .&&&&&&&&%......./(&&&&%%%%&&&&&&&&/.. #%%%%%%&&&&&&&&
+    &&&&&&&&%&%*.   #&&&&%/...&&&&&&&&%/..,..  .*&&&&&&&&&%%%&&&&&%.  .%%%%%&&%%&&&&
+    &&&&&&&&&%%&%.   .%&&&&&&&&&&&&&&&&%,.. ... %&&&&&&&%,....(&&&&&#. .,%%%%%%&&&&&
+    &&&%%&&&%%%%%%%.  ./&&&&&&#..  #%&&%%%#/,/%&&&&&&&&&% ..  *&&&&&&%, ..,%%%&&&&&&
+    &&&&&%&&&&&&%%&%#.   %&&&%(. ...*%&&&&&&&&&&&&&&&&&&&%*..#&&&&&&&&#... (%%%&&&&&
+    %&&&&&&&&&&&&&%%&%,    %%#%%..  #%&&&&&&&&&&&&&&&&&&&&&&&&&&&%#. ... .#%%%%%%%&&
+    &&%&&&&&&&&&&&&%%&%# . .*%&&&&&&&&&%%%&&&&&&&&&&&&&&&&&&&%%...    .%%%%%%%%%%%%%
+    &&%%&&&&&&&&%%%%%%%%%(  . #%&&&&&#  .*  (&&&&&&&&&&&&&%/.   . .%%%%%%%%%%%%%%%%%
+    &&&&&&&&&&&&%%%%%%%%%%%.  ..%%%%%#      .%&&&&&&&&%/ .     #%%%%%%%%%%%%%%%%%%%%
+    &&&&&&&%%&&&&&&%%%%%%%%%(    *%%%%%%%#%%%&&&&&%#.   .  *#%%%%%%%%%%%%%%%%%%%%%%%
+    &&&&&&&&%%%%%%%&&%%%%%%%%%.  . #%%%%&&&&&%%#, .    ,#%%%%%%%%%%%%%%%%%%%%%%%%&&&
+    &&&&&&&&%%%%%%%%%%%%%%%%%%%#  . .%%%&%%%*      .#%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&
+    &&&&&&&&&&%%%%%%%%%%%%%%%%%%%/    *%(...   .#%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&
+    &&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%.        (%%%%%&%%&&&&&%%%%%%%%%%%%%&&&&&&&&&&&&&
+    %&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%(   ,%%%%%&%&%%%%%%%&&&&&&%%%%%%%&&&&&&&&&&&&&&&
+    %%&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&%%%%%%%%&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    """
+    return verify_is_barcode_res
+
 def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     """quadrocode with diagonal orientation and orthogonal ID
-    Check that the diagonal elements are correct
+    Check that the diagonal elements are correct, and get orientation
+    Use orientation to shift orthogonal elements and decode ID
     &%%#%%@&&&&&%%%%###%#%###&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     &&&%%##%%%%%###%%&&&&&&&&&&&&&&&&&&&&&&&&&&&&%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     &&&&&&%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%, .. #%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -515,4 +565,16 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
         return VerifyBarcodeResult(res=False, sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}", status="bad sqr_err_barwidth")
     
 
-    return VerifyBarcodeResult(res=True, sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}", status="Pass")
+    # get orientation
+    # orientation is determined by the missing bar from a quadrant/segment
+    # in the non_edge_bars_per_quad dict, we should have keys [1-4] with the bar positions
+    # missing integer in that range is the offset
+    expected_sum = 10 # sum of [1,2,3,4]
+    actual_sum = sum(list(non_edge_bars_per_quad.keys()))
+    missing_number = expected_sum - actual_sum
+
+    return VerifyBarcodeResult(
+        res=True,
+        sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}",
+        status="Pass",
+        orientation_offset=missing_number)

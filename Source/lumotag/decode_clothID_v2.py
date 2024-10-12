@@ -744,88 +744,71 @@ def get_approx_shape_and_bbox2(
             img2use = img
 
 
-        use_new_id = True
-        if use_new_id:
+        # use_new_id = True
+        # if use_new_id:
             #quadcode - ID with diagonal as orientation and orthogonal as ID
-            spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
-                img2use,
-                [cX, cY],
-                nearest_points,
-                samples_per_line=SAMPLES_PER_LINE
-                )
-            res = check_barcode.is_valid_quadro_id(spoke_samples_corners).res
+        spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
+            img2use,
+            [cX, cY],
+            nearest_points,
+            samples_per_line=SAMPLES_PER_LINE
+            )
+        res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges).res
 
-            if res is True:
-                shape_ = Shapes.SQUARE
-                # if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-                #     # add image here to check it against output one
-                #     plop = ShapeItem(
-                #         id=index,
-                #         approx_contour=approx,
-                #         default_contour=None,
-                #         filtered_contour=None,
-                #         boundingbox=None,
-                #         boundingbox_min=min_bbox,
-                #         sample_positions=None,#samplepos,
-                #         closest_corners=nearest_points,
-                #         sum_int_angles=None,
-                #         size=contour_pxl_cnt,
-                #         min_bbx_size = cv2.contourArea(min_bbox),
-                #         shape=None,
-                #         centre_x_y=[cX, cY],
-                #         _2d_samples=[averages1, averages2],
-                #         notes_for_debug_file=None)
-                   # notes_for_debug_file = [img2use.copy(), draw_barcode_spokes(img2use.copy(), plop)]
-            else:
-                shape_ = Shapes.ALMOST_ID
-                #notes_for_debug_file = "defo not a square"
+
+        if res is True:
+            shape_ = Shapes.SQUARE
 
         else:
+            shape_ = Shapes.ALMOST_ID
+            #notes_for_debug_file = "defo not a square"
 
-            if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-                samplepos = sample_line1_diag + sample_line2_diag
-            else:
-                samplepos = None
+        # else:
+
+        #     if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+        #         samplepos = sample_line1_diag + sample_line2_diag
+        #     else:
+        #         samplepos = None
 
 
-            _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
+        #     _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
 
         
-            for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
-                try:
-                #averages.append(img2use[np.clip(sample_line1_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1_diag[i][0], 1,img2use.shape[1]-1)])
-                    averages1.append(img2use[sample_line1_diag[i][1], sample_line1_diag[i][0]])
-                except Exception as e:
-                    print("out of range - skip")
+        #     for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
+        #         try:
+        #         #averages.append(img2use[np.clip(sample_line1_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1_diag[i][0], 1,img2use.shape[1]-1)])
+        #             averages1.append(img2use[sample_line1_diag[i][1], sample_line1_diag[i][0]])
+        #         except Exception as e:
+        #             print("out of range - skip")
 
-            for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
-                #averages2.append(img2use[np.clip(sample_line2_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2_diag[i][0], 1,img2use.shape[1]-1)])
-                try:
-                    averages2.append(img2use[sample_line2_diag[i][1], sample_line2_diag[i][0]])
-                except Exception:
-                    print("out of range")
+        #     for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
+        #         #averages2.append(img2use[np.clip(sample_line2_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2_diag[i][0], 1,img2use.shape[1]-1)])
+        #         try:
+        #             averages2.append(img2use[sample_line2_diag[i][1], sample_line2_diag[i][0]])
+        #         except Exception:
+        #             print("out of range")
 
 
 
-            if len(averages1) != SAMPLES_PER_LINE:
-                averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
-            if len(averages2) != SAMPLES_PER_LINE:
-                averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
+        #     if len(averages1) != SAMPLES_PER_LINE:
+        #         averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
+        #     if len(averages2) != SAMPLES_PER_LINE:
+        #         averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
 
-            # cheesy way to test for pattern
-            #check_for_patternv2([averages1, averages2])
-            (res, _) = check_for_patternv2([averages1, averages2])
-            if res:
-                shape_ = Shapes.SQUARE
-                notes_for_debug_file = "bad wtf"
-            else:
-                shape_ = Shapes.ALMOST_ID
-                notes_for_debug_file = "bad not a square"
+        #     # cheesy way to test for pattern
+        #     #check_for_patternv2([averages1, averages2])
+        #     (res, _) = check_for_patternv2([averages1, averages2])
+        #     if res:
+        #         shape_ = Shapes.SQUARE
+        #         notes_for_debug_file = "bad wtf"
+        #     else:
+        #         shape_ = Shapes.ALMOST_ID
+        #         notes_for_debug_file = "bad not a square"
 
-            if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-                samplepos = sample_line1_diag + sample_line2_diag
-            else:
-                samplepos = None
+        #     if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
+        #         samplepos = sample_line1_diag + sample_line2_diag
+        #     else:
+        #         samplepos = None
 
         output = ShapeItem(
             id=index,
@@ -1077,7 +1060,7 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     #spoke_samples_corners = img_pro.normalise_np_array(spoke_samples_corners)
     #spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
 
-    res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
+    res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges)
 
     colour_gradient = [(255, i, 255-i) for i in range(0, 255, int(255/8))]
 
@@ -1299,7 +1282,7 @@ def analyse_candidates_shapematch(
             #     c.closest_corners,
             #     samples_per_line=SAMPLES_PER_LINE
             #     )
-            # res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
+            # res = check_barcode.get_ID(spoke_samples_corners)
             # if not res:
             #     plop=1
 
