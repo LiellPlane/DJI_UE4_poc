@@ -11,7 +11,7 @@ from math import floor
 from functools import lru_cache
 
 MSE_LIM_BAR_WIDTH = 2
-MSE_LIM_BAR_DISTANCE = 2
+MSE_LIM_BAR_DISTANCE = 1.5
 
 class CodeSegment(Enum):
     CORNER: int = 1
