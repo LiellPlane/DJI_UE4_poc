@@ -394,12 +394,12 @@ def decode_id(
             )
 
     # for this specific barcode - we expect to have one bar at position 2 and one at position 4
-    if not all([
-        2 in non_edge_bars_per_quad.keys(),
-        4 in non_edge_bars_per_quad.keys(),
-        len(non_edge_bars_per_quad[2]) == 1,
-        len(non_edge_bars_per_quad[4]) == 1,
-    ]):
+    if not all((
+        2 in non_edge_bars_per_quad,
+        4 in non_edge_bars_per_quad,
+        2 in non_edge_bars_per_quad and len(non_edge_bars_per_quad[2]) == 1,
+        4 in non_edge_bars_per_quad and len(non_edge_bars_per_quad[4]) == 1
+    )):
         return VerifyBarcodeResult(
             res=False,
             status="ID CHECK: did not find bars at position 2 and 4 for quadrocode"
