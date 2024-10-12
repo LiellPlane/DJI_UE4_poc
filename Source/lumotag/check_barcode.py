@@ -377,15 +377,41 @@ def decode_id(
     if not np.all(res):
         return VerifyBarcodeResult(
             res=False,
-            status="check ID: quadrant not starting with high signal")
+            status="ID CHECK: quadrant not starting with high signal")
     
+
+    non_edge_bars_per_quad, edge_bars_per_quad, _100001_bars, _00100_bars = breakout_edges_and_middle_bars(spoke_samples_middle_edges, white_bars)
+    # each quadrant sans edge bars should have at most 1 bar
+    if not all([(len(whitebar_pos) <= 1) for _, whitebar_pos in non_edge_bars_per_quad.items()]):
+        return VerifyBarcodeResult(
+            res=False,
+            status="ID CHECK: segment bar count invalid"
+            )
+
+    _00100_mask = get_00100_mask(len(spoke_samples_middle_edges))
+    if np.any(np.bitwise_and(_00100_mask, _100001_bars)):
+        # check our corner edges don't touch the middle of each segment
+        # ex white edge bars on sample:
+        # 11001|10001|11001|10000|
+        # ex mask
+        # 00100|00100|00100|00100|
+        # now OR them together - if any of the edge white bars touch the middle - fail
+        return VerifyBarcodeResult(
+            res=False,
+            status="ID CHECK: segment edge bar too large"
+            )
+
     return verify_is_barcode_res
 
 
 def breakout_edges_and_middle_bars(samples, white_bars):
     # we extract bars not touching edges of segments, and which straddles
     # the middle of each segment as expected for this barcode
-
+    # samples in form:
+    # 000000000000
+    # segments in form (corresponding to radial samples outwards of centre)
+    # |000|000|000|000|
+    # we want the position of every bar
     segment_ends = [
         i for i
         in range(
@@ -418,7 +444,7 @@ def breakout_edges_and_middle_bars(samples, white_bars):
             if quad_key not in non_edge_bars_per_quad:
                 non_edge_bars_per_quad[quad_key] = []
             non_edge_bars_per_quad[quad_key].append(bar_pos) 
-    return non_edge_bars_per_quad, edge_bars_per_quad
+    return non_edge_bars_per_quad, edge_bars_per_quad, _100001_bars, _00100_bars
 
 def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     """quadrocode with diagonal orientation and orthogonal ID
@@ -483,17 +509,17 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
             "should be multiple of 4!! QuadroCode alignment is 4 diagonal segments"
          ) # make sure 4 samples or something weird going on
 
-    # samples in form:
-    # 000000000000
-    # segments in form (corresponding to radial samples outwards of centre)
-    # |000|000|000|000|
-    # we want the position of every bar
-    segment_ends = [
-        i for i
-        in range(
-            0, len(spoke_samples_corners), len(spoke_samples_corners)//4
-            )
-        ] + [len(spoke_samples_corners)] # 4 segments will have 5 edges
+    # # samples in form:
+    # # 000000000000
+    # # segments in form (corresponding to radial samples outwards of centre)
+    # # |000|000|000|000|
+    # # we want the position of every bar
+    # segment_ends = [
+    #     i for i
+    #     in range(
+    #         0, len(spoke_samples_corners), len(spoke_samples_corners)//4
+    #         )
+    #     ] + [len(spoke_samples_corners)] # 4 segments will have 5 edges
 
 
     # now test that the start of each edge bar is white (corresponding to centre dot)
@@ -505,34 +531,34 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
             res=False,
             status="quadrant not starting with high signal")
     
-    # we extract bars not touching edges of segments, and which straddles
-    # the middle of each segment as expected for this barcode
-    non_edge_bars_per_quad = {}
-    edge_bars_per_quad = {}
-    _100001_bars = np.zeros(len(spoke_samples_corners), dtype=bool)
-    _00100_bars = np.zeros(len(spoke_samples_corners), dtype=bool)
+    # # we extract bars not touching edges of segments, and which straddles
+    # # the middle of each segment as expected for this barcode
+    # non_edge_bars_per_quad = {}
+    # edge_bars_per_quad = {}
+    # _100001_bars = np.zeros(len(spoke_samples_corners), dtype=bool)
+    # _00100_bars = np.zeros(len(spoke_samples_corners), dtype=bool)
 
-    for bar_pos in white_bars.white_bar_positions:
-        while bar_pos[0] > segment_ends[0]:
-            segment_ends.pop(0)
+    # for bar_pos in white_bars.white_bar_positions:
+    #     while bar_pos[0] > segment_ends[0]:
+    #         segment_ends.pop(0)
 
-        quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
+    #     quad_key = floor(segment_ends[0] / (len(spoke_samples_corners)/4))
 
-        # does white bar straddle or touch an edge?
-        if (bar_pos[0] <= segment_ends[0]) and (bar_pos[1] >= segment_ends[0]):
-            if quad_key not in edge_bars_per_quad:
-                edge_bars_per_quad[quad_key] = []
-            edge_bars_per_quad[quad_key].append(bar_pos)
-            # also load in the binary representation
-            _100001_bars[bar_pos[0]:bar_pos[1]] = True
-        else:
-            # also load in the binary representation
-            _00100_bars[bar_pos[0]:bar_pos[1]] = True
-            if quad_key not in non_edge_bars_per_quad:
-                non_edge_bars_per_quad[quad_key] = []
-            non_edge_bars_per_quad[quad_key].append(bar_pos)  
+    #     # does white bar straddle or touch an edge?
+    #     if (bar_pos[0] <= segment_ends[0]) and (bar_pos[1] >= segment_ends[0]):
+    #         if quad_key not in edge_bars_per_quad:
+    #             edge_bars_per_quad[quad_key] = []
+    #         edge_bars_per_quad[quad_key].append(bar_pos)
+    #         # also load in the binary representation
+    #         _100001_bars[bar_pos[0]:bar_pos[1]] = True
+    #     else:
+    #         # also load in the binary representation
+    #         _00100_bars[bar_pos[0]:bar_pos[1]] = True
+    #         if quad_key not in non_edge_bars_per_quad:
+    #             non_edge_bars_per_quad[quad_key] = []
+    #         non_edge_bars_per_quad[quad_key].append(bar_pos)  
 
-    l,k = breakout_edges_and_middle_bars(spoke_samples_corners, white_bars)
+    non_edge_bars_per_quad,edge_bars_per_quad, _100001_bars, _00100_bars = breakout_edges_and_middle_bars(spoke_samples_corners, white_bars)
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
     # nb - continuous sample is in 4 segments, each segment start is categorised as an edge
     if not all([(len(whitebar_pos) == 1) for _, whitebar_pos in non_edge_bars_per_quad.items()]):
