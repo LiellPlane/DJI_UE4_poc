@@ -1043,3 +1043,22 @@ def normalise_np_array(data):
 
 def binarize_barcode(normalized_data):
     return (normalized_data > 0.5).astype(np.int8)
+
+
+def add_text_to_image(image, text):
+    height, width = image.shape[:2]
+    
+    # Calculate font scale based on image width
+    font_scale = width/1000 # This will make the text size relative to the image width
+    
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    color = (0, 0, 255)  # Red in BGR
+    thickness = 2
+    
+    # Position text in top left with some padding
+    position = (10, 50)  # (x, y) coordinates
+    
+    # Put text on image
+    cv2.putText(image, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
+    
+    return image

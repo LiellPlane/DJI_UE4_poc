@@ -758,7 +758,7 @@ def get_approx_shape_and_bbox2(
                 nearest_points,
                 samples_per_line=SAMPLES_PER_LINE
                 )
-            res = check_barcode.is_valid_quadro_id(spoke_samples_corners)
+            res = check_barcode.is_valid_quadro_id(spoke_samples_corners).res
 
             if res is True:
                 shape_ = Shapes.SQUARE
@@ -1130,10 +1130,13 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     viewing_buffer = check_barcode.visualise_1d_barcode(
         (spoke_samples_middle_edges * 0).astype("uint8"), height=img.shape[0]
         )
-    if res:
+    
+    
+    if res.res is True:
         viewing_buffer[:] = (0,255,0)
     else:
         viewing_buffer[:] = (0,0,255)
+    debug_img = img_pro.add_text_to_image(debug_img,f"{res.sqr_err} : {res.status}")
     spoke_samples_middle_edges_norm = img_pro.normalise_np_array(spoke_samples_middle_edges)
     spoke_samples_middle_edges_norm = img_pro.binarize_barcode(spoke_samples_middle_edges_norm)
     midedge_samples = check_barcode.visualise_1d_barcode(
@@ -1256,12 +1259,12 @@ def analyse_candidates_shapematch(
         TOO_CLOSE =  [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TOO_CLOSE]
         ALMOST_ID = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.ALMOST_ID]
         
-        # BAD_PIXELS = []
-        # BAD_RATIO = []
-        # BAD_APPROX_LEN = []
-        # BAD_APPROX_PXL =  []
-        # TOO_CLOSE =  []
-        # ALMOST_ID = []
+        BAD_PIXELS = []
+        BAD_RATIO = []
+        BAD_APPROX_LEN = []
+        BAD_APPROX_PXL =  []
+        TOO_CLOSE =  []
+        ALMOST_ID = []
         
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)

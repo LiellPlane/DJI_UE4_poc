@@ -26,6 +26,13 @@ class WhiteBars():
     white_bar_widths: list[int]
 
 
+class VerifyBarcodeResult:
+    __slots__ = ['res', 'sqr_err', 'status']
+    def __init__(self, res: bool, sqr_err: float = -1,status:str="no status"):
+        self.res = res
+        self.sqr_err = sqr_err
+        self.status = status
+
 @dataclass
 class FilteredWhiteBars(WhiteBars):
     pass
@@ -301,7 +308,7 @@ def get_00100_mask(segment_length) -> np.ndarray:
     return np.tile(segment_mask, 4)
 
 
-def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
+def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     """quadrocode with diagonal orientation and orthogonal ID
     Check that the diagonal elements are correct
     &%%#%%@&&&&&%%%%###%#%###&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -350,7 +357,9 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
         expectedpeaks_insideboundary,
         expectedpeaks_ousideboundary
     ]:
-        return False
+        return VerifyBarcodeResult(
+            res=False,
+            status=f"bad peak total {len(white_bars.white_bar_positions)}")
     # now check it is in the format we expect
     # the quadroID should have white 1 peak in each segment (not touching edges),
     # except for one segment which has no peak. This is how we orientate and validate the ID
@@ -379,7 +388,9 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     res = np.bitwise_and(segment_high_start_mask, binary_bars.astype(bool))
     res = res[::len(spoke_samples_corners)//4] # get every Nth sample - here the start of each segment
     if not np.all(res):
-        return False
+        return VerifyBarcodeResult(
+            res=False,
+            status="quadrant not starting with high signal")
     
     # we extract bars not touching edges of segments, and which straddles
     # the middle of each segment as expected for this barcode
@@ -412,11 +423,17 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
     # should be 3 non-edge white bars for this ID (see example of diagonal sampling)
     # nb - continuous sample is in 4 segments, each segment start is categorised as an edge
     if not all([(len(whitebar_pos) == 1) for _, whitebar_pos in non_edge_bars_per_quad.items()]):
-        return False
+        return VerifyBarcodeResult(
+            res=False,
+            status="segment bar count invalid"
+            )
   
     # now we check that these 3 barcodes are in the quadrants
     if len(non_edge_bars_per_quad) != 3:
-        return False
+        return VerifyBarcodeResult(
+            res=False,
+            status="bad internal white bar count for all quadrant"
+            )
 
 
     # now check middle bars aren't near the edges of each segment
@@ -426,17 +443,39 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
         # 00100|00100|00100|00100|
         # ex mask
         # 10001|10001|10001|10001|
-        return False
+       return VerifyBarcodeResult(
+            res=False,
+            status="segment internal bar touching edge of segment"
+            )
 
-    # now check middle bars straddle the middle
-    _00100_mask = get_00100_mask(len(spoke_samples_corners))
-    if np.any(np.bitwise_and(_00100_mask, _00100_bars)):
-        # ex white middle bars on sample:
-        # 00100|00100|00100|00100|
-        # ex mask
-        # 00100|00100|00100|00100|
-        return False
+
+    ###### ID element sometimes not straddling middle.... keep this incase we need it
+    # # now check middle bars straddle the middle
+    # _00100_mask = get_00100_mask(len(spoke_samples_corners))
+    # res = np.bitwise_and(_00100_mask, _00100_bars)
+    # if not np.all(_00100_mask == res):
+    #     # ex white middle bars on sample:
+    #     # 00100|00100|00100|00100|
+    #     # ex mask
+    #     # 00100|00100|00100|00100|
+    #     return False
     
+
+    # check the distance of each 0001000 bar from the centre point, make sure within error
+    # try mean squared error?
+    sqr_errors = 0
+    for quad, edgebars in non_edge_bars_per_quad.items():
+        # (per segment)
+        # A00000
+        # bar
+        # 000B00
+        # how close is B from A? 
+        start_sample_pos = (len(spoke_samples_corners)//4) * (quad-1) # get start of each segment
+        Yi_expected_mid_pos = start_sample_pos + (len(spoke_samples_corners)//8) # halfway point
+        Yihat_expected_mid_pos = (edgebars[0][0] + edgebars[0][1])/2 # edgebars[0] as should always be one position only
+        sqr_errors += (Yi_expected_mid_pos - Yihat_expected_mid_pos)**2
+    # calculate MSQRERROR
+    sqr_err = round((1/len(non_edge_bars_per_quad)) * sqr_errors, 3) # watch out here - relies on non_edge_bars being cleaned up previously
 
     # now test that the edge bars (if we split the total sample into 4 segments each start and 
     # end is classed as an edge)
@@ -448,7 +487,10 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> bool:
         # ex mask
         # 00100|00100|00100|00100|
         # now OR them together - if any of the edge white bars touch the middle - fail
-        return False
+        return VerifyBarcodeResult(
+            res=False,
+            status="segment edge bar too large"
+            )
 
-    return True
+    return VerifyBarcodeResult(res=True, sqr_err=f"MSE{sqr_err}", status="Pass")
 
