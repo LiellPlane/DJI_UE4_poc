@@ -366,6 +366,11 @@ def decode_id(
     same as diagonal quadrants/segments - we expected a high signal for the 
     start of each segment"""
 
+
+    # shift samples according to incoming orientation
+    offset = (len(spoke_samples_middle_edges)//4) * verify_is_barcode_res.orientation_offset
+    spoke_samples_middle_edges = np.roll(spoke_samples_middle_edges, shift=offset)
+
     # get all white bars - with no filtering for bars touching edges
     # this will normalise the data!
     white_bars, binary_bars = decode_white_bars(spoke_samples_middle_edges)
@@ -386,6 +391,18 @@ def decode_id(
         return VerifyBarcodeResult(
             res=False,
             status="ID CHECK: segment bar count invalid"
+            )
+
+    # for this specific barcode - we expect to have one bar at position 2 and one at position 4
+    if not all([
+        2 in non_edge_bars_per_quad.keys(),
+        4 in non_edge_bars_per_quad.keys(),
+        len(non_edge_bars_per_quad[2]) == 1,
+        len(non_edge_bars_per_quad[4]) == 1,
+    ]):
+        return VerifyBarcodeResult(
+            res=False,
+            status="ID CHECK: did not find bars at position 2 and 4 for quadrocode"
             )
 
     _00100_mask = get_00100_mask(len(spoke_samples_middle_edges))
