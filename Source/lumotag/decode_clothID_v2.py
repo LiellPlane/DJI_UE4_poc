@@ -1113,7 +1113,7 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
         viewing_buffer[:] = (0,255,0)
     else:
         viewing_buffer[:] = (0,0,255)
-    debug_img = img_pro.add_text_to_image(debug_img,f"{res.sqr_err} : {res.status}")
+    debug_img = img_pro.add_text_to_image(debug_img,f" id{res.decoded_id} {res.sqr_err}:{res.status}")
     spoke_samples_middle_edges_norm = img_pro.normalise_np_array(spoke_samples_middle_edges)
     spoke_samples_middle_edges_norm = img_pro.binarize_barcode(spoke_samples_middle_edges_norm)
     midedge_samples = check_barcode.visualise_1d_barcode(

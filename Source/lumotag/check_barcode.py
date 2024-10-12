@@ -30,12 +30,20 @@ class WhiteBars():
 
 
 class VerifyBarcodeResult:
-    __slots__ = ['res', 'sqr_err', 'status', "orientation_offset"]
-    def __init__(self, res: bool, sqr_err: float = -1,status:str="no status", orientation_offset: int=-1):
+    __slots__ = ['res', 'sqr_err', 'status', "orientation_offset", "decoded_id"]
+    def __init__(
+            self,
+            res: bool,
+            sqr_err: float = -1,
+            status:str="no status",
+            orientation_offset: int=-1,
+            decoded_id: int=-1):
         self.res = res
         self.sqr_err = sqr_err
         self.status = status
         self.orientation_offset = orientation_offset
+        self.decoded_id = decoded_id
+
 
 @dataclass
 class FilteredWhiteBars(WhiteBars):
@@ -382,6 +390,7 @@ def decode_id(
     if not np.all(res):
         return VerifyBarcodeResult(
             res=False,
+            sqr_err=verify_is_barcode_res.sqr_err,
             status="ID CHECK: quadrant not starting with high signal")
     
 
@@ -390,6 +399,7 @@ def decode_id(
     if not all([(len(whitebar_pos) <= 1) for _, whitebar_pos in non_edge_bars_per_quad.items()]):
         return VerifyBarcodeResult(
             res=False,
+            sqr_err=verify_is_barcode_res.sqr_err,
             status="ID CHECK: segment bar count invalid"
             )
 
@@ -402,6 +412,7 @@ def decode_id(
     )):
         return VerifyBarcodeResult(
             res=False,
+            sqr_err=verify_is_barcode_res.sqr_err,
             status="ID CHECK: did not find bars at position 2 and 4 for quadrocode"
             )
 
@@ -415,10 +426,29 @@ def decode_id(
         # now OR them together - if any of the edge white bars touch the middle - fail
         return VerifyBarcodeResult(
             res=False,
+            sqr_err=verify_is_barcode_res.sqr_err,
             status="ID CHECK: segment edge bar too large"
             )
+    
 
-    return verify_is_barcode_res
+    # get integer representation of 2 ID bits
+    # should be left at position 1 and 3
+    # don't know what endian they are, who cares
+
+    # this sucks I am sorry
+    barcode_id_int = 0
+    for index, bar_pos in enumerate([1,3]):
+        if non_edge_bars_per_quad.get(bar_pos) is None:
+            continue
+        barcode_id_int += 2**index
+
+
+    return VerifyBarcodeResult(
+        res=True,
+        sqr_err=verify_is_barcode_res.sqr_err,
+        status="ID CHECK: pass",
+        decoded_id=barcode_id_int
+        )
 
 
 def breakout_edges_and_middle_bars(samples, white_bars):
