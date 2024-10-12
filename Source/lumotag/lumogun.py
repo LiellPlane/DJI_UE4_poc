@@ -339,6 +339,8 @@ def main():
                 # any other behaviour during refractory period is ignored
                 result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if result is True:
+                    file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     voice.speak("wut")
                     # true will only be available as an impulse after
                     # pulling trigger, then go low again - but
