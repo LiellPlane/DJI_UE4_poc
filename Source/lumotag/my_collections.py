@@ -119,7 +119,6 @@ class ShapeItem:
     boundingbox_min: np.array
     sample_positions: np.array
     closest_corners: np.array
-    sum_int_angles: float
     size: int
     min_bbx_size: int
     shape: Shapes

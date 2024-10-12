@@ -169,8 +169,7 @@ def main():
     messenger = lumogun.Messenger(GUN_CONFIGURATION)
     #workingdata = decode_clothID.WorkingData()
     file_system = lumogun.filesystem()
-    voice.speak("all devices healthy")
-    voice.wait_for_speak()
+
     # display.display_output(img)
     # while True:
     #display.display_output(next(image_capture2))
@@ -237,6 +236,10 @@ def main():
             if PLATFORM == _OS.RASPBERRY: time.sleep(0.1)
         if PLATFORM == _OS.RASPBERRY: time.sleep(1)
 
+    voice.speak("all devices healthy")
+    voice.wait_for_speak()
+
+    
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.zoom_debounce
     #torch_debounce = GUN_CONFIGURATION.torch_debounce.trigger_oneshot_simple
