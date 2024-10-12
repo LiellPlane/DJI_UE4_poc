@@ -463,20 +463,34 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
 
     # check the distance of each 0001000 bar from the centre point, make sure within error
     # try mean squared error?
-    sqr_errors = 0
+    # get avergae position of bars first
+    sqr_errors_dist = 0
+    sqr_errors_width = 0
+    avg_distance_from_seg_start = 0
+    avg_width = 0
     for quad, edgebars in non_edge_bars_per_quad.items():
-        # (per segment)
-        # A00000
-        # bar
-        # 000B00
-        # how close is B from A? 
-        start_sample_pos = (len(spoke_samples_corners)//4) * (quad-1) # get start of each segment
-        Yi_expected_mid_pos = start_sample_pos + (len(spoke_samples_corners)//8) # halfway point
-        Yihat_expected_mid_pos = (edgebars[0][0] + edgebars[0][1])/2 # edgebars[0] as should always be one position only
-        sqr_errors += (Yi_expected_mid_pos - Yihat_expected_mid_pos)**2
-    # calculate MSQRERROR
-    sqr_err = round((1/len(non_edge_bars_per_quad)) * sqr_errors, 3) # watch out here - relies on non_edge_bars being cleaned up previously
+        start_sample_pos = (len(spoke_samples_corners)//4) * (quad-1)
+        avg_distance_from_seg_start += ((edgebars[0][0] + edgebars[0][1])/2) - start_sample_pos
 
+        avg_width += (edgebars[0][1] - edgebars[0][0])
+
+    avg_width = round(avg_width/3, 3)
+    avg_distance_from_seg_start = round(avg_distance_from_seg_start/3, 3)# Magic number 3 for only 3 mid bars (out of 4) for orientation
+    
+    # now calculate MSE from average mid position of bars
+    for quad, edgebars in non_edge_bars_per_quad.items():
+        start_sample_pos = (len(spoke_samples_corners)//4) * (quad-1)
+        Yi_expected_mid_pos = avg_distance_from_seg_start
+        Yihat_mid_pos = ((edgebars[0][0] + edgebars[0][1])/2) - start_sample_pos# edgebars[0] as should always be one position only
+        sqr_errors_dist += (Yi_expected_mid_pos - Yihat_mid_pos)**2
+
+        Yi_expected_width = avg_width
+        Yihat_width = (edgebars[0][1] - edgebars[0][0])
+        sqr_errors_width += (Yi_expected_width - Yihat_width)**2
+
+    # calculate MSQRERROR
+    sqr_err_bardist = round((1/len(non_edge_bars_per_quad)) * sqr_errors_dist, 3) # watch out here - relies on non_edge_bars being cleaned up previously
+    sqr_err_barwidth = round((1/len(non_edge_bars_per_quad)) * sqr_errors_width, 3) # watch out here - relies on non_edge_bars being cleaned up previously
     # now test that the edge bars (if we split the total sample into 4 segments each start and 
     # end is classed as an edge)
     _00100_mask = get_00100_mask(len(spoke_samples_corners))
@@ -492,5 +506,5 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
             status="segment edge bar too large"
             )
 
-    return VerifyBarcodeResult(res=True, sqr_err=f"MSE{sqr_err}", status="Pass")
+    return VerifyBarcodeResult(res=True, sqr_err=f"MSE dist {sqr_err_bardist} width {sqr_err_barwidth}", status="Pass")
 

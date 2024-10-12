@@ -1049,11 +1049,11 @@ def add_text_to_image(image, text):
     height, width = image.shape[:2]
     
     # Calculate font scale based on image width
-    font_scale = width/1000 # This will make the text size relative to the image width
+    font_scale = width/800 # This will make the text size relative to the image width
     
     font = cv2.FONT_HERSHEY_SIMPLEX
     color = (0, 0, 255)  # Red in BGR
-    thickness = 2
+    thickness = 1
     
     # Position text in top left with some padding
     position = (10, 50)  # (x, y) coordinates
