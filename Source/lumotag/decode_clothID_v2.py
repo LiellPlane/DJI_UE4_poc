@@ -706,43 +706,43 @@ def get_approx_shape_and_bbox2(
         # all_points.append(nearest_points[3])
         # all_points.append()
         # diagonal paths (each composed of 2 lines emanting from centre)
-        sample_line1_diagA = img_pro.efficient_line_sampler(
-            x2=cX,
-            y2=cY,
-            x1=nearest_points[0][0],
-            y1=nearest_points[0][1],
-            num_samples=SAMPLES_PER_LINE//2)
+        # sample_line1_diagA = img_pro.efficient_line_sampler(
+        #     x2=cX,
+        #     y2=cY,
+        #     x1=nearest_points[0][0],
+        #     y1=nearest_points[0][1],
+        #     num_samples=SAMPLES_PER_LINE//2)
         
-        sample_line1_diagB = img_pro.efficient_line_sampler(
-            x1=cX,
-            y1=cY,
-            x2=nearest_points[2][0],
-            y2=nearest_points[2][1],
-            num_samples=SAMPLES_PER_LINE//2)
+        # sample_line1_diagB = img_pro.efficient_line_sampler(
+        #     x1=cX,
+        #     y1=cY,
+        #     x2=nearest_points[2][0],
+        #     y2=nearest_points[2][1],
+        #     num_samples=SAMPLES_PER_LINE//2)
  
-        sample_line1_diag = np.vstack([sample_line1_diagA, sample_line1_diagB])
+        # sample_line1_diag = np.vstack([sample_line1_diagA, sample_line1_diagB])
 
-        sample_line2_diagA = img_pro.efficient_line_sampler(
-            x2=cX,
-            y2=cY,
-            x1=nearest_points[3][0],
-            y1=nearest_points[3][1],
-            num_samples=SAMPLES_PER_LINE//2)
+        # sample_line2_diagA = img_pro.efficient_line_sampler(
+        #     x2=cX,
+        #     y2=cY,
+        #     x1=nearest_points[3][0],
+        #     y1=nearest_points[3][1],
+        #     num_samples=SAMPLES_PER_LINE//2)
 
-        sample_line2_diagB = img_pro.efficient_line_sampler(
-            x2=nearest_points[1][0],
-            y2=nearest_points[1][1],
-            x1=cX,
-            y1=cY,
-            num_samples=SAMPLES_PER_LINE//2)
+        # sample_line2_diagB = img_pro.efficient_line_sampler(
+        #     x2=nearest_points[1][0],
+        #     y2=nearest_points[1][1],
+        #     x1=cX,
+        #     y1=cY,
+        #     num_samples=SAMPLES_PER_LINE//2)
     
-        sample_line2_diag = np.vstack([sample_line2_diagA, sample_line2_diagB])
+        # sample_line2_diag = np.vstack([sample_line2_diagA, sample_line2_diagB])
 
-        averages1 = []
-        averages2 = []
-        pixel_div_count = 90
-        #_step = max(int((math.floor(len(sample_line1_diag)) / pixel_div_count)), 1)
-        sample_size = 1
+        # averages1 = []
+        # averages2 = []
+        # pixel_div_count = 90
+        # #_step = max(int((math.floor(len(sample_line1_diag)) / pixel_div_count)), 1)
+        # sample_size = 1
         if use_blurred_image(contour_pxl_cnt):
             img2use = img_blurred
         else:
@@ -846,7 +846,7 @@ def get_approx_shape_and_bbox2(
             min_bbx_size = cv2.contourArea(min_bbox),
             shape=shape_,
             centre_x_y=[cX, cY],
-            _2d_samples=[averages1, averages2],
+            _2d_samples=None,
             notes_for_debug_file=None)
 
     return output
@@ -1259,12 +1259,12 @@ def analyse_candidates_shapematch(
         TOO_CLOSE =  [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.TOO_CLOSE]
         ALMOST_ID = [cont for cont in contour_stats if cont is not None and cont.shape == Shapes.ALMOST_ID]
         
-        BAD_PIXELS = []
-        BAD_RATIO = []
-        BAD_APPROX_LEN = []
-        BAD_APPROX_PXL =  []
-        TOO_CLOSE =  []
-        ALMOST_ID = []
+        # BAD_PIXELS = []
+        # BAD_RATIO = []
+        # BAD_APPROX_LEN = []
+        # BAD_APPROX_PXL =  []
+        # TOO_CLOSE =  []
+        # ALMOST_ID = []
         
         debug_img = original_img.copy()
         debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
