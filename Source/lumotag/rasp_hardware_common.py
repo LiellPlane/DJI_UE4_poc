@@ -13,6 +13,7 @@ import time
 import factory
 import rabbit_mq
 from picamera2 import Picamera2
+from libcamera import controls
 #accelerometer
 # adafruit board library forces BCM mode!!
 import board
@@ -194,7 +195,8 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
-        self.picam2.set_controls({"AwbEnable": 0})
+        self.picam2.set_controls({"AwbEnable": 0, "AeMeteringMode": controls.AeMeteringModeEnum.Spot})
+        #self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
         #self.picam2.set_controls({"AnalogueGain": 10.0})
         self.picam2.start()
         time.sleep(0.2)
@@ -218,7 +220,8 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
-        self.picam2.set_controls({"AwbEnable": 0})
+        #self.picam2.set_controls({"AwbEnable": 0})
+        self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
         #self.picam2.set_controls({"AnalogueGain": 5.0})
         self.picam2.start()
         time.sleep(0.2)
