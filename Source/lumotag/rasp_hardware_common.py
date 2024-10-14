@@ -224,7 +224,8 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         self.picam2.set_controls({
             "AwbEnable": 0, 
             "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
-            "AeExposureMode": controls.AeExposureModeEnum.Short
+            "AeExposureMode": controls.AeExposureModeEnum.Short,
+            "ExposureValue": -8
             })
         #self.picam2.set_controls({"AnalogueGain": 5.0})
         self.picam2.start()
