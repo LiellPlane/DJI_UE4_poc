@@ -685,130 +685,28 @@ def get_approx_shape_and_bbox2(
         for pt in min_bbox:
             nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
 
-        # for index in range (0, len(nearest_points) -1 ):
-        #     all_points.append(nearest_points[index])
-        #     midline = (nearest_points[index] + nearest_points[index+1]) / 2
-        #     all_points.append(midline)
 
-        # all_points = []
-        # midpoint_target = np.array(cX, cY)
-        # all_points.append(nearest_points[0])
-        # all_points.append(midpoint_target)
-        # all_points.append(nearest_points[1])
-        # all_points.append()
-        # all_points.append(nearest_points[2])
-        # all_points.append()
-        # all_points.append(nearest_points[3])
-        # all_points.append()
-        # diagonal paths (each composed of 2 lines emanting from centre)
-        # sample_line1_diagA = img_pro.efficient_line_sampler(
-        #     x2=cX,
-        #     y2=cY,
-        #     x1=nearest_points[0][0],
-        #     y1=nearest_points[0][1],
-        #     num_samples=SAMPLES_PER_LINE//2)
-        
-        # sample_line1_diagB = img_pro.efficient_line_sampler(
-        #     x1=cX,
-        #     y1=cY,
-        #     x2=nearest_points[2][0],
-        #     y2=nearest_points[2][1],
-        #     num_samples=SAMPLES_PER_LINE//2)
- 
-        # sample_line1_diag = np.vstack([sample_line1_diagA, sample_line1_diagB])
-
-        # sample_line2_diagA = img_pro.efficient_line_sampler(
-        #     x2=cX,
-        #     y2=cY,
-        #     x1=nearest_points[3][0],
-        #     y1=nearest_points[3][1],
-        #     num_samples=SAMPLES_PER_LINE//2)
-
-        # sample_line2_diagB = img_pro.efficient_line_sampler(
-        #     x2=nearest_points[1][0],
-        #     y2=nearest_points[1][1],
-        #     x1=cX,
-        #     y1=cY,
-        #     num_samples=SAMPLES_PER_LINE//2)
-    
-        # sample_line2_diag = np.vstack([sample_line2_diagA, sample_line2_diagB])
-
-        # averages1 = []
-        # averages2 = []
-        # pixel_div_count = 90
-        # #_step = max(int((math.floor(len(sample_line1_diag)) / pixel_div_count)), 1)
-        # sample_size = 1
         if use_blurred_image(contour_pxl_cnt):
             img2use = img_blurred
         else:
             img2use = img
 
 
-        # use_new_id = True
-        # if use_new_id:
-            #quadcode - ID with diagonal as orientation and orthogonal as ID
         spoke_samples_corners, spoke_samples_middle_edges = get_spokecode_samples(
             img2use,
             [cX, cY],
             nearest_points,
             samples_per_line=SAMPLES_PER_LINE
             )
-        res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges).res
+        res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges)
 
 
-        if res is True:
+        if res.res is True:
             shape_ = Shapes.SQUARE
 
         else:
             shape_ = Shapes.ALMOST_ID
-            #notes_for_debug_file = "defo not a square"
-
-        # else:
-
-        #     if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-        #         samplepos = sample_line1_diag + sample_line2_diag
-        #     else:
-        #         samplepos = None
-
-
-        #     _step = max(math.floor(len(sample_line1_diag)/SAMPLES_PER_LINE), 1)
-
-        
-        #     for i in range (sample_size, len(sample_line1_diag)-sample_size, _step):
-        #         try:
-        #         #averages.append(img2use[np.clip(sample_line1_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line1_diag[i][0], 1,img2use.shape[1]-1)])
-        #             averages1.append(img2use[sample_line1_diag[i][1], sample_line1_diag[i][0]])
-        #         except Exception as e:
-        #             print("out of range - skip")
-
-        #     for i in range (sample_size, len(sample_line2_diag)-sample_size, _step):
-        #         #averages2.append(img2use[np.clip(sample_line2_diag[i][1], 1,img2use.shape[0]-1), np.clip(sample_line2_diag[i][0], 1,img2use.shape[1]-1)])
-        #         try:
-        #             averages2.append(img2use[sample_line2_diag[i][1], sample_line2_diag[i][0]])
-        #         except Exception:
-        #             print("out of range")
-
-
-
-        #     if len(averages1) != SAMPLES_PER_LINE:
-        #         averages1 = resize_array(np.array(averages1), SAMPLES_PER_LINE)
-        #     if len(averages2) != SAMPLES_PER_LINE:
-        #         averages2 = resize_array(np.array(averages2), SAMPLES_PER_LINE)
-
-        #     # cheesy way to test for pattern
-        #     #check_for_patternv2([averages1, averages2])
-        #     (res, _) = check_for_patternv2([averages1, averages2])
-        #     if res:
-        #         shape_ = Shapes.SQUARE
-        #         notes_for_debug_file = "bad wtf"
-        #     else:
-        #         shape_ = Shapes.ALMOST_ID
-        #         notes_for_debug_file = "bad not a square"
-
-        #     if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
-        #         samplepos = sample_line1_diag + sample_line2_diag
-        #     else:
-        #         samplepos = None
+ 
 
         output = ShapeItem(
             id=index,
@@ -824,7 +722,8 @@ def get_approx_shape_and_bbox2(
             shape=shape_,
             centre_x_y=[cX, cY],
             _2d_samples=None,
-            notes_for_debug_file=None)
+            notes_for_debug_file=None,
+            decoded_id=res.decoded_id)
 
     return output
 
@@ -1673,7 +1572,8 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     # if analyse_IDs is not None:
     #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
     #     return analyse_IDs, playerfound
-    
+    if len(output_contour_data)>0:
+        plop=1
     return output_contour_data
 
 

@@ -125,6 +125,8 @@ class ShapeItem:
     centre_x_y: list[int]
     _2d_samples: list[list]
     notes_for_debug_file: str
+    decoded_id: int = -1
+    
 
     def add_offset_for_graphics(self, offset: list[int, int]):
         """mutating function is used when a cropped part of the image
