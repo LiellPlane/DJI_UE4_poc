@@ -141,7 +141,21 @@ class gun_config(ABC):
     @abstractmethod
     def ui_overlay(self) -> dict:
         ...
+
+    def get_unrotated_UI_canvas(self):
+        """For creating UI elements - we need a canvas with no rotation
+        to make adding elements easier. So modify the canvas size using
+        rotation so we can add UI elements and rotate later. For instance
+        if we have a screen size of 1000 * 500, with 0 rotation this will be the same,
+        but at 90 degree it will be 500 * 1000 and thats what we want to draw on before
+        rotating to match viewer/LCD offset
         
+        180 degrees we do not have to worry about as image ratio is the same"""
+        if self.screen_rotation in [90, -90, 270, -270]:
+            # flip dims
+            return self.screen_size[::-1]
+        return self.screen_size
+    
 
 class filesystem(ABC):
     @abstractmethod
@@ -323,7 +337,7 @@ class PlayerInfoBox:
         return self.calculate_fade(direction=1)
 
     def elements_fadeout(self):
-         return self.calculate_fade(direction=-1)
+        return self.calculate_fade(direction=-1)
 
     def calculate_fade(self, direction: Literal[-1, 1]):
         if direction not in [-1, 1]:

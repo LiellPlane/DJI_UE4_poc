@@ -231,10 +231,8 @@ def main():
         # voice.wait_for_speak()
         print(f"Testing : {devicename}")
         for _function in _function_list:
-            if PLATFORM == _OS.RASPBERRY: time.sleep(0.1)
             _function()
             if PLATFORM == _OS.RASPBERRY: time.sleep(0.1)
-        if PLATFORM == _OS.RASPBERRY: time.sleep(1)
 
     voice.speak("all devices healthy")
     voice.wait_for_speak()
@@ -328,8 +326,8 @@ def main():
 
                 set_laser(state=is_torch_reqd, strobe_cnt=0)
 
-
                 result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)
+
                 if result_zoom:
                     transform_manager.trigger_transition()
                 # desired behaviour: 
@@ -339,8 +337,8 @@ def main():
                 # any other behaviour during refractory period is ignored
                 result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if result is True:
-                    file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     voice.speak("wut")
                     # true will only be available as an impulse after
                     # pulling trigger, then go low again - but
@@ -357,8 +355,8 @@ def main():
                     # debugging code to capture images
                     #if cap_img is not None:
                     TEMP_DEBUG_trigger_cnt += 1
-                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0
