@@ -294,7 +294,161 @@ class display(ABC):
                     )
 
 
-class PlayerInfoBox:
+# class PlayerInfoBox:
+#     def __init__(
+#             self,
+#             playername,
+#             playergraphic,
+#             _gun_config: gun_config
+#             ) -> None:
+#         """object to persist player name and graphic
+        
+#         params:
+        
+#         cam_img_res: resolution of the image capture device, to calculate affine transforms
+#         playergraphic: PNG file (with alpha channel)"""
+
+#         self.timer = TimeDiffObject()
+#         self.playername = playername
+#         self.playergraphic = playergraphic
+#         self.gun_config: gun_config = _gun_config
+#         self.output_display_shape = img_processing.get_empty_lumodisplay_img(
+#             _gun_config.screen_size
+#             ).shape
+  
+#         self.gray_image, self.alphamask = self.create_player_image_and_mask()
+#         self.fade_ms = 250
+#         self.current_fade_ms = 0
+#         #self.fade_direction = 1
+
+#         self.ui_elements = []
+
+#         self.ui_elements.append(self.get_affine_transform(
+#             self.gray_image,
+#             element_name=UI_Element.PHOTO.value)
+#             )
+
+#         self.ui_elements.append(self.get_affine_transform(
+#             self.create_player_text(),
+#             element_name=UI_Element.USER_ID.value)
+#             )
+
+#     def elements_fadein(self):
+#         return self.calculate_fade(direction=1)
+
+#     def elements_fadeout(self):
+#         return self.calculate_fade(direction=-1)
+
+#     def calculate_fade(self, direction: Literal[-1, 1]):
+#         if direction not in [-1, 1]:
+#             raise Exception("bad input to calculate fade", direction)
+#         time_diff_ms = self.timer.get_dt() * 1000
+#         self.timer.reset()
+#         self.current_fade_ms += (time_diff_ms * direction)
+#         # limit working fade value
+#         self.current_fade_ms = min(
+#             max(self.current_fade_ms, 0),
+#             self.fade_ms
+#             )
+#         # get normalised value
+#         norm = self.current_fade_ms / self.fade_ms
+#         return self.lerp(norm)
+
+#     @staticmethod
+#     def lerp(x):
+#         lerpation = 1 - (1 - x) * (1 - x)
+#         return max(0, min(lerpation, 1))
+
+#     def create_player_text(self):
+#         """we need to create the player name/ID/handle
+#         but to a specific size so it looks OK, then
+#         rotate it"""
+
+#         id_img = img_processing.print_text_in_boundingbox(
+#             self.playername,
+#             grayscale=True
+#             )
+
+#         return id_img
+
+#     def create_player_image_and_mask(self):
+#         """get the transparent player custom graphic"""
+#         img = img_processing.load_img_set_transparency()
+#         gray_image = cv2.cvtColor(img[:,:,0:3], cv2.COLOR_BGR2GRAY)
+#         alpha_mask = img[:,:,3]
+
+#         #img_processing.test_viewer(gray_image, 0, True, True)
+#         return gray_image, alpha_mask
+
+
+#     def get_affine_transform(
+#             self,
+#             ui_element,
+#             element_name: UI_Element):
+
+
+#         ui_element = img_processing.rotate_img_orthogonal(
+#             ui_element,
+#             (360-self.gun_config.screen_rotation)
+#             )
+
+#         input_pts = img_processing.AffinePoints(
+#             top_left_w_h=[0, 0],
+#             top_right_w_h=[ui_element.shape[1], 0],
+#             lower_right_w_h=[ui_element.shape[1], ui_element.shape[0]]
+#         )
+
+#         # get pixel positions for display output
+#         pixel_pos = self.gun_config.ui_overlay[element_name].get_pixel_positions(
+#             self.output_display_shape
+#             )
+
+#         output_pts = img_processing.AffinePoints(
+#             top_left_w_h=[pixel_pos.left, pixel_pos.top],
+#             top_right_w_h=[pixel_pos.right, pixel_pos.top],
+#             lower_right_w_h=[pixel_pos.right, pixel_pos.lower]
+#         )
+
+#         transfrm = img_processing.get_affine_transform(
+#             pts1=np.asarray(input_pts.as_array(), dtype="float32"),
+#             pts2=np.asarray(output_pts.as_array(), dtype="float32"))
+
+#         #row_cols = self.output_display_shape[0:2][::-1]
+#         #outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
+
+#         #img_processing.test_viewer(outptu_img, 0, True, True)
+
+#         resized_element = img_processing.resize_image(
+#             ui_element,
+#             abs(pixel_pos.left-pixel_pos.right),
+#             abs(pixel_pos.top-pixel_pos.lower)
+#             )
+#         #img_processing.test_viewer(resized_element, 0, True, True)
+#         #test_grab = outptu_img[pixel_pos.top:pixel_pos.lower, pixel_pos.left:pixel_pos.right]
+#         #print("test grab")
+#         #img_processing.test_viewer(test_grab, 0, True, True)
+#         #img_processing.test_viewer(resized_element, 0, True, True)
+
+#         # plops = UI_ready_element(
+#         #     name=element_name,
+#         #     position=pixel_pos,
+#         #     image=resized_element,
+#         #     transform=transfrm
+#         # )
+
+#         # testempty = img_processing.get_empty_lumodisplay_img(self.gun_config.screen_size)
+#         # img_processing.add_ui_elements(testempty, plops)
+#         # img_processing.test_viewer(testempty, 0, True, True)
+
+#         return UI_ready_element(
+#             name=element_name,
+#             position=pixel_pos,
+#             image=resized_element,
+#             transform=transfrm
+#         )
+
+
+class PlayerInfoBoxv2:
     def __init__(
             self,
             playername,
@@ -302,9 +456,9 @@ class PlayerInfoBox:
             _gun_config: gun_config
             ) -> None:
         """object to persist player name and graphic
-        
+       
         params:
-        
+
         cam_img_res: resolution of the image capture device, to calculate affine transforms
         playergraphic: PNG file (with alpha channel)"""
 
@@ -312,34 +466,63 @@ class PlayerInfoBox:
         self.playername = playername
         self.playergraphic = playergraphic
         self.gun_config: gun_config = _gun_config
-        self.output_display_shape = img_processing.get_empty_lumodisplay_img(
-            _gun_config.screen_size
-            ).shape
 
+        self.unrotated_display_canvas = img_processing.get_empty_lumodisplay_img(
+            self.gun_config.screen_size
+            )
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
         self.fade_ms = 250
         self.current_fade_ms = 0
         #self.fade_direction = 1
-
+        self.healthpoints = 100
         self.ui_elements = []
 
+        # load up array with UI element object
         self.ui_elements.append(self.get_affine_transform(
             self.gray_image,
             element_name=UI_Element.PHOTO.value)
             )
 
         self.ui_elements.append(self.get_affine_transform(
-            self.create_player_text(),
+            self.create_player_text(self.playername),
             element_name=UI_Element.USER_ID.value)
             )
 
+        self.ui_elements.append(self.get_affine_transform(
+            self.create_player_text(playername="doesn't matter"),
+            element_name=UI_Element.USER_INFO.value)
+            )
+        
+
+        self.static_canvas = self.create_static_canvas_elements()
+
+    def sim_healthpoints(self):
+        self.healthpoints =- 1
+        if self.healthpoints < 0:
+            self.healthpoints = 100
+
+    def create_static_canvas_elements(self):
+        """for the elements that are not going to change, such
+        as avatar and player name"""
+        temp = self.unrotated_display_canvas.copy()
+        for elm in self.ui_elements:
+            img_processing.add_ui_elements(
+                temp,
+                elm,
+                fade_norm=1
+            )
+        temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
+        #img_processing.quick_image_viewer(temp)
+        return temp
+
     def elements_fadein(self):
-        return self.calculate_fade(direction=1)
+        return self.calculate_fade(direction=1,fade_ms= self.fade_ms)
 
     def elements_fadeout(self):
-        return self.calculate_fade(direction=-1)
+        
+        return self.calculate_fade(direction=-1, fade_ms=self.fade_ms*100)
 
-    def calculate_fade(self, direction: Literal[-1, 1]):
+    def calculate_fade(self, direction: Literal[-1, 1], fade_ms):
         if direction not in [-1, 1]:
             raise Exception("bad input to calculate fade", direction)
         time_diff_ms = self.timer.get_dt() * 1000
@@ -348,10 +531,10 @@ class PlayerInfoBox:
         # limit working fade value
         self.current_fade_ms = min(
             max(self.current_fade_ms, 0),
-            self.fade_ms
+            fade_ms
             )
         # get normalised value
-        norm = self.current_fade_ms / self.fade_ms
+        norm = self.current_fade_ms / fade_ms
         return self.lerp(norm)
 
     @staticmethod
@@ -359,18 +542,20 @@ class PlayerInfoBox:
         lerpation = 1 - (1 - x) * (1 - x)
         return max(0, min(lerpation, 1))
 
-    def create_player_text(self):
+    @staticmethod
+    def create_player_text(playername):
         """we need to create the player name/ID/handle
         but to a specific size so it looks OK, then
         rotate it"""
 
         id_img = img_processing.print_text_in_boundingbox(
-            self.playername,
+            playername,
             grayscale=True
             )
 
         return id_img
 
+    
     def create_player_image_and_mask(self):
         """get the transparent player custom graphic"""
         img = img_processing.load_img_set_transparency()
@@ -387,21 +572,29 @@ class PlayerInfoBox:
             element_name: UI_Element):
 
 
-        ui_element = img_processing.rotate_img_orthogonal(
-            ui_element,
-            (360-self.gun_config.screen_rotation)
-            )
+        # ui_element = img_processing.rotate_img_orthogonal(
+        #     ui_element,
+        #     (360-self.gun_config.screen_rotation)
+        #     )
 
+        # get points from original input material
+        # do not need to modify these
         input_pts = img_processing.AffinePoints(
             top_left_w_h=[0, 0],
             top_right_w_h=[ui_element.shape[1], 0],
             lower_right_w_h=[ui_element.shape[1], ui_element.shape[0]]
         )
 
-        # get pixel positions for display output
-        pixel_pos = self.gun_config.ui_overlay[element_name].get_pixel_positions(
-            self.output_display_shape
+        # get pixel positions for display output from normalised positions
+        # here we can modify the pixels to keep the image ratio
+        pixel_pos = self.gun_config.ui_overlay[element_name].get_pixel_positions_with_ratio(
+            self.unrotated_display_canvas.shape,
+            ui_element.shape
             )
+
+        # check_ratio = (np.array(ui_element.shape) / np.array((pixel_pos.lower-pixel_pos.top, pixel_pos.right-pixel_pos.left))).astype("float")
+        # if abs(check_ratio[0] - check_ratio[1]) > 0.5:
+        #     raise Exception(f"bad ratio!! something weird happening for {element_name}")
 
         output_pts = img_processing.AffinePoints(
             top_left_w_h=[pixel_pos.left, pixel_pos.top],
@@ -420,9 +613,13 @@ class PlayerInfoBox:
 
         resized_element = img_processing.resize_image(
             ui_element,
-            abs(pixel_pos.left-pixel_pos.right),
-            abs(pixel_pos.top-pixel_pos.lower)
+            pixel_pos.right-pixel_pos.left,
+            pixel_pos.lower-pixel_pos.top
             )
+
+        # check_ratio = (np.array(ui_element.shape) / np.array(resized_element.shape)).astype("float")
+        # if abs(check_ratio[0] - check_ratio[1]) > 0.01:
+        #     raise Exception("bad ratio!! something weird happening")
         #img_processing.test_viewer(resized_element, 0, True, True)
         #test_grab = outptu_img[pixel_pos.top:pixel_pos.lower, pixel_pos.left:pixel_pos.right]
         #print("test grab")

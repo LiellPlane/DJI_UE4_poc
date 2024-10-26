@@ -1,6 +1,6 @@
 
 from enum import Enum, auto
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 from typing import ClassVar
 
@@ -54,6 +54,20 @@ class ScreenPixelPositions:
     lower: int
     left: int
     right: int
+    top_frame: int = field(init=False)
+    lower_frame: int = field(init=False)
+    left_frame: int = field(init=False)
+    right_frame: int = field(init=False)
+
+    def __post_init__(self):
+        self.calculate_padding()
+
+    def calculate_padding(self):
+        padding = 6
+        self.top_frame = max(self.top - padding, 0)
+        self.lower_frame = self.lower + padding
+        self.left_frame = max(self.left - padding, 0)
+        self.right_frame = self.right + padding
 
 
 @dataclass
@@ -73,6 +87,48 @@ class ScreenNormalisedPositions:
             lower=int(self.lower * img_shape[0]),
             left=int(self.left * img_shape[1]),
             right=int(self.right * img_shape[1])
+        )
+    def get_pixel_positions_with_ratio(self, img_shape, element_shape):
+
+        element_height = element_shape[0]
+        element_width = element_shape[1]
+
+        img_height = img_shape[0]
+        img_width = img_shape[1]
+
+        pxl_width_pc = self.right - self.left
+        pxl_height_pc = self.lower - self.top
+
+        ui_boxsize_width_pxls = pxl_width_pc * img_width
+        ui_boxsize_height_pxls = pxl_height_pc * img_height
+
+        # try one and if it fails try the other
+        resize_ratios = [
+            ui_boxsize_width_pxls / element_width,
+            ui_boxsize_height_pxls / element_height
+        ]
+
+        for resize_ratio in resize_ratios:
+            new_width = int(element_width * resize_ratio)
+            new_height = int(element_height * resize_ratio)
+            if all([
+                new_width <= ui_boxsize_width_pxls,
+                new_height <= ui_boxsize_height_pxls
+            ]):
+                break
+
+        # we have normalised positions and pre-scaled positions
+        # need to offset the pre-scaled positions from the normalised ones
+        top = self.top * img_shape[0]
+        lower = top + new_height
+        left = self.left * img_shape[0]
+        right = left + new_width
+
+        return ScreenPixelPositions(
+            top=int(top),
+            lower=int(lower),
+            left=int(left),
+            right=int(right)
         )
 
 @dataclass

@@ -1062,3 +1062,9 @@ def add_text_to_image(image, text):
     cv2.putText(image, text, position, font, font_scale, color, thickness, cv2.LINE_AA)
     
     return image
+
+
+def quick_image_viewer(image):
+    cv2.imshow('Image', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

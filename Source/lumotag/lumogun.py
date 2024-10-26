@@ -42,8 +42,10 @@ else:
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
 
+
 class AnalysisTimeoutException(Exception):
     pass
+
 
 def save_analysis(result):
     """Debug function"""
@@ -57,6 +59,7 @@ def save_analysis(result):
         pickle.dump(all_results, file)
     with open(filename, 'rb') as file:
         check_data= pickle.load(file)
+
 
 def save_images_if_barcode(analysis, file_system, cap_img, cap_img_closerange):
     """Debug function"""
@@ -198,7 +201,7 @@ def main():
     # create demo player
     players = {
         "demoplayer":
-        factory.PlayerInfoBox(
+        factory.PlayerInfoBoxv2(
             playername="demoplayer",
             playergraphic=None,
             _gun_config=GUN_CONFIGURATION

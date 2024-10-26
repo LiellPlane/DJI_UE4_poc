@@ -1,8 +1,8 @@
-IMMEDIATE:
-Why isn't sound working
-//Two cameras at once
-automatic homography - backgrouind process to discover calibration? or force user to wave about until we get a good bunch of them??
-sniper mode - how are we going to do this. I think we want all functionality intact apart from analysing thingies
+SERVER:
+docker with rust
+https://hub.qovery.com/guides/tutorial/create-a-blazingly-fast-api-in-rust-part-1/
+
+
 
 MIDIATE:
 Opencv window more efficient - its being created and destroyed constantly which isn't best practise
@@ -16,11 +16,7 @@ look for IR flash instead of flashlight
 
 MODELLING:
 add battery cover for left side
-make camera access easier! maybe add cover
-//maybe remove some of fake piping to make more room
 
 WIRING:
-draw up new diagram with new boost circuit
-make slot to extract SD card?
 new capacitor - doesnt seem to do much
 
