@@ -787,16 +787,16 @@ def rotate_pt_around_origin(point, origin, degrees):
     return qx, qy
 
 
-def add_ui_elements(
-        image,
-        element_package: UI_ready_element,
-        fade_norm: float
-        ) -> None:
-    image[
-            element_package.position.top:element_package.position.lower,
-            element_package.position.left:element_package.position.right,
-            0
-        ] = (element_package.image * fade_norm).astype(np.uint8)
+# def add_ui_elements(
+#         image,
+#         element_package: UI_ready_element,
+#         fade_norm: float
+#         ) -> None:
+#     image[
+#             element_package.position.top:element_package.position.lower,
+#             element_package.position.left:element_package.position.right,
+#             0
+#         ] = (element_package.image * fade_norm).astype(np.uint8)
 
 def add_ui_elementsv2(
         image,
@@ -804,12 +804,14 @@ def add_ui_elementsv2(
         image_to_insert: np.array,
         fade_norm: float
         ) -> None:
+    if fade_norm < 0.01:
+        return
     image[
             position.top: position.lower,
             position.left: position.right,
             0
         ] = (image_to_insert* fade_norm).astype(np.uint8)
-
+    return
 
 def resize_image(inputimage, width, height):
     return cv2.resize(inputimage, (width, height), interpolation = cv2.INTER_NEAREST)

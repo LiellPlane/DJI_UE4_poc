@@ -3,6 +3,10 @@ docker with rust
 https://hub.qovery.com/guides/tutorial/create-a-blazingly-fast-api-in-rust-part-1/
 
 
+fix issue with lerping player ID card - it appears immediately before activated then sticks
+try not to use another flag
+
+
 
 MIDIATE:
 Opencv window more efficient - its being created and destroyed constantly which isn't best practise

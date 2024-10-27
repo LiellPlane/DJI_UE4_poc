@@ -532,8 +532,7 @@ class PlayerInfoBoxv2:
         return self.calculate_fade(direction=1,fade_ms= self.fade_ms)
 
     def elements_fadeout(self):
-        return 1
-        #return self.calculate_fade(direction=-1, fade_ms=self.fade_ms*1000)
+        return self.calculate_fade(direction=-1, fade_ms=self.fade_ms)
 
     def calculate_fade(self, direction: Literal[-1, 1], fade_ms):
         if direction not in [-1, 1]:
