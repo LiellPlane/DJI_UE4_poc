@@ -6,6 +6,8 @@ https://hub.qovery.com/guides/tutorial/create-a-blazingly-fast-api-in-rust-part-
 fix issue with lerping player ID card - it appears immediately before activated then sticks
 try not to use another flag
 
+we maybe want roll in lerp instead of fade (or both)
+and also change colour if currently being targetted
 
 
 MIDIATE:
