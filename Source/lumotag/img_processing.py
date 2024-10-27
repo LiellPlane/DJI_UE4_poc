@@ -842,10 +842,6 @@ def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO
     if debug is False:
         cv2.line(image, tuple(closest_corners[0]), tuple(closest_corners[2]), BLUE, 1) 
         cv2.line(image, tuple(closest_corners[1]), tuple(closest_corners[3]), BLUE, 1)
-    else:
-        for pos in patterndetails.sample_positions:
-
-            cv2.circle(image, (pos[0],pos[1]), radius=0, color=RED, thickness=-1)
 
 
 def load_img_set_transparency():
