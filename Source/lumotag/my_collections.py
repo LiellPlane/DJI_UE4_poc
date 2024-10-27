@@ -3,7 +3,7 @@ from enum import Enum, auto
 from dataclasses import dataclass, field
 import numpy as np
 from typing import ClassVar
-
+from functools import lru_cache
 
 class AutoStrEnum(str, Enum):
     """
@@ -68,6 +68,23 @@ class ScreenPixelPositions:
         self.lower_frame = self.lower + padding
         self.left_frame = max(self.left - padding, 0)
         self.right_frame = self.right + padding
+
+    # #@lru_cache(maxsize=None)
+    # def get_rotated_points(self, angle_degs):
+    #     theta = np.radians(angle_degs)
+    #     rotation_matrix = np.array([
+    #         [np.cos(theta), -np.sin(theta)],
+    #         [np.sin(theta), np.cos(theta)]
+    #     ])
+    #     points = np.array([
+    #         [self.left, self.top],
+    #         [self.right, self.top],
+    #         [self.right, self.lower],
+    #         [self.left, self.lower]
+    #     ])
+    #     # get mapping of the rotated element from the static image, so we can copy it in at display time
+    #     rotated_points = np.dot(points, rotation_matrix.T)
+    #     return rotated_points
 
 
 @dataclass
@@ -136,7 +153,9 @@ class UI_ready_element:
     """UI element with positions to inject into an image"""
     name: str
     position: ScreenPixelPositions
+    rotated_position: ScreenPixelPositions
     image: any # np array
+    rotated_image: any # np array
     transform: any # affine matrix to transform element to position in output display NB element has to be rotated correctly first
 
 

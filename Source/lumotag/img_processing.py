@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from typing import Iterator, Literal, Annotated, Optional
 from dataclasses import dataclass
 from skimage.draw import line
-from my_collections import CropSlicing, AffinePoints, UI_ready_element
+from my_collections import CropSlicing, AffinePoints, UI_ready_element, ScreenPixelPositions
 from math import floor
 try:# TODO FIX
     import utils
@@ -798,6 +798,18 @@ def add_ui_elements(
             0
         ] = (element_package.image * fade_norm).astype(np.uint8)
 
+def add_ui_elementsv2(
+        image,
+        position: ScreenPixelPositions,
+        image_to_insert: np.array,
+        fade_norm: float
+        ) -> None:
+    image[
+            position.top: position.lower,
+            position.left: position.right,
+            0
+        ] = (image_to_insert* fade_norm).astype(np.uint8)
+
 
 def resize_image(inputimage, width, height):
     return cv2.resize(inputimage, (width, height), interpolation = cv2.INTER_NEAREST)
@@ -1068,3 +1080,33 @@ def quick_image_viewer(image):
     cv2.imshow('Image', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
+def rotate_points_right_angle(points, angle, width, height):
+    """
+    Rotate points by the given angle.
+
+    :param points: List of tuples [(x1, y1), (x2, y2), ...]
+    :param angle: Rotation angle in degrees (0, 90, 180, 270)
+    :param width: Original image width
+    :param height: Original image height
+    :return: List of tuples with rotated points
+    """
+    rotated = []
+    for (x, y) in points:
+        if angle == 0:
+            new_x = x
+            new_y = y
+        elif angle == 90:
+            new_x = y
+            new_y = width - x
+        elif angle == 180:
+            new_x = width - x
+            new_y = height - y
+        elif angle == 270:
+            new_x = height - y
+            new_y = x
+        else:
+            raise ValueError("Angle must be 0, 90, 180, or 270 degrees")
+        rotated.append((new_x, new_y))
+    return rotated

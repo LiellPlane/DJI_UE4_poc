@@ -324,11 +324,11 @@ class simitzar_config(gun_config):
     
     @property
     def screen_rotation(self):
-        return(0)
+        return(90)
 
     @property
     def screen_size(self):
-        return(screensizes.windows_laptop.value)
+        return(screensizes.tzar.value)
 
     def loop_wait(self):
         time.sleep(0.05)

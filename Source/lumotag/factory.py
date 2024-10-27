@@ -24,7 +24,8 @@ from my_collections import (
     CropSlicing,
     UI_ready_element,
     UI_Element,
-    SharedMem_ImgTicket
+    SharedMem_ImgTicket,
+    ScreenPixelPositions
     )
 import re
 import itertools
@@ -287,10 +288,11 @@ class display(ABC):
         for player in players.values():
             fade_norm = self.get_norm_fade_val(player, analysis)
             for element in player.ui_elements:
-                img_processing.add_ui_elements(
-                    output,
-                    element,
-                    fade_norm
+                img_processing.add_ui_elementsv2(
+                    image=output,
+                    position=element.rotated_position,
+                    image_to_insert=element.rotated_image,
+                    fade_norm=fade_norm
                     )
 
 
@@ -468,7 +470,7 @@ class PlayerInfoBoxv2:
         self.gun_config: gun_config = _gun_config
 
         self.unrotated_display_canvas = img_processing.get_empty_lumodisplay_img(
-            self.gun_config.screen_size
+            self.gun_config.get_unrotated_UI_canvas()
             )
         self.gray_image, self.alphamask = self.create_player_image_and_mask()
         self.fade_ms = 250
@@ -492,7 +494,7 @@ class PlayerInfoBoxv2:
             self.create_player_text(playername="doesn't matter"),
             element_name=UI_Element.USER_INFO.value)
             )
-        
+
 
         self.static_canvas = self.create_static_canvas_elements()
 
@@ -506,12 +508,23 @@ class PlayerInfoBoxv2:
         as avatar and player name"""
         temp = self.unrotated_display_canvas.copy()
         for elm in self.ui_elements:
-            img_processing.add_ui_elements(
-                temp,
-                elm,
+            img_processing.add_ui_elementsv2(
+                image=temp,
+                position=elm.position,
+                image_to_insert=elm.image,
                 fade_norm=1
             )
+        #img_processing.quick_image_viewer(temp)
         temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
+        
+        # test adding rotated elements
+        for elm in self.ui_elements:
+            img_processing.add_ui_elementsv2(
+                image=temp,
+                position=elm.rotated_position,
+                image_to_insert=elm.rotated_image,
+                fade_norm=1
+            )
         #img_processing.quick_image_viewer(temp)
         return temp
 
@@ -569,7 +582,7 @@ class PlayerInfoBoxv2:
     def get_affine_transform(
             self,
             ui_element,
-            element_name: UI_Element):
+            element_name: UI_Element) -> UI_ready_element:
 
 
         # ui_element = img_processing.rotate_img_orthogonal(
@@ -610,11 +623,27 @@ class PlayerInfoBoxv2:
         #outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
 
         #img_processing.test_viewer(outptu_img, 0, True, True)
-
+        rotated_points = img_processing.rotate_points_right_angle(
+            [(pixel_pos.top, pixel_pos.left),(pixel_pos.lower, pixel_pos.right), (0,0)],
+            self.gun_config.screen_rotation,
+            self.unrotated_display_canvas.shape[0],
+            self.unrotated_display_canvas.shape[1]
+            )
+        rotated_position = ScreenPixelPositions(
+            left=int(min(rotated_points[0][1], rotated_points[1][1])),
+            right=int(max(rotated_points[0][1], rotated_points[1][1])),
+            top=int(min(rotated_points[0][0], rotated_points[1][0])),
+            lower=int(max(rotated_points[0][0], rotated_points[1][0])),
+        )
         resized_element = img_processing.resize_image(
             ui_element,
             pixel_pos.right-pixel_pos.left,
             pixel_pos.lower-pixel_pos.top
+            )
+
+        ui_element_rotated = img_processing.rotate_img_orthogonal(
+            resized_element,
+            (360-self.gun_config.screen_rotation)
             )
 
         # check_ratio = (np.array(ui_element.shape) / np.array(resized_element.shape)).astype("float")
@@ -640,7 +669,9 @@ class PlayerInfoBoxv2:
         return UI_ready_element(
             name=element_name,
             position=pixel_pos,
+            rotated_position=rotated_position,
             image=resized_element,
+            rotated_image=ui_element_rotated,
             transform=transfrm
         )
 
