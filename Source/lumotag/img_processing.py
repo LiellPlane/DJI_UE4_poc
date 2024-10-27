@@ -1097,13 +1097,13 @@ def rotate_points_right_angle(points, angle, width, height):
         if angle == 0:
             new_x = x
             new_y = y
-        elif angle == 90:
+        elif angle == 270:
             new_x = y
             new_y = width - x
         elif angle == 180:
             new_x = width - x
             new_y = height - y
-        elif angle == 270:
+        elif angle == 90:
             new_x = height - y
             new_y = x
         else:
