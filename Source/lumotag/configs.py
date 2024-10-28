@@ -4,7 +4,9 @@ from my_collections import (
     ImagingMode,
     _OS,
     ScreenNormalisedPositions,
-    UI_Element
+    UI_Element,
+    UI_Behaviour_static,
+    UI_Behaviour_dynamic
 )
 from dataclasses import dataclass
 import time
@@ -367,7 +369,35 @@ class simitzar_config(gun_config):
 
 
 common_ui_overlay = {
-                UI_Element.PHOTO.value:ScreenNormalisedPositions(top=0.25, lower=0.5, left=0.01, right=0.3),
-                UI_Element.USER_ID.value:ScreenNormalisedPositions(top=0.51, lower=0.6, left=0.01, right=0.2),
-                UI_Element.USER_INFO.value:ScreenNormalisedPositions(top=0.61, lower=1, left=0.01, right=0.2)
+                UI_Element.PHOTO.value: UI_Behaviour_static(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.25,
+                        lower=0.5,
+                        left=0.01,
+                        right=0.3
+                        ),
+                    channel=0,
+                    border=False
+                ),
+                UI_Element.USER_ID.value: UI_Behaviour_static(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.51,
+                        lower=0.6,
+                        left=0.01,
+                        right=0.2
+                        ),
+                    channel=0,
+                    border=False
+                ),
+                UI_Element.USER_INFO.value: UI_Behaviour_static(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.61,
+                        lower=1,
+                        left=0.01,
+                        right=0.2
+                        ),
+                    channel=0,
+                    border=False
+                ),
             }
+

@@ -28,6 +28,7 @@ class UI_Element(Enum):
     USER_INFO = "USER_INFO"
 
 
+
 class Shapes(AutoStrEnum):
     ALMOST_ID = auto()
     TOO_CLOSE = auto()
@@ -149,6 +150,26 @@ class ScreenNormalisedPositions:
         )
 
 @dataclass
+class UI_Behaviour_static():
+    screen_normed_pos: ScreenNormalisedPositions
+    channel: int
+    border: bool
+    
+@dataclass
+class UI_Behaviour_dynamic():
+    screen_normed_pos: ScreenNormalisedPositions
+    border: bool
+    channel_A: int
+    channel_B: int
+    cut_off_value: float | int
+
+    def get_channel(self, cut_off_value):
+        if cut_off_value <= self.cut_off_value:
+            return self.channel_A
+        return self.channel_B 
+
+
+@dataclass
 class UI_ready_element:
     """UI element with positions to inject into an image"""
     name: str
@@ -157,7 +178,7 @@ class UI_ready_element:
     image: any # np array
     rotated_image: any # np array
     transform: any # affine matrix to transform element to position in output display NB element has to be rotated correctly first
-
+    element_specifics: UI_Behaviour_static | UI_Behaviour_dynamic
 
 # @dataclass
 # class UI_playerInfo:

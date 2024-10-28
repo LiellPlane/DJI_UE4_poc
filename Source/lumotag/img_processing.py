@@ -813,6 +813,7 @@ def add_ui_elementsv2(
         ] = (image_to_insert* fade_norm).astype(np.uint8)
     return
 
+
 def resize_image(inputimage, width, height):
     return cv2.resize(inputimage, (width, height), interpolation = cv2.INTER_NEAREST)
 

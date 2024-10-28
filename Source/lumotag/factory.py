@@ -567,7 +567,7 @@ class PlayerInfoBoxv2:
 
         return id_img
 
-    
+
     def create_player_image_and_mask(self):
         """get the transparent player custom graphic"""
         img = img_processing.load_img_set_transparency()
@@ -599,7 +599,7 @@ class PlayerInfoBoxv2:
 
         # get pixel positions for display output from normalised positions
         # here we can modify the pixels to keep the image ratio
-        pixel_pos = self.gun_config.ui_overlay[element_name].get_pixel_positions_with_ratio(
+        pixel_pos = self.gun_config.ui_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
             self.unrotated_display_canvas.shape,
             ui_element.shape
             )
@@ -671,7 +671,8 @@ class PlayerInfoBoxv2:
             rotated_position=rotated_position,
             image=resized_element,
             rotated_image=ui_element_rotated,
-            transform=transfrm
+            transform=transfrm,
+            element_specifics=self.gun_config._UI_overlay[element_name]
         )
 
 
