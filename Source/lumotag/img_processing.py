@@ -802,6 +802,7 @@ def add_ui_elementsv2(
         image,
         position: ScreenPixelPositions,
         image_to_insert: np.array,
+        channel: int,
         fade_norm: float
         ) -> None:
     if fade_norm < 0.01:
@@ -809,7 +810,7 @@ def add_ui_elementsv2(
     image[
             position.top: position.lower,
             position.left: position.right,
-            0
+            channel
         ] = (image_to_insert* fade_norm).astype(np.uint8)
     return
 

@@ -2,7 +2,7 @@
 from enum import Enum, auto
 from dataclasses import dataclass, field
 import numpy as np
-from typing import ClassVar
+from typing import ClassVar, Union
 from functools import lru_cache
 
 class AutoStrEnum(str, Enum):
@@ -154,14 +154,14 @@ class UI_Behaviour_static():
     screen_normed_pos: ScreenNormalisedPositions
     channel: int
     border: bool
-    
+
 @dataclass
 class UI_Behaviour_dynamic():
     screen_normed_pos: ScreenNormalisedPositions
     border: bool
     channel_A: int
     channel_B: int
-    cut_off_value: float | int
+    cut_off_value: Union[float,  int]
 
     def get_channel(self, cut_off_value):
         if cut_off_value <= self.cut_off_value:
@@ -178,7 +178,7 @@ class UI_ready_element:
     image: any # np array
     rotated_image: any # np array
     transform: any # affine matrix to transform element to position in output display NB element has to be rotated correctly first
-    element_specifics: UI_Behaviour_static | UI_Behaviour_dynamic
+    element_specifics: Union[UI_Behaviour_static, UI_Behaviour_dynamic]
 
 # @dataclass
 # class UI_playerInfo:

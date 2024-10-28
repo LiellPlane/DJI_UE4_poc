@@ -25,7 +25,9 @@ from my_collections import (
     UI_ready_element,
     UI_Element,
     SharedMem_ImgTicket,
-    ScreenPixelPositions
+    ScreenPixelPositions,
+    UI_Behaviour_static,
+    UI_Behaviour_dynamic
     )
 import re
 import itertools
@@ -288,12 +290,17 @@ class display(ABC):
         for player in players.values():
             fade_norm = self.get_norm_fade_val(player, analysis)
             for element in player.ui_elements:
-                img_processing.add_ui_elementsv2(
-                    image=output,
-                    position=element.rotated_position,
-                    image_to_insert=element.rotated_image,
-                    fade_norm=fade_norm
-                    )
+
+                if isinstance(element.element_specifics, UI_Behaviour_dynamic):
+                    pass
+                if isinstance(element.element_specifics, UI_Behaviour_static):
+                    img_processing.add_ui_elementsv2(
+                        image=output,
+                        position=element.rotated_position,
+                        image_to_insert=element.rotated_image,
+                        channel=element.element_specifics.channel,
+                        fade_norm=fade_norm
+                        )
 
 
 # class PlayerInfoBox:
@@ -480,25 +487,26 @@ class PlayerInfoBoxv2:
         self.ui_elements = []
 
         # load up array with UI element object
-        self.ui_elements.append(self.get_affine_transform(
+        self.ui_elements.append(self.prepare_UI_element(
             self.gray_image,
             element_name=UI_Element.PHOTO.value)
             )
 
-        self.ui_elements.append(self.get_affine_transform(
+        self.ui_elements.append(self.prepare_UI_element(
             self.create_player_text(self.playername),
             element_name=UI_Element.USER_ID.value)
             )
 
-        self.ui_elements.append(self.get_affine_transform(
+        self.ui_elements.append(self.prepare_UI_element(
             self.create_player_text(playername="doesn't matter"),
             element_name=UI_Element.USER_INFO.value)
             )
 
+        
 
         self.static_canvas = self.create_static_canvas_elements()
 
-    def sim_healthpoints(self):
+    def get_healthpoints(self):
         self.healthpoints =- 1
         if self.healthpoints < 0:
             self.healthpoints = 100
@@ -512,6 +520,7 @@ class PlayerInfoBoxv2:
                 image=temp,
                 position=elm.position,
                 image_to_insert=elm.image,
+                channel=elm.element_specifics.channel,
                 fade_norm=1
             )
         #img_processing.quick_image_viewer(temp)
@@ -523,6 +532,7 @@ class PlayerInfoBoxv2:
                 image=temp,
                 position=elm.rotated_position,
                 image_to_insert=elm.rotated_image,
+                channel=elm.element_specifics.channel,
                 fade_norm=1
             )
         #img_processing.quick_image_viewer(temp)
@@ -578,7 +588,7 @@ class PlayerInfoBoxv2:
         return gray_image, alpha_mask
 
 
-    def get_affine_transform(
+    def prepare_UI_element(
             self,
             ui_element,
             element_name: UI_Element) -> UI_ready_element:
