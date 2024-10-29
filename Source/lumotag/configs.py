@@ -409,7 +409,7 @@ common_ui_overlay = {
                         top=0.71,
                         lower=0.8,
                         left=0.01,
-                        right=0.2
+                        right=0.4
                         ),
                     channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,
                     channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,

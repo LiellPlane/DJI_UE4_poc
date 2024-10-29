@@ -27,7 +27,8 @@ from my_collections import (
     SharedMem_ImgTicket,
     ScreenPixelPositions,
     UI_Behaviour_static,
-    UI_Behaviour_dynamic
+    UI_Behaviour_dynamic,
+    ScreenNormalisedPositions
     )
 import re
 import itertools
@@ -502,20 +503,37 @@ class PlayerInfoBoxv2:
             element_name=UI_Element.USER_INFO.value)
             )
 
+        # add health bar
+        # this is a little funky as we want to make sure its the same aspect ratio
+        # as depicted in the UI configuration for this platform. 
+        normalised_desired_positions = self.gun_config.ui_overlay[UI_Element.HEALTH_BAR.value].screen_normed_pos
+        self.ui_elements.append(self.prepare_UI_element(
+            self.generate_healthbar(normalised_desired_positions),
+            element_name=UI_Element.HEALTH_BAR.value)
+            )
         
 
-        self.static_canvas = self.create_static_canvas_elements()
+        self.static_canvas = self.create_canvas_elements()
+
+    def generate_healthbar(self, normalised_pos: ScreenNormalisedPositions):
+        """Create a healthbar - but we need to have correct aspect ratio"""
+        # multiply by arbitrary number to have something we can
+        # verify visually
+        x = int((normalised_pos.right - normalised_pos.left) * 100)
+        y = int((normalised_pos.lower - normalised_pos.top) * 100)
+        return np.full((y, x), 255, dtype=np.uint8)
 
     def get_healthpoints(self):
         self.healthpoints =- 1
         if self.healthpoints < 0:
             self.healthpoints = 100
 
-    def create_static_canvas_elements(self):
+    def create_canvas_elements(self):
         """for the elements that are not going to change, such
         as avatar and player name"""
         temp = self.unrotated_display_canvas.copy()
-        for elm in self.ui_elements:
+
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
             img_processing.add_ui_elementsv2(
                 image=temp,
                 position=elm.position,
@@ -523,11 +541,19 @@ class PlayerInfoBoxv2:
                 channel=elm.element_specifics.channel,
                 fade_norm=1
             )
-        #img_processing.quick_image_viewer(temp)
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+            img_processing.add_ui_elementsv2(
+                image=temp,
+                position=elm.position,
+                image_to_insert=elm.image,
+                channel=elm.element_specifics.get_channel(0.6),
+                fade_norm=1
+            )
+        img_processing.quick_image_viewer(temp)
         temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
         
         # test adding rotated elements
-        for elm in self.ui_elements:
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
             img_processing.add_ui_elementsv2(
                 image=temp,
                 position=elm.rotated_position,
