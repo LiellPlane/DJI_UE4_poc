@@ -5,6 +5,7 @@ import numpy as np
 from typing import ClassVar, Union
 from functools import lru_cache
 
+
 class AutoStrEnum(str, Enum):
     """
     StrEnum where auto() returns the field name.
@@ -22,10 +23,16 @@ class _OS(str, Enum):
     MAC_OS = "disgusting mac os"
 
 
+class CHANNEL_COLOUR(Enum):
+    BLUE_CHANNEL = 0
+    RED_CHANNEL = 2
+    GREEN_CHANNEL = 1
+
 class UI_Element(Enum):
     PHOTO = "PHOTO"
     USER_ID = "USER_ID"
     USER_INFO = "USER_INFO"
+    HEALTH_BAR = "HEALTH_BAR"
 
 
 
@@ -161,10 +168,10 @@ class UI_Behaviour_dynamic():
     border: bool
     channel_A: int
     channel_B: int
-    cut_off_value: Union[float,  int]
+    cut_off_value_norm: Union[float,  int]
 
-    def get_channel(self, cut_off_value):
-        if cut_off_value <= self.cut_off_value:
+    def get_channel(self, cut_off_value_norm):
+        if cut_off_value_norm <= self.cut_off_value_norm:
             return self.channel_A
         return self.channel_B 
 

@@ -6,7 +6,8 @@ from my_collections import (
     ScreenNormalisedPositions,
     UI_Element,
     UI_Behaviour_static,
-    UI_Behaviour_dynamic
+    UI_Behaviour_dynamic,
+    CHANNEL_COLOUR
 )
 from dataclasses import dataclass
 import time
@@ -294,8 +295,10 @@ class TZAR_config(gun_config):
 
         return self._UI_overlay
 
+
 class simitzar_config(gun_config):
     model = "SIMITZAR"
+
     def __init__(self) -> None:
         super().__init__()
         #for reference on rasperry pi 4
@@ -319,11 +322,11 @@ class simitzar_config(gun_config):
     @property
     def RELAY_IO(self):
         return(self.RELAY_IO_BCM)
-    
+
     @property
     def TRIGGER_IO(self):
         return (self.TRIGGER_IO_BCM)
-    
+
     @property
     def screen_rotation(self):
         return(270)
@@ -357,9 +360,11 @@ class simitzar_config(gun_config):
     @property
     def video_modes(self):
         return Fake_Cam_vidmodes_longrangeFILES
+
     @property
     def video_modes_closerange(self):
         return Fake_Cam_vidmodes_closerangeFILES
+
     @property
     def ui_overlay(self) -> dict:
         if self._UI_overlay is None:
@@ -376,7 +381,7 @@ common_ui_overlay = {
                         left=0.01,
                         right=0.3
                         ),
-                    channel=0,
+                    channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
                 ),
                 UI_Element.USER_ID.value: UI_Behaviour_static(
@@ -386,17 +391,29 @@ common_ui_overlay = {
                         left=0.01,
                         right=0.2
                         ),
-                    channel=0,
+                    channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
                 ),
                 UI_Element.USER_INFO.value: UI_Behaviour_static(
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.61,
-                        lower=1,
+                        lower=0.7,
                         left=0.01,
                         right=0.2
                         ),
-                    channel=0,
+                    channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
+                    border=False
+                ),
+                UI_Element.HEALTH_BAR.value: UI_Behaviour_dynamic(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.71,
+                        lower=0.8,
+                        left=0.01,
+                        right=0.2
+                        ),
+                    channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,
+                    channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
+                    cut_off_value_norm=0.2,
                     border=False
                 ),
             }
