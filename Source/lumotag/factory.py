@@ -543,19 +543,16 @@ class PlayerInfoBoxv2:
             )
 
         for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-            get_value_for_dynamic_UI_element(
-                obj_id_reference_check=id(self),
-                element_name=1,
-                PlayerCard=self,
-                ui_element=elm
+            custom_dynamic_UI_element_callback(
+                playercard_ref_check=id(self),
+                element_name=elm.name,
+                player_card=self,
+                ui_element=elm,
+                gunconfig=self.gun_config,
+                gunconfig_ref_check=id(self.gun_config),
+                image=temp
                 )
-            img_processing.add_ui_elementsv2(
-                image=temp,
-                position=elm.position,
-                image_to_insert=elm.image,
-                channel=elm.element_specifics.get_channel(0.6),
-                fade_norm=1
-            )
+
         img_processing.quick_image_viewer(temp)
         temp[:] = 0
         temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
@@ -569,20 +566,20 @@ class PlayerInfoBoxv2:
                 channel=elm.element_specifics.channel,
                 fade_norm=1
             )
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-            get_value_for_dynamic_UI_element(
-                obj_id_reference_check=id(self),
-                element_name=1,
-                PlayerCard=self,
-                ui_element=elm
-                )
-            img_processing.add_ui_elementsv2(
-                image=temp,
-                position=elm.rotated_position,
-                image_to_insert=elm.rotated_image,
-                channel=elm.element_specifics.get_channel(0.6),
-                fade_norm=1
-            )
+        # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+        #     get_value_for_dynamic_UI_element(
+        #         obj_id_reference_check=id(self),
+        #         element_name=1,
+        #         PlayerCard=self,
+        #         ui_element=elm
+        #         )
+        #     img_processing.add_ui_elementsv2(
+        #         image=temp,
+        #         position=elm.rotated_position,
+        #         image_to_insert=elm.rotated_image,
+        #         channel=elm.element_specifics.get_channel(0.6),
+        #         fade_norm=1
+        #     )
         img_processing.quick_image_viewer(temp)
         return temp
 
@@ -734,18 +731,23 @@ class PlayerInfoBoxv2:
         )
 
 
-def get_value_for_dynamic_UI_element(
-        obj_id_reference_check,
-        element_name: UI_Element,
-        PlayerCard: PlayerInfoBoxv2,
-        ui_element: UI_Element
-        ):
-    """This function is used to define the specific behaviour for the 
-    UI element. Make sure you don't do anything to stop passing in by
-    reference as this will destroy performance"""
-    if obj_id_reference_check != id(PlayerCard):
-        raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
 
+
+def custom_dynamic_UI_element_callback(
+        playercard_ref_check: int,
+        element_name: UI_Element,
+        player_card: PlayerInfoBoxv2,
+        ui_element: UI_Element,
+        gunconfig: gun_config,
+        gunconfig_ref_check:int,
+        image: np.ndarray
+        ):
+    """This function is used to define the specific behaviour for drawing the UI element"""
+    if playercard_ref_check != id(player_card):
+        raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
+    if gunconfig_ref_check != id(gunconfig):
+        raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
+    plop=1
 
 class Accelerometer(ABC):
 

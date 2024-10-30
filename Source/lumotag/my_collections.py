@@ -2,7 +2,7 @@
 from enum import Enum, auto
 from dataclasses import dataclass, field
 import numpy as np
-from typing import ClassVar, Union
+from typing import ClassVar, Union, Callable
 from functools import lru_cache
 
 
@@ -174,7 +174,7 @@ class UI_Behaviour_dynamic():
     def get_channel(self, cut_off_value_norm):
         if cut_off_value_norm <= self.cut_off_value_norm:
             return self.channel_A
-        return self.channel_B 
+        return self.channel_B
 
 @dataclass
 class UI_ready_element:
