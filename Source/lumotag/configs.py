@@ -386,8 +386,8 @@ common_ui_overlay = {
                 ),
                 UI_Element.USER_ID.value: UI_Behaviour_static(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.51,
-                        lower=0.6,
+                        top=0.55,
+                        lower=0.60,
                         left=0.01,
                         right=0.2
                         ),
@@ -397,7 +397,7 @@ common_ui_overlay = {
                 UI_Element.USER_INFO.value: UI_Behaviour_static(
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.61,
-                        lower=0.7,
+                        lower=0.65,
                         left=0.01,
                         right=0.2
                         ),
@@ -406,13 +406,13 @@ common_ui_overlay = {
                 ),
                 UI_Element.HEALTH_BAR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.71,
-                        lower=0.75,
+                        top=0.51,
+                        lower=0.54,
                         left=0.01,
-                        right=0.4
+                        right=0.25
                         ),
                     channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,
-                    channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
+                    channel_B=CHANNEL_COLOUR.GREEN_CHANNEL.value,
                     cut_off_value_norm=0.2,
                     border=False
                 ),

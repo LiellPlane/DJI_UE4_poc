@@ -546,7 +546,8 @@ class PlayerInfoBoxv2:
             get_value_for_dynamic_UI_element(
                 obj_id_reference_check=id(self),
                 element_name=1,
-                PlayerCard=self
+                PlayerCard=self,
+                ui_element=elm
                 )
             img_processing.add_ui_elementsv2(
                 image=temp,
@@ -556,6 +557,7 @@ class PlayerInfoBoxv2:
                 fade_norm=1
             )
         img_processing.quick_image_viewer(temp)
+        temp[:] = 0
         temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
 
         # test adding rotated elements
@@ -567,7 +569,21 @@ class PlayerInfoBoxv2:
                 channel=elm.element_specifics.channel,
                 fade_norm=1
             )
-        #img_processing.quick_image_viewer(temp)
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+            get_value_for_dynamic_UI_element(
+                obj_id_reference_check=id(self),
+                element_name=1,
+                PlayerCard=self,
+                ui_element=elm
+                )
+            img_processing.add_ui_elementsv2(
+                image=temp,
+                position=elm.rotated_position,
+                image_to_insert=elm.rotated_image,
+                channel=elm.element_specifics.get_channel(0.6),
+                fade_norm=1
+            )
+        img_processing.quick_image_viewer(temp)
         return temp
 
     def elements_fadein(self):
@@ -721,7 +737,8 @@ class PlayerInfoBoxv2:
 def get_value_for_dynamic_UI_element(
         obj_id_reference_check,
         element_name: UI_Element,
-        PlayerCard: PlayerInfoBoxv2
+        PlayerCard: PlayerInfoBoxv2,
+        ui_element: UI_Element
         ):
     """This function is used to define the specific behaviour for the 
     UI element. Make sure you don't do anything to stop passing in by
