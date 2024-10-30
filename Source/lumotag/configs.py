@@ -407,7 +407,7 @@ common_ui_overlay = {
                 UI_Element.HEALTH_BAR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.71,
-                        lower=0.8,
+                        lower=0.75,
                         left=0.01,
                         right=0.4
                         ),

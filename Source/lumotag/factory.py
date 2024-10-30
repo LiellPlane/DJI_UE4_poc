@@ -541,7 +541,13 @@ class PlayerInfoBoxv2:
                 channel=elm.element_specifics.channel,
                 fade_norm=1
             )
+
         for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+            get_value_for_dynamic_UI_element(
+                obj_id_reference_check=id(self),
+                element_name=1,
+                PlayerCard=self
+                )
             img_processing.add_ui_elementsv2(
                 image=temp,
                 position=elm.position,
@@ -551,7 +557,7 @@ class PlayerInfoBoxv2:
             )
         img_processing.quick_image_viewer(temp)
         temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
-        
+
         # test adding rotated elements
         for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
             img_processing.add_ui_elementsv2(
@@ -710,6 +716,18 @@ class PlayerInfoBoxv2:
             transform=transfrm,
             element_specifics=self.gun_config._UI_overlay[element_name]
         )
+
+
+def get_value_for_dynamic_UI_element(
+        obj_id_reference_check,
+        element_name: UI_Element,
+        PlayerCard: PlayerInfoBoxv2
+        ):
+    """This function is used to define the specific behaviour for the 
+    UI element. Make sure you don't do anything to stop passing in by
+    reference as this will destroy performance"""
+    if obj_id_reference_check != id(PlayerCard):
+        raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
 
 
 class Accelerometer(ABC):

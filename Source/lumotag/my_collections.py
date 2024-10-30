@@ -162,6 +162,7 @@ class UI_Behaviour_static():
     channel: int
     border: bool
 
+
 @dataclass
 class UI_Behaviour_dynamic():
     screen_normed_pos: ScreenNormalisedPositions
@@ -174,7 +175,6 @@ class UI_Behaviour_dynamic():
         if cut_off_value_norm <= self.cut_off_value_norm:
             return self.channel_A
         return self.channel_B 
-
 
 @dataclass
 class UI_ready_element:
