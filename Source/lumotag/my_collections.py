@@ -95,24 +95,26 @@ class ScreenPixelPositions:
     #     return rotated_points
 
 
-@dataclass
+@dataclass(frozen=True) # need this so we can hash the dataclass for caching 
 class ScreenNormalisedPositions:
     top: float
     lower: float
     left: float
     right: float
-    
-    def get_pixel_positions(self, img_shape):
 
-        #input_img_ratio = img_shape[0]/img_shape[1] 
-        #requested_ratio = abs(self.top-self.lower)/abs(self.left-self.right)
-        print("put something here to correct aspect ratio: get_pixel_positions")
-        return ScreenPixelPositions(
-            top=int(self.top * img_shape[0]),
-            lower=int(self.lower * img_shape[0]),
-            left=int(self.left * img_shape[1]),
-            right=int(self.right * img_shape[1])
-        )
+    # def get_pixel_positions(self, img_shape):
+
+    #     #input_img_ratio = img_shape[0]/img_shape[1] 
+    #     #requested_ratio = abs(self.top-self.lower)/abs(self.left-self.right)
+    #     print("put something here to correct aspect ratio: get_pixel_positions")
+    #     return ScreenPixelPositions(
+    #         top=int(self.top * img_shape[0]),
+    #         lower=int(self.lower * img_shape[0]),
+    #         left=int(self.left * img_shape[1]),
+    #         right=int(self.right * img_shape[1])
+    #     )
+
+    @lru_cache
     def get_pixel_positions_with_ratio(self, img_shape, element_shape):
 
         element_height = element_shape[0]
