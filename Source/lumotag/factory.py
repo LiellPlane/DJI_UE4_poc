@@ -753,28 +753,46 @@ def custom_dynamic_UI_element_callback(
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
     if element_name == UI_Element.HEALTH_BAR.value:
         hp = player_card.get_healthpoints()
-        max_hp, min_hp = player_card.get_max_min_healthpoints()
+        max_hp, _ = player_card.get_max_min_healthpoints()
         # get_pixel_positions_with_ratio is cached - but lets think how
         # to get the changing HP bar - we only want to catch the max length of the bar
         # and modify pixel_pos afterwards - otherwise we will have to cache every degree of the HP
         # whjich isn't ideal
-        pixel_pos = self.gun_config.ui_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
-            self.unrotated_display_canvas.shape,
-            ui_element.shape
+
+        unrotated_screen_size = gunconfig.get_unrotated_UI_canvas()
+        # get cached pixel positions
+        pixel_pos = gunconfig.ui_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
+            unrotated_screen_size,
+            ui_element.image.shape
             )
-        
+
+        # now we have UNrotated denormalised screen position of the healthbar,
+        # as this traditionally decreases right to left,
+        # we now reduce the distance to the right scaling with the healthpoints
+        image_distance = pixel_pos.right - pixel_pos.left
+        hp_ratio = hp/max_hp
+        new_img_distance = image_distance * hp_ratio
+        new_right = int(pixel_pos.left + new_img_distance)
+
         rotated_points = img_processing.rotate_points_right_angle(
-            [(pixel_pos.top, pixel_pos.left),(pixel_pos.lower, pixel_pos.right), (0,0)],
-            self.gun_config.screen_rotation,
-            self.unrotated_display_canvas.shape[0],
-            self.unrotated_display_canvas.shape[1]
+            [(pixel_pos.top, pixel_pos.left),(pixel_pos.lower, new_right), (0,0)],
+            gunconfig.screen_rotation,
+            unrotated_screen_size[0],
+            unrotated_screen_size[1]
             )
-        rotated_position = ScreenPixelPositions(
-            left=int(min(rotated_points[0][1], rotated_points[1][1])),
-            right=int(max(rotated_points[0][1], rotated_points[1][1])),
-            top=int(min(rotated_points[0][0], rotated_points[1][0])),
-            lower=int(max(rotated_points[0][0], rotated_points[1][0])),
-        )
+
+        left=int(min(rotated_points[0][1], rotated_points[1][1]))
+        right=int(max(rotated_points[0][1], rotated_points[1][1]))
+        top=int(min(rotated_points[0][0], rotated_points[1][0]))
+        lower=int(max(rotated_points[0][0], rotated_points[1][0]))
+
+        image[
+                top: lower,
+                left: right,
+                1
+            ] = 255
+
+
     else:
         raise Exception(f"UI element {element_name} not handled yet")
 
