@@ -269,15 +269,6 @@ class display(ABC):
                     image=output,
                     patterndetails=result)
 
-    # def add_crosshair_and_analytics_graphics(self, source_image_shape, output, graphics: ShapeItem):
-    #     img_processing.add_cross_hair(
-    #         output,
-    #         adapt=True)
-    #     for c in graphics:
-    #         c.transform_points(self._affine_transform[source_image_shape[0:2]])
-    #         img_processing.draw_pattern_output(
-    #             image=output,
-    #             patterndetails=c)
 
     @staticmethod
     def get_norm_fade_val(player, analysis):
@@ -290,10 +281,20 @@ class display(ABC):
 
         for player in players.values():
             fade_norm = self.get_norm_fade_val(player, analysis)
+            if fade_norm < 0.01 : break
             for element in player.ui_elements:
 
                 if isinstance(element.element_specifics, UI_Behaviour_dynamic):
-                    pass
+                    custom_dynamic_UI_element_callback(
+                        playercard_ref_check=id(player),
+                        element_name=element.name,
+                        player_card=player,
+                        ui_element=element,
+                        gunconfig=player.gun_config,
+                        gunconfig_ref_check=id(player.gun_config),
+                        image=output,
+                        fade_norm=fade_norm
+                        )
                 if isinstance(element.element_specifics, UI_Behaviour_static):
                     img_processing.add_ui_elementsv2(
                         image=output,
@@ -304,158 +305,6 @@ class display(ABC):
                         )
 
 
-# class PlayerInfoBox:
-#     def __init__(
-#             self,
-#             playername,
-#             playergraphic,
-#             _gun_config: gun_config
-#             ) -> None:
-#         """object to persist player name and graphic
-        
-#         params:
-        
-#         cam_img_res: resolution of the image capture device, to calculate affine transforms
-#         playergraphic: PNG file (with alpha channel)"""
-
-#         self.timer = TimeDiffObject()
-#         self.playername = playername
-#         self.playergraphic = playergraphic
-#         self.gun_config: gun_config = _gun_config
-#         self.output_display_shape = img_processing.get_empty_lumodisplay_img(
-#             _gun_config.screen_size
-#             ).shape
-  
-#         self.gray_image, self.alphamask = self.create_player_image_and_mask()
-#         self.fade_ms = 250
-#         self.current_fade_ms = 0
-#         #self.fade_direction = 1
-
-#         self.ui_elements = []
-
-#         self.ui_elements.append(self.get_affine_transform(
-#             self.gray_image,
-#             element_name=UI_Element.PHOTO.value)
-#             )
-
-#         self.ui_elements.append(self.get_affine_transform(
-#             self.create_player_text(),
-#             element_name=UI_Element.USER_ID.value)
-#             )
-
-#     def elements_fadein(self):
-#         return self.calculate_fade(direction=1)
-
-#     def elements_fadeout(self):
-#         return self.calculate_fade(direction=-1)
-
-#     def calculate_fade(self, direction: Literal[-1, 1]):
-#         if direction not in [-1, 1]:
-#             raise Exception("bad input to calculate fade", direction)
-#         time_diff_ms = self.timer.get_dt() * 1000
-#         self.timer.reset()
-#         self.current_fade_ms += (time_diff_ms * direction)
-#         # limit working fade value
-#         self.current_fade_ms = min(
-#             max(self.current_fade_ms, 0),
-#             self.fade_ms
-#             )
-#         # get normalised value
-#         norm = self.current_fade_ms / self.fade_ms
-#         return self.lerp(norm)
-
-#     @staticmethod
-#     def lerp(x):
-#         lerpation = 1 - (1 - x) * (1 - x)
-#         return max(0, min(lerpation, 1))
-
-#     def create_player_text(self):
-#         """we need to create the player name/ID/handle
-#         but to a specific size so it looks OK, then
-#         rotate it"""
-
-#         id_img = img_processing.print_text_in_boundingbox(
-#             self.playername,
-#             grayscale=True
-#             )
-
-#         return id_img
-
-#     def create_player_image_and_mask(self):
-#         """get the transparent player custom graphic"""
-#         img = img_processing.load_img_set_transparency()
-#         gray_image = cv2.cvtColor(img[:,:,0:3], cv2.COLOR_BGR2GRAY)
-#         alpha_mask = img[:,:,3]
-
-#         #img_processing.test_viewer(gray_image, 0, True, True)
-#         return gray_image, alpha_mask
-
-
-#     def get_affine_transform(
-#             self,
-#             ui_element,
-#             element_name: UI_Element):
-
-
-#         ui_element = img_processing.rotate_img_orthogonal(
-#             ui_element,
-#             (360-self.gun_config.screen_rotation)
-#             )
-
-#         input_pts = img_processing.AffinePoints(
-#             top_left_w_h=[0, 0],
-#             top_right_w_h=[ui_element.shape[1], 0],
-#             lower_right_w_h=[ui_element.shape[1], ui_element.shape[0]]
-#         )
-
-#         # get pixel positions for display output
-#         pixel_pos = self.gun_config.ui_overlay[element_name].get_pixel_positions(
-#             self.output_display_shape
-#             )
-
-#         output_pts = img_processing.AffinePoints(
-#             top_left_w_h=[pixel_pos.left, pixel_pos.top],
-#             top_right_w_h=[pixel_pos.right, pixel_pos.top],
-#             lower_right_w_h=[pixel_pos.right, pixel_pos.lower]
-#         )
-
-#         transfrm = img_processing.get_affine_transform(
-#             pts1=np.asarray(input_pts.as_array(), dtype="float32"),
-#             pts2=np.asarray(output_pts.as_array(), dtype="float32"))
-
-#         #row_cols = self.output_display_shape[0:2][::-1]
-#         #outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
-
-#         #img_processing.test_viewer(outptu_img, 0, True, True)
-
-#         resized_element = img_processing.resize_image(
-#             ui_element,
-#             abs(pixel_pos.left-pixel_pos.right),
-#             abs(pixel_pos.top-pixel_pos.lower)
-#             )
-#         #img_processing.test_viewer(resized_element, 0, True, True)
-#         #test_grab = outptu_img[pixel_pos.top:pixel_pos.lower, pixel_pos.left:pixel_pos.right]
-#         #print("test grab")
-#         #img_processing.test_viewer(test_grab, 0, True, True)
-#         #img_processing.test_viewer(resized_element, 0, True, True)
-
-#         # plops = UI_ready_element(
-#         #     name=element_name,
-#         #     position=pixel_pos,
-#         #     image=resized_element,
-#         #     transform=transfrm
-#         # )
-
-#         # testempty = img_processing.get_empty_lumodisplay_img(self.gun_config.screen_size)
-#         # img_processing.add_ui_elements(testempty, plops)
-#         # img_processing.test_viewer(testempty, 0, True, True)
-
-#         return UI_ready_element(
-#             name=element_name,
-#             position=pixel_pos,
-#             image=resized_element,
-#             transform=transfrm
-#         )
 
 
 class PlayerInfoBoxv2:
@@ -515,7 +364,7 @@ class PlayerInfoBoxv2:
             )
         
 
-        self.static_canvas = self.create_canvas_elements()
+        #self.static_canvas = self.create_canvas_elements()
 
     def generate_healthbar(self, normalised_pos: ScreenNormalisedPositions):
         """Create a healthbar - but we need to have correct aspect ratio"""
@@ -526,10 +375,13 @@ class PlayerInfoBoxv2:
         return np.full((y, x), 255, dtype=np.uint8)
 
     def get_healthpoints(self):
-        self.healthpoints = self.healthpoints - 1
+        
         if self.healthpoints < 0:
-            self.healthpoints = 100
+            self.healthpoints = self.max_healthpoints
         return self.healthpoints
+
+    def update_healthpoints(self, diff: int):
+        self.healthpoints = self.healthpoints + diff
 
     def get_max_min_healthpoints(self)->tuple[int, int]:
         return self.max_healthpoints, self.min_healthpoints
@@ -537,69 +389,69 @@ class PlayerInfoBoxv2:
     def create_canvas_elements(self):
         """for the elements that are not going to change, such
         as avatar and player name"""
-        while True:
-            time.sleep(0.1)
-            temp = self.unrotated_display_canvas.copy()
 
-            # unmem this for unrotated canvas
-            # but dynamic elements do not work in unrotated
-            # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-            #     img_processing.add_ui_elementsv2(
-            #         image=temp,
-            #         position=elm.position,
-            #         image_to_insert=elm.image,
-            #         channel=elm.element_specifics.channel,
-            #         fade_norm=1
-            #     )
+        time.sleep(0.1)
+        temp = self.unrotated_display_canvas.copy()
 
-            # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-            #     custom_dynamic_UI_element_callback(
-            #         playercard_ref_check=id(self),
-            #         element_name=elm.name,
-            #         player_card=self,
-            #         ui_element=elm,
-            #         gunconfig=self.gun_config,
-            #         gunconfig_ref_check=id(self.gun_config),
-            #         image=temp
-            #         )
+        # unmem this for unrotated canvas
+        # but dynamic elements do not work in unrotated
+        # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
+        #     img_processing.add_ui_elementsv2(
+        #         image=temp,
+        #         position=elm.position,
+        #         image_to_insert=elm.image,
+        #         channel=elm.element_specifics.channel,
+        #         fade_norm=1
+        #     )
 
-            # img_processing.quick_image_viewer(temp)
-            # temp[:] = 0
-            temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
+        # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+        #     custom_dynamic_UI_element_callback(
+        #         playercard_ref_check=id(self),
+        #         element_name=elm.name,
+        #         player_card=self,
+        #         ui_element=elm,
+        #         gunconfig=self.gun_config,
+        #         gunconfig_ref_check=id(self.gun_config),
+        #         image=temp
+        #         )
 
-            # test adding rotated elements
-            for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-                img_processing.add_ui_elementsv2(
-                    image=temp,
-                    position=elm.rotated_position,
-                    image_to_insert=elm.rotated_image,
-                    channel=elm.element_specifics.channel,
-                    fade_norm=1
+        # img_processing.quick_image_viewer(temp)
+        # temp[:] = 0
+        temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
+
+        # test adding rotated elements
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
+            img_processing.add_ui_elementsv2(
+                image=temp,
+                position=elm.rotated_position,
+                image_to_insert=elm.rotated_image,
+                channel=elm.element_specifics.channel,
+                fade_norm=1
+            )
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+            custom_dynamic_UI_element_callback(
+                playercard_ref_check=id(self),
+                element_name=elm.name,
+                player_card=self,
+                ui_element=elm,
+                gunconfig=self.gun_config,
+                gunconfig_ref_check=id(self.gun_config),
+                image=temp,
+                fade_norm=1
                 )
-            for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-                custom_dynamic_UI_element_callback(
-                    playercard_ref_check=id(self),
-                    element_name=elm.name,
-                    player_card=self,
-                    ui_element=elm,
-                    gunconfig=self.gun_config,
-                    gunconfig_ref_check=id(self.gun_config),
-                    image=temp,
-                    fade_norm=1
-                    )
-            img_processing.quick_image_viewer(temp)
+        img_processing.quick_image_viewer(temp)
         return temp
 
     def elements_fadein(self):
         return self.calculate_fade(direction=1,fade_ms= self.fade_ms)
 
     def elements_fadeout(self):
-        return self.calculate_fade(direction=-1, fade_ms=self.fade_ms)
+        return self.calculate_fade(direction=-1, fade_ms=self.fade_ms, multiplier=(1/50))
 
-    def calculate_fade(self, direction: Literal[-1, 1], fade_ms):
+    def calculate_fade(self, direction: Literal[-1, 1], fade_ms, multiplier=1):
         if direction not in [-1, 1]:
             raise Exception("bad input to calculate fade", direction)
-        time_diff_ms = self.timer.get_dt() * 1000
+        time_diff_ms = self.timer.get_dt() * (1000 *multiplier)
         self.timer.reset()
         self.current_fade_ms += (time_diff_ms * direction)
         # limit working fade value

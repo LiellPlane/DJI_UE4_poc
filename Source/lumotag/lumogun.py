@@ -338,8 +338,8 @@ def main():
                 # after 0.N seconds, relay clicks off
                 # user can now fire again immediately
                 # any other behaviour during refractory period is ignored
-                result = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
-                if result is True:
+                is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+                if is_trigger_pressed is True:
                     #file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     #file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     voice.speak("wut")
