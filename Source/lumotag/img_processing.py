@@ -1,6 +1,7 @@
 import sys
 import cv2
 import shutil
+from functools import lru_cache
 from enum import Enum, auto
 import os
 import numpy as np
@@ -1082,6 +1083,7 @@ def quick_image_viewer(image):
     cv2.destroyAllWindows()
 
 
+@lru_cache
 def rotate_points_right_angle(points, angle, width, height):
     """
     Rotate points by the given angle.

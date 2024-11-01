@@ -173,10 +173,10 @@ class UI_Behaviour_dynamic():
     channel_B: int
     cut_off_value_norm: Union[float,  int]
 
-    def get_channel(self, cut_off_value_norm):
-        if cut_off_value_norm <= self.cut_off_value_norm:
-            return self.channel_A
-        return self.channel_B
+    def get_channel(self, normalised_input_value):
+        if normalised_input_value <= self.cut_off_value_norm:
+            return self.channel_B
+        return self.channel_A
 
 @dataclass
 class UI_ready_element:

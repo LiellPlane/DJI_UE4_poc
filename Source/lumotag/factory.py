@@ -526,7 +526,7 @@ class PlayerInfoBoxv2:
         return np.full((y, x), 255, dtype=np.uint8)
 
     def get_healthpoints(self):
-        self.healthpoints =- 1
+        self.healthpoints = self.healthpoints - 1
         if self.healthpoints < 0:
             self.healthpoints = 100
         return self.healthpoints
@@ -537,56 +537,57 @@ class PlayerInfoBoxv2:
     def create_canvas_elements(self):
         """for the elements that are not going to change, such
         as avatar and player name"""
-        temp = self.unrotated_display_canvas.copy()
+        while True:
+            time.sleep(0.1)
+            temp = self.unrotated_display_canvas.copy()
 
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-            img_processing.add_ui_elementsv2(
-                image=temp,
-                position=elm.position,
-                image_to_insert=elm.image,
-                channel=elm.element_specifics.channel,
-                fade_norm=1
-            )
+            # unmem this for unrotated canvas
+            # but dynamic elements do not work in unrotated
+            # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
+            #     img_processing.add_ui_elementsv2(
+            #         image=temp,
+            #         position=elm.position,
+            #         image_to_insert=elm.image,
+            #         channel=elm.element_specifics.channel,
+            #         fade_norm=1
+            #     )
 
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-            custom_dynamic_UI_element_callback(
-                playercard_ref_check=id(self),
-                element_name=elm.name,
-                player_card=self,
-                ui_element=elm,
-                gunconfig=self.gun_config,
-                gunconfig_ref_check=id(self.gun_config),
-                image=temp
+            # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+            #     custom_dynamic_UI_element_callback(
+            #         playercard_ref_check=id(self),
+            #         element_name=elm.name,
+            #         player_card=self,
+            #         ui_element=elm,
+            #         gunconfig=self.gun_config,
+            #         gunconfig_ref_check=id(self.gun_config),
+            #         image=temp
+            #         )
+
+            # img_processing.quick_image_viewer(temp)
+            # temp[:] = 0
+            temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
+
+            # test adding rotated elements
+            for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
+                img_processing.add_ui_elementsv2(
+                    image=temp,
+                    position=elm.rotated_position,
+                    image_to_insert=elm.rotated_image,
+                    channel=elm.element_specifics.channel,
+                    fade_norm=1
                 )
-
-        img_processing.quick_image_viewer(temp)
-        temp[:] = 0
-        temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
-
-        # test adding rotated elements
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-            img_processing.add_ui_elementsv2(
-                image=temp,
-                position=elm.rotated_position,
-                image_to_insert=elm.rotated_image,
-                channel=elm.element_specifics.channel,
-                fade_norm=1
-            )
-        # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-        #     get_value_for_dynamic_UI_element(
-        #         obj_id_reference_check=id(self),
-        #         element_name=1,
-        #         PlayerCard=self,
-        #         ui_element=elm
-        #         )
-        #     img_processing.add_ui_elementsv2(
-        #         image=temp,
-        #         position=elm.rotated_position,
-        #         image_to_insert=elm.rotated_image,
-        #         channel=elm.element_specifics.get_channel(0.6),
-        #         fade_norm=1
-        #     )
-        img_processing.quick_image_viewer(temp)
+            for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
+                custom_dynamic_UI_element_callback(
+                    playercard_ref_check=id(self),
+                    element_name=elm.name,
+                    player_card=self,
+                    ui_element=elm,
+                    gunconfig=self.gun_config,
+                    gunconfig_ref_check=id(self.gun_config),
+                    image=temp,
+                    fade_norm=1
+                    )
+            img_processing.quick_image_viewer(temp)
         return temp
 
     def elements_fadein(self):
@@ -684,7 +685,7 @@ class PlayerInfoBoxv2:
 
         #img_processing.test_viewer(outptu_img, 0, True, True)
         rotated_points = img_processing.rotate_points_right_angle(
-            [(pixel_pos.top, pixel_pos.left),(pixel_pos.lower, pixel_pos.right), (0,0)],
+            ((pixel_pos.top, pixel_pos.left),(pixel_pos.lower, pixel_pos.right), (0,0)),
             self.gun_config.screen_rotation,
             self.unrotated_display_canvas.shape[0],
             self.unrotated_display_canvas.shape[1]
@@ -744,7 +745,8 @@ def custom_dynamic_UI_element_callback(
         ui_element: UI_Element,
         gunconfig: gun_config,
         gunconfig_ref_check:int,
-        image: np.ndarray
+        image: np.ndarray,
+        fade_norm: float
         ):
     """This function is used to define the specific behaviour for drawing the UI element"""
     if playercard_ref_check != id(player_card):
@@ -775,7 +777,7 @@ def custom_dynamic_UI_element_callback(
         new_right = int(pixel_pos.left + new_img_distance)
 
         rotated_points = img_processing.rotate_points_right_angle(
-            [(pixel_pos.top, pixel_pos.left),(pixel_pos.lower, new_right), (0,0)],
+            ((pixel_pos.top, pixel_pos.left),(pixel_pos.lower, new_right), (0,0)),
             gunconfig.screen_rotation,
             unrotated_screen_size[0],
             unrotated_screen_size[1]
@@ -786,11 +788,12 @@ def custom_dynamic_UI_element_callback(
         top=int(min(rotated_points[0][0], rotated_points[1][0]))
         lower=int(max(rotated_points[0][0], rotated_points[1][0]))
 
+
         image[
                 top: lower,
                 left: right,
-                1
-            ] = 255
+                ui_element.element_specifics.get_channel(normalised_input_value=hp/max_hp)
+            ] = int(255 * fade_norm)
 
 
     else:
