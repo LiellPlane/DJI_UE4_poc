@@ -263,7 +263,6 @@ def main():
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis()
 
-
             with time_it("check messaging", debug=PRINT_DEBUG):
                 for msg in messenger.check_in_box():
                     in_msg = msgs.parse_input_msg(msg)
@@ -472,7 +471,9 @@ def main():
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(output_image)
                 
-                # if len(analysis) > 0:
+                if len(analysis) > 0:
+                    if is_trigger_pressed is True:
+                        players["demoplayer"].update_healthpoints(diff=-10)
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
 
