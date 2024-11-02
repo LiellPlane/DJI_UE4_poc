@@ -417,3 +417,51 @@ otherPlayers_ui_overlay = {
                     border=False
                 ),
             }
+
+
+Player_ui_overlay = {
+                UI_Element.USER_ID.value: UI_Behaviour_static(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.60,
+                        lower=0.65,
+                        left=0.75,
+                        right=0.9
+                        ),
+                    channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
+                    border=False
+                ),
+                UI_Element.USER_INFO.value: UI_Behaviour_static(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.65,
+                        lower=0.7,
+                        left=0.75,
+                        right=1
+                        ),
+                    channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
+                    border=False
+                ),
+                UI_Element.ENERGY_LR.value: UI_Behaviour_dynamic(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.8,
+                        lower=0.9,
+                        left=0.75,
+                        right=1
+                        ),
+                    channel_A=CHANNEL_COLOUR.BLUE_CHANNEL.value,
+                    channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
+                    cut_off_value_norm=0.25,
+                    border=False
+                ),
+                UI_Element.BARMETRIC_LR.value: UI_Behaviour_dynamic(
+                    screen_normed_pos=ScreenNormalisedPositions(
+                        top=0.9,
+                        lower=1,
+                        left=0.5,
+                        right=1
+                        ),
+                    channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,
+                    channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
+                    cut_off_value_norm=0.25,
+                    border=False
+                ),
+            }

@@ -206,7 +206,16 @@ def main():
             playergraphic=None,
             _gun_config=GUN_CONFIGURATION,
             _UI_overlay=configs.otherPlayers_ui_overlay
-        )}
+        ),
+        "me":
+        factory.PlayerInfoBoxv2(
+            playername="me",
+            playergraphic=None,
+            _gun_config=GUN_CONFIGURATION,
+            _UI_overlay=configs.Player_ui_overlay
+        ),
+
+        }
 
 
     # set partial functions
@@ -474,7 +483,8 @@ def main():
                 
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:
-                        players["demoplayer"].update_healthpoints(diff=-10)
+                        if "demoplayer" in players:
+                            players["demoplayer"].update_healthpoints(diff=-10)
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
 

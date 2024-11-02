@@ -360,13 +360,15 @@ class PlayerInfoBoxv2:
 
         # add health bar
         # this is a little funky as we want to make sure its the same aspect ratio
-        # as depicted in the UI configuration for this platform. 
-        if UI_Element.BARMETRIC_RL.value in self._UI_overlay:
-            normalised_desired_positions = self._UI_overlay[UI_Element.BARMETRIC_RL.value].screen_normed_pos
-            self.ui_elements.append(self.prepare_UI_element(
-                self.generate_healthbar(normalised_desired_positions),
-                element_name=UI_Element.BARMETRIC_RL.value)
-                )
+        # as depicted in the UI configuration for this platform.
+        for dynamic_elm in [UI_Element.BARMETRIC_RL.value, UI_Element.ENERGY_LR.value, UI_Element.BARMETRIC_LR.value]: 
+            if dynamic_elm in self._UI_overlay:
+                normalised_desired_positions = self._UI_overlay[dynamic_elm].screen_normed_pos
+                self.ui_elements.append(self.prepare_UI_element(
+                    self.generate_healthbar(normalised_desired_positions),
+                    element_name=dynamic_elm)
+                    )
+
 
         #self.static_canvas = self.create_canvas_elements()
 
@@ -399,14 +401,15 @@ class PlayerInfoBoxv2:
 
         # unmem this for unrotated canvas
         # but dynamic elements do not work in unrotated
-        # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-        #     img_processing.add_ui_elementsv2(
-        #         image=temp,
-        #         position=elm.position,
-        #         image_to_insert=elm.image,
-        #         channel=elm.element_specifics.channel,
-        #         fade_norm=1
-        #     )
+        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
+            print(elm.name)
+            img_processing.add_ui_elementsv2(
+                image=temp,
+                position=elm.position,
+                image_to_insert=elm.image,
+                channel=elm.element_specifics.channel,
+                fade_norm=1
+            )
 
         # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
         #     custom_dynamic_UI_element_callback(
@@ -419,7 +422,7 @@ class PlayerInfoBoxv2:
         #         image=temp
         #         )
 
-        # img_processing.quick_image_viewer(temp)
+        img_processing.quick_image_viewer(temp)
         # temp[:] = 0
         temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
 
@@ -609,7 +612,7 @@ def custom_dynamic_UI_element_callback(
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
     if gunconfig_ref_check != id(gunconfig):
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
-    if element_name == UI_Element.BARMETRIC_RL.value:
+    if element_name in {UI_Element.BARMETRIC_RL.value, UI_Element.ENERGY_LR.value, UI_Element.BARMETRIC_LR.value}:
         hp = player_card.get_healthpoints()
         max_hp, _ = player_card.get_max_min_healthpoints()
         # get_pixel_positions_with_ratio is cached - but lets think how
