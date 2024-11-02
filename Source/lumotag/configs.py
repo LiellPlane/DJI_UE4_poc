@@ -404,7 +404,7 @@ common_ui_overlay = {
                     channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
                 ),
-                UI_Element.HEALTH_BAR.value: UI_Behaviour_dynamic(
+                UI_Element.BARMETRIC_RL.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.51,
                         lower=0.54,

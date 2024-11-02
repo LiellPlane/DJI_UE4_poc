@@ -32,7 +32,8 @@ class UI_Element(Enum):
     PHOTO = "PHOTO"
     USER_ID = "USER_ID"
     USER_INFO = "USER_INFO"
-    HEALTH_BAR = "HEALTH_BAR"
+    BARMETRIC_RL = "BARMETRIC_RL"
+    BARMETRIC_LR = "BARMETRIC_LR"
 
 
 

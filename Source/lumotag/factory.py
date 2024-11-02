@@ -357,12 +357,11 @@ class PlayerInfoBoxv2:
         # add health bar
         # this is a little funky as we want to make sure its the same aspect ratio
         # as depicted in the UI configuration for this platform. 
-        normalised_desired_positions = self.gun_config.ui_overlay[UI_Element.HEALTH_BAR.value].screen_normed_pos
+        normalised_desired_positions = self.gun_config.ui_overlay[UI_Element.BARMETRIC_RL.value].screen_normed_pos
         self.ui_elements.append(self.prepare_UI_element(
             self.generate_healthbar(normalised_desired_positions),
-            element_name=UI_Element.HEALTH_BAR.value)
+            element_name=UI_Element.BARMETRIC_RL.value)
             )
-        
 
         #self.static_canvas = self.create_canvas_elements()
 
@@ -605,7 +604,7 @@ def custom_dynamic_UI_element_callback(
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
     if gunconfig_ref_check != id(gunconfig):
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
-    if element_name == UI_Element.HEALTH_BAR.value:
+    if element_name == UI_Element.BARMETRIC_RL.value:
         hp = player_card.get_healthpoints()
         max_hp, _ = player_card.get_max_min_healthpoints()
         # get_pixel_positions_with_ratio is cached - but lets think how
@@ -627,7 +626,7 @@ def custom_dynamic_UI_element_callback(
         hp_ratio = hp/max_hp
         new_img_distance = image_distance * hp_ratio
         new_right = int(pixel_pos.left + new_img_distance)
-
+        
         rotated_points = img_processing.rotate_points_right_angle(
             ((pixel_pos.top, pixel_pos.left),(pixel_pos.lower, new_right), (0,0)),
             gunconfig.screen_rotation,
@@ -640,6 +639,11 @@ def custom_dynamic_UI_element_callback(
         top=int(min(rotated_points[0][0], rotated_points[1][0]))
         lower=int(max(rotated_points[0][0], rotated_points[1][0]))
 
+        # image[
+        #         ui_element.rotated_position.top_frame: ui_element.rotated_position.lower_frame,
+        #         ui_element.rotated_position.left_frame: ui_element.rotated_position.right_frame,
+        #         :
+        #     ] = 0
 
         image[
                 top: lower,

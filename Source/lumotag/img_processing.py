@@ -1,6 +1,7 @@
 import sys
 import cv2
 import shutil
+from collections import deque
 from functools import lru_cache
 from enum import Enum, auto
 import os
@@ -667,8 +668,8 @@ def add_cross_hair(image, adapt, lerp = 0):
     else:
         col = 255
 
-    red = int(255 * lerp)
-    green = int((1- lerp) * max(col, 50))
+    red = int(255 * (1-lerp))
+    green = int((lerp) * max(col, 50))
 
     image[midx - thick : midx + thick, 0:midy-vis_block, 2] = red
     image[midx - thick : midx + thick, 0:midy-vis_block, 1] = green
@@ -684,18 +685,23 @@ def add_cross_hair(image, adapt, lerp = 0):
 class lerped_add_crosshair():
     def __init__(self) -> None:
         self.lerper = utils.Lerp(
-            start_value=0,
-            end_value=1,
+            start_value=1,
+            end_value=0,
             duration=0.15,
             easing="ease_in_out_cubic"
             )
+        self.buffer = deque(maxlen=4)
         self.last_target_acquired = False
-        self.debouncecheck = utils.SequenceDetector(3,[True,True,True])
+        #self.debouncecheck = utils.SequenceDetector(3,[True,True,True])
+
+    def add_target_state(self, target_state):
+        self.buffer.append(target_state)
+        return sum(x for x in self.buffer) > 2
 
     def add_cross_hair(self, image, adapt, target_acquired=False):
         """wrap the add cross hair function so we can lerp it easily
         lerp in when target is acquired and lerp back out when lost"""
-        target_acquired_ok = self.debouncecheck.add(target_acquired)
+        target_acquired_ok = self.add_target_state(target_acquired)
         self.lerper.set_direction_forward(target_acquired_ok)
         add_cross_hair(image, adapt, self.lerper.get_value())
         self.last_target_acquired = target_acquired
