@@ -329,7 +329,7 @@ class simitzar_config(gun_config):
 
     @property
     def screen_rotation(self):
-        return(0)
+        return(270)
 
     @property
     def screen_size(self):
@@ -425,7 +425,7 @@ Player_ui_overlay = {
                         top=0.60,
                         lower=0.65,
                         left=0.75,
-                        right=0.9
+                        right=1
                         ),
                     channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
