@@ -288,12 +288,12 @@ class TZAR_config(gun_config):
     def video_modes_closerange(self):
         return RPICAMv2Noir_Cam_vidmodes
     
-    @property
-    def ui_overlay(self) -> dict:
-        if self._UI_overlay is None:
-            self._UI_overlay = common_ui_overlay
+    # @property
+    # def ui_overlay(self) -> dict:
+    #     if self._UI_overlay is None:
+    #         self._UI_overlay = common_ui_overlay
 
-        return self._UI_overlay
+    #     return self._UI_overlay
 
 
 class simitzar_config(gun_config):
@@ -365,15 +365,15 @@ class simitzar_config(gun_config):
     def video_modes_closerange(self):
         return Fake_Cam_vidmodes_closerangeFILES
 
-    @property
-    def ui_overlay(self) -> dict:
-        if self._UI_overlay is None:
-            self._UI_overlay = common_ui_overlay
+    # @property
+    # def ui_overlay(self) -> dict:
+    #     if self._UI_overlay is None:
+    #         self._UI_overlay = common_ui_overlay
 
-        return self._UI_overlay
+    #     return self._UI_overlay
 
 
-common_ui_overlay = {
+otherPlayers_ui_overlay = {
                 UI_Element.PHOTO.value: UI_Behaviour_static(
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.25,

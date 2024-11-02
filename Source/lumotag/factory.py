@@ -80,7 +80,7 @@ class gun_config(ABC):
         self.torch_debounce = Debounce(
             debounce_sec=1.0)
 
-        self._UI_overlay = None
+        # self._UI_overlay = None
 
 
     @property
@@ -141,10 +141,10 @@ class gun_config(ABC):
     @abstractmethod
     def video_modes_closerange(self):
         ...
-    @property
-    @abstractmethod
-    def ui_overlay(self) -> dict:
-        ...
+    # @property
+    # @abstractmethod
+    # def ui_overlay(self) -> dict:
+    #     ...
 
     def get_unrotated_UI_canvas(self):
         """For creating UI elements - we need a canvas with no rotation
@@ -312,7 +312,8 @@ class PlayerInfoBoxv2:
             self,
             playername,
             playergraphic,
-            _gun_config: gun_config
+            _gun_config: gun_config,
+            _UI_overlay: dict
             ) -> None:
         """object to persist player name and graphic
        
@@ -325,7 +326,7 @@ class PlayerInfoBoxv2:
         self.playername = playername
         self.playergraphic = playergraphic
         self.gun_config: gun_config = _gun_config
-
+        self._UI_overlay = _UI_overlay
         self.unrotated_display_canvas = img_processing.get_empty_lumodisplay_img(
             self.gun_config.get_unrotated_UI_canvas()
             )
@@ -339,29 +340,33 @@ class PlayerInfoBoxv2:
         self.ui_elements = []
 
         # load up array with UI element object
-        self.ui_elements.append(self.prepare_UI_element(
-            self.gray_image,
-            element_name=UI_Element.PHOTO.value)
-            )
-
-        self.ui_elements.append(self.prepare_UI_element(
-            self.create_player_text(self.playername),
-            element_name=UI_Element.USER_ID.value)
-            )
-
-        self.ui_elements.append(self.prepare_UI_element(
-            self.create_player_text(playername="doesn't matter"),
-            element_name=UI_Element.USER_INFO.value)
-            )
+        # because this class is used for non-players and the player
+        # we require this stage to check what elements are needed, as have unique processes
+        if UI_Element.PHOTO.value in self._UI_overlay:
+            self.ui_elements.append(self.prepare_UI_element(
+                self.gray_image,
+                element_name=UI_Element.PHOTO.value)
+                )
+        if UI_Element.USER_ID.value in self._UI_overlay:
+            self.ui_elements.append(self.prepare_UI_element(
+                self.create_player_text(self.playername),
+                element_name=UI_Element.USER_ID.value)
+                )
+        if UI_Element.USER_INFO.value in self._UI_overlay:
+            self.ui_elements.append(self.prepare_UI_element(
+                self.create_player_text(playername="doesn't matter"),
+                element_name=UI_Element.USER_INFO.value)
+                )
 
         # add health bar
         # this is a little funky as we want to make sure its the same aspect ratio
         # as depicted in the UI configuration for this platform. 
-        normalised_desired_positions = self.gun_config.ui_overlay[UI_Element.BARMETRIC_RL.value].screen_normed_pos
-        self.ui_elements.append(self.prepare_UI_element(
-            self.generate_healthbar(normalised_desired_positions),
-            element_name=UI_Element.BARMETRIC_RL.value)
-            )
+        if UI_Element.BARMETRIC_RL.value in self._UI_overlay:
+            normalised_desired_positions = self._UI_overlay[UI_Element.BARMETRIC_RL.value].screen_normed_pos
+            self.ui_elements.append(self.prepare_UI_element(
+                self.generate_healthbar(normalised_desired_positions),
+                element_name=UI_Element.BARMETRIC_RL.value)
+                )
 
         #self.static_canvas = self.create_canvas_elements()
 
@@ -512,7 +517,7 @@ class PlayerInfoBoxv2:
 
         # get pixel positions for display output from normalised positions
         # here we can modify the pixels to keep the image ratio
-        pixel_pos = self.gun_config.ui_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
+        pixel_pos = self._UI_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
             self.unrotated_display_canvas.shape,
             ui_element.shape
             )
@@ -585,7 +590,7 @@ class PlayerInfoBoxv2:
             image=resized_element,
             rotated_image=ui_element_rotated,
             transform=transfrm,
-            element_specifics=self.gun_config._UI_overlay[element_name]
+            element_specifics=self._UI_overlay[element_name]
         )
 
 
@@ -614,7 +619,7 @@ def custom_dynamic_UI_element_callback(
 
         unrotated_screen_size = gunconfig.get_unrotated_UI_canvas()
         # get cached pixel positions
-        pixel_pos = gunconfig.ui_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
+        pixel_pos = player_card._UI_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
             unrotated_screen_size,
             ui_element.image.shape
             )

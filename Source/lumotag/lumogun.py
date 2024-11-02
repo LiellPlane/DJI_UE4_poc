@@ -204,7 +204,8 @@ def main():
         factory.PlayerInfoBoxv2(
             playername="demoplayer",
             playergraphic=None,
-            _gun_config=GUN_CONFIGURATION
+            _gun_config=GUN_CONFIGURATION,
+            _UI_overlay=configs.otherPlayers_ui_overlay
         )}
 
 
