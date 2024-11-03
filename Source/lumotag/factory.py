@@ -613,6 +613,8 @@ def custom_dynamic_UI_element_callback(
     if gunconfig_ref_check != id(gunconfig):
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
     if element_name in {UI_Element.BARMETRIC_RL.value, UI_Element.ENERGY_LR.value, UI_Element.BARMETRIC_LR.value}:
+        if element_name in {UI_Element.ENERGY_LR.value}:
+            plop=1
         hp = player_card.get_healthpoints()
         max_hp, _ = player_card.get_max_min_healthpoints()
         # get_pixel_positions_with_ratio is cached - but lets think how
@@ -657,7 +659,7 @@ def custom_dynamic_UI_element_callback(
                 top: lower,
                 left: right,
                 ui_element.element_specifics.get_channel(normalised_input_value=hp/max_hp)
-            ] = int(255 * fade_norm)
+            ] = int(175 * fade_norm)
 
 
     else:
@@ -1664,3 +1666,108 @@ class VoiceBase(ABC):
 
     def speaker(self, in_box):
         pass
+
+
+if __name__ == '__main__':
+
+    # run tests
+    top = 0
+    left = 0
+    lower = 500
+    right = 1000
+
+    image_height = 500
+    image_width = 1000
+    rotated_points = img_processing.rotate_points_right_angle(
+        ((top, left),(lower, right)),
+        0,
+        image_height,
+        image_width
+        )
+
+    if rotated_points != [(0, 0), (500, 1000)]:
+        raise Exception
+
+    top = 0
+    left = 0
+    lower = 500
+    right = 1000
+
+    image_height = 500
+    image_width = 1000
+    rotated_points = img_processing.rotate_points_right_angle(
+        ((top, left),(lower, right)),
+        90,
+        image_height,
+        image_width
+        )
+
+    if rotated_points != [(1000, 0), (0, 500)]:
+        raise Exception
+
+
+    top = 0
+    left = 0
+    lower = 500
+    right = 1000
+
+    image_height = 500
+    image_width = 1000
+    rotated_points = img_processing.rotate_points_right_angle(
+        ((top, left),(lower, right)),
+        270,
+        image_height,
+        image_width
+        )
+
+    if rotated_points != [(0, 500), (1000, 0)]:
+        raise Exception
+    
+
+    test_pos = ScreenNormalisedPositions(
+        top=0,
+        lower=1,
+        left=0,
+        right=1
+    )
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(500,1000), element_shape=(500,1000))
+    assert res == ScreenPixelPositions(top=0, lower=500, left=0, right=1000)
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(500,1000), element_shape=(100,100))
+    assert res == ScreenPixelPositions(top=0, lower=500, left=0, right=500)
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(500,1000), element_shape=(1000,100))
+    assert res == ScreenPixelPositions(top=0, lower=500, left=0, right=50)
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(1000,500), element_shape=(1000,100))
+    assert res == ScreenPixelPositions(top=0, lower=1000, left=0, right=100)
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(500, 1000), element_shape=(1000,2000))
+    assert res == ScreenPixelPositions(top=0, lower=500, left=0, right=1000)
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(500, 1000), element_shape=(1000,3000))
+    assert res == ScreenPixelPositions(top=0, lower=333, left=0, right=1000)
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=(500, 1000), element_shape=(1000,300))
+    assert res == ScreenPixelPositions(top=0, lower=500, left=0, right=150)
+
+
+    element_shape=(4, 25)
+    img_shape=(480, 775, 3)
+    test_pos = ScreenNormalisedPositions(top=0.9, lower=0.95, left=0.75, right=1)
+    expected_image_width = (test_pos.right - test_pos.left) * img_shape[1]
+    expected_image_height = (test_pos.lower - test_pos.top) * img_shape[0]
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=img_shape, element_shape=element_shape)
+    assert abs((expected_image_width/element_shape[1]) - (expected_image_height/element_shape[0])) < 0.1
+    # sanity check the input ratios are the same
+    ratio2 = (test_pos.lower - test_pos.top)  / (test_pos.right - test_pos.left)
+    assert abs((element_shape[0]/element_shape[1]) - ratio2) < 0.1
+
+    ratio2 = (res.lower - res.top)  / (res.right - res.left)
+    assert abs((element_shape[0]/element_shape[1]) - ratio2) < 0.1
+    res_height =  (res.lower - res.top)
+    res_width =  (res.right - res.left)
+
+    assert abs(res_width - (expected_image_width)) < 0.1
+    plop=1

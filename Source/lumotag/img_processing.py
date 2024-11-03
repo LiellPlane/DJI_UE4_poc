@@ -1102,7 +1102,7 @@ def rotate_points_right_angle(points, angle, width, height):
     """
     rotated = []
     for (x, y) in points:
-        if angle == 0:
+        if angle in [0, 360]:
             new_x = x
             new_y = y
         elif angle == 270:

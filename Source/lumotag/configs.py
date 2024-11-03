@@ -422,8 +422,8 @@ otherPlayers_ui_overlay = {
 Player_ui_overlay = {
                 UI_Element.USER_ID.value: UI_Behaviour_static(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.60,
-                        lower=0.65,
+                        top=0.80,
+                        lower=0.85,
                         left=0.75,
                         right=1
                         ),
@@ -432,8 +432,8 @@ Player_ui_overlay = {
                 ),
                 UI_Element.USER_INFO.value: UI_Behaviour_static(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.65,
-                        lower=0.7,
+                        top=0.85,
+                        lower=0.9,
                         left=0.75,
                         right=1
                         ),
@@ -442,8 +442,8 @@ Player_ui_overlay = {
                 ),
                 UI_Element.ENERGY_LR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.8,
-                        lower=0.9,
+                        top=0.9,
+                        lower=0.95,
                         left=0.75,
                         right=1
                         ),
@@ -454,9 +454,9 @@ Player_ui_overlay = {
                 ),
                 UI_Element.BARMETRIC_LR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.9,
+                        top=0.95,
                         lower=1,
-                        left=0.5,
+                        left=0.75,
                         right=1
                         ),
                     channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,

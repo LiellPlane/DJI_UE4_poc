@@ -104,17 +104,6 @@ class ScreenNormalisedPositions:
     left: float
     right: float
 
-    # def get_pixel_positions(self, img_shape):
-
-    #     #input_img_ratio = img_shape[0]/img_shape[1] 
-    #     #requested_ratio = abs(self.top-self.lower)/abs(self.left-self.right)
-    #     print("put something here to correct aspect ratio: get_pixel_positions")
-    #     return ScreenPixelPositions(
-    #         top=int(self.top * img_shape[0]),
-    #         lower=int(self.lower * img_shape[0]),
-    #         left=int(self.left * img_shape[1]),
-    #         right=int(self.right * img_shape[1])
-    #     )
     @lru_cache
     def get_pixel_positions_with_ratio(self, img_shape, element_shape):
 
@@ -145,8 +134,8 @@ class ScreenNormalisedPositions:
             ]):
                 break
 
-        # if abs((img_height / new_height) - (img_width / new_width)) > 0.1:
-        #     raise ValueError("bad image ratio!!")
+        if abs((element_height / new_height) - (element_width / new_width)) > 0.1:
+            raise ValueError("bad image ratio!!")
         # we have normalised positions and pre-scaled positions
         # need to offset the pre-scaled positions from the normalised ones
         top = self.top * img_height
