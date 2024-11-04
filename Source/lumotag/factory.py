@@ -354,7 +354,7 @@ class PlayerInfoBoxv2:
                 )
         if UI_Element.USER_INFO.value in self._UI_overlay:
             self.ui_elements.append(self.prepare_UI_element(
-                self.create_player_text(playername="doesn't matter"),
+                self.create_player_text(playername="some player info"),
                 element_name=UI_Element.USER_INFO.value)
                 )
 
@@ -365,20 +365,25 @@ class PlayerInfoBoxv2:
             if dynamic_elm in self._UI_overlay:
                 normalised_desired_positions = self._UI_overlay[dynamic_elm].screen_normed_pos
                 self.ui_elements.append(self.prepare_UI_element(
-                    self.generate_healthbar(normalised_desired_positions),
+                    self.generate_healthbar(normalised_desired_positions, self.unrotated_display_canvas.shape),
                     element_name=dynamic_elm)
                     )
 
 
         #self.static_canvas = self.create_canvas_elements()
 
-    def generate_healthbar(self, normalised_pos: ScreenNormalisedPositions):
+    @staticmethod
+    def generate_healthbar(
+        normalised_pos: ScreenNormalisedPositions,
+        imageshape: np.ndarray
+        ):
         """Create a healthbar - but we need to have correct aspect ratio"""
         # multiply by arbitrary number to have something we can
         # verify visually
-        x = int((normalised_pos.right - normalised_pos.left) * 100)
-        y = int((normalised_pos.lower - normalised_pos.top) * 100)
+        x = int((normalised_pos.right - normalised_pos.left) * imageshape[1])
+        y = int((normalised_pos.lower - normalised_pos.top) * imageshape[0])
         return np.full((y, x), 255, dtype=np.uint8)
+
 
     def get_healthpoints(self):
         
@@ -1752,22 +1757,30 @@ if __name__ == '__main__':
     res = test_pos.get_pixel_positions_with_ratio(img_shape=(500, 1000), element_shape=(1000,300))
     assert res == ScreenPixelPositions(top=0, lower=500, left=0, right=150)
 
+    
 
-    element_shape=(4, 25)
     img_shape=(480, 775, 3)
     test_pos = ScreenNormalisedPositions(top=0.9, lower=0.95, left=0.75, right=1)
+
+    generated_barmetric =PlayerInfoBoxv2.generate_healthbar(test_pos, img_shape).shape
+
     expected_image_width = (test_pos.right - test_pos.left) * img_shape[1]
     expected_image_height = (test_pos.lower - test_pos.top) * img_shape[0]
-    res = test_pos.get_pixel_positions_with_ratio(img_shape=img_shape, element_shape=element_shape)
-    assert abs((expected_image_width/element_shape[1]) - (expected_image_height/element_shape[0])) < 0.1
+    bar_width = generated_barmetric[1]
+    bar_height = generated_barmetric[0]
+    assert abs((expected_image_width/bar_width) - (expected_image_height/bar_height)) < 0.1
+
+
+    res = test_pos.get_pixel_positions_with_ratio(img_shape=img_shape, element_shape=generated_barmetric)
+    assert abs((expected_image_width/generated_barmetric[1]) - (expected_image_height/generated_barmetric[0])) < 0.1
     # sanity check the input ratios are the same
     ratio2 = (test_pos.lower - test_pos.top)  / (test_pos.right - test_pos.left)
-    assert abs((element_shape[0]/element_shape[1]) - ratio2) < 0.1
+    assert abs((generated_barmetric[0]/generated_barmetric[1]) - ratio2) < 0.1
 
     ratio2 = (res.lower - res.top)  / (res.right - res.left)
-    assert abs((element_shape[0]/element_shape[1]) - ratio2) < 0.1
-    res_height =  (res.lower - res.top)
-    res_width =  (res.right - res.left)
+    assert abs((generated_barmetric[0]/generated_barmetric[1]) - ratio2) < 0.1
+    res_height = (res.lower - res.top)
+    res_width = (res.right - res.left)
 
     assert abs(res_width - (expected_image_width)) < 0.1
     plop=1

@@ -7,6 +7,7 @@ from enum import Enum, auto
 import os
 import numpy as np
 import time
+import random
 from contextlib import contextmanager
 from typing import Iterator, Literal, Annotated, Optional
 from dataclasses import dataclass
@@ -814,11 +815,13 @@ def add_ui_elementsv2(
         ) -> None:
     if fade_norm < 0.01:
         return
+    rand = random.randint(-2, 2)
+
     image[
             position.top: position.lower,
             position.left: position.right,
             channel
-        ] = (image_to_insert* fade_norm).astype(np.uint8)
+        ] = ((image_to_insert * fade_norm) + rand).astype(np.uint8)
     return
 
 

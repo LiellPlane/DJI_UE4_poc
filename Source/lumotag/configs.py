@@ -379,7 +379,7 @@ otherPlayers_ui_overlay = {
                         top=0.25,
                         lower=0.5,
                         left=0.01,
-                        right=0.3
+                        right=0.2
                         ),
                     channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
@@ -409,7 +409,7 @@ otherPlayers_ui_overlay = {
                         top=0.51,
                         lower=0.54,
                         left=0.01,
-                        right=0.3
+                        right=0.2
                         ),
                     channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,
                     channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
@@ -442,8 +442,8 @@ Player_ui_overlay = {
                 ),
                 UI_Element.ENERGY_LR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.9,
-                        lower=0.95,
+                        top=0.94,
+                        lower=0.96,
                         left=0.75,
                         right=1
                         ),
@@ -454,8 +454,8 @@ Player_ui_overlay = {
                 ),
                 UI_Element.BARMETRIC_LR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.95,
-                        lower=1,
+                        top=0.96,
+                        lower=0.99,
                         left=0.75,
                         right=1
                         ),
