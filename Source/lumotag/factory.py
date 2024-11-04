@@ -281,7 +281,9 @@ class display(ABC):
 
         for player in players.values():
             fade_norm = self.get_norm_fade_val(player, analysis)
-            if fade_norm < 0.01 : break
+            if fade_norm < 0.01 :
+                # continue rather than break as some elements have to be on screen all the time
+                continue
             for element in player.ui_elements:
 
                 if isinstance(element.element_specifics, UI_Behaviour_dynamic):
