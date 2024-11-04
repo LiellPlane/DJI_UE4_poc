@@ -4,7 +4,7 @@ import json
 import time
 from enum import Enum
 from functools import lru_cache
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 import cv2
 import os
 import threading
@@ -638,7 +638,7 @@ class LocalPlayerCard(PlayerInfoBoxv2):
     def get_torch_energy(self):
         
         if self.torchenergy < 0:
-            self.torchenergy = self.torchenergy
+            self.torchenergy = 0
         return self.torchenergy
 
     def _update_torch_energy(self, diff: float):
@@ -649,7 +649,7 @@ class LocalPlayerCard(PlayerInfoBoxv2):
 def custom_dynamic_UI_element_callback(
         playercard_ref_check: int,
         element_name: UI_Element,
-        player_card: PlayerInfoBoxv2,
+        player_card: Union[PlayerInfoBoxv2, LocalPlayerCard],
         ui_element: UI_Element,
         gunconfig: gun_config,
         gunconfig_ref_check:int,
@@ -663,9 +663,13 @@ def custom_dynamic_UI_element_callback(
         raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
     if element_name in {UI_Element.BARMETRIC_RL.value, UI_Element.ENERGY_LR.value, UI_Element.BARMETRIC_LR.value}:
         if element_name in {UI_Element.ENERGY_LR.value}:
-            plop=1
-        hp = player_card.get_healthpoints()
-        max_hp, _ = player_card.get_max_min_healthpoints()
+            # looking at LocalPlayerCard
+            hp = player_card.get_torch_energy()
+            _, max_hp= player_card.get_min_max_torchenergy()
+        else:
+            # looking at PlayerInfoBoxv2
+            hp = player_card.get_healthpoints()
+            max_hp, _ = player_card.get_max_min_healthpoints()
         # get_pixel_positions_with_ratio is cached - but lets think how
         # to get the changing HP bar - we only want to catch the max length of the bar
         # and modify pixel_pos afterwards - otherwise we will have to cache every degree of the HP

@@ -310,7 +310,7 @@ def main():
                             continue
 
             GUN_CONFIGURATION.loop_wait()
-            players["me"].torch_energy_update(True)
+            
             with time_it("gun states set", debug=PRINT_DEBUG):
                 #accelerometer.update_vel()
                 results_trig_positions = (triggers.test_states())
@@ -334,8 +334,8 @@ def main():
                 # if result is True:
                 #     set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
                 #     set_laser(state=is_torch_reqd, strobe_cnt=0)
-                set_torch(state=is_torch_reqd, strobe_cnt=0)
-
+                torch_on = set_torch(state=is_torch_reqd, strobe_cnt=0)
+                players["me"].torch_energy_update(torch_on)
                 set_laser(state=is_torch_reqd, strobe_cnt=0)
 
                 result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)
