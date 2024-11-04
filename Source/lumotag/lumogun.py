@@ -223,6 +223,9 @@ def main():
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["torch"])
 
+    # very convoluted way to find out if the torch debouncer is allowing us to trigger
+    can_torch_trigger = relay.debouncers[relay.gun_config.RELAY_IO[GUN_CONFIGURATION.relay_map["torch"]]].can_trigger()
+
     set_laser = partial(
         relay.set_relay,
         GUN_CONFIGURATION.relay_map["laser"])
@@ -334,8 +337,16 @@ def main():
                 # if result is True:
                 #     set_torch(state=is_torch_reqd, strobe_cnt=GUN_CONFIGURATION.light_strobe_cnt)
                 #     set_laser(state=is_torch_reqd, strobe_cnt=0)
-                torch_on = set_torch(state=is_torch_reqd, strobe_cnt=0)
-                players["me"].torch_energy_update(torch_on)
+
+                # here we check the torch debouncer and the input trigger
+                # if we see that we have no energy we disable torch
+                # update torch with latest energy
+                players["me"].torch_energy_update(can_torch_trigger and is_torch_reqd)
+                if players["me"].get_torch_energy() < 5:
+                    is_torch_reqd = False
+
+                set_torch(state=is_torch_reqd, strobe_cnt=0)
+                
                 set_laser(state=is_torch_reqd, strobe_cnt=0)
 
                 result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)

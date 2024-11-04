@@ -619,7 +619,7 @@ class LocalPlayerCard(PlayerInfoBoxv2):
         if deplete is False and self.torchstate is False:
             time_ms = self.timer_energy_recover.get_dt() * 1000
             self.timer_torch_deplete.reset()
-            self._update_torch_energy(time_ms/25)
+            self._update_torch_energy(time_ms/40)
             return
         elif deplete is True and self.torchstate is False:
             self.torchstate = True
@@ -636,15 +636,18 @@ class LocalPlayerCard(PlayerInfoBoxv2):
             return
 
     def get_torch_energy(self):
-        
-        if self.torchenergy < 0:
-            self.torchenergy = 0
         return self.torchenergy
 
     def _update_torch_energy(self, diff: float):
+        min, max = self.get_min_max_torchenergy()
         self.torchenergy = self.torchenergy + diff
+        if self.torchenergy < min:
+            self.torchenergy = min
+        if self.torchenergy > max:
+            self.torchenergy = max
 
-
+    def calculate_fade(self, direction: Literal[-1, 1], fade_ms, multiplier=1):
+        return 1
 
 def custom_dynamic_UI_element_callback(
         playercard_ref_check: int,
