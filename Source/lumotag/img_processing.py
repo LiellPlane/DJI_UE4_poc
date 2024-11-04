@@ -815,13 +815,14 @@ def add_ui_elementsv2(
         ) -> None:
     if fade_norm < 0.01:
         return
-    rand = random.randint(-2, 2)
+    #rand = random.randint(-2, 2)
 
     image[
             position.top: position.lower,
             position.left: position.right,
             channel
-        ] = ((image_to_insert * fade_norm) + rand).astype(np.uint8)
+        ] = (image_to_insert * fade_norm).astype(np.uint8)
+
     return
 
 
@@ -1121,3 +1122,41 @@ def rotate_points_right_angle(points, angle, width, height):
             raise ValueError("Angle must be 0, 90, 180, or 270 degrees")
         rotated.append((new_x, new_y))
     return rotated
+
+
+def apply_hud_flicker(image, flicker_density=0.9):
+    """
+    Apply a simple HUD flicker effect by creating random black spots.
+    
+    Parameters:
+    - image: numpy array (height, width) or (height, width, channels)
+    - flicker_density: float 0-1, what proportion of pixels to affect
+    
+    Returns:
+    - Modified image array
+    """
+    # Work on a copy to preserve original
+    result = image.copy()
+    
+    # Get image dimensions
+    if len(image.shape) == 2:
+        h, w = image.shape
+        channels = 1
+    else:
+        h, w, channels = image.shape
+    
+    # Calculate number of pixels to flicker
+    n_pixels = int(h * w * flicker_density)
+    
+    # Generate random positions efficiently
+    y_pos = np.random.randint(0, h, n_pixels)
+    x_pos = np.random.randint(0, w, n_pixels)
+    
+    if channels == 1:
+        # Set random pixels to black
+        result[y_pos, x_pos] = 0
+    else:
+        # Set random pixels to black in all channels
+        result[y_pos, x_pos, :] = 0
+    
+    return result

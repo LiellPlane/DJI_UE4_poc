@@ -602,6 +602,50 @@ class PlayerInfoBoxv2:
         )
 
 
+class LocalPlayerCard(PlayerInfoBoxv2):
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.torchenergy = self.get_min_max_torchenergy()[1]
+        self.timer_torch_deplete = TimeDiffObject()
+        self.timer_energy_recover = TimeDiffObject()
+        self.torchstate = False
+
+    def get_min_max_torchenergy(self):
+        return(0, 100)
+    
+    def torch_energy_update(self, deplete:bool):
+        """update when energy used and recovery"""
+        if deplete is False and self.torchstate is False:
+            time_ms = self.timer_energy_recover.get_dt() * 1000
+            self.timer_torch_deplete.reset()
+            self._update_torch_energy(time_ms/25)
+            return
+        elif deplete is True and self.torchstate is False:
+            self.torchstate = True
+            self.timer_torch_deplete.reset()
+            return
+        elif deplete is False and self.torchstate is True:
+            self.torchstate = False
+            self.timer_energy_recover.reset()
+            return
+        elif deplete is True and self.torchstate is True:
+            time_ms = self.timer_torch_deplete.get_dt() * 1000
+            self.timer_torch_deplete.reset()
+            self._update_torch_energy(-time_ms/50)
+            return
+
+    def get_torch_energy(self):
+        
+        if self.torchenergy < 0:
+            self.torchenergy = self.torchenergy
+        return self.torchenergy
+
+    def _update_torch_energy(self, diff: float):
+        self.torchenergy = self.torchenergy + diff
+
+
+
 def custom_dynamic_UI_element_callback(
         playercard_ref_check: int,
         element_name: UI_Element,
@@ -1764,8 +1808,8 @@ if __name__ == '__main__':
 
     generated_barmetric =PlayerInfoBoxv2.generate_healthbar(test_pos, img_shape).shape
 
-    expected_image_width = (test_pos.right - test_pos.left) * img_shape[1]
-    expected_image_height = (test_pos.lower - test_pos.top) * img_shape[0]
+    expected_image_width = int((test_pos.right - test_pos.left) * img_shape[1])
+    expected_image_height = int((test_pos.lower - test_pos.top) * img_shape[0])
     bar_width = generated_barmetric[1]
     bar_height = generated_barmetric[0]
     assert abs((expected_image_width/bar_width) - (expected_image_height/bar_height)) < 0.1
@@ -1782,5 +1826,12 @@ if __name__ == '__main__':
     res_height = (res.lower - res.top)
     res_width = (res.right - res.left)
 
-    assert abs(res_width - (expected_image_width)) < 0.1
-    plop=1
+    assert abs(res_width - (expected_image_width)) <= 1 # can have one pixel error
+
+
+
+    ui_element_shape = (32, 269)
+    unrotated_canvas_shape = (775, 480, 3)
+    plop = ScreenNormalisedPositions(top=0.61, lower=0.65, left=0.01, right=0.2)
+    # will throw exception internally
+    plop.get_pixel_positions_with_ratio(unrotated_canvas_shape, ui_element_shape)

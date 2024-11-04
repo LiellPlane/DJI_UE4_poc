@@ -208,7 +208,7 @@ def main():
             _UI_overlay=configs.otherPlayers_ui_overlay
         ),
         "me":
-        factory.PlayerInfoBoxv2(
+        factory.LocalPlayerCard(
             playername="me",
             playergraphic=None,
             _gun_config=GUN_CONFIGURATION,
@@ -310,7 +310,7 @@ def main():
                             continue
 
             GUN_CONFIGURATION.loop_wait()
-
+            players["me"].torch_energy_update(True)
             with time_it("gun states set", debug=PRINT_DEBUG):
                 #accelerometer.update_vel()
                 results_trig_positions = (triggers.test_states())

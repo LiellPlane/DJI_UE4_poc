@@ -126,8 +126,8 @@ class ScreenNormalisedPositions:
         ]
 
         for resize_ratio in resize_ratios:
-            new_width = int(element_width * resize_ratio)
-            new_height = int(element_height * resize_ratio)
+            new_width = element_width * resize_ratio
+            new_height = element_height * resize_ratio
             if all([
                 new_width <= ui_boxsize_width_pxls,
                 new_height <= ui_boxsize_height_pxls
@@ -135,51 +135,6 @@ class ScreenNormalisedPositions:
                 break
 
         if abs((element_height / new_height) - (element_width / new_width)) > 0.1:
-            raise ValueError("bad image ratio!!")
-        # we have normalised positions and pre-scaled positions
-        # need to offset the pre-scaled positions from the normalised ones
-        top = self.top * img_height
-        lower = top + new_height
-        left = self.left * img_width
-        right = left + new_width
-
-        return ScreenPixelPositions(
-            top=int(top),
-            lower=int(lower),
-            left=int(left),
-            right=int(right)
-        )
-    @lru_cache
-    def get_pixel_positions_with_ratio_old(self, img_shape, element_shape):
-
-        element_height = element_shape[0]
-        element_width = element_shape[1]
-
-        img_height = img_shape[0]
-        img_width = img_shape[1]
-
-        pxl_width_pc = self.right - self.left
-        pxl_height_pc = self.lower - self.top
-
-        ui_boxsize_width_pxls = pxl_width_pc * img_width
-        ui_boxsize_height_pxls = pxl_height_pc * img_height
-
-        # try one and if it fails try the other
-        resize_ratios = [
-            ui_boxsize_width_pxls / element_width,
-            ui_boxsize_height_pxls / element_height
-        ]
-
-        for resize_ratio in resize_ratios:
-            new_width = int(element_width * resize_ratio)
-            new_height = int(element_height * resize_ratio)
-            if all([
-                new_width <= ui_boxsize_width_pxls,
-                new_height <= ui_boxsize_height_pxls
-            ]):
-                break
-
-        if abs((img_height / new_height) - (img_width / new_width)) > 0.1:
             raise ValueError("bad image ratio!!")
         # we have normalised positions and pre-scaled positions
         # need to offset the pre-scaled positions from the normalised ones
