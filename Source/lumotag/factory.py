@@ -620,8 +620,8 @@ class LocalPlayerCard(PlayerInfoBoxv2):
         """update when energy used and recovery"""
         if deplete is False and self.torchstate is False:
             time_ms = self.timer_energy_recover.get_dt() * 1000
-            self.timer_torch_deplete.reset()
-            self._update_torch_energy(time_ms/40)
+            self.timer_energy_recover.reset()
+            self._update_torch_energy(time_ms/20)
             return
         elif deplete is True and self.torchstate is False:
             self.torchstate = True
@@ -634,7 +634,7 @@ class LocalPlayerCard(PlayerInfoBoxv2):
         elif deplete is True and self.torchstate is True:
             time_ms = self.timer_torch_deplete.get_dt() * 1000
             self.timer_torch_deplete.reset()
-            self._update_torch_energy(-time_ms/50)
+            self._update_torch_energy(-time_ms/30)
             return
 
     def get_torch_energy(self):

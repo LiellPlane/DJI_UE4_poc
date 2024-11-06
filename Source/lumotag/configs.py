@@ -424,8 +424,8 @@ Player_ui_overlay = {
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.80,
                         lower=0.85,
-                        left=0.75,
-                        right=1
+                        left=0.5,
+                        right=0.6
                         ),
                     channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
@@ -434,30 +434,30 @@ Player_ui_overlay = {
                     screen_normed_pos=ScreenNormalisedPositions(
                         top=0.85,
                         lower=0.9,
-                        left=0.75,
-                        right=1
+                        left=0.5,
+                        right=0.6
                         ),
                     channel=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     border=False
                 ),
                 UI_Element.ENERGY_LR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.94,
-                        lower=0.96,
-                        left=0.75,
-                        right=1
+                        top=0.7,
+                        lower=0.73,
+                        left=0.5,
+                        right=0.6
                         ),
                     channel_A=CHANNEL_COLOUR.BLUE_CHANNEL.value,
                     channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
-                    cut_off_value_norm=0.25,
+                    cut_off_value_norm=0.50,
                     border=False
                 ),
                 UI_Element.BARMETRIC_LR.value: UI_Behaviour_dynamic(
                     screen_normed_pos=ScreenNormalisedPositions(
-                        top=0.96,
-                        lower=0.99,
-                        left=0.75,
-                        right=1
+                        top=0.73,
+                        lower=0.76,
+                        left=0.5,
+                        right=0.6
                         ),
                     channel_A=CHANNEL_COLOUR.GREEN_CHANNEL.value,
                     channel_B=CHANNEL_COLOUR.RED_CHANNEL.value,
