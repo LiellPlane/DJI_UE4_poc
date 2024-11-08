@@ -1,0 +1,162 @@
+use tokio::net::{TcpListener, TcpStream};
+use tokio_tungstenite::{accept_async, tungstenite::protocol::Message};
+use futures::{StreamExt, SinkExt};
+use std::env;
+use std::net::SocketAddr;
+use log::{info, error};
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
+
+#[tokio::main]
+async fn main() {
+    // Initialize the logger
+    env_logger::init();
+
+    // Get the WebSocket address to bind to (default: 127.0.0.1:8080)
+    let ws_addr = env::args().nth(1).unwrap_or_else(|| "127.0.0.1:8080".to_string());
+    let ws_addr: SocketAddr = ws_addr.parse().expect("Invalid WebSocket address");
+
+    // Get the HTTP address to bind to (default: 127.0.0.1:8081)
+    let http_addr = env::args().nth(2).unwrap_or_else(|| "127.0.0.1:8081".to_string());
+    let http_addr: SocketAddr = http_addr.parse().expect("Invalid HTTP address");
+
+    // Create the WebSocket TCP listener
+    let ws_listener = TcpListener::bind(&ws_addr).await.expect("Failed to bind WebSocket listener");
+    info!("WebSocket Listening on: {}", ws_addr);
+
+    // Create the HTTP TCP listener
+    let http_listener = TcpListener::bind(&http_addr).await.expect("Failed to bind HTTP listener");
+    info!("HTTP Listening on: {}", http_addr);
+
+    // Spawn the WebSocket server task
+    let ws_server = tokio::spawn(async move {
+        loop {
+            match ws_listener.accept().await {
+                Ok((stream, _)) => {
+                    tokio::spawn(handle_ws_connection(stream));
+                },
+                Err(e) => {
+                    error!("WebSocket accept error: {}", e);
+                }
+            }
+        }
+    });
+
+    // Spawn the HTTP server task
+    let http_server = tokio::spawn(async move {
+        loop {
+            match http_listener.accept().await {
+                Ok((stream, addr)) => {
+                    tokio::spawn(handle_http_connection(stream, addr));
+                },
+                Err(e) => {
+                    error!("HTTP accept error: {}", e);
+                }
+            }
+        }
+    });
+
+    // Wait for both servers to run indefinitely
+    tokio::select! {
+        _ = ws_server => {},
+        _ = http_server => {},
+    }
+}
+
+// Existing WebSocket connection handler
+async fn handle_ws_connection(stream: TcpStream) {
+    // Accept the WebSocket connection
+    let ws_stream = match accept_async(stream).await {
+        Ok(ws) => ws,
+        Err(e) => {
+            error!("Error during the websocket handshake: {}", e);
+            return;
+        }
+    };
+
+    // Split the WebSocket stream into a sender and receiver
+    let (mut sender, mut receiver) = ws_stream.split();
+
+    // Send a welcome message
+    if let Err(e) = sender.send(Message::Text("Welcome to the WebSocket server!".to_string())).await {
+        error!("Error sending message: {}", e);
+    }
+
+    // Handle incoming messages
+    while let Some(msg) = receiver.next().await {
+        match msg {
+            Ok(Message::Text(text)) => {
+                // Reverse the received string and send it back
+                let reversed = text.chars().rev().collect::<String>();
+                if let Err(e) = sender.send(Message::Text(reversed)).await {
+                    error!("Error sending message: {}", e);
+                }
+            }
+            Ok(Message::Close(_)) => break,
+            Ok(_) => (),
+            Err(e) => {
+                error!("Error processing message: {}", e);
+                break;
+            }
+        }
+    }
+}
+
+// New HTTP connection handler
+async fn handle_http_connection(mut stream: TcpStream, addr: SocketAddr) {
+    let mut buffer = [0u8; 1024];
+    // Read the request
+    match stream.read(&mut buffer).await {
+        Ok(n) if n == 0 => return, // Connection closed
+        Ok(n) => {
+            let request = String::from_utf8_lossy(&buffer[..n]);
+            info!("Received HTTP request from {}:\n{}", addr, request);
+
+            // Simple parsing: check if it's GET or POST
+            let response = if request.starts_with("GET") {
+                // Handle GET request
+                http_get_response()
+            } else if request.starts_with("POST") {
+                // Handle POST request
+                http_post_response()
+            } else {
+                // Handle other methods
+                http_not_found_response()
+            };
+
+            // Write the response
+            if let Err(e) = stream.write_all(response.as_bytes()).await {
+                error!("Failed to write response to {}: {}", addr, e);
+            }
+        }
+        Err(e) => {
+            error!("Failed to read from {}: {}", addr, e);
+        }
+    }
+}
+
+fn http_get_response() -> String {
+    let body = "<html><body><h1>Hello, GET!</h1></body></html>";
+    format!(
+        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nContent-Type: text/html\r\n\r\n{}",
+        body.len(),
+        body
+    )
+}
+
+fn http_post_response() -> String {
+    let body = "<html><body><h1>Hello, POST!</h1></body></html>";
+    format!(
+        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nContent-Type: text/html\r\n\r\n{}",
+        body.len(),
+        body
+    )
+}
+
+fn http_not_found_response() -> String {
+    let body = "<html><body><h1>404 Not Found</h1></body></html>";
+    format!(
+        "HTTP/1.1 404 NOT FOUND\r\nContent-Length: {}\r\nContent-Type: text/html\r\n\r\n{}",
+        body.len(),
+        body
+    )
+}

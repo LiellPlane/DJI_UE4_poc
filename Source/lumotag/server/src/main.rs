@@ -1,1 +1,12 @@
-https://github.com/Totodore/socketioxide/blob/main/examples/axum-echo/axum_echo.rs
+use axum::{routing::get, Router};
+
+#[tokio::main]
+async fn main() {
+    let app = Router::new().route("/", get(|| async { "Hello, Rust!" }));
+
+    println!("Running on http://localhost:3000");
+    axum::Server::bind(&"0.0.0.0:3000".parse().unwrap())
+        .serve(app.into_make_service())
+        .await
+        .unwrap();
+}

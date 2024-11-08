@@ -2,5 +2,13 @@
 name = "server"
 version = "0.1.0"
 edition = "2021"
-
 [dependencies]
+tokio = { version = "1", features = ["full"] }
+warp = "0.3"
+tokio-tungstenite = "0.17"
+futures = "0.3"
+log = "0.4"
+env_logger = "0.9"
+axum = "0.6"
+hyper = "0.14"
+tower = "0.4"
