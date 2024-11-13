@@ -614,7 +614,7 @@ class LocalPlayerCard(PlayerInfoBoxv2):
         self.torchstate = False
 
     def get_min_max_torchenergy(self):
-        return(0, 100)
+        return(0, 300)
     
     def torch_energy_update(self, deplete:bool):
         """update when energy used and recovery"""
@@ -717,7 +717,7 @@ def custom_dynamic_UI_element_callback(
                 top: lower,
                 left: right,
                 ui_element.element_specifics.get_channel(normalised_input_value=hp/max_hp)
-            ] = int(175 * fade_norm)
+            ] = int(254 * fade_norm)
 
 
     else:

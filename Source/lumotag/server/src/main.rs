@@ -10,11 +10,19 @@ use tokio::time::{sleep, Duration};
 use axum::{routing::get, Router};
 use anyhow::Result;
 
+// #[derive(Clone, Serialize, Deserialize, Debug)]
+// struct ScambiUnitLedOnly {
+//     player_id: String,
+//     player_pseudonym: String,
+// }
+
+
+
 async fn start_http_server() -> Result<()> {
     let app = Router::new().route("/", get(|| async { "plz go away" }));
 
-    println!("Running on http://localhost:3000");
-    axum::Server::bind(&"127.0.0.1:9090".parse()?)
+    println!("Running on http://localhost:9001");
+    axum::Server::bind(&"127.0.0.1:9001".parse()?)
         .serve(app.into_make_service())
         .await?;
 
@@ -26,7 +34,7 @@ async fn main() {
     // Initialize the logger
     env_logger::init();
 
-
+    
     // Create a new tokio runtime
     let runtime = tokio::runtime::Runtime::new().unwrap();
 

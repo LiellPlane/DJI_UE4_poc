@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+// Player model options
+enum PlayerModel {
+  DEFAULT = 0;
+  ASTRONAUT = 1;
+  NINJA = 2;
+  ROBOT = 3;
+}
+
+// Team options
+enum Team {
+  UNASSIGNED = 0;
+  RED = 1;
+  BLUE = 2;
+}
+
+// Power-up types
+enum PowerUpType {
+  NONE = 0;
+  SPEED = 1;
+  SHIELD = 2;
+  INVISIBILITY = 3;
+}
+
+// Connection message when player joins
+message PlayerConnection {
+  string player_id = 1;
+  PlayerModel model = 2;
+  string player_name = 3;
+  Team team = 4;
+}
+
+// When a player tags another player
+message TagEvent {
+  string tagger_id = 1;
+  string tagged_id = 2;
+  optional string image_id = 3;  // Optional reference to a TagImage
+}
+
+// The actual tag image data
+message TagImage {
+  string image_id = 1;
+  string player_id = 2;
+  bytes image_data = 3;
+  int64 timestamp = 4;
+}
+
+// Individual player status
+message PlayerStatus {
+  string player_id = 1;
+  int32 hitpoints = 2;
+  PowerUpType active_power_up = 3;
+  Team team = 4;
+  bool is_alive = 5;
+  int32 score = 6;
+}
+
+// Game status message (using fixed size for 4 players)
+message GameStatus {
+  repeated PlayerStatus players = 1;  // Up to 4 players
+  int32 red_team_score = 2;
+  int32 blue_team_score = 3;
+  int32 time_remaining = 4;  // in seconds
+}
+
+// Wrapper message for all possible message types
+message GameMessage {
+  int64 timestamp = 1;
+  
+  oneof payload {
+    PlayerConnection connection = 2;
+    TagEvent tag = 3;
+    TagImage tag_image = 4;
+    GameStatus game_status = 5;
+  }
+}
