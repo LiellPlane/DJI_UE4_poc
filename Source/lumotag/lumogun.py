@@ -342,8 +342,8 @@ def main():
                 # if we see that we have no energy we disable torch
                 # update torch with latest energy
                 players["me"].torch_energy_update(is_torch_reqd) # this isnt quite right as needs to ask debouncer if can use torch
-                if players["me"].get_torch_energy() < 5:
-                    is_torch_reqd = False
+                #if players["me"].get_torch_energy() < 5:
+                #    is_torch_reqd = False
 
                 set_torch(state=is_torch_reqd, strobe_cnt=0)
                 
