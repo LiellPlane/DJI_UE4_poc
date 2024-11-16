@@ -39,7 +39,16 @@ async fn main() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
 
     // Spawn the async task
-    runtime.spawn(start_http_server());
+    
+    let result = runtime.spawn(start_http_server());
+    match result {
+        Ok(value) => {
+            println!("Succesfully started HTTP server");
+        }
+        Err(err) => {
+            eprintln!("Function failed with error: {:?}", err);
+        }
+    }
     // Get the address to bind to
     // nth selects the element, unwrap going wrong will run the default with empty closure ||
     let addr = env::args().nth(1).unwrap_or_else(|| "127.0.0.1:8080".to_string());
