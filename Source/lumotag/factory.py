@@ -1567,20 +1567,31 @@ def get_images_for_cam_pair(
 
 
 class ImageLibraryMeta(type(ImageGenerator)):
-    """Experiment with metaclasses - can we pass the metaclass to a downstream process
+    """
+    image_id_to_use if you want to specify a specific image for testing, otherwise set to empty string or none
+    
+    Experiment with metaclasses - can we pass the metaclass to a downstream process
     and it succesfully instances it depending on flavour? would be useful
     if we have lots of similar classes that have to be passed around"""
     def __new__(cls, name, bases, attrs):
         if 'cam_name' not in attrs:
             raise TypeError(f"Class {name} must define 'cam_name'")
-        
+        if 'image_id_to_use' not in attrs:
+            raise TypeError(f"Class {name} must define 'image_id_to_use'")
         def init(self, res):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
                 filters=["quadrocode"]#quadrocode_corners
             )
-            sorted_files = reduce(lambda acc, s: acc + [s] * 1, sorted_files, [])
+            repeats = 1
+            if self.image_id_to_use is not None:
+                if len(self.image_id_to_use)>0:
+                    sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
+                    repeats= 10 # just to get some feedback when running
+                    if len(sorted_files) == 0 :
+                        raise Exception(f"could not find image id {self.image_id_to_use}")
+            sorted_files = reduce(lambda acc, s: acc + [s] * repeats, sorted_files, [])
             self.cycled_files_generator = iter(sorted_files)
             self.res = res
 
@@ -1601,11 +1612,11 @@ class ImageLibraryMeta(type(ImageGenerator)):
 
 class ImageLibrary_longrange(ImageGenerator, metaclass=ImageLibraryMeta):
     cam_name = "long"
-
+    image_id_to_use = "3100"
 
 class ImageLibrary_closerange(ImageGenerator, metaclass=ImageLibraryMeta):
     cam_name = "close"
-
+    image_id_to_use = "3100"
 
 class ImageLibrary(ImageGenerator):
     
