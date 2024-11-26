@@ -1,0 +1,2 @@
+prismatic is more efficient, but has lower observation angle than beads
+
