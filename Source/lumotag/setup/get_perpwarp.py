@@ -79,8 +79,8 @@ def show_image_until_keypress(image, window_name='Image'):
     #cv2.destroyWindow(window_name)
 # load long range then close range
 images = [
-    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\testdata\unique_id_2cam\_longrange_cnt26cnt1722685284_1272304.jpg",
-    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\testdata\unique_id_2cam\_closerange_cnt26cnt1722685284_1332743.jpg"
+    r"C:\VMs\SharedFolder\data\_longrange_cnt2672cnt1732911259_054169.jpg",
+    r"C:\VMs\SharedFolder\data\_closerange_cnt2672cnt1732911259_0611994.jpg"
     ]
 
 images = [cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2GRAY) for image in images]

@@ -175,6 +175,7 @@ class filesystem(ABC):
         script_path = os.path.abspath(__file__)
         parent_dir = os.path.dirname(script_path)
         pickle_file_path = os.path.join(parent_dir, get_perspectivewarp_filename())
+        print(f"Opening transform file {pickle_file_path}")
         with open(pickle_file_path, 'rb') as f:
             perp_details = pickle.load(f)
         return perp_details[get_perspectivewarp_dictkey()]
