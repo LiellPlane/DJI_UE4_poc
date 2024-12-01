@@ -850,6 +850,7 @@ def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO
     # bounding box of contour - this does not handle perspective
     cv2.drawContours(image, [min_bbox], 0, RED)
 
+    cv2.fillPoly(image, [min_bbox], RED)
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
     if debug is False:
