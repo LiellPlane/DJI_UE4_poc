@@ -644,8 +644,8 @@ def get_approx_shape_and_bbox2(
     min_bbox_pxl_cnt = cv2.contourArea(min_bbox)
     contour_pxl_cnt = cv2.contourArea(contour)
 
-
-    if contour_pxl_cnt <= (min_bbox_pxl_cnt * 0.80):
+    pxl_err = 0.70
+    if contour_pxl_cnt <= (min_bbox_pxl_cnt * pxl_err):
         return ShapeItem(
             id=index,
             approx_contour=approx,
@@ -662,7 +662,7 @@ def get_approx_shape_and_bbox2(
             _2d_samples=None,
             notes_for_debug_file=f"BAD_APPROX_PXL")
 
-    if contour_pxl_cnt > (min_bbox_pxl_cnt * 0.80):
+    if contour_pxl_cnt > (min_bbox_pxl_cnt * pxl_err):
         
         # we know we have a square - lets see if it 
         # has the internal inverse colour circle pattern
@@ -1384,67 +1384,67 @@ def check_for_patternv2(samples) -> Tuple[bool, List[check_barcode.FilteredWhite
     return check_barcode.check_pattern_valid(whitebars, len(sample)), whitebars
 
 
-def check_for_pattern(samples):
-    peaks = []
-    peaks_dic={}
-    normed_samples = []
-    min_val = None
-    #raise Exception("fix me")
-    sample_with_peaks = None
-    sample_sans_peaks = None
-    symmetric_err = float("inf")
-    for index, sample in enumerate(samples):
-        peaks_, normed_sample = get_peaks(sample)
-        normed_samples.append(normed_sample)
-        peaks.append(peaks_)
-        if len(peaks[-1]) > 0:
-            symmetric_err = abs(functools.reduce(lambda a, b: a + b, [(len(sample)/2)-x for x in peaks[-1]]))
-            peaks_dic["withpeaks_normed"] = normed_sample
-            peaks_dic["withpeaks"] = sample
-            min_val = min(normed_sample)
-            sample_with_peaks = index
-        else:
-            #peaks_dic["sanspeaks"] = normed_sample
-            peaks_dic["sanspeaks"] = sample
-            sample_sans_peaks = index
-            # we expect black here - so have to normalise this sample with the
-            # limits of the peaked sample
-            #normalized_data_should_be_black = (sample - np.min(normed_samples[0])) / (np.max(normed_samples[0]) - np.min(normed_samples[0]))
-    # for now check that we have one sample line with no peaks and one with 2
-    # later we can make sure peaks are in the positions we expect
+# def check_for_pattern(samples):
+#     peaks = []
+#     peaks_dic={}
+#     normed_samples = []
+#     min_val = None
+#     #raise Exception("fix me")
+#     sample_with_peaks = None
+#     sample_sans_peaks = None
+#     symmetric_err = float("inf")
+#     for index, sample in enumerate(samples):
+#         peaks_, normed_sample = get_peaks(sample)
+#         normed_samples.append(normed_sample)
+#         peaks.append(peaks_)
+#         if len(peaks[-1]) > 0:
+#             symmetric_err = abs(functools.reduce(lambda a, b: a + b, [(len(sample)/2)-x for x in peaks[-1]]))
+#             peaks_dic["withpeaks_normed"] = normed_sample
+#             peaks_dic["withpeaks"] = sample
+#             min_val = min(normed_sample)
+#             sample_with_peaks = index
+#         else:
+#             #peaks_dic["sanspeaks"] = normed_sample
+#             peaks_dic["sanspeaks"] = sample
+#             sample_sans_peaks = index
+#             # we expect black here - so have to normalise this sample with the
+#             # limits of the peaked sample
+#             #normalized_data_should_be_black = (sample - np.min(normed_samples[0])) / (np.max(normed_samples[0]) - np.min(normed_samples[0]))
+#     # for now check that we have one sample line with no peaks and one with 2
+#     # later we can make sure peaks are in the positions we expect
 
-    # we expect one set of samples with 2 peaks and one set with none
-    if set([len(x) for x in peaks]) != set([2, 0]):
-        return False
-    # we expect the peaks to be equally distributed across midline
-    if symmetric_err > MAX_PATTERN_SYMMETRY_ERROR:
-        return False
+#     # we expect one set of samples with 2 peaks and one set with none
+#     if set([len(x) for x in peaks]) != set([2, 0]):
+#         return False
+#     # we expect the peaks to be equally distributed across midline
+#     if symmetric_err > MAX_PATTERN_SYMMETRY_ERROR:
+#         return False
     
-    # # this should be impossible but for some reason its happening
-    # if not "withpeaks" in peaks_dic:
-    #     return False
-    # we expected the middle of the peaks to be black or close to
-    # this is normalised values
-    if peaks_dic["withpeaks_normed"][int(len(peaks_dic["withpeaks_normed"])/2)] > 0.3:
-        return False
-    # we expected the seamples with peaks to be 
-    #Y_true = peaks_dic["sanspeaks_normed"][2:-2]
-    #Y_predicated = [min_val] * len(samples[sample_sans_peaks])
-    #MSE = np.square(np.subtract(Y_true, Y_predicated)).mean()
-    # if MSE > 505555:
-    #     return False
+#     # # this should be impossible but for some reason its happening
+#     # if not "withpeaks" in peaks_dic:
+#     #     return False
+#     # we expected the middle of the peaks to be black or close to
+#     # this is normalised values
+#     if peaks_dic["withpeaks_normed"][int(len(peaks_dic["withpeaks_normed"])/2)] > 0.3:
+#         return False
+#     # we expected the seamples with peaks to be 
+#     #Y_true = peaks_dic["sanspeaks_normed"][2:-2]
+#     #Y_predicated = [min_val] * len(samples[sample_sans_peaks])
+#     #MSE = np.square(np.subtract(Y_true, Y_predicated)).mean()
+#     # if MSE > 505555:
+#     #     return False
 
-    # we expect the sample without peaks to have a low grayscale
-    # similar to the middle of the one with peaks
-    dark_of_peak = peaks_dic["withpeaks"][int(len(peaks_dic["withpeaks"])/2)]
-    # this is just to get an idea of its performance
-    # bear in mind if very dark image compressed range this might die
-    dark_of_peak_max = dark_of_peak * 1.1
-    midpt = int(len(peaks_dic["sanspeaks"])/2)
-    if any(peak > dark_of_peak_max for peak in (peaks_dic["sanspeaks"][midpt],)):
-        return False
+#     # we expect the sample without peaks to have a low grayscale
+#     # similar to the middle of the one with peaks
+#     dark_of_peak = peaks_dic["withpeaks"][int(len(peaks_dic["withpeaks"])/2)]
+#     # this is just to get an idea of its performance
+#     # bear in mind if very dark image compressed range this might die
+#     dark_of_peak_max = dark_of_peak * 1.1
+#     midpt = int(len(peaks_dic["sanspeaks"])/2)
+#     if any(peak > dark_of_peak_max for peak in (peaks_dic["sanspeaks"][midpt],)):
+#         return False
 
-    return True
+#     return True
 
 
 def get_peaks(sample):

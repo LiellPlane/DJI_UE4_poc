@@ -372,7 +372,9 @@ def decode_id(
     %%&&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&%%%%%%%%&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
     same as diagonal quadrants/segments - we expected a high signal for the 
-    start of each segment"""
+    start of each segment
+    
+    nb- each diagonal segment has origin at centre dot and radiates around like spokes"""
 
 
     # shift samples according to incoming orientation
@@ -391,7 +393,7 @@ def decode_id(
         return VerifyBarcodeResult(
             res=False,
             sqr_err=verify_is_barcode_res.sqr_err,
-            status="ID CHECK: quadrant not starting with high signal")
+            status="f1: quadrant not starting with high signal")
     
 
     non_edge_bars_per_quad, edge_bars_per_quad, _100001_bars, _00100_bars = breakout_edges_and_middle_bars(spoke_samples_middle_edges, white_bars)
@@ -400,20 +402,22 @@ def decode_id(
         return VerifyBarcodeResult(
             res=False,
             sqr_err=verify_is_barcode_res.sqr_err,
-            status="ID CHECK: segment bar count invalid"
+            status="f2: segment bar count invalid"
             )
 
-    # for this specific barcode - we expect to have one bar at position 2 and one at position 4
+    # for this specific barcode - we expect to have one bar at two positions
+    pos1 = 1
+    pos2 = 3
     if not all((
-        2 in non_edge_bars_per_quad,
-        4 in non_edge_bars_per_quad,
-        2 in non_edge_bars_per_quad and len(non_edge_bars_per_quad[2]) == 1,
-        4 in non_edge_bars_per_quad and len(non_edge_bars_per_quad[4]) == 1
+        pos1 in non_edge_bars_per_quad, # short circuit if not found
+        pos2 in non_edge_bars_per_quad, # short circuit if not found
+        pos1 in non_edge_bars_per_quad and len(non_edge_bars_per_quad[1]) == pos1,
+        pos2 in non_edge_bars_per_quad and len(non_edge_bars_per_quad[3]) == pos1
     )):
         return VerifyBarcodeResult(
             res=False,
             sqr_err=verify_is_barcode_res.sqr_err,
-            status="ID CHECK: did not find bars at position 2 and 4 for quadrocode"
+            status=f"f3: did not find bars at position {pos1} and {pos2} for quadrocode"
             )
 
     _00100_mask = get_00100_mask(len(spoke_samples_middle_edges))
@@ -427,7 +431,7 @@ def decode_id(
         return VerifyBarcodeResult(
             res=False,
             sqr_err=verify_is_barcode_res.sqr_err,
-            status="ID CHECK: segment edge bar too large"
+            status="f4: segment edge bar too large"
             )
     
 
@@ -446,7 +450,7 @@ def decode_id(
     return VerifyBarcodeResult(
         res=True,
         sqr_err=verify_is_barcode_res.sqr_err,
-        status="ID CHECK: pass",
+        status="p ID CHECK: pass",
         decoded_id=barcode_id_int
         )
 

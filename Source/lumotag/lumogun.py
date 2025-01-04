@@ -58,7 +58,7 @@ def save_analysis(result):
     with open(filename, 'wb') as file:
         pickle.dump(all_results, file)
     with open(filename, 'rb') as file:
-        check_data= pickle.load(file)
+        _ = pickle.load(file)
 
 
 def save_images_if_barcode(analysis, file_system, cap_img, cap_img_closerange):
