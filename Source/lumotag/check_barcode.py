@@ -109,6 +109,7 @@ def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead], 
 def decode_white_bars(data) -> tuple[WhiteBars, any]:
     """
     Detects white bars in a barcode by identifying transitions from black to white to black.
+    Uses statistical methods to handle hotspots and improve normalization.
 
     Parameters:
     - data: np.ndarray, 1D array of uint8 values representing the scanned barcode.
@@ -121,39 +122,45 @@ def decode_white_bars(data) -> tuple[WhiteBars, any]:
     """
     MIN_VARIANCE = 15
     
-    # Use percentiles instead of absolute min/max
-    data_min = np.percentile(data, 5)  # 5th percentile instead of minimum
-    data_max = np.percentile(data, 95)  # 95th percentile instead of maximum
+    # Calculate mean and standard deviation
+    mean = np.mean(data)
+    std = np.std(data)
+    
+    # Define outlier threshold (e.g., 2 standard deviations)
+    OUTLIER_THRESHOLD = 2
+    
+    # Create mask for non-outlier values
+    valid_mask = np.abs(data - mean) <= (OUTLIER_THRESHOLD * std)
+    
+    if np.sum(valid_mask) < len(data) * 0.5:  # If we've masked too much data
+        # Fall back to percentile method
+        data_min = np.percentile(data, 5)
+        data_max = np.percentile(data, 95)
+    else:
+        # Use statistics from non-outlier values
+        valid_data = data[valid_mask]
+        data_min = np.min(valid_data)
+        data_max = np.max(valid_data)
     
     if data_max - data_min < MIN_VARIANCE:
         normalized_data = np.zeros_like(data, dtype=float)
     else:
-        # Clip values to percentile range before normalizing
+        # Clip values to range before normalizing
         data_clipped = np.clip(data, data_min, data_max)
         normalized_data = (data_clipped - data_min) / (data_max - data_min)
 
-    # Thresholding (fixed threshold at 0.5)
+    # Rest of the function remains the same
     binary_data = (normalized_data > 0.5).astype(np.int8)
-
-    # Find transitions
     diff_data = np.diff(binary_data)
-
-    # Find indices where transitions occur
     white_starts = np.where(diff_data == 1)[0] + 1
     white_ends = np.where(diff_data == -1)[0] + 1
 
-    # Handle edge cases
     if binary_data[0] == 1:
-        # The signal starts with a white bar
         white_starts = np.insert(white_starts, 0, 0)
     if binary_data[-1] == 1:
-        # The signal ends with a white bar
         white_ends = np.append(white_ends, len(binary_data))
 
-    # Pair up starts and ends to get the positions of white bars
     white_bar_positions = list(zip(white_starts, white_ends))
-
-    # Calculate widths of the white bars
     white_bar_widths = white_ends - white_starts
 
     return (WhiteBars(white_bar_positions, white_bar_widths)), binary_data
