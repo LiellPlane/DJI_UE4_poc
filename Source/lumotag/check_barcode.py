@@ -30,19 +30,21 @@ class WhiteBars():
 
 
 class VerifyBarcodeResult:
-    __slots__ = ['res', 'sqr_err', 'status', "orientation_offset", "decoded_id"]
+    __slots__ = ['res', 'sqr_err', 'status', "orientation_offset", "decoded_id", "retry_reduce_blur"]
     def __init__(
             self,
             res: bool,
             sqr_err: float = -1,
             status:str="no status",
             orientation_offset: int=-1,
-            decoded_id: int=-1):
+            decoded_id: int=-1,
+            retry_reduce_blur: bool=False):
         self.res = res
         self.sqr_err = sqr_err
         self.status = status
         self.orientation_offset = orientation_offset
         self.decoded_id = decoded_id
+        self.retry_reduce_blur = retry_reduce_blur
 
 
 @dataclass
@@ -117,14 +119,18 @@ def decode_white_bars(data) -> tuple[WhiteBars, any]:
     - white_bar_widths: List of widths of the white bars.
     - binary_data: Binarized version of the input data.
     """
-    MIN_VARIANCE = 15  # if the barcode has small intensity range, probably just noise. Set all to zero
-    # Normalize data
-    data_min = data.min()
-    data_max = data.max()
+    MIN_VARIANCE = 15
+    
+    # Use percentiles instead of absolute min/max
+    data_min = np.percentile(data, 5)  # 5th percentile instead of minimum
+    data_max = np.percentile(data, 95)  # 95th percentile instead of maximum
+    
     if data_max - data_min < MIN_VARIANCE:
         normalized_data = np.zeros_like(data, dtype=float)
     else:
-        normalized_data = (data - data_min) / (data_max - data_min)
+        # Clip values to percentile range before normalizing
+        data_clipped = np.clip(data, data_min, data_max)
+        normalized_data = (data_clipped - data_min) / (data_max - data_min)
 
     # Thresholding (fixed threshold at 0.5)
     binary_data = (normalized_data > 0.5).astype(np.int8)
@@ -317,7 +323,6 @@ def get_00100_mask(segment_length) -> np.ndarray:
         segment_mask[middle_left_index] = True
         segment_mask[middle_right_index] = True
     return np.tile(segment_mask, 4)
-
 
 def get_ID(
         spoke_samples_corners: list[int],
@@ -543,6 +548,15 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
 
     expectedpeaks_insideboundary = 7
     expectedpeaks_ousideboundary = 8
+
+    if len(white_bars.white_bar_positions) > expectedpeaks_ousideboundary:
+        # if the boundary is motion blurred/out of focus sometimes a sample can fall outside the barcode and return a LOW signal
+        # this can split a barcode into two parts and fail. Its worth retrying in this case
+        return VerifyBarcodeResult(
+            res=False,
+            status="bad peak count, worth retrying",
+            retry_reduce_blur=True
+            )
     if len(white_bars.white_bar_positions) not in [
         expectedpeaks_insideboundary,
         expectedpeaks_ousideboundary

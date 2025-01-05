@@ -681,7 +681,6 @@ def get_approx_shape_and_bbox2(
         # 
         #  Get corners of 
         nearest_points = [] # corners only going clockwise (probably - doesnt matter so much)
-        all_points = [] # all points, so should be corner, half-way to next corner, corner (etc)
         for pt in min_bbox:
             nearest_points.append(closest_point(pt, approx.reshape(-1, 2)))
 
@@ -701,9 +700,25 @@ def get_approx_shape_and_bbox2(
         res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges)
 
 
+        # retry if the barcode is out of focus or motion blurred with constricted sample reach
+        if res.res is False:
+            if res.retry_reduce_blur is True:
+                # Fix the last sample of each quarter by copying from second-to-last
+                # this is to improve sampling targetting if the barcode is out of focus or motion blurred
+                quarter_length = len(spoke_samples_corners) // 4
+                for i in range(4):
+                    end_idx = (i + 1) * quarter_length
+                    # Copy second-to-last value to last position in each quarter
+                    spoke_samples_corners[end_idx - 1] = spoke_samples_corners[end_idx - 2]
+                    spoke_samples_middle_edges[end_idx - 1] = spoke_samples_middle_edges[end_idx - 2]
+                res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges)
+
+
+
+
+
         if res.res is True:
             shape_ = Shapes.SQUARE
-
         else:
             shape_ = Shapes.ALMOST_ID
  
@@ -960,6 +975,20 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     #spoke_samples_middle_edges = img_pro.normalise_np_array(spoke_samples_middle_edges)
 
     res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges)
+    # retry if the barcode is out of focus or motion blurred with constricted sample reach
+    # TODO: This is duplicating code, try and make it nicer when doing the redo so we don't have to maintain in two places
+    if res.res is False:
+        if res.retry_reduce_blur is True:
+            # Fix the last sample of each quarter by copying from second-to-last
+            # this is to improve sampling targetting if the barcode is out of focus or motion blurred
+            quarter_length = len(spoke_samples_corners) // 4
+            for i in range(4):
+                end_idx = (i + 1) * quarter_length
+                # Copy second-to-last value to last position in each quarter
+                spoke_samples_corners[end_idx - 1] = spoke_samples_corners[end_idx - 2]
+                spoke_samples_middle_edges[end_idx - 1] = spoke_samples_middle_edges[end_idx - 2]
+            res = check_barcode.get_ID(spoke_samples_corners, spoke_samples_middle_edges)
+
 
     colour_gradient = [(255, i, 255-i) for i in range(0, 255, int(255/8))]
 

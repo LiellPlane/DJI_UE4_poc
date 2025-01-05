@@ -1583,12 +1583,10 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["backwards"]#quadrocode_corners
+                filters=["some_bad"]#quadrocode_corners
             )
-            if len(sorted_files) < 10:
-                repeats = 5
-            else:
-                repeats = 1
+ 
+            repeats = 1
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
@@ -1596,11 +1594,18 @@ class ImageLibraryMeta(type(ImageGenerator)):
                     if len(sorted_files) == 0 :
                         raise Exception(f"could not find image id {self.image_id_to_use}")
             sorted_files = reduce(lambda acc, s: acc + [s] * repeats, sorted_files, [])
-            self.cycled_files_generator = iter(sorted_files)
+            self.cycled_files_generator = itertools.chain(
+                itertools.repeat(None, 5),
+                iter(sorted_files)
+            )
             self.res = res
 
         def get_image(self):
             img_to_load = next(self.cycled_files_generator)
+            # we are preloading the first 5 images as otherwise
+            # during system initialise these are not analysed
+            if img_to_load is None:
+                return self.blank_image.copy()
             img = cv2.imread(img_to_load)
             if len(img.shape) == 3:
                 img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
