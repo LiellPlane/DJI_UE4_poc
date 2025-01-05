@@ -150,7 +150,7 @@ def decode_white_bars(data) -> tuple[WhiteBars, any]:
         normalized_data = (data_clipped - data_min) / (data_max - data_min)
 
     # Rest of the function remains the same
-    binary_data = (normalized_data > 0.1).astype(np.int8)
+    binary_data = (normalized_data > 0.3).astype(np.int8)
     diff_data = np.diff(binary_data)
     white_starts = np.where(diff_data == 1)[0] + 1
     white_ends = np.where(diff_data == -1)[0] + 1

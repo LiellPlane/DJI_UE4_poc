@@ -476,9 +476,9 @@ def normalise(img):
     image2_Norm = cv2.normalize(img,img, 0, 255, cv2.NORM_MINMAX)
     return image2_Norm
 
-def threshold_img(img, low=0, high=255):
+def threshold_img(img, high=255):
     #_ , th3 = cv2.threshold(img, low, 255,cv2.THRESH_BINARY)
-    th3 = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,7,1)
+    th3 = cv2.adaptiveThreshold(img,high,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,7,1)
     #_,th3 = cv2.threshold(img,low,high,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     #th3 = cv2.adaptiveThreshold(img,high,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
     return th3

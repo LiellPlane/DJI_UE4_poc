@@ -1559,17 +1559,27 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #with time_it():
         #print("threshold_img")
 
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG:
+            squr_img=img_pro.simple_canny(
+                blurred_img=img_op.copy(),
+                lower=0,
+            upper=255)
+            dataobject.img_view_or_save_if_debug(squr_img, "testing_simple_canny")
+            squr_img=img_pro.threshold_img_static(img_op,low=0,high=150)
+            dataobject.img_view_or_save_if_debug(squr_img, "test_static_params")
 
         #squr_img=edge_img(gray_orig)
         with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
             #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
-            img_op=img_pro.threshold_img(img_op,low=40,high=255)
+            img_op=img_pro.threshold_img(img_op,high=255)
             # squr_img=img_pro.simple_canny(
             #     blurred_img=squr_img,
             #     lower=0,
         #     upper=255)
+        
+            dataobject.img_view_or_save_if_debug(img_op, "thresholdimg")
 
-        dataobject.img_view_or_save_if_debug(img_op, "thresholdimg")
+
     #with time_it():
         #print("invert_img")
         #squr_img=invert_img(squr_img)
