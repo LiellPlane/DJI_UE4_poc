@@ -72,7 +72,7 @@ class gun_config(ABC):
         self.my_id = create_id()
 
         self.trigger_debounce = Debounce(
-            debounce_sec=0.2)
+            debounce_sec=0.1)
         self.zoom_debounce = Debounce(
             debounce_sec=0.1)
         self.msg_heartbeat_s = 20
