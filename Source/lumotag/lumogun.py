@@ -363,7 +363,7 @@ def main():
                 if is_trigger_pressed is True:
                     #file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     #file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    voice.speak("wut")
+                    #voice.speak("wut")
                     # true will only be available as an impulse after
                     # pulling trigger, then go low again - but
                     # mem state of debouncer will remain high
@@ -379,8 +379,8 @@ def main():
                     # debugging code to capture images
                     #if cap_img is not None:
                     TEMP_DEBUG_trigger_cnt += 1
-                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    #file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0
@@ -490,6 +490,8 @@ def main():
                         analysis=analysis
                         )
 
+                if is_trigger_pressed:
+                    output_image[:] = 255
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(output_image)
                 
