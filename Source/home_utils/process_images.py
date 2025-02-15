@@ -16,7 +16,7 @@ directory_of_current_file = os.path.dirname(current_file_path)
 
 PROCESSED = "processed"
 IMAGES_FOLDER = r"D:\temp_phone_images_jpegs"
-SORTED_IMAGES_FOLDER = r"D:\temp_phoneimgs_sorted"
+SORTED_IMAGES_FOLDER = r"D:\temp_phone_images_sorted"
 OPERATION_JSON = f"{directory_of_current_file}\\all_images.json"
 PROCESSED_JSON = f"{directory_of_current_file}\\{PROCESSED}.json"
 IMAGETYPES = [
@@ -154,6 +154,7 @@ def main():
     while len(all_images_list) > 0:
         
         newfile = random.choice(list(all_images_list.keys()))
+        print(newfile)
         img = cv2.imread(newfile)
         ratio = 1000/img.shape[0]
         img = cv2.resize(img, (int(img.shape[1]*ratio),int(img.shape[0]*ratio)), interpolation = cv2.INTER_AREA)
@@ -188,6 +189,9 @@ def main():
 
     fart = input("press y (in termimal) to distribute into folders")
     if fart == "y":
+        fart = input(f"type {SORTED_IMAGES_FOLDER} to continue")
+        if fart != SORTED_IMAGES_FOLDER:
+            raise Exception("process terminated by user")
         DeleteFiles_RecreateFolder(SORTED_IMAGES_FOLDER)
         #os.mkdir(f"{SORTED_IMAGES_FOLDER}\\BACKUP")
         list_batch_jsons  = {x: None for x in json_in_folder(directory_of_current_file)}

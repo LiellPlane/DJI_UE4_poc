@@ -1559,15 +1559,35 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #with time_it():
         #print("threshold_img")
 
+        #print("threshold_img")
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG:
+            # Compute min and max
+            min_val = np.percentile(img_op, 1)  # Using 1st percentile instead of min to avoid outliers
+            max_val = np.percentile(img_op, 99) # Using 99th percentile instead of max to avoid outliers
+            
+            # Fast linear scaling using numpy operations
+            test_eq = np.clip((img_op - min_val) * (255.0 / (max_val - min_val)), 0, 255).astype(np.uint8)
+            
+            dataobject.img_view_or_save_if_debug(test_eq, "test contrast-stretch equalized", resize=False)
+        # True histogram equalization
+            hist_eq = cv2.equalizeHist(img_op)
+
+            dataobject.img_view_or_save_if_debug(hist_eq, "test histogram_equalized", resize=False)
         if dataobject.debug_details.SAVE_IMAGES_DEBUG:
             squr_img=img_pro.simple_canny(
                 blurred_img=img_op.copy(),
                 lower=0,
             upper=255)
             dataobject.img_view_or_save_if_debug(squr_img, "testing_simple_canny")
-            squr_img=img_pro.threshold_img_static(img_op,low=0,high=150)
-            dataobject.img_view_or_save_if_debug(squr_img, "test_static_params")
-
+            squr_img=img_pro.threshold_img(squr_img,high=125)
+            squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
+            dataobject.img_view_or_save_if_debug(squr_img, "test_static_params125high")
+            squr_img = np.clip(img_op, 0, 125)
+            dataobject.img_view_or_save_if_debug(squr_img, "test-clip125")
+            squr_img = ((squr_img - 0) * (255.0 / 125.0)).astype(np.uint8)
+            dataobject.img_view_or_save_if_debug(squr_img, "normalise_from_125", resize=False)
+            squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
+            dataobject.img_view_or_save_if_debug(squr_img, "test_static_threshold_img_high125")
         #squr_img=edge_img(gray_orig)
         with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
             #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
