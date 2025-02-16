@@ -397,7 +397,7 @@ def main():
                         display_active_image = cap_img_closerange
                         output_image = display.generate_output_affine(display_active_image)
                         transition_i=0
-                    if transition_state == img_processing.CameraTransitionState.LONGRANGE:
+                    elif transition_state == img_processing.CameraTransitionState.LONGRANGE:
                         display_active_image = cap_img
                         output_image = display.generate_output_affine(display_active_image)
                         transition_i=transform_manager.transformdetails.transition_steps-1
@@ -408,7 +408,7 @@ def main():
 
                             mat = transform_manager.LR_all_transition_m[transition_i]
                             lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
-
+                        with time_it("darken and overlay", debug=PRINT_DEBUG):
                             percent_done = transition_i/(transform_manager.transformdetails.transition_steps-1)
                             cr_img = img_processing.darken_image(cr_img, 1-percent_done)
                             combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
