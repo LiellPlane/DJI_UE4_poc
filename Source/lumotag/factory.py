@@ -201,7 +201,6 @@ class display(ABC):
 
     def debug_add_imgpro_wait(self, time_ms, image):
         normed_to_100ms = int(image.shape[0]/50)
-        time_ms = 20
         image[:normed_to_100ms * int(time_ms), 0:2, 0] = 0
         image[:normed_to_100ms * int(time_ms), 0:2, 1] = 0
         image[:normed_to_100ms * int(time_ms), 0:2, 2] = 255
