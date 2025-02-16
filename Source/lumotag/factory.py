@@ -7,6 +7,8 @@ from functools import lru_cache
 from typing import Literal, Optional, Union
 import cv2
 import os
+from contextlib import contextmanager
+from collections import deque
 import threading
 import random
 import pickle
@@ -197,6 +199,14 @@ class display(ABC):
     def display_method(image, self):
         pass
 
+    def debug_add_imgpro_wait(self, time_ms, image):
+        normed_to_100ms = int(image.shape[0]/50)
+        time_ms = 20
+        image[:normed_to_100ms * int(time_ms), 0:2, 0] = 0
+        image[:normed_to_100ms * int(time_ms), 0:2, 1] = 0
+        image[:normed_to_100ms * int(time_ms), 0:2, 2] = 255
+
+    
     def TESTgenerate_output_affine2cam(self, cam_capture1, cam_2capture):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
@@ -1745,6 +1755,34 @@ class VoiceBase(ABC):
 
     def speaker(self, in_box):
         pass
+
+
+class Perfmonitor:
+    def __init__(self, maxlen=10) -> None:
+        self.measurements = deque(maxlen=maxlen)
+    
+    def get_time(self):
+        elapsed = time.perf_counter() - self.start_time
+        self.measurements.append(elapsed * 1000)  # Convert to ms
+        return elapsed * 1000  # Return ms
+    
+    def get_average(self):
+        if not self.measurements:
+            return 0
+        return sum(self.measurements) / len(self.measurements)
+    
+    def reset(self):
+        self.start_time = time.perf_counter()
+        
+    @contextmanager
+    def measure(self):
+        """Context manager for measuring execution time of a code block in milliseconds"""
+        self.reset()
+        try:
+            yield
+        finally:
+            elapsed_ms = (time.perf_counter() - self.start_time) * 1000
+            self.measurements.append(elapsed_ms)
 
 
 if __name__ == '__main__':

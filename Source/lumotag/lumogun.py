@@ -73,6 +73,7 @@ def save_images_if_barcode(analysis, file_system, cap_img, cap_img_closerange):
             )
                     
 def main():
+    perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
     # application
@@ -421,22 +422,23 @@ def main():
 
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
                     analysis = {}
-                    for img_analyser in image_analysis:
-                        # TODO: get this properly. Some complexity due to reversed shape so using
-                        # protected member :(
-                        res_for_affine_transform_lookup = img_analyser.camera_source_class_ref._store_res #BAD LIELL!!! 
-                        try:
-                            result = img_analyser.analysis_output_q.get(block=True, timeout=5)
-                            if result:
-                                
-                                #file_system.save_barcodepair(result, message="falsepos")
-                                #save_analysis(result)
+                    with perfmonitor.measure():
+                        for img_analyser in image_analysis:
+                            # TODO: get this properly. Some complexity due to reversed shape so using
+                            # protected member :(
+                            res_for_affine_transform_lookup = img_analyser.camera_source_class_ref._store_res #BAD LIELL!!! 
+                            try:
+                                result = img_analyser.analysis_output_q.get(block=True, timeout=5)
+                                if result:
+                                    
+                                    #file_system.save_barcodepair(result, message="falsepos")
+                                    #save_analysis(result)
 
-                                if res_for_affine_transform_lookup not in analysis:
-                                    analysis[res_for_affine_transform_lookup] = []
-                                analysis[res_for_affine_transform_lookup].extend(result)
-                        except queue.Empty:
-                            raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
+                                    if res_for_affine_transform_lookup not in analysis:
+                                        analysis[res_for_affine_transform_lookup] = []
+                                    analysis[res_for_affine_transform_lookup].extend(result)
+                            except queue.Empty:
+                                raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
 
 
                 #save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
@@ -492,6 +494,7 @@ def main():
 
                 if is_trigger_pressed:
                     output_image[:] = 255
+                display.debug_add_imgpro_wait(perfmonitor.get_average(), output_image)
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(output_image)
                 

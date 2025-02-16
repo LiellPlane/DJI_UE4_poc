@@ -196,7 +196,6 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
         
 class display(factory.display):
 
-
     def display_method(self, image):
         lumo_viewer(
             inputimage=image,
