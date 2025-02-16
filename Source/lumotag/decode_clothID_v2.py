@@ -1513,6 +1513,27 @@ def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, ori
 
     return cannyied_img, original_image
 
+
+def find_lumotag_mser(inputimg, dataobject : WorkingData):
+    """analyse input image for specific lumotag pattern"""
+    #~2ms
+    with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
+        with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
+            if len(inputimg.shape)>2:
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+            else:
+                img_grayscale = inputimg
+        dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
+
+       #print("equalisation")
+        with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
+            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+            img_op = cv2.medianBlur(img_grayscale, 5)
+            dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
+        with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
+            msers, bboxes = img_pro.get_mser_regions(img_op)
+
+        return []
 def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
