@@ -24,7 +24,8 @@ class ImageAnalyser_shared_mem():
             img_shrink_factor: int,
             OS_friendly_name: str,
             camera_source_class_ref: type,
-            config: configs.base_find_lumotag_config) -> None:
+            config: configs.base_find_lumotag_config,
+            lumotag_func: Callable[[np.ndarray, decode_clothID.WorkingData], list]) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_index = None
         self.camera_source_class_ref = camera_source_class_ref

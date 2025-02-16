@@ -5,6 +5,7 @@ from typing import Tuple, List, Optional
 from enum import Enum, auto
 import os
 import numpy as np
+from numpy.typing import NDArray
 #sys.path.append(r"C:\Working\GIT\TestLab\TestLab")
 #from matplotlib import pyplot as plt
 import math
@@ -29,6 +30,10 @@ MIN_TAG_VARIANCE = 25 # OBSOLETE? max-min for grayscale values of lumotag - peak
 MAX_PATTERN_SYMMETRY_ERROR = 5 # OBSOLETE?
 SAMPLES_PER_LINE = 20 # this is for how many samples we do along each diagonal of the barcode
 
+ContourType = NDArray[np.int32]  # Shape: (N, 1, 2) where N is number of points
+
+# For multiple contours (what findContours returns)
+ContoursType = List[ContourType]
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
@@ -758,7 +763,7 @@ def debug_save_images(img, contours, text : str, dataobject: WorkingData):
         dataobject.img_view_or_save_if_debug(img_check_contours, text)
 
 
-def get_possible_candidates(img, dataobject : WorkingData):
+def get_possible_candidates(img, contours: ContoursType, hierarchy: any, dataobject : WorkingData):
     """get all contours of image, and filter to remove noise
     
     provide thresholded image (might have to inverted to avoid segments
@@ -768,10 +773,9 @@ def get_possible_candidates(img, dataobject : WorkingData):
     smallest_area = max((img.shape[0]*0.01) *  (img.shape[1]*0.01), 100)
     largest_area = (img.shape[0]*0.9) *  (img.shape[1]*0.9)
 
-    dataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
+    #d#ataobject.img_view_or_save_if_debug(img, Debug_Images.input_to_contours.value)
     #  get all contours, 
-    with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
-        contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
     custom_print(f"get possible candidates: {len(contours)} contours found", dataobject.debug_details.PRINT_DEBUG)
     debug_save_images(img, contours, Debug_Images.unfiltered_contours.value, dataobject)
 
@@ -1532,8 +1536,32 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
         with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
             msers, bboxes = img_pro.get_mser_regions(img_op[::2,::2])
+    with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
+        contours, hierarchy=get_possible_candidates(img_op, dataobject)
 
-        return []
+    # if len(contours) == 0:
+    #     print("no results found for image")
+    #     return []
+    with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
+        #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+        org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
+        dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
+
+    with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
+        output_contour_data = analyse_candidates_shapematch(
+                                                original_img=inputimg,
+                                                original_blurred_image=org_img_grayscale_blur,
+                                                contours = contours,
+                                                contour_hierarchy = hierarchy,
+                                                dataobject = dataobject)
+    # if analyse_IDs is not None:
+    #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
+    #     return analyse_IDs, playerfound
+    if len(output_contour_data)>0:
+        plop=1
+    return output_contour_data
+
+
 def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
@@ -1650,7 +1678,9 @@ def find_lumotag(inputimg, dataobject : WorkingData):
             dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
-        contours, hierarchy=get_possible_candidates(img_op, dataobject)
+        with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
+            contours, hierarchy = cv2.findContours(img_op, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours, hierarchy = get_possible_candidates(img_op,contours, hierarchy, dataobject)
 
     # if len(contours) == 0:
     #     print("no results found for image")

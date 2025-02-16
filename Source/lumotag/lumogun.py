@@ -11,6 +11,7 @@ import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
 import img_processing
+from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
 from my_collections import _OS
 # need this import to detect lumogun types (subclasses)
@@ -111,8 +112,18 @@ def main():
         safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
         slice_details=slice_details_long_range,
         img_shrink_factor=None,
+        OS_friendly_name="cam1inner_mser",
+        camera_source_class_ref = image_capture_longrange,
+        lumotag_func=find_lumotag_mser,
+        config=configs.get_lumofind_config(PLATFORM)))
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture_longrange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
+        slice_details=slice_details_long_range,
+        img_shrink_factor=None,
         OS_friendly_name="cam1inner",
         camera_source_class_ref = image_capture_longrange,
+        lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
@@ -122,6 +133,7 @@ def main():
         OS_friendly_name="cam1macro",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         camera_source_class_ref = image_capture_longrange,
+        lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
 
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
@@ -131,6 +143,7 @@ def main():
         OS_friendly_name="cam2inner",
         img_shrink_factor=GUN_CONFIGURATION.img_subsmple_factor,
         camera_source_class_ref = image_capture_shortrange,
+        lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
     
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
@@ -140,6 +153,7 @@ def main():
         OS_friendly_name="cam2macro",
         img_shrink_factor=None,
         camera_source_class_ref = image_capture_shortrange,
+        lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
     
     #time.sleep(100000)
