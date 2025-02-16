@@ -784,7 +784,7 @@ def get_possible_candidates(img, contours: ContoursType, hierarchy: any, dataobj
         # filter by area
         contours_area = []
         hierarchy_area = []
-        if hierarchy is None or len(contours) == 0:
+        if hierarchy is None or len(contours) == 0 or contours is None:
             return [], []
         for con, hier in zip(contours, hierarchy[0]):
             area = cv2.contourArea(con)
@@ -1535,9 +1535,14 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
         with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
-            msers, bboxes = img_pro.get_mser_regions(img_op[::2,::2])
+            msers, bboxes = img_pro.get_mser_regions(img_op[::1,::1])
+        if dataobject.debug_details.SAVE_IMAGES_DEBUG:
+            mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
+            dataobject.img_view_or_save_if_debug(mser_img, "mser_img")
+    if len(msers) > 0:
+        plop=1
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
-        contours, hierarchy=get_possible_candidates(img_op, dataobject)
+        contours, hierarchy=get_possible_candidates(img_op,msers, [[None for _ in msers]], dataobject)
 
     # if len(contours) == 0:
     #     print("no results found for image")
@@ -1547,6 +1552,7 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
         org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
         dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
+
     with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
         output_contour_data = analyse_candidates_shapematch(
                                                 original_img=inputimg,
@@ -1554,11 +1560,7 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)
-    # if analyse_IDs is not None:
-    #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
-    #     return analyse_IDs, playerfound
-    if len(output_contour_data)>0:
-        plop=1
+
     return output_contour_data
 
 

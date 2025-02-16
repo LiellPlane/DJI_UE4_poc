@@ -27,6 +27,7 @@ class ImageAnalyser_shared_mem():
             config: configs.base_find_lumotag_config,
             lumotag_func: Callable[[np.ndarray, decode_clothID.WorkingData], list]) -> None:
         self.sharedmem_bufs = sharedmem_buffs
+        self.lumotag_func = lumotag_func
         self.safe_index = None
         self.camera_source_class_ref = camera_source_class_ref
         self.OS_friendly_name = OS_friendly_name
@@ -104,7 +105,7 @@ class ImageAnalyser_shared_mem():
                     img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
                 try:
-                    contour_data = decode_clothID.find_lumotag(
+                    contour_data = self.lumotag_func(
                         img_buff, workingdata)
                 except Exception as e:
                     print(f"Error finding lumotag: {e}")
