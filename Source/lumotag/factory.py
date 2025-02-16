@@ -200,7 +200,7 @@ class display(ABC):
         pass
 
     def debug_add_imgpro_wait(self, time_ms, image):
-        normed_to_100ms = int(image.shape[0]/50)
+        normed_to_100ms = int(image.shape[0]/100)
         for cnt, metric in enumerate(time_ms):
             start_pos = 2 * cnt
             end_pos = 2 * (cnt + 1)
