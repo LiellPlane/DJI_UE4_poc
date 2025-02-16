@@ -103,7 +103,7 @@ class ImageAnalyser_shared_mem():
                     img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
                 try:
-                    contour_data = decode_clothID.find_lumotag_mser(
+                    contour_data = decode_clothID.find_lumotag(
                         img_buff, workingdata)
                 except Exception as e:
                     print(f"Error finding lumotag: {e}")
