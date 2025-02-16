@@ -387,35 +387,36 @@ def main():
                     strobe_cnt=0
                     ) # click noise from relay only
 
-            with time_it("gun image stuff", debug=PRINT_DEBUG):
+            with perfmonitor.measure("gun_image"):
+                with time_it("gun image stuff", debug=PRINT_DEBUG):
 
-                transition_i = transform_manager.get_deltatime_transition()
-                transition_state = transform_manager.get_transition_state()
-                display_active_image = cap_img_closerange
-                if  transition_state == img_processing.CameraTransitionState.CLOSERANGE:
+                    transition_i = transform_manager.get_deltatime_transition()
+                    transition_state = transform_manager.get_transition_state()
                     display_active_image = cap_img_closerange
-                    output_image = display.generate_output_affine(display_active_image)
-                    transition_i=0
-                if transition_state == img_processing.CameraTransitionState.LONGRANGE:
-                    display_active_image = cap_img
-                    output_image = display.generate_output_affine(display_active_image)
-                    transition_i=transform_manager.transformdetails.transition_steps-1
-                else:
-                    with time_it("execute affine transform", debug=PRINT_DEBUG):
-                        mat = transform_manager.CR_all_transition_m[transition_i]
-                        cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
+                    if  transition_state == img_processing.CameraTransitionState.CLOSERANGE:
+                        display_active_image = cap_img_closerange
+                        output_image = display.generate_output_affine(display_active_image)
+                        transition_i=0
+                    if transition_state == img_processing.CameraTransitionState.LONGRANGE:
+                        display_active_image = cap_img
+                        output_image = display.generate_output_affine(display_active_image)
+                        transition_i=transform_manager.transformdetails.transition_steps-1
+                    else:
+                        with time_it("execute affine transform", debug=PRINT_DEBUG):
+                            mat = transform_manager.CR_all_transition_m[transition_i]
+                            cr_img = img_processing.apply_perp_transform(mat, cap_img_closerange, display.emptyscreen)
 
-                        mat = transform_manager.LR_all_transition_m[transition_i]
-                        lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
+                            mat = transform_manager.LR_all_transition_m[transition_i]
+                            lr_img = img_processing.apply_perp_transform(mat, cap_img, display.emptyscreen)
 
-                        percent_done = transition_i/(transform_manager.transformdetails.transition_steps-1)
-                        cr_img = img_processing.darken_image(cr_img, 1-percent_done)
-                        combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
-                        
-                        #combo_image = img_processing.radial_motion_blur(combo_image)
-                        output_image = img_processing.gray2rgb(combo_image)
+                            percent_done = transition_i/(transform_manager.transformdetails.transition_steps-1)
+                            cr_img = img_processing.darken_image(cr_img, 1-percent_done)
+                            combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
+                            
+                            #combo_image = img_processing.radial_motion_blur(combo_image)
+                            output_image = img_processing.gray2rgb(combo_image)
 
-                
+                    
                 # with time_it("execute affine transform", debug=PRINT_DEBUG):
                 #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
 
@@ -442,62 +443,62 @@ def main():
 
 
                 #save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
+                with perfmonitor.measure("graphics"):
+                    with time_it("add internal section", debug=PRINT_DEBUG):
+                        display.add_internal_section_region(
+                            display_active_image.shape,
+                            output_image,
+                            transform_manager.get_lerped_targetzone_slice(transition_i),
+                            transform_manager.get_display_affine_transformation(transition_i))
 
-                with time_it("add internal section", debug=PRINT_DEBUG):
-                    display.add_internal_section_region(
-                        display_active_image.shape,
-                        output_image,
-                        transform_manager.get_lerped_targetzone_slice(transition_i),
-                        transform_manager.get_display_affine_transformation(transition_i))
+                    with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
 
-                with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
-
-                    crosshair_lerper.add_cross_hair(
-                        image=output_image,
-                        adapt=True,
-                        target_acquired=(len(analysis) > 0)
-                    )
-
-
-                    # use the image shape to determine image analysis provenance
-                    # we don't want to draw for instance close-range target graphics
-                    # on long-range active image and vice-versa
-                    # don't draw if we are transitiong (for now)
-                    # might be a nice effect though
-
-                    if transition_state != img_processing.CameraTransitionState.TRANSITIONING:
-                        if transition_state == img_processing.CameraTransitionState.CLOSERANGE:
-                            # filter for close range origin analysis
-                            display.add_target_tags(
-                                output=output_image,
-                                graphics={
-                                    k: v for k, v in analysis.items()
-                                    if k == image_capture_shortrange._store_res
-                                    }
-                                )
-                        if transition_state == img_processing.CameraTransitionState.LONGRANGE:
-                            # filter for long range origin analysis
-                            display.add_target_tags(
-                                output=output_image,
-                                graphics={
-                                    k: v for k, v in analysis.items()
-                                    if k == image_capture_longrange._store_res
-                                    }
-                                )
-
-                with time_it("add graphics: player info", debug=PRINT_DEBUG):
-                    display.add_playerinfo_graphics(
-                        output=output_image,
-                        players=players,
-                        analysis=analysis
+                        crosshair_lerper.add_cross_hair(
+                            image=output_image,
+                            adapt=True,
+                            target_acquired=(len(analysis) > 0)
                         )
 
-                if is_trigger_pressed:
-                    output_image[:] = 255
-                display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
-                with time_it("display image", debug=PRINT_DEBUG):
-                    display.display_method(output_image)
-                
+
+                        # use the image shape to determine image analysis provenance
+                        # we don't want to draw for instance close-range target graphics
+                        # on long-range active image and vice-versa
+                        # don't draw if we are transitiong (for now)
+                        # might be a nice effect though
+
+                        if transition_state != img_processing.CameraTransitionState.TRANSITIONING:
+                            if transition_state == img_processing.CameraTransitionState.CLOSERANGE:
+                                # filter for close range origin analysis
+                                display.add_target_tags(
+                                    output=output_image,
+                                    graphics={
+                                        k: v for k, v in analysis.items()
+                                        if k == image_capture_shortrange._store_res
+                                        }
+                                    )
+                            if transition_state == img_processing.CameraTransitionState.LONGRANGE:
+                                # filter for long range origin analysis
+                                display.add_target_tags(
+                                    output=output_image,
+                                    graphics={
+                                        k: v for k, v in analysis.items()
+                                        if k == image_capture_longrange._store_res
+                                        }
+                                    )
+
+                    with time_it("add graphics: player info", debug=PRINT_DEBUG):
+                        display.add_playerinfo_graphics(
+                            output=output_image,
+                            players=players,
+                            analysis=analysis
+                            )
+
+                    if is_trigger_pressed:
+                        output_image[:] = 255
+                    display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
+                    with time_it("display image", debug=PRINT_DEBUG):
+                        display.display_method(output_image)
+                    
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:
                         if "demoplayer" in players:
