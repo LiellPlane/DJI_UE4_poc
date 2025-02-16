@@ -1181,9 +1181,11 @@ def find_black_blobs(image):
 
 @lru_cache(maxsize=1)
 def get_mser_detector():
+    print("Creating new MSER detector - cache miss")  # Debug statement
     # Configure MSER parameters for better performance
     mser = cv2.MSER_create(
         min_area=1000,  # Minimum area size (50*50)
+        delta=20
     )
     return mser
 
