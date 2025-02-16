@@ -1600,6 +1600,8 @@ def find_lumotag(inputimg, dataobject : WorkingData):
             mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
             dataobject.img_view_or_save_if_debug(mser_img, "mser_img")
 
+        with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
+            msers, bboxes = img_pro.get_mser_regions(img_op)
         #squr_img=edge_img(gray_orig)
         with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
             #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
