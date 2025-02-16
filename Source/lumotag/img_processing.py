@@ -1161,3 +1161,147 @@ def apply_hud_flicker(image, flicker_density=0.9):
         result[y_pos, x_pos, :] = 0
     
     return result
+
+
+def find_black_blobs(image):
+    # Convert to grayscale if needed
+    if len(image.shape) == 3:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = image
+    
+    # Threshold for black regions - very fast operation
+    _, binary = cv2.threshold(gray, 30, 255, cv2.THRESH_BINARY_INV)
+    
+    # Find contours - relatively fast
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    return contours
+
+
+@lru_cache(maxsize=1)
+def get_mser_detector():
+    # Configure MSER parameters for better performance
+    mser = cv2.MSER_create(
+        min_area=1000,  # Minimum area size (50*50)
+    )
+    return mser
+
+def get_mser_regions(image, preprocess=False):
+    """Get MSER regions as contours from input image.
+    
+    Args:
+        image: Input grayscale image
+        preprocess: Whether to apply preprocessing (default: True)
+        
+    Returns:
+        List of contours in format compatible with cv2.findContours output
+    """
+    # Optional preprocessing to improve detection speed and quality
+    if preprocess:
+        # Resize large images
+        max_dim = 800
+        h, w = image.shape[:2]
+        if max(h, w) > max_dim:
+            scale = max_dim / max(h, w)
+            image = cv2.resize(image, None, fx=scale, fy=scale)
+            
+        # Reduce noise while preserving edges
+        image = cv2.bilateralFilter(image, d=5, sigmaColor=75, sigmaSpace=75)
+    
+    # Get cached MSER detector
+    mser = get_mser_detector()
+    
+    # Detect regions using numpy array directly
+    msers, bboxes = mser.detectRegions(image)
+    return msers, bboxes
+    # More efficient contour conversion using numpy operations
+    if regions:
+        contours = [np.expand_dims(region, 1) for region in regions]
+        return contours
+    return []
+
+
+def visualize_mser_regions1(image_shape, regions):
+    output = np.zeros(image_shape + (3,), dtype=np.uint8)
+    for region in regions:
+        # Generate random BGR color (50-200 range to avoid too dark/bright colors)
+        color = (
+            random.randint(50, 200),  # B
+            random.randint(50, 200),  # G 
+            random.randint(50, 200)   # R
+        )
+        hull = cv2.convexHull(region.reshape(-1, 1, 2))
+        cv2.polylines(output, [hull], 1, color, 2)
+    return output
+
+def visualize_mser_regions(image_shape, contours):
+    """Visualize MSER regions with random colors
+    Args:
+        image_shape: Shape of original image (height, width)
+        contours: List of contours in OpenCV format (from get_mser_regions or findContours)
+        
+    Returns:
+        RGB image with randomly colored MSER region contours
+    """
+    # Debug print for contours
+    print(f"Number of contours: {len(contours)}")
+    if len(contours) > 0:
+        print(f"Shape of first contour: {contours[0].shape}")
+    
+    # Input validation
+    if not contours:
+        return np.zeros(image_shape + (3,), dtype=np.uint8)
+    
+    # Create output image (3 channels for RGB)
+    output = np.zeros(image_shape + (3,), dtype=np.uint8)
+    
+    # Generate random colors for each region
+    for contour in contours:
+        if contour is not None and len(contour) > 0:
+            color = (
+                random.randint(50, 200),  # B
+                random.randint(50, 200),  # G
+                random.randint(50, 200)   # R
+            )
+            # Changed thickness from -1 to 2 to draw contour lines
+            cv2.drawContours(output, [contour], -1, color, 1)
+    
+    return output
+
+def detect_mser_regions(image):
+    """Legacy function that combines detection and visualization.
+    Consider using get_mser_regions() and visualize_mser_regions() separately."""
+    contours = get_mser_regions(image)
+    return visualize_mser_regions(image.shape, contours)
+
+
+
+def visualize_mser_bboxes(image, bboxes):
+    """Draw bounding boxes from MSER regions on an image.
+    
+    Args:
+        image: Input image (grayscale or BGR)
+        bboxes: List of bounding boxes in format (x, y, w, h)
+    
+    Returns:
+        Image with drawn bounding boxes
+    """
+    # Convert to BGR if grayscale
+    if len(image.shape) == 2:
+        vis_image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    else:
+        vis_image = image.copy()
+        
+    # Draw each bounding box with a random color
+    for bbox in bboxes:
+        # Generate random BGR color (50-200 range to avoid too dark/bright colors)
+        color = (
+            random.randint(50, 200),  # B
+            random.randint(50, 200),  # G 
+            random.randint(50, 200)   # R
+        )
+        x, y, w, h = bbox
+        cv2.rectangle(vis_image, (x, y), (x + w, y + h), color, 2)
+    
+    return vis_image

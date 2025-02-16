@@ -102,9 +102,12 @@ class ImageAnalyser_shared_mem():
                     # might not be optimal putting this here rather than when grabbing the array
                     img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
-
-                contour_data = decode_clothID.find_lumotag(
-                    img_buff, workingdata)
+                try:
+                    contour_data = decode_clothID.find_lumotag(
+                        img_buff, workingdata)
+                except Exception as e:
+                    print(f"Error finding lumotag: {e}")
+                    raise e
             #with time_it("analyse lumotag: prepare graphics"):
                 for contour in contour_data:
                     if self.img_shrink_factor is not None:

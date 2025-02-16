@@ -1566,28 +1566,40 @@ def find_lumotag(inputimg, dataobject : WorkingData):
             max_val = np.percentile(img_op, 99) # Using 99th percentile instead of max to avoid outliers
             
             # Fast linear scaling using numpy operations
-            test_eq = np.clip((img_op - min_val) * (255.0 / (max_val - min_val)), 0, 255).astype(np.uint8)
+            # test_eq = np.clip((img_op - min_val) * (255.0 / (max_val - min_val)), 0, 255).astype(np.uint8)
             
-            dataobject.img_view_or_save_if_debug(test_eq, "test contrast-stretch equalized", resize=False)
+            # dataobject.img_view_or_save_if_debug(test_eq, "test contrast-stretch equalized", resize=False)
         # True histogram equalization
-            hist_eq = cv2.equalizeHist(img_op)
+            # hist_eq = cv2.equalizeHist(img_op)
 
-            dataobject.img_view_or_save_if_debug(hist_eq, "test histogram_equalized", resize=False)
+            # dataobject.img_view_or_save_if_debug(hist_eq, "test histogram_equalized", resize=False)
         if dataobject.debug_details.SAVE_IMAGES_DEBUG:
-            squr_img=img_pro.simple_canny(
-                blurred_img=img_op.copy(),
-                lower=0,
-            upper=255)
-            dataobject.img_view_or_save_if_debug(squr_img, "testing_simple_canny")
-            squr_img=img_pro.threshold_img(squr_img,high=125)
-            squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
-            dataobject.img_view_or_save_if_debug(squr_img, "test_static_params125high")
-            squr_img = np.clip(img_op, 0, 125)
-            dataobject.img_view_or_save_if_debug(squr_img, "test-clip125")
-            squr_img = ((squr_img - 0) * (255.0 / 125.0)).astype(np.uint8)
-            dataobject.img_view_or_save_if_debug(squr_img, "normalise_from_125", resize=False)
-            squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
-            dataobject.img_view_or_save_if_debug(squr_img, "test_static_threshold_img_high125")
+            # squr_img=img_pro.simple_canny(
+            #     blurred_img=img_op.copy(),
+            #     lower=0,
+            # upper=255)
+            # dataobject.img_view_or_save_if_debug(squr_img, "testing_simple_canny")
+            # squr_img=img_pro.threshold_img(squr_img,high=125)
+            # squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
+            # dataobject.img_view_or_save_if_debug(squr_img, "test_static_params125high")
+            # squr_img = np.clip(img_op, 0, 125)
+            # dataobject.img_view_or_save_if_debug(squr_img, "test-clip125")
+            # squr_img = ((squr_img - 0) * (255.0 / 125.0)).astype(np.uint8)
+            # dataobject.img_view_or_save_if_debug(squr_img, "normalise_from_125", resize=False)
+            # squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
+            # dataobject.img_view_or_save_if_debug(squr_img, "test_static_threshold_img_high125")
+
+            # for i in range(40, 80, 10):
+            #     _, binary = cv2.threshold(img_op, i, 255, cv2.THRESH_BINARY)
+            #     dataobject.img_view_or_save_if_debug(binary, f"testbin-threshold-{i}")
+            # for i in range(30, 140, 10):
+            #     binary = cv2.adaptiveThreshold(img_op,i,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,7,1)
+            #     dataobject.img_view_or_save_if_debug(binary, f"adaptive-testbin-threshold-{i}")
+            msers, bboxes = img_pro.get_mser_regions(img_op)
+
+            mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
+            dataobject.img_view_or_save_if_debug(mser_img, "mser_img")
+
         #squr_img=edge_img(gray_orig)
         with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
             #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
