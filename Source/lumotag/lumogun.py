@@ -111,7 +111,7 @@ def main():
         sharedmem_buffs=image_capture_longrange.get_mem_buffers(),
         safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
         slice_details=slice_details_long_range,
-        img_shrink_factor=None,
+        img_shrink_factor=2,
         OS_friendly_name="cam1inner_mser",
         camera_source_class_ref = image_capture_longrange,
         lumotag_func=find_lumotag_mser,
