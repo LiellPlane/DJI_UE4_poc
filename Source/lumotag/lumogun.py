@@ -419,10 +419,10 @@ def main():
                 # with time_it("execute affine transform", debug=PRINT_DEBUG):
                 #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
 
-
+                perfmonitor.get_time("complete_cycle", reset=True)
                 with time_it("wait for image analysis", debug=PRINT_DEBUG):
                     analysis = {}
-                    with perfmonitor.measure():
+                    with perfmonitor.measure("image_analysis"):
                         for img_analyser in image_analysis:
                             # TODO: get this properly. Some complexity due to reversed shape so using
                             # protected member :(
@@ -494,7 +494,7 @@ def main():
 
                 if is_trigger_pressed:
                     output_image[:] = 255
-                display.debug_add_imgpro_wait(perfmonitor.get_average(), output_image)
+                display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
                 with time_it("display image", debug=PRINT_DEBUG):
                     display.display_method(output_image)
                 

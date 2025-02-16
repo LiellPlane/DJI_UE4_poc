@@ -1531,7 +1531,7 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
         with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
-            msers, bboxes = img_pro.get_mser_regions(img_op[::3,::3])
+            msers, bboxes = img_pro.get_mser_regions(img_op[::2,::2])
 
         return []
 def find_lumotag(inputimg, dataobject : WorkingData):

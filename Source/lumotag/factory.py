@@ -201,9 +201,12 @@ class display(ABC):
 
     def debug_add_imgpro_wait(self, time_ms, image):
         normed_to_100ms = int(image.shape[0]/50)
-        image[:normed_to_100ms * int(time_ms), 0:2, 0] = 0
-        image[:normed_to_100ms * int(time_ms), 0:2, 1] = 0
-        image[:normed_to_100ms * int(time_ms), 0:2, 2] = 255
+        for cnt, metric in enumerate(time_ms):
+            start_pos = 2 * cnt
+            end_pos = 2 * (cnt + 1)
+            image[:normed_to_100ms * int(metric), start_pos:end_pos, 0] = 0
+            image[:normed_to_100ms * int(metric), start_pos:end_pos, 1] = 0
+            image[:normed_to_100ms * int(metric), start_pos:end_pos, 2] = 255
 
     
     def TESTgenerate_output_affine2cam(self, cam_capture1, cam_2capture):
@@ -1757,31 +1760,44 @@ class VoiceBase(ABC):
 
 
 class Perfmonitor:
-    def __init__(self, maxlen=10) -> None:
-        self.measurements = deque(maxlen=maxlen)
+    def __init__(self) -> None:
+        self.measurements = {}
+        self.timers = {}
+        self.start_time = {}
     
-    def get_time(self):
-        elapsed = time.perf_counter() - self.start_time
-        self.measurements.append(elapsed * 1000)  # Convert to ms
+    def create_metric(self, metric_name):
+        if metric_name not in self.measurements:
+            self.measurements[metric_name] = deque(maxlen=10)
+            self.timers[metric_name] = time.perf_counter()
+            self.start_time[metric_name] = time.perf_counter()
+
+    def get_time(self, metric_name, reset=False):
+        self.create_metric(metric_name)
+        elapsed = time.perf_counter() - self.start_time[metric_name]
+        self.measurements[metric_name].append(elapsed * 1000)  # Convert to ms
+        if reset:
+            self.reset(metric_name)
         return elapsed * 1000  # Return ms
-    
-    def get_average(self):
-        if not self.measurements:
+
+    def get_average(self, metric_name):
+        self.create_metric(metric_name)
+        if not self.measurements[metric_name]:
             return 0
-        return sum(self.measurements) / len(self.measurements)
+        return sum(self.measurements[metric_name]) / len(self.measurements[metric_name])
     
-    def reset(self):
-        self.start_time = time.perf_counter()
+    def reset(self, metric_name):
+        self.start_time[metric_name] = time.perf_counter()
         
     @contextmanager
-    def measure(self):
+    def measure(self, metric_name: str):
         """Context manager for measuring execution time of a code block in milliseconds"""
-        self.reset()
+        self.create_metric(metric_name)
+        self.reset(metric_name)
         try:
             yield
         finally:
-            elapsed_ms = (time.perf_counter() - self.start_time) * 1000
-            self.measurements.append(elapsed_ms)
+            elapsed_ms = (time.perf_counter() - self.start_time[metric_name]) * 1000
+            self.measurements[metric_name].append(elapsed_ms)
 
 
 if __name__ == '__main__':
