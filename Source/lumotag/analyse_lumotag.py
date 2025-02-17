@@ -11,7 +11,7 @@ from my_collections import (
 from typing import Callable
 import configs
 from cv2 import resize, INTER_NEAREST
-
+import time
 
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
@@ -37,6 +37,7 @@ class ImageAnalyser_shared_mem():
         self.img_crop = slice_details
         self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
+        self.last_analysis_time = time.perf_counter()
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -47,13 +48,21 @@ class ImageAnalyser_shared_mem():
             daemon=True)
 
         process.start()
-
+    def check_if_timed_out(self):
+        if time.perf_counter() - self.last_analysis_time > 2: # wait in seconds
+            return True
+        return False
+    def get_analysis_time_ms(self):
+        return (time.perf_counter() - self.last_analysis_time) * 1000
     def trigger_analysis(self):
+        
         #print("putting record for analyis", mapped_details)
-        self.input_shared_mem_index_q.put(
-            self.safe_mem_details_func(),
-            block=True,
-            timeout=None)
+        if self.input_shared_mem_index_q.empty():# skip if procesing something already
+            self.last_analysis_time = time.perf_counter() # reset time out
+            self.input_shared_mem_index_q.put(
+                self.safe_mem_details_func(),
+                block=True,
+                timeout=None)
 
     def async_imganalysis_loop(
             self,
@@ -74,6 +83,7 @@ class ImageAnalyser_shared_mem():
                 block=True,
                 timeout=None
                 )
+            # print(f"ANALOL received analysis details {self.OS_friendly_name}")
             #print("ANALOL received analysis details", shared_details)
             with time_it("analyse lumotag: total", workingdata.debug_details.PRINT_DEBUG):
 
@@ -109,7 +119,8 @@ class ImageAnalyser_shared_mem():
                         img_buff, workingdata)
                 except Exception as e:
                     print(f"Error finding lumotag: {e}")
-                    raise e
+                    # this will explode but at least we get something back
+                    analysis_output_q.put(e, block=True, timeout=None)
             #with time_it("analyse lumotag: prepare graphics"):
                 for contour in contour_data:
                     if self.img_shrink_factor is not None:
@@ -120,5 +131,8 @@ class ImageAnalyser_shared_mem():
                 # correct contour data here? not sure if correct place
                 
             #print("ANALOL waiting to put response")
-
+            # import time
+            # import random
+            # randimtew = random.randint(10,50)
+            # time.sleep(randimtew/1000)
             analysis_output_q.put(contour_data, block=True, timeout=None)

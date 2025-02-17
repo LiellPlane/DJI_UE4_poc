@@ -435,16 +435,20 @@ def main():
                 #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
 
             perfmonitor.get_time("complete_cycle", reset=True)
-            with time_it("wait for image analysis", debug=PRINT_DEBUG), perfmonitor.measure("image_analysis"):
+            with time_it("wait for image analysis", debug=PRINT_DEBUG):
                 analysis = {}
                 for img_analyser in image_analysis:
+                    if img_analyser.check_if_timed_out():
+                        raise Exception(f"Analysis timed out for {img_analyser.OS_friendly_name} analysis")
                     # TODO: get this properly. Some complexity due to reversed shape so using
                     # protected member :(
                     res_for_affine_transform_lookup = img_analyser.camera_source_class_ref._store_res #BAD LIELL!!! 
                     try:
-                        result = img_analyser.analysis_output_q.get(block=True, timeout=5)
+                        result = img_analyser.analysis_output_q.get(block=True, timeout=0)
+                        if isinstance(result, Exception):
+                            raise Exception(result)# this is really shit but better than nothing or dying downstream in a confusing way
                         if result:
-                            
+                            perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}_analysis_time", img_analyser.get_analysis_time_ms())
                             #file_system.save_barcodepair(result, message="falsepos")
                             #save_analysis(result)
 
@@ -452,8 +456,11 @@ def main():
                                 analysis[res_for_affine_transform_lookup] = []
                             analysis[res_for_affine_transform_lookup].extend(result)
                     except queue.Empty:
-                        raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
+                        # raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
+                        # print(f"waiting for analysis {img_analyser.OS_friendly_name}")
+                        pass # test asynchronous analysis
 
+ 
 
                 #save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
             with perfmonitor.measure("graphics"):

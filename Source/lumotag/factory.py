@@ -1598,7 +1598,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
                 filters=["response"]#quadrocode_corners
             )
  
-            repeats = 1
+            repeats = 20
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
@@ -1787,7 +1787,11 @@ class Perfmonitor:
     
     def reset(self, metric_name):
         self.start_time[metric_name] = time.perf_counter()
-        
+    
+    def manual_measure(self, metric_name, time_ms):
+        self.create_metric(metric_name)
+        self.measurements[metric_name].append(time_ms)
+
     @contextmanager
     def measure(self, metric_name: str):
         """Context manager for measuring execution time of a code block in milliseconds"""
