@@ -107,15 +107,15 @@ def main():
                         image_capture_longrange.get_res(),
                         GUN_CONFIGURATION.internal_img_crop_lr)
     image_analysis = []
-    # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
-    #     sharedmem_buffs=image_capture_longrange.get_mem_buffers(),
-    #     safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
-    #     slice_details=slice_details_long_range,
-    #     img_shrink_factor=None,
-    #     OS_friendly_name="cam1inner_mser",
-    #     camera_source_class_ref = image_capture_longrange,
-    #     lumotag_func=find_lumotag_mser,
-    #     config=configs.get_lumofind_config(PLATFORM)))
+    image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
+        sharedmem_buffs=image_capture_longrange.get_mem_buffers(),
+        safe_mem_details_func = image_capture_longrange.get_safe_mem_details,
+        slice_details=slice_details_long_range,
+        img_shrink_factor=None,
+        OS_friendly_name="cam1inner_mser",
+        camera_source_class_ref = image_capture_longrange,
+        lumotag_func=find_lumotag_mser,
+        config=configs.get_lumofind_config(PLATFORM)))
  
     image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
         sharedmem_buffs=image_capture_longrange.get_mem_buffers(),

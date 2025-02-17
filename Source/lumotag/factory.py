@@ -200,15 +200,26 @@ class display(ABC):
         pass
 
     def debug_add_imgpro_wait(self, time_ms, image):
-        normed_to_100ms = int(image.shape[0]/100)
+        normed_to_100ms = int(image.shape[0] / 100)
+        total_metrics = len(time_ms)
+        
         for cnt, metric in enumerate(time_ms):
-            start_pos = 2 * cnt
-            end_pos = 2 * (cnt + 1)
-            image[:normed_to_100ms * int(metric), start_pos:end_pos, 0] = 0
-            image[:normed_to_100ms * int(metric), start_pos:end_pos, 1] = 0
-            image[:normed_to_100ms * int(metric), start_pos:end_pos, 2] = 255
-
-    
+            # Calculate step based on total number of metrics
+            step = 255 // max(total_metrics, 1)
+            
+            # Generate colors using a simple formula
+            red = (255 - cnt * step) % 256
+            green = (cnt * step) % 256
+            blue = (128 + cnt * step) % 256  # Offset blue for better visibility
+            
+            start_pos = 4 * cnt
+            end_pos = 4 * (cnt + 1)
+            
+            # Draw the bar with the calculated color
+            height = normed_to_100ms * int(metric)
+            image[:height, start_pos:end_pos, 0] = red    # Red channel
+            image[:height, start_pos:end_pos, 1] = green  # Green channel
+            image[:height, start_pos:end_pos, 2] = blue   # Blue channel
     def TESTgenerate_output_affine2cam(self, cam_capture1, cam_2capture):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
