@@ -157,6 +157,10 @@ def main():
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
     
+
+    for image_analyser in image_analysis:
+        print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
+        perfmonitor.manual_measure(f"{image_analyser.OS_friendly_name}", 10)
     #time.sleep(100000)
     voice.speak("test cam 1")
     voice.wait_for_speak()
@@ -447,7 +451,7 @@ def main():
                         result = img_analyser.analysis_output_q.get(block=True, timeout=0)
                         if isinstance(result, Exception):
                             raise Exception(result)# this is really shit but better than nothing or dying downstream in a confusing way
-                        perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}_analysis_time", img_analyser.get_analysis_time_ms())
+                        perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}", img_analyser.get_analysis_time_ms())
                         if result:
                             
                             #file_system.save_barcodepair(result, message="falsepos")
