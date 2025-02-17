@@ -202,7 +202,7 @@ class display(ABC):
     def debug_add_imgpro_wait(self, time_ms, image):
         normed_to_100ms = int(image.shape[0] / 100)
         total_metrics = len(time_ms)
-        
+        offset = 50
         for cnt, metric in enumerate(time_ms):
             # Calculate step based on total number of metrics
             step = 255 // max(total_metrics, 1)
@@ -212,8 +212,8 @@ class display(ABC):
             green = (cnt * step) % 256
             blue = (128 + cnt * step) % 256  # Offset blue for better visibility
             
-            start_pos = 4 * cnt
-            end_pos = 4 * (cnt + 1)
+            start_pos = (4 * cnt) + offset
+            end_pos = (4 * (cnt + 1)) + offset
             
             # Draw the bar with the calculated color
             height = normed_to_100ms * int(metric)
