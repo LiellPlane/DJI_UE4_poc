@@ -447,8 +447,9 @@ def main():
                         result = img_analyser.analysis_output_q.get(block=True, timeout=0)
                         if isinstance(result, Exception):
                             raise Exception(result)# this is really shit but better than nothing or dying downstream in a confusing way
+                        perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}_analysis_time", img_analyser.get_analysis_time_ms())
                         if result:
-                            perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}_analysis_time", img_analyser.get_analysis_time_ms())
+                            
                             #file_system.save_barcodepair(result, message="falsepos")
                             #save_analysis(result)
 

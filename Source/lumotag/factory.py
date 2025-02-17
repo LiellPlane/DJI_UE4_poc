@@ -202,7 +202,7 @@ class display(ABC):
     def debug_add_imgpro_wait(self, time_ms, image):
         normed_to_100ms = int(image.shape[0] / 100)
         total_metrics = len(time_ms)
-        offset = 50
+        offset = 20
         for cnt, metric in enumerate(time_ms):
             # Calculate step based on total number of metrics
             step = 255 // max(total_metrics, 1)
