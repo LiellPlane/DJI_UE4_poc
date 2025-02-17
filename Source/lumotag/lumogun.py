@@ -158,9 +158,11 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
     
 
+
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
         perfmonitor.manual_measure(f"{image_analyser.OS_friendly_name}", 10)
+     perfmonitor.manual_measure("spacemaker", 0) # for visual break between analyusis and system metrics
     #time.sleep(100000)
     voice.speak("test cam 1")
     voice.wait_for_speak()
