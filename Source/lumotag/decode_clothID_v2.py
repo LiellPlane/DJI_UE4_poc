@@ -1538,7 +1538,7 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             msers, bboxes = img_pro.get_mser_regions(img_op)
         if dataobject.debug_details.SAVE_IMAGES_DEBUG:
             mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
-            dataobject.img_view_or_save_if_debug(mser_img, "mser_img")
+            dataobject.img_view_or_save_if_debug(mser_img, f"mser_img{len(msers)}")
     if len(msers) > 0:
         plop=1
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):

@@ -31,7 +31,7 @@ def get_lumofind_config(platform):
         return base_find_lumotag_config(
             SAVE_IMAGES_DEBUG=True,
             SAVE_IMAGES_PATH=r"D:/lumodebug/",
-            PRINT_DEBUG=True)
+            PRINT_DEBUG=False)
     elif platform == _OS.MAC_OS:
         return base_find_lumotag_config(
             SAVE_IMAGES_DEBUG=False,
