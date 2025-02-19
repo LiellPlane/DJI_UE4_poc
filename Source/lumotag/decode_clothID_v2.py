@@ -1521,6 +1521,10 @@ def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, ori
 def find_lumotag_mser(inputimg, dataobject : WorkingData):
     """analyse input image for specific lumotag pattern"""
     #~2ms
+
+    # import pickle
+    # with open('contours.pickle', 'rb') as handle:
+    #     contours_from_non_mser = pickle.load(handle)
     with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
@@ -1536,9 +1540,16 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
         with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
             msers, bboxes = img_pro.get_mser_regions(img_op)
-        if dataobject.debug_details.SAVE_IMAGES_DEBUG:
-            mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
-            dataobject.img_view_or_save_if_debug(mser_img, f"mser_img{len(msers)}")
+
+            # Using reshape
+            # msers = tuple(contour.reshape(-1, 1, 2) for contour in msers)
+            msers = [cv2.convexHull(mser.reshape(-1, 1, 2)) for mser in msers]
+            # # Using np.newaxis
+            # msers_converted = tuple(contour[:, np.newaxis, :] for contour in msers)
+
+        # if dataobject.debug_details.SAVE_IMAGES_DEBUG:
+        #     mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
+        #     dataobject.img_view_or_save_if_debug(mser_img, f"mser_img{len(msers)}")
     if len(msers) > 0:
         plop=1
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
@@ -1682,6 +1693,11 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
         with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
             contours, hierarchy = cv2.findContours(img_op, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+            # if len(contours) >0:
+            #     import pickle
+            #     # Store data (serialize)
+            #     with open('contours.pickle', 'wb') as handle:
+            #         pickle.dump(contours, handle, protocol=pickle.HIGHEST_PROTOCOL)
         contours, hierarchy = get_possible_candidates(img_op,contours, hierarchy, dataobject)
 
     # if len(contours) == 0:
@@ -1700,6 +1716,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     #     return analyse_IDs, playerfound
     if len(output_contour_data)>0:
         plop=1
+
     return output_contour_data
 
 
