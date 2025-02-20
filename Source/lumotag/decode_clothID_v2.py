@@ -1516,6 +1516,9 @@ def block_filter_highfreq_areas(cannyied_img, block_pc, max_white_per_block, ori
                 yrange[ydex]: yrange[ydex+1]] = 0
 
     return cannyied_img, original_image
+def quantize_box(box, precision=5):
+    # Rounds each coordinate to the nearest multiple defined by precision
+    return tuple((box / precision).round().astype(int))
 
 
 def find_lumotag_mser(inputimg, dataobject : WorkingData):
@@ -1539,7 +1542,22 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
         with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
+            # bounding box in form: x, y, w, h = box
             msers, bboxes = img_pro.get_mser_regions(img_op)
+
+
+            unique_boxes = {}
+            indexes_to_keep = []
+
+            for idx, box in enumerate(bboxes):
+                key = quantize_box(box, precision=5)
+                if key not in unique_boxes:
+                    unique_boxes[key] = idx
+                    indexes_to_keep.append(idx)
+
+            if len(msers) > 0:
+                plop=1
+
 
             # Using reshape
             # msers = tuple(contour.reshape(-1, 1, 2) for contour in msers)
@@ -1550,8 +1568,7 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
         # if dataobject.debug_details.SAVE_IMAGES_DEBUG:
         #     mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
         #     dataobject.img_view_or_save_if_debug(mser_img, f"mser_img{len(msers)}")
-    if len(msers) > 0:
-        plop=1
+
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
         contours, hierarchy=get_possible_candidates(img_op,msers, [[None for _ in msers]], dataobject)
 
