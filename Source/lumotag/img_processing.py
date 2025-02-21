@@ -1185,7 +1185,7 @@ def get_mser_detector():
     # Configure MSER parameters for better performance
     mser = cv2.MSER_create(
         min_area=1000,  # Minimum area size (50*50)
-        delta=20,
+        delta=5,
         # max_variation=0.25
     )
     return mser

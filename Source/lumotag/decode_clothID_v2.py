@@ -760,7 +760,7 @@ def debug_save_images(img, contours, text : str, dataobject: WorkingData):
                 color=(random.randint(20,255),random.randint(20,255),random.randint(20,255)),
                 thickness=1,
                 lineType=cv2.LINE_AA)
-        dataobject.img_view_or_save_if_debug(img_check_contours, text)
+        dataobject.img_view_or_save_if_debug(img_check_contours, f"{text}_l{len(contours)}")
 
 
 def get_possible_candidates(img, contours: ContoursType, hierarchy: any, dataobject : WorkingData):
@@ -1531,10 +1531,14 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
     with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
-                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY).copy()
             else:
-                img_grayscale = inputimg
-        dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
+                img_grayscale = inputimg.copy()
+        dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
+    # with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
+    #     #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+    #     org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
+    #     dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
        #print("equalisation")
         with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
@@ -1545,46 +1549,47 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             # bounding box in form: x, y, w, h = box
             msers, bboxes = img_pro.get_mser_regions(img_op)
 
-
+            if dataobject.debug_details.SAVE_IMAGES_DEBUG:
+                debug_save_images(img_op, msers, "UnfliteredMsers", dataobject)
             unique_boxes = {}
             indexes_to_keep = []
-
-            for idx, box in enumerate(bboxes):
+            filtered_msers = []
+            # for idx, box in enumerate(bboxes):
+            #     key = quantize_box(box, precision=5)
+            #     if key not in unique_boxes:
+            #         unique_boxes[key] = idx
+            #         indexes_to_keep.append(idx)
+            for idx, (box, mser) in enumerate(zip(bboxes, msers)):
                 key = quantize_box(box, precision=5)
                 if key not in unique_boxes:
                     unique_boxes[key] = idx
-                    indexes_to_keep.append(idx)
-
+                    filtered_msers.append(mser)
             if len(msers) > 0:
                 plop=1
 
-
+            # dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
             # Using reshape
             # msers = tuple(contour.reshape(-1, 1, 2) for contour in msers)
-            msers = [cv2.convexHull(mser.reshape(-1, 1, 2)) for mser in msers]
+            filtered_msers = [cv2.convexHull(mser.reshape(-1, 1, 2)) for mser in filtered_msers]
             # # Using np.newaxis
             # msers_converted = tuple(contour[:, np.newaxis, :] for contour in msers)
-
+            # dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
         # if dataobject.debug_details.SAVE_IMAGES_DEBUG:
         #     mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
         #     dataobject.img_view_or_save_if_debug(mser_img, f"mser_img{len(msers)}")
 
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
-        contours, hierarchy=get_possible_candidates(img_op,msers, [[None for _ in msers]], dataobject)
+        contours, hierarchy=get_possible_candidates(img_op,filtered_msers, [[None for _ in filtered_msers]], dataobject)
 
     # if len(contours) == 0:
     #     print("no results found for image")
     #     return []
-    with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
-        #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-        org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
-        dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
 
     with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
         output_contour_data = analyse_candidates_shapematch(
-                                                original_img=inputimg,
-                                                original_blurred_image=org_img_grayscale_blur,
+                                                original_img=img_grayscale,
+                                                original_blurred_image=img_op,
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)
