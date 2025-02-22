@@ -1528,12 +1528,12 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
     # import pickle
     # with open('contours.pickle', 'rb') as handle:
     #     contours_from_non_mser = pickle.load(handle)
-    with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
+    with time_it("pre-processing msers: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
                 img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY).copy()
             else:
-                img_grayscale = inputimg.copy()
+                img_grayscale = inputimg.copy() # get the image source changing here sometimes
         dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
     # with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
     #     #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter

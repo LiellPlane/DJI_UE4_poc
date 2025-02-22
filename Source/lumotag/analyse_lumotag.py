@@ -85,7 +85,7 @@ class ImageAnalyser_shared_mem():
                 )
             # print(f"ANALOL received analysis details {self.OS_friendly_name}")
             #print("ANALOL received analysis details", shared_details)
-            with time_it("analyse lumotag: total", workingdata.debug_details.PRINT_DEBUG):
+            with time_it(f"analyse lumotag{self.OS_friendly_name}: total", workingdata.debug_details.PRINT_DEBUG):
 
                 # shared memory is in chunks of 4096 - so have to slice it
                 bytesize = reduce((lambda x, y: x * y), shared_details.res)
