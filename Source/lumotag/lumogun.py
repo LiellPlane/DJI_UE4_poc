@@ -80,7 +80,7 @@ def main():
     # application
     # initialise components of lumogun
     voice = sound.Voice()
-
+    output_image_buffer = None
     if get_platform() == _OS.RASPBERRY:
         for _ in range(0, 2):
             voice.speak("cancel")
@@ -186,8 +186,8 @@ def main():
     # this generates the affine transform dictionary key, which
     # is used by other processes for annotating the screen such as found targets
     # so best to do it before any other processes come back with data
-    display.generate_output_affine(next(image_capture_longrange))
-    display.generate_output_affine(next(image_capture_shortrange))
+    display.generate_output_affine(next(image_capture_longrange), output_image_buffer)
+    display.generate_output_affine(next(image_capture_shortrange), output_image_buffer)
     voice.speak("ok display")
     voice.wait_for_speak()
 
@@ -415,11 +415,11 @@ def main():
                 display_active_image = cap_img_closerange
                 if  transition_state == img_processing.CameraTransitionState.CLOSERANGE:
                     display_active_image = cap_img_closerange
-                    output_image = display.generate_output_affine(display_active_image)
+                    output_image_buffer = display.generate_output_affine(display_active_image, output_image_buffer)
                     transition_i=0
                 elif transition_state == img_processing.CameraTransitionState.LONGRANGE:
                     display_active_image = cap_img
-                    output_image = display.generate_output_affine(display_active_image)
+                    output_image_buffer =display.generate_output_affine(display_active_image, output_image_buffer)
                     transition_i=transform_manager.transformdetails.transition_steps-1
                 else:
                     with time_it("execute affine transform", debug=PRINT_DEBUG):
@@ -434,7 +434,7 @@ def main():
                         combo_image = img_processing.overlay_warped_image_alpha_feathered(cr_img, lr_img, percent_done)
                         
                         #combo_image = img_processing.radial_motion_blur(combo_image)
-                        output_image = img_processing.gray2rgb(combo_image)
+                        output_image_buffer = img_processing.gray2rgb(combo_image)
 
                     
                 # with time_it("execute affine transform", debug=PRINT_DEBUG):
@@ -474,14 +474,14 @@ def main():
                 with time_it("add internal section", debug=PRINT_DEBUG):
                     display.add_internal_section_region(
                         display_active_image.shape,
-                        output_image,
+                        output_image_buffer,
                         transform_manager.get_lerped_targetzone_slice(transition_i),
                         transform_manager.get_display_affine_transformation(transition_i))
 
                 with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG):
 
                     crosshair_lerper.add_cross_hair(
-                        image=output_image,
+                        image=output_image_buffer,
                         adapt=True,
                         target_acquired=(len(analysis) > 0)
                     )
@@ -497,7 +497,7 @@ def main():
                         if transition_state == img_processing.CameraTransitionState.CLOSERANGE:
                             # filter for close range origin analysis
                             display.add_target_tags(
-                                output=output_image,
+                                output=output_image_buffer,
                                 graphics={
                                     k: v for k, v in analysis.items()
                                     if k == image_capture_shortrange._store_res
@@ -506,7 +506,7 @@ def main():
                         if transition_state == img_processing.CameraTransitionState.LONGRANGE:
                             # filter for long range origin analysis
                             display.add_target_tags(
-                                output=output_image,
+                                output=output_image_buffer,
                                 graphics={
                                     k: v for k, v in analysis.items()
                                     if k == image_capture_longrange._store_res
@@ -515,16 +515,16 @@ def main():
 
                 with time_it("add graphics: player info", debug=PRINT_DEBUG):
                     display.add_playerinfo_graphics(
-                        output=output_image,
+                        output=output_image_buffer,
                         players=players,
                         analysis=analysis
                         )
 
                 if is_trigger_pressed:
-                    output_image[:] = 255
-                display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
+                    output_image_buffer[:] = 255
+                display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image_buffer)
                 with time_it("display image", debug=PRINT_DEBUG):
-                    display.display_method(output_image)
+                    display.display_method(output_image_buffer)
                 
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:

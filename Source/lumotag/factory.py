@@ -246,7 +246,7 @@ class display(ABC):
     
 
     
-    def generate_output_affine(self, cam_capture):
+    def generate_output_affine(self, cam_capture, output_image_buffer):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
 
@@ -258,12 +258,24 @@ class display(ABC):
             )
 
         row_cols = self.emptyscreen.shape[0:2][::-1]
-        outptu_img = img_processing.do_affine(cam_capture, self._affine_transform[cam_capture.shape[0:2]], row_cols)
-        outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
+        if output_image_buffer is None:
+            # create buffer if first time - pre-allocation speeds things up
+            output_image_buffer = img_processing.do_affine(cam_capture, self._affine_transform[cam_capture.shape[0:2]], row_cols)
+            output_image_buffer = cv2.cvtColor(output_image_buffer, cv2.COLOR_GRAY2BGR)
+        else:
+            img_processing.do_affine_pre_allocate(
+                cam_capture,
+                output_image_buffer,
+                self._affine_transform[cam_capture.shape[0:2]],
+                row_cols
+                )
+        # this is faster than colour conversion apparantly
+        output_image_buffer[:,:,1] = output_image_buffer[:,:,0]
+        output_image_buffer[:,:,2] = output_image_buffer[:,:,0]
         #height, width = outptu_img.shape
         #three_channel_image = np.zeros((height, width, 3), dtype=outptu_img.dtype)
         #three_channel_image[:, :, 2] = outptu_img
-        return outptu_img
+        return output_image_buffer
 
     def add_internal_section_region(self, source_image_shape, inputimg, _slice: CropSlicing, affinetransform: Optional):
         """Draw the white square which is the inner zone for detecting patterns

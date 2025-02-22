@@ -779,7 +779,12 @@ def get_affine_transform(pts1, pts2):
 
 
 def do_affine(img, T, row_cols: tuple[int, int]):
-    return cv2.warpAffine(img, T, row_cols)
+    return cv2.warpAffine(img, T, row_cols, flags=cv2.INTER_NEAREST)
+
+def do_affine_pre_allocate(img, dst, T, row_cols: tuple[int, int]):
+    cv2.warpAffine(img, T, row_cols, dst=dst, flags=cv2.INTER_NEAREST)
+    return dst
+
 
 
 def rotate_pt_around_origin(point, origin, degrees):
