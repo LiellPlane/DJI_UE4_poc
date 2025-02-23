@@ -186,8 +186,8 @@ def main():
     # this generates the affine transform dictionary key, which
     # is used by other processes for annotating the screen such as found targets
     # so best to do it before any other processes come back with data
-    display.generate_output_affine(next(image_capture_longrange), output_image_buffer)
-    display.generate_output_affine(next(image_capture_shortrange), output_image_buffer)
+    output_image_buffer = display.generate_output_affine(next(image_capture_longrange), output_image_buffer)
+    output_image_buffer = display.generate_output_affine(next(image_capture_shortrange), output_image_buffer)
     voice.speak("ok display")
     voice.wait_for_speak()
 

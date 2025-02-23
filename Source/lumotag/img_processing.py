@@ -782,8 +782,15 @@ def do_affine(img, T, row_cols: tuple[int, int]):
     return cv2.warpAffine(img, T, row_cols, flags=cv2.INTER_NEAREST)
 
 def do_affine_pre_allocate(img, dst, T, row_cols: tuple[int, int]):
-    cv2.warpAffine(img, T, row_cols, dst=dst, flags=cv2.INTER_NEAREST)
-    return dst
+    dst_view = np.ascontiguousarray(dst[:,:,0])
+    result = cv2.warpAffine(
+        img,
+        T,
+        row_cols,
+        dst=dst_view,
+        flags=cv2.INTER_NEAREST
+    )
+    return result
 
 
 
