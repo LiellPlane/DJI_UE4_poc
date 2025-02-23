@@ -491,45 +491,45 @@ def main():
 
             with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG), perfmonitor.measure("graphics"):
 
-                crosshair_lerper.add_cross_hair(
-                    image=output_image,
-                    adapt=True,
-                    target_acquired=(len(analysis) > 0)
-                )
+                # crosshair_lerper.add_cross_hair(
+                #     image=output_image,
+                #     adapt=True,
+                #     target_acquired=(len(analysis) > 0)
+                # )
 
 
-                # use the image shape to determine image analysis provenance
-                # we don't want to draw for instance close-range target graphics
-                # on long-range active image and vice-versa
-                # don't draw if we are transitiong (for now)
-                # might be a nice effect though
+                # # use the image shape to determine image analysis provenance
+                # # we don't want to draw for instance close-range target graphics
+                # # on long-range active image and vice-versa
+                # # don't draw if we are transitiong (for now)
+                # # might be a nice effect though
 
-                if transition_state != img_processing.CameraTransitionState.TRANSITIONING:
-                    if transition_state == img_processing.CameraTransitionState.CLOSERANGE:
-                        # filter for close range origin analysis
-                        display.add_target_tags(
-                            output=output_image,
-                            graphics={
-                                k: v for k, v in analysis.items()
-                                if k == image_capture_shortrange._store_res
-                                }
-                            )
-                    if transition_state == img_processing.CameraTransitionState.LONGRANGE:
-                        # filter for long range origin analysis
-                        display.add_target_tags(
-                            output=output_image,
-                            graphics={
-                                k: v for k, v in analysis.items()
-                                if k == image_capture_longrange._store_res
-                                }
-                            )
+                # if transition_state != img_processing.CameraTransitionState.TRANSITIONING:
+                #     if transition_state == img_processing.CameraTransitionState.CLOSERANGE:
+                #         # filter for close range origin analysis
+                #         display.add_target_tags(
+                #             output=output_image,
+                #             graphics={
+                #                 k: v for k, v in analysis.items()
+                #                 if k == image_capture_shortrange._store_res
+                #                 }
+                #             )
+                #     if transition_state == img_processing.CameraTransitionState.LONGRANGE:
+                #         # filter for long range origin analysis
+                #         display.add_target_tags(
+                #             output=output_image,
+                #             graphics={
+                #                 k: v for k, v in analysis.items()
+                #                 if k == image_capture_longrange._store_res
+                #                 }
+                #             )
 
-                with time_it("add graphics: player info", debug=PRINT_DEBUG):
-                    display.add_playerinfo_graphics(
-                        output=output_image,
-                        players=players,
-                        analysis=analysis
-                        )
+                # with time_it("add graphics: player info", debug=PRINT_DEBUG):
+                #     display.add_playerinfo_graphics(
+                #         output=output_image,
+                #         players=players,
+                #         analysis=analysis
+                #         )
 
                 if is_trigger_pressed:
                     output_image[:] = 255
