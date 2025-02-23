@@ -1769,12 +1769,17 @@ class VoiceBase(ABC):
     def speaker(self, in_box):
         pass
 
+from collections import deque
+from contextlib import contextmanager
+import time
+
 
 class Perfmonitor:
     def __init__(self) -> None:
         self.measurements = {}
         self.timers = {}
         self.start_time = {}
+        self._active_sections = {}  # Track active section measurements
     
     def create_metric(self, metric_name):
         if metric_name not in self.measurements:
@@ -1803,16 +1808,75 @@ class Perfmonitor:
         self.create_metric(metric_name)
         self.measurements[metric_name].append(time_ms)
 
+    def start_section(self, section_name: str):
+        """Start timing a specific section of code"""
+        self._active_sections[section_name] = time.perf_counter()
+    
+    def end_section(self, section_name: str) -> float:
+        """End timing a specific section and return elapsed time in ms"""
+        if section_name not in self._active_sections:
+            raise ValueError(f"Section '{section_name}' was never started")
+        
+        elapsed_ms = (time.perf_counter() - self._active_sections[section_name]) * 1000
+        del self._active_sections[section_name]
+        
+        self.create_metric(section_name)
+        self.measurements[section_name].append(elapsed_ms)
+        return elapsed_ms
+
     @contextmanager
     def measure(self, metric_name: str):
         """Context manager for measuring execution time of a code block in milliseconds"""
-        self.create_metric(metric_name)
-        self.reset(metric_name)
+        self.start_section(metric_name)
         try:
             yield
         finally:
-            elapsed_ms = (time.perf_counter() - self.start_time[metric_name]) * 1000
-            self.measurements[metric_name].append(elapsed_ms)
+            self.end_section(metric_name)
+
+
+# class Perfmonitor:
+#     def __init__(self) -> None:
+#         self.measurements = {}
+#         self.timers = {}
+#         self.start_time = {}
+    
+#     def create_metric(self, metric_name):
+#         if metric_name not in self.measurements:
+#             self.measurements[metric_name] = deque(maxlen=10)
+#             self.timers[metric_name] = time.perf_counter()
+#             self.start_time[metric_name] = time.perf_counter()
+
+#     def get_time(self, metric_name, reset=False):
+#         self.create_metric(metric_name)
+#         elapsed = time.perf_counter() - self.start_time[metric_name]
+#         self.measurements[metric_name].append(elapsed * 1000)  # Convert to ms
+#         if reset:
+#             self.reset(metric_name)
+#         return elapsed * 1000  # Return ms
+
+#     def get_average(self, metric_name):
+#         self.create_metric(metric_name)
+#         if not self.measurements[metric_name]:
+#             return 0
+#         return sum(self.measurements[metric_name]) / len(self.measurements[metric_name])
+    
+#     def reset(self, metric_name):
+#         self.start_time[metric_name] = time.perf_counter()
+    
+#     def manual_measure(self, metric_name, time_ms):
+#         self.create_metric(metric_name)
+#         self.measurements[metric_name].append(time_ms)
+
+#     @contextmanager
+#     def measure(self, metric_name: str):
+#         """Context manager for measuring execution time of a code block in milliseconds"""
+#         self.create_metric(metric_name)
+#         self.reset(metric_name)
+#         try:
+#             yield
+#         finally:
+#             elapsed_ms = (time.perf_counter() - self.start_time[metric_name]) * 1000
+#             self.measurements[metric_name].append(elapsed_ms)
 
 
 if __name__ == '__main__':
