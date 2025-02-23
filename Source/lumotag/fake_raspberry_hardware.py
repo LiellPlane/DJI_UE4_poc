@@ -26,7 +26,7 @@ def lumo_viewer(
             cv2.waitKey(0); #any key
     
         if presskey==False:
-            if cv2.waitKey(20) & 0xFF == 27:
+            if cv2.waitKey(1) & 0xFF == 27:
                     pass
         if pausetime_Secs>0:
             time.sleep(pausetime_Secs)
