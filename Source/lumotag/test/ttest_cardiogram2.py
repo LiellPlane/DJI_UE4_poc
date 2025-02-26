@@ -28,7 +28,7 @@ class CardioGramDisplay:
 
     def update_metrics(self, updates):
         """
-        updates: Dictionary mapping metric names to (value, color)
+        updates: Dictionary mapping metric names to (value, color, pos)
                  - value: Numeric value within the specified value_range.
                  - color: A BGR tuple (e.g. (0, 0, 255) for red).
         
@@ -44,6 +44,7 @@ class CardioGramDisplay:
             self.overlay[:-1, :, :] = self.overlay[1:, :, :]
             self.overlay[-1, :, :] = 0
             new_edge = self.height - 1
+            new_edge = [i for i in range(self.height - 1, self.height - 10, -1)]
         elif self.flow_direction == 180:
             # New data at top; shift downward.
             self.overlay[1:, :, :] = self.overlay[:-1, :, :]
@@ -61,14 +62,14 @@ class CardioGramDisplay:
             new_edge = 0
 
         # For each metric update, compute the coordinate and set the pixel.
-        for metric, (value, color) in updates.items():
+        for metric, (value, color, pos) in updates.items():
             # Normalize the value to a 0..1 scale.
             norm = (value - min_val) / (max_val - min_val)
             if self.flow_direction in (0, 180):
                 # Map normalized value to an x-coordinate (using the full width)
                 new_x = int(norm * (self.width - 1))
                 # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
-                self.overlay[new_edge, new_x] = (color[0], color[1], color[2], 255)
+                self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
             else:
                 # Map normalized value to a y-coordinate (using the full height)
                 new_y = int(norm * (self.height - 1))
@@ -95,6 +96,12 @@ class CardioGramDisplay:
                 gradient = np.linspace(1, 0, self.width).reshape(1, self.width)
             alpha_float = overlay_copy[:, :, 3].astype(np.float32)
             overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
+
+        # Apply a blur to the overlay
+        # overlay_copy = cv2.blur(overlay_copy, (1, 1))  # Simple box blur with a 5x5 kernel
+        # Alternatively, use GaussianBlur for a smoother effect
+        # overlay_copy = cv2.GaussianBlur(overlay_copy, (5, 5), 0)
+
         return overlay_copy
 
     def composite_onto_inplace(self, background):
@@ -142,13 +149,13 @@ if __name__ == '__main__':
         background[i, :, :] = (shade, shade, shade)
 
     # Define display parameters.
-    disp_pos_x = 50   # X position in the background
-    disp_pos_y = 50   # Y position in the background
-    disp_width = 100  # Width of the overlay region
+    disp_pos_x = 0   # X position in the background
+    disp_pos_y = 500   # Y position in the background
+    disp_width = 300  # Width of the overlay region
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction = 90  # For example, 0°: new data appears at the bottom.
+    flow_direction = 0  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
@@ -164,15 +171,15 @@ if __name__ == '__main__':
         updates = {}
         # Metric "A" (red) is available from the start.
         valueA = math.sin(t * 1.0) + random.uniform(-0.1, 0.1)
-        updates["A"] = (max(-1, min(1, valueA)), (0, 0, 255))
+        updates["A"] = (max(-1, min(1, valueA)), (0, 0, 255), 0)
         # Metric "B" (green) starts after 1 second.
         if t > 1:
             valueB = math.sin(t * 1.2 + math.pi/4) + random.uniform(-0.1, 0.1)
-            updates["B"] = (max(-1, min(1, valueB)), (0, 255, 0))
+            updates["B"] = (max(-1, min(1, valueB)), (0, 255, 0), 5)
         # Metric "C" (blue) starts after 2 seconds.
         if t > 2:
             valueC = math.sin(t * 0.8 + math.pi/2) + random.uniform(-0.1, 0.1)
-            updates["C"] = (max(-1, min(1, valueC)), (255, 0, 0))
+            updates["C"] = (max(-1, min(1, valueC)), (255, 0, 0), 8)
 
         # Update the display with the provided metric updates.
         display.update_metrics(updates)

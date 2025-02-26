@@ -74,6 +74,7 @@ def save_images_if_barcode(analysis, file_system, cap_img, cap_img_closerange):
             )
                     
 def main():
+
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
