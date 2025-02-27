@@ -193,14 +193,14 @@ class display(ABC):
         #     ( _gun_config.screen_size + (3,)), np.uint8)
         #self.draw_test_rect()
         self._affine_transform = {}
-        # self.cardiogram = CardioGramDisplay(
-            pos_x=0,
-            pos_y=self.emptyscreen.shape[0]-100,
-            width=self.emptyscreen.shape[1] //2,
-            height=50,
-            value_range=(0, 50),
-            flow_direction=0
-        )
+        # # self.cardiogram = CardioGramDisplay(
+        #     pos_x=0,
+        #     pos_y=self.emptyscreen.shape[0]-100,
+        #     width=self.emptyscreen.shape[1] //2,
+        #     height=50,
+        #     value_range=(0, 50),
+        #     flow_direction=0
+        # )
 
 
     @abstractmethod

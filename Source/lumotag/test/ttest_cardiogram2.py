@@ -50,6 +50,7 @@ class CardioGramDisplay:
             self.overlay[1:, :, :] = self.overlay[:-1, :, :]
             self.overlay[0, :, :] = 0
             new_edge = 0
+            new_edge = [i for i in range(0, 12,1)]
         elif self.flow_direction == 90:
             # New data at right; shift left.
             self.overlay[:, :-1, :] = self.overlay[:, 1:, :]
@@ -64,12 +65,15 @@ class CardioGramDisplay:
         # For each metric update, compute the coordinate and set the pixel.
         for metric, (value, color, pos) in updates.items():
             # Normalize the value to a 0..1 scale.
+            value = min(max(value, min_val), max_val)
             norm = (value - min_val) / (max_val - min_val)
             if self.flow_direction in (0, 180):
                 # Map normalized value to an x-coordinate (using the full width)
                 new_x = int(norm * (self.width - 1))
                 # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
+                # self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
                 self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
+                self.overlay[new_edge[pos], 0: new_x] = (color[0], color[1], color[2], 255)
             else:
                 # Map normalized value to a y-coordinate (using the full height)
                 new_y = int(norm * (self.height - 1))
@@ -155,11 +159,11 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction = 0  # For example, 0°: new data appears at the bottom.
+    flow_direction = 180  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
-                                value_range=(-1, 1), flow_direction=flow_direction)
+                                value_range=(0, 25), flow_direction=flow_direction)
 
     t = 0.0
     dt = 0.05
@@ -170,16 +174,16 @@ if __name__ == '__main__':
         # Each update provides a value and a color (BGR) for that metric.
         updates = {}
         # Metric "A" (red) is available from the start.
-        valueA = math.sin(t * 1.0) + random.uniform(-0.1, 0.1)
-        updates["A"] = (max(-1, min(1, valueA)), (0, 0, 255), 0)
+        valueA = 25 + 25 * math.sin(t * 1.0) + random.uniform(-2, 2)
+        updates["A"] = (max(0, min(50, valueA)), (0, 0, 255), 0)
         # Metric "B" (green) starts after 1 second.
         if t > 1:
-            valueB = math.sin(t * 1.2 + math.pi/4) + random.uniform(-0.1, 0.1)
-            updates["B"] = (max(-1, min(1, valueB)), (0, 255, 0), 5)
+            valueB = 25 + 25 * math.sin(t * 1.2 + math.pi/4) + random.uniform(-2, 2)
+            updates["B"] = (max(0, min(50, valueB)), (0, 255, 0), 5)
         # Metric "C" (blue) starts after 2 seconds.
         if t > 2:
-            valueC = math.sin(t * 0.8 + math.pi/2) + random.uniform(-0.1, 0.1)
-            updates["C"] = (max(-1, min(1, valueC)), (255, 0, 0), 8)
+            valueC = 25 + 25 * math.sin(t * 0.8 + math.pi/2) + random.uniform(-2, 2)
+            updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 8)
 
         # Update the display with the provided metric updates.
         display.update_metrics(updates)
