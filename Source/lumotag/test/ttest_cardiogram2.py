@@ -37,30 +37,31 @@ class CardioGramDisplay:
         and directly sets that pixel in the overlay.
         """
         min_val, max_val = self.value_range
-
+        offset_range = 20
         # Shift the overlay along the chosen axis.
         if self.flow_direction == 0:
             # New data at bottom; shift upward.
             self.overlay[:-1, :, :] = self.overlay[1:, :, :]
             self.overlay[-1, :, :] = 0
             new_edge = self.height - 1
-            new_edge = [i for i in range(self.height - 1, self.height - 10, -1)]
+            new_edge = [i for i in range(self.height - 1, self.height - offset_range, -1)]
         elif self.flow_direction == 180:
             # New data at top; shift downward.
             self.overlay[1:, :, :] = self.overlay[:-1, :, :]
             self.overlay[0, :, :] = 0
             new_edge = 0
-            new_edge = [i for i in range(0, 12,1)]
+            new_edge = [i for i in range(0, offset_range, 1)]
         elif self.flow_direction == 90:
             # New data at right; shift left.
             self.overlay[:, :-1, :] = self.overlay[:, 1:, :]
             self.overlay[:, -1, :] = 0
             new_edge = self.width - 1
+            new_edge = [i for i in range(self.width - 1, self.width - offset_range, -1)]
         elif self.flow_direction == 270:
             # New data at left; shift right.
             self.overlay[:, 1:, :] = self.overlay[:, :-1, :]
             self.overlay[:, 0, :] = 0
-            new_edge = 0
+            new_edge = [i for i in range(0, offset_range, 1)]
 
         # For each metric update, compute the coordinate and set the pixel.
         for metric, (value, color, pos) in updates.items():
@@ -73,12 +74,12 @@ class CardioGramDisplay:
                 # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
                 # self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
                 self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
-                self.overlay[new_edge[pos], 0: new_x] = (color[0], color[1], color[2], 255)
+                # self.overlay[new_edge[pos], 0: new_x] = (color[0], color[1], color[2], 255)
             else:
                 # Map normalized value to a y-coordinate (using the full height)
                 new_y = int(norm * (self.height - 1))
                 # Directly set the pixel at (row=new_y, col=new_edge) to the provided color with full opacity.
-                self.overlay[new_y, new_edge] = (color[0], color[1], color[2], 255)
+                self.overlay[new_y, new_edge[pos]] = (color[0], color[1], color[2], 255)
 
     def get_overlay_with_gradient(self):
         """
@@ -100,6 +101,18 @@ class CardioGramDisplay:
                 gradient = np.linspace(1, 0, self.width).reshape(1, self.width)
             alpha_float = overlay_copy[:, :, 3].astype(np.float32)
             overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
+
+        if self.flow_direction == 0:
+            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
+        elif self.flow_direction == 90:
+            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
+        elif self.flow_direction == 90:
+            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
+        elif self.flow_direction == 90:
+            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
+        else:
+            raise ValueError(f"Invalid flow direction: {self.flow_direction}")
+
 
         # Apply a blur to the overlay
         # overlay_copy = cv2.blur(overlay_copy, (1, 1))  # Simple box blur with a 5x5 kernel
@@ -159,11 +172,11 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction = 180  # For example, 0°: new data appears at the bottom.
+    flow_direction = 0  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
-                                value_range=(0, 25), flow_direction=flow_direction)
+                                value_range=(0, 50), flow_direction=flow_direction)
 
     t = 0.0
     dt = 0.05
