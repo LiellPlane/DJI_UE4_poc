@@ -37,7 +37,7 @@ class CardioGramDisplay:
         and directly sets that pixel in the overlay.
         """
         min_val, max_val = self.value_range
-        offset_range = 20
+        offset_range = 40
         # Shift the overlay along the chosen axis.
         if self.flow_direction == 0:
             # New data at bottom; shift upward.
@@ -68,18 +68,40 @@ class CardioGramDisplay:
             # Normalize the value to a 0..1 scale.
             value = min(max(value, min_val), max_val)
             norm = (value - min_val) / (max_val - min_val)
-            if self.flow_direction in (0, 180):
+            if self.flow_direction == 0:
                 # Map normalized value to an x-coordinate (using the full width)
                 new_x = int(norm * (self.width - 1))
                 # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
                 # self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
                 self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
                 # self.overlay[new_edge[pos], 0: new_x] = (color[0], color[1], color[2], 255)
-            else:
+            elif self.flow_direction == 180:
+                new_x = int(norm * (self.width - 1))
+                # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
+                # self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
+                self.overlay[new_edge[pos], self.width - new_x - 1] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 90 :
                 # Map normalized value to a y-coordinate (using the full height)
                 new_y = int(norm * (self.height - 1))
                 # Directly set the pixel at (row=new_y, col=new_edge) to the provided color with full opacity.
                 self.overlay[new_y, new_edge[pos]] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 270 :
+                # Map normalized value to a y-coordinate (using the full height)
+                new_y = int(norm * (self.height - 1))
+                # Directly set the pixel at (row=new_y, col=new_edge) to the provided color with full opacity.
+                self.overlay[self.height - new_y - 1, new_edge[pos]] = (color[0], color[1], color[2], 255)
+
+
+            if self.flow_direction == 0:
+                self.overlay[new_edge[pos]-3:new_edge[pos], 0:new_x] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 90:
+                self.overlay[new_y, 0:new_edge[pos]] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 180:
+                self.overlay[new_edge[pos]:new_edge[pos]+3, new_x:0] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 270:
+                self.overlay[new_y, 0:new_edge[pos]] = (color[0], color[1], color[2], 255)
+            else:
+                raise ValueError(f"Invalid flow direction: {self.flow_direction}")
 
     def get_overlay_with_gradient(self):
         """
@@ -102,17 +124,7 @@ class CardioGramDisplay:
             alpha_float = overlay_copy[:, :, 3].astype(np.float32)
             overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
 
-        if self.flow_direction == 0:
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
-        elif self.flow_direction == 90:
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
-        elif self.flow_direction == 90:
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
-        elif self.flow_direction == 90:
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
-        else:
-            raise ValueError(f"Invalid flow direction: {self.flow_direction}")
-
+        overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
 
         # Apply a blur to the overlay
         # overlay_copy = cv2.blur(overlay_copy, (1, 1))  # Simple box blur with a 5x5 kernel
@@ -172,11 +184,11 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction = 0  # For example, 0°: new data appears at the bottom.
+    flow_direction =0  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
-                                value_range=(0, 50), flow_direction=flow_direction)
+                                value_range=(0, 100), flow_direction=flow_direction)
 
     t = 0.0
     dt = 0.05
@@ -190,14 +202,14 @@ if __name__ == '__main__':
         valueA = 25 + 25 * math.sin(t * 1.0) + random.uniform(-2, 2)
         updates["A"] = (max(0, min(50, valueA)), (0, 0, 255), 0)
         # Metric "B" (green) starts after 1 second.
-        if t > 1:
-            valueB = 25 + 25 * math.sin(t * 1.2 + math.pi/4) + random.uniform(-2, 2)
-            updates["B"] = (max(0, min(50, valueB)), (0, 255, 0), 5)
-        # Metric "C" (blue) starts after 2 seconds.
-        if t > 2:
-            valueC = 25 + 25 * math.sin(t * 0.8 + math.pi/2) + random.uniform(-2, 2)
-            updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 8)
-
+        # if t > 1:
+        #     valueB = 25 + 25 * math.sin(t * 1.2 + math.pi/4) + random.uniform(-2, 2)
+        #     updates["B"] = (max(0, min(50, valueB)), (0, 255, 0), 4)
+        # # Metric "C" (blue) starts after 2 seconds.
+        # if t > 2:
+        #     valueC = 25 + 25 * math.sin(t * 0.8 + math.pi/2) + random.uniform(-2, 2)
+        #     updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 6)
+        updates["D"] = (10, (0, 255, 255), 8)
         # Update the display with the provided metric updates.
         display.update_metrics(updates)
         # Composite the overlay (with fade gradient) onto a copy of the background.
