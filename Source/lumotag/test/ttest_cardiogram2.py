@@ -34,6 +34,13 @@ class CardioGramDisplay:
         slice_row: slice
         slice_col: slice
 
+    def apply_image_actions(self, background, image_actions):
+        """
+        Applies a list of image actions to the background image.
+        """
+        for action in image_actions:
+            self.overlay[action.slice_row, action.slice_col] = action.color
+
     def update_metrics(self, updates) -> list[MetricUpdate]:
         """
         updates: Dictionary mapping metric names to (value, color, pos)
@@ -105,22 +112,22 @@ class CardioGramDisplay:
             if self.flow_direction == 0:
                 row_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
                 col_slice = slice(0, new_x)
-                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 90:
                 row_slice = slice(0, new_y)
                 col_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
-                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 180:
                 row_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
                 col_slice = slice(self.width - new_x - 1, self.width)
-                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 270:
-                row_slice = slice(new_y, self.height)
+                row_slice = slice(self.height - new_y, self.height)
                 col_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
-                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             else:
                 raise ValueError(f"Invalid flow direction: {self.flow_direction}")
-            output_actions.append(self.MetricUpdate(metric, color, row_slice, col_slice))
+            output_actions.append(self.MetricUpdate(metric, (color[0], color[1], color[2], 255),slice_row=row_slice, slice_col=col_slice))
         return output_actions
     def get_overlay_with_gradient(self):
         """
@@ -157,14 +164,16 @@ class CardioGramDisplay:
         Applies a list of image actions to the background image.
         """
         for action in image_actions:
-            self.overlay[action.slice_row, action.slice_col] = action.color
+            background[action.slice_row, action.slice_col, :] = action.color
 
-    def composite_onto_inplace(self, background):
+
+    def composite_onto_inplace(self, background, image_actions):
         """
         Composites the (gradient-adjusted) overlay directly onto the given background image,
         modifying the background in place.
         """
         overlay = self.get_overlay_with_gradient()
+        self.apply_image_actions(overlay, image_actions)
         h, w = self.height, self.width
         roi = background[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w]
         roi_float = roi.astype(float)
@@ -210,7 +219,7 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction =270  # For example, 0°: new data appears at the bottom.
+    flow_direction =0  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
@@ -239,7 +248,8 @@ if __name__ == '__main__':
         # Update the display with the provided metric updates.
         image_actions = display.update_metrics(updates)
         # Composite the overlay (with fade gradient) onto a copy of the background.
-        output = display.composite_onto_inplace(background.copy())
+        output = display.composite_onto_inplace(background.copy(), image_actions)
+        
         cv2.imshow("CardioGram Test", output)
         key = cv2.waitKey(1)
         if key == 27:  # ESC key to exit
