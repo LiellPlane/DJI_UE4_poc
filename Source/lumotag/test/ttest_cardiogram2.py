@@ -34,7 +34,7 @@ class CardioGramDisplay:
         slice_row: slice
         slice_col: slice
 
-    def update_metrics(self, updates):
+    def update_metrics(self, updates) -> list[MetricUpdate]:
         """
         updates: Dictionary mapping metric names to (value, color, pos)
                  - value: Numeric value within the specified value_range.
@@ -121,6 +121,7 @@ class CardioGramDisplay:
             else:
                 raise ValueError(f"Invalid flow direction: {self.flow_direction}")
             output_actions.append(self.MetricUpdate(metric, color, row_slice, col_slice))
+        return output_actions
     def get_overlay_with_gradient(self):
         """
         Returns a copy of the overlay with a fade gradient applied along the history flow axis.
@@ -150,6 +151,13 @@ class CardioGramDisplay:
         # overlay_copy = cv2.GaussianBlur(overlay_copy, (5, 5), 0)
 
         return overlay_copy
+
+    def apply_image_actions(self, background, image_actions):
+        """
+        Applies a list of image actions to the background image.
+        """
+        for action in image_actions:
+            self.overlay[action.slice_row, action.slice_col] = action.color
 
     def composite_onto_inplace(self, background):
         """
@@ -202,7 +210,7 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction =90  # For example, 0°: new data appears at the bottom.
+    flow_direction =270  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
@@ -229,7 +237,7 @@ if __name__ == '__main__':
             updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 6)
         # updates["D"] = (10, (0, 255, 255), 8)
         # Update the display with the provided metric updates.
-        display.update_metrics(updates)
+        image_actions = display.update_metrics(updates)
         # Composite the overlay (with fade gradient) onto a copy of the background.
         output = display.composite_onto_inplace(background.copy())
         cv2.imshow("CardioGram Test", output)
