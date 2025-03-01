@@ -3,7 +3,7 @@ import numpy as np
 import math
 import random
 import time
-
+from dataclasses import dataclass
 class CardioGramDisplay:
     def __init__(self, pos_x, pos_y, width, height, value_range=(-1, 1), flow_direction=0):
         """
@@ -26,6 +26,14 @@ class CardioGramDisplay:
         # Create an overlay with an alpha channel (BGRA)
         self.overlay = np.zeros((height, width, 4), dtype=np.uint8)
 
+    @dataclass
+    class MetricUpdate:
+        __slots__ = ['metric', 'color', 'slice_row', 'slice_col']
+        metric: str
+        color: tuple[int, int, int]
+        slice_row: slice
+        slice_col: slice
+
     def update_metrics(self, updates):
         """
         updates: Dictionary mapping metric names to (value, color, pos)
@@ -38,6 +46,7 @@ class CardioGramDisplay:
         """
         min_val, max_val = self.value_range
         offset_range = 40
+        bar_thickness = 3
         # Shift the overlay along the chosen axis.
         if self.flow_direction == 0:
             # New data at bottom; shift upward.
@@ -63,6 +72,7 @@ class CardioGramDisplay:
             self.overlay[:, 0, :] = 0
             new_edge = [i for i in range(0, offset_range, 1)]
 
+        output_actions = []
         # For each metric update, compute the coordinate and set the pixel.
         for metric, (value, color, pos) in updates.items():
             # Normalize the value to a 0..1 scale.
@@ -78,7 +88,7 @@ class CardioGramDisplay:
             elif self.flow_direction == 180:
                 new_x = int(norm * (self.width - 1))
                 # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
-                # self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
+                #self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
                 self.overlay[new_edge[pos], self.width - new_x - 1] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 90 :
                 # Map normalized value to a y-coordinate (using the full height)
@@ -90,19 +100,27 @@ class CardioGramDisplay:
                 new_y = int(norm * (self.height - 1))
                 # Directly set the pixel at (row=new_y, col=new_edge) to the provided color with full opacity.
                 self.overlay[self.height - new_y - 1, new_edge[pos]] = (color[0], color[1], color[2], 255)
-
-
+           
+            # Using slice objects instead
             if self.flow_direction == 0:
-                self.overlay[new_edge[pos]-3:new_edge[pos], 0:new_x] = (color[0], color[1], color[2], 255)
+                row_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
+                col_slice = slice(0, new_x)
+                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 90:
-                self.overlay[new_y, 0:new_edge[pos]] = (color[0], color[1], color[2], 255)
+                row_slice = slice(0, new_y)
+                col_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
+                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 180:
-                self.overlay[new_edge[pos]:new_edge[pos]+3, new_x:0] = (color[0], color[1], color[2], 255)
+                row_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
+                col_slice = slice(self.width - new_x - 1, self.width)
+                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             elif self.flow_direction == 270:
-                self.overlay[new_y, 0:new_edge[pos]] = (color[0], color[1], color[2], 255)
+                row_slice = slice(new_y, self.height)
+                col_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
+                # self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
             else:
                 raise ValueError(f"Invalid flow direction: {self.flow_direction}")
-
+            output_actions.append(self.MetricUpdate(metric, color, row_slice, col_slice))
     def get_overlay_with_gradient(self):
         """
         Returns a copy of the overlay with a fade gradient applied along the history flow axis.
@@ -184,7 +202,7 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction =0  # For example, 0°: new data appears at the bottom.
+    flow_direction =90  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
@@ -206,10 +224,10 @@ if __name__ == '__main__':
         #     valueB = 25 + 25 * math.sin(t * 1.2 + math.pi/4) + random.uniform(-2, 2)
         #     updates["B"] = (max(0, min(50, valueB)), (0, 255, 0), 4)
         # # Metric "C" (blue) starts after 2 seconds.
-        # if t > 2:
-        #     valueC = 25 + 25 * math.sin(t * 0.8 + math.pi/2) + random.uniform(-2, 2)
-        #     updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 6)
-        updates["D"] = (10, (0, 255, 255), 8)
+        if t > 2:
+            valueC = 25 + 25 * math.sin(t * 0.8 + math.pi/2) + random.uniform(-2, 2)
+            updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 6)
+        # updates["D"] = (10, (0, 255, 255), 8)
         # Update the display with the provided metric updates.
         display.update_metrics(updates)
         # Composite the overlay (with fade gradient) onto a copy of the background.
