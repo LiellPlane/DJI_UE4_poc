@@ -197,8 +197,8 @@ class display(ABC):
         self.cardio_gram_display =CardioGramDisplay(
             pos_x=50,
             pos_y=10,
-            width=50,
-            height=250,
+            width=70,
+            height=self.screen_size[0]//2,
             value_range=(0, 100),
             flow_direction=90
             )
