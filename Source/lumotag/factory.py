@@ -35,6 +35,7 @@ from my_collections import (
 import re
 import itertools
 from functools import reduce
+from dataclasses import dataclass
 try:
     pass
 except Exception as e:
@@ -193,15 +194,14 @@ class display(ABC):
         #     ( _gun_config.screen_size + (3,)), np.uint8)
         #self.draw_test_rect()
         self._affine_transform = {}
-        # # self.cardiogram = CardioGramDisplay(
-        #     pos_x=0,
-        #     pos_y=self.emptyscreen.shape[0]-100,
-        #     width=self.emptyscreen.shape[1] //2,
-        #     height=50,
-        #     value_range=(0, 50),
-        #     flow_direction=0
-        # )
-
+        self.cardio_gram_display =CardioGramDisplay(
+            0,
+            250,
+            80,
+            50,
+            value_range=(0, 100),
+            flow_direction=0
+            )
 
     @abstractmethod
     def display_method(image, self):
@@ -1885,6 +1885,7 @@ class Perfmonitor:
 #         finally:
 #             elapsed_ms = (time.perf_counter() - self.start_time[metric_name]) * 1000
 #             self.measurements[metric_name].append(elapsed_ms)
+
 class CardioGramDisplay:
     def __init__(self, pos_x, pos_y, width, height, value_range=(-1, 1), flow_direction=0):
         """
@@ -1906,10 +1907,32 @@ class CardioGramDisplay:
 
         # Create an overlay with an alpha channel (BGRA)
         self.overlay = np.zeros((height, width, 4), dtype=np.uint8)
+        self.metrics: dict[str, self.Metric] = {"test": self.Metric("test", 0)}
 
-    def update_metrics(self, updates):
+    @dataclass
+    class MetricUpdate:
+        __slots__ = ['metric', 'color', 'slice_row', 'slice_col']
+        metric: str
+        color: tuple[int, int, int]
+        slice_row: slice
+        slice_col: slice
+
+    @dataclass
+    class Metric:
+        __slots__ = ['metric', 'pos']
+        metric: str
+        pos: int
+
+    def apply_image_actions(self, image, image_actions):
         """
-        updates: Dictionary mapping metric names to (value, color)
+        Applies a list of image actions to the given image.
+        """
+        for action in image_actions:
+            image[action.slice_row, action.slice_col] = action.color
+
+    def update_metrics(self, updates: dict[str, float]) -> list[MetricUpdate]:
+        """
+        updates: Dictionary mapping metric names to (value, color, pos)
                  - value: Numeric value within the specified value_range.
                  - color: A BGR tuple (e.g. (0, 0, 255) for red).
         
@@ -1918,78 +1941,126 @@ class CardioGramDisplay:
         and directly sets that pixel in the overlay.
         """
         min_val, max_val = self.value_range
-
+        offset_range = 40
+        bar_thickness = 3
         # Shift the overlay along the chosen axis.
         if self.flow_direction == 0:
             # New data at bottom; shift upward.
             self.overlay[:-1, :, :] = self.overlay[1:, :, :]
             self.overlay[-1, :, :] = 0
             new_edge = self.height - 1
+            new_edge = [i for i in range(self.height - 1, self.height - offset_range, -1)]
         elif self.flow_direction == 180:
             # New data at top; shift downward.
             self.overlay[1:, :, :] = self.overlay[:-1, :, :]
             self.overlay[0, :, :] = 0
             new_edge = 0
+            new_edge = [i for i in range(0, offset_range, 1)]
         elif self.flow_direction == 90:
             # New data at right; shift left.
             self.overlay[:, :-1, :] = self.overlay[:, 1:, :]
             self.overlay[:, -1, :] = 0
             new_edge = self.width - 1
+            new_edge = [i for i in range(self.width - 1, self.width - offset_range, -1)]
         elif self.flow_direction == 270:
             # New data at left; shift right.
             self.overlay[:, 1:, :] = self.overlay[:, :-1, :]
             self.overlay[:, 0, :] = 0
-            new_edge = 0
+            new_edge = [i for i in range(0, offset_range, 1)]
 
+        output_actions = []
         # For each metric update, compute the coordinate and set the pixel.
-        for metric, (value, color) in updates.items():
+        for cnt, (metric, value) in enumerate(updates.items()):
+            if metric not in self.metrics:
+
+                self.metrics[metric] = self.Metric(metric, max(self.metrics.values(), key=lambda m: m.pos).pos + bar_thickness)
+            pos = self.metrics[metric].pos
+            # create colours
+            # Calculate step based on total number of metrics
+            step = 255 // max(len(self.metrics), 1)
+            # Generate colors using a simple formula
+            red = (255 - cnt * step) % 256
+            green = (cnt * step) % 256
+            blue = (128 + cnt * step) % 256  # Offset blue for better visibility
+            color = (red, green, blue)
+
             # Normalize the value to a 0..1 scale.
+            value = min(max(value, min_val), max_val)
             norm = (value - min_val) / (max_val - min_val)
-            if self.flow_direction in (0, 180):
+            if self.flow_direction == 0:
                 # Map normalized value to an x-coordinate (using the full width)
                 new_x = int(norm * (self.width - 1))
                 # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
-                self.overlay[new_edge, new_x] = (color[0], color[1], color[2], 255)
-            else:
+                # self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
+                self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
+                # self.overlay[new_edge[pos], 0: new_x] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 180:
+                new_x = int(norm * (self.width - 1))
+                # Directly set the pixel at (row=new_edge, col=new_x) to the provided color with full opacity.
+                #self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
+                self.overlay[new_edge[pos], self.width - new_x - 1] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 90 :
                 # Map normalized value to a y-coordinate (using the full height)
                 new_y = int(norm * (self.height - 1))
                 # Directly set the pixel at (row=new_y, col=new_edge) to the provided color with full opacity.
-                self.overlay[new_y, new_edge] = (color[0], color[1], color[2], 255)
-
+                self.overlay[new_y, new_edge[pos]] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 270 :
+                # Map normalized value to a y-coordinate (using the full height)
+                new_y = int(norm * (self.height - 1))
+                # Directly set the pixel at (row=new_y, col=new_edge) to the provided color with full opacity.
+                self.overlay[self.height - new_y - 1, new_edge[pos]] = (color[0], color[1], color[2], 255)
+           
+            # Using slice objects instead
+            if self.flow_direction == 0:
+                row_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
+                col_slice = slice(0, new_x)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 90:
+                row_slice = slice(0, new_y)
+                col_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 180:
+                row_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
+                col_slice = slice(self.width - new_x - 1, self.width)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+            elif self.flow_direction == 270:
+                row_slice = slice(self.height - new_y, self.height)
+                col_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
+                #self.overlay[row_slice, col_slice] = (color[0], color[1], color[2], 255)
+            else:
+                raise ValueError(f"Invalid flow direction: {self.flow_direction}")
+            output_actions.append(self.MetricUpdate(metric, (color[0], color[1], color[2], 255),slice_row=row_slice, slice_col=col_slice))
+        return output_actions
     def get_overlay_with_gradient(self):
         """
         Returns a copy of the overlay with a fade gradient applied along the history flow axis.
         New data is fully opaque while older data fades to transparent.
         """
         overlay_copy = self.overlay.copy()
+        alpha_float = overlay_copy[:, :, 3].astype(np.float32)
+        
         if self.flow_direction in (0, 180):
             if self.flow_direction == 0:
                 gradient = np.linspace(0, 1, self.height).reshape(self.height, 1)
             else:
                 gradient = np.linspace(1, 0, self.height).reshape(self.height, 1)
-            alpha_float = overlay_copy[:, :, 3].astype(np.float32)
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
         else:
             if self.flow_direction == 90:
                 gradient = np.linspace(0, 1, self.width).reshape(1, self.width)
             else:
                 gradient = np.linspace(1, 0, self.width).reshape(1, self.width)
-            alpha_float = overlay_copy[:, :, 3].astype(np.float32)
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
-
-        # Apply a blur to the overlay
-        # overlay_copy = cv2.blur(overlay_copy, (1, 1))  # Simple box blur with a 5x5 kernel
-        # Alternatively, use GaussianBlur for a smoother effect
-        # overlay_copy = cv2.GaussianBlur(overlay_copy, (5, 5), 0)
+                
+        overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
 
         return overlay_copy
 
-    def composite_onto_inplace(self, background):
+    def composite_onto_inplace(self, background, image_actions):
         """
         Composites the (gradient-adjusted) overlay directly onto the given background image,
         modifying the background in place.
         """
         overlay = self.get_overlay_with_gradient()
+        self.apply_image_actions(overlay, image_actions)
         h, w = self.height, self.width
         roi = background[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w]
         roi_float = roi.astype(float)
@@ -2000,23 +2071,6 @@ class CardioGramDisplay:
             roi_float[:, :, c] = overlay_bgr[:, :, c] * overlay_alpha + roi_float[:, :, c] * (1 - overlay_alpha)
         background[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w] = roi_float.astype(np.uint8)
         return background
-
-    def composite_onto(self, background):
-        """
-        Composites the (gradient-adjusted) overlay onto a copy of the background image.
-        """
-        overlay = self.get_overlay_with_gradient()
-        output = background.copy()
-        h, w = self.height, self.width
-        roi = output[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w]
-        overlay_bgr = overlay[:, :, :3].astype(float)
-        overlay_alpha = overlay[:, :, 3].astype(float) / 255.0
-        roi = roi.astype(float)
-        for c in range(3):
-            roi[:, :, c] = overlay_bgr[:, :, c] * overlay_alpha + roi[:, :, c] * (1 - overlay_alpha)
-        output[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w] = roi.astype(np.uint8)
-        return output
-
 
 if __name__ == '__main__':
 

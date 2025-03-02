@@ -41,12 +41,12 @@ class CardioGramDisplay:
         metric: str
         pos: int
 
-    def apply_image_actions(self, background, image_actions):
+    def apply_image_actions(self, image, image_actions):
         """
-        Applies a list of image actions to the background image.
+        Applies a list of image actions to the given image.
         """
         for action in image_actions:
-            self.overlay[action.slice_row, action.slice_col] = action.color
+            image[action.slice_row, action.slice_col] = action.color
 
     def update_metrics(self, updates) -> list[MetricUpdate]:
         """
@@ -155,37 +155,22 @@ class CardioGramDisplay:
         New data is fully opaque while older data fades to transparent.
         """
         overlay_copy = self.overlay.copy()
+        alpha_float = overlay_copy[:, :, 3].astype(np.float32)
+        
         if self.flow_direction in (0, 180):
             if self.flow_direction == 0:
                 gradient = np.linspace(0, 1, self.height).reshape(self.height, 1)
             else:
                 gradient = np.linspace(1, 0, self.height).reshape(self.height, 1)
-            alpha_float = overlay_copy[:, :, 3].astype(np.float32)
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
         else:
             if self.flow_direction == 90:
                 gradient = np.linspace(0, 1, self.width).reshape(1, self.width)
             else:
                 gradient = np.linspace(1, 0, self.width).reshape(1, self.width)
-            alpha_float = overlay_copy[:, :, 3].astype(np.float32)
-            overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
-
+                
         overlay_copy[:, :, 3] = (alpha_float * gradient).astype(np.uint8)
 
-        # Apply a blur to the overlay
-        # overlay_copy = cv2.blur(overlay_copy, (1, 1))  # Simple box blur with a 5x5 kernel
-        # Alternatively, use GaussianBlur for a smoother effect
-        # overlay_copy = cv2.GaussianBlur(overlay_copy, (5, 5), 0)
-
         return overlay_copy
-
-    def apply_image_actions(self, background, image_actions):
-        """
-        Applies a list of image actions to the background image.
-        """
-        for action in image_actions:
-            background[action.slice_row, action.slice_col, :] = action.color
-
 
     def composite_onto_inplace(self, background, image_actions):
         """
@@ -205,22 +190,6 @@ class CardioGramDisplay:
         background[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w] = roi_float.astype(np.uint8)
         return background
 
-    def composite_onto(self, background):
-        """
-        Composites the (gradient-adjusted) overlay onto a copy of the background image.
-        """
-        overlay = self.get_overlay_with_gradient()
-        output = background.copy()
-        h, w = self.height, self.width
-        roi = output[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w]
-        overlay_bgr = overlay[:, :, :3].astype(float)
-        overlay_alpha = overlay[:, :, 3].astype(float) / 255.0
-        roi = roi.astype(float)
-        for c in range(3):
-            roi[:, :, c] = overlay_bgr[:, :, c] * overlay_alpha + roi[:, :, c] * (1 - overlay_alpha)
-        output[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w] = roi.astype(np.uint8)
-        return output
-
 # ------------------------ Test Script ------------------------
 
 if __name__ == '__main__':
@@ -239,7 +208,7 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction =180  # For example, 0°: new data appears at the bottom.
+    flow_direction =0  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
