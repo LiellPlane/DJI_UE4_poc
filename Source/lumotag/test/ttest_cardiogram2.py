@@ -25,6 +25,7 @@ class CardioGramDisplay:
 
         # Create an overlay with an alpha channel (BGRA)
         self.overlay = np.zeros((height, width, 4), dtype=np.uint8)
+        self.metrics: dict[str, self.Metric] = {"test": self.Metric("test", 0)}
 
     @dataclass
     class MetricUpdate:
@@ -33,6 +34,12 @@ class CardioGramDisplay:
         color: tuple[int, int, int]
         slice_row: slice
         slice_col: slice
+
+    @dataclass
+    class Metric:
+        __slots__ = ['metric', 'pos']
+        metric: str
+        pos: int
 
     def apply_image_actions(self, background, image_actions):
         """
@@ -81,7 +88,20 @@ class CardioGramDisplay:
 
         output_actions = []
         # For each metric update, compute the coordinate and set the pixel.
-        for metric, (value, color, pos) in updates.items():
+        for cnt, (metric, (value, _, _)) in enumerate(updates.items()):
+            if metric not in self.metrics:
+
+                self.metrics[metric] = self.Metric(metric, max(self.metrics.values(), key=lambda m: m.pos).pos + bar_thickness)
+            pos = self.metrics[metric].pos
+            # create colours
+            # Calculate step based on total number of metrics
+            step = 255 // max(len(self.metrics), 1)
+            # Generate colors using a simple formula
+            red = (255 - cnt * step) % 256
+            green = (cnt * step) % 256
+            blue = (128 + cnt * step) % 256  # Offset blue for better visibility
+            color = (red, green, blue)
+
             # Normalize the value to a 0..1 scale.
             value = min(max(value, min_val), max_val)
             norm = (value - min_val) / (max_val - min_val)
@@ -219,7 +239,7 @@ if __name__ == '__main__':
     disp_height = 80 # Height of the overlay region
 
     # Set desired flow direction (0, 90, 180, or 270).
-    flow_direction =0  # For example, 0°: new data appears at the bottom.
+    flow_direction =180  # For example, 0°: new data appears at the bottom.
 
     # Create an instance of the display.
     display = CardioGramDisplay(disp_pos_x, disp_pos_y, disp_width, disp_height,
@@ -237,10 +257,10 @@ if __name__ == '__main__':
         valueA = 25 + 25 * math.sin(t * 1.0) + random.uniform(-2, 2)
         updates["A"] = (max(0, min(50, valueA)), (0, 0, 255), 0)
         # Metric "B" (green) starts after 1 second.
-        # if t > 1:
-        #     valueB = 25 + 25 * math.sin(t * 1.2 + math.pi/4) + random.uniform(-2, 2)
-        #     updates["B"] = (max(0, min(50, valueB)), (0, 255, 0), 4)
-        # # Metric "C" (blue) starts after 2 seconds.
+        if t > 1:
+            valueB = 25 + 25 * math.sin(t * 1.2 + math.pi/4) + random.uniform(-2, 2)
+            updates["B"] = (max(0, min(50, valueB)), (0, 255, 0), 4)
+        # Metric "C" (blue) starts after 2 seconds.
         if t > 2:
             valueC = 25 + 25 * math.sin(t * 0.8 + math.pi/2) + random.uniform(-2, 2)
             updates["C"] = (max(0, min(50, valueC)), (255, 0, 0), 6)
