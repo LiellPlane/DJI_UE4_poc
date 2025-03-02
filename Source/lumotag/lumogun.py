@@ -536,6 +536,7 @@ def main():
                     output_image[:] = 255
 
                 with perfmonitor.measure("show_metrics"):
+                    perfmonitor.manual_measure("check_scale", 50)
                     # display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
