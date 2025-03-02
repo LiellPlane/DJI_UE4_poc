@@ -1990,16 +1990,20 @@ class CardioGramDisplay:
                 self.metrics[metric] = self.Metric(metric, max_pos + bar_thickness)
             pos = self.metrics[metric].pos
             
-            if metric not in self.color_cache:
-                # Calculate colors (same as before)
-                step = 255 // max(len(self.metrics), 1)
-                red = (255 - cnt * step) % 256
-                green = (cnt * step) % 256
-                blue = (128 + cnt * step) % 256
-                self.color_cache[metric] = (red, green, blue)
+            # if metric not in self.color_cache:
+            #     # Calculate colors (same as before)
+            #     step = 255 // max(len(self.metrics), 1)
+            #     red = (255 - cnt * step) % 256
+            #     green = (cnt * step) % 256
+            #     blue = (128 + cnt * step) % 256
+            #     self.color_cache[metric] = (red, green, blue)
             
-            color = self.color_cache[metric]
-            
+            # color = self.color_cache[metric]
+            step = 255 // max(len(self.metrics), 1)
+            red = (255 - cnt * step) % 256
+            green = (cnt * step) % 256
+            blue = (128 + cnt * step) % 256
+            color = (red, green, blue)
             # OPTIMIZATION: Faster normalization with pre-calculated factor
             value = min(max(value, min_val), max_val)
             norm_val = (value - min_val) * norm_factor
