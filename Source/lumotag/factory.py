@@ -195,12 +195,12 @@ class display(ABC):
         #self.draw_test_rect()
         self._affine_transform = {}
         self.cardio_gram_display =CardioGramDisplay(
-            0,
-            250,
-            80,
-            50,
+            pos_x=50,
+            pos_y=10,
+            width=50,
+            height=250,
             value_range=(0, 100),
-            flow_direction=0
+            flow_direction=90
             )
 
     @abstractmethod
