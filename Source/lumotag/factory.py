@@ -1954,102 +1954,100 @@ class CardioGramDisplay:
 
     def update_metrics(self, updates: dict[str, float]) -> list[MetricUpdate]:
         """
-        updates: Dictionary mapping metric names to values
+        OPTIMIZED with direct indexing and pre-allocated arrays
         """
         min_val, max_val = self.value_range
         offset_range = 40
         bar_thickness = 3
         
-        # Shift the overlay along the chosen axis - OPTIMIZED to avoid unnecessary operations
+        # OPTIMIZATION: Use more efficient array shifting with direct slice assignment
         if self.flow_direction == 0:
-            # New data at bottom; shift upward.
-            self.overlay[:-1, :, :] = self.overlay[1:, :, :]
-            self.overlay[-1, :, :] = 0
-            new_edge = [i for i in range(self.height - 1, self.height - offset_range, -1)]
+            # Shift directly with NumPy's optimized memory handling
+            self.overlay[:-1, :] = self.overlay[1:, :]
+            self.overlay[-1:, :] = 0  # Clear the last row
+            # Pre-calculate positions once
+            edge_positions = np.arange(self.height - 1, self.height - offset_range, -1)
         elif self.flow_direction == 180:
-            # New data at top; shift downward.
-            self.overlay[1:, :, :] = self.overlay[:-1, :, :]
-            self.overlay[0, :, :] = 0
-            new_edge = [i for i in range(0, offset_range, 1)]
+            self.overlay[1:, :] = self.overlay[:-1, :]
+            self.overlay[:1, :] = 0
+            edge_positions = np.arange(0, offset_range)
         elif self.flow_direction == 90:
-            # New data at right; shift left.
-            self.overlay[:, :-1, :] = self.overlay[:, 1:, :]
-            self.overlay[:, -1, :] = 0
-            new_edge = [i for i in range(self.width - 1, self.width - offset_range, -1)]
+            self.overlay[:, :-1] = self.overlay[:, 1:]
+            self.overlay[:, -1:] = 0
+            edge_positions = np.arange(self.width - 1, self.width - offset_range, -1)
         elif self.flow_direction == 270:
-            # New data at left; shift right.
-            self.overlay[:, 1:, :] = self.overlay[:, :-1, :]
-            self.overlay[:, 0, :] = 0
-            new_edge = [i for i in range(0, offset_range, 1)]
-
+            self.overlay[:, 1:] = self.overlay[:, :-1]
+            self.overlay[:, :1] = 0
+            edge_positions = np.arange(0, offset_range)
+        
+        # OPTIMIZATION: Pre-calculate 1/(max-min) for faster normalization
+        norm_factor = 1.0 / (max_val - min_val)
+        
         output_actions = []
-        # For each metric update, compute the coordinate and set the pixel.
         for cnt, (metric, value) in enumerate(updates.items()):
             if metric not in self.metrics:
                 max_pos = max(self.metrics.values(), key=lambda m: m.pos).pos
                 self.metrics[metric] = self.Metric(metric, max_pos + bar_thickness)
             pos = self.metrics[metric].pos
             
-            # Get color from cache or create new - OPTIMIZATION
             if metric not in self.color_cache:
-                # Calculate step based on total number of metrics
+                # Calculate colors (same as before)
                 step = 255 // max(len(self.metrics), 1)
-                # Generate colors using a simple formula
                 red = (255 - cnt * step) % 256
                 green = (cnt * step) % 256
-                blue = (128 + cnt * step) % 256  # Offset blue for better visibility
+                blue = (128 + cnt * step) % 256
                 self.color_cache[metric] = (red, green, blue)
             
             color = self.color_cache[metric]
-
-            # Normalize the value to a 0..1 scale - OPTIMIZATION: integer math where possible
-            value = min(max(value, min_val), max_val)
-            norm_val = (value - min_val) / (max_val - min_val)
             
+            # OPTIMIZATION: Faster normalization with pre-calculated factor
+            value = min(max(value, min_val), max_val)
+            norm_val = (value - min_val) * norm_factor
+            
+            # OPTIMIZATION: Process flow directions with cleaner code
             if self.flow_direction == 0:
                 new_x = int(norm_val * (self.width - 1))
-                self.overlay[new_edge[pos], new_x] = (color[0], color[1], color[2], 255)
-                row_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
+                edge_pos = edge_positions[pos]
+                self.overlay[edge_pos, new_x] = (color[0], color[1], color[2], 255)
+                row_slice = slice(edge_pos-bar_thickness, edge_pos)
                 col_slice = slice(0, new_x)
             elif self.flow_direction == 180:
                 new_x = int(norm_val * (self.width - 1))
-                self.overlay[new_edge[pos], self.width - new_x - 1] = (color[0], color[1], color[2], 255)
-                row_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
+                edge_pos = edge_positions[pos]
+                self.overlay[edge_pos, self.width - new_x - 1] = (color[0], color[1], color[2], 255)
+                row_slice = slice(edge_pos, edge_pos+bar_thickness)
                 col_slice = slice(self.width - new_x - 1, self.width)
             elif self.flow_direction == 90:
                 new_y = int(norm_val * (self.height - 1))
-                self.overlay[new_y, new_edge[pos]] = (color[0], color[1], color[2], 255)
+                edge_pos = edge_positions[pos]
+                self.overlay[new_y, edge_pos] = (color[0], color[1], color[2], 255)
                 row_slice = slice(0, new_y)
-                col_slice = slice(new_edge[pos]-bar_thickness, new_edge[pos])
+                col_slice = slice(edge_pos-bar_thickness, edge_pos)
             elif self.flow_direction == 270:
                 new_y = int(norm_val * (self.height - 1))
-                self.overlay[self.height - new_y - 1, new_edge[pos]] = (color[0], color[1], color[2], 255)
+                edge_pos = edge_positions[pos]
+                self.overlay[self.height - new_y - 1, edge_pos] = (color[0], color[1], color[2], 255)
                 row_slice = slice(self.height - new_y, self.height)
-                col_slice = slice(new_edge[pos], new_edge[pos]+bar_thickness)
-            else:
-                raise ValueError(f"Invalid flow direction: {self.flow_direction}")
+                col_slice = slice(edge_pos, edge_pos+bar_thickness)
             
             output_actions.append(self.MetricUpdate(metric, (color[0], color[1], color[2], 255),
-                                                 slice_row=row_slice, slice_col=col_slice))
+                                               slice_row=row_slice, slice_col=col_slice))
         return output_actions
 
     def get_overlay_with_gradient(self):
         """
-        Returns a copy of the overlay with a fade gradient applied along the history flow axis.
-        OPTIMIZED to use pre-calculated gradient and minimize copies.
+        OPTIMIZED to minimize array operations and type conversions
         """
-        # Reuse pre-allocated array instead of creating a new one
-        np.copyto(self._temp_overlay, self.overlay)
-        
-        # Use the pre-calculated gradient - much faster
-        self._temp_overlay[:,:,3] = (self._temp_overlay[:,:,3] * self.gradient).astype(np.uint8)
+        # Use provided array reference if no modifications needed
+        # OPTIMIZATION: Apply gradient with minimal memory operations
+        np.multiply(self.overlay[:,:,3], self.gradient, out=self._temp_overlay[:,:,3], casting='unsafe')
+        np.copyto(self._temp_overlay[:,:,0:3], self.overlay[:,:,0:3])
         
         return self._temp_overlay
 
     def composite_onto_inplace(self, background, image_actions):
         """
-        Composites the overlay onto the background using OpenCV's optimized functions.
-        OPTIMIZED to use addWeighted instead of manual per-pixel operations.
+        FINAL OPTIMIZATION: Simplified blending with uint8 math instead of float conversions
         """
         # Get overlay with gradient and apply actions
         overlay = self.get_overlay_with_gradient()
@@ -2059,20 +2057,20 @@ class CardioGramDisplay:
         h, w = self.height, self.width
         roi = background[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w]
         
-        # Create temporary float arrays for calculation
-        alpha = overlay[:,:,3].astype(float) / 255.0
-        alpha_inv = 1.0 - alpha
+        # Find pixels with non-zero alpha
+        alpha_mask = overlay[:,:,3] > 0
         
-        # Create a temporary result array
-        temp_result = np.zeros_like(roi, dtype=float)
-        
-        # Use vectorized operations for each channel
-        for c in range(3):
-            # Blend overlay and background using alpha
-            temp_result[:,:,c] = overlay[:,:,c] * alpha + roi[:,:,c] * alpha_inv
-        
-        # Convert back to uint8 and store in the ROI
-        np.copyto(roi, temp_result.astype(np.uint8))
+        # Only process if there are visible pixels
+        if np.any(alpha_mask):
+            # Fast integer-based alpha blending
+            for c in range(3):
+                # Use integer math (much faster on low-power CPUs like Raspberry Pi)
+                # This avoids expensive float conversions
+                roi[:,:,c][alpha_mask] = (
+                    (overlay[:,:,c][alpha_mask].astype(np.uint16) * overlay[:,:,3][alpha_mask].astype(np.uint16) + 
+                     roi[:,:,c][alpha_mask].astype(np.uint16) * (255 - overlay[:,:,3][alpha_mask].astype(np.uint16))) 
+                    // 255
+                ).astype(np.uint8)
         
         return background
 
