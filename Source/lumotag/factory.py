@@ -2012,25 +2012,55 @@ class CardioGramDisplay:
             if self.flow_direction == 0:
                 new_x = int(norm_val * (self.width - 1))
                 edge_pos = edge_positions[pos]
+                # Draw 4 pixels instead of 1 for better visibility
                 self.overlay[edge_pos, new_x] = (color[0], color[1], color[2], 255)
+                if new_x > 0:
+                    self.overlay[edge_pos, new_x-1] = (color[0], color[1], color[2], 255)
+                if new_x < self.width-1:
+                    self.overlay[edge_pos, new_x+1] = (color[0], color[1], color[2], 255)
+                if edge_pos > 0:
+                    self.overlay[edge_pos-1, new_x] = (color[0], color[1], color[2], 255)
                 row_slice = slice(edge_pos-bar_thickness, edge_pos)
                 col_slice = slice(0, new_x)
             elif self.flow_direction == 180:
                 new_x = int(norm_val * (self.width - 1))
                 edge_pos = edge_positions[pos]
-                self.overlay[edge_pos, self.width - new_x - 1] = (color[0], color[1], color[2], 255)
+                x_pos = self.width - new_x - 1
+                # Draw 4 pixels instead of 1 for better visibility
+                self.overlay[edge_pos, x_pos] = (color[0], color[1], color[2], 255)
+                if x_pos > 0:
+                    self.overlay[edge_pos, x_pos-1] = (color[0], color[1], color[2], 255)
+                if x_pos < self.width-1:
+                    self.overlay[edge_pos, x_pos+1] = (color[0], color[1], color[2], 255)
+                if edge_pos < self.height-1:
+                    self.overlay[edge_pos+1, x_pos] = (color[0], color[1], color[2], 255)
                 row_slice = slice(edge_pos, edge_pos+bar_thickness)
                 col_slice = slice(self.width - new_x - 1, self.width)
             elif self.flow_direction == 90:
                 new_y = int(norm_val * (self.height - 1))
                 edge_pos = edge_positions[pos]
+                # Draw 4 pixels instead of 1 for better visibility
                 self.overlay[new_y, edge_pos] = (color[0], color[1], color[2], 255)
+                if new_y > 0:
+                    self.overlay[new_y-1, edge_pos] = (color[0], color[1], color[2], 255)
+                if new_y < self.height-1:
+                    self.overlay[new_y+1, edge_pos] = (color[0], color[1], color[2], 255)
+                if edge_pos > 0:
+                    self.overlay[new_y, edge_pos-1] = (color[0], color[1], color[2], 255)
                 row_slice = slice(0, new_y)
                 col_slice = slice(edge_pos-bar_thickness, edge_pos)
             elif self.flow_direction == 270:
                 new_y = int(norm_val * (self.height - 1))
                 edge_pos = edge_positions[pos]
-                self.overlay[self.height - new_y - 1, edge_pos] = (color[0], color[1], color[2], 255)
+                y_pos = self.height - new_y - 1
+                # Draw 4 pixels instead of 1 for better visibility
+                self.overlay[y_pos, edge_pos] = (color[0], color[1], color[2], 255)
+                if y_pos > 0:
+                    self.overlay[y_pos-1, edge_pos] = (color[0], color[1], color[2], 255)
+                if y_pos < self.height-1:
+                    self.overlay[y_pos+1, edge_pos] = (color[0], color[1], color[2], 255)
+                if edge_pos < self.width-1:
+                    self.overlay[y_pos, edge_pos+1] = (color[0], color[1], color[2], 255)
                 row_slice = slice(self.height - new_y, self.height)
                 col_slice = slice(edge_pos, edge_pos+bar_thickness)
             
