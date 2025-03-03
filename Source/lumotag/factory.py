@@ -194,14 +194,37 @@ class display(ABC):
         #     ( _gun_config.screen_size + (3,)), np.uint8)
         #self.draw_test_rect()
         self._affine_transform = {}
-        self.cardio_gram_display =CardioGramDisplay(
-            pos_x=50,
-            pos_y=10,
-            width=70,
-            height=self.screen_size[0]//2,
-            value_range=(0, 100),
-            flow_direction=90
-            )
+        # this is lazy - if we find we rotate a lot then do this properly
+        if self.display_rotate == 270:
+            self.cardio_gram_display =CardioGramDisplay(
+                pos_x=50,
+                pos_y=10,
+                width=self.screen_size[1]//7,
+                height=self.screen_size[0]//2,
+                value_range=(0, 100),
+                flow_direction=90
+                )
+        if self.display_rotate == 0:
+            self.cardio_gram_display =CardioGramDisplay(
+                pos_x=10,
+                pos_y=self.screen_size[0]-80,
+                width=self.screen_size[0]//2,
+                height=60,
+                value_range=(0, 100),
+                flow_direction=0
+                )
+        if self.display_rotate in [180, 90]:
+            print("Metric bars not configured yet!!!!!!!!!")
+            self.cardio_gram_display =CardioGramDisplay(
+                pos_x=10,
+                pos_y=self.screen_size[0]-80,
+                width=self.screen_size[0]//2,
+                height=60,
+                value_range=(0, 50),
+                flow_direction=0
+                )
+
+
 
     @abstractmethod
     def display_method(image, self):
