@@ -482,13 +482,13 @@ def main():
  
 
                 #save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
-            # with perfmonitor.measure("graphics"):
-                # with time_it("add internal section", debug=PRINT_DEBUG):
-                #     display.add_internal_section_region(
-                #         display_active_image.shape,
-                #         output_image,
-                #         transform_manager.get_lerped_targetzone_slice(transition_i),
-                #         transform_manager.get_display_affine_transformation(transition_i))
+            with perfmonitor.measure("graphics"):
+                with time_it("add internal section", debug=PRINT_DEBUG):
+                    display.add_internal_section_region(
+                        display_active_image.shape,
+                        output_image,
+                        transform_manager.get_lerped_targetzone_slice(transition_i),
+                        transform_manager.get_display_affine_transformation(transition_i))
 
             with time_it("add graphics: crosshair/analyics", debug=PRINT_DEBUG), perfmonitor.measure("graphics"):
 
@@ -548,8 +548,9 @@ def main():
                     if is_trigger_pressed is True:
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
-                #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                else:
+                    file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
 
 if __name__ == '__main__':
     main()
