@@ -1980,7 +1980,7 @@ class CardioGramDisplay:
         OPTIMIZED with direct indexing and pre-allocated arrays
         """
         min_val, max_val = self.value_range
-        offset_range = 40
+        offset_range = 60
         bar_thickness = 3
         
         # OPTIMIZATION: Use more efficient array shifting with direct slice assignment

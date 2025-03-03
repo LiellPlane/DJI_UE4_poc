@@ -301,7 +301,7 @@ def main():
         #print(TEMP_DEBUG_trigger_cnt)
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
-            with time_it("get next image", debug=PRINT_DEBUG):
+            with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure("get next image"):
                 cap_img = next(image_capture_longrange)
                 cap_img_closerange = next(image_capture_shortrange)
                 # this is bad code - should come as package with the image -
@@ -348,7 +348,7 @@ def main():
 
             GUN_CONFIGURATION.loop_wait()
             
-            with time_it("gun states set", debug=PRINT_DEBUG):
+            with time_it("gun states set", debug=PRINT_DEBUG), perfmonitor.measure("gun_states"):
                 #accelerometer.update_vel()
                 results_trig_positions = (triggers.test_states())
 
@@ -453,7 +453,7 @@ def main():
                 #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
 
             perfmonitor.get_time("complete_cycle", reset=True)
-            with time_it("wait for image analysis", debug=PRINT_DEBUG):
+            with time_it("wait for image analysis", debug=PRINT_DEBUG), perfmonitor.measure("wait image_analysis"):
                 analysis = {}
                 for img_analyser in image_analysis:
                     if img_analyser.check_if_timed_out():
@@ -549,8 +549,9 @@ def main():
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
                 else:
-                    file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    if is_trigger_pressed is True:
+                        file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                        file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
 
 if __name__ == '__main__':
     main()
