@@ -1637,7 +1637,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["quadrocode"]#quadrocode_corners
+                filters=["2025"]#quadrocode_corners
             )
  
             repeats = 1

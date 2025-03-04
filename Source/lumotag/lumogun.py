@@ -231,7 +231,6 @@ def main():
     transform_manager = img_processing.TransformManager(transformdetails=transform_details)
     crosshair_lerper = img_processing.lerped_add_crosshair()
 
-
     # create demo player
     players = {
         "demoplayer":
