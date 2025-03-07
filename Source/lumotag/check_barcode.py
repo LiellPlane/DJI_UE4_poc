@@ -224,6 +224,41 @@ def visualise_1d_barcode(_1dbarcode, height, segmentise:Optional[int]=None):
 
     return out_img1
 
+def visualise_color_barcode(color_array, height, segmentise:Optional[int]=None):
+    """
+    Visualize an array of RGB values as a tall, thin barcode.
+    
+    Args:
+        color_array: Array of RGB values, shape=(n,3)
+        height: Height of the output image
+        segmentise: Optional number of segments to mark with lines
+        
+    Returns:
+        Tall, thin color barcode image
+    """
+    # Convert input to numpy array
+    color_array = np.asarray(color_array)
+    
+    # Get number of color values
+    n_values = len(color_array)
+    
+    # Create a narrow image with one row per color value
+    color_image = np.zeros((n_values, 1, 3), dtype=np.uint8)
+    
+    # Fill in the colors
+    for i, color in enumerate(color_array):
+        color_image[i, 0] = color
+        
+    # Resize to the target height, keeping it narrow (50 pixels wide)
+    out_img = cv2.resize(color_image, (10, height), interpolation=cv2.INTER_NEAREST)
+    
+    # Add segment lines if requested
+    if segmentise:
+        for segment_y in [i for i in range(0, height, height//segmentise)]:
+            cv2.line(out_img, (0, segment_y), (5, segment_y), (0, 0, 255), 3)
+
+    return out_img
+
 
 def analyse_and_get_image(test_member):
     height = 500

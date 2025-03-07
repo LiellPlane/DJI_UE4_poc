@@ -1000,15 +1000,19 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     debug_img = cv2.cvtColor(debug_img, cv2.COLOR_GRAY2RGB)
     # print out the sample coordinates so we can visualise them,
     # spitting corner points and mid-edge points
+    colarray_corners = []
+    colarray_midline = []
     for index, spoke in enumerate(barcode_array):
         col = list(colour_gradient[index])
 
         if spoke.barcode_segment == check_barcode.CodeSegment.CORNER:
             col[0] = 255
             col[1] = 0
+            colarray_corners.append(col)
         else:
             col[0] = 0
             col[1] = 255
+            colarray_midline.append(col)
         for pt in spoke.line_sample_pts:
             debug_img[int(pt[1]), int(pt[0])] = col
 
@@ -1022,6 +1026,14 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     spoke_samples_corners_normed = img_pro.normalise_np_array(spoke_samples_corners)
     spoke_samples_corners_normed = img_pro.binarize_barcode(spoke_samples_corners_normed)
 
+    corner_samples_colours= check_barcode.visualise_color_barcode(
+        colarray_corners, height=img.shape[0],
+        segmentise=4
+        )
+    middle_samples_colours= check_barcode.visualise_color_barcode(
+        colarray_midline, height=img.shape[0],
+        segmentise=4
+        )
     corner_samples_decoded = check_barcode.visualise_1d_barcode(
         (visualise_corners * 255).astype("uint8"), height=img.shape[0],
         segmentise=4
@@ -1060,11 +1072,14 @@ def draw_barcode_spokes(img, shape_data: ShapeItem):
     debug_img = np.hstack(
         [   
             debug_img,
+            corner_samples_colours,
             corner_samples_decoded,
             corner_samples,
             corner_samples_norm,
             viewing_buffer,
+            
             midedge_samples,
+            middle_samples_colours,
             midedge_samples_norm
             ])
     return debug_img
