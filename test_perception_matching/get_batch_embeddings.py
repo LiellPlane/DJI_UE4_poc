@@ -1,10 +1,21 @@
-import generate_embeddings
 import os
 import pathlib
-from typing import List
+from typing import List, Optional
 import multiprocessing as mp
 import cv2
 import time
+import generate_embeddings
+import numpy as np
+from dataclasses import dataclass
+
+@dataclass
+class HSEmbeddingResult:
+    """Data class for storing successful embedding results"""
+    filename: str
+    shape: str
+    embedding: np.ndarray
+    mask: bool
+    params: generate_embeddings.ImageEmbeddingParams
 
 
 def get_image_filepaths() -> List[str]:
@@ -73,15 +84,35 @@ def worker(queue_in, queue_out):
         if filepath is None:  # None is our signal to stop
             break
         
-        # Process the image
-        _, img = load_image(filepath)
-        if img is not None:
-            # Include image shape in the output message
-            filename = os.path.basename(filepath)
-            height, width, channels = img.shape  # OpenCV images have shape (height, width, channels)
-            queue_out.put(f"fileprocessed {filename} | Shape: {height}x{width}x{channels}")
-        else:
-            queue_out.put(f"failed {os.path.basename(filepath)}")
+        try:
+            # Process the image
+            _, img = load_image(filepath)
+            if img is not None:
+                # Include image shape in the output message
+                filename = os.path.basename(filepath)
+                height, width, channels = img.shape  # OpenCV images have shape (height, width, channels)
+                mask = generate_embeddings.create_circular_mask(img.shape)
+                embedding = generate_embeddings.create_image_embedding(
+                    img, 
+                    generate_embeddings.ImageEmbeddingParams(),
+                    mask
+                )
+                
+                # Create an EmbeddingResult with the numpy array
+                result = HSEmbeddingResult(
+                    filename=filename,
+                    shape=f"{height}x{width}x{channels}",
+                    embedding=embedding,
+                    mask=True,
+                    params=generate_embeddings.ImageEmbeddingParams()
+                )
+                queue_out.put(result)
+            else:
+                # Send the actual exception for failed images
+                queue_out.put(ValueError(f"Failed to load image: {os.path.basename(filepath)}"))
+        except Exception as e:
+            # Send the actual exception that occurred
+            queue_out.put(e)
     
     # Let the output queue know this worker is done
     queue_out.put(None)
@@ -116,8 +147,7 @@ def main():
         
         # Simple replication to create ~500,000 paths (all pointing to real files)
         if original_count > 0:
-            image_paths = image_paths * (5000 // original_count + 1)
-            image_paths = image_paths[:5000]  # Trim to exactly 500,000 if needed
+            image_paths = image_paths * (9000 // original_count + 1)
         
         total_images = len(image_paths)
         print(f"Created test dataset with {total_images} image paths")
@@ -156,9 +186,18 @@ def main():
             try:
                 # Use a small timeout to allow for regular progress updates
                 result = queue_out.get(timeout=0.1)
+                
                 if result is None:
                     completed_workers += 1
+                elif isinstance(result, Exception):
+                    # Simply handle exceptions by type
+                    print(f"\nError: {type(result).__name__}: {str(result)}")
+                    results.append(f"error: {type(result).__name__}")
+                elif isinstance(result, HSEmbeddingResult):
+                    # Handle successful results
+                    results.append(result)
                 else:
+                    # Handle any other type (like legacy string messages)
                     results.append(result)
                 
                 # Update progress periodically
@@ -199,7 +238,13 @@ def main():
         if results:
             print("\nSample of processed files:")
             for result in results[:5]:
-                print(f"  - {result}")
+                if isinstance(result, HSEmbeddingResult):
+                    print(f"  - Success: {result.filename} | Shape: {result.shape} | "
+                          f"Embedding shape: {result.embedding.shape}")
+                elif isinstance(result, Exception):
+                    print(f"  - Error: {type(result).__name__}: {str(result)}")
+                else:
+                    print(f"  - {result}")
         
     except Exception as e:
         print(f"Error in main: {e}")

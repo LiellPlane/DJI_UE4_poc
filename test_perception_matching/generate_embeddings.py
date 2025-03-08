@@ -289,7 +289,7 @@ def create_test_image(width=800, height=600, num_shapes=50, bg_color=(240, 240, 
     
     return image
 
-def demo_with_random_image(vertical=10, horizontal=9, overlap=10, bins_per_channel=8, center_histograms=True):
+def demo_with_random_image(params: ImageEmbeddingParams = None):
     """
     Demonstration function that creates two random test images,
     shows the slicing visualization, calculates histogram embeddings,
@@ -297,63 +297,36 @@ def demo_with_random_image(vertical=10, horizontal=9, overlap=10, bins_per_chann
     
     Parameters:
     -----------
-    vertical : int
-        Number of vertical stripes
-    horizontal : int
-        Number of horizontal stripes
-    overlap : int
-        Overlap percentage between adjacent stripes
-    bins_per_channel : int
-        Number of bins per color channel for histograms
-    center_histograms : bool
-        Whether to center histograms for comparison
+    params : ImageEmbeddingParams, optional
+        Parameters for embedding generation (uses default values if None)
         
     Returns:
     --------
     tuple
         (original_image1, original_image2, visualization1, visualization2, similarity_score)
     """
+    # Use default parameters if none provided
+    if params is None:
+        params = ImageEmbeddingParams()
+    
     # Create two random test images
     test_image1 = create_test_image()
     test_image2 = create_test_image()
     
     # Get slices for both images
-    slices1 = create_image_slices(test_image1, vertical, horizontal, overlap)
-    slices2 = create_image_slices(test_image2, vertical, horizontal, overlap)
+    slices1 = create_image_slices(test_image1, params.vertical, params.horizontal, params.overlap)
+    slices2 = create_image_slices(test_image2, params.vertical, params.horizontal, params.overlap)
     
     # Visualize the slices
     vis_image1 = visualize_slices(test_image1, slices1)
     vis_image2 = visualize_slices(test_image2, slices2)
     
     # Calculate embeddings for both images
-    embedding1 = create_image_embedding(
-        test_image1, 
-        vertical=vertical, 
-        horizontal=horizontal, 
-        overlap=overlap,
-        bins_per_channel=bins_per_channel,
-        center_histograms=center_histograms
-    )
-    
-    embedding2 = create_image_embedding(
-        test_image2, 
-        vertical=vertical, 
-        horizontal=horizontal, 
-        overlap=overlap,
-        bins_per_channel=bins_per_channel,
-        center_histograms=center_histograms
-    )
+    embedding1 = create_image_embedding(test_image1, params=params)
+    embedding2 = create_image_embedding(test_image2, params=params)
     
     # Compare the embeddings
-    similarity = compare_images_for_vector_db(
-        test_image1, 
-        test_image2, 
-        center_histograms=center_histograms,
-        vertical=vertical,
-        horizontal=horizontal,
-        overlap=overlap,
-        bins_per_channel=bins_per_channel
-    )
+    similarity = compare_images_for_vector_db(test_image1, test_image2, params=params)
     
     # Display results
     cv2.imshow("Image 1", test_image1)
@@ -389,7 +362,7 @@ def demo_with_random_image(vertical=10, horizontal=9, overlap=10, bins_per_chann
     # Add text showing histogram parameters
     cv2.putText(
         result_img, 
-        f"Bins: {bins_per_channel}, Centered: {center_histograms}", 
+        f"Bins: {params.bins_per_channel}, Centered: {params.center_histograms}", 
         (20, 130), 
         cv2.FONT_HERSHEY_SIMPLEX, 
         0.6, 
@@ -409,19 +382,24 @@ def demo_with_random_image(vertical=10, horizontal=9, overlap=10, bins_per_chann
     
     return test_image1, test_image2, vis_image1, vis_image2, similarity
 
-def demo_similar_images(vertical=10, horizontal=9, overlap=10, bins_per_channel=8, center_histograms=True):
+def demo_similar_images(params: ImageEmbeddingParams = None):
     """
     Demonstrates comparison between a random image and a slightly modified version of itself.
     
     Parameters:
     -----------
-    Same as demo_with_random_image
+    params : ImageEmbeddingParams, optional
+        Parameters for embedding generation (uses default values if None)
     
     Returns:
     --------
     tuple
         (original_image, modified_image, similarity_score)
     """
+    # Use default parameters if none provided
+    if params is None:
+        params = ImageEmbeddingParams()
+    
     # Create a random test image
     original_image = create_test_image()
     
@@ -431,15 +409,7 @@ def demo_similar_images(vertical=10, horizontal=9, overlap=10, bins_per_channel=
     modified_image = cv2.add(modified_image, noise)
     
     # Compare the images
-    similarity = compare_images_for_vector_db(
-        original_image, 
-        modified_image, 
-        center_histograms=center_histograms,
-        vertical=vertical,
-        horizontal=horizontal,
-        overlap=overlap,
-        bins_per_channel=bins_per_channel
-    )
+    similarity = compare_images_for_vector_db(original_image, modified_image, params=params)
     
     # Display results
     cv2.imshow("Original Image", original_image)
@@ -550,12 +520,7 @@ def calculate_slice_histograms(
 def create_image_embedding(
     image, 
     params: ImageEmbeddingParams = None,
-    vertical: int = 10, 
-    horizontal: int = 9, 
-    overlap: int = 10, 
-    bins_per_channel: int = 8,
-    mask: Optional[np.ndarray] = None,
-    center_histograms: bool = False
+    mask: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """
     Create an image embedding by calculating histograms for slices of the image.
@@ -564,41 +529,26 @@ def create_image_embedding(
     -----------
     image : numpy.ndarray
         Input image
-    params : ImageEmbeddingParams, optional
-        Parameters as a dataclass object (overrides individual parameters if provided)
-    vertical : int
-        Number of vertical stripes
-    horizontal : int
-        Number of horizontal stripes
-    overlap : int
-        Overlap percentage between stripes
-    bins_per_channel : int
-        Number of bins per color channel for histogram
+    params : ImageEmbeddingParams
+        Parameters for the embedding generation (uses default values if None)
     mask : numpy.ndarray, optional
         Optional mask for the image
-    center_histograms : bool
-        If True, center histograms by subtracting the mean, making
-        cosine similarity behave more like correlation
         
     Returns:
     --------
     numpy.ndarray
         Feature vector representing the image as concatenated histograms
     """
-    # Use params object if provided, otherwise use individual parameters
-    if params is not None:
-        vertical = params.vertical
-        horizontal = params.horizontal
-        overlap = params.overlap
-        bins_per_channel = params.bins_per_channel
-        center_histograms = params.center_histograms
+    # Use default parameters if none provided
+    if params is None:
+        params = ImageEmbeddingParams()
     
     # Create the slices
-    slices = create_image_slices(image, vertical, horizontal, overlap)
+    slices = create_image_slices(image, params.vertical, params.horizontal, params.overlap)
     
     # Calculate histograms for each slice
     histograms = calculate_slice_histograms(
-        image, slices, bins_per_channel, mask, center_histograms
+        image, slices, params.bins_per_channel, mask, params.center_histograms
     )
     
     # Always concatenate into a single feature vector
@@ -635,8 +585,7 @@ def compare_images_for_vector_db(
     image1, 
     image2, 
     params: ImageEmbeddingParams = None,
-    center_histograms: bool = True, 
-    **kwargs
+    mask: Optional[np.ndarray] = None
 ) -> float:
     """
     Compare two images using cosine similarity for vector database compatibility.
@@ -648,33 +597,22 @@ def compare_images_for_vector_db(
     image2 : numpy.ndarray
         Second input image
     params : ImageEmbeddingParams, optional
-        Parameters as a dataclass object (overrides other parameters if provided)
-    center_histograms : bool
-        If True, center histograms before comparison to make
-        cosine similarity behave more like correlation
-    **kwargs : Any
-        Additional arguments to pass to create_image_embedding
+        Parameters for embedding generation (uses default values if None)
+    mask : Optional[np.ndarray], optional
+        Optional mask to apply to both images
         
     Returns:
     --------
     float
         Similarity score between the two images (higher means more similar)
     """
-    # If params is provided, use it, otherwise construct kwargs
-    if params is not None:
-        # Update kwargs with center_histograms if it's not in params
-        embedding_params = params
-    else:
-        # Update kwargs with center_histograms parameter
-        kwargs['center_histograms'] = center_histograms
+    # Use default parameters if none provided
+    if params is None:
+        params = ImageEmbeddingParams()
     
     # Get embeddings for both images
-    if params is not None:
-        embedding1 = create_image_embedding(image1, params=embedding_params, mask=kwargs.get('mask'))
-        embedding2 = create_image_embedding(image2, params=embedding_params, mask=kwargs.get('mask'))
-    else:
-        embedding1 = create_image_embedding(image1, **kwargs)
-        embedding2 = create_image_embedding(image2, **kwargs)
+    embedding1 = create_image_embedding(image1, params=params, mask=mask)
+    embedding2 = create_image_embedding(image2, params=params, mask=mask)
     
     # Handle empty embeddings
     if embedding1.size == 0 or embedding2.size == 0:
@@ -817,8 +755,17 @@ def test_masked_embedding():
     # Visualize the mask
     mask_vis = visualize_mask(test_image, mask)
     
-    # Create slices
-    slices = create_image_slices(test_image, vertical=5, horizontal=4, overlap=10)
+    # Create embedding parameters
+    params = ImageEmbeddingParams(
+        vertical=5,
+        horizontal=4,
+        overlap=10,
+        bins_per_channel=8,
+        center_histograms=True
+    )
+    
+    # Create slices for visualization
+    slices = create_image_slices(test_image, params.vertical, params.horizontal, params.overlap)
     
     # Visualize the slices (on grayscale to see better)
     gray_image = cv2.cvtColor(test_image, cv2.COLOR_BGR2GRAY)
@@ -826,28 +773,16 @@ def test_masked_embedding():
     slices_vis = visualize_slices(gray_image, slices)
     
     # Calculate embeddings with and without mask
-    embedding_with_mask = create_image_embedding(
-        test_image, 
-        vertical=5, 
-        horizontal=4, 
-        overlap=10,
-        bins_per_channel=8,
-        mask=mask,
-        center_histograms=True
-    )
-    
-    embedding_without_mask = create_image_embedding(
-        test_image, 
-        vertical=5, 
-        horizontal=4, 
-        overlap=10,
-        bins_per_channel=8,
-        mask=None,
-        center_histograms=True
-    )
+    embedding_with_mask = create_image_embedding(test_image, params=params, mask=mask)
+    embedding_without_mask = create_image_embedding(test_image, params=params, mask=None)
     
     # Compare the embeddings
     similarity = cosine_similarity(embedding_with_mask, embedding_without_mask)
+    
+    # Verify embedding sizes are identical
+    embedding_with_mask_size = len(embedding_with_mask)
+    embedding_without_mask_size = len(embedding_without_mask)
+    sizes_match = embedding_with_mask_size == embedding_without_mask_size
     
     # Calculate how many slices are affected by the mask
     affected_slices = 0
@@ -859,19 +794,23 @@ def test_masked_embedding():
             affected_slices += 1
     
     # Create an information image
-    info_img = np.ones((300, 500, 3), dtype=np.uint8) * 255
+    info_img = np.ones((350, 500, 3), dtype=np.uint8) * 255
     cv2.putText(info_img, f"Masked vs Unmasked Similarity: {similarity:.4f}", 
                 (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-    cv2.putText(info_img, f"Embedding size: {len(embedding_with_mask)}", 
+    cv2.putText(info_img, f"Embedding size with mask: {embedding_with_mask_size}", 
                 (20, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-    cv2.putText(info_img, f"Slices: {len(slices)}", 
+    cv2.putText(info_img, f"Embedding size without mask: {embedding_without_mask_size}", 
                 (20, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-    cv2.putText(info_img, f"Partially masked slices: {affected_slices}", 
-                (20, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
-    cv2.putText(info_img, f"Mask coverage: {np.sum(mask) / mask.size * 100:.1f}%", 
+    cv2.putText(info_img, f"Sizes match: {sizes_match}", 
+                (20, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 100 if sizes_match else 255), 2)
+    cv2.putText(info_img, f"Slices: {len(slices)}", 
                 (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+    cv2.putText(info_img, f"Partially masked slices: {affected_slices}", 
+                (20, 240), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
+    cv2.putText(info_img, f"Mask coverage: {np.sum(mask) / mask.size * 100:.1f}%", 
+                (20, 280), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
     cv2.putText(info_img, "Lower similarity = bigger mask impact", 
-                (20, 240), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 100, 0), 2)
+                (20, 320), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 100, 0), 2)
     
     # Display the results
     cv2.imshow("Original Image", test_image)
@@ -884,23 +823,80 @@ def test_masked_embedding():
     cv2.destroyAllWindows()
     
     print(f"Masked vs Unmasked Similarity: {similarity:.4f}")
-    print(f"Embedding size: {len(embedding_with_mask)}")
+    print(f"Embedding size with mask: {embedding_with_mask_size}")
+    print(f"Embedding size without mask: {embedding_without_mask_size}")
+    print(f"Sizes match: {sizes_match}")
     
-    return test_image, mask, mask_vis, embedding_with_mask
+    return test_image, mask, mask_vis, embedding_with_mask, embedding_without_mask, similarity
+
+def verify_mask_effect():
+    """
+    Verify that mask has the expected effect on embeddings while maintaining consistent size.
+    """
+    test_image = create_test_image(width=600, height=400)
+    mask = create_circular_mask(test_image.shape)
+    
+    # Try different parameter combinations
+    param_variations = [
+        ImageEmbeddingParams(vertical=5, horizontal=4, bins_per_channel=4, center_histograms=False),
+        ImageEmbeddingParams(vertical=10, horizontal=8, bins_per_channel=8, center_histograms=True),
+        ImageEmbeddingParams(vertical=3, horizontal=3, bins_per_channel=16, center_histograms=False)
+    ]
+    
+    results = []
+    
+    for i, params in enumerate(param_variations):
+        # Generate embeddings with and without mask
+        embedding_with_mask = create_image_embedding(test_image, params=params, mask=mask)
+        embedding_without_mask = create_image_embedding(test_image, params=params, mask=None)
+        
+        # Check if sizes match
+        sizes_match = len(embedding_with_mask) == len(embedding_without_mask)
+        
+        # Calculate similarity
+        similarity = cosine_similarity(embedding_with_mask, embedding_without_mask)
+        
+        # Store results
+        results.append({
+            "params": params,
+            "embedding_size": len(embedding_with_mask),
+            "sizes_match": sizes_match,
+            "similarity": similarity
+        })
+        
+        print(f"Test {i+1}:")
+        print(f"  Params: v={params.vertical}, h={params.horizontal}, bins={params.bins_per_channel}, center={params.center_histograms}")
+        print(f"  Embedding size: {len(embedding_with_mask)}")
+        print(f"  Sizes match: {sizes_match}")
+        print(f"  Similarity: {similarity:.4f}")
+        print()
+    
+    return results
 
 def stress_test_embeddings(
     num_images=100, 
-    vertical=10, 
-    horizontal=9, 
-    overlap=10, 
-    bins_per_channel=4,
-    center_histograms=True,
+    params: ImageEmbeddingParams = None,
     show_visualizations=False,
     use_plasma=False
 ):
     """
     Run a stress test by processing multiple random images and comparing embeddings.
+    
+    Parameters:
+    -----------
+    num_images : int
+        Number of images to process
+    params : ImageEmbeddingParams, optional
+        Parameters for embedding generation (uses default values if None)
+    show_visualizations : bool
+        Whether to show visualizations during processing
+    use_plasma : bool
+        Use plasma images instead of random shapes
     """
+    # Use default parameters if none provided
+    if params is None:
+        params = ImageEmbeddingParams()
+    
     import time
     start_time = time.time()
     
@@ -955,30 +951,14 @@ def stress_test_embeddings(
             stats["masked_images"] += 1
         
         # Calculate embedding
-        embedding = create_image_embedding(
-            test_image, 
-            vertical=vertical, 
-            horizontal=horizontal, 
-            overlap=overlap,
-            bins_per_channel=bins_per_channel,
-            mask=mask,
-            center_histograms=center_histograms
-        )
+        embedding = create_image_embedding(test_image, params=params, mask=mask)
         
         # Record embedding size
         stats["embedding_sizes"].append(len(embedding))
         
         # If mask was used, also calculate unmasked embedding and compare
         if use_mask:
-            unmasked_embedding = create_image_embedding(
-                test_image, 
-                vertical=vertical, 
-                horizontal=horizontal, 
-                overlap=overlap,
-                bins_per_channel=bins_per_channel,
-                mask=None,
-                center_histograms=center_histograms
-            )
+            unmasked_embedding = create_image_embedding(test_image, params=params, mask=None)
             
             # Calculate similarity between masked and unmasked versions
             similarity = cosine_similarity(embedding, unmasked_embedding)
@@ -1001,7 +981,7 @@ def stress_test_embeddings(
         # Optional visualization
         if show_visualizations:
             # Create slice visualization
-            slices = create_image_slices(test_image, vertical, horizontal, overlap)
+            slices = create_image_slices(test_image, params.vertical, params.horizontal, params.overlap)
             vis_image = visualize_slices(test_image, slices)
             
             # Show mask if used
@@ -1075,12 +1055,17 @@ def stress_test_embeddings(
 # Fixed the stress_test_with_plasma function
 def stress_test_with_plasma(num_images=100, bins_per_channel=4, show_visualizations=True):
     """Run the stress test using plasma images instead of random shapes"""
-    return stress_test_embeddings(
-        num_images=num_images,
+    params = ImageEmbeddingParams(
         vertical=10, 
         horizontal=9, 
         overlap=10, 
         bins_per_channel=bins_per_channel,
+        center_histograms=True
+    )
+    
+    return stress_test_embeddings(
+        num_images=num_images,
+        params=params,
         show_visualizations=show_visualizations,
         use_plasma=True  # Use plasma images
     )
@@ -1327,6 +1312,298 @@ def demo_plasma_images(num_images=3, delay=1000):
             
     cv2.destroyAllWindows()
 
+
+
+def crop_inward_slices(image_shape, total_percent_crop, steps, min_dimension=10):
+    """
+    Generator that yields slices for progressively cropping an image inward.
+    
+    Args:
+        image_shape: Shape of the image or the image itself
+        total_percent_crop: Total percentage to crop from each edge by the final step (0-50)
+        steps: Number of cropping steps to perform
+        min_dimension: Minimum allowed dimension (width/height) for any crop
+        
+    Yields:
+        tuple: (y_slice, x_slice) for each cropping step
+        
+    Raises:
+        ValueError: If parameters would result in invalid crops
+    """
+    # Get image dimensions
+    if isinstance(image_shape, np.ndarray):
+        height, width = image_shape.shape[:2]
+    else:
+        height, width = image_shape[:2]
+    
+    # Validate parameters
+    if total_percent_crop <= 0 or total_percent_crop >= 50:
+        raise ValueError(f"total_percent_crop must be between 0 and 50, got {total_percent_crop}")
+    if steps <= 0:
+        raise ValueError(f"steps must be greater than 0, got {steps}")
+    
+    # Calculate per-step crop percentage
+    per_step_percent = total_percent_crop / steps
+    
+    # Check if any step would create too small crops
+    smallest_height = height * (1 - 2 * (total_percent_crop / 100))
+    smallest_width = width * (1 - 2 * (total_percent_crop / 100))
+    
+    if smallest_height < min_dimension or smallest_width < min_dimension:
+        raise ValueError(f"Cropping parameters would result in dimensions smaller than {min_dimension}px " 
+                         f"(would be {smallest_width:.1f}x{smallest_height:.1f})")
+    
+    # Start with the full image (step 0)
+    yield slice(0, height), slice(0, width)
+    
+    # Generate progressive crops
+    for step in range(1, steps + 1):
+        # Calculate the crop amount for this step (as a fraction of image size)
+        crop_fraction = (step * per_step_percent) / 100.0
+        
+        # Ensure we're not cropping beyond the image bounds
+        if crop_fraction >= 0.5:  # Can't crop more than half from each side
+            break
+        
+        # Calculate slice boundaries
+        top = int(height * crop_fraction)
+        bottom = int(height * (1 - crop_fraction))
+        left = int(width * crop_fraction)
+        right = int(width * (1 - crop_fraction))
+        
+        # Validate the crop dimensions
+        crop_height = bottom - top
+        crop_width = right - left
+        
+        if crop_height <= 0 or crop_width <= 0:
+            raise ValueError(f"Invalid crop dimensions at step {step}: {crop_width}x{crop_height}")
+        
+        if crop_height < min_dimension or crop_width < min_dimension:
+            break  # Stop generating crops when they become too small
+        
+        # Create and yield slices
+        y_slice = slice(top, bottom)
+        x_slice = slice(left, right)
+        
+        yield y_slice, x_slice
+
+def apply_crop_slice(image, slice_pair):
+    """
+    Apply a crop slice to an image.
+    
+    Args:
+        image: Input image
+        slice_pair: Tuple of (y_slice, x_slice)
+        
+    Returns:
+        numpy.ndarray: Cropped image
+    """
+    y_slice, x_slice = slice_pair
+    return image[y_slice, x_slice]
+
+def test_cropping_animation(num_test_cases=5):
+    """
+    Test function that demonstrates the crop_inward_slices generator with animated visualization.
+    Runs multiple test cases with random parameters.
+    
+    Args:
+        num_test_cases: Number of different parameter combinations to test
+    """
+    import random
+    import time
+    
+    print("Starting crop animation test...")
+    print("Press 'ESC' at any time to exit, any other key to proceed to next test case")
+    
+    # Counter for successful tests
+    successful_tests = 0
+    
+    for test_case in range(num_test_cases):
+        try:
+            # Create a test image with random dimensions
+            width = random.randint(400, 800)
+            height = random.randint(300, 600)
+            
+            # Randomly choose between test_image and plasma_image
+            if random.choice([True, False]):
+                test_image = create_test_image(width, height)
+                image_type ="Shape"
+            else:
+                test_image = create_plasma_image(width, height)
+                image_type ="Plasma"
+            
+            # Random cropping parameters
+            total_percent_crop = random.uniform(10, 45)  # Between 10% and 45%
+            steps = random.randint(5, 15)  # Between 5 and 15 steps
+            
+            # Create window with parameters displayed in title
+            window_name = f"Test {test_case+1}/{num_test_cases}: {image_type} Image, {width}x{height}, Crop {total_percent_crop:.1f}%, {steps} steps"
+            cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+            
+            # Display original image first
+            cv2.imshow(window_name, test_image)
+            if cv2.waitKey(500) == 27:  # Wait 500ms, exit on ESC
+                break
+            
+            # Get crop generator
+            crop_gen = crop_inward_slices(test_image, total_percent_crop, steps)
+            
+            # Skip the first yield (full image) since we already displayed it
+            next(crop_gen)
+            
+            # Display each crop with timing
+            for i, (y_slice, x_slice) in enumerate(crop_gen, 1):
+                # Apply crop
+                cropped = test_image[y_slice, x_slice]
+                
+                # Create info image with black border
+                h, w = cropped.shape[:2]
+                info_img = np.ones((h + 60, w, 3), dtype=np.uint8) * 255
+                info_img[60:, :] = cropped
+                
+                # Add text with crop information
+                current_percent = (total_percent_crop * i) / steps
+                cv2.putText(
+                    info_img, 
+                    f"Step {i}/{steps}: Cropped {current_percent:.1f}% from each side", 
+                    (10, 30), 
+                    cv2.FONT_HERSHEY_SIMPLEX, 
+                    0.7, 
+                    (0, 0, 0), 
+                    2
+                )
+                
+                # Display
+                cv2.imshow(window_name, info_img)
+                
+                # Wait 100ms between frames, break if ESC pressed
+                key = cv2.waitKey(100)
+                if key == 27:  # ESC
+                    break
+            
+            # Final pause after sequence completes
+            key = cv2.waitKey(1000)
+            if key == 27:  # ESC
+                break
+                
+            # Clean up
+            cv2.destroyWindow(window_name)
+            successful_tests += 1
+            
+        except Exception as e:
+            print(f"Error in test case {test_case+1}: {str(e)}")
+    
+    # Final cleanup
+    cv2.destroyAllWindows()
+    print(f"\nCompleted {successful_tests} of {num_test_cases} test cases.")
+    
+    return successful_tests == num_test_cases
+
+def test_crop_stress(num_iterations=20):
+    """
+    Stress test for the crop_inward_slices generator with extreme parameters.
+    
+    Args:
+        num_iterations: Number of iterations to run
+    """
+    import random
+    
+    print("Starting crop stress test...")
+    
+    # Edge cases to test
+    edge_cases = [
+        # (total_percent_crop, steps)
+        (0.1, 1),        # Minimal crop, minimal steps
+        (49.9, 100),     # Maximum crop, many steps
+        (5, 50),         # Small crop, many steps
+        (45, 3),         # Large crop, few steps 
+        (25, 25),        # Medium values
+    ]
+    
+    # Track failures
+    failures = []
+    
+    # Test edge cases first
+    for i, (percent, step_count) in enumerate(edge_cases):
+        try:
+            # Create a test image with random dimensions
+            test_image = create_test_image(600, 400)
+            
+            # Get slices
+            slice_count = 0
+            for y_slice, x_slice in crop_inward_slices(test_image, percent, step_count):
+                # Apply crop to verify
+                cropped = test_image[y_slice, x_slice]
+                slice_count += 1
+                
+                # Basic validation
+                assert cropped.shape[0] > 0 and cropped.shape[1] > 0, "Empty crop generated"
+            
+            print(f"Edge case {i+1}: {percent}%, {step_count} steps - Generated {slice_count} valid slices")
+            
+        except Exception as e:
+            failures.append(f"Edge case {i+1} failed: {str(e)}")
+    
+    # Random parameter tests
+    for i in range(num_iterations):
+        try:
+            # Create random image
+            width = random.randint(10, 2000)   # Test tiny and large images
+            height = random.randint(10, 2000)
+            test_shape = (height, width, 3)
+            
+            # Random parameters, including edge values
+            percent = random.uniform(0.001, 49.999)
+            steps = random.randint(1, 100)
+            
+            # Get slices
+            slice_count = 0
+            for y_slice, x_slice in crop_inward_slices(test_shape, percent, steps):
+                # Validate slices
+                assert 0 <= y_slice.start < y_slice.stop <= height, f"Invalid y_slice: {y_slice}"
+                assert 0 <= x_slice.start < x_slice.stop <= width, f"Invalid x_slice: {x_slice}"
+                slice_count += 1
+            
+            if i % 5 == 0:  # Print only every 5th iteration to reduce output
+                print(f"Random test {i+1}: {width}x{height}, {percent:.2f}%, {steps} steps - Generated {slice_count} valid slices")
+            
+        except Exception as e:
+            failures.append(f"Random test {i+1} failed: {str(e)}")
+    
+    # Report results
+    if failures:
+        print("\nFailures detected:")
+        for failure in failures:
+            print(f"  - {failure}")
+        print(f"\n{len(failures)} tests failed out of {len(edge_cases) + num_iterations}")
+    else:
+        print(f"\nAll {len(edge_cases) + num_iterations} tests passed successfully!")
+    
+    return len(failures) == 0
+
+
+def run_crop_tests():
+    """Run both animation and stress tests for the cropping generator"""
+    print("=== Starting Crop Generator Tests ===\n")
+    
+    # Run animation test
+    print("\n--- Animation Test ---")
+    animation_success = test_cropping_animation(num_test_cases=3)
+    
+    # Run stress test
+    print("\n--- Stress Test ---")
+    stress_success = test_crop_stress(num_iterations=20)
+    
+    # Overall result
+    print("\n=== Test Results ===")
+    print(f"Animation Test: {'PASSED' if animation_success else 'FAILED'}")
+    print(f"Stress Test: {'PASSED' if stress_success else 'FAILED'}")
+    print(f"Overall: {'PASSED' if (animation_success and stress_success) else 'FAILED'}")
+    
+    return animation_success and stress_success
+
+
+
 # Run the plasma image demo
 # demo_plasma_images(num_images=5, delay=1000)  # 1 second delay between images
 
@@ -1336,4 +1613,19 @@ def demo_plasma_images(num_images=3, delay=1000):
 
 # Run the stress test with shape images
 # # Uncomment to run:
-# stress_test_embeddings(num_images=10000, bins_per_channel=8, show_visualizations=False)
+# Run the stress test with shape images
+# # Uncomment to run:
+# params = ImageEmbeddingParams(bins_per_channel=8)
+# stress_test_embeddings(num_images=50, params=params, show_visualizations=False)
+
+# # Verify mask functionality
+# test_masked_embedding()
+# # verify_mask_effect()  # Uncomment for more detailed testing
+
+# # Run stress test
+# params = ImageEmbeddingParams(bins_per_channel=8)
+# stress_test_embeddings(num_images=50, params=params, show_visualizations=True)
+
+if __name__ == "__main__":
+    run_crop_tests()
+
