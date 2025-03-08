@@ -1335,5 +1335,5 @@ def demo_plasma_images(num_images=3, delay=1000):
 # stress_test_with_plasma(num_images=100, bins_per_channel=4, show_visualizations=True)
 
 # Run the stress test with shape images
-# Uncomment to run:
-stress_test_embeddings(num_images=10000, bins_per_channel=8, show_visualizations=False)
+# # Uncomment to run:
+# stress_test_embeddings(num_images=10000, bins_per_channel=8, show_visualizations=False)
