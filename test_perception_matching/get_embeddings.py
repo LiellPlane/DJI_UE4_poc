@@ -2,6 +2,35 @@ import numpy as np
 import cv2
 import random
 from typing import List, Tuple, Literal, Optional, Union, Any
+from dataclasses import dataclass, asdict
+import json
+
+@dataclass
+class ImageEmbeddingParams:
+    """Parameters for image embedding generation, designed to be serializable."""
+    vertical: int = 10
+    horizontal: int = 9
+    overlap: int = 10
+    bins_per_channel: int = 8
+    center_histograms: bool = False
+    
+    def to_dict(self):
+        """Convert parameters to dictionary for serialization."""
+        return asdict(self)
+    
+    def to_json(self):
+        """Convert parameters to JSON string."""
+        return json.dumps(self.to_dict())
+    
+    @classmethod
+    def from_dict(cls, data):
+        """Create parameters from dictionary."""
+        return cls(**data)
+    
+    @classmethod
+    def from_json(cls, json_str):
+        """Create parameters from JSON string."""
+        return cls.from_dict(json.loads(json_str))
 
 def create_image_slices(image, vertical=10, horizontal=9, overlap=10) -> list[tuple[slice, slice, str]]:
     """
@@ -520,14 +549,14 @@ def calculate_slice_histograms(
 
 def create_image_embedding(
     image, 
+    params: ImageEmbeddingParams = None,
     vertical: int = 10, 
     horizontal: int = 9, 
     overlap: int = 10, 
     bins_per_channel: int = 8,
     mask: Optional[np.ndarray] = None,
-    concatenate: bool = True,
     center_histograms: bool = False
-) -> Union[np.ndarray, List[np.ndarray]]:
+) -> np.ndarray:
     """
     Create an image embedding by calculating histograms for slices of the image.
     
@@ -535,6 +564,8 @@ def create_image_embedding(
     -----------
     image : numpy.ndarray
         Input image
+    params : ImageEmbeddingParams, optional
+        Parameters as a dataclass object (overrides individual parameters if provided)
     vertical : int
         Number of vertical stripes
     horizontal : int
@@ -545,18 +576,23 @@ def create_image_embedding(
         Number of bins per color channel for histogram
     mask : numpy.ndarray, optional
         Optional mask for the image
-    concatenate : bool
-        If True, concatenate all histograms into a single feature vector
     center_histograms : bool
         If True, center histograms by subtracting the mean, making
         cosine similarity behave more like correlation
         
     Returns:
     --------
-    numpy.ndarray or List[numpy.ndarray]
-        If concatenate=True: single feature vector for the image
-        If concatenate=False: list of histogram vectors for each slice
+    numpy.ndarray
+        Feature vector representing the image as concatenated histograms
     """
+    # Use params object if provided, otherwise use individual parameters
+    if params is not None:
+        vertical = params.vertical
+        horizontal = params.horizontal
+        overlap = params.overlap
+        bins_per_channel = params.bins_per_channel
+        center_histograms = params.center_histograms
+    
     # Create the slices
     slices = create_image_slices(image, vertical, horizontal, overlap)
     
@@ -565,11 +601,8 @@ def create_image_embedding(
         image, slices, bins_per_channel, mask, center_histograms
     )
     
-    # Optionally concatenate into a single feature vector
-    if concatenate:
-        return np.concatenate(histograms) if histograms else np.array([])
-    else:
-        return histograms
+    # Always concatenate into a single feature vector
+    return np.concatenate(histograms) if histograms else np.array([])
 
 def cosine_similarity(vector1: np.ndarray, vector2: np.ndarray) -> float:
     """
@@ -598,7 +631,13 @@ def cosine_similarity(vector1: np.ndarray, vector2: np.ndarray) -> float:
     # Calculate cosine similarity
     return np.dot(vector1, vector2) / (norm1 * norm2)
 
-def compare_images_for_vector_db(image1, image2, center_histograms: bool = True, **kwargs) -> float:
+def compare_images_for_vector_db(
+    image1, 
+    image2, 
+    params: ImageEmbeddingParams = None,
+    center_histograms: bool = True, 
+    **kwargs
+) -> float:
     """
     Compare two images using cosine similarity for vector database compatibility.
     
@@ -608,6 +647,8 @@ def compare_images_for_vector_db(image1, image2, center_histograms: bool = True,
         First input image
     image2 : numpy.ndarray
         Second input image
+    params : ImageEmbeddingParams, optional
+        Parameters as a dataclass object (overrides other parameters if provided)
     center_histograms : bool
         If True, center histograms before comparison to make
         cosine similarity behave more like correlation
@@ -619,12 +660,21 @@ def compare_images_for_vector_db(image1, image2, center_histograms: bool = True,
     float
         Similarity score between the two images (higher means more similar)
     """
-    # Update kwargs with center_histograms parameter
-    kwargs['center_histograms'] = center_histograms
+    # If params is provided, use it, otherwise construct kwargs
+    if params is not None:
+        # Update kwargs with center_histograms if it's not in params
+        embedding_params = params
+    else:
+        # Update kwargs with center_histograms parameter
+        kwargs['center_histograms'] = center_histograms
     
     # Get embeddings for both images
-    embedding1 = create_image_embedding(image1, **kwargs)
-    embedding2 = create_image_embedding(image2, **kwargs)
+    if params is not None:
+        embedding1 = create_image_embedding(image1, params=embedding_params, mask=kwargs.get('mask'))
+        embedding2 = create_image_embedding(image2, params=embedding_params, mask=kwargs.get('mask'))
+    else:
+        embedding1 = create_image_embedding(image1, **kwargs)
+        embedding2 = create_image_embedding(image2, **kwargs)
     
     # Handle empty embeddings
     if embedding1.size == 0 or embedding2.size == 0:
@@ -870,6 +920,7 @@ def stress_test_embeddings(
     
     # Process multiple random images
     for i in range(num_images):
+        print(i)
         img_start_time = time.time()
         
         # Create a random test image with random dimensions
@@ -1285,4 +1336,4 @@ def demo_plasma_images(num_images=3, delay=1000):
 
 # Run the stress test with shape images
 # Uncomment to run:
-stress_test_embeddings(num_images=100, bins_per_channel=8, show_visualizations=True)
+stress_test_embeddings(num_images=10000, bins_per_channel=8, show_visualizations=False)
