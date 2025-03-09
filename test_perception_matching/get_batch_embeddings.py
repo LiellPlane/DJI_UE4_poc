@@ -1,23 +1,62 @@
 import os
 import pathlib
-from typing import List, Optional
 import multiprocessing as mp
 import cv2
 import time
-import generate_embeddings
+import gc
 import numpy as np
 from dataclasses import dataclass
-
+import generate_embeddings
+import psutil
+import pickle
 @dataclass
 class HSEmbeddingResult:
     """Data class for storing successful embedding results"""
     filename: str
+    shape: str
     embedding: np.ndarray
     mask: bool
     params: generate_embeddings.ImageEmbeddingParams
 
+def get_image_filepaths_from_folders(target_folders: list[str]) -> list[str]:
+    """
+    Find all image files in the specified folders and their subfolders.
+    
+    Args:
+        target_folders (list[str]): List of folder paths to search for images
+    
+    Returns:
+        list[str]: List of absolute paths to all found image files
+    """
+    # Common image file extensions
+    image_extensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp']
+    
+    # Final list of all image paths
+    all_image_files = []
+    
+    for folder in target_folders:
+        folder_path = pathlib.Path(folder).resolve()
+        
+        # Check if the folder exists
+        if not folder_path.exists():
+            print(f"Warning: The directory {folder_path} does not exist, skipping")
+            continue
+        
+        if not folder_path.is_dir():
+            print(f"Warning: {folder_path} is not a directory, skipping")
+            continue
+            
+        # Find all image files recursively
+        for ext in image_extensions:
+            # Search for lowercase extensions
+            all_image_files.extend(list(folder_path.glob(f"**/*{ext}")))
+            # Search for uppercase extensions
+            all_image_files.extend(list(folder_path.glob(f"**/*{ext.upper()}")))
+    
+    # Convert Path objects to strings and return
+    return [str(file_path) for file_path in all_image_files]
 
-def get_image_filepaths() -> List[str]:
+def get_image_filepaths_localtest() -> list[str]:
     """
     Get absolute filepaths of all images in the 'test_images' directory
     which is located in the same directory as this script.
@@ -78,6 +117,15 @@ def worker(queue_in, queue_out):
         queue_in: Queue to get image paths from
         queue_out: Queue to put processed results to
     """
+    # Create image embedding parameters - explicitly define all parameters
+    params = generate_embeddings.ImageEmbeddingParams(
+        vertical=10,
+        horizontal=9,
+        overlap=10,
+        bins_per_channel=8,
+        center_histograms=True
+    )
+    
     while True:
         filepath = queue_in.get()
         if filepath is None:  # None is our signal to stop
@@ -88,21 +136,25 @@ def worker(queue_in, queue_out):
             _, img = load_image(filepath)
             if img is not None:
                 # Include image shape in the output message
-                # height, width, channels = img.shape  # OpenCV images have shape (height, width, channels)
-                # mask = generate_embeddings.create_circular_mask(img.shape)
+                height, width, channels = img.shape
+                
+                # Set mask to None for now (can be customized if needed)
                 mask = None
+                
+                # Create embedding using explicit parameters
                 embedding = generate_embeddings.create_image_embedding(
                     img, 
-                    generate_embeddings.ImageEmbeddingParams(),
-                    mask
+                    params=params,
+                    mask=mask
                 )
                 
                 # Create an EmbeddingResult with the numpy array
                 result = HSEmbeddingResult(
-                    filename=filepath,
+                    filename=filepath,  # Store full filepath
+                    shape=f"{height}x{width}x{channels}",
                     embedding=embedding,
-                    mask=True if mask is not None else False,
-                    params=generate_embeddings.ImageEmbeddingParams()
+                    mask=mask is not None,
+                    params=params
                 )
                 queue_out.put(result)
             else:
@@ -133,116 +185,237 @@ def producer(image_paths, queue_in, num_processes):
         queue_in.put(None)
 
 
+def process_batch(image_paths):
+    """
+    Process a single batch of images using multiprocessing.
+    
+    Args:
+        image_paths: List of image paths for this batch
+        
+    Returns:
+        list: List of processing results
+    """
+    # Set up multiprocessing resources
+    num_processes = max(1, mp.cpu_count() - 3)
+    queue_in = mp.Queue(maxsize=5)
+    queue_out = mp.Queue(maxsize=5)
+    
+    # Start worker processes
+    processes = []
+    for _ in range(num_processes):
+        p = mp.Process(target=worker, args=(queue_in, queue_out))
+        p.daemon = True
+        p.start()
+        processes.append(p)
+    
+    # Start producer in separate process
+    producer_process = mp.Process(
+        target=producer, 
+        args=(image_paths, queue_in, num_processes)
+    )
+    producer_process.start()
+    
+    # Collect results with progress tracking
+    results = []
+    completed_workers = 0
+    start_time = time.time()
+    last_update_time = start_time
+    update_interval = 1.0  # Update progress every second
+    total_images = len(image_paths)
+    
+    while completed_workers < num_processes:
+        try:
+            result = queue_out.get(timeout=0.1)
+            
+            if result is None:
+                completed_workers += 1
+            elif isinstance(result, Exception):
+                # Log exceptions but continue processing
+                print(f"\nError: {type(result).__name__}: {str(result)}")
+            elif isinstance(result, HSEmbeddingResult):
+                results.append(result)
+            
+            # Update progress periodically
+            current_time = time.time()
+            if current_time - last_update_time >= update_interval:
+                elapsed_time = current_time - start_time
+                processed_count = len(results)
+                percent_complete = (processed_count / total_images) * 100
+                
+                if elapsed_time > 0:
+                    rate = processed_count / elapsed_time
+                    eta = (total_images - processed_count) / rate if rate > 0 else 0
+                    
+                    # Report current memory usage
+                    process = psutil.Process()
+                    memory_usage = process.memory_info().rss / 1024 / 1024  # MB
+                    
+                    # Clear line and print updated progress
+                    print(f"\rProgress: {percent_complete:.1f}% ({processed_count}/{total_images}) " 
+                          f"| Rate: {rate:.1f} img/s | ETA: {eta:.1f}s | Mem: {memory_usage:.1f}MB ", end="")
+                
+                last_update_time = current_time
+            
+        except mp.queues.Empty:
+            # Queue is empty but workers might still be processing
+            continue
+    
+    # Print newline after progress updates
+    print()
+    
+    # Clean up processes
+    producer_process.join()
+    for p in processes:
+        p.join()
+    
+    # Empty any remaining items in queues (cleanup)
+    while not queue_in.empty():
+        try:
+            queue_in.get_nowait()
+        except:
+            pass
+            
+    while not queue_out.empty():
+        try:
+            queue_out.get_nowait()
+        except:
+            pass
+    
+    return results
+
+
+def process_in_batches(all_image_paths, batch_size=50000, output_path="embeddings"):
+    """
+    Process images in batches to prevent memory issues.
+    
+    Args:
+        all_image_paths: List of all image paths to process
+        batch_size: Number of images to process in each batch
+        output_path: Directory to save batch results
+    """
+    # Ensure output directory exists
+    os.makedirs(output_path, exist_ok=True)
+    
+    total_images = len(all_image_paths)
+    batch_results_meta = []
+    
+    # Calculate number of batches
+    num_batches = (total_images + batch_size - 1) // batch_size
+    
+    overall_start_time = time.time()
+    
+    for batch_num in range(num_batches):
+        batch_start_time = time.time()
+        
+        # Calculate start and end indices for this batch
+        start_idx = batch_num * batch_size
+        end_idx = min(start_idx + batch_size, total_images)
+        current_batch_size = end_idx - start_idx
+        
+        print(f"\n=== Processing Batch {batch_num+1}/{num_batches} ({current_batch_size} images) ===")
+        print(f"Batch range: {start_idx} to {end_idx-1}\n")
+        
+        # Track memory usage before batch
+        process = psutil.Process()
+        mem_before = process.memory_info().rss / 1024 / 1024  # MB
+        
+        try:
+            # Get the paths for this batch
+            batch_paths = all_image_paths[start_idx:end_idx]
+            
+            # Process this batch
+            batch_results = process_batch(batch_paths)
+            
+            # Generate batch output filename
+            batch_filename = f"batch_{batch_num+1}_of_{num_batches}.pickle"
+            batch_filepath = os.path.join(output_path, batch_filename)
+            
+            # ===== Persistence logic =====
+            # This is where you would add your code to save the results
+            # Example:
+            # save_embeddings_to_file(batch_results, batch_filepath)
+            print(f"\nSaving {len(batch_results)} embeddings to {batch_filepath}")
+            # Uncomment and implement your saving logic:
+            with open(batch_filepath, 'wb') as f:
+                pickle.dump(batch_results, f)
+            
+            # Add metadata about this batch
+            batch_results_meta.append({
+                "batch_num": batch_num + 1,
+                "filename": batch_filename,
+                "images_processed": len(batch_results),
+                "start_idx": start_idx,
+                "end_idx": end_idx - 1
+            })
+        
+        except Exception as e:
+            print(f"\nERROR processing batch {batch_num+1}: {str(e)}")
+        
+        # Track memory and timing after batch
+        mem_after = process.memory_info().rss / 1024 / 1024  # MB
+        batch_duration = time.time() - batch_start_time
+        
+        # Report on batch completion
+        print(f"\nBatch {batch_num+1} completed in {batch_duration:.1f} seconds")
+        print(f"Memory: {mem_before:.1f}MB → {mem_after:.1f}MB (Δ{mem_after-mem_before:.1f}MB)")
+        
+        # Force garbage collection
+        del batch_results
+        gc.collect()
+        
+        # Report memory after garbage collection
+        mem_after_gc = process.memory_info().rss / 1024 / 1024
+        print(f"Memory after GC: {mem_after_gc:.1f}MB (Δ{mem_after_gc-mem_after:.1f}MB)")
+        
+        # If there are more batches, add a small delay to ensure resources are released
+        if batch_num < num_batches - 1:
+            time.sleep(1)
+    
+    # Report overall completion
+    total_duration = time.time() - overall_start_time
+    print(f"\n=== All batches completed in {total_duration:.1f} seconds ===")
+    print(f"Processed {total_images} images in {num_batches} batches")
+    
+    # Create a summary file with metadata about all batches
+    # summary_path = os.path.join(output_path, "batch_summary.json")
+    # with open(summary_path, 'w') as f:
+    #     json.dump(batch_results_meta, f, indent=2)
+    
+    return batch_results_meta
+
+
 def main():
     """
-    Main function to demonstrate parallel image loading with a queue
+    Main function to process images in batches
     """
     try:
         # Get all image filepaths
-        image_paths = get_image_filepaths()
+        image_paths = get_image_filepaths_from_folders(
+            [
+                r"D:\temp_match_imgs\matchable",
+                r"D:\temp_match_imgs\Flowers",
+                r"D:\temp_match_imgs\pokemoncards"
+                ]
+                )
         original_count = len(image_paths)
         print(f"Found {original_count} images in test_images directory")
         
-        # Simple replication to create ~500,000 paths (all pointing to real files)
-        if original_count > 0:
-            image_paths = image_paths * (500 // original_count + 1)
+        # # Simple replication to create test dataset (can be removed for real use)
+        # if original_count > 0 and original_count < 500:
+        #     image_paths = image_paths * (500 // original_count + 1)
+        #     image_paths = image_paths[:500]  # Limit to 500k for testing
         
         total_images = len(image_paths)
         print(f"Created test dataset with {total_images} image paths")
         
-        # Determine number of processes to use (leave one core for the main process)
-        num_processes = max(1, mp.cpu_count() - 3)
-        print(f"Starting {num_processes} worker processes")
-        
-        # Create input and output queues, both with maximum size of 5
-        queue_in = mp.Queue(maxsize=5)
-        queue_out = mp.Queue(maxsize=5)  # Output queue also blocks at size 5
-        
-        # Start worker processes
-        processes = []
-        for _ in range(num_processes):
-            p = mp.Process(target=worker, args=(queue_in, queue_out))
-            p.daemon = True  # Process will terminate when main process exits
-            p.start()
-            processes.append(p)
-        
-        # Start producer in a separate process to avoid blocking
-        producer_process = mp.Process(
-            target=producer, 
-            args=(image_paths, queue_in, num_processes)
+        # Process all images in batches of 50,000
+        batch_results = process_in_batches(
+            image_paths,
+            batch_size=50000,
+            output_path="embeddings_output"
         )
-        producer_process.start()
         
-        # Collect results from the output queue with progress tracking
-        results = []
-        completed_workers = 0
-        start_time = time.time()
-        last_update_time = start_time
-        update_interval = 1.0  # Update progress every second
-        
-        while completed_workers < num_processes:
-            try:
-                # Use a small timeout to allow for regular progress updates
-                result = queue_out.get(timeout=0.1)
-                
-                if result is None:
-                    completed_workers += 1
-                elif isinstance(result, Exception):
-                    # Simply handle exceptions by type
-                    print(f"\nError: {type(result).__name__}: {str(result)}")
-                    results.append(f"error: {type(result).__name__}")
-                elif isinstance(result, HSEmbeddingResult):
-                    # Handle successful results
-                    results.append(result)
-                else:
-                    # Handle any other type (like legacy string messages)
-                    results.append(result)
-                
-                # Update progress periodically
-                current_time = time.time()
-                if current_time - last_update_time >= update_interval:
-                    elapsed_time = current_time - start_time
-                    processed_count = len(results)
-                    percent_complete = (processed_count / total_images) * 100
-                    
-                    if elapsed_time > 0:
-                        rate = processed_count / elapsed_time
-                        eta = (total_images - processed_count) / rate if rate > 0 else 0
-                        
-                        # Clear line and print updated progress
-                        print(f"\rProgress: {percent_complete:.1f}% ({processed_count}/{total_images}) " 
-                              f"| Rate: {rate:.1f} img/s | ETA: {eta:.1f}s ", end="")
-                    
-                    last_update_time = current_time
-            
-            except mp.queues.Empty:
-                # Queue is empty but workers might still be processing
-                continue
-        
-        # Print newline after progress updates
-        print()
-        
-        # Wait for all processes to finish
-        producer_process.join()
-        for p in processes:
-            p.join()
-        
-        # Final statistics
-        total_time = time.time() - start_time
-        print(f"\nCompleted processing {len(results)} images in {total_time:.2f} seconds")
-        print(f"Average processing rate: {len(results)/total_time:.1f} images/second")
-        
-        # Print a sample of results
-        if results:
-            print("\nSample of processed files:")
-            for result in results[:5]:
-                if isinstance(result, HSEmbeddingResult):
-                    print(f"  - Success: {result.filename}  | "
-                          f"Embedding shape: {result.embedding.shape}")
-                elif isinstance(result, Exception):
-                    print(f"  - Error: {type(result).__name__}: {str(result)}")
-                else:
-                    print(f"  - {result}")
+        print(f"\nProcessed {len(batch_results)} batches successfully")
         
     except Exception as e:
         print(f"Error in main: {e}")
