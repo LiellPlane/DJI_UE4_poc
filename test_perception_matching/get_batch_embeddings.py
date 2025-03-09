@@ -12,7 +12,6 @@ from dataclasses import dataclass
 class HSEmbeddingResult:
     """Data class for storing successful embedding results"""
     filename: str
-    shape: str
     embedding: np.ndarray
     mask: bool
     params: generate_embeddings.ImageEmbeddingParams
@@ -89,9 +88,9 @@ def worker(queue_in, queue_out):
             _, img = load_image(filepath)
             if img is not None:
                 # Include image shape in the output message
-                filename = os.path.basename(filepath)
-                height, width, channels = img.shape  # OpenCV images have shape (height, width, channels)
-                mask = generate_embeddings.create_circular_mask(img.shape)
+                # height, width, channels = img.shape  # OpenCV images have shape (height, width, channels)
+                # mask = generate_embeddings.create_circular_mask(img.shape)
+                mask = None
                 embedding = generate_embeddings.create_image_embedding(
                     img, 
                     generate_embeddings.ImageEmbeddingParams(),
@@ -100,16 +99,15 @@ def worker(queue_in, queue_out):
                 
                 # Create an EmbeddingResult with the numpy array
                 result = HSEmbeddingResult(
-                    filename=filename,
-                    shape=f"{height}x{width}x{channels}",
+                    filename=filepath,
                     embedding=embedding,
-                    mask=True,
+                    mask=True if mask is not None else False,
                     params=generate_embeddings.ImageEmbeddingParams()
                 )
                 queue_out.put(result)
             else:
                 # Send the actual exception for failed images
-                queue_out.put(ValueError(f"Failed to load image: {os.path.basename(filepath)}"))
+                queue_out.put(ValueError(f"Failed to load image: {filepath}"))
         except Exception as e:
             # Send the actual exception that occurred
             queue_out.put(e)
@@ -147,7 +145,7 @@ def main():
         
         # Simple replication to create ~500,000 paths (all pointing to real files)
         if original_count > 0:
-            image_paths = image_paths * (9000 // original_count + 1)
+            image_paths = image_paths * (500 // original_count + 1)
         
         total_images = len(image_paths)
         print(f"Created test dataset with {total_images} image paths")
@@ -239,7 +237,7 @@ def main():
             print("\nSample of processed files:")
             for result in results[:5]:
                 if isinstance(result, HSEmbeddingResult):
-                    print(f"  - Success: {result.filename} | Shape: {result.shape} | "
+                    print(f"  - Success: {result.filename}  | "
                           f"Embedding shape: {result.embedding.shape}")
                 elif isinstance(result, Exception):
                     print(f"  - Error: {type(result).__name__}: {str(result)}")

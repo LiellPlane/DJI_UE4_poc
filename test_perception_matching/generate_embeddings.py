@@ -519,7 +519,7 @@ def calculate_slice_histograms(
 
 def create_image_embedding(
     image, 
-    params: ImageEmbeddingParams = None,
+    params: ImageEmbeddingParams,
     mask: Optional[np.ndarray] = None
 ) -> np.ndarray:
     """
@@ -539,10 +539,7 @@ def create_image_embedding(
     numpy.ndarray
         Feature vector representing the image as concatenated histograms
     """
-    # Use default parameters if none provided
-    if params is None:
-        params = ImageEmbeddingParams()
-    
+
     # Create the slices
     slices = create_image_slices(image, params.vertical, params.horizontal, params.overlap)
     
@@ -584,7 +581,7 @@ def cosine_similarity(vector1: np.ndarray, vector2: np.ndarray) -> float:
 def compare_images_for_vector_db(
     image1, 
     image2, 
-    params: ImageEmbeddingParams = None,
+    params: ImageEmbeddingParams,
     mask: Optional[np.ndarray] = None
 ) -> float:
     """
@@ -606,9 +603,7 @@ def compare_images_for_vector_db(
     float
         Similarity score between the two images (higher means more similar)
     """
-    # Use default parameters if none provided
-    if params is None:
-        params = ImageEmbeddingParams()
+
     
     # Get embeddings for both images
     embedding1 = create_image_embedding(image1, params=params, mask=mask)
@@ -1626,6 +1621,6 @@ def run_crop_tests():
 # params = ImageEmbeddingParams(bins_per_channel=8)
 # stress_test_embeddings(num_images=50, params=params, show_visualizations=True)
 
-if __name__ == "__main__":
-    run_crop_tests()
+# if __name__ == "__main__":
+#     run_crop_tests()
 
