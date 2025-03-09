@@ -411,7 +411,7 @@ def main():
         # Process all images in batches of 50,000
         batch_results = process_in_batches(
             image_paths,
-            batch_size=50000,
+            batch_size=5000,
             output_path="embeddings_output"
         )
         
