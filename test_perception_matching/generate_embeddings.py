@@ -8,8 +8,8 @@ import json
 @dataclass
 class ImageEmbeddingParams:
     """Parameters for image embedding generation, designed to be serializable."""
-    vertical: int = 10
-    horizontal: int = 9
+    vertical: int = 5
+    horizontal: int = 5
     overlap: int = 10
     bins_per_channel: int = 8
     center_histograms: bool = False

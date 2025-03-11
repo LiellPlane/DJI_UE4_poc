@@ -9,14 +9,18 @@ from dataclasses import dataclass
 import generate_embeddings
 import psutil
 import pickle
+import uuid  # Added UUID library
+
+
 @dataclass
 class HSEmbeddingResult:
     """Data class for storing successful embedding results"""
     filename: str
-    shape: str
     embedding: np.ndarray
     mask: bool
     params: generate_embeddings.ImageEmbeddingParams
+    uuid: str
+    
 
 def get_image_filepaths_from_folders(target_folders: list[str]) -> list[str]:
     """
@@ -150,11 +154,11 @@ def worker(queue_in, queue_out):
                 
                 # Create an EmbeddingResult with the numpy array
                 result = HSEmbeddingResult(
-                    filename=filepath,  # Store full filepath
-                    shape=f"{height}x{width}x{channels}",
+                    filename=filepath,
                     embedding=embedding,
                     mask=mask is not None,
-                    params=params
+                    params=params.to_json(),
+                    uuid=str(uuid.uuid4())
                 )
                 queue_out.put(result)
             else:
