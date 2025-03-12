@@ -123,8 +123,8 @@ def worker(queue_in, queue_out):
     """
     # Create image embedding parameters - explicitly define all parameters
     params = generate_embeddings.ImageEmbeddingParams(
-        vertical=10,
-        horizontal=9,
+        vertical=5,
+        horizontal=5,
         overlap=10,
         bins_per_channel=8,
         center_histograms=True
