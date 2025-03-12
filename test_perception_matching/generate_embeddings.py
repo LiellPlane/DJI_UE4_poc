@@ -8,8 +8,8 @@ import json
 @dataclass
 class ImageEmbeddingParams:
     """Parameters for image embedding generation, designed to be serializable."""
-    vertical: int = 5
-    horizontal: int = 5
+    vertical: int = 4
+    horizontal: int = 4
     overlap: int = 10
     bins_per_channel: int = 8
     center_histograms: bool = False
@@ -547,7 +547,8 @@ def create_image_embedding(
     histograms = calculate_slice_histograms(
         image, slices, params.bins_per_channel, mask, params.center_histograms
     )
-    
+    for histogram in histograms:
+        print(histogram.shape)
     # Always concatenate into a single feature vector
     return np.concatenate(histograms) if histograms else np.array([])
 
