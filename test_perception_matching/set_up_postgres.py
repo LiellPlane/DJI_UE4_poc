@@ -6,8 +6,8 @@ This script creates the necessary table if it doesn't already exist.
 
 import os
 import sys
-import psycopg2 # pip install psycopg2-binary --force-reinstall --no-cache-dir
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import psycopg # pip install psycopg2-binary --force-reinstall --no-cache-dir
+# from psycopg.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # Set this to True to drop and recreate the database
 DROP_EXISTING_DATABASE = True
@@ -25,14 +25,14 @@ def create_vector_table():
     # Connect to PostgreSQL server
     try:
         # First connect to default database to check if our database exists
-        conn = psycopg2.connect(
+        conn = psycopg.connect(
             host=db_host,
             port=db_port,
             user=db_user,
             password=db_password,
-            database="postgres"
+            dbname="postgres",
+            autocommit=True  # Set autocommit to True for database operations
         )
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = conn.cursor()
         
         # Check if database exists
@@ -62,12 +62,12 @@ def create_vector_table():
         conn.close()
         
         # Connect to the vector database
-        conn = psycopg2.connect(
+        conn = psycopg.connect(
             host=db_host,
             port=db_port,
             user=db_user,
             password=db_password,
-            database=db_name
+            dbname=db_name
         )
         cursor = conn.cursor()
         
@@ -80,7 +80,7 @@ def create_vector_table():
             id SERIAL PRIMARY KEY,
             uuid UUID NOT NULL UNIQUE,
             filename TEXT NOT NULL,
-            embedding vector(2000),
+            embedding halfvec(2160),
             params JSONB,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
         )
@@ -89,9 +89,9 @@ def create_vector_table():
         # Create index for faster similarity search
         cursor.execute("""
         CREATE INDEX IF NOT EXISTS embedding_idx ON embeddings 
-        USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100)
+        USING ivfflat (embedding halfvec_cosine_ops) WITH (lists = 100)
         """)
-        
+        # halfvec_l2_ops
         conn.commit()
         print("Vector database table setup completed successfully.")
         

@@ -126,7 +126,7 @@ def worker(queue_in, queue_out):
         vertical=5,
         horizontal=5,
         overlap=10,
-        bins_per_channel=8,
+        bins_per_channel=6,
         center_histograms=True
     )
     
@@ -151,7 +151,7 @@ def worker(queue_in, queue_out):
                     params=params,
                     mask=mask
                 )
-                
+                print(embedding.shape)
                 # Create an EmbeddingResult with the numpy array
                 result = HSEmbeddingResult(
                     filename=filepath,

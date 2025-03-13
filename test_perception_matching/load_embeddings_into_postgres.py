@@ -84,6 +84,7 @@ def load_pickle_files():
         inserted_embeddings = 0
         skipped_files = 0
         failed_files = 0  # Make sure this is initialized
+        processed_files = 0  # Add this line to initialize the counter
         batch_size = 100  # Process files in batches of this size
         
         for i in range(0, len(pickle_files), batch_size):
@@ -102,45 +103,30 @@ def load_pickle_files():
                     # Handle the list of HSEmbeddingResult objects
                     if isinstance(embedding_results, list):
                         for result in embedding_results:
-                            # Check if this is an HSEmbeddingResult object
-                            if hasattr(result, 'filename') and hasattr(result, 'embedding'):
-                                # Extract the fields we need
-                                image_filename = result.filename
-                                embedding_vector = result.embedding
-                                
-                                # Convert numpy array to list for JSON serialization
-                                if isinstance(embedding_vector, np.ndarray):
-                                    embedding_vector = embedding_vector.tolist()
-                                
-                                # Create params JSON
-                                params = {
-                                    'mask': result.mask
-                                }
-                                
-                                # Add params from the result if available
-                                if hasattr(result, 'params'):
-                                    if hasattr(result.params, '__dict__'):
-                                        # If params is an object, convert to dict
-                                        params.update(result.params.__dict__)
-                                    elif isinstance(result.params, dict):
-                                        # If params is already a dict
-                                        params.update(result.params)
-                                
-                                # Use the UUID from the result if available, otherwise generate one
-                                if hasattr(result, 'uuid') and result.uuid:
-                                    embedding_uuid = result.uuid
-                                else:
-                                    embedding_uuid = str(uuid.uuid4())
-                                
-                                # Add to batch
-                                data_to_insert.append((
-                                    embedding_uuid,
-                                    image_filename,
-                                    embedding_vector,
-                                    json.dumps(params, default=str)
-                                ))
-                                
-                                processed_embeddings += 1
+                            # Extract the fields - will break if any field is missing
+                            image_filename = result.filename
+                            embedding_vector = result.embedding.tolist()
+                            
+                            # Create params JSON
+                            # params = {
+                            #     'mask': result.mask
+                            # }
+                            
+                            # Add params from the result
+                            # params.update(result.params)
+                            
+                            # Use the UUID from the result
+                            embedding_uuid = result.uuid
+                            
+                            # Add to batch
+                            data_to_insert.append((
+                                embedding_uuid,
+                                image_filename,
+                                embedding_vector,
+                                json.dumps(result.params, default=str)
+                            ))
+                            
+                            processed_embeddings += 1
                     else:
                         print(f"Skipping {pickle_file}: Expected a list of HSEmbeddingResult objects")
                         continue
@@ -176,7 +162,7 @@ def load_pickle_files():
                 inserted_embeddings += len(data_to_insert)
                 print(f"Inserted {len(data_to_insert)} embeddings from batch")
             
-            processed_files += 1
+            processed_files += len(batch_files)  # Update to count actual files processed, not iterations
             if processed_files % 100 == 0:
                 print(f"Processed {processed_files} files...")
         
