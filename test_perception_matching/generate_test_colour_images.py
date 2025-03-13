@@ -19,6 +19,7 @@ def generate_random_colour_images(num_images, output_folder):
     min_height, max_height = 100, 600
     
     for i in range(num_images):
+        print(f"Generating image {i+1} of {num_images}")
         # Generate random dimensions
         width = random.randint(min_width, max_width)
         height = random.randint(min_height, max_height)
@@ -32,8 +33,8 @@ def generate_random_colour_images(num_images, output_folder):
         img_array = np.full((height, width, 3), [r, g, b], dtype=np.uint8)
         img = Image.fromarray(img_array)
         
-        # Save the image
-        filename = f"random_colour_{i+1:04d}.jpg"
+        # Save the image with colour values in the filename
+        filename = f"random_colour_r{r:03d}_g{g:03d}_b{b:03d}_{i+1:04d}.jpg"
         img.save(os.path.join(output_folder, filename))
         
     print(f"Generated {num_images} random colour images in {output_folder}")

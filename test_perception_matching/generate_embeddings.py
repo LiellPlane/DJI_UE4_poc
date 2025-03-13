@@ -547,8 +547,8 @@ def create_image_embedding(
     histograms = calculate_slice_histograms(
         image, slices, params.bins_per_channel, mask, params.center_histograms
     )
-    for histogram in histograms:
-        print(histogram.shape)
+    # for histogram in histograms:
+    #     print(histogram.shape)
     # Always concatenate into a single feature vector
     return np.concatenate(histograms) if histograms else np.array([])
 
