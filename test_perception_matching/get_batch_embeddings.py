@@ -371,7 +371,8 @@ def process_in_batches(all_image_paths, batch_size=50000, output_path="embedding
         mem_after_gc = process.memory_info().rss / 1024 / 1024
         print(f"Memory after GC: {mem_after_gc:.1f}MB (Δ{mem_after_gc-mem_after:.1f}MB)")
         
-        # If there are more batches, add a small delay to ensure resources are released
+        # If there are more batches, add a small
+        #  delay to ensure resources are released
         if batch_num < num_batches - 1:
             time.sleep(1)
     
@@ -394,15 +395,15 @@ def main():
     """
     try:
         # # Get all image filepaths
-        # image_paths = get_image_filepaths_from_folders(
-        #     [
-        #         r"D:\temp_match_imgs\matchable",
-        #         r"D:\temp_match_imgs\Flowers",
-        #         r"D:\temp_match_imgs\pokemoncards"
-        #         ]
-        #         )
         image_paths = get_image_filepaths_from_folders(
-            ["/Users/liell_p/GIT/DJI_UE4_poc/test_perception_matching/test_images_colour_seq"])
+            [
+                r"D:\temp_match_imgs\matchable",
+                r"D:\temp_match_imgs\Flowers",
+                r"D:\temp_match_imgs\pokemoncards"
+                ]
+                )
+        # image_paths = get_image_filepaths_from_folders(
+        #     ["/Users/liell_p/GIT/DJI_UE4_poc/test_perception_matching/test_images_colour_seq"])
         # image_paths = get_image_filepaths_localtest()
         original_count = len(image_paths)
         print(f"Found {original_count} images in test_images directory")
