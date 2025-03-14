@@ -15,4 +15,6 @@ docker pull qdrant/qdrant
 # Run the Qdrant container
    docker run -p 6333:6333 -p 6334:6334 -v qdrant_volume:/qdrant/storage qdrant/qdrant
 
-UI http://localhost:6333/dashboard#/collections/test_collection
+UI http://localhost:6333/dashboard
+
+#/collections/test_collection

@@ -10,6 +10,7 @@ import generate_embeddings
 import psutil
 import pickle
 import uuid  # Added UUID library
+from pathlib import Path
 
 
 @dataclass
@@ -85,8 +86,12 @@ def get_image_filepaths_localtest() -> list[str]:
     # Get all image files in the directory
     image_files = []
     for ext in image_extensions:
-        image_files.extend(list(test_images_dir.glob(f"*{ext}")))
-        image_files.extend(list(test_images_dir.glob(f"*{ext.upper()}")))  # For uppercase extensions
+        # Use a case-insensitive approach
+        lowercase_files = set(str(f) for f in test_images_dir.glob(f"*{ext}"))
+        uppercase_files = set(str(f) for f in test_images_dir.glob(f"*{ext.upper()}"))
+        # Combine both sets to eliminate duplicates
+        unique_files = lowercase_files.union(uppercase_files)
+        image_files.extend([Path(f) for f in unique_files])
     
     # Convert Path objects to strings
     return [str(file_path) for file_path in image_files]
@@ -127,7 +132,7 @@ def worker(queue_in, queue_out):
         horizontal=5,
         overlap=10,
         bins_per_channel=6,
-        center_histograms=True
+        center_histograms=False
     )
     
     while True:
@@ -151,7 +156,7 @@ def worker(queue_in, queue_out):
                     params=params,
                     mask=mask
                 )
-                print(embedding.shape)
+                
                 # Create an EmbeddingResult with the numpy array
                 result = HSEmbeddingResult(
                     filename=filepath,
@@ -395,15 +400,15 @@ def main():
     """
     try:
         # # Get all image filepaths
-        image_paths = get_image_filepaths_from_folders(
-            [
-                r"D:\temp_match_imgs\matchable",
-                r"D:\temp_match_imgs\Flowers",
-                r"D:\temp_match_imgs\pokemoncards"
-                ]
-                )
         # image_paths = get_image_filepaths_from_folders(
-        #     ["/Users/liell_p/GIT/DJI_UE4_poc/test_perception_matching/test_images_colour_seq"])
+        #     [
+        #         r"D:\temp_match_imgs\matchable",
+        #         r"D:\temp_match_imgs\Flowers",
+        #         r"D:\temp_match_imgs\pokemoncards"
+        #         ]
+        #         )
+        image_paths = get_image_filepaths_from_folders(
+            [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
         # image_paths = get_image_filepaths_localtest()
         original_count = len(image_paths)
         print(f"Found {original_count} images in test_images directory")

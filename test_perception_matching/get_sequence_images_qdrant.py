@@ -5,7 +5,7 @@ Module for Qdrant vector database connection and similarity search.
 
 import os
 from qdrant_client import QdrantClient, models
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue, ScoredPoint
 from typing import Optional, Tuple, List, Dict, Any
 import shutil
 from pathlib import Path
@@ -66,166 +66,210 @@ def get_random_item_with_closest_match(
     random_id = sampled.points[0].id
     vector = sampled.points[0].vector
     # Find closest matches (excluding the random item itself)
-    closest_matches_result = client.search(
+
+    zz = client.query_points(
         collection_name=collection_name,
-        query_vector=vector,
-        limit=limit+10,  # Get more results to filter from
-        with_payload=True,
-        query_filter=Filter(
-            must_not=[
-                FieldCondition(
-                    key="id",
-                    match=MatchValue(value=str(random_id))  # Ensure ID is string type
-                )
-            ]
-        )
+        query=vector, # <--- Dense vector
     )
-    
+
+    matched_item: ScoredPoint = zz.points[0]
 
     
-    # Add double check to ensure no duplicates
-    closest_matches = []
-    seen_ids = {random_id}  # Track already seen IDs
-    for match in closest_matches_result:
-        match_filename = match.payload.get("filename")
-        
-        # Skip duplicate IDs instead of raising exception
-        if match.id == random_id or match.id in seen_ids:
-            print(f"Skipping duplicate ID: {match.id}")
-            continue
-            
-        # Skip if this is somehow the same file (different ID but same file)
-        if match_filename == random_filename:
-            print(f"Skipping duplicate file: {match_filename}")
-            continue
-            
-        seen_ids.add(match.id)  # Track this ID
-        match_dict = {
-            "id": match.id,
-            "filename": match_filename,
-            "embedding": match.vector
-        }
-        closest_matches.append(match_dict)
-        
-        # Break once we have enough matches
-        if len(closest_matches) >= limit:
-            break
-    
-    # Verify we have unique items
-    if closest_matches:
-        print(f"Random item: {random_filename}")
-        print(f"Closest match: {closest_matches[0]['filename']}")
-    else:
-        print(f"Warning: No closest matches found for {random_filename}")
-    
-    return random_item_dict, closest_matches
+  
+    return vector, (random_id, random_filename), (matched_item.id, matched_item.payload.get("filename"))
 
 
 def get_sequence_of_closest_matches(
     client, 
-    collection_name: str = "embeddings", 
-    sequence_length: int = 100
+    collection_name: str, 
+    vector: List[float]
 ) -> List[Dict[str, Any]]:
     """
-    Get a sequence of closest matches, starting from a random item.
-    Each subsequent item is the closest match to the previous item,
-    excluding all items already in the sequence.
+    Get a sequence of closest matches to a vector, depleting the collection.
+    
+    This function repeatedly:
+    1. Finds the closest point to the input vector
+    2. Adds its payload to the result list
+    3. Deletes the point from the collection
+    4. Repeats until the collection is empty
     
     Args:
         client: Qdrant client
-        collection_name: Name of the collection containing vector data (default: embeddings)
-        sequence_length: Number of items in the sequence (default: 100)
+        collection_name: Name of the collection containing vector data
+        vector: Query vector to find similarities against
         
     Returns:
-        List of items forming a similarity chain.
+        List of payloads sorted by similarity to the input vector
     """
-    # Provide initial feedback with time estimate
-    print(f"Starting sequence generation of {sequence_length} items...")
-    print(f"Estimated time: {sequence_length/1000:.1f} to {sequence_length/500:.1f} minutes")
+    results = []
+    
+    # Get total count of points for progress reporting
+    collection_info = client.get_collection(collection_name=collection_name)
+    total_points = collection_info.points_count
+    print(f"Starting similarity sequence processing for {total_points} points")
+    
+    # Track progress and timing
     start_time = time.time()
+    last_update_time = start_time
+    processed_count = 0
     
-    # Get a random item to start the sequence
-    random_items = client.scroll(
-        collection_name=collection_name,
-        limit=1,
-        with_payload=True,
-        with_vectors=True
-    )
-    
-    if not random_items or not random_items[0]:
-        raise ValueError(f"No data found in collection {collection_name}")
-    
-    # Initialize sequence with the random item
-    current_item = random_items[0][0]
-    
-    # Convert to dictionary format
-    current_item_dict = {
-        "id": current_item.id,
-        "filename": current_item.payload.get("filename"),
-        "embedding": current_item.vector
-    }
-    
-    sequence = [current_item_dict]
-    excluded_ids = [current_item.id]
-    
-    # Process one item at a time to maintain the proper chain
-    for i in range(sequence_length - 1):
-        # Get current vector for similarity search
-        current_vector = current_item_dict["embedding"]
-        
-        # Find the closest match to the current item
-        search_results = client.search(
+    while True:
+        # Find the closest matching point
+        search_result = client.search(
             collection_name=collection_name,
-            query_vector=current_vector,
-            limit=100,  # Get more than needed to filter through already excluded
+            query_vector=vector,
+            limit=1,
             with_payload=True,
-            with_vectors=True,
-            query_filter=Filter(
-                must_not=[
-                    FieldCondition(
-                        key="id",
-                        match=MatchValue(value=str(id_val))
-                    ) for id_val in excluded_ids
-                ]
-            )
+            with_vectors=True
         )
         
-        if not search_results:
-            # No more matches found
+        # Check if we found any points
+        if not search_result:
             break
             
-        # Get the first non-excluded match
-        next_item = search_results[0]
+        # Get the closest point
+        point = search_result[0]
+        vector = point.vector
+        # Add the payload to our results
+        results.append(point.payload)
         
-        # Convert to dictionary format
-        next_item_dict = {
-            "id": next_item.id,
-            "filename": next_item.payload.get("filename"),
-            "embedding": next_item.vector
-        }
+        # Delete the point so it won't be found in the next iteration
+        client.delete(
+            collection_name=collection_name,
+            points_selector=models.PointIdsList(
+                points=[point.id]
+            ),
+            wait=True
+        )
         
-        sequence.append(next_item_dict)
-        excluded_ids.append(next_item.id)
+        # Update progress tracking
+        processed_count += 1
+        current_time = time.time()
         
-        # Update for next iteration
-        current_item_dict = next_item_dict
-        
-        # Provide progress updates
-        if (i + 1) % 10 == 0:
-            elapsed = time.time() - start_time
-            items_per_second = (i + 1) / elapsed if elapsed > 0 else 0
-            estimated_total = sequence_length / items_per_second if items_per_second > 0 else 0
-            remaining = max(0, estimated_total - elapsed)
+        # Print progress update every 10 seconds
+        if current_time - last_update_time >= 10:
+            elapsed_time = current_time - start_time
+            points_per_second = processed_count / elapsed_time if elapsed_time > 0 else 0
             
-            print(f"Processed {i + 1}/{sequence_length} items ({(i+1)/sequence_length*100:.1f}%)")
-            print(f"Speed: {items_per_second:.1f} items/sec, Est. remaining: {remaining/60:.1f} minutes")
-                
-    # Final timing information
+            # Estimate remaining time
+            remaining_points = total_points - processed_count
+            estimated_time_remaining = remaining_points / points_per_second if points_per_second > 0 else float('inf')
+            
+            # Format time remaining nicely
+            if estimated_time_remaining == float('inf'):
+                time_remaining_str = "unknown"
+            else:
+                hours, remainder = divmod(estimated_time_remaining, 3600)
+                minutes, seconds = divmod(remainder, 60)
+                time_remaining_str = f"{int(hours)}h {int(minutes)}m {int(seconds)}s"
+            
+            print(f"Progress: {processed_count}/{total_points} points ({processed_count/total_points*100:.1f}%) | "
+                  f"Speed: {points_per_second:.2f} points/sec | "
+                  f"Elapsed: {elapsed_time:.1f}s | "
+                  f"Est. remaining: {time_remaining_str}")
+            
+            # Update the last update time
+            last_update_time = current_time
+    
+    # Final progress report
     total_time = time.time() - start_time
-    print(f"Sequence generation complete: {len(sequence)} items in {total_time/60:.1f} minutes")
-            
-    return sequence
+    print(f"Completed processing {processed_count} points in {total_time:.1f} seconds "
+          f"({processed_count/total_time:.2f} points/sec)")
+    
+    return results
 
+def clone_collection(client, collection_name: str, new_collection_name: str, batch_size: int = 1000):
+    """
+    Clone a collection including all vectors and payloads to a new collection.
+    
+    Args:
+        client: Qdrant client
+        collection_name: Source collection name
+        new_collection_name: Destination collection name
+        batch_size: Number of points to process in each batch
+    """
+    # Check if destination collection already exists and delete it if it does
+    try:
+        client.get_collection(collection_name=new_collection_name)
+        print(f"Collection '{new_collection_name}' already exists. Deleting it...")
+        client.delete_collection(collection_name=new_collection_name)
+        print(f"Deleted existing collection: '{new_collection_name}'")
+    except Exception:
+        # Collection doesn't exist, which is fine
+        pass
+        
+    # Get source collection configuration
+    source_collection = client.get_collection(collection_name=collection_name)
+    vector_size = source_collection.config.params.vectors.size
+    vector_distance = source_collection.config.params.vectors.distance
+    
+    # Create new collection with the same vector configuration
+    print(f"Creating new collection '{new_collection_name}' with same configuration as '{collection_name}'")
+    client.create_collection(
+        collection_name=new_collection_name,
+        vectors_config=models.VectorParams(size=vector_size, distance=vector_distance),
+        on_disk_payload=True
+    )
+    
+    # We'll determine total count during processing
+    total_copied = 0
+    start_time = time.time()
+    offset = None  # Start with None for first batch
+    
+    print(f"Starting clone from '{collection_name}' to '{new_collection_name}'")
+    
+    while True:
+        batch_start_time = time.time()
+        
+        # Scroll through records in batches
+        points, next_offset = client.scroll(
+            collection_name=collection_name,
+            limit=batch_size,
+            offset=offset,  # This will be None for the first request
+            with_payload=True,
+            with_vectors=True
+        )
+        
+        if not points:
+            break  # No more points to process
+            
+        # Prepare batch of points to upload
+        points_to_upsert = [
+            models.PointStruct(
+                id=point.id,
+                vector=point.vector,
+                payload=point.payload
+            ) for point in points
+        ]
+        
+        # Upload batch to new collection
+        client.upsert(
+            collection_name=new_collection_name,
+            points=points_to_upsert,
+            wait=True  # Wait for this batch to be processed before continuing
+        )
+        
+        total_copied += len(points)
+        
+        # Print progress without percentages that might be misleading
+        elapsed = time.time() - start_time
+        batch_time = time.time() - batch_start_time
+        points_per_second = total_copied / elapsed if elapsed > 0 else 0
+        
+        print(f"Progress: {total_copied} points copied | " 
+              f"Speed: {points_per_second:.1f} points/sec | "
+              f"Batch time: {batch_time:.2f}s | "
+              f"Elapsed: {elapsed:.1f}s")
+        
+        # Use the returned next_offset value for the next iteration
+        offset = next_offset
+        
+        # If there is no next offset, we're done
+        if offset is None:
+            break
+    
+    # Final status
+    print(f"Successfully cloned {total_copied} points from '{collection_name}' to '{new_collection_name}'")
 
 def main():
     # Create image_sequence directory in the same location as this script
@@ -248,16 +292,19 @@ def main():
     print(f"Connected to Qdrant server")
     
     # Use "embeddings" as the collection name
-    random_item, closest_matches = get_random_item_with_closest_match(
+    vector, random_item, closest_matches = get_random_item_with_closest_match(
         client,
         collection_name="test_collection",
         limit=1
     )
+
+    print(f"Cloning collection test_collection to test_collection_clone")
+    clone_collection(client,collection_name="test_collection", new_collection_name="test_collection_clone")
     
     sequence = get_sequence_of_closest_matches(
         client,
-        collection_name="test_collection",
-        sequence_length=10
+        collection_name="test_collection_clone",
+        vector=vector
     )
     
     print(f"Generated sequence of {len(sequence)} items")

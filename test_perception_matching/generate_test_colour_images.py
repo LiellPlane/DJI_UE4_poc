@@ -47,4 +47,4 @@ if __name__ == "__main__":
     # Create output folder path by appending the folder name to script directory
     output_folder = os.path.join(script_dir, "test_images_colour_seq")
     
-    generate_random_colour_images(100, output_folder)
+    generate_random_colour_images(500, output_folder)
