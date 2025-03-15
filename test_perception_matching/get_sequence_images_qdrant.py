@@ -76,7 +76,7 @@ def get_random_item_with_closest_match(
 
     
   
-    return vector, (random_id, random_filename), (matched_item.id, matched_item.payload.get("filename"))
+    return vector, (random_id, random_filename), (matched_item.id, matched_item.payload.get("filename")), matched_item.payload
 
 
 def get_sequence_of_closest_matches(
@@ -292,7 +292,7 @@ def main():
     print(f"Connected to Qdrant server")
     
     # Use "embeddings" as the collection name
-    vector, random_item, closest_matches = get_random_item_with_closest_match(
+    vector, random_item, closest_matches, payload = get_random_item_with_closest_match(
         client,
         collection_name="test_collection",
         limit=1

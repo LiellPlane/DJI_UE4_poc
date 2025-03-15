@@ -202,7 +202,7 @@ def main():
     """Main function to run the Qdrant test script."""
     # Connect to Qdrant server
     client = QdrantClient(url="http://localhost:6333", timeout=120)  # Increased client timeout
-    collection_name = "test_collection"
+    collection_name = "everything"
     
     # Set up collection with the correct vector size (2160 instead of 1024)
     setup_collection(client, collection_name, vector_size=2160)
@@ -219,7 +219,7 @@ def main():
         success = load_embeddings_from_pickle(
             client, 
             collection_name,
-            batch_size=50,  # Further reduced batch size to 5
+            batch_size=500,  # Further reduced batch size to 5
             max_retries=3   # Allow retries
         )
         if success:

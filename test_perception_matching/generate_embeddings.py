@@ -14,6 +14,7 @@ class ImageEmbeddingParams:
     bins_per_channel: int = 8
     center_histograms: bool = False
     
+ 
     def to_dict(self):
         """Convert parameters to dictionary for serialization."""
         return asdict(self)
