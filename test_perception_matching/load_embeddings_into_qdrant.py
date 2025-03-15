@@ -9,7 +9,7 @@ import sys
 from pathlib import Path
 
 
-def setup_collection(client, collection_name, vector_size=1024):
+def setup_collection(client, collection_name, vector_size):
     """Set up a Qdrant collection, deleting it first if it already exists."""
     collections = client.get_collections().collections
     if any(collection.name == collection_name for collection in collections):
@@ -18,7 +18,7 @@ def setup_collection(client, collection_name, vector_size=1024):
 
     client.create_collection(
         collection_name=collection_name,
-        vectors_config=VectorParams(size=vector_size, distance=Distance.DOT),
+        vectors_config=VectorParams(size=vector_size, distance=Distance.COSINE),
     )
     print(f"Created collection '{collection_name}'")
 

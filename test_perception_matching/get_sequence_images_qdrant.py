@@ -112,7 +112,7 @@ def get_sequence_of_closest_matches(
     start_time = time.time()
     last_update_time = start_time
     processed_count = 0
-    
+    scores=[]
     while True:
         # Find the closest matching point
         search_result = client.search(
@@ -126,7 +126,7 @@ def get_sequence_of_closest_matches(
         # Check if we found any points
         if not search_result:
             break
-            
+        scores.append(search_result[0].score)
         # Get the closest point
         point = search_result[0]
         vector = point.vector
@@ -176,7 +176,7 @@ def get_sequence_of_closest_matches(
     print(f"Completed processing {processed_count} points in {total_time:.1f} seconds "
           f"({processed_count/total_time:.2f} points/sec)")
     
-    return results
+    return results, scores
 
 def clone_collection(client, collection_name: str, new_collection_name: str, batch_size: int = 1000):
     """
@@ -301,7 +301,7 @@ def main():
     print(f"Cloning collection test_collection to test_collection_clone")
     clone_collection(client,collection_name="test_collection", new_collection_name="test_collection_clone")
     
-    sequence = get_sequence_of_closest_matches(
+    sequence, scores = get_sequence_of_closest_matches(
         client,
         collection_name="test_collection_clone",
         vector=vector
@@ -315,15 +315,16 @@ def main():
         print(f"Created directory: {image_sequence_dir}")
     
     # Copy files with incrementing filenames
-    for i, item in enumerate(sequence):
+    for i, (item, score) in enumerate(zip(sequence, scores)):
         source_path = item["filename"]
+        score = str(score).replace(".", "_")
         # Create destination filename with leading zeros (7 digits)
-        dest_filename = f"{i+1:07d}.jpg"
+        dest_filename = f"{i+1:007d}_s{score}.jpg"
         dest_path = image_sequence_dir / dest_filename
         
         try:
             shutil.copy2(source_path, dest_path)
-            # print(f"Copied: {source_path} → {dest_path}")
+            # print(f"Copied: {source_path} → {dest_path}, Score: {score}")
         except Exception as e:
             print(f"Error copying {source_path}: {e}")
     

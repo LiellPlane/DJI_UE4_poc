@@ -51,12 +51,16 @@ def get_image_filepaths_from_folders(target_folders: list[str]) -> list[str]:
             print(f"Warning: {folder_path} is not a directory, skipping")
             continue
             
-        # Find all image files recursively
+        # Use a set to prevent duplicate files
+        found_image_files = set()
         for ext in image_extensions:
-            # Search for lowercase extensions
-            all_image_files.extend(list(folder_path.glob(f"**/*{ext}")))
-            # Search for uppercase extensions
-            all_image_files.extend(list(folder_path.glob(f"**/*{ext.upper()}")))
+            # Search for extensions in a case-insensitive way (once per extension)
+            files = list(folder_path.glob(f"**/*{ext}")) + list(folder_path.glob(f"**/*{ext.upper()}"))
+            # Convert to absolute paths and add to set to eliminate duplicates
+            found_image_files.update([str(f.absolute()) for f in files])
+
+        # Add the files from this folder to our total list
+        all_image_files.extend([Path(f) for f in found_image_files])
     
     # Convert Path objects to strings and return
     return [str(file_path) for file_path in all_image_files]
@@ -132,7 +136,7 @@ def worker(queue_in, queue_out):
         horizontal=5,
         overlap=10,
         bins_per_channel=6,
-        center_histograms=False
+        center_histograms=True
     )
     
     while True:
@@ -400,15 +404,15 @@ def main():
     """
     try:
         # # Get all image filepaths
-        # image_paths = get_image_filepaths_from_folders(
-        #     [
-        #         r"D:\temp_match_imgs\matchable",
-        #         r"D:\temp_match_imgs\Flowers",
-        #         r"D:\temp_match_imgs\pokemoncards"
-        #         ]
-        #         )
         image_paths = get_image_filepaths_from_folders(
-            [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
+            [
+                r"D:\temp_match_imgs\matchable",
+                r"D:\temp_match_imgs\butterflys",
+                r"D:\temp_match_imgs\Flowers",
+                ]
+                )
+        # image_paths = get_image_filepaths_from_folders(
+            # [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
         # image_paths = get_image_filepaths_localtest()
         original_count = len(image_paths)
         print(f"Found {original_count} images in test_images directory")
