@@ -12,7 +12,7 @@ from pathlib import Path
 import time
 import random
 
-
+COLLECTION_NAME = "pokemon"
 def get_qdrant_client():
     """
     Get a connection to the Qdrant vector database.
@@ -81,8 +81,10 @@ def get_random_item_with_closest_match(
 
 def get_sequence_of_closest_matches(
     client, 
+    
     collection_name: str, 
-    vector: List[float]
+    vector: List[float],
+    limit: int | None = None
 ) -> List[Dict[str, Any]]:
     """
     Get a sequence of closest matches to a vector, depleting the collection.
@@ -113,7 +115,11 @@ def get_sequence_of_closest_matches(
     last_update_time = start_time
     processed_count = 0
     scores=[]
+    cnt = 0
     while True:
+        if limit is not None and cnt >= limit:
+            break
+        cnt += 1
         # Find the closest matching point
         search_result = client.search(
             collection_name=collection_name,
@@ -294,16 +300,17 @@ def main():
     # Use "embeddings" as the collection name
     vector, random_item, closest_matches, payload = get_random_item_with_closest_match(
         client,
-        collection_name="test_collection",
+        collection_name=COLLECTION_NAME,
         limit=1
     )
 
-    print(f"Cloning collection test_collection to test_collection_clone")
-    clone_collection(client,collection_name="test_collection", new_collection_name="test_collection_clone")
+    print(f"Cloning collection {COLLECTION_NAME} to {COLLECTION_NAME}_clone")
+    clone_collection(client,collection_name=COLLECTION_NAME, new_collection_name=f"{COLLECTION_NAME}_clone")
     
     sequence, scores = get_sequence_of_closest_matches(
         client,
-        collection_name="test_collection_clone",
+        limit=None,
+        collection_name=f"{COLLECTION_NAME}_clone",
         vector=vector
     )
     

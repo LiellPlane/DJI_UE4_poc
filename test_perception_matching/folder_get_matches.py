@@ -20,7 +20,7 @@ if platform.system() == "Darwin":  # macOS
     IMAGES_TO_MATCH_PATH = Path("/Users/liell_p/match_images")
     OUTPUT_PATH = Path("/Users/liell_p/match_images_output")
 elif platform.system() == "Windows":
-    IMAGES_TO_MATCH_PATH = Path(r"D:\temp_match_imgs\fart")
+    IMAGES_TO_MATCH_PATH = Path(r"D:\match_images")
     OUTPUT_PATH = Path("D:\match_images_output")
 else:  # Linux or other OS
     IMAGES_TO_MATCH_PATH = Path("/tmp/temp_match_imgs/")
@@ -92,8 +92,11 @@ def main():
             all_results = [ScoredPointWithFlip(pt, is_flipped=True) for pt in search_result_flipped]
             all_results.extend([ScoredPointWithFlip(pt, is_flipped=False) for pt in search_result])
             
+            # reopulate back
             # Sort by score and take top 10
-            top_10 = sorted(all_results, key=lambda x: x.point.score, reverse=True)[:10]
+            sorted_files = sorted(all_results, key=lambda x: x.point.score, reverse=False)
+            # remove duplicates
+            top_10 = list({res.point.payload["filename"]:res for res in sorted_files}.values())[:10]
             output[image_path] = top_10
 
         except Exception as e:

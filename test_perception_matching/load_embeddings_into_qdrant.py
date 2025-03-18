@@ -202,8 +202,12 @@ def main():
     """Main function to run the Qdrant test script."""
     # Connect to Qdrant server
     client = QdrantClient(url="http://localhost:6333", timeout=120)  # Increased client timeout
-    collection_name = "everything"
     
+    collection_name = "pokemon"
+    confirmation = input(f"Are you sure you want to load the embeddings into the collection {collection_name}? Press Y to continue or any other key to exit: ")
+    if confirmation.lower() != 'y':
+        print("Operation cancelled by user.")
+        return
     # Set up collection with the correct vector size (2160 instead of 1024)
     setup_collection(client, collection_name, vector_size=2160)
     
