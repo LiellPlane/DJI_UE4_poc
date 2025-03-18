@@ -404,16 +404,16 @@ def main():
     """
     try:
         # # Get all image filepaths
-        image_paths = get_image_filepaths_from_folders(
-            [
-                r"D:\temp_match_imgs\matchable",
-                r"D:\temp_match_imgs\butterflys",
-                r"D:\temp_match_imgs\Flowers",
-                ]
-                )
+        # image_paths = get_image_filepaths_from_folders(
+        #     [
+        #         r"D:\temp_match_imgs\matchable",
+        #         r"D:\temp_match_imgs\butterflys",
+        #         r"D:\temp_match_imgs\Flowers",
+        #         ]
+        #         )
         # image_paths = get_image_filepaths_from_folders(
             # [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
-        # image_paths = get_image_filepaths_localtest()
+        image_paths = get_image_filepaths_localtest()
         original_count = len(image_paths)
         print(f"Found {original_count} images in test_images directory")
         

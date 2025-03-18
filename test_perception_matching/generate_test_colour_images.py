@@ -65,4 +65,4 @@ if __name__ == "__main__":
     output_folder = os.path.join(script_dir, "test_images_colour_seq")
     
     # Example with 25% noise
-    generate_random_colour_images(3000, output_folder, add_noise=True, noise_percentage=25)
+    generate_random_colour_images(300, output_folder, add_noise=True, noise_percentage=25)
