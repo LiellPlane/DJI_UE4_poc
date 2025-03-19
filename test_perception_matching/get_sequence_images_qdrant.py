@@ -12,7 +12,7 @@ from pathlib import Path
 import time
 import random
 
-COLLECTION_NAME = "pokemon"
+COLLECTION_NAME = "testoptimove"
 def get_qdrant_client():
     """
     Get a connection to the Qdrant vector database.

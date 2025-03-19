@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from qdrant_client.http.models.models import ScoredPoint
 
 
-QDRANT_COLLECTION_NAME = "everything"
+QDRANT_COLLECTION_NAME = "testoptimove"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS
@@ -97,7 +97,7 @@ def main():
             sorted_files = sorted(all_results, key=lambda x: x.point.score, reverse=False)
             # remove duplicates
             top_10 = list({res.point.payload["filename"]:res for res in sorted_files}.values())[:10]
-            output[image_path] = top_10
+            output[image_path] = all_results[0:3]
 
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
@@ -121,7 +121,7 @@ def main():
             indexer+=1
         # Copy search results
         for res in search_result:
-            if res.is_flipped:
+            if not res.is_flipped:
                 # load the image and flip it
                 img = cv2.imread(res.point.payload["filename"])
                 img = cv2.flip(img, 1)
