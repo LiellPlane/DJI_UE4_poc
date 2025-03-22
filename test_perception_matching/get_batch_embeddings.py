@@ -136,7 +136,8 @@ def worker(queue_in, queue_out):
         horizontal=5,
         overlap=10,
         bins_per_channel=6,
-        center_histograms=True
+        center_histograms=True,
+        mask=True
     )
     
     while True:
@@ -153,9 +154,9 @@ def worker(queue_in, queue_out):
                 
                 # Set mask to None for now (can be customized if needed)
                 mask = None
-                # if use_mask:
-                #     mask = create_circular_mask(test_image.shape)
-                #     stats["masked_images"] += 1
+                if params.mask is True:
+                    mask = generate_embeddings.create_circular_mask(img.shape)
+
                 # Create embedding using explicit parameters
                 embedding = generate_embeddings.create_image_embedding(
                     img, 

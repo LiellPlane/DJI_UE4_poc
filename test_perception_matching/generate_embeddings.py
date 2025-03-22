@@ -4,15 +4,17 @@ import random
 from typing import List, Tuple, Literal, Optional, Union, Any
 from dataclasses import dataclass, asdict
 import json
+from enum import Enum
 
 @dataclass
 class ImageEmbeddingParams:
     """Parameters for image embedding generation, designed to be serializable."""
-    vertical: int = 4
-    horizontal: int = 4
-    overlap: int = 10
-    bins_per_channel: int = 8
-    center_histograms: bool = False
+    vertical: int
+    horizontal: int
+    overlap: int
+    bins_per_channel: int
+    center_histograms: bool
+    mask: bool
     
  
     def to_dict(self):
@@ -544,10 +546,12 @@ def create_image_embedding(
     # Create the slices
     slices = create_image_slices(image, params.vertical, params.horizontal, params.overlap)
     
+
     # Calculate histograms for each slice
     histograms = calculate_slice_histograms(
         image, slices, params.bins_per_channel, mask, params.center_histograms
     )
+
     # for histogram in histograms:
     #     print(histogram.shape)
     # Always concatenate into a single feature vector
