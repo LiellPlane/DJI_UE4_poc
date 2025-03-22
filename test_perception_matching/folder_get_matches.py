@@ -13,14 +13,14 @@ from dataclasses import dataclass
 from qdrant_client.http.models.models import ScoredPoint
 
 
-QDRANT_COLLECTION_NAME = "testoptimove"
+QDRANT_COLLECTION_NAME = "everything"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS
     IMAGES_TO_MATCH_PATH = Path("/Users/liell_p/match_images")
     OUTPUT_PATH = Path("/Users/liell_p/match_images_output")
 elif platform.system() == "Windows":
-    IMAGES_TO_MATCH_PATH = Path(r"D:\match_images")
+    IMAGES_TO_MATCH_PATH = Path("D:\match_images")
     OUTPUT_PATH = Path("D:\match_images_output")
 else:  # Linux or other OS
     IMAGES_TO_MATCH_PATH = Path("/tmp/temp_match_imgs/")
@@ -76,14 +76,14 @@ def main():
             search_result = client.search(
                 collection_name=QDRANT_COLLECTION_NAME,
                 query_vector=embedding,
-                limit=10,
+                limit=5,
                 with_payload=True,
                 with_vectors=False
             )
             search_result_flipped = client.search(
                 collection_name=QDRANT_COLLECTION_NAME,
                 query_vector=embedding_flipped,
-                limit=10,
+                limit=5,
                 with_payload=True,
                 with_vectors=False
             )
@@ -95,10 +95,11 @@ def main():
             # reopulate back
             # Sort by score and take top 10
             sorted_files = sorted(all_results, key=lambda x: x.point.score, reverse=False)
-            # remove duplicates
-            top_10 = list({res.point.payload["filename"]:res for res in sorted_files}.values())[:10]
-            output[image_path] = all_results[0:3]
+            # remove image if it already exists in the output (to avoid flipped and unflipped versions)
+            # do backwards so overwrite the dictionary key of first instance
+            unique_images =list({i.point.payload["filename"]:i for i in sorted_files}.values())[-3:]
 
+            output[image_path] = all_results
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
 
