@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from qdrant_client.http.models.models import ScoredPoint
 
 
-QDRANT_COLLECTION_NAME = "everything"
+QDRANT_COLLECTION_NAME = "testmask"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS
@@ -61,17 +61,22 @@ def main():
         try:
             print(f"processing {index} of {len(image_paths)}")
             img = cv2.imread(image_path)
+
+            if GRABBED_EMBEDDING_PARAMS.mask:
+                mask = generate_embeddings.create_circular_mask(img.shape)
+            else:
+                mask = None
             # Flip the image horizontally (mirror effect)
             img_flipped = cv2.flip(img, 1)
             embedding = generate_embeddings.create_image_embedding(
                 img, 
                 params=GRABBED_EMBEDDING_PARAMS,
-                mask=None
+                mask=mask
             )
             embedding_flipped = generate_embeddings.create_image_embedding(
                 img_flipped, 
                 params=GRABBED_EMBEDDING_PARAMS,
-                mask=None
+                mask=mask
             )
             search_result = client.search(
                 collection_name=QDRANT_COLLECTION_NAME,
