@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from qdrant_client.http.models.models import ScoredPoint
 
 
-QDRANT_COLLECTION_NAME = "testmask"
+QDRANT_COLLECTION_NAME = "everything_with_naughty"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS

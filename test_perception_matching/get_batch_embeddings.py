@@ -11,7 +11,7 @@ import psutil
 import pickle
 import uuid  # Added UUID library
 from pathlib import Path
-
+import random
 
 @dataclass
 class HSEmbeddingResult:
@@ -408,7 +408,7 @@ def main():
     try:
         # # Get all image filepaths
         
-        # image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs\pokemoncards"])
+        image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
         # image_paths = get_image_filepaths_from_folders(
         #     [
         #         r"D:\temp_match_imgs\matchable",
@@ -418,7 +418,9 @@ def main():
         #         )
         # image_paths = get_image_filepaths_from_folders(
             # [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
-        image_paths = get_image_filepaths_localtest()
+        # image_paths = get_image_filepaths_localtest()
+        random.shuffle(image_paths)
+        # image_paths = image_paths[:10000]
         original_count = len(image_paths)
         print(f"Found {original_count} images in test_images directory")
         
@@ -428,7 +430,7 @@ def main():
         #     image_paths = image_paths[:500]  # Limit to 500k for testing
         
         total_images = len(image_paths)
-        print(f"Created test dataset with {total_images} image paths")
+        print(f"creating test dataset with {total_images} image paths")
         
         # Process all images in batches of 50,000
         batch_results = process_in_batches(
