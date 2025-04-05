@@ -78,7 +78,7 @@ def get_image_filepaths_localtest() -> list[str]:
     # Get the directory containing the script
     current_dir = current_file_path.parent
     # Build path to the test_images directory
-    test_images_dir = current_dir / "test_images"
+    test_images_dir = current_dir / "test_images_colour_seq"
     
     # Check if the directory exists
     if not test_images_dir.exists():
@@ -408,7 +408,7 @@ def main():
     try:
         # # Get all image filepaths
         
-        image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
+        # image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
         # image_paths = get_image_filepaths_from_folders(
         #     [
         #         r"D:\temp_match_imgs\matchable",
@@ -418,7 +418,7 @@ def main():
         #         )
         # image_paths = get_image_filepaths_from_folders(
             # [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
-        # image_paths = get_image_filepaths_localtest()
+        image_paths = get_image_filepaths_localtest()
         random.shuffle(image_paths)
         # image_paths = image_paths[:10000]
         original_count = len(image_paths)

@@ -90,10 +90,6 @@ def get_random_item_with_closest_match(
             match_item = dict(zip(columns, match_data))
             closest_matches.append(match_item)
             
-        fart = [
-            closest_matches[0]["filename"],
-            random_item["filename"]
-        ]
     return random_item, closest_matches
 
 def get_sequence_of_closest_matches(
@@ -212,6 +208,35 @@ def get_sequence_of_closest_matches(
         print(f"Sequence generation complete: {len(sequence)} items in {total_time/60:.1f} minutes")
             
     return sequence
+
+def get_random_item(
+    conn, 
+    table_name: str, 
+    id_column: str = "id"
+) -> Dict[str, Any]:
+    """
+    Get a random item from the database.
+    
+    Args:
+        conn: PostgreSQL connection
+        table_name: Name of the table containing data
+        id_column: Name of the ID column
+        
+    Returns:
+        A dictionary containing a random item
+    """
+    with conn.cursor() as cursor:
+        # Get a random item
+        cursor.execute(f"SELECT * FROM {table_name} ORDER BY RANDOM() LIMIT 1")
+        columns = [desc[0] for desc in cursor.description]
+        random_item_data = cursor.fetchone()
+        
+        if not random_item_data:
+            raise ValueError(f"No data found in table {table_name}")
+            
+        random_item = dict(zip(columns, random_item_data))
+        
+    return random_item
 
 def main():
     # Create image_sequence directory in the same location as this script
