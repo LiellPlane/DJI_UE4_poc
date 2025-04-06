@@ -198,3 +198,43 @@ def get_random_item(
         raise ValueError(f"No data found in collection {collection_name}")
         
     return sampled.points[0]
+
+
+def get_closest_match(
+    client, 
+    collection_name: str,
+    vector: List[float],
+    limit: int = 1,
+    with_payload: bool = True,
+    with_vectors: bool = True
+) -> ScoredPoint:
+    """Get the closest match to a vector in a Qdrant collection."""
+    search_result = client.search(
+        collection_name=collection_name,
+        query_vector=vector,
+        limit=limit,
+        with_payload=with_payload,
+        with_vectors=with_vectors
+    )
+    return search_result
+
+def delete_point(client, collection_name: str, point_id: str):
+    """Delete a point from a Qdrant collection."""
+
+    client.delete(
+        collection_name=collection_name,
+        points_selector=models.PointIdsList(
+            points=[point_id]
+        ),
+        wait=True
+    )
+
+
+def get_point_by_id(client, collection_name: str, point_id: str, with_payload: bool = True, with_vectors: bool = True) -> ScoredPoint:
+    """Get a point from a Qdrant collection by its ID."""
+    return client.retrieve(
+        collection_name=collection_name,
+        ids=[point_id],
+        with_payload=with_payload, 
+        with_vectors=with_vectors
+        )

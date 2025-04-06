@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 from dataclasses import dataclass
-from qdrant_utils import get_qdrant_client, get_random_item
+from qdrant_utils import get_point_by_id, clone_collection, get_qdrant_client, get_random_item, get_closest_match, delete_point
 
 @dataclass(frozen=True)
 class ColourPoint:
@@ -48,8 +48,27 @@ def generate_touching_pxls_coords(
                 continue
             yield ((x + dx, y + dy))
             
+def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
+    """Get the average embedding of the neighbour ids"""
+    # Retrieve points by their IDs
+    results = client.retrieve(
+        collection_name=collection_name,
+        ids=neighbour_ids,
+        with_vectors=True
+    )
+    
+    # Extract vectors from the retrieved points
+    embeddings = [point.vector for point in results]
+    
+    # Return the mean of embeddings if any exist, otherwise return None
+    if embeddings:
+        # this will work for histogram embeddings - but
+        # potentially not as well for other embedding types
+        return np.mean(embeddings, axis=0)
+    return None
 
-def get_ids_in_radius(colourpoint: ColourPoint, embedding_ids: dict[tuple[int, int], EmbeddedPoint])->list[str]:
+def get_ids_in_radius(colourpoint: ColourPoint, 
+                      embedding_ids: dict[tuple[int, int], EmbeddedPoint]) -> list[str]:
     """Get the ids of the points in the radius of the colourpoint"""
     ids = []
     for pxl in generate_touching_pxls_coords(colourpoint, embedding_ids):
@@ -58,15 +77,21 @@ def get_ids_in_radius(colourpoint: ColourPoint, embedding_ids: dict[tuple[int, i
     return ids
 
 
-def draw_concentric_circles(image_size=200, num_circles=20)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+def draw_concentric_circles(client, collection_name, image_size=20, num_circles=10)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
     embedding_ids = {}
     # for testing - load the embeddings into the embedding_ids dict
-    client = get_qdrant_client()
-    for x,y in np.ndindex(img.shape[0:1]):
-        embedding_ids[(x,y)] = get_random_item_with_closest_match(client, "colours", (x,y), 1)
+    
+    # for x, y in np.ndindex(img.shape[0:2]):
+    #     print(x, y)
+    #     embedding_ids[(x, y)] = EmbeddedPoint(
+    #         embedding_id=   get_random_item(client, "colours").id,
+    #         x=x,
+    #         y=y,
+    #         visual_test_colour=(0, 0, 0)
+    #     )
 
     # Get center coordinates
     center = (image_size // 2, image_size // 2)
@@ -86,6 +111,7 @@ def draw_concentric_circles(image_size=200, num_circles=20)->tuple[np.ndarray, d
     
     # Draw concentric circles starting from radius 1 (just outside the center dot)
     for i in range(num_circles):
+        print(f"Drawing circle {i+1} of {num_circles}")
         # Each ring is exactly 1 pixel thick
         inner_radius = 1 + i  # Start just outside the center dot
         outer_radius = inner_radius + 1
@@ -93,13 +119,55 @@ def draw_concentric_circles(image_size=200, num_circles=20)->tuple[np.ndarray, d
         color = colors[i % len(colors)]
 
         ring_gen = draw_ring(img, center, inner_radius, outer_radius, color)
+        id = None
         for colourpoint in ring_gen:
             # check if any touching points already exist
             # if so, get the average embedding of the touching points
-            get_ids_in_radius(colourpoint, embedding_ids)
+            neighbour_ids = get_ids_in_radius(colourpoint, embedding_ids)
+            if len(neighbour_ids) == 0:
+                print("No neighbour ids found")
+                id = get_random_item(client=client, collection_name=collection_name).id
+            elif len(neighbour_ids) == 1:
+                print("One neighbour id found")
+                point = get_point_by_id(client=client, collection_name=collection_name, point_id=neighbour_ids[0])
+                
+                res = get_closest_match(
+                    client=client,
+                    collection_name=collection_name,
+                    vector=neighbour_ids[0],
+                    limit=1,
+                    with_payload=False,
+                    with_vectors=False
+                    )
+                id = res[0].id
+            elif len(neighbour_ids) > 1:
+                print(f"{len(neighbour_ids)} neighbour ids found")
+                embedding_average = get_embedding_average(client, neighbour_ids, collection_name)
+                res =get_closest_match(
+                    client=client,
+                    collection_name=collection_name,
+                    vector=embedding_average,
+                    limit=1,
+                    with_payload=False,
+                    with_vectors=False
+                    )
+                id = res[0].id
+            else:
+                raise ValueError(f"Unexpected number of neighbour ids: {len(neighbour_ids)}")
+                
+            delete_point(client=client, collection_name=collection_name, point_id=id)
             
+            embedding_ids[(colourpoint.x, colourpoint.y)] = EmbeddedPoint(
+                embedding_id=id,
+                x=colourpoint.x,
+                y=colourpoint.y,
+                visual_test_colour=color
+            )
 
-            img[colourpoint.y, colourpoint.x] = colourpoint.visual_test_colour
+            if colourpoint.x < img.shape[0] and colourpoint.y < img.shape[1]:
+                img[colourpoint.y, colourpoint.x] = colourpoint.visual_test_colour
+            else:
+                break
             # embedding_ids[(colourpoint.x, colourpoint.y)] = colourpoint
 
 
@@ -107,8 +175,12 @@ def draw_concentric_circles(image_size=200, num_circles=20)->tuple[np.ndarray, d
     return img
 
 def main():
+
+    client = get_qdrant_client()
+    clone_collection(client, collection_name="colours", new_collection_name="colours_clone")
+
     # Create the image with concentric circles
-    img = draw_concentric_circles()
+    img = draw_concentric_circles(client, "colours_clone")
     
     # Zoom the image by 4x
     zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)

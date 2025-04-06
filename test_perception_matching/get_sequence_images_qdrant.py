@@ -11,7 +11,7 @@ import shutil
 from pathlib import Path
 import time
 import random
-from qdrant_utils import clone_collection, get_random_item_with_closest_match, get_qdrant_client
+from qdrant_utils import delete_point, get_closest_match, clone_collection, get_random_item_with_closest_match, get_qdrant_client
 COLLECTION_NAME = "colours"
 
 
@@ -57,9 +57,10 @@ def get_sequence_of_closest_matches(
             break
         cnt += 1
         # Find the closest matching point
-        search_result = client.search(
+        search_result = get_closest_match(
+            client,
             collection_name=collection_name,
-            query_vector=vector,
+            vector=vector,
             limit=1,
             with_payload=True,
             with_vectors=True
@@ -76,13 +77,14 @@ def get_sequence_of_closest_matches(
         results.append(point.payload)
         
         # Delete the point so it won't be found in the next iteration
-        client.delete(
-            collection_name=collection_name,
-            points_selector=models.PointIdsList(
-                points=[point.id]
-            ),
-            wait=True
-        )
+        delete_point(client=client, collection_name=collection_name, point_id=point.id)
+        # client.delete(
+        #     collection_name=collection_name,
+        #     points_selector=models.PointIdsList(
+        #         points=[point.id]
+        #     ),
+        #     wait=True
+        # )
         
         # Update progress tracking
         processed_count += 1
