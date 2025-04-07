@@ -77,7 +77,7 @@ def get_ids_in_radius(colourpoint: ColourPoint,
     return ids
 
 
-def draw_concentric_circles(client, collection_name, image_size=20, num_circles=10)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=30, num_circles=15)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
@@ -129,21 +129,24 @@ def draw_concentric_circles(client, collection_name, image_size=20, num_circles=
                 id = get_random_item(client=client, collection_name=collection_name).id
             elif len(neighbour_ids) == 1:
                 print("One neighbour id found")
-                point = get_point_by_id(client=client, collection_name=collection_name, point_id=neighbour_ids[0])
-                
+                # have to use read-only source collection as clone collection point will have been deleted
+                point = get_point_by_id(client=client, collection_name=read_only_collection_name, point_id=neighbour_ids[0])
+                # now grab point from the clone collection so we don't repeat images
                 res = get_closest_match(
                     client=client,
                     collection_name=collection_name,
-                    vector=neighbour_ids[0],
+                    vector=point[0].vector,
                     limit=1,
                     with_payload=False,
-                    with_vectors=False
+                    with_vectors=True
                     )
+                if len(res) == 0:
+                    break
                 id = res[0].id
             elif len(neighbour_ids) > 1:
                 print(f"{len(neighbour_ids)} neighbour ids found")
-                embedding_average = get_embedding_average(client, neighbour_ids, collection_name)
-                res =get_closest_match(
+                embedding_average = get_embedding_average(client, neighbour_ids, read_only_collection_name)
+                res = get_closest_match(
                     client=client,
                     collection_name=collection_name,
                     vector=embedding_average,
@@ -151,7 +154,11 @@ def draw_concentric_circles(client, collection_name, image_size=20, num_circles=
                     with_payload=False,
                     with_vectors=False
                     )
+
+                if len(res) == 0:
+                    break
                 id = res[0].id
+
             else:
                 raise ValueError(f"Unexpected number of neighbour ids: {len(neighbour_ids)}")
                 
@@ -172,7 +179,7 @@ def draw_concentric_circles(client, collection_name, image_size=20, num_circles=
 
 
     
-    return img
+    return img, embedding_ids
 
 def main():
 
@@ -180,7 +187,7 @@ def main():
     clone_collection(client, collection_name="colours", new_collection_name="colours_clone")
 
     # Create the image with concentric circles
-    img = draw_concentric_circles(client, "colours_clone")
+    img, similarity_matrix = draw_concentric_circles(client, "colours_clone", read_only_collection_name="colours")
     
     # Zoom the image by 4x
     zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
