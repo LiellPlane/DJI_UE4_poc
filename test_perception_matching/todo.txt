@@ -1,0 +1,7 @@
+make ring creation async or multithreaded
+
+have more than 1 target image - and create averages between them in a vector so the matcher
+can smoothly transition one fromt he other (so half then half again etc)
+
+make it so can cleverly position more than 1 by finding max distance from each other and edge
+of circle
