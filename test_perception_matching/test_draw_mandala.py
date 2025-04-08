@@ -53,7 +53,13 @@ def generate_touching_pxls_coords(
             if dx == 0 and dy == 0:
                 continue
             yield ((x + dx, y + dy))
-            
+    # dx = 0
+    # for dy in [-1, 0, 1]:
+    #     # Skip the centre pixel (the pixel itself)
+    #     if dx == 0 and dy == 0:
+    #         continue
+    #     yield ((x + dx, y + dy))
+        
 def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
     """Get the average embedding of the neighbour ids"""
     # Retrieve points by their IDs
