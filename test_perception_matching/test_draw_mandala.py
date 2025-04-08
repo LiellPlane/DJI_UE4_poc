@@ -21,6 +21,10 @@ class EmbeddedPoint(ColourPoint):
 def draw_ring(img, center, inner_radius, outer_radius, color)->ColourPoint:
     """Draw a ring using scanline fill approach"""
     x0, y0 = center
+    if inner_radius == 0:
+        # special case - draw a single pixel
+        yield ColourPoint(x0, y0, color)
+ 
     for y in range(int(y0 - outer_radius), int(y0 + outer_radius + 1)):
         for x in range(int(x0 - outer_radius), int(x0 + outer_radius + 1)):
             # Calculate distance from center
@@ -113,7 +117,7 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
     
     # Draw concentric circles starting from radius 1 (just outside the center dot)
     images_exhausted: bool = False
-    for i in range(num_circles):
+    for i in range(-1, num_circles): # we use -1 as special case to draw the centre dot
         print(f"Drawing circle {i+1} of {num_circles}")
         # Each ring is exactly 1 pixel thick
         inner_radius = 1 + i  # Start just outside the center dot
@@ -124,7 +128,7 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
         ring_gen = draw_ring(img, center, inner_radius, outer_radius, color)
         id = None
         filepath = None
-        
+        score =None
         for colourpoint in ring_gen:
             # check if any touching points already exist
             # if so, get the average embedding of the touching points
@@ -135,29 +139,30 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
                     point = get_random_item(client=client, collection_name=collection_name)
                     id = point.id
                     filepath = point.payload["filename"]
+                    score = point.score
                 except ValueError as e:
                     print(f"Error getting random item: {e}")
                     images_exhausted = True
                     break
-            elif len(neighbour_ids) == 1:
-                print("One neighbour id found")
-                # have to use read-only source collection as clone collection point will have been deleted
-                point = get_point_by_id(client=client, collection_name=read_only_collection_name, point_id=neighbour_ids[0])
-                # now grab point from the clone collection so we don't repeat images
-                res = get_closest_match(
-                    client=client,
-                    collection_name=collection_name,
-                    vector=point[0].vector,
-                    limit=1,
-                    with_payload=True,
-                    with_vectors=True
-                    )
-                if len(res) == 0:
-                    images_exhausted = True
-                    break
-                id = res[0].id
-                filepath = res[0].payload["filename"]
-            elif len(neighbour_ids) > 1:
+            # elif len(neighbour_ids) == 1:
+            #     print("One neighbour id found")
+            #     # have to use read-only source collection as clone collection point will have been deleted
+            #     point = get_point_by_id(client=client, collection_name=read_only_collection_name, point_id=neighbour_ids[0])
+            #     # now grab point from the clone collection so we don't repeat images
+            #     res = get_closest_match(
+            #         client=client,
+            #         collection_name=collection_name,
+            #         vector=point[0].vector,
+            #         limit=1,
+            #         with_payload=True,
+            #         with_vectors=True
+            #         )
+            #     if len(res) == 0:
+            #         images_exhausted = True
+            #         break
+            #     id = res[0].id
+            #     filepath = res[0].payload["filename"]
+            elif len(neighbour_ids) > 0:
                 # print(f"{len(neighbour_ids)} neighbour ids found")
                 embedding_average = get_embedding_average(client, neighbour_ids, read_only_collection_name)
                 res = get_closest_match(
@@ -174,7 +179,7 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
                     break
                 id = res[0].id
                 filepath = res[0].payload["filename"]
-
+                score = res[0].score
             else:
                 raise ValueError(f"Unexpected number of neighbour ids: {len(neighbour_ids)}")
                 
@@ -194,11 +199,36 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
             if colourpoint.x < img.shape[0] and colourpoint.y < img.shape[1]:
                 # anomaly due to circle drawing errors - which may cause poor matching/artifacts
 
-                img[colourpoint.y, colourpoint.x] = colourpoint.visual_test_colour
+                # Create color gradient: RED (0,0,255) for score=0 to GREEN (0,255,0) for score=1
+                clamped_score = max(0, min(1, score))
+                green = int(255 * clamped_score)
+                red = int(255 * (1 - clamped_score))
+                similarity_colour = (0, green, red)  # BGR format in OpenCV
+                img[colourpoint.y, colourpoint.x] = similarity_colour
                 
                 if random.random() < 0.01:
                     # Zoom the image by 4x
                     zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
+                    
+                    # Crop to non-default pixels (white)
+                    # Find all non-white pixels
+                    non_default_pixels = np.where(np.any(zoomed_img != 255, axis=2))
+                    
+                    # Check if there are any non-default pixels
+                    if len(non_default_pixels[0]) > 0:
+                        # Get the bounding box
+                        min_y, max_y = np.min(non_default_pixels[0]), np.max(non_default_pixels[0])
+                        min_x, max_x = np.min(non_default_pixels[1]), np.max(non_default_pixels[1])
+                        
+                        # Add padding (10 pixels)
+                        padding = 10
+                        min_y = max(0, min_y - padding)
+                        min_x = max(0, min_x - padding)
+                        max_y = min(zoomed_img.shape[0] - 1, max_y + padding)
+                        max_x = min(zoomed_img.shape[1] - 1, max_x + padding)
+                        
+                        # Crop the image
+                        zoomed_img = zoomed_img[min_y:max_y+1, min_x:max_x+1]
                     
                     # Display the image
                     cv2.imshow('Concentric Circles', zoomed_img)
