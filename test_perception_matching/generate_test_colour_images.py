@@ -17,8 +17,8 @@ def generate_random_colour_images(num_images, output_folder, add_noise=False, no
     os.makedirs(output_folder, exist_ok=True)
     
     # Reasonable size ranges for images (in pixels)
-    min_width, max_width = 500, 500
-    min_height, max_height = 500, 500
+    min_width, max_width = 50, 50
+    min_height, max_height = 50, 50
     
     for i in range(num_images):
         print(f"Generating image {i+1} of {num_images}")
@@ -65,4 +65,4 @@ if __name__ == "__main__":
     output_folder = os.path.join(script_dir, "test_images_colour_seq")
     
     # Example with 25% noise
-    generate_random_colour_images(10000, output_folder, add_noise=True, noise_percentage=25)
+    generate_random_colour_images(2000, output_folder, add_noise=True, noise_percentage=10)

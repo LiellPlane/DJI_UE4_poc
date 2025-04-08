@@ -416,9 +416,9 @@ def main():
         #         r"D:\temp_match_imgs\Flowers",
         #         ]
         #         )
-        # image_paths = get_image_filepaths_from_folders(
-            # [r"C:\Working\GIT\DJI_UE4_poc\test_perception_matching\test_images_colour_seq"])
-        image_paths = get_image_filepaths_localtest()
+        image_paths = get_image_filepaths_from_folders(
+            [r"D:\temp_match_imgs\naughty"])
+        # image_paths = get_image_filepaths_localtest()
         random.shuffle(image_paths)
         # image_paths = image_paths[:10000]
         original_count = len(image_paths)

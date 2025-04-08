@@ -89,21 +89,11 @@ def get_ids_in_radius(colourpoint: ColourPoint,
     return ids
 
 
-def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=200)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=5)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
     embedding_ids = {}
-    # for testing - load the embeddings into the embedding_ids dict
-    
-    # for x, y in np.ndindex(img.shape[0:2]):
-    #     print(x, y)
-    #     embedding_ids[(x, y)] = EmbeddedPoint(
-    #         embedding_id=   get_random_item(client, "colours").id,
-    #         x=x,
-    #         y=y,
-    #         visual_test_colour=(0, 0, 0)
-    #     )
 
     # Get center coordinates
     center = (image_size // 2, image_size // 2)
@@ -150,24 +140,6 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
                     print(f"Error getting random item: {e}")
                     images_exhausted = True
                     break
-            # elif len(neighbour_ids) == 1:
-            #     print("One neighbour id found")
-            #     # have to use read-only source collection as clone collection point will have been deleted
-            #     point = get_point_by_id(client=client, collection_name=read_only_collection_name, point_id=neighbour_ids[0])
-            #     # now grab point from the clone collection so we don't repeat images
-            #     res = get_closest_match(
-            #         client=client,
-            #         collection_name=collection_name,
-            #         vector=point[0].vector,
-            #         limit=1,
-            #         with_payload=True,
-            #         with_vectors=True
-            #         )
-            #     if len(res) == 0:
-            #         images_exhausted = True
-            #         break
-            #     id = res[0].id
-            #     filepath = res[0].payload["filename"]
             elif len(neighbour_ids) > 0:
                 # print(f"{len(neighbour_ids)} neighbour ids found")
                 embedding_average = get_embedding_average(client, neighbour_ids, read_only_collection_name)
@@ -253,7 +225,7 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
 
 def create_mandala_from_similarity_matrix(
     similarity_matrix: dict[tuple[int, int], EmbeddedPoint],
-    tile_size: int = 15
+    tile_size: int = 50
 ) -> np.ndarray:
     """Create a mandala from a similarity matrix"""
     # Find boundaries of the grid
@@ -356,12 +328,13 @@ def create_mandala_from_similarity_matrix(
 
     
 def main():
-
+    read_only_collection_name = "naughty"
+    clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
-    clone_collection(client, collection_name="colours", new_collection_name="colours_clone")
+    clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)
 
     # Create the image with concentric circles
-    img, similarity_matrix = draw_concentric_circles(client, "colours_clone", read_only_collection_name="colours")
+    img, similarity_matrix = draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     
