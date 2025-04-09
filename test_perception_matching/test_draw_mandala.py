@@ -24,7 +24,7 @@ class EmbeddedPoint(ColourPoint):
     local_file_path: str = None
 
 
-def draw_ring(img, center, inner_radius, outer_radius, color)->ColourPoint:
+def draw_ring(center, inner_radius, outer_radius, color)->ColourPoint:
     """Draw a ring using scanline fill approach"""
     x0, y0 = center
     if inner_radius == 0:
@@ -97,8 +97,7 @@ def get_ids_in_radius(colourpoint: ColourPoint,
     return ids
 
 
-
-def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=9)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+def backup_draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=9)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
@@ -130,7 +129,7 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
         # Cycle through the 5 colors
         color = colors[i % len(colors)]
 
-        ring_gen = draw_ring(img, center, inner_radius, outer_radius, color)
+        ring_gen = draw_ring(center, inner_radius, outer_radius, color)
         id = None
         filepath = None
         score =None
@@ -224,6 +223,151 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
             else:
                 break
             # embedding_ids[(colourpoint.x, colourpoint.y)] = colourpoint
+
+        if images_exhausted:
+            print("Images exhausted")
+            break
+
+    return img, embedding_ids
+
+
+
+
+def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=9)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+    # Create a white image
+    img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
+    
+    embedding_ids = {}
+
+    # Get center coordinates
+    center = (image_size // 2, image_size // 2)
+    
+    # Draw single pixel center dot
+    img[center[1], center[0]] = (0, 0, 0)
+    
+    # Define 5 different colors
+    colors = [
+        (0, 0, 0),      # Black
+        (0, 0, 255),    # Red
+        (0, 255, 0),    # Green
+        (255, 0, 0),    # Blue
+        
+        (128, 0, 128)   # Purple
+    ]
+    
+    # Draw concentric circles starting from radius 1 (just outside the center dot)
+    images_exhausted: bool = False
+    for i in range(-1, num_circles): # we use -1 as special case to draw the centre dot
+        print(f"Drawing circle {i+1} of {num_circles}")
+        # Each ring is exactly 1 pixel thick
+        inner_radius = 1 + i  # Start just outside the center dot
+        outer_radius = inner_radius + 1
+        # Cycle through the 5 colors
+        color = colors[i % len(colors)]
+
+        ring_gen = draw_ring(center, 10, 12, color)
+        id = None
+        filepath = None
+        score =None
+
+        # get the ids of the points in the radius of the colourpoint
+        # this will be used to pass to the async worker to get the average embedding
+        # bear in mind that this should be alternating or we will miss averages from neighbours on the same circle
+        ids_per_circle_point = {(colourpoint.x, colourpoint.y): get_ids_in_radius(colourpoint, embedding_ids) for colourpoint in ring_gen}
+        even_points = ids_per_circle_point[::2]  # Get elements at positions 0, 2, 4, ...
+        odd_points = ids_per_circle_point[1::2]
+
+        
+        for colourpoint in ring_gen:
+            # check if any touching points already exist
+            # if so, get the average embedding of the touching points
+            neighbour_ids = get_ids_in_radius(colourpoint, embedding_ids)
+            # if len(neighbour_ids) == 0:
+            #     print("No neighbour ids found")
+            #     try:
+            #         point = get_random_item(client=client, collection_name=collection_name)
+            #         id = point.id
+            #         filepath = point.payload["filename"]
+            #         score = point.score
+            #     except ValueError as e:
+            #         print(f"Error getting random item: {e}")
+            #         images_exhausted = True
+            #         break
+            # elif len(neighbour_ids) > 0:
+            #     # print(f"{len(neighbour_ids)} neighbour ids found")
+            #     embedding_average = get_embedding_average(client, neighbour_ids, read_only_collection_name)
+            #     res = get_closest_match(
+            #         client=client,
+            #         collection_name=collection_name,
+            #         vector=embedding_average,
+            #         limit=1,
+            #         with_payload=True,
+            #         with_vectors=False
+            #         )
+
+            #     if len(res) == 0:
+            #         images_exhausted = True
+            #         break
+            #     id = res[0].id
+            #     filepath = res[0].payload["filename"]
+            #     score = res[0].score
+            # else:
+            #     raise ValueError(f"Unexpected number of neighbour ids: {len(neighbour_ids)}")
+                
+            # delete_point(client=client, collection_name=collection_name, point_id=id)
+            
+            # if (colourpoint.x, colourpoint.y) not in embedding_ids:
+            #     embedding_ids[(colourpoint.x, colourpoint.y)] = EmbeddedPoint(
+            #         embedding_id=id,
+            #         local_file_path=filepath,
+            #         x=colourpoint.x,
+            #         y=colourpoint.y,
+            #         visual_test_colour=color
+            #     )
+            # else:
+            #     print(f"Skipping pixel at ({colourpoint.x}, {colourpoint.y})")
+
+            # if colourpoint.x < img.shape[0] and colourpoint.y < img.shape[1]:
+            #     # anomaly due to circle drawing errors - which may cause poor matching/artifacts
+
+            #     # Create color gradient: RED (0,0,255) for score=0 to GREEN (0,255,0) for score=1
+            #     clamped_score = max(0, min(1, score))
+            #     green = int(255 * clamped_score)
+            #     red = int(255 * (1 - clamped_score))
+            #     similarity_colour = (0, green, red)  # BGR format in OpenCV
+            #     img[colourpoint.y, colourpoint.x] = similarity_colour
+                
+            #     if random.random() < 0.01:
+            #         # Zoom the image by 4x
+            #         zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
+                    
+            #         # Crop to non-default pixels (white)
+            #         # Find all non-white pixels
+            #         non_default_pixels = np.where(np.any(zoomed_img != 255, axis=2))
+                    
+            #         # Check if there are any non-default pixels
+            #         if len(non_default_pixels[0]) > 0:
+            #             # Get the bounding box
+            #             min_y, max_y = np.min(non_default_pixels[0]), np.max(non_default_pixels[0])
+            #             min_x, max_x = np.min(non_default_pixels[1]), np.max(non_default_pixels[1])
+                        
+            #             # Add padding (10 pixels)
+            #             padding = 10
+            #             min_y = max(0, min_y - padding)
+            #             min_x = max(0, min_x - padding)
+            #             max_y = min(zoomed_img.shape[0] - 1, max_y + padding)
+            #             max_x = min(zoomed_img.shape[1] - 1, max_x + padding)
+                        
+            #             # Crop the image
+            #             zoomed_img = zoomed_img[min_y:max_y+1, min_x:max_x+1]
+                    
+            #         # Display the image
+            #         cv2.imshow('Concentric Circles', zoomed_img)
+            #         cv2.waitKey(1)
+
+            # else:
+            #     break
+            # # embedding_ids[(colourpoint.x, colourpoint.y)] = colourpoint
 
         if images_exhausted:
             print("Images exhausted")

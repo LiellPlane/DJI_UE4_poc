@@ -238,3 +238,30 @@ def get_point_by_id(client, collection_name: str, point_id: str, with_payload: b
         with_payload=with_payload, 
         with_vectors=with_vectors
         )
+
+
+async def async_get_nearest_neighbors(client, collection_name: str, vector: List[float], limit: int = 1, with_payload: bool = True, with_vectors: bool = True) -> ScoredPoint:
+    """Get the nearest neighbors to a vector in a Qdrant collection."""
+    res= await client.search(
+        collection_name=collection_name,
+        query_vector=vector,
+        limit=limit,
+        with_payload=with_payload, with_vectors=with_vectors).points
+    return res.points
+
+
+async def async_get_point_by_id(client, collection_name: str, point_id: str, with_payload: bool = True, with_vectors: bool = True) -> ScoredPoint:
+    """Get a point from a Qdrant collection by its ID."""
+    return await client.retrieve(
+        collection_name=collection_name,
+        ids=[point_id],
+        with_payload=with_payload, with_vectors=with_vectors)
+
+
+async def async_get_random_point(client, collection_name: str, with_payload: bool = True, with_vectors: bool = True) -> ScoredPoint:
+    """Get a random point from a Qdrant collection."""
+    res = await client.query_points(
+        collection_name=collection_name,
+        query=models.SampleQuery(sample=models.Sample.RANDOM),
+        with_payload=with_payload, with_vectors=with_vectors)
+    return res.points
