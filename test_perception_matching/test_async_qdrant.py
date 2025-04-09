@@ -107,7 +107,7 @@ class AsyncTaskHandler:
         self.tasks = []
         
         # Create tasks for all embeddings directly
-        for embedding in embeddings:
+        for task_id, embedding in embeddings.items():
             task = asyncio.create_task(
                 self.search_with_embedding(task_id, embedding, limit)
             )
