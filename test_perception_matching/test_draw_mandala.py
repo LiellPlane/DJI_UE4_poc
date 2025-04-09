@@ -5,6 +5,12 @@ from dataclasses import dataclass
 from qdrant_utils import get_point_by_id, clone_collection, get_qdrant_client, get_random_item, get_closest_match, delete_point
 from get_batch_embeddings import HSEmbeddingResult
 import random
+import threading
+import queue
+import os
+from typing import Optional, List
+from pydantic import BaseModel
+
 @dataclass(frozen=True)
 class ColourPoint:
     x: int
@@ -59,7 +65,8 @@ def generate_touching_pxls_coords(
     #     if dx == 0 and dy == 0:
     #         continue
     #     yield ((x + dx, y + dy))
-        
+
+
 def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
     """Get the average embedding of the neighbour ids"""
     # Retrieve points by their IDs
@@ -79,6 +86,7 @@ def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> 
         return np.mean(embeddings, axis=0)
     return None
 
+
 def get_ids_in_radius(colourpoint: ColourPoint, 
                       embedding_ids: dict[tuple[int, int], EmbeddedPoint]) -> list[str]:
     """Get the ids of the points in the radius of the colourpoint"""
@@ -89,7 +97,8 @@ def get_ids_in_radius(colourpoint: ColourPoint,
     return ids
 
 
-def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=5)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+
+def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=9)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
@@ -223,6 +232,127 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
     return img, embedding_ids
 
 
+
+def embedding_worker(task_queue, result_queue):
+    while True:
+        try:
+            task = task_queue.get(timeout=0.5)
+            try:
+                # Process task (placeholder)
+                print(f"Processing task {task.task_id}")
+
+                # Placeholder for actual processing
+                result = ResultData(
+                    task_id=task.task_id,
+                    result={"processed": True}
+                )
+                
+                # Add to result queue
+                result_queue.put(result)
+                
+            except Exception as e:
+                print(f"Error processing task {task.task_id}: {e}")
+            finally:
+                task_queue.task_done()
+                
+        except queue.Empty:
+            # No tasks available
+            continue
+
+
+def draw_concentric_circles_multithreaded(client, collection_name, read_only_collection_name, image_size=300, num_circles=9)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+
+
+    # Pydantic models for input and output data
+    class TaskData(BaseModel):
+        """Simple placeholder for task data"""
+        task_id: int
+        data: dict
+
+    class ResultData(BaseModel):
+        """Simple placeholder for result data"""
+        task_id: int
+        result: dict
+        success: bool = True
+
+    # Create task queue and result queue
+    task_queue = queue.Queue()
+    result_queue = queue.Queue()
+    
+    # Flag to signal workers to stop
+    stop_event = threading.Event()
+    
+    # Worker function
+    def worker():
+        while not stop_event.is_set():
+            try:
+                # Get task with timeout
+                task = task_queue.get(timeout=0.5)
+                
+                try:
+                    # Process task (placeholder)
+                    print(f"Processing task {task.task_id}")
+                    import time
+                    time.sleep(1)
+                    # Placeholder for actual processing
+                    result = ResultData(
+                        task_id=task.task_id,
+                        result={"processed": True}
+                    )
+                    
+                    # Add to result queue
+                    result_queue.put(result)
+                    
+                except Exception as e:
+                    print(f"Error processing task {task.task_id}: {e}")
+                finally:
+                    task_queue.task_done()
+                    
+            except queue.Empty:
+                # No tasks available
+                continue
+    
+    # Automatically determine optimal number of threads for I/O bound tasks
+    cpu_count = os.cpu_count() or 4  # Default to 4 if detection fails
+    num_workers = min(32, cpu_count * 2)  # Use 2x CPU cores, capped at 32
+    
+    print(f"Using {num_workers} worker threads")
+    threads = []
+    
+    for i in range(num_workers):
+        thread = threading.Thread(target=worker)
+        thread.daemon = True
+        thread.start()
+        threads.append(thread)
+    
+    # Placeholder: Add tasks to queue
+    for i in range(10):  # Example: 10 tasks
+        task = TaskData(task_id=i, data={"example": "data"})
+        task_queue.put(task)
+    
+    # Wait for all tasks to complete
+    task_queue.join()
+    
+    # Stop all workers
+    stop_event.set()
+    for thread in threads:
+        thread.join()
+    
+    # Process results (placeholder)
+    results = []
+    while not result_queue.empty():
+        result = result_queue.get()
+        results.append(result)
+    
+    print(f"Processed {len(results)} tasks")
+    
+    # Placeholder return values
+    img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
+    embedding_ids = {}
+    
+    return img, embedding_ids
+
+
 def create_mandala_from_similarity_matrix(
     similarity_matrix: dict[tuple[int, int], EmbeddedPoint],
     tile_size: int = 50
@@ -328,11 +458,14 @@ def create_mandala_from_similarity_matrix(
 
     
 def main():
-    read_only_collection_name = "naughty"
+    read_only_collection_name = "colours"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
     clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)
 
+    # img, similarity_matrix = draw_concentric_circles_multithreaded(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
+    
+    # 1/0
     # Create the image with concentric circles
     img, similarity_matrix = draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
     
