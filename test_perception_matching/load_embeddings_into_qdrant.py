@@ -7,7 +7,7 @@ import pickle
 import json
 import sys
 from pathlib import Path
-
+import test_async_qdrant 
 
 def setup_collection(client, collection_name, vector_size):
     """Set up a Qdrant collection, deleting it first if it already exists."""

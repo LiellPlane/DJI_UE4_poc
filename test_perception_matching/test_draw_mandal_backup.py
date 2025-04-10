@@ -10,6 +10,8 @@ import queue
 import os
 from typing import Optional, List
 from pydantic import BaseModel
+import asyncio
+import test_async_qdrant
 
 @dataclass(frozen=True)
 class ColourPoint:
@@ -233,7 +235,14 @@ def backup_draw_concentric_circles(client, collection_name, read_only_collection
 
 
 
-def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=9)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=100)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+    
+    
+    client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
+    real_client = test_async_qdrant.qdrant_client.AsyncQdrantClient("localhost")
+    # Create task handler
+    handler = test_async_qdrant.AsyncTaskHandler("colours", real_client, client)    
+    
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
@@ -265,7 +274,7 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
         # Cycle through the 5 colors
         color = colors[i % len(colors)]
 
-        ring_gen = draw_ring(center, 10, 12, color)
+        ring_gen = draw_ring(center, inner_radius, outer_radius, color)
         id = None
         filepath = None
         score =None
@@ -279,11 +288,13 @@ def draw_concentric_circles(client, collection_name, read_only_collection_name, 
         odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
         odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
 
-        
-        for colourpoint in ring_gen:
+        for set_ in odds_and_evens:
+            results = await handler.process_embeddings(set_, limit=3)
+        plop=1
+        # for colourpoint in ring_gen:
             # check if any touching points already exist
             # if so, get the average embedding of the touching points
-            neighbour_ids = get_ids_in_radius(colourpoint, embedding_ids)
+            # neighbour_ids = get_ids_in_radius(colourpoint, embedding_ids)
             # if len(neighbour_ids) == 0:
             #     print("No neighbour ids found")
             #     try:
@@ -603,7 +614,7 @@ def create_mandala_from_similarity_matrix(
 
 
     
-def main():
+async def async_main():
     read_only_collection_name = "colours"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
@@ -613,7 +624,7 @@ def main():
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     
@@ -632,6 +643,11 @@ def main():
     print("Mandala saved successfully")
     
     plop=1
+
+
+def main():
+    import asyncio
+    asyncio.run(async_main())
 
 if __name__ == "__main__":
     main()
