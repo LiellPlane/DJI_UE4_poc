@@ -91,7 +91,7 @@ class AsyncTaskHandler:
             }
     
     async def process_embeddings(
-        self, embeddings: Dict[str, List[float]], limit: int = 5
+        self, embeddings: Dict[tuple[int,int], List[str]], limit: int = 5
     ) -> Dict[str, Any]:
         """
         Process multiple embeddings concurrently and collect results
