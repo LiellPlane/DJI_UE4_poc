@@ -288,8 +288,8 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
         odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
 
-        for set_ in odds_and_evens:
-            results = await handler.process_embeddings(set_, limit=3)
+        for neighbours in odds_and_evens:
+            results = await handler.process_embeddings(neighbour_ids=neighbours)
         plop=1
         # for colourpoint in ring_gen:
             # check if any touching points already exist

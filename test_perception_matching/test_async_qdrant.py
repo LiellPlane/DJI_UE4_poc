@@ -67,49 +67,50 @@ class AsyncTaskHandler:
     
     async def search_with_embedding(
         self, 
-        task_id: str, 
-        embedding: List[float],
-        limit: int = 5
+        coord: str, 
+        neighbour_ids: List[str],
     ) -> Dict[str, Any]:
         """Perform a search with the given embedding and return results"""
         try:
-            # results = await self.fake_client.search(embedding, limit=limit)
-            results = await async_get_random_point(self.real_client, self.collection_name)
-            
+            if len(neighbour_ids) == 0:
+                # print("No neighbour ids found")
+                try:
+                    points = await async_get_random_point(client=self.real_client, collection_name=self.collection_name)
+                    id = points[0].id
+                    filepath = points[0].payload["filename"]
+                    score = points[0].score
+                except ValueError as e:
+                    print(f"Error getting random item: {e}")
+                    return e
+            elif len(neighbour_ids) > 0:
+                plop=1
+            # results = await async_get_random_point(self.real_client, self.collection_name)
+            # print(points[0].vector[0])
             return {
-                "task_id": task_id,
-                "results": results[0].vector[0],
+                "task_id": coord,
+                "results": points[0].vector[0],
                 "status": "success"
             }
         except Exception as e:
             print(f"Search error for task {task_id}: {e}")
             return {
-                "task_id": task_id,
+                "task_id": coord,
                 "results": [],
                 "status": "error",
                 "error": str(e)
             }
     
     async def process_embeddings(
-        self, embeddings: Dict[tuple[int,int], List[str]], limit: int = 5
+        self, neighbour_ids: Dict[tuple[int,int], List[str]]
     ) -> Dict[str, Any]:
-        """
-        Process multiple embeddings concurrently and collect results
-        
-        Args:
-            embeddings: Dictionary mapping task_id to embedding vector
-            limit: Maximum number of results per search
-            
-        Returns:
-            Dictionary mapping task_id to search results
-        """
         # Clear previous tasks
         self.tasks = []
-        
-        # Create tasks for all embeddings directly
-        for task_id, embedding in embeddings.items():
+
+        # each worker gets a coordinate, and a list of neighbours ids
+        # touching 
+        for coord, neighbour_ids in neighbour_ids.items():
             task = asyncio.create_task(
-                self.search_with_embedding(task_id, embedding, limit)
+                self.search_with_embedding(coord, neighbour_ids)
             )
             self.tasks.append(task)
         
