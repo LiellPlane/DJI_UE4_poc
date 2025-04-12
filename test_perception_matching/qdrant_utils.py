@@ -11,6 +11,7 @@ import shutil
 from pathlib import Path
 import time
 import random
+import numpy as np
 
 
 def clone_collection(client, collection_name: str, new_collection_name: str, batch_size: int = 1000):
@@ -200,6 +201,24 @@ def get_random_item(
     return sampled.points[0]
 
 
+async def async_get_closest_match(
+    client, 
+    collection_name: str,
+    vector: List[float],
+    limit: int = 1,
+    with_payload: bool = True,
+    with_vectors: bool = True
+) -> ScoredPoint:
+    """Get the closest match to a vector in a Qdrant collection."""
+    res = await client.search(
+        collection_name=collection_name,
+        query_vector=vector,
+        limit=limit,
+        with_payload=with_payload,
+        with_vectors=with_vectors
+    )
+    return res
+
 def get_closest_match(
     client, 
     collection_name: str,
@@ -265,3 +284,24 @@ async def async_get_random_point(client, collection_name: str, with_payload: boo
         query=models.SampleQuery(sample=models.Sample.RANDOM),
         with_payload=with_payload, with_vectors=with_vectors)
     return res.points
+
+
+def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
+    """Get the average embedding of the neighbour ids
+    probably should be in another utils but whatever this will do for now"""
+    # Retrieve points by their IDs
+    results = client.retrieve(
+        collection_name=collection_name,
+        ids=neighbour_ids,
+        with_vectors=True
+    )
+    
+    # Extract vectors from the retrieved points
+    embeddings = [point.vector for point in results]
+    
+    # Return the mean of embeddings if any exist, otherwise return None
+    if embeddings:
+        # this will work for histogram embeddings - but
+        # potentially not as well for other embedding types
+        return np.mean(embeddings, axis=0)
+    return None

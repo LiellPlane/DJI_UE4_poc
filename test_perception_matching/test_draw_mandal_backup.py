@@ -69,24 +69,7 @@ def generate_touching_pxls_coords(
     #     yield ((x + dx, y + dy))
 
 
-def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
-    """Get the average embedding of the neighbour ids"""
-    # Retrieve points by their IDs
-    results = client.retrieve(
-        collection_name=collection_name,
-        ids=neighbour_ids,
-        with_vectors=True
-    )
-    
-    # Extract vectors from the retrieved points
-    embeddings = [point.vector for point in results]
-    
-    # Return the mean of embeddings if any exist, otherwise return None
-    if embeddings:
-        # this will work for histogram embeddings - but
-        # potentially not as well for other embedding types
-        return np.mean(embeddings, axis=0)
-    return None
+
 
 
 def get_ids_in_radius(colourpoint: ColourPoint, 
@@ -241,11 +224,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
     client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
     real_client = test_async_qdrant.qdrant_client.AsyncQdrantClient("localhost")
     # Create task handler
-    handler = test_async_qdrant.AsyncTaskHandler(
-        depleting_collection_name=collection_name,
-        read_only_collection_name=read_only_collection_name,
-        real_client=real_client, fake_client=client
-        )    
+    handler = test_async_qdrant.AsyncTaskHandler("colours", real_client, client)    
     
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
@@ -292,8 +271,8 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
         odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
 
-        for neighbours in odds_and_evens:
-            results = await handler.process_embeddings(neighbour_ids=neighbours)
+        for set_ in odds_and_evens:
+            results = await handler.process_embeddings(set_, limit=3)
         plop=1
         # for colourpoint in ring_gen:
             # check if any touching points already exist

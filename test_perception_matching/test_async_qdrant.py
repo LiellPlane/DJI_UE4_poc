@@ -6,7 +6,7 @@ from uuid import uuid4
 from qdrant_client import models
 import qdrant_client
 import asyncio
-from qdrant_utils import async_get_point_by_id, async_get_random_point
+from qdrant_utils import async_get_closest_match, async_get_point_by_id, async_get_random_point, get_embedding_average
 
 @dataclass
 class VectorSearchResult:
@@ -58,10 +58,11 @@ class FakeQdrantClient:
 class AsyncTaskHandler:
     """Handler for managing asynchronous search tasks with embeddings"""
     
-    def __init__(self, collection_name:str, real_client: qdrant_client.AsyncQdrantClient, fake_client: FakeQdrantClient):
+    def __init__(self, depleting_collection_name:str, read_only_collection_name:str, real_client: qdrant_client.AsyncQdrantClient, fake_client: FakeQdrantClient):
         self.real_client = real_client
         self.fake_client = fake_client
-        self.collection_name = collection_name
+        self.depleting_collection_name = depleting_collection_name
+        self.read_only_collection_name = read_only_collection_name
         self.tasks = []
         self.results_by_id = {}
     
@@ -73,9 +74,11 @@ class AsyncTaskHandler:
         """Perform a search with the given embedding and return results"""
         try:
             if len(neighbour_ids) == 0:
+                1/0
                 # print("No neighbour ids found")
                 try:
-                    points = await async_get_random_point(client=self.real_client, collection_name=self.collection_name)
+                    # get a random point - we want this depleted so its removed from collection
+                    points = await async_get_random_point(client=self.real_client, collection_name=self.depleting_collection_name)
                     id = points[0].id
                     filepath = points[0].payload["filename"]
                     score = points[0].score
@@ -83,7 +86,23 @@ class AsyncTaskHandler:
                     print(f"Error getting random item: {e}")
                     return e
             elif len(neighbour_ids) > 0:
-                plop=1
+                # get neighbour ids - we want from write only as need reference
+                embedding_average = async_get_closest_match(self.real_client, neighbour_ids, self.read_only_collection_name)
+                # get depleting match so its removed from collection
+                res = async_get_closest_match(
+                    client=self.real_client,
+                    collection_name=self.depleting_collection_name,
+                    vector=embedding_average,
+                    limit=1,
+                    with_payload=True,
+                    with_vectors=False
+                    )
+
+                if len(res) == 0:
+                    raise ValueError("No closest match found: collection probably depleted")
+                id = res[0].id
+                filepath = res[0].payload["filename"]
+                score = res[0].score
             # results = await async_get_random_point(self.real_client, self.collection_name)
             # print(points[0].vector[0])
             return {
@@ -92,13 +111,7 @@ class AsyncTaskHandler:
                 "status": "success"
             }
         except Exception as e:
-            print(f"Search error for task {task_id}: {e}")
-            return {
-                "task_id": coord,
-                "results": [],
-                "status": "error",
-                "error": str(e)
-            }
+            return e
     
     async def process_embeddings(
         self, neighbour_ids: Dict[tuple[int,int], List[str]]
@@ -125,7 +138,7 @@ class AsyncTaskHandler:
         results_by_id = {}
         for result in all_results:
             if isinstance(result, Exception):
-                print(f"Task failed with error: {result}")
+                results_by_id[result["task_id"]] = result
             else:
                 results_by_id[result["task_id"]] = result
         
