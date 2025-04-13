@@ -235,7 +235,7 @@ def backup_draw_concentric_circles(client, collection_name, read_only_collection
 
 
 
-async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=30)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=50)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     
     
     client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
@@ -296,7 +296,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # filter out already calculated points
         # ids_per_circle_point = {id:val for id,val in ids_per_circle_point.items() if id not in embedding_ids}
 
-        if len(ids_per_circle_point) > 25:
+        if len(ids_per_circle_point) > 3456789:
             sequence = []
             sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
             sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
