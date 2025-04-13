@@ -7,6 +7,7 @@ import random
 import threading
 import queue
 import os
+import time
 from typing import Optional, List
 from pydantic import BaseModel
 import asyncio
@@ -234,7 +235,7 @@ def backup_draw_concentric_circles(client, collection_name, read_only_collection
 
 
 
-async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=100)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=30)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     
     
     client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
@@ -268,8 +269,10 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
     ]
     
     # Draw concentric circles starting from radius 1 (just outside the center dot)
-    images_exhausted: bool = False
-    for i in range(-1, num_circles): # we use -1 as special case to draw the centre dot
+    janky_start= -2 # to bodyswerve issues with the first couple circles
+
+    for i in range(janky_start, num_circles): # we use -1 as special case to draw the centre dot
+        start_time = time.time()
         print(f"Drawing circle {i+1} of {num_circles}")
         # Each ring is exactly 1 pixel thick
         inner_radius = 1 + i  # Start just outside the center dot
@@ -277,7 +280,10 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # Cycle through the 5 colors
         color = colors[i % len(colors)]
 
-        ring_gen = draw_ring(center, inner_radius, outer_radius, color)
+        if i == janky_start:
+            ring_gen = draw_ring(center, 0, 0, color)
+        else:
+            ring_gen = draw_ring(center, inner_radius, outer_radius, color)
 
         # get the ids of the points in the radius of the colourpoint
         # this will be used to pass to the async worker to get the average embedding
@@ -289,11 +295,17 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
             }
         # filter out already calculated points
         # ids_per_circle_point = {id:val for id,val in ids_per_circle_point.items() if id not in embedding_ids}
-        odds_and_evens = []
-        odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
-        odds_and_evens.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
 
-        for neighbours in odds_and_evens:
+        if len(ids_per_circle_point) > 25:
+            sequence = []
+            sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
+            sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
+        else:
+            sequence = [ids_per_circle_point]
+
+        # if len(ids_per_circle_point) != len(sequence[0]) + len(sequence[1]):
+        #     raise ValueError(f"Odd and evens do not match: {len(ids_per_circle_point)} != {len(odds_and_evens[0])} + {len(odds_and_evens[1])}") 
+        for neighbours in sequence:
             results: list[test_async_qdrant.TaskResult | Exception] = await handler.process_embeddings(neighbour_ids=neighbours)
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
             for result in results:
@@ -306,55 +318,61 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                         y=result.coord[1],
                         visual_test_colour=color
                     )
-            
 
-                if result.coord[0] < img.shape[0] and result.coord[1] < img.shape[1]:
-                    # anomaly due to circle drawing errors - which may cause poor matching/artifacts
+                if not [i for i in results if isinstance(i, Exception)]:
+                    if result.coord[0] < img.shape[0] and result.coord[1] < img.shape[1]:
+                        # anomaly due to circle drawing errors - which may cause poor matching/artifacts
 
-                    # Create color gradient: RED (0,0,255) for score=0 to GREEN (0,255,0) for score=1
-                    clamped_score = max(0, min(1, result.score))
-                    green = int(255 * clamped_score)
-                    red = int(255 * (1 - clamped_score))
-                    similarity_colour = (0, green, red)  # BGR format in OpenCV
-                    img[result.coord[1], result.coord[0]] = similarity_colour
-                    
-                    if random.random() < 0.01:
-                        # Zoom the image by 4x
-                        zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
+                        # Create color gradient: RED (0,0,255) for score=0 to GREEN (0,255,0) for score=1
+                        clamped_score = max(0, min(1, result.score))
+                        green = int(255 * clamped_score)
+                        red = int(255 * (1 - clamped_score))
+                        similarity_colour = (0, green, red)  # BGR format in OpenCV
+                        img[result.coord[1], result.coord[0]] = similarity_colour
                         
-                        # Crop to non-default pixels (white)
-                        # Find all non-white pixels
-                        non_default_pixels = np.where(np.any(zoomed_img != 255, axis=2))
-                        
-                        # Check if there are any non-default pixels
-                        if len(non_default_pixels[0]) > 0:
-                            # Get the bounding box
-                            min_y, max_y = np.min(non_default_pixels[0]), np.max(non_default_pixels[0])
-                            min_x, max_x = np.min(non_default_pixels[1]), np.max(non_default_pixels[1])
+                        if random.random() < 0.03:
+                            # Zoom the image by 4x
+                            zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
                             
-                            # Add padding (10 pixels)
-                            padding = 10
-                            min_y = max(0, min_y - padding)
-                            min_x = max(0, min_x - padding)
-                            max_y = min(zoomed_img.shape[0] - 1, max_y + padding)
-                            max_x = min(zoomed_img.shape[1] - 1, max_x + padding)
+                            # Crop to non-default pixels (white)
+                            # Find all non-white pixels
+                            non_default_pixels = np.where(np.any(zoomed_img != 255, axis=2))
                             
-                            # Crop the image
-                            zoomed_img = zoomed_img[min_y:max_y+1, min_x:max_x+1]
-                        
-                        # Display the image
-                        cv2.imshow('Concentric Circles', zoomed_img)
-                        cv2.waitKey(1)
+                            # Check if there are any non-default pixels
+                            if len(non_default_pixels[0]) > 0:
+                                # Get the bounding box
+                                min_y, max_y = np.min(non_default_pixels[0]), np.max(non_default_pixels[0])
+                                min_x, max_x = np.min(non_default_pixels[1]), np.max(non_default_pixels[1])
+                                
+                                # Add padding (10 pixels)
+                                padding = 10
+                                min_y = max(0, min_y - padding)
+                                min_x = max(0, min_x - padding)
+                                max_y = min(zoomed_img.shape[0] - 1, max_y + padding)
+                                max_x = min(zoomed_img.shape[1] - 1, max_x + padding)
+                                
+                                # Crop the image
+                                zoomed_img = zoomed_img[min_y:max_y+1, min_x:max_x+1]
+                            
+                            # Display the image
+                            cv2.imshow('Concentric Circles', zoomed_img)
+                            cv2.waitKey(1)
 
-                else:
-                    break
                 # embedding_ids[(colourpoint.x, colourpoint.y)] = colourpoint
             # using async client so have to use await or it complains
+            if [i for i in results if isinstance(i, Exception)]:
+                print(f"Circle {i+1} failed: probably ran out of images")
+                break
             await async_delete_point(client=real_client, collection_name=collection_name, point_ids=[res.embedding_id for res in results if isinstance(res, test_async_qdrant.TaskResult)])
-
-        if images_exhausted:
-            print("Images exhausted")
-            break
+            if [i for i in results if isinstance(i, Exception)]:
+                print(f"Circle {i+1} failed: probably ran out of images")
+                break
+                
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        seconds = int(elapsed_time)
+        milliseconds = int((elapsed_time - seconds) * 1000)
+        print(f"Circle {i+1} completed in {seconds} seconds and {milliseconds} milliseconds")
 
     return img, embedding_ids
 
