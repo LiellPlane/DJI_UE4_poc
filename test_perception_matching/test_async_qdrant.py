@@ -6,7 +6,7 @@ from uuid import uuid4
 from qdrant_client import models
 import qdrant_client
 import asyncio
-from qdrant_utils import async_get_closest_match, async_get_point_by_id, async_get_random_point, get_embedding_average
+from qdrant_utils import async_get_closest_match, async_get_point_by_id, async_get_random_point, get_embedding_average, async_get_embedding_average
 
 @dataclass
 class VectorSearchResult:
@@ -55,6 +55,13 @@ class FakeQdrantClient:
         return sorted(results, key=lambda x: x.score, reverse=True)
 
 
+@dataclass
+class TaskResult:
+    coord: tuple[int, int]
+    embedding_id: str
+    local_file_path: str
+    score: float
+
 class AsyncTaskHandler:
     """Handler for managing asynchronous search tasks with embeddings"""
     
@@ -70,11 +77,10 @@ class AsyncTaskHandler:
         self, 
         coord: str, 
         neighbour_ids: List[str],
-    ) -> Dict[str, Any]:
+    ) -> TaskResult | Exception:
         """Perform a search with the given embedding and return results"""
         try:
             if len(neighbour_ids) == 0:
-                1/0
                 # print("No neighbour ids found")
                 try:
                     # get a random point - we want this depleted so its removed from collection
@@ -87,9 +93,9 @@ class AsyncTaskHandler:
                     return e
             elif len(neighbour_ids) > 0:
                 # get neighbour ids - we want from write only as need reference
-                embedding_average = async_get_closest_match(self.real_client, neighbour_ids, self.read_only_collection_name)
+                embedding_average = await async_get_embedding_average(self.real_client, neighbour_ids, self.read_only_collection_name)
                 # get depleting match so its removed from collection
-                res = async_get_closest_match(
+                res = await async_get_closest_match(
                     client=self.real_client,
                     collection_name=self.depleting_collection_name,
                     vector=embedding_average,
@@ -103,13 +109,15 @@ class AsyncTaskHandler:
                 id = res[0].id
                 filepath = res[0].payload["filename"]
                 score = res[0].score
+
             # results = await async_get_random_point(self.real_client, self.collection_name)
             # print(points[0].vector[0])
-            return {
-                "task_id": coord,
-                "results": points[0].vector[0],
-                "status": "success"
-            }
+            return TaskResult(
+                coord=coord,
+                embedding_id=id,
+                local_file_path=filepath,
+                score=score
+            )
         except Exception as e:
             return e
     
@@ -134,16 +142,16 @@ class AsyncTaskHandler:
         # Wait for all tasks to complete and gather results
         all_results = await asyncio.gather(*self.tasks, return_exceptions=True)
         
-        # Organize results by task_id
-        results_by_id = {}
-        for result in all_results:
-            if isinstance(result, Exception):
-                results_by_id[result["task_id"]] = result
-            else:
-                results_by_id[result["task_id"]] = result
+        # # Organize results by task_id
+        # results_by_id = {}
+        # for result in all_results:
+        #     if isinstance(result, Exception):
+        #         results_by_id[result["task_id"]] = result
+        #     else:
+        #         results_by_id[result["task_id"]] = result
         
-        self.results_by_id = results_by_id
-        return results_by_id
+        # self.results_by_id = results_by_id
+        return all_results
 
 
 async def main():

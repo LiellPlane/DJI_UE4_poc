@@ -237,13 +237,24 @@ def get_closest_match(
     )
     return search_result
 
-def delete_point(client, collection_name: str, point_id: str):
+
+async def async_delete_point(client, collection_name: str, point_ids: str):
+    """Delete a point from a Qdrant collection."""
+    await client.delete(
+        collection_name=collection_name,
+        points_selector=models.PointIdsList(
+            points=point_ids
+        ),
+        wait=True
+    )
+
+def delete_point(client, collection_name: str, point_ids: list[str]):
     """Delete a point from a Qdrant collection."""
 
     client.delete(
         collection_name=collection_name,
         points_selector=models.PointIdsList(
-            points=[point_id]
+            points=point_ids
         ),
         wait=True
     )
@@ -285,6 +296,25 @@ async def async_get_random_point(client, collection_name: str, with_payload: boo
         with_payload=with_payload, with_vectors=with_vectors)
     return res.points
 
+async def async_get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
+    """Get the average embedding of the neighbour ids
+    probably should be in another utils but whatever this will do for now"""
+    # Retrieve points by their IDs
+    results = await client.retrieve(
+        collection_name=collection_name,
+        ids=neighbour_ids,
+        with_vectors=True
+    )
+    
+    # Extract vectors from the retrieved points
+    embeddings = [point.vector for point in results]
+    
+    # Return the mean of embeddings if any exist, otherwise return None
+    if embeddings:
+        # this will work for histogram embeddings - but
+        # potentially not as well for other embedding types
+        return np.mean(embeddings, axis=0)
+    return None
 
 def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
     """Get the average embedding of the neighbour ids
