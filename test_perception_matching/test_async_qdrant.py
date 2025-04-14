@@ -154,7 +154,7 @@ class AsyncTaskHandler:
         self.tasks = []
 
         if force_sequential:
-            print(f"Processing {len(neighbour_ids)} embeddings SEQUENTIALLY")
+            # print(f"Processing {len(neighbour_ids)} embeddings SEQUENTIALLY")
             # Process one by one in sequence
             all_results = []
             for coord, n_ids in neighbour_ids.items():
@@ -181,7 +181,7 @@ class AsyncTaskHandler:
                     all_results.append(e)
             return all_results
         else:
-            print(f"Processing {len(neighbour_ids)} embeddings in PARALLEL")
+            # print(f"Processing {len(neighbour_ids)} embeddings in PARALLEL")
             # each worker gets a coordinate, and a list of neighbours ids
             # Process concurrently using tasks
             for coord, n_ids in neighbour_ids.items():

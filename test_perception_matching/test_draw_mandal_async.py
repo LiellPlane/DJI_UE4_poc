@@ -301,14 +301,16 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # Choose whether to process each point one-by-one sequentially or in parallel
         # use_sequential_processing = True  # Set to True for sequential processing, False for parallel
 
-        if len(ids_per_circle_point) > 123456789:
+        if i > 10:# for first circles we want best matches - so strictly sequential to
+            # avoid complications with duplicate ids. Once farther apart it should in theory be less
+            # of an issue
             use_sequential_processing = False
             sequence = []
             sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
             sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
         else:
             use_sequential_processing = True
-            sequence = [ids_per_circle_point]
+            sequence = [{key_:val_} for key_, val_ in ids_per_circle_point.items()]
 
         # if len(ids_per_circle_point) != len(sequence[0]) + len(sequence[1]):
         #     raise ValueError(f"Odd and evens do not match: {len(ids_per_circle_point)} != {len(odds_and_evens[0])} + {len(odds_and_evens[1])}") 
@@ -317,13 +319,14 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
             results: list[test_async_qdrant.TaskResult | Exception] = await handler.process_embeddings(
                 neighbour_ids=neighbours,
                 force_sequential=use_sequential_processing,
-                delete_after_processing=True  # Delete each point immediately after processing
+                delete_after_processing=True  # Delete each point immediately after processing - sequential only
             )
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
-            plop=1
+            if len(set([res.embedding_id for res in results])) != len(results):
+                print(f"Duplicate ids: {len(set([res.embedding_id for res in results]))} != {len(results)}")
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
-                    embedding_ids[result.coord] = result
+                    # embedding_ids[result.coord] = result
                     embedding_ids[result.coord] = EmbeddedPoint(
                         embedding_id=result.embedding_id,
                         local_file_path=result.local_file_path,
@@ -343,7 +346,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                         similarity_colour = (0, green, red)  # BGR format in OpenCV
                         img[result.coord[1], result.coord[0]] = similarity_colour
                         
-                        if random.random() < 0.03:
+                        if random.random() < 0.01:
                             # Zoom the image by 4x
                             zoomed_img = cv2.resize(img, None, fx=4, fy=4, interpolation=cv2.INTER_NEAREST)
                             
@@ -389,11 +392,11 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                         point_ids=point_ids
                     )
 
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            seconds = int(elapsed_time)
-            milliseconds = int((elapsed_time - seconds) * 1000)
-            print(f"Circle {i+1} completed in {seconds} seconds and {milliseconds} milliseconds")
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        seconds = int(elapsed_time)
+        milliseconds = int((elapsed_time - seconds) * 1000)
+        print(f"Circle {i+1} completed in {seconds} seconds and {milliseconds} milliseconds")
 
     return img, embedding_ids
 
