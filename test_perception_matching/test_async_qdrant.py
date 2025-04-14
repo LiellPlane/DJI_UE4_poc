@@ -65,13 +65,21 @@ class TaskResult:
 class AsyncTaskHandler:
     """Handler for managing asynchronous search tasks with embeddings"""
     
-    def __init__(self, depleting_collection_name:str, read_only_collection_name:str, real_client: qdrant_client.AsyncQdrantClient, fake_client: FakeQdrantClient):
+    def __init__(
+        self, 
+        depleting_collection_name: str, 
+        read_only_collection_name: str, 
+        real_client: qdrant_client.AsyncQdrantClient, 
+        fake_client: FakeQdrantClient,
+        debug_delay: float = 0.0  # Add debug delay parameter
+    ):
         self.real_client = real_client
         self.fake_client = fake_client
         self.depleting_collection_name = depleting_collection_name
         self.read_only_collection_name = read_only_collection_name
         self.tasks = []
         self.results_by_id = {}
+        self.debug_delay = debug_delay  # Store the debug delay
     
     async def search_with_embedding(
         self, 
@@ -80,6 +88,11 @@ class AsyncTaskHandler:
     ) -> TaskResult | Exception:
         """Perform a search with the given embedding and return results"""
         try:
+            # Add optional debugging delay to see sequential operations clearly
+            if self.debug_delay > 0:
+                # print(f"DEBUG: Adding {self.debug_delay}s delay before processing coordinate {coord}")
+                await asyncio.sleep(self.debug_delay)
+                
             if len(neighbour_ids) == 0:
                 # print("No neighbour ids found")
                 try:
@@ -122,36 +135,69 @@ class AsyncTaskHandler:
             return e
     
     async def process_embeddings(
-        self, neighbour_ids: Dict[tuple[int,int], List[str]]
-    ) -> Dict[str, Any]:
+        self, 
+        neighbour_ids: Dict[tuple[int,int], List[str]], 
+        force_sequential: bool = False,
+        delete_after_processing: bool = True
+    ) -> List[Any]:
+        """Process embeddings either in parallel or sequentially.
+        
+        Args:
+            neighbour_ids: Dictionary mapping coordinates to lists of neighbour IDs
+            force_sequential: If True, process embeddings one by one (for debugging)
+            delete_after_processing: Whether to delete points after processing
+            
+        Returns:
+            List of results (either TaskResult objects or exceptions)
+        """
         # Clear previous tasks
         self.tasks = []
 
-        # each worker gets a coordinate, and a list of neighbours ids
-        # touching 
-        for coord, neighbour_ids in neighbour_ids.items():
-            task = asyncio.create_task(
-                self.search_with_embedding(coord, neighbour_ids)
-            )
-            self.tasks.append(task)
-        
-        if not self.tasks:
-            print("No tasks to run")
-            return {}
-        
-        # Wait for all tasks to complete and gather results
-        all_results = await asyncio.gather(*self.tasks, return_exceptions=True)
-        
-        # # Organize results by task_id
-        # results_by_id = {}
-        # for result in all_results:
-        #     if isinstance(result, Exception):
-        #         results_by_id[result["task_id"]] = result
-        #     else:
-        #         results_by_id[result["task_id"]] = result
-        
-        # self.results_by_id = results_by_id
-        return all_results
+        if force_sequential:
+            print(f"Processing {len(neighbour_ids)} embeddings SEQUENTIALLY")
+            # Process one by one in sequence
+            all_results = []
+            for coord, n_ids in neighbour_ids.items():
+                # print(f"Processing coordinate {coord} sequentially...")
+                # Process directly (await each operation individually)
+                try:
+                    result = await self.search_with_embedding(coord, n_ids)
+                    all_results.append(result)
+                    
+                    # Delete immediately in sequential mode if requested
+                    if delete_after_processing and isinstance(result, TaskResult):
+                        # print(f"Immediately deleting point {result.embedding_id} after processing")
+                        await self.real_client.delete(
+                            collection_name=self.depleting_collection_name,
+                            points_selector=models.PointIdsList(
+                                points=[result.embedding_id]
+                            ),
+                            wait=True
+                        )
+                    
+                    # print(f"Completed processing coordinate {coord}")
+                except Exception as e:
+                    print(f"Error processing coordinate {coord}: {e}")
+                    all_results.append(e)
+            return all_results
+        else:
+            print(f"Processing {len(neighbour_ids)} embeddings in PARALLEL")
+            # each worker gets a coordinate, and a list of neighbours ids
+            # Process concurrently using tasks
+            for coord, n_ids in neighbour_ids.items():
+                task = asyncio.create_task(
+                    self.search_with_embedding(coord, n_ids)
+                )
+                self.tasks.append(task)
+            
+            if not self.tasks:
+                print("No tasks to run")
+                return []
+            
+            # Wait for all tasks to complete and gather results
+            all_results = await asyncio.gather(*self.tasks, return_exceptions=True)
+            
+            return all_results
 
 
 async def main():

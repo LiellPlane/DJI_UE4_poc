@@ -244,8 +244,10 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
     handler = test_async_qdrant.AsyncTaskHandler(
         depleting_collection_name=collection_name,
         read_only_collection_name=read_only_collection_name,
-        real_client=real_client, fake_client=client
-        )    
+        real_client=real_client, 
+        fake_client=client,
+        debug_delay=0.0  # Add a small delay to make sequential processing more visible
+    )    
     
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
@@ -296,18 +298,29 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # filter out already calculated points
         # ids_per_circle_point = {id:val for id,val in ids_per_circle_point.items() if id not in embedding_ids}
 
-        if len(ids_per_circle_point) > 3456789:
+        # Choose whether to process each point one-by-one sequentially or in parallel
+        # use_sequential_processing = True  # Set to True for sequential processing, False for parallel
+
+        if len(ids_per_circle_point) > 123456789:
+            use_sequential_processing = False
             sequence = []
             sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[::2]})
             sequence.append({key: ids_per_circle_point[key] for key in list(ids_per_circle_point.keys())[1::2]})
         else:
+            use_sequential_processing = True
             sequence = [ids_per_circle_point]
 
         # if len(ids_per_circle_point) != len(sequence[0]) + len(sequence[1]):
         #     raise ValueError(f"Odd and evens do not match: {len(ids_per_circle_point)} != {len(odds_and_evens[0])} + {len(odds_and_evens[1])}") 
         for neighbours in sequence:
-            results: list[test_async_qdrant.TaskResult | Exception] = await handler.process_embeddings(neighbour_ids=neighbours)
+            # Pass force_sequential parameter to process embeddings
+            results: list[test_async_qdrant.TaskResult | Exception] = await handler.process_embeddings(
+                neighbour_ids=neighbours,
+                force_sequential=use_sequential_processing,
+                delete_after_processing=True  # Delete each point immediately after processing
+            )
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
+            plop=1
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
                     embedding_ids[result.coord] = result
@@ -358,21 +371,29 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                             cv2.imshow('Concentric Circles', zoomed_img)
                             cv2.waitKey(1)
 
-                # embedding_ids[(colourpoint.x, colourpoint.y)] = colourpoint
-            # using async client so have to use await or it complains
-            if [i for i in results if isinstance(i, Exception)]:
-                print(f"Circle {i+1} failed: probably ran out of images")
-                break
-            await async_delete_point(client=real_client, collection_name=collection_name, point_ids=[res.embedding_id for res in results if isinstance(res, test_async_qdrant.TaskResult)])
+            # Check for exceptions
             if [i for i in results if isinstance(i, Exception)]:
                 print(f"Circle {i+1} failed: probably ran out of images")
                 break
                 
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        seconds = int(elapsed_time)
-        milliseconds = int((elapsed_time - seconds) * 1000)
-        print(f"Circle {i+1} completed in {seconds} seconds and {milliseconds} milliseconds")
+            # In parallel mode, we need to handle deletion separately
+            # Sequential mode already handles deletion during processing
+            if not use_sequential_processing:
+                # Only do bulk deletion for parallel processing
+                point_ids = [res.embedding_id for res in results if isinstance(res, test_async_qdrant.TaskResult)]
+                if point_ids:
+                    print(f"Parallel mode: Deleting {len(point_ids)} points in bulk")
+                    await async_delete_point(
+                        client=real_client, 
+                        collection_name=collection_name, 
+                        point_ids=point_ids
+                    )
+
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            seconds = int(elapsed_time)
+            milliseconds = int((elapsed_time - seconds) * 1000)
+            print(f"Circle {i+1} completed in {seconds} seconds and {milliseconds} milliseconds")
 
     return img, embedding_ids
 
