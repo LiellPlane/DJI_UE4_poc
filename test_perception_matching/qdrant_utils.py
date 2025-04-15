@@ -4,15 +4,25 @@ Module for Qdrant vector database connection and similarity search.
 """
 
 import os
-from qdrant_client import QdrantClient, models
-from qdrant_client.http.models import Filter, FieldCondition, MatchValue, ScoredPoint
-from typing import Optional, Tuple, List, Dict, Any
-import shutil
-from pathlib import Path
+import sys
+import pathlib
 import time
+import shutil
 import random
 import numpy as np
+from pathlib import Path
+from typing import Dict, List, Tuple, Any, Optional
+from qdrant_client import QdrantClient, models
+from qdrant_client.http.models import Filter, FieldCondition, MatchValue
+from qdrant_client.models import ScoredPoint, PointStruct
+from sklearn.decomposition import PCA
 
+# Add all parent directories to Python path
+current_path = pathlib.Path(__file__).parent.absolute()
+while current_path != current_path.parent:
+    if current_path not in sys.path:
+        sys.path.append(str(current_path))
+    current_path = current_path.parent
 
 def clone_collection(client, collection_name: str, new_collection_name: str, batch_size: int = 1000):
     """
@@ -296,9 +306,71 @@ async def async_get_random_point(client, collection_name: str, with_payload: boo
         with_payload=with_payload, with_vectors=with_vectors)
     return res.points
 
-async def async_get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
+# Various embedding aggregation methods
+def mean_aggregation(embeddings: list) -> np.ndarray:
+    """Aggregate embeddings using mean"""
+    return np.mean(embeddings, axis=0)
+
+def median_aggregation(embeddings: list) -> np.ndarray:
+    """Aggregate embeddings using median (more robust to outliers)"""
+    return np.median(embeddings, axis=0)
+
+def normalized_mean_aggregation(embeddings: list) -> np.ndarray:
+    """Aggregate embeddings using L2-normalized mean"""
+    avg_embedding = np.mean(embeddings, axis=0)
+    norm = np.linalg.norm(avg_embedding)
+    if norm > 0:
+        return avg_embedding / norm
+    return avg_embedding
+
+def weighted_aggregation(embeddings: list, weights: list = None) -> np.ndarray:
+    """Aggregate embeddings using weighted average"""
+    if weights is None or len(weights) != len(embeddings):
+        # Fall back to mean if weights are invalid
+        return mean_aggregation(embeddings)
+    
+    # Normalize weights to sum to 1
+    weights = np.array(weights) / sum(weights)
+    # Apply weights and sum
+    return np.sum([emb * w for emb, w in zip(embeddings, weights)], axis=0)
+
+
+
+def pca_aggregation(embeddings: list, variance_retained=0.95) -> np.ndarray:
+    """Aggregate embeddings using PCA-based method"""
+    if len(embeddings) > 1:
+        embeddings_array = np.array(embeddings)
+        # Apply PCA to reduce noise
+        pca = PCA(n_components=variance_retained)
+        reduced = pca.fit_transform(embeddings_array)
+        # Project back to original space and take mean
+        reconstructed = pca.inverse_transform(reduced)
+        return np.mean(reconstructed, axis=0)
+    return embeddings[0]
+
+async def async_get_embedding_average(
+    client, 
+    neighbour_ids: list[str], 
+    collection_name,
+    aggregation_method=median_aggregation,
+    **kwargs
+) -> np.ndarray:
     """Get the average embedding of the neighbour ids
-    probably should be in another utils but whatever this will do for now"""
+    probably should be in another utils but whatever this will do for now
+    
+    Parameters:
+    -----------
+    client : Qdrant client
+        Client for accessing the vector database
+    neighbour_ids : list[str]
+        List of IDs to average
+    collection_name : str
+        Name of the collection
+    aggregation_method : function
+        Function that takes a list of embeddings and returns an aggregated embedding
+    **kwargs : dict
+        Additional arguments to pass to the aggregation method
+    """
     # Retrieve points by their IDs
     results = await client.retrieve(
         collection_name=collection_name,
@@ -309,16 +381,34 @@ async def async_get_embedding_average(client, neighbour_ids: list[str], collecti
     # Extract vectors from the retrieved points
     embeddings = [point.vector for point in results]
     
-    # Return the mean of embeddings if any exist, otherwise return None
+    # Return the aggregated embeddings if any exist, otherwise return None
     if embeddings:
-        # this will work for histogram embeddings - but
-        # potentially not as well for other embedding types
-        return np.mean(embeddings, axis=0)
+        return aggregation_method(embeddings, **kwargs)
     return None
 
-def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> np.ndarray:
+def get_embedding_average(
+    client, 
+    neighbour_ids: list[str], 
+    collection_name,
+    aggregation_method=mean_aggregation,
+    **kwargs
+) -> np.ndarray:
     """Get the average embedding of the neighbour ids
-    probably should be in another utils but whatever this will do for now"""
+    probably should be in another utils but whatever this will do for now
+    
+    Parameters:
+    -----------
+    client : Qdrant client
+        Client for accessing the vector database
+    neighbour_ids : list[str]
+        List of IDs to average
+    collection_name : str
+        Name of the collection
+    aggregation_method : function
+        Function that takes a list of embeddings and returns an aggregated embedding
+    **kwargs : dict
+        Additional arguments to pass to the aggregation method
+    """
     # Retrieve points by their IDs
     results = client.retrieve(
         collection_name=collection_name,
@@ -329,9 +419,7 @@ def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> 
     # Extract vectors from the retrieved points
     embeddings = [point.vector for point in results]
     
-    # Return the mean of embeddings if any exist, otherwise return None
+    # Return the aggregated embeddings if any exist, otherwise return None
     if embeddings:
-        # this will work for histogram embeddings - but
-        # potentially not as well for other embedding types
-        return np.mean(embeddings, axis=0)
+        return aggregation_method(embeddings, **kwargs)
     return None

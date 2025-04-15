@@ -2,11 +2,18 @@ import cv2
 import numpy as np
 import math
 from dataclasses import dataclass
+
+# Extremely aggressive Python path handling
+import os
+import sys
+import site
+
+
 from qdrant_utils import get_point_by_id, clone_collection, get_qdrant_client, get_random_item, get_closest_match, delete_point, async_delete_point
+
 import random
 import threading
 import queue
-import os
 import time
 from typing import Optional, List
 from pydantic import BaseModel
@@ -235,7 +242,7 @@ def backup_draw_concentric_circles(client, collection_name, read_only_collection
 
 
 
-async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=50)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=45)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     
     
     client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
@@ -301,7 +308,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # Choose whether to process each point one-by-one sequentially or in parallel
         # use_sequential_processing = True  # Set to True for sequential processing, False for parallel
 
-        if i > 10:# for first circles we want best matches - so strictly sequential to
+        if i > 10000000:# for first circles we want best matches - so strictly sequential to
             # avoid complications with duplicate ids. Once farther apart it should in theory be less
             # of an issue
             use_sequential_processing = False

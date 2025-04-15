@@ -3,6 +3,13 @@ import random
 from typing import Dict, List, Any
 from dataclasses import dataclass
 from uuid import uuid4
+import sys
+import pathlib
+# Add all parent directories to Python path
+current_path = pathlib.Path(__file__).parent.absolute()
+parent_path = current_path.parent
+sys.path.insert(0, str(parent_path))
+
 from qdrant_client import models
 import qdrant_client
 import asyncio
