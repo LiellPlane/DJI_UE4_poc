@@ -242,7 +242,7 @@ def backup_draw_concentric_circles(client, collection_name, read_only_collection
 
 
 
-async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=45)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=7)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     
     
     client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
@@ -634,7 +634,7 @@ def create_mandala_from_similarity_matrix(
 
     
 async def async_main():
-    read_only_collection_name = "colours"
+    read_only_collection_name = "naughty"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
     clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)

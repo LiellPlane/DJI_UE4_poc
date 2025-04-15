@@ -8,6 +8,7 @@ dependencies = [
     "numpy==1.26.0",
     "opencv-python==4.8.1.78",
     "opencv-python-headless==4.8.1.78",
+    "pillow>=11.2.1",
     "psutil==7.0.0",
     "psycopg==3.2.6",
     "psycopg-binary==3.2.6",

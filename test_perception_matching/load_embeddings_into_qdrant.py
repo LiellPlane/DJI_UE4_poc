@@ -46,7 +46,7 @@ def load_embeddings_from_pickle(client, collection_name, embeddings_dir=None, ma
     if embeddings_dir is None:
         current_file_dir = Path(__file__).parent
         repo_root = current_file_dir.parent
-        embeddings_dir = repo_root / "embeddings_output"
+        embeddings_dir = repo_root / "test_perception_matching/embeddings_output"
     
     if not embeddings_dir.exists():
         print(f"Error: Directory {embeddings_dir} does not exist")
