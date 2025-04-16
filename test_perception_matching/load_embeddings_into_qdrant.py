@@ -46,7 +46,7 @@ def load_embeddings_from_pickle(client, collection_name, embeddings_dir=None, ma
     if embeddings_dir is None:
         current_file_dir = Path(__file__).parent
         repo_root = current_file_dir.parent
-        embeddings_dir = repo_root / "test_perception_matching/embeddings_output"
+        embeddings_dir = repo_root / "embeddings_output"
     
     if not embeddings_dir.exists():
         print(f"Error: Directory {embeddings_dir} does not exist")
@@ -203,7 +203,7 @@ def main():
     # Connect to Qdrant server
     client = QdrantClient(url="http://localhost:6333", timeout=120)  # Increased client timeout
     
-    collection_name = "colours"
+    collection_name = "starwars"
     confirmation = input(f"Are you sure you want to load the embeddings into the collection {collection_name}? Press Y to continue or any other key to exit: ")
     if confirmation.lower() != 'y':
         print("Operation cancelled by user.")

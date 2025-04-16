@@ -11,8 +11,8 @@ import shutil
 from pathlib import Path
 import time
 import random
-from qdrant_utils import delete_point, get_closest_match, clone_collection, get_random_item_with_closest_match, get_qdrant_client
-COLLECTION_NAME = "naughty"
+from qdrant_utils import wait_for_collection_ready, delete_point, get_closest_match, clone_collection, get_random_item_with_closest_match, get_qdrant_client
+COLLECTION_NAME = "starwars"
 
 
 def get_sequence_of_closest_matches(
@@ -152,7 +152,7 @@ def main():
 
     print(f"Cloning collection {COLLECTION_NAME} to {COLLECTION_NAME}_clone")
     clone_collection(client,collection_name=COLLECTION_NAME, new_collection_name=f"{COLLECTION_NAME}_clone")
-    
+    wait_for_collection_ready(client, f"{COLLECTION_NAME}_clone")
     sequence, scores = get_sequence_of_closest_matches(
         client,
         limit=None,

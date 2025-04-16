@@ -669,7 +669,7 @@ def create_mandala_from_similarity_matrix(
 
     
 async def async_main():
-    read_only_collection_name = "everything_with_naughty"
+    read_only_collection_name = "starwars"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
     # Detect operating system and set appropriate paths
@@ -684,7 +684,7 @@ async def async_main():
         # get closest matches so we can see if using a flipped image gives better results
         sorted_files = get_image_embedding.get_closest_match(client, embedding, embedding_flipped, read_only_collection_name)
 
-        seed_embedding = SeedEmbedding(embedding=embedding_flipped if sorted_files[0].is_flipped else embedding, flipped=sorted_files[0].is_flipped, image_path=image_path)
+        seed_embedding = [SeedEmbedding(embedding=embedding_flipped if sorted_files[0].is_flipped else embedding, flipped=sorted_files[0].is_flipped, image_path=image_path)]
 
     clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)
     wait_for_collection_ready(client, clone_collection_name)
@@ -693,7 +693,7 @@ async def async_main():
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=5, seeds=[seed_embedding])
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=40, seeds=None)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     

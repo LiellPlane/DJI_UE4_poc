@@ -18,6 +18,7 @@ from qdrant_client.models import ScoredPoint, PointStruct
 from sklearn.decomposition import PCA
 from qdrant_client.http.models.models import ScoredPoint
 from dataclasses import dataclass
+import asyncio
 
 @dataclass
 class ScoredPointWithFlip:
@@ -295,15 +296,24 @@ def get_closest_match(
     return search_result
 
 
-async def async_delete_point(client, collection_name: str, point_ids: str):
-    """Delete a point from a Qdrant collection."""
-    await client.delete(
-        collection_name=collection_name,
-        points_selector=models.PointIdsList(
-            points=point_ids
-        ),
-        wait=True
-    )
+async def async_delete_point(client, collection_name: str, point_ids: str, max_retries=3):
+    """Delete a point from a Qdrant collection with retry logic."""
+    for retry in range(max_retries):
+        try:
+            await client.delete(
+                collection_name=collection_name,
+                points_selector=models.PointIdsList(
+                    points=point_ids
+                ),
+                wait=True
+            )
+            return
+        except Exception as e:
+            if retry < max_retries - 1:
+                print(f"Error deleting points: {e}. Retrying ({retry+1}/{max_retries})...")
+                await asyncio.sleep(2 * (retry + 1))  # Exponential backoff
+            else:
+                raise
 
 def delete_point(client, collection_name: str, point_ids: list[str]):
     """Delete a point from a Qdrant collection."""
@@ -399,7 +409,7 @@ async def async_get_embedding_average(
     client, 
     neighbour_ids: list[str], 
     collection_name,
-    aggregation_method=median_aggregation,
+    aggregation_method=normalized_mean_aggregation,
     **kwargs
 ) -> np.ndarray:
     """Get the average embedding of the neighbour ids
