@@ -8,9 +8,10 @@ import json
 import shutil
 import cv2
 import platform
+import get_image_embedding
 from pathlib import Path
 from dataclasses import dataclass
-from qdrant_client.http.models.models import ScoredPoint
+
 
 
 QDRANT_COLLECTION_NAME = "everything_with_naughty"
@@ -26,14 +27,6 @@ else:  # Linux or other OS
     IMAGES_TO_MATCH_PATH = Path("/tmp/temp_match_imgs/")
     OUTPUT_PATH = Path("/tmp/match_images_output")
 
-@dataclass
-class ScoredPointWithFlip:
-    """
-    Simple wrapper for ScoredPoint that adds information about whether
-    the match was found with a flipped version of the image.
-    """
-    point: ScoredPoint
-    is_flipped: bool = False
 
 client = get_sequence_images_qdrant.get_qdrant_client()
 vector, random_item, closest_matches, payload = get_sequence_images_qdrant.get_random_item_with_closest_match(
@@ -60,51 +53,11 @@ def main():
     for index, image_path in enumerate(image_paths):
         try:
             print(f"processing {index} of {len(image_paths)}")
-            img = cv2.imread(image_path)
+            embedding, embedding_flipped = get_image_embedding.get_image_embedding(client, image_path, QDRANT_COLLECTION_NAME)
 
-            if GRABBED_EMBEDDING_PARAMS.mask:
-                mask = generate_embeddings.create_circular_mask(img.shape)
-            else:
-                mask = None
-            # Flip the image horizontally (mirror effect)
-            img_flipped = cv2.flip(img, 1)
-            embedding = generate_embeddings.create_image_embedding(
-                img, 
-                params=GRABBED_EMBEDDING_PARAMS,
-                mask=mask
-            )
-            embedding_flipped = generate_embeddings.create_image_embedding(
-                img_flipped, 
-                params=GRABBED_EMBEDDING_PARAMS,
-                mask=mask
-            )
-            search_result = client.search(
-                collection_name=QDRANT_COLLECTION_NAME,
-                query_vector=embedding,
-                limit=5,
-                with_payload=True,
-                with_vectors=False
-            )
-            search_result_flipped = client.search(
-                collection_name=QDRANT_COLLECTION_NAME,
-                query_vector=embedding_flipped,
-                limit=5,
-                with_payload=True,
-                with_vectors=False
-            )
+            sorted_files = get_image_embedding.get_closest_match(client, embedding, embedding_flipped, QDRANT_COLLECTION_NAME)
 
-            # Create a list of all results with flipped information
-            all_results = [ScoredPointWithFlip(pt, is_flipped=True) for pt in search_result_flipped]
-            all_results.extend([ScoredPointWithFlip(pt, is_flipped=False) for pt in search_result])
-            
-            # reopulate back
-            # Sort by score and take top 10
-            sorted_files = sorted(all_results, key=lambda x: x.point.score, reverse=False)
-            # remove image if it already exists in the output (to avoid flipped and unflipped versions)
-            # do backwards so overwrite the dictionary key of first instance
-            unique_images =list({i.point.payload["filename"]:i for i in sorted_files}.values())[-3:]
-
-            output[image_path] = all_results
+            output[image_path] = sorted_files
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
 

@@ -12,7 +12,7 @@ from pathlib import Path
 import time
 import random
 from qdrant_utils import delete_point, get_closest_match, clone_collection, get_random_item_with_closest_match, get_qdrant_client
-COLLECTION_NAME = "colours"
+COLLECTION_NAME = "naughty"
 
 
 def get_sequence_of_closest_matches(
@@ -77,7 +77,7 @@ def get_sequence_of_closest_matches(
         results.append(point.payload)
         
         # Delete the point so it won't be found in the next iteration
-        delete_point(client=client, collection_name=collection_name, point_id=point.id)
+        delete_point(client=client, collection_name=collection_name, point_ids=[point.id])
         # client.delete(
         #     collection_name=collection_name,
         #     points_selector=models.PointIdsList(
@@ -127,7 +127,7 @@ def main():
     # Create image_sequence directory in the same location as this script
     script_dir = Path(__file__).parent.absolute()
     image_sequence_dir = script_dir / "image_sequence"
-    
+    # image_sequence_dir = r"D:\MatchOutput"
     # Check if directory already exists
     if image_sequence_dir.exists():
         response = input(f"Directory {image_sequence_dir} already exists. Delete and continue? (y/n): ").strip().lower()

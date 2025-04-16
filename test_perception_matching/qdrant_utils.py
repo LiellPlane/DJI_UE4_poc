@@ -16,6 +16,18 @@ from qdrant_client import QdrantClient, models
 from qdrant_client.http.models import Filter, FieldCondition, MatchValue
 from qdrant_client.models import ScoredPoint, PointStruct
 from sklearn.decomposition import PCA
+from qdrant_client.http.models.models import ScoredPoint
+from dataclasses import dataclass
+
+@dataclass
+class ScoredPointWithFlip:
+    """
+    Simple wrapper for ScoredPoint that adds information about whether
+    the match was found with a flipped version of the image.
+    """
+    point: ScoredPoint
+    is_flipped: bool = False
+
 
 # Add all parent directories to Python path
 current_path = pathlib.Path(__file__).parent.absolute()
@@ -23,6 +35,32 @@ while current_path != current_path.parent:
     if current_path not in sys.path:
         sys.path.append(str(current_path))
     current_path = current_path.parent
+
+
+
+def wait_for_collection_ready(client, collection_name: str):
+    """
+    Wait until the collection is ready and healthy, showing the count of items.
+    
+    Args:
+        client: Qdrant client
+        collection_name: Name of the collection to wait for
+    """
+    while True:
+        time.sleep(5) # TODO do this first as collection will be status green with zero points and not ready
+        # this is bad code so fix it if going beyond POC
+        try:
+            collection_info = client.get_collection(collection_name=collection_name)
+            count = client.count(collection_name=collection_name)
+            if collection_info.status == "green":
+                print(f"Collection '{collection_name}' is ready with {count.count} items")
+                return
+            else:
+                print(f"Collection '{collection_name}' is not ready yet, status: {collection_info.status}, count: {count.count}")
+        except Exception:
+            print(f"Collection '{collection_name}' is not ready yet")
+            
+        
 
 def clone_collection(client, collection_name: str, new_collection_name: str, batch_size: int = 1000):
     """
@@ -49,6 +87,15 @@ def clone_collection(client, collection_name: str, new_collection_name: str, bat
     vector_size = source_collection.config.params.vectors.size
     vector_distance = source_collection.config.params.vectors.distance
     
+
+
+    client.create_collection(
+        collection_name=new_collection_name,
+        vectors_config=models.VectorParams(size=vector_size, distance=vector_distance),
+            init_from=models.InitFrom(collection=collection_name),
+        )
+
+    return 
     # Create new collection with the same vector configuration
     print(f"Creating new collection '{new_collection_name}' with same configuration as '{collection_name}'")
     client.create_collection(
@@ -372,14 +419,16 @@ async def async_get_embedding_average(
         Additional arguments to pass to the aggregation method
     """
     # Retrieve points by their IDs
+    # we have to  deal with qdrant objects (ids for embeddings), and our own seed objects (have embedding already)
     results = await client.retrieve(
         collection_name=collection_name,
-        ids=neighbour_ids,
+        ids=[id for id in neighbour_ids if isinstance(id, str)],
         with_vectors=True
     )
     
     # Extract vectors from the retrieved points
-    embeddings = [point.vector for point in results]
+    # add the seed embeddings to the list if they exist
+    embeddings = [point.vector for point in results] + [id for id in neighbour_ids if isinstance(id, np.ndarray)]
     
     # Return the aggregated embeddings if any exist, otherwise return None
     if embeddings:

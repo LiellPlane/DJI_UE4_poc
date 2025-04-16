@@ -7,19 +7,19 @@ from dataclasses import dataclass
 import os
 import sys
 import site
-
-
-from qdrant_utils import get_point_by_id, clone_collection, get_qdrant_client, get_random_item, get_closest_match, delete_point, async_delete_point
-
+from pathlib import Path
+import platform
+from qdrant_utils import wait_for_collection_ready, get_point_by_id, clone_collection, get_qdrant_client, get_random_item, get_closest_match, delete_point, async_delete_point
+import get_batch_embeddings
 import random
 import threading
 import queue
 import time
 from typing import Optional, List
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, field_validator
 import asyncio
 import test_async_qdrant
-
+import get_image_embedding
 @dataclass(frozen=True)
 class ColourPoint:
     x: int
@@ -31,6 +31,23 @@ class ColourPoint:
 class EmbeddedPoint(ColourPoint):
     embedding_id: str = None
     local_file_path: str = None
+
+class SeedEmbedding(BaseModel):
+    """
+    if we want to seed the mandala with a specific image
+    """
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+    
+    embedding: np.ndarray
+    flipped: bool
+    image_path: str
+
+    @field_validator('embedding')
+    @classmethod
+    def validate_numpy_array(cls, v):
+        if not isinstance(v, np.ndarray):
+            raise ValueError('Must be a numpy array')
+        return v
 
 
 def draw_ring(center, inner_radius, outer_radius, color)->ColourPoint:
@@ -97,12 +114,18 @@ def get_embedding_average(client, neighbour_ids: list[str], collection_name) -> 
 
 
 def get_ids_in_radius(colourpoint: ColourPoint, 
-                      embedding_ids: dict[tuple[int, int], EmbeddedPoint]) -> list[str]:
+                      embedding_ids: dict[tuple[int, int], EmbeddedPoint | SeedEmbedding]) -> list[str | np.ndarray]:
     """Get the ids of the points in the radius of the colourpoint"""
     ids = []
     for pxl in generate_touching_pxls_coords(colourpoint, embedding_ids):
-        if pxl in embedding_ids:
-            ids.append(embedding_ids[pxl].embedding_id)
+        if pxl in embedding_ids: # if there is data there, use it
+            if isinstance(embedding_ids[pxl], EmbeddedPoint):
+                ids.append(embedding_ids[pxl].embedding_id)
+            elif isinstance(embedding_ids[pxl], SeedEmbedding):
+                ids.append(embedding_ids[pxl].embedding)
+            else:
+                raise ValueError(f"Unexpected type: {type(embedding_ids[pxl])}")
+                
     return ids
 
 
@@ -242,7 +265,7 @@ def backup_draw_concentric_circles(client, collection_name, read_only_collection
 
 
 
-async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=7)->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
+async def draw_concentric_circles(client, collection_name, read_only_collection_name, image_size=300, num_circles=7, seeds: list[SeedEmbedding]=[])->tuple[np.ndarray, dict[tuple[int, int], EmbeddedPoint]]:
     
     
     client = test_async_qdrant.FakeQdrantClient(collection_name="test_vectors")
@@ -256,6 +279,8 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         debug_delay=0.0  # Add a small delay to make sequential processing more visible
     )    
     
+
+
     # Create a white image
     img = np.ones((image_size, image_size, 3), dtype=np.uint8) * 255
     
@@ -264,6 +289,11 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
     # Get center coordinates
     center = (image_size // 2, image_size // 2)
     
+
+    if seeds:
+        # plop in the seed if they exist. space them out if more than one but for now just one
+        embedding_ids[center] = seeds[0]
+
     # Draw single pixel center dot
     img[center[1], center[0]] = (0, 0, 0)
     
@@ -329,7 +359,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                 delete_after_processing=True  # Delete each point immediately after processing - sequential only
             )
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
-            if len(set([res.embedding_id for res in results])) != len(results):
+            if len(set([res.embedding_id for res in [r for r in results if isinstance(r, test_async_qdrant.TaskResult)]])) != len([r for r in results if isinstance(r, test_async_qdrant.TaskResult)]):
                 print(f"Duplicate ids: {len(set([res.embedding_id for res in results]))} != {len(results)}")
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
@@ -531,7 +561,7 @@ def draw_concentric_circles_multithreaded(client, collection_name, read_only_col
 
 def create_mandala_from_similarity_matrix(
     similarity_matrix: dict[tuple[int, int], EmbeddedPoint],
-    tile_size: int = 50
+    tile_size: int = 100
 ) -> np.ndarray:
     """Create a mandala from a similarity matrix"""
     # Find boundaries of the grid
@@ -563,17 +593,22 @@ def create_mandala_from_similarity_matrix(
         if processed_tiles % 10 == 0:
             print(f"Processed {processed_tiles}/{total_tiles} tiles")
             
+
+        if isinstance(point, SeedEmbedding):
+            img_path = point.image_path
+        if isinstance(point, EmbeddedPoint):
+            img_path = point.local_file_path
         # Skip if the file path is not available
-        if not point.local_file_path:
-            print(f"Skipping tile at ({x}, {y}): No file path")
-            continue
+        # if not point.local_file_path:
+        #     print(f"Skipping tile at ({x}, {y}): No file path")
+        #     continue
             
         try:
             # Load image
-            img = cv2.imread(point.local_file_path)
+            img = cv2.imread(img_path)
             
             if img is None:
-                print(f"Failed to load image: {point.local_file_path}")
+                print(f"Failed to load image: {img_path}")
                 continue
                 
             # Resize to tile_size x tile_size
@@ -634,16 +669,31 @@ def create_mandala_from_similarity_matrix(
 
     
 async def async_main():
-    read_only_collection_name = "naughty"
+    read_only_collection_name = "everything_with_naughty"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
-    clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)
+    # Detect operating system and set appropriate paths
+    if platform.system() == "Darwin":  # macOS
+        image_paths = get_batch_embeddings.get_image_filepaths_from_folders([Path("D:/match_images_mandala")])
+    elif platform.system() == "Windows":
+        image_paths = get_batch_embeddings.get_image_filepaths_from_folders([Path("D:/match_images_mandala")])
 
+    if len(image_paths) > 0:
+        image_path=image_paths[0]
+        embedding, embedding_flipped = get_image_embedding.get_image_embedding(client, image_path, read_only_collection_name)
+        # get closest matches so we can see if using a flipped image gives better results
+        sorted_files = get_image_embedding.get_closest_match(client, embedding, embedding_flipped, read_only_collection_name)
+
+        seed_embedding = SeedEmbedding(embedding=embedding_flipped if sorted_files[0].is_flipped else embedding, flipped=sorted_files[0].is_flipped, image_path=image_path)
+
+    clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)
+    wait_for_collection_ready(client, clone_collection_name)
+    
     # img, similarity_matrix = draw_concentric_circles_multithreaded(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=5, seeds=[seed_embedding])
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     
