@@ -90,6 +90,7 @@ class AsyncTaskHandler:
     
     async def search_with_embedding(
         self, 
+        results_limit: int,
         coord: str, 
         neighbour_ids: List[str],
     ) -> TaskResult | Exception:
@@ -119,7 +120,7 @@ class AsyncTaskHandler:
                     client=self.real_client,
                     collection_name=self.depleting_collection_name,
                     vector=embedding_average,
-                    limit=1,
+                    limit=results_limit,
                     with_payload=True,
                     with_vectors=False
                     )
@@ -143,6 +144,7 @@ class AsyncTaskHandler:
     
     async def process_embeddings(
         self, 
+        results_limit: int,
         neighbour_ids: Dict[tuple[int,int], List[str]], 
         force_sequential: bool = False,
         delete_after_processing: bool = True
@@ -168,7 +170,7 @@ class AsyncTaskHandler:
                 # print(f"Processing coordinate {coord} sequentially...")
                 # Process directly (await each operation individually)
                 try:
-                    result = await self.search_with_embedding(coord, n_ids)
+                    result = await self.search_with_embedding(results_limit, coord, n_ids)
                     all_results.append(result)
                     
                     # Delete immediately in sequential mode if requested
@@ -193,7 +195,7 @@ class AsyncTaskHandler:
             # Process concurrently using tasks
             for coord, n_ids in neighbour_ids.items():
                 task = asyncio.create_task(
-                    self.search_with_embedding(coord, n_ids)
+                    self.search_with_embedding(results_limit, coord, n_ids)
                 )
                 self.tasks.append(task)
             

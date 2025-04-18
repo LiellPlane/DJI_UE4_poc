@@ -338,7 +338,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # Choose whether to process each point one-by-one sequentially or in parallel
         # use_sequential_processing = True  # Set to True for sequential processing, False for parallel
 
-        if i > 20:# for first circles we want best matches - so strictly sequential to
+        if i > 8:# for first circles we want best matches - so strictly sequential to
             # avoid complications with duplicate ids. Once farther apart it should in theory be less
             # of an issue
             use_sequential_processing = False
@@ -354,13 +354,14 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         for neighbours in sequence:
             # Pass force_sequential parameter to process embeddings
             results: list[test_async_qdrant.TaskResult | Exception] = await handler.process_embeddings(
+                results_limit=len(sequence),
                 neighbour_ids=neighbours,
                 force_sequential=use_sequential_processing,
                 delete_after_processing=True  # Delete each point immediately after processing - sequential only
             )
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
             if len(set([res.embedding_id for res in [r for r in results if isinstance(r, test_async_qdrant.TaskResult)]])) != len([r for r in results if isinstance(r, test_async_qdrant.TaskResult)]):
-                print(f"Duplicate ids: {len(set([res.embedding_id for res in results]))} != {len(results)}")
+                print(f" {len(results) - len(set([res.embedding_id for res in [r for r in results if isinstance(r, test_async_qdrant.TaskResult)]]))} Duplicate ids")
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
                     # embedding_ids[result.coord] = result
@@ -695,7 +696,7 @@ async def async_main():
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=300, seeds=seed_embedding)
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=15, seeds=seed_embedding)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     
