@@ -179,7 +179,7 @@ class AsyncTaskHandler:
                         await self.real_client.delete(
                             collection_name=self.depleting_collection_name,
                             points_selector=models.PointIdsList(
-                                points=result.embedding_id
+                                points=[result.embedding_id[0]]
                             ),
                             wait=True
                         )

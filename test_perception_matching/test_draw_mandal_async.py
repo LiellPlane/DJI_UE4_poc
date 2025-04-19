@@ -351,29 +351,48 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
 
         # if len(ids_per_circle_point) != len(sequence[0]) + len(sequence[1]):
         #     raise ValueError(f"Odd and evens do not match: {len(ids_per_circle_point)} != {len(odds_and_evens[0])} + {len(odds_and_evens[1])}") 
+        neighbours: dict[tuple[int, int], list[str]]
         for neighbours in sequence:
             # Pass force_sequential parameter to process embeddings
             results: list[test_async_qdrant.TaskResult | Exception] = await handler.process_embeddings(
-                results_limit=len(sequence),
+                results_limit=len(neighbours),
                 neighbour_ids=neighbours,
                 force_sequential=use_sequential_processing,
                 delete_after_processing=True  # Delete each point immediately after processing - sequential only
             )
+            
+            # We now have a bunch of candidate ids for each point around circle (or whatever the interval is)
+            # Now remove duplicates
+
+            used_ids = set()
+            results_deduped: dict[tuple[int, int], list[str]] = {}
+            for result in results:
+                if isinstance(result, test_async_qdrant.TaskResult):
+                    for index, id in enumerate(result.embedding_id):
+                        if id not in used_ids:
+                            results_deduped[result.coord] = test_async_qdrant.TaskResult(
+                                coord=result.coord,
+                                embedding_id=[result.embedding_id[index]],
+                                local_file_path=[result.local_file_path[index]],
+                                score=[result.score[index]]
+                            )
+                            used_ids.add(id)
+            
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
             flattened_embedding_ids = [id for result in results if isinstance(result, test_async_qdrant.TaskResult) for id in result.embedding_id]
-            if set(flattened_embedding_ids) != set(flattened_embedding_ids):
+            if len(set(flattened_embedding_ids)) != len(flattened_embedding_ids):
                 print(f" {len(flattened_embedding_ids) - len(set(flattened_embedding_ids))} Duplicate ids")
-            
-            here we have results, each result has a list of ids (n closest match)
-            but each seperate result may have duplicates
-            we want an algorithm that will let each result have only one id with no duplicates
-            we request closest matches to handle duplicates so we can eliminate them
+
+            # here we have results, each result has a list of ids (n closest match)
+            # but each seperate result may have duplicates
+            # we want an algorithm that will let each result have only one id with no duplicates
+            # we request closest matches to handle duplicates so we can eliminate them
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
                     # embedding_ids[result.coord] = result
                     embedding_ids[result.coord] = EmbeddedPoint(
-                        embedding_id=result.embedding_id,
-                        local_file_path=result.local_file_path,
+                        embedding_id=result.embedding_id[0],
+                        local_file_path=result.local_file_path[0],
                         x=result.coord[0],
                         y=result.coord[1],
                         visual_test_colour=color
@@ -384,7 +403,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                         # anomaly due to circle drawing errors - which may cause poor matching/artifacts
 
                         # Create color gradient: RED (0,0,255) for score=0 to GREEN (0,255,0) for score=1
-                        clamped_score = max(0, min(1, result.score))
+                        clamped_score = max(0, min(1, result.score[0]))
                         green = int(255 * clamped_score)
                         red = int(255 * (1 - clamped_score))
                         similarity_colour = (0, green, red)  # BGR format in OpenCV
@@ -421,13 +440,23 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
             # Check for exceptions
             if [i for i in results if isinstance(i, Exception)]:
                 print(f"Circle {i+1} failed: probably ran out of images")
+                print(f"Results: {results}")
                 break
+            break_ = False
+            for result in results:
+                if break_:
+                    break
+                if isinstance(result, Exception):
+                    print(f"Circle {i+1} failed: probably ran out of images")
+                    print(f"result: {result}")
+                    break_ = True
                 
             # In parallel mode, we need to handle deletion separately
             # Sequential mode already handles deletion during processing
             if not use_sequential_processing:
                 # Only do bulk deletion for parallel processing
-                point_ids = [res.embedding_id for res in results if isinstance(res, test_async_qdrant.TaskResult)]
+                # point_ids = [res.embedding_id for res in results if isinstance(res, test_async_qdrant.TaskResult)]
+                point_ids = [id for result in results if isinstance(result, test_async_qdrant.TaskResult) for id in result.embedding_id]
                 if point_ids:
                     print(f"Parallel mode: Deleting {len(point_ids)} points in bulk")
                     await async_delete_point(
@@ -702,7 +731,7 @@ async def async_main():
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=15, seeds=seed_embedding)
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=23, seeds=seed_embedding)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     
