@@ -410,10 +410,13 @@ async def async_get_embedding_average(
     neighbour_ids: list[str], 
     collection_name,
     aggregation_method=normalized_mean_aggregation,
+    max_retries: int = 3,
+    initial_delay: float = 1.0,
+    max_delay: float = 10.0,
+    batch_size: int = 100,
     **kwargs
 ) -> np.ndarray:
-    """Get the average embedding of the neighbour ids
-    probably should be in another utils but whatever this will do for now
+    """Get the average embedding of the neighbour ids with retry mechanism
     
     Parameters:
     -----------
@@ -425,20 +428,56 @@ async def async_get_embedding_average(
         Name of the collection
     aggregation_method : function
         Function that takes a list of embeddings and returns an aggregated embedding
+    max_retries : int
+        Maximum number of retry attempts
+    initial_delay : float
+        Initial delay between retries in seconds
+    max_delay : float
+        Maximum delay between retries in seconds
+    batch_size : int
+        Number of IDs to process in each batch
     **kwargs : dict
         Additional arguments to pass to the aggregation method
     """
-    # Retrieve points by their IDs
-    # we have to  deal with qdrant objects (ids for embeddings), and our own seed objects (have embedding already)
-    results = await client.retrieve(
-        collection_name=collection_name,
-        ids=[id for id in neighbour_ids if isinstance(id, str)],
-        with_vectors=True
-    )
+    async def process_batch(batch_ids):
+        """Process a batch of IDs with retry mechanism"""
+        delay = initial_delay
+        last_error = None
+        
+        for attempt in range(max_retries):
+            try:
+                # Retrieve points by their IDs
+                results = await client.retrieve(
+                    collection_name=collection_name,
+                    ids=[id for id in batch_ids if isinstance(id, str)],
+                    with_vectors=True
+                )
+                return results
+            except Exception as e:
+                last_error = e
+                if attempt < max_retries - 1:  # Don't sleep on the last attempt
+                    # Exponential backoff with jitter
+                    delay = min(delay * 2, max_delay)
+                    jitter = random.uniform(0, delay * 0.1)  # Add 10% jitter
+                    await asyncio.sleep(delay + jitter)
+                else:
+                    raise last_error
+    
+    # Process IDs in batches
+    all_results = []
+    for i in range(0, len(neighbour_ids), batch_size):
+        batch = neighbour_ids[i:i + batch_size]
+        try:
+            batch_results = await process_batch(batch)
+            all_results.extend(batch_results)
+        except Exception as e:
+            print(f"Error processing batch {i//batch_size + 1}: {e}")
+            # Continue with next batch even if current batch fails
+            continue
     
     # Extract vectors from the retrieved points
     # add the seed embeddings to the list if they exist
-    embeddings = [point.vector for point in results] + [id for id in neighbour_ids if isinstance(id, np.ndarray)]
+    embeddings = [point.vector for point in all_results] + [id for id in neighbour_ids if isinstance(id, np.ndarray)]
     
     # Return the aggregated embeddings if any exist, otherwise return None
     if embeddings:

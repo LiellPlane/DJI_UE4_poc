@@ -365,18 +365,21 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
             # Now remove duplicates
 
             used_ids = set()
-            results_deduped: dict[tuple[int, int], list[str]] = {}
+            results_deduped: list[ test_async_qdrant.TaskResult] = []
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
                     for index, id in enumerate(result.embedding_id):
                         if id not in used_ids:
-                            results_deduped[result.coord] = test_async_qdrant.TaskResult(
+                            results_deduped.append(test_async_qdrant.TaskResult(
                                 coord=result.coord,
                                 embedding_id=[result.embedding_id[index]],
                                 local_file_path=[result.local_file_path[index]],
                                 score=[result.score[index]]
-                            )
+                            ))  
                             used_ids.add(id)
+                            break
+                else:
+                    results_deduped.append(result)
             
 
             results = results_deduped
@@ -733,7 +736,7 @@ async def async_main():
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=23, seeds=seed_embedding)
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=100, seeds=seed_embedding)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     
