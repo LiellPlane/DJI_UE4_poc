@@ -338,7 +338,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # Choose whether to process each point one-by-one sequentially or in parallel
         # use_sequential_processing = True  # Set to True for sequential processing, False for parallel
 
-        if i > 20:# for first circles we want best matches - so strictly sequential to
+        if i > 8:# for first circles we want best matches - so strictly sequential to
             # avoid complications with duplicate ids. Once farther apart it should in theory be less
             # of an issue
             use_sequential_processing = False
@@ -378,6 +378,8 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                             )
                             used_ids.add(id)
             
+
+            results = results_deduped
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
             flattened_embedding_ids = [id for result in results if isinstance(result, test_async_qdrant.TaskResult) for id in result.embedding_id]
             if len(set(flattened_embedding_ids)) != len(flattened_embedding_ids):
