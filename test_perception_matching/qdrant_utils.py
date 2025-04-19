@@ -410,10 +410,10 @@ async def async_get_embedding_average(
     neighbour_ids: list[str], 
     collection_name,
     aggregation_method=normalized_mean_aggregation,
-    max_retries: int = 3,
+    max_retries: int = 5,  # Increased from 3 to 5
     initial_delay: float = 1.0,
-    max_delay: float = 10.0,
-    batch_size: int = 100,
+    max_delay: float = 30.0,  # Increased from 10 to 30
+    batch_size: int = 50,  # Reduced from 100 to 50
     **kwargs
 ) -> np.ndarray:
     """Get the average embedding of the neighbour ids with retry mechanism
@@ -456,11 +456,13 @@ async def async_get_embedding_average(
             except Exception as e:
                 last_error = e
                 if attempt < max_retries - 1:  # Don't sleep on the last attempt
+                    print(f"Error processing batch (attempt {attempt + 1}/{max_retries}): {e}. Retrying in {delay} seconds...")
                     # Exponential backoff with jitter
                     delay = min(delay * 2, max_delay)
                     jitter = random.uniform(0, delay * 0.1)  # Add 10% jitter
                     await asyncio.sleep(delay + jitter)
                 else:
+                    print(f"Failed to process batch after {max_retries} attempts. Last error: {e}")
                     raise last_error
     
     # Process IDs in batches

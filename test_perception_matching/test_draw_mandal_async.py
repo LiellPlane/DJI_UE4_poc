@@ -631,7 +631,7 @@ def create_mandala_from_similarity_matrix(
     
     for (x, y), point in similarity_matrix.items():
         processed_tiles += 1
-        if processed_tiles % 10 == 0:
+        if processed_tiles % 100 == 0:
             print(f"Processed {processed_tiles}/{total_tiles} tiles")
             
 
@@ -710,7 +710,7 @@ def create_mandala_from_similarity_matrix(
 
     
 async def async_main():
-    read_only_collection_name = "fishwars"
+    read_only_collection_name = "everything_with_naughty"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
     # Detect operating system and set appropriate paths
