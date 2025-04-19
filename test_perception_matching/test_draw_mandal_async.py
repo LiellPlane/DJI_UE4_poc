@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import math
 from dataclasses import dataclass
-
+from itertools import chain
 # Extremely aggressive Python path handling
 import os
 import sys
@@ -338,7 +338,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         # Choose whether to process each point one-by-one sequentially or in parallel
         # use_sequential_processing = True  # Set to True for sequential processing, False for parallel
 
-        if i > 8:# for first circles we want best matches - so strictly sequential to
+        if i > 20:# for first circles we want best matches - so strictly sequential to
             # avoid complications with duplicate ids. Once farther apart it should in theory be less
             # of an issue
             use_sequential_processing = False
@@ -360,8 +360,14 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
                 delete_after_processing=True  # Delete each point immediately after processing - sequential only
             )
             # we should now have the coordinate and embedding details for that coordinate. load it into the object
-            if len(set([res.embedding_id for res in [r for r in results if isinstance(r, test_async_qdrant.TaskResult)]])) != len([r for r in results if isinstance(r, test_async_qdrant.TaskResult)]):
-                print(f" {len(results) - len(set([res.embedding_id for res in [r for r in results if isinstance(r, test_async_qdrant.TaskResult)]]))} Duplicate ids")
+            flattened_embedding_ids = [id for result in results if isinstance(result, test_async_qdrant.TaskResult) for id in result.embedding_id]
+            if set(flattened_embedding_ids) != set(flattened_embedding_ids):
+                print(f" {len(flattened_embedding_ids) - len(set(flattened_embedding_ids))} Duplicate ids")
+            
+            here we have results, each result has a list of ids (n closest match)
+            but each seperate result may have duplicates
+            we want an algorithm that will let each result have only one id with no duplicates
+            we request closest matches to handle duplicates so we can eliminate them
             for result in results:
                 if isinstance(result, test_async_qdrant.TaskResult):
                     # embedding_ids[result.coord] = result

@@ -65,9 +65,9 @@ class FakeQdrantClient:
 @dataclass
 class TaskResult:
     coord: tuple[int, int]
-    embedding_id: str
-    local_file_path: str
-    score: float
+    embedding_id: List[str]
+    local_file_path: List[str]
+    score: List[float]
 
 class AsyncTaskHandler:
     """Handler for managing asynchronous search tasks with embeddings"""
@@ -106,9 +106,9 @@ class AsyncTaskHandler:
                 try:
                     # get a random point - we want this depleted so its removed from collection
                     points = await async_get_random_point(client=self.real_client, collection_name=self.depleting_collection_name)
-                    id = points[0].id
-                    filepath = points[0].payload["filename"]
-                    score = points[0].score
+                    id = [points[0].id]
+                    filepath = [points[0].payload["filename"]]
+                    score = [points[0].score]
                 except ValueError as e:
                     print(f"Error getting random item: {e}")
                     return e
@@ -127,9 +127,9 @@ class AsyncTaskHandler:
 
                 if len(res) == 0:
                     raise ValueError("No closest match found: collection probably depleted")
-                id = res[0].id
-                filepath = res[0].payload["filename"]
-                score = res[0].score
+                id = [res_.id for res_ in res]#res[0].id
+                filepath = [res_.payload["filename"] for res_ in res]#res[0].payload["filename"]
+                score = [res_.score for res_ in res]#res[0].score
 
             # results = await async_get_random_point(self.real_client, self.collection_name)
             # print(points[0].vector[0])
@@ -179,7 +179,7 @@ class AsyncTaskHandler:
                         await self.real_client.delete(
                             collection_name=self.depleting_collection_name,
                             points_selector=models.PointIdsList(
-                                points=[result.embedding_id]
+                                points=result.embedding_id
                             ),
                             wait=True
                         )
