@@ -36,7 +36,7 @@ vector, random_item, closest_matches, payload = get_sequence_images_qdrant.get_r
 # ensure using same embeddings by grabbing it straight from qdrant collection
 GRABBED_EMBEDDING_PARAMS = generate_embeddings.ImageEmbeddingParams(**json.loads(payload["params"]))
 
-def get_image_segments(image: np.ndarray, grid_size: Tuple[int, int] = (10, 10)) -> List[np.ndarray]:
+def get_image_segments(image: np.ndarray, grid_size: Tuple[int, int] = (30, 30)) -> List[np.ndarray]:
     """Divide an image into segments based on grid size."""
     height, width = image.shape[:2]
     segment_height = height // grid_size[0]
@@ -53,7 +53,7 @@ def get_image_segments(image: np.ndarray, grid_size: Tuple[int, int] = (10, 10))
             segments.append(segment)
     return segments
 
-def create_mosaic(image_path: str, grid_size: Tuple[int, int] = (30, 30), output_size: Tuple[int, int] = (300, 300)) -> np.ndarray:
+def create_mosaic(image_path: str, grid_size: Tuple[int, int] = (5, 5), output_size: Tuple[int, int] = (3000, 3000)) -> np.ndarray:
     """Create a mosaic from an image using the Qdrant database for matching."""
     # Read the input image
     img = cv2.imread(image_path)
@@ -93,7 +93,7 @@ def create_mosaic(image_path: str, grid_size: Tuple[int, int] = (30, 30), output
                 if matched_img is None:
                     continue
                     
-                # Resize matched image to segment size
+                # Resize matched image to fill the segment space completely
                 matched_img = cv2.resize(matched_img, (segment_width, segment_height))
                 
                 # Calculate position in mosaic
