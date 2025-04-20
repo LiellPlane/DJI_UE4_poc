@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from qdrant_utils import delete_point, clone_collection, wait_for_collection_ready
 
 
-QDRANT_COLLECTION_NAME = "everything_with_naughty"
+QDRANT_COLLECTION_NAME = "fishwars"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS
@@ -58,7 +58,7 @@ class ImageWithScore:
     image_path: str
     score: float
 
-def lerp(start: np.ndarray, end: np.ndarray, steps: int, debug: bool = False, use_slerp: bool = False) -> np.ndarray:
+def lerp(start: np.ndarray, end: np.ndarray, steps: int, debug: bool = False, use_slerp: bool = True) -> np.ndarray:
     """
     Interpolate between two high-dimensional embeddings using a combination of techniques.
     
