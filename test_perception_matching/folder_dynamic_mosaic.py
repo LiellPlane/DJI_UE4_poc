@@ -15,7 +15,9 @@ from typing import List, Tuple
 import tempfile
 import asyncio
 from square_sampling import sample_square_regions, Canvas, Square
-QDRANT_COLLECTION_NAME = "fishwars"
+from test_async_qdrant import AsyncClosestMatchHandler
+from qdrant_client import AsyncQdrantClient
+
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS
@@ -28,17 +30,47 @@ else:  # Linux or other OS
     IMAGES_TO_MATCH_PATH = Path("/tmp/temp_match_imgs/")
     OUTPUT_PATH = Path("/tmp/match_images_output")
 
+def extract_region_from_square(image: np.ndarray, square: Square) -> np.ndarray:
+    """
+    Extract a region from an image based on a Square object.
+    
+    Parameters
+    ----------
+    image : np.ndarray
+        The input image
+    square : Square
+        The Square object defining the region to extract
+        
+    Returns
+    -------
+    np.ndarray
+        The extracted region
+    """
+    # Ensure coordinates are within image bounds
+    x = max(0, min(square.x, image.shape[1] - 1))
+    y = max(0, min(square.y, image.shape[0] - 1))
+    side = min(square.side, image.shape[1] - x, image.shape[0] - y)
+    
+    # Extract the region
+    region = image[y:y+side, x:x+side]
+    return region
 
 async def main():
     # Create output directory if it doesn't exist
+    QDRANT_COLLECTION_NAME = "fishwars"
     os.makedirs(OUTPUT_PATH, exist_ok=True)
+    async_client =  AsyncQdrantClient("localhost")
     sync_client = get_sequence_images_qdrant.get_qdrant_client()
-
+    async_handler = AsyncClosestMatchHandler(
+        collection_name=QDRANT_COLLECTION_NAME,
+        real_client=async_client
+        )
+    
 
     vector, random_item, closest_matches, payload = get_sequence_images_qdrant.get_random_item_with_closest_match(
-    sync_client,
-    collection_name=QDRANT_COLLECTION_NAME,
-    limit=1
+        sync_client,
+        collection_name=QDRANT_COLLECTION_NAME,
+        limit=1
     )
     GRABBED_EMBEDDING_PARAMS = generate_embeddings.ImageEmbeddingParams(**json.loads(payload["params"]))
     # Get all images to process
@@ -49,13 +81,34 @@ async def main():
         try:
             print(f"Processing {index + 1} of {len(image_paths)}: {image_path}")
             image = cv2.imread(image_path)
-            cv2.imshow("Image", image)
-            squares = sample_square_regions(canvas=Canvas(image.shape[1], image.shape[0]))
+            if image is None:
+                print(f"Failed to read image: {image_path}")
+                continue
+                
+            # Create canvas and sample squares
+            canvas = Canvas(image.shape[1], image.shape[0])
+            squares = sample_square_regions(canvas=canvas)
+            
+            # Process each square region
             for square in squares:
-                print(square)
-                print("this can be done in parallel")
-                embedding, embedding_flipped = get_image_embedding.get_image_embedding(sync_client, image_path, QDRANT_COLLECTION_NAME, img_in_memory=image, GRABBED_EMBEDDING_PARAMS= GRABBED_EMBEDDING_PARAMS)
+                # Extract the region
+                region = extract_region_from_square(image, square)
+                cv2.imshow("Region", region)
+                cv2.waitKey(1)    
+                # Get embeddings for the region
+                embedding, embedding_flipped = get_image_embedding.get_image_embedding(
+                    sync_client, 
+                    image_path, 
+                    QDRANT_COLLECTION_NAME, 
+                    img_in_memory=region, 
+                    GRABBED_EMBEDDING_PARAMS=GRABBED_EMBEDDING_PARAMS
+                )
 
+                # Process the embeddings as needed
+                res = await async_handler.process_embeddings({"plop": embedding}, 1)
+                print(res)
+        # TODO: Process the embeddings as needed
+        # print(f"Processed square at ({square.x}, {square.y}) with size {square.side}")
             
         except Exception as e:
             print(f"Error processing {image_path}: {e}")
