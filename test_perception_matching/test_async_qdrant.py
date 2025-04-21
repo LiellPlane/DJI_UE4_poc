@@ -78,7 +78,6 @@ class AsyncTaskHandler:
         read_only_collection_name: str, 
         real_client: qdrant_client.AsyncQdrantClient, 
         fake_client: FakeQdrantClient,
-        debug_delay: float = 0.0  # Add debug delay parameter
     ):
         self.real_client = real_client
         self.fake_client = fake_client
@@ -86,7 +85,6 @@ class AsyncTaskHandler:
         self.read_only_collection_name = read_only_collection_name
         self.tasks = []
         self.results_by_id = {}
-        self.debug_delay = debug_delay  # Store the debug delay
     
     async def search_with_embedding(
         self, 
@@ -96,22 +94,12 @@ class AsyncTaskHandler:
     ) -> TaskResult | Exception:
         """Perform a search with the given embedding and return results"""
         try:
-            # Add optional debugging delay to see sequential operations clearly
-            if self.debug_delay > 0:
-                # print(f"DEBUG: Adding {self.debug_delay}s delay before processing coordinate {coord}")
-                await asyncio.sleep(self.debug_delay)
-                
             if len(neighbour_ids) == 0:
-                # print("No neighbour ids found")
-                try:
-                    # get a random point - we want this depleted so its removed from collection
-                    points = await async_get_random_point(client=self.real_client, collection_name=self.depleting_collection_name)
-                    id = [points[0].id]
-                    filepath = [points[0].payload["filename"]]
-                    score = [points[0].score]
-                except ValueError as e:
-                    print(f"Error getting random item: {e}")
-                    return e
+                # get a random point - we want this depleted so its removed from collection
+                points = await async_get_random_point(client=self.real_client, collection_name=self.depleting_collection_name)
+                id = [points[0].id]
+                filepath = [points[0].payload["filename"]]
+                score = [points[0].score]
             elif len(neighbour_ids) > 0:
                 # get neighbour ids - we want from write only as need reference
                 embedding_average = await async_get_embedding_average(self.real_client, neighbour_ids, self.read_only_collection_name)
@@ -163,11 +151,9 @@ class AsyncTaskHandler:
         self.tasks = []
 
         if force_sequential:
-            # print(f"Processing {len(neighbour_ids)} embeddings SEQUENTIALLY")
             # Process one by one in sequence
             all_results = []
             for coord, n_ids in neighbour_ids.items():
-                # print(f"Processing coordinate {coord} sequentially...")
                 # Process directly (await each operation individually)
                 try:
                     result = await self.search_with_embedding(results_limit, coord, n_ids)
@@ -175,7 +161,6 @@ class AsyncTaskHandler:
                     
                     # Delete immediately in sequential mode if requested
                     if delete_after_processing and isinstance(result, TaskResult):
-                        # print(f"Immediately deleting point {result.embedding_id} after processing")
                         await self.real_client.delete(
                             collection_name=self.depleting_collection_name,
                             points_selector=models.PointIdsList(
@@ -183,14 +168,11 @@ class AsyncTaskHandler:
                             ),
                             wait=True
                         )
-                    
-                    # print(f"Completed processing coordinate {coord}")
                 except Exception as e:
                     print(f"Error processing coordinate {coord}: {e}")
                     all_results.append(e)
             return all_results
         else:
-            # print(f"Processing {len(neighbour_ids)} embeddings in PARALLEL")
             # each worker gets a coordinate, and a list of neighbours ids
             # Process concurrently using tasks
             for coord, n_ids in neighbour_ids.items():
@@ -207,6 +189,123 @@ class AsyncTaskHandler:
             all_results = await asyncio.gather(*self.tasks, return_exceptions=True)
             
             return all_results
+
+
+@dataclass
+class ClosestMatchResult:
+    """Result of a closest match search"""
+    key: str
+    embedding_ids: List[str]
+    scores: List[float]
+    filepaths: List[str]
+    error: Exception | None = None
+
+class AsyncClosestMatchHandler:
+    """Handler for managing asynchronous closest match searches with embeddings"""
+    
+    def __init__(
+        self, 
+        collection_name: str,
+        real_client: qdrant_client.AsyncQdrantClient
+    ):
+        self.real_client = real_client
+        self.collection_name = collection_name
+        self.tasks = []
+    
+    async def search_with_embedding(
+        self, 
+        key: str,
+        embedding: List[float],
+        limit: int = 1
+    ) -> ClosestMatchResult:
+        """Perform a search with the given embedding and return results"""
+        max_retries = 3
+        base_delay = 1.0  # Start with 1 second delay
+        
+        for attempt in range(max_retries):
+            try:
+                # Get closest matches
+                res = await async_get_closest_match(
+                    client=self.real_client,
+                    collection_name=self.collection_name,
+                    vector=embedding,
+                    limit=limit,
+                    with_payload=True,
+                    with_vectors=False
+                )
+
+                if len(res) == 0:
+                    raise ValueError("No closest match found")
+                    
+                embedding_ids = [r.id for r in res]
+                scores = [r.score for r in res]
+                filepaths = [r.payload["filename"] for r in res]
+
+                return ClosestMatchResult(
+                    key=key,
+                    embedding_ids=embedding_ids,
+                    scores=scores,
+                    filepaths=filepaths,
+                    error=None
+                )
+            except Exception as e:
+                if attempt == max_retries - 1:  # Last attempt
+                    return ClosestMatchResult(
+                        key=key,
+                        embedding_ids=[],
+                        scores=[],
+                        filepaths=[],
+                        error=e
+                    )
+                # Wait before retrying, with exponential backoff
+                delay = base_delay * (2 ** attempt)  # 1s, 2s, 4s
+                print(f"Retry {attempt + 1}/{max_retries} for key {key} after {delay}s delay")
+                await asyncio.sleep(delay)
+    
+    async def process_embeddings(
+        self, 
+        embeddings: Dict[str, List[float]],
+        limit: int = 1,
+        force_sequential: bool = False
+    ) -> Dict[str, ClosestMatchResult]:
+        """Process embeddings either in parallel or sequentially.
+        
+        Args:
+            embeddings: Dictionary mapping keys to embedding vectors
+            limit: Number of closest matches to return per embedding
+            force_sequential: If True, process embeddings one by one (for debugging)
+            
+        Returns:
+            Dictionary mapping input keys to ClosestMatchResult objects, including any errors
+        """
+        # Clear previous tasks
+        self.tasks = []
+
+        if force_sequential:
+            # Process one by one in sequence
+            results = {}
+            for key, embedding in embeddings.items():
+                result = await self.search_with_embedding(key, embedding, limit)
+                results[key] = result
+            return results
+        else:
+            # Process concurrently using tasks
+            for key, embedding in embeddings.items():
+                task = asyncio.create_task(
+                    self.search_with_embedding(key, embedding, limit)
+                )
+                self.tasks.append(task)
+            
+            if not self.tasks:
+                print("No tasks to run")
+                return {}
+            
+            # Wait for all tasks to complete and gather results
+            all_results = await asyncio.gather(*self.tasks)
+            
+            # Convert results to dictionary
+            results = {result.key: result for result in all_results}
+            return results
 
 
 async def main():

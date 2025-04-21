@@ -53,7 +53,7 @@ def get_image_segments(image: np.ndarray, grid_size: Tuple[int, int] = (30, 30))
             segments.append(segment)
     return segments
 
-def create_mosaic(image_path: str, grid_size: Tuple[int, int] = (18, 18), output_size: Tuple[int, int] = (3000, 3000)) -> np.ndarray:
+def create_mosaic(image_path: str, grid_size: Tuple[int, int] = (9, 9), output_size: Tuple[int, int] = (3000, 3000)) -> np.ndarray:
     """Create a mosaic from an image using the Qdrant database for matching."""
     # Read the input image
     img = cv2.imread(image_path)

@@ -3,21 +3,26 @@ import qdrant_utils
 import get_sequence_images_qdrant
 import json
 import cv2
+import numpy as np
 
-
-def get_image_embedding(client, image_path: str,collection_name: str):
+def get_image_embedding(client, image_path: str,collection_name: str, img_in_memory:np.ndarray = None, GRABBED_EMBEDDING_PARAMS: generate_embeddings.ImageEmbeddingParams = None):
     """
     Get embeddings used in collection and apply to image,
     return flipped and non-flipped embeddings
     """
-    vector, random_item, closest_matches, payload = get_sequence_images_qdrant.get_random_item_with_closest_match(
-    client,
-    collection_name=collection_name,
-    limit=1
-    )
-    # ensure using same embeddings by grabbing it straight from qdrant collection
-    GRABBED_EMBEDDING_PARAMS = generate_embeddings.ImageEmbeddingParams(**json.loads(payload["params"]))
-    img = cv2.imread(image_path)
+    if GRABBED_EMBEDDING_PARAMS is None:
+        vector, random_item, closest_matches, payload = get_sequence_images_qdrant.get_random_item_with_closest_match(
+        client,
+        collection_name=collection_name,
+        limit=1
+        )
+        # ensure using same embeddings by grabbing it straight from qdrant collection
+        GRABBED_EMBEDDING_PARAMS = generate_embeddings.ImageEmbeddingParams(**json.loads(payload["params"]))
+
+    if img_in_memory is None:
+        img = cv2.imread(image_path)
+    else:
+        img = img_in_memory
     if GRABBED_EMBEDDING_PARAMS.mask:
         mask = generate_embeddings.create_circular_mask(img.shape)
     else:

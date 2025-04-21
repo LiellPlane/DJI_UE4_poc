@@ -11,8 +11,8 @@ def sample_square_regions(
     canvas: Canvas,
     *,
     max_side_ratio: float = 0.5,
-    n_sizes: int = 5,
-    positions_per_size: int = 12,
+    n_sizes: int = 10,
+    positions_per_size: int = 20,
     rng_seed: int | None = None,
 ) -> list[Square]:
     """
