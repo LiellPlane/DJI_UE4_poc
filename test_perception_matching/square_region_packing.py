@@ -18,7 +18,7 @@ class Canvas:
 class Region:
     """
     Axis‑aligned rectangle (also used for reserved areas).
-    Coordinates are top‑left (x, y); size is width × height.
+    Coordinates are top‑left (x, y); size is width × height.
     """
     x: int
     y: int
@@ -81,6 +81,14 @@ class Square:
     y: int
     side: int
 
+    def __hash__(self):
+        return hash((self.x, self.y, self.side))
+
+    def __eq__(self, other):
+        if not isinstance(other, Square):
+            return NotImplemented
+        return (self.x, self.y, self.side) == (other.x, other.y, other.side)
+
 
 # ────────────────────────────────
 # Packing algorithm
@@ -100,8 +108,8 @@ def pack_squares(
     reserved : list[Region]
         Already‑occupied areas to exclude.
     max_side_ratio : float, optional
-        Upper bound for a square’s side as a fraction of
-        min(canvas.width, canvas.height).  Default = 0.5 (50 %).
+        Upper bound for a square's side as a fraction of
+        min(canvas.width, canvas.height).  Default = 0.5 (50 %).
 
     Returns
     -------
@@ -172,7 +180,7 @@ except ImportError:   # keep the whole script usable even without OpenCV install
 def _hsv_cycle(n: int) -> list[tuple[int, int, int]]:
     """
     Return *n* distinct BGR colours produced from an HSV wheel,
-    already converted for OpenCV (B, G, R in [0, 255]).
+    already converted for OpenCV (B, G, R in [0, 255]).
     """
     colours = []
     for i in range(n):
@@ -230,7 +238,7 @@ def visualise_packing(
 
     # Draw square tiles (outline only) with a colour cycle
     palette = _hsv_cycle(max(8, len(squares)))  # at least 8 colours
-    alpha = 0.25  # 25 % opaque fill
+    alpha = 0.25  # 25 % opaque fill
     for idx, sq in enumerate(squares):
         colour = palette[idx % len(palette)]
         top_left  = (sq.x * scale, sq.y * scale)
@@ -268,5 +276,5 @@ if __name__ == "__main__":
     ]
     squares = pack_squares(canvas, reserved)
 
-    # Visualise at 1 px : 1 unit (or change scale = 2 for larger view)
+    # Visualise at 1 px : 1 unit (or change scale = 2 for larger view)
     visualise_packing(canvas, reserved, squares, scale=1, show=True)

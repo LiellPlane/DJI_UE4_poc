@@ -15,7 +15,7 @@ from typing import List, Tuple
 import tempfile
 import asyncio
 from square_sampling import sample_square_regions, Canvas, Square
-from test_async_qdrant import AsyncClosestMatchHandler
+from test_async_qdrant import AsyncClosestMatchHandler, ClosestMatchResult
 from qdrant_client import AsyncQdrantClient
 
 
@@ -87,14 +87,22 @@ async def main():
                 
             # Create canvas and sample squares
             canvas = Canvas(image.shape[1], image.shape[0])
-            squares = sample_square_regions(canvas=canvas)
+            squares = sample_square_regions(
+                canvas=canvas,
+                max_side_ratio=0.3,
+                min_side_ratio=0.1,
+                n_sizes=10,
+                min_distance_ratio=0.4,
+                )
             
             # Process each square region
-            for square in squares:
+            embeddings:dict [Square, np.ndarray] = {}
+            for sqr_index, square in enumerate(squares):
                 # Extract the region
                 region = extract_region_from_square(image, square)
-                cv2.imshow("Region", region)
-                cv2.waitKey(1)    
+                if sqr_index % 100 == 0:
+                    cv2.imshow("Region", region)
+                    cv2.waitKey(1)    
                 # Get embeddings for the region
                 embedding, embedding_flipped = get_image_embedding.get_image_embedding(
                     sync_client, 
@@ -103,10 +111,34 @@ async def main():
                     img_in_memory=region, 
                     GRABBED_EMBEDDING_PARAMS=GRABBED_EMBEDDING_PARAMS
                 )
-
+                embeddings[square] = embedding
                 # Process the embeddings as needed
-                res = await async_handler.process_embeddings({"plop": embedding}, 1)
-                print(res)
+            res = await async_handler.process_embeddings(embeddings, 1)
+            
+            # Get the best match for each square
+            best_square: Square = list((res.keys()))[0] # start anywhere
+            best_score: float = -1
+            for square, embedding in res.items():
+                for score, filepath in zip(embedding.scores, embedding.filepaths):
+                    if score > best_score:
+                        best_score = score
+                        best_square = square
+                        best_image = filepath
+                    
+            # now load the best match
+            best_image = cv2.imread(best_image)
+
+            # Resize the best match image to match the square's dimensions
+            best_image = cv2.resize(best_image, (best_square.side, best_square.side))
+            
+            image_with_best_match = image.copy()
+            image_with_best_match[best_square.y:best_square.y+best_square.side, best_square.x:best_square.x+best_square.side] = best_image
+            cv2.imshow("Image with Best Match", image_with_best_match)
+            cv2.waitKey(0)
+            cv2.destroyAllWindows()
+
+                
+
         # TODO: Process the embeddings as needed
         # print(f"Processed square at ({square.x}, {square.y}) with size {square.side}")
             

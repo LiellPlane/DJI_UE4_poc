@@ -135,7 +135,8 @@ class AsyncTaskHandler:
         results_limit: int,
         neighbour_ids: Dict[tuple[int,int], List[str]], 
         force_sequential: bool = False,
-        delete_after_processing: bool = True
+        delete_after_processing: bool = True,
+        batch_size: int = 100
     ) -> List[Any]:
         """Process embeddings either in parallel or sequentially.
         
@@ -143,16 +144,17 @@ class AsyncTaskHandler:
             neighbour_ids: Dictionary mapping coordinates to lists of neighbour IDs
             force_sequential: If True, process embeddings one by one (for debugging)
             delete_after_processing: Whether to delete points after processing
+            batch_size: Maximum number of tasks to process concurrently
             
         Returns:
             List of results (either TaskResult objects or exceptions)
         """
         # Clear previous tasks
         self.tasks = []
+        all_results = []
 
         if force_sequential:
             # Process one by one in sequence
-            all_results = []
             for coord, n_ids in neighbour_ids.items():
                 # Process directly (await each operation individually)
                 try:
@@ -173,20 +175,33 @@ class AsyncTaskHandler:
                     all_results.append(e)
             return all_results
         else:
-            # each worker gets a coordinate, and a list of neighbours ids
-            # Process concurrently using tasks
-            for coord, n_ids in neighbour_ids.items():
-                task = asyncio.create_task(
-                    self.search_with_embedding(results_limit, coord, n_ids)
-                )
-                self.tasks.append(task)
+            # Process in batches if there are many tasks
+            items = list(neighbour_ids.items())
+            total_items = len(items)
             
-            if not self.tasks:
-                print("No tasks to run")
-                return []
-            
-            # Wait for all tasks to complete and gather results
-            all_results = await asyncio.gather(*self.tasks, return_exceptions=True)
+            for i in range(0, total_items, batch_size):
+                batch = items[i:i + batch_size]
+                self.tasks = []
+                
+                # Create tasks for current batch
+                for coord, n_ids in batch:
+                    task = asyncio.create_task(
+                        self.search_with_embedding(results_limit, coord, n_ids)
+                    )
+                    self.tasks.append(task)
+                
+                if not self.tasks:
+                    print("No tasks to run in current batch")
+                    continue
+                
+                # Wait for current batch to complete
+                print(f"Processing batch {i//batch_size + 1}/{(total_items + batch_size - 1)//batch_size} ({len(batch)} tasks)")
+                batch_results = await asyncio.gather(*self.tasks, return_exceptions=True)
+                all_results.extend(batch_results)
+                
+                # Small delay between batches to prevent server overload
+                if i + batch_size < total_items:
+                    await asyncio.sleep(0.5)
             
             return all_results
 
@@ -266,7 +281,8 @@ class AsyncClosestMatchHandler:
         self, 
         embeddings: Dict[str, List[float]],
         limit: int = 1,
-        force_sequential: bool = False
+        force_sequential: bool = False,
+        batch_size: int = 100
     ) -> Dict[str, ClosestMatchResult]:
         """Process embeddings either in parallel or sequentially.
         
@@ -274,37 +290,53 @@ class AsyncClosestMatchHandler:
             embeddings: Dictionary mapping keys to embedding vectors
             limit: Number of closest matches to return per embedding
             force_sequential: If True, process embeddings one by one (for debugging)
+            batch_size: Maximum number of tasks to process concurrently
             
         Returns:
             Dictionary mapping input keys to ClosestMatchResult objects, including any errors
         """
         # Clear previous tasks
         self.tasks = []
+        results = {}
 
         if force_sequential:
             # Process one by one in sequence
-            results = {}
             for key, embedding in embeddings.items():
                 result = await self.search_with_embedding(key, embedding, limit)
                 results[key] = result
             return results
         else:
-            # Process concurrently using tasks
-            for key, embedding in embeddings.items():
-                task = asyncio.create_task(
-                    self.search_with_embedding(key, embedding, limit)
-                )
-                self.tasks.append(task)
+            # Process in batches if there are many tasks
+            items = list(embeddings.items())
+            total_items = len(items)
             
-            if not self.tasks:
-                print("No tasks to run")
-                return {}
+            for i in range(0, total_items, batch_size):
+                batch = items[i:i + batch_size]
+                self.tasks = []
+                
+                # Create tasks for current batch
+                for key, embedding in batch:
+                    task = asyncio.create_task(
+                        self.search_with_embedding(key, embedding, limit)
+                    )
+                    self.tasks.append(task)
+                
+                if not self.tasks:
+                    print("No tasks to run in current batch")
+                    continue
+                
+                # Wait for current batch to complete
+                print(f"Processing batch {i//batch_size + 1}/{(total_items + batch_size - 1)//batch_size} ({len(batch)} tasks)")
+                batch_results = await asyncio.gather(*self.tasks)
+                
+                # Add batch results to final results
+                for result in batch_results:
+                    results[result.key] = result
+                
+                # Small delay between batches to prevent server overload
+                if i + batch_size < total_items:
+                    await asyncio.sleep(0.5)
             
-            # Wait for all tasks to complete and gather results
-            all_results = await asyncio.gather(*self.tasks)
-            
-            # Convert results to dictionary
-            results = {result.key: result for result in all_results}
             return results
 
 
