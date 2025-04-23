@@ -275,8 +275,7 @@ async def draw_concentric_circles(client, collection_name, read_only_collection_
         depleting_collection_name=collection_name,
         read_only_collection_name=read_only_collection_name,
         real_client=real_client, 
-        fake_client=client,
-        debug_delay=0.0  # Add a small delay to make sequential processing more visible
+        fake_client=client# Add a small delay to make sequential processing more visible
     )    
     
 
@@ -710,7 +709,7 @@ def create_mandala_from_similarity_matrix(
 
     
 async def async_main():
-    read_only_collection_name = "everything_with_naughty"
+    read_only_collection_name = "colours"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
     # Detect operating system and set appropriate paths
@@ -736,7 +735,7 @@ async def async_main():
     
     # 1/0
     # Create the image with concentric circles
-    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=100, seeds=seed_embedding)
+    img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=35, seeds=seed_embedding)
     
     mandala = create_mandala_from_similarity_matrix(similarity_matrix)
     

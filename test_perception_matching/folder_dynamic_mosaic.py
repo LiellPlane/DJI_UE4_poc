@@ -57,7 +57,7 @@ def extract_region_from_square(image: np.ndarray, square: Square) -> np.ndarray:
 
 async def main():
     # Create output directory if it doesn't exist
-    QDRANT_COLLECTION_NAME = "fishwars"
+    QDRANT_COLLECTION_NAME = "colours"
     os.makedirs(OUTPUT_PATH, exist_ok=True)
     async_client =  AsyncQdrantClient("localhost")
     sync_client = get_sequence_images_qdrant.get_qdrant_client()
@@ -89,8 +89,8 @@ async def main():
             canvas = Canvas(image.shape[1], image.shape[0])
             squares = sample_square_regions(
                 canvas=canvas,
-                max_side_ratio=0.3,
-                min_side_ratio=0.1,
+                max_side_ratio=0.6,
+                min_side_ratio=0.2,
                 n_sizes=10,
                 min_distance_ratio=0.4,
                 )
@@ -133,8 +133,19 @@ async def main():
             
             image_with_best_match = image.copy()
             image_with_best_match[best_square.y:best_square.y+best_square.side, best_square.x:best_square.x+best_square.side] = best_image
-            cv2.imshow("Image with Best Match", image_with_best_match)
-            cv2.waitKey(0)
+            while True:
+                cv2.imshow("Image with Best Match", image_with_best_match)
+                key = cv2.waitKey(0)
+                if key == ord('q'):
+                    break
+                elif key == ord('n'):
+                    break
+                cv2.imshow("Image with Best Match", image)
+                key = cv2.waitKey(0)
+                if key == ord('q'):
+                    break
+                elif key == ord('n'):
+                    break
             cv2.destroyAllWindows()
 
                 
