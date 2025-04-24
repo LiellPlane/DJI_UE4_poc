@@ -57,7 +57,7 @@ def extract_region_from_square(image: np.ndarray, square: Square) -> np.ndarray:
 
 async def main():
     # Create output directory if it doesn't exist
-    QDRANT_COLLECTION_NAME = "colours"
+    QDRANT_COLLECTION_NAME = "everything"
     os.makedirs(OUTPUT_PATH, exist_ok=True)
     async_client =  AsyncQdrantClient("localhost")
     sync_client = get_sequence_images_qdrant.get_qdrant_client()
@@ -89,10 +89,10 @@ async def main():
             canvas = Canvas(image.shape[1], image.shape[0])
             squares = sample_square_regions(
                 canvas=canvas,
-                max_side_ratio=0.6,
-                min_side_ratio=0.2,
-                n_sizes=10,
-                min_distance_ratio=0.4,
+                max_side_ratio=0.8,
+                min_side_ratio=0.1,
+                n_sizes=5,
+                min_distance_ratio=0.2,
                 )
             
             # Process each square region
@@ -118,6 +118,7 @@ async def main():
             # Get the best match for each square
             best_square: Square = list((res.keys()))[0] # start anywhere
             best_score: float = -1
+            filtered_res = {}
             for square, embedding in res.items():
                 for score, filepath in zip(embedding.scores, embedding.filepaths):
                     if score > best_score:
@@ -125,7 +126,23 @@ async def main():
                         best_square = square
                         best_image = filepath
                     
+
+            # TODO this doesnt quite work so just for testing - expects only one match per square
+            sorted_results = dict(sorted(res.items(), key=lambda x: max(x[1].scores), reverse=False))
+            multiple_match_image = image.copy()
+            for square, embedding in sorted_results.items():
+                if len(embedding.filepaths) > 1:
+                    raise Exception(f"Multiple matches for square {square} - logic not expecting this")
+                for score, filepath in zip(embedding.scores, embedding.filepaths):
+                    matched_image = cv2.imread(filepath)
+                    matched_image = cv2.resize(matched_image, (square.side, square.side))
+                    multiple_match_image[square.y:square.y+square.side, square.x:square.x+square.side] = matched_image
+            
+            # cv2.imshow("Multiple Match Image", cv2.resize(multiple_match_image, (800, 800)))
+            # key = cv2.waitKey(0)
+            
             # now load the best match
+            print(f"Best image: {best_image}, best score: {best_score}")
             best_image = cv2.imread(best_image)
 
             # Resize the best match image to match the square's dimensions
@@ -133,14 +150,15 @@ async def main():
             
             image_with_best_match = image.copy()
             image_with_best_match[best_square.y:best_square.y+best_square.side, best_square.x:best_square.x+best_square.side] = best_image
+            cv2.imwrite(f"{OUTPUT_PATH}/best_match_{index}.jpg", multiple_match_image)
             while True:
-                cv2.imshow("Image with Best Match", image_with_best_match)
+                cv2.imshow("Image with Best Match", cv2.resize(multiple_match_image, (800, 800)))
                 key = cv2.waitKey(0)
                 if key == ord('q'):
                     break
                 elif key == ord('n'):
                     break
-                cv2.imshow("Image with Best Match", image)
+                cv2.imshow("Image with Best Match", cv2.resize(image, (800, 800)))
                 key = cv2.waitKey(0)
                 if key == ord('q'):
                     break

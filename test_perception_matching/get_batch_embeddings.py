@@ -408,7 +408,7 @@ def main():
     try:
         # # Get all image filepaths
         
-        # image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
+        image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
         # image_paths = get_image_filepaths_from_folders(
         #     [
         #         r"D:\temp_match_imgs\matchable",
@@ -418,7 +418,7 @@ def main():
         #         )
         # image_paths = get_image_filepaths_from_folders(
         #     [r"D:\phantom_menance_frames"])
-        image_paths = get_image_filepaths_localtest()
+        # image_paths = get_image_filepaths_localtest()
         random.shuffle(image_paths)
         # image_paths = image_paths[:10000]
         original_count = len(image_paths)

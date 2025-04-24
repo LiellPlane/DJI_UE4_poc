@@ -203,7 +203,7 @@ def main():
     # Connect to Qdrant server
     client = QdrantClient(url="http://localhost:6333", timeout=120)  # Increased client timeout
     
-    collection_name = "colours"
+    collection_name = "everything"
     confirmation = input(f"Are you sure you want to load the embeddings into the collection {collection_name}? Press Y to continue or any other key to exit: ")
     if confirmation.lower() != 'y':
         print("Operation cancelled by user.")
