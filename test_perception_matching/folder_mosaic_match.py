@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from typing import List, Tuple
 import tempfile
 
-QDRANT_COLLECTION_NAME = "fishwars"
+QDRANT_COLLECTION_NAME = "everything"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS

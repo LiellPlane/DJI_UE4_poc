@@ -14,7 +14,7 @@ from dataclasses import dataclass
 
 
 
-QDRANT_COLLECTION_NAME = "everything_with_naughty"
+QDRANT_COLLECTION_NAME = "naughty"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS

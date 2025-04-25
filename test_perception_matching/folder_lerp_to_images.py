@@ -16,7 +16,7 @@ from test_async_qdrant import AsyncClosestMatchHandler
 import asyncio
 from qdrant_client import AsyncQdrantClient, QdrantClient
 
-QDRANT_COLLECTION_NAME = "everything_with_naughty"
+QDRANT_COLLECTION_NAME = "everything"
 
 # Detect operating system and set appropriate paths
 if platform.system() == "Darwin":  # macOS
