@@ -10,12 +10,11 @@ use tokio::time::{sleep, Duration};
 use axum::{routing::get, Router};
 use anyhow::Result;
 
-// #[derive(Clone, Serialize, Deserialize, Debug)]
-// struct ScambiUnitLedOnly {
-//     player_id: String,
-//     player_pseudonym: String,
-// }
-
+struct GameState {
+    // positions, scores, etc.
+}
+// Interior mutability with concurrency:
+type SharedState = Arc<tokio::sync::RwLock<GameState>>;
 
 
 async fn start_http_server() -> Result<()> {
@@ -36,11 +35,12 @@ async fn main() {
 
     
     // Create a new tokio runtime
-    let runtime = tokio::runtime::Runtime::new().unwrap();
+    tokio::spawn(start_http_server());
+    //let runtime = tokio::runtime::Runtime::new().unwrap();
 
     // Spawn the async task
     
-    let result = runtime.spawn(start_http_server());
+    //let result = runtime.spawn(start_http_server());
     match result {
         Ok(value) => {
             println!("Succesfully started HTTP server");
