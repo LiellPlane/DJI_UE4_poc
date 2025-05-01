@@ -33,31 +33,40 @@ async fn main() {
     // Initialize the logger
     env_logger::init();
 
-    
-    // Create a new tokio runtime
-    tokio::spawn(start_http_server());
-    //let runtime = tokio::runtime::Runtime::new().unwrap();
-
-    // Spawn the async task
-    
-    //let result = runtime.spawn(start_http_server());
-    match result {
-        Ok(value) => {
-            println!("Succesfully started HTTP server");
+    // Spawn the HTTP server task
+    let http_server_handle = tokio::spawn(async {
+        if let Err(e) = start_http_server().await {
+            error!("HTTP server failed: {}", e);
+            // Optionally, return the error if needed elsewhere, though JoinHandle captures panic/completion
+            // Err(e)
         }
-        Err(err) => {
-            eprintln!("Function failed with error: {:?}", err);
+        // Ok(()) // Or Ok if returning Result
+    });
+
+    info!("HTTP server task spawned.");
+
+    // Spawn a separate task to monitor the HTTP server's completion status
+    tokio::spawn(async move {
+        match http_server_handle.await {
+            Ok(_) => info!("HTTP server task completed successfully."), // This implies the server stopped gracefully or the task finished.
+            Err(e) => error!("HTTP server task failed: {}", e), // This catches panics or cancellations.
         }
-    }
-    // Get the address to bind to
-    // nth selects the element, unwrap going wrong will run the default with empty closure ||
-    let addr = env::args().nth(1).unwrap_or_else(|| "127.0.0.1:8080".to_string());
-    let addr: SocketAddr = addr.parse().expect("Invalid address");
+    });
 
-    // Create the TCP listener
-    let listener = TcpListener::bind(&addr).await.expect("Failed to bind");
+    let addr_str = "127.0.0.1:8080";
 
-    info!("Listening on: {}", addr);
+    let addr: SocketAddr = match addr_str.parse() {
+        Ok(parsed_addr) => parsed_addr,
+        Err(e) => {
+            error!("Failed to parse hardcoded address \"{}\" : {}", addr_str, e);
+            std::process::exit(1); 
+        }
+    };
+
+    // Create the TCP listener for WebSockets
+    let listener = TcpListener::bind(&addr).await.expect("Failed to bind WebSocket listener");
+
+    info!("WebSocket server listening on: {}", addr);
 
     // Create a broadcast channel with a capacity of 100 messages
     let (broadcast_tx, _) = broadcast::channel(100);
