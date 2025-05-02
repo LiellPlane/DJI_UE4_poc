@@ -412,8 +412,8 @@ def main():
                     # debugging code to capture images
                     #if cap_img is not None:
                     TEMP_DEBUG_trigger_cnt += 1
-                    #file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    #file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0
@@ -548,9 +548,9 @@ def main():
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
 
-                if is_trigger_pressed is True:
-                    file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                # if is_trigger_pressed is True:
+                #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
 
 if __name__ == '__main__':
     main()
