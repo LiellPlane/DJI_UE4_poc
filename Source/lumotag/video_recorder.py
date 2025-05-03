@@ -54,6 +54,7 @@ class VideoRecorder:
         ]
         
         try:
+            print(f"Starting FFmpeg with command: {' '.join(command)}")
             # Create a pipe for stderr to capture FFmpeg errors
             stderr_pipe = subprocess.PIPE
             self.process = subprocess.Popen(
@@ -75,9 +76,12 @@ class VideoRecorder:
             # Start a thread to monitor FFmpeg's stderr
             def monitor_stderr():
                 while self.is_recording and self.process.poll() is None:
-                    line = self.process.stderr.readline().decode().strip()
-                    if line:
-                        print(f"FFmpeg: {line}")
+                    try:
+                        line = self.process.stderr.readline().decode().strip()
+                        if line:
+                            print(f"FFmpeg: {line}")
+                    except Exception as e:
+                        print(f"Error reading FFmpeg stderr: {e}")
             
             self.stderr_monitor = threading.Thread(target=monitor_stderr, daemon=True)
             self.stderr_monitor.start()
@@ -90,21 +94,17 @@ class VideoRecorder:
         
     def write_frame(self, frame):
         if not self.is_recording or self.process is None:
-            print("Not recording or process not started!")
-            return
+            raise RuntimeError("Not recording or process not started!")
             
         # Validate frame format
         if not isinstance(frame, np.ndarray):
-            print("Error: Frame must be a numpy array")
-            return
+            raise ValueError("Frame must be a numpy array")
             
         if frame.shape != (self.height, self.width, 3):
-            print(f"Error: Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
-            return
+            raise ValueError(f"Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
             
         if frame.dtype != np.uint8:
-            print(f"Error: Frame dtype {frame.dtype} is not uint8")
-            return
+            raise ValueError(f"Frame dtype {frame.dtype} is not uint8")
             
         try:
             # Control frame rate
@@ -120,8 +120,16 @@ class VideoRecorder:
                 return  # Skip this frame to maintain target FPS
                 
             # Write frame and flush to ensure it's sent
-            self.process.stdin.write(frame.tobytes())
-            self.process.stdin.flush()
+            try:
+                self.process.stdin.write(frame.tobytes())
+                self.process.stdin.flush()
+            except BrokenPipeError as e:
+                if self.process.poll() is not None:
+                    error = self.process.stderr.read().decode()
+                    raise RuntimeError(f"FFmpeg process died with error: {error}") from e
+                raise RuntimeError("Broken pipe to FFmpeg process") from e
+            except Exception as e:
+                raise RuntimeError(f"Error writing to FFmpeg: {str(e)}") from e
             
             # Update last frame time
             self.last_frame_time = current_time
@@ -129,10 +137,9 @@ class VideoRecorder:
             # Check if FFmpeg is still running
             if self.process.poll() is not None:
                 error = self.process.stderr.read().decode()
-                raise Exception(f"FFmpeg process died: {error}")
+                raise RuntimeError(f"FFmpeg process died: {error}")
                 
         except Exception as e:
-            print(f"Error writing frame: {e}")
             self.stop_recording()
             raise  # Re-raise the exception to handle it in the calling code
                 
@@ -146,9 +153,14 @@ class VideoRecorder:
             try:
                 self.process.stdin.close()
                 self.process.wait()
-                print("Recording stopped")
             except Exception as e:
-                print(f"Error stopping recording: {e}")
+                # Try to kill the process if it's still running
+                if self.process.poll() is None:
+                    try:
+                        self.process.kill()
+                    except Exception as kill_error:
+                        raise RuntimeError(f"Failed to stop recording and kill process: {str(e)}, kill error: {str(kill_error)}") from e
+                raise RuntimeError(f"Failed to stop recording: {str(e)}") from e
             finally:
                 self.process = None
                 self.is_recording = False
