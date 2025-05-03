@@ -93,16 +93,17 @@ class VideoRecorder:
             
         # Validate frame format
         if not isinstance(frame, np.ndarray):
+            
             print("Error: Frame must be a numpy array")
-            return
+            raise Exception("Error: Frame must be a numpy array")
             
         if frame.shape != (self.height, self.width, 3):
             print(f"Error: Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
-            return
+            raise Exception(f"Error: Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
             
         if frame.dtype != np.uint8:
             print(f"Error: Frame dtype {frame.dtype} is not uint8")
-            return
+            raise Exception(f"Error: Frame dtype {frame.dtype} is not uint8")
             
         try:
             # Write frame and flush to ensure it's sent
