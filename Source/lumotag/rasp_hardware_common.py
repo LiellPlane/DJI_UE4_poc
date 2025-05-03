@@ -123,15 +123,21 @@ class display(factory.display):
         super().__init__(_gun_config)
         self.video_recorder = None
     def display_method(self, image):
-
         if self.video_recorder is None:
+            # image.shape is (height, width, channels)
+            height, width = image.shape[:2]
             self.video_recorder = video_recorder.VideoRecorder(
-                width=image.shape[0],
-                height=image.shape[1],
+                width=width,    # width is second dimension
+                height=height,  # height is first dimension
                 fps=30
             )
             self.video_recorder.start_recording()
+            
         try:
+            # Write frame to recorder
+            self.video_recorder.write_frame(image)
+            
+            # Display the image
             lumo_viewer(
                 inputimage=image,
                 move_windowx=self.opencv_win_pos[0],
@@ -141,7 +147,7 @@ class display(factory.display):
                 destroyWindow=False)
         except Exception as e:
             # when SSHing
-            pass
+            print(f"Error in display_method: {e}")
 
     # def display_output_with_implant(self, main_img, img_to_implant):
     #         """avoid performing higher workload by resizing images to
