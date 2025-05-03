@@ -12,17 +12,18 @@ class VideoRecorder:
         self.fps = fps
         self.process = None
         self.is_recording = False
-        self.chunk_duration = 60  # seconds
+        self.chunk_duration = 10      # seconds
         self.last_chunk_time = None
         
         # Always use home directory for recordings
         home_dir = Path.home()
         self.output_dir = home_dir / "recordings"
-        self.output_dir.mkdir(mode=0o755, exist_ok=True)
+        self.output_dir.mkdir(exist_ok=True)
         print(f"Recordings will be saved to: {self.output_dir}")
         
     def start_recording(self, filename=None):
         if self.is_recording:
+            print("Already recording!")
             return
             
         if filename is None:
@@ -41,18 +42,28 @@ class VideoRecorder:
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
-            '-c:v', 'h264_v4l2m2m',  # Raspberry Pi 5 hardware encoder
+            '-c:v', 'h264_v4l2m2m',
+            '-b:v', '2M',  # bitrate
             '-pix_fmt', 'yuv420p',
+            '-preset', 'fast',  # encoding preset
             str(output_path)
         ]
         
         try:
+            # Create a pipe for stderr to capture FFmpeg errors
+            stderr_pipe = subprocess.PIPE
             self.process = subprocess.Popen(
                 command,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL
+                stderr=stderr_pipe
             )
+            
+            # Check if FFmpeg started successfully
+            if self.process.poll() is not None:
+                error = self.process.stderr.read().decode()
+                raise Exception(f"FFmpeg failed to start: {error}")
+                
             self.is_recording = True
             self.last_chunk_time = time.time()
             print(f"Started recording to {output_path}")
@@ -60,9 +71,11 @@ class VideoRecorder:
             print(f"Error starting recording: {e}")
             self.is_recording = False
             self.process = None
+            raise  # Re-raise the exception to handle it in the calling code
         
     def write_frame(self, frame):
         if not self.is_recording or self.process is None:
+            print("Not recording or process not started!")
             return
             
         # Validate frame format
@@ -79,10 +92,19 @@ class VideoRecorder:
             return
             
         try:
+            # Write frame and flush to ensure it's sent
             self.process.stdin.write(frame.tobytes())
+            self.process.stdin.flush()
+            
+            # Check if FFmpeg is still running
+            if self.process.poll() is not None:
+                error = self.process.stderr.read().decode()
+                raise Exception(f"FFmpeg process died: {error}")
+                
         except Exception as e:
             print(f"Error writing frame: {e}")
             self.stop_recording()
+            raise  # Re-raise the exception to handle it in the calling code
                 
         if time.time() - self.last_chunk_time > self.chunk_duration:
             print("Starting new chunk...")
