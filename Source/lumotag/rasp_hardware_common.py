@@ -132,10 +132,10 @@ class display(factory.display):
                 fps=30
             )
             self.video_recorder.start_recording()
-            
+        # Write frame to recorder
+        self.video_recorder.write_frame(image)
         try:
-            # Write frame to recorder
-            self.video_recorder.write_frame(image)
+
             
             # Display the image
             lumo_viewer(
