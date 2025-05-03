@@ -15,6 +15,8 @@ class VideoRecorder:
         self.is_recording = False
         self.chunk_duration = 10      # seconds
         self.last_chunk_time = None
+        self.last_frame_time = 0
+        self.frame_interval = 1.0 / fps  # time between frames
         
         # Always use home directory for recordings
         home_dir = Path.home()
@@ -93,22 +95,36 @@ class VideoRecorder:
             
         # Validate frame format
         if not isinstance(frame, np.ndarray):
-            
             print("Error: Frame must be a numpy array")
-            raise Exception("Error: Frame must be a numpy array")
+            return
             
         if frame.shape != (self.height, self.width, 3):
             print(f"Error: Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
-            raise Exception(f"Error: Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
+            return
             
         if frame.dtype != np.uint8:
             print(f"Error: Frame dtype {frame.dtype} is not uint8")
-            raise Exception(f"Error: Frame dtype {frame.dtype} is not uint8")
+            return
             
         try:
+            # Control frame rate
+            current_time = time.time()
+            time_since_last_frame = current_time - self.last_frame_time
+            
+            # If we're falling behind, log a warning
+            if time_since_last_frame > self.frame_interval * 2:
+                print(f"Warning: Frame rate falling behind. Last frame was {time_since_last_frame:.3f}s ago")
+            
+            # Skip frame if too soon
+            if time_since_last_frame < self.frame_interval:
+                return  # Skip this frame to maintain target FPS
+                
             # Write frame and flush to ensure it's sent
             self.process.stdin.write(frame.tobytes())
             self.process.stdin.flush()
+            
+            # Update last frame time
+            self.last_frame_time = current_time
             
             # Check if FFmpeg is still running
             if self.process.poll() is not None:

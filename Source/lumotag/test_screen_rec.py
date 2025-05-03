@@ -34,7 +34,7 @@ def main():
     # Video parameters
     width = 640
     height = 480
-    fps = 30
+    fps = 40
     
     # Initialize video recorder
     recorder = VideoRecorder(width, height, fps)

@@ -129,7 +129,7 @@ class display(factory.display):
             self.video_recorder = video_recorder.VideoRecorder(
                 width=width,    # width is second dimension
                 height=height,  # height is first dimension
-                fps=30
+                fps=40
             )
             self.video_recorder.start_recording()
         # Write frame to recorder
