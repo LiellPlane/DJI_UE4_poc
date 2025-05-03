@@ -5,16 +5,21 @@ import os
 from pathlib import Path
 
 class VideoRecorder:
-    def __init__(self, width, height, fps=30, output_dir="recordings"):
+    def __init__(self, width, height, fps=30):
+        # Initialize all attributes first
         self.width = width
         self.height = height
         self.fps = fps
-        self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
         self.process = None
         self.is_recording = False
         self.chunk_duration = 60  # seconds
         self.last_chunk_time = None
+        
+        # Always use home directory for recordings
+        home_dir = Path.home()
+        self.output_dir = home_dir / "recordings"
+        self.output_dir.mkdir(mode=0o755, exist_ok=True)
+        print(f"Recordings will be saved to: {self.output_dir}")
         
     def start_recording(self, filename=None):
         if self.is_recording:
@@ -60,6 +65,19 @@ class VideoRecorder:
         if not self.is_recording or self.process is None:
             return
             
+        # Validate frame format
+        if not isinstance(frame, np.ndarray):
+            print("Error: Frame must be a numpy array")
+            return
+            
+        if frame.shape != (self.height, self.width, 3):
+            print(f"Error: Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
+            return
+            
+        if frame.dtype != np.uint8:
+            print(f"Error: Frame dtype {frame.dtype} is not uint8")
+            return
+            
         try:
             self.process.stdin.write(frame.tobytes())
         except Exception as e:
@@ -84,4 +102,5 @@ class VideoRecorder:
                 self.is_recording = False
                 
     def __del__(self):
-        self.stop_recording() 
+        if hasattr(self, 'is_recording'):  # Check if attribute exists
+            self.stop_recording() 

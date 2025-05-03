@@ -4,7 +4,9 @@ from video_recorder import VideoRecorder
 
 def create_text_frame(width, height, text, x, y):
     """Create a frame with text at specified position"""
+    # Create frame in BGR format (3 channels, uint8)
     frame = np.zeros((height, width, 3), dtype=np.uint8)
+    
     # Draw text using numpy operations
     text_size = 20
     text_width = len(text) * text_size
@@ -15,7 +17,8 @@ def create_text_frame(width, height, text, x, y):
     y_start = max(0, min(y, height - text_height))
     
     # Draw text (simple rectangle for now)
-    frame[y_start:y_start+text_height, x_start:x_start+text_width] = 255
+    # Set all channels (BGR) to 255 for white
+    frame[y_start:y_start+text_height, x_start:x_start+text_width, :] = 255
     return frame
 
 def main():
