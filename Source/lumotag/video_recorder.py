@@ -43,7 +43,7 @@ class VideoRecorder:
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
-            '-c:v', 'libx264',  # Use standard x264 encoder
+            '-c:v', 'libx264',  # software encoder - watch out
             '-b:v', '2M',  # bitrate
             '-pix_fmt', 'yuv420p',
             '-preset', 'ultrafast',  # faster encoding preset

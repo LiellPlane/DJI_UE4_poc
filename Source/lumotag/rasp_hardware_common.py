@@ -23,7 +23,7 @@ import adafruit_lis3dh
 import json
 import img_processing
 import utils
-# import video_recorder
+import video_recorder
 from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv2Noir_Cam_vidmodes
 #import imutils
 
@@ -119,8 +119,18 @@ class Accelerometer(factory.Accelerometer):
 
 class display(factory.display):
 
+    def __init__(self, _gun_config: factory.gun_config):
+        super().__init__(_gun_config)
+        self.video_recorder = None
     def display_method(self, image):
-        
+
+        if self.video_recorder is None:
+            self.video_recorder = video_recorder.VideoRecorder(
+                width=image.shape[1],
+                height=image.shape[0],
+                fps=30
+            )
+            self.video_recorder.start_recording()
         try:
             lumo_viewer(
                 inputimage=image,
