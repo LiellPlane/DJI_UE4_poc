@@ -10,6 +10,7 @@ module_parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'
 sys.path.insert(0, module_parent_dir)
 import lumotag
 import numpy as np
+print(np.__version__)
 # List to store click positions
 import pickle
 def overlay_warped_image(background, warped):

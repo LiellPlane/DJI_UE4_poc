@@ -179,9 +179,12 @@ class filesystem(ABC):
         parent_dir = os.path.dirname(script_path)
         pickle_file_path = os.path.join(parent_dir, get_perspectivewarp_filename())
         print(f"Opening transform file {pickle_file_path}")
-        with open(pickle_file_path, 'rb') as f:
-            perp_details = pickle.load(f)
-        return perp_details[get_perspectivewarp_dictkey()]
+        try:
+            with open(pickle_file_path, 'rb') as f:
+                perp_details = pickle.load(f)
+            return perp_details[get_perspectivewarp_dictkey()]
+        except Exception as e:
+            raise Exception(f"Error loading transform file get_closerange_to_longrange_transform: {e} : if this is a numpy error it may be a version match issue between creater and consumer")
 
 class display(ABC):
     
