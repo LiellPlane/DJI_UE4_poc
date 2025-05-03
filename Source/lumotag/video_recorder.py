@@ -3,14 +3,6 @@ import numpy as np
 import time
 import os
 from pathlib import Path
-import platform
-
-def get_ffmpeg_encoder():
-    system = platform.system()
-    if system == "Linux":
-        return "h264_v4l2m2m"  # or "h264_omx" as fallback
-    else:
-        return "libx264"
 
 class VideoRecorder:
     def __init__(self, width, height, fps=30, output_dir="recordings"):
@@ -34,7 +26,7 @@ class VideoRecorder:
             
         output_path = self.output_dir / filename
         
-        encoder = get_ffmpeg_encoder()
+        # FFmpeg command with Raspberry Pi 5 hardware acceleration
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
@@ -44,9 +36,7 @@ class VideoRecorder:
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
-            '-c:v', encoder,
-            '-preset', 'ultrafast',  # fastest encoding
-            '-crf', '23',  # quality (lower = better, 23 is good)
+            '-c:v', 'h264_v4l2m2m',  # Raspberry Pi 5 hardware encoder
             '-pix_fmt', 'yuv420p',
             str(output_path)
         ]
