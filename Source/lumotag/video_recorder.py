@@ -33,7 +33,7 @@ class VideoRecorder:
             
         output_path = self.output_dir / filename
         
-        # FFmpeg command with Raspberry Pi 5 hardware acceleration
+        # FFmpeg command with standard encoding
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
@@ -43,10 +43,10 @@ class VideoRecorder:
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
-            '-c:v', 'h264_omx',  # Use OMX encoder instead
+            '-c:v', 'libx264',  # Use standard x264 encoder
             '-b:v', '2M',  # bitrate
             '-pix_fmt', 'yuv420p',
-            '-preset', 'fast',  # encoding preset
+            '-preset', 'ultrafast',  # faster encoding preset
             '-loglevel', 'error',  # Only show errors
             str(output_path)
         ]
