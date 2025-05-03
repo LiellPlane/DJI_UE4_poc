@@ -126,8 +126,8 @@ class display(factory.display):
 
         if self.video_recorder is None:
             self.video_recorder = video_recorder.VideoRecorder(
-                width=image.shape[1],
-                height=image.shape[0],
+                width=image.shape[0],
+                height=image.shape[1],
                 fps=30
             )
             self.video_recorder.start_recording()
