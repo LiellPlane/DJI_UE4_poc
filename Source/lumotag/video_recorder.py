@@ -41,24 +41,33 @@ class VideoRecorder:
             str(output_path)
         ]
         
-        self.process = subprocess.Popen(
-            command,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL
-        )
-        self.is_recording = True
-        self.last_chunk_time = time.time()
+        try:
+            self.process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            self.is_recording = True
+            self.last_chunk_time = time.time()
+            print(f"Started recording to {output_path}")
+        except Exception as e:
+            print(f"Error starting recording: {e}")
+            self.is_recording = False
+            self.process = None
         
     def write_frame(self, frame):
-        if self.is_recording and self.process is not None:
-            try:
-                self.process.stdin.write(frame.tobytes())
-            except Exception as e:
-                print(f"Error writing frame: {e}")
-                self.stop_recording()
+        if not self.is_recording or self.process is None:
+            return
+            
+        try:
+            self.process.stdin.write(frame.tobytes())
+        except Exception as e:
+            print(f"Error writing frame: {e}")
+            self.stop_recording()
                 
         if time.time() - self.last_chunk_time > self.chunk_duration:
+            print("Starting new chunk...")
             self.stop_recording()
             self.start_recording()  # new chunk
                 
@@ -67,6 +76,7 @@ class VideoRecorder:
             try:
                 self.process.stdin.close()
                 self.process.wait()
+                print("Recording stopped")
             except Exception as e:
                 print(f"Error stopping recording: {e}")
             finally:
