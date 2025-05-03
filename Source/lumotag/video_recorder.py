@@ -3,6 +3,7 @@ import numpy as np
 import time
 import os
 from pathlib import Path
+import threading
 
 class VideoRecorder:
     def __init__(self, width, height, fps=30):
@@ -42,10 +43,11 @@ class VideoRecorder:
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
-            '-c:v', 'h264_v4l2m2m',
+            '-c:v', 'h264_omx',  # Use OMX encoder instead
             '-b:v', '2M',  # bitrate
             '-pix_fmt', 'yuv420p',
             '-preset', 'fast',  # encoding preset
+            '-loglevel', 'error',  # Only show errors
             str(output_path)
         ]
         
@@ -67,6 +69,17 @@ class VideoRecorder:
             self.is_recording = True
             self.last_chunk_time = time.time()
             print(f"Started recording to {output_path}")
+            
+            # Start a thread to monitor FFmpeg's stderr
+            def monitor_stderr():
+                while self.is_recording and self.process.poll() is None:
+                    line = self.process.stderr.readline().decode().strip()
+                    if line:
+                        print(f"FFmpeg: {line}")
+            
+            self.stderr_monitor = threading.Thread(target=monitor_stderr, daemon=True)
+            self.stderr_monitor.start()
+            
         except Exception as e:
             print(f"Error starting recording: {e}")
             self.is_recording = False
