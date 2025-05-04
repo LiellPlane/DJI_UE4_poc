@@ -51,7 +51,7 @@ class VideoRecorder:
             '-preset', 'ultrafast',  # fastest encoding preset
             '-tune', 'zerolatency',  # optimize for low latency
             '-crf', '28',  # higher CRF for lower quality but better performance
-            '-loglevel', 'error',  # Only show errors
+            '-loglevel', 'warning',  # Show warnings and errors
             str(output_path)
         ]
         
@@ -62,31 +62,37 @@ class VideoRecorder:
             self.process = subprocess.Popen(
                 command,
                 stdin=subprocess.PIPE,
-                stdout=subprocess.DEVNULL,
-                stderr=stderr_pipe
+                stdout=subprocess.PIPE,  # Capture stdout as well
+                stderr=stderr_pipe,
+                text=True  # Enable text mode for easier error handling
             )
             
             # Check if FFmpeg started successfully
             if self.process.poll() is not None:
-                error = self.process.stderr.read().decode()
+                error = self.process.stderr.read()
                 raise Exception(f"FFmpeg failed to start: {error}")
                 
             self.is_recording = True
             self.last_chunk_time = time.time()
             print(f"Started recording to {output_path}")
             
-            # Start a thread to monitor FFmpeg's stderr
-            def monitor_stderr():
+            # Start a thread to monitor FFmpeg's output
+            def monitor_output():
                 while self.is_recording and self.process.poll() is None:
                     try:
-                        line = self.process.stderr.readline().decode().strip()
-                        if line:
-                            print(f"FFmpeg: {line}")
+                        # Read both stdout and stderr
+                        stdout_line = self.process.stdout.readline()
+                        stderr_line = self.process.stderr.readline()
+                        
+                        if stdout_line:
+                            print(f"FFmpeg stdout: {stdout_line.strip()}")
+                        if stderr_line:
+                            print(f"FFmpeg stderr: {stderr_line.strip()}")
                     except Exception as e:
-                        print(f"Error reading FFmpeg stderr: {e}")
+                        print(f"Error reading FFmpeg output: {e}")
             
-            self.stderr_monitor = threading.Thread(target=monitor_stderr, daemon=True)
-            self.stderr_monitor.start()
+            self.output_monitor = threading.Thread(target=monitor_output, daemon=True)
+            self.output_monitor.start()
             
         except Exception as e:
             print(f"Error starting recording: {e}")
