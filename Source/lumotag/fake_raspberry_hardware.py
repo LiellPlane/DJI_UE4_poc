@@ -203,19 +203,33 @@ class display(factory.display):
     def display_method(self, image):
         if self.video_recorder is None:
             # image.shape is (height, width, channels)
-            self.ffmpeg_height, self.ffmpeg_width = image.shape[:2]
-            self.ffmpeg_width = (self.ffmpeg_width -1) if self.ffmpeg_width % 2 == 1 else self.ffmpeg_width
-            self.ffmpeg_height = (self.ffmpeg_height -1) if self.ffmpeg_height % 2 == 1 else self.ffmpeg_height
-            print(f"Initializing VideoRecorder with frame dimensions: {self.ffmpeg_height}x{self.ffmpeg_width}")
+            height, width = image.shape[:2]
+            
+            # Make dimensions even (required for some codecs)
+            width = width - 1 if width % 2 == 1 else width
+            height = height - 1 if height % 2 == 1 else height
+            
+            print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
             self.video_recorder = video_recorder.VideoRecorder(
-                width=self.ffmpeg_width,    # width is second dimension
-                height=self.ffmpeg_height,  # height is first dimension
+                width=width,     # width is second dimension
+                height=height,   # height is first dimension
                 fps=30
             )
             self.video_recorder.start_recording()
+            
+        # Ensure frame dimensions match what FFmpeg expects
+        height, width = image.shape[:2]
+        if height % 2 == 1 or width % 2 == 1:
+            # Crop to even dimensions if needed
+            height = height - 1 if height % 2 == 1 else height
+            width = width - 1 if width % 2 == 1 else width
+            image = image[:height, :width, :]
+            
         # Write frame to recorder
-        self.video_recorder.write_frame(image[0:self.ffmpeg_height, 0:self.ffmpeg_width, :])
-        self.dim_check[f"{self.ffmpeg_height}x{self.ffmpeg_width}"] = image.shape[:2]
+        self.video_recorder.write_frame(image)
+        
+        # Track dimensions to ensure consistency
+        self.dim_check[f"{height}x{width}"] = image.shape[:2]
         if len(self.dim_check) > 1:
             raise Exception(f"Frame dimensions have changed {self.dim_check}")
         
