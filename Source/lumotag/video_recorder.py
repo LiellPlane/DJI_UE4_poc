@@ -11,7 +11,7 @@ class VideoRecorder:
         self.fps = fps
         self.process = None
         self.is_recording = False
-        self.chunk_duration = 10      # seconds
+        self.chunk_duration = 50      # seconds
         self.last_chunk_time = None
         self.last_frame_time = 0
         self.frame_interval = 1.0 / fps  # time between frames
