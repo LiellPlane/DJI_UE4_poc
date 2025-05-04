@@ -251,14 +251,14 @@ class display(ABC):
             
             print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
             self.video_recorder = video_recorder.VideoRecorder(
-                width=height,     # width is second dimension
-                height=width,   # height is first dimension
+                width=height,# for some stupid fucking reason this needs reversed on the pi. fuck off
+                height=width, # bullshit
                 fps=30
             )
             self.video_recorder.start_recording()
         self.video_recorder.write_frame(
-            image[0:self.video_recorder.height,
-                  0:self.video_recorder.width,
+            image[0:self.video_recorder.width,
+                  0:self.video_recorder.height,
                   :
                   ])
         self.display_method(image)
