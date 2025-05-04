@@ -4,6 +4,7 @@ import time
 import os
 from pathlib import Path
 import threading
+import cv2
 
 class VideoRecorder:
     def __init__(self, width, height, fps=30):
@@ -134,11 +135,8 @@ class VideoRecorder:
         if not isinstance(frame, np.ndarray):
             raise ValueError("Frame must be a numpy array")
             
-        # Print debug information about frame dimensions
-        print(f"Frame shape: {frame.shape}, Expected: {(self.height, self.width, 3)}")
-        
         if frame.shape != (self.height, self.width, 3):
-            raise ValueError(f"Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
+            raise ValueError(f"Frame shape mismatch. Got: {frame.shape}, Expected: {(self.height, self.width, 3)}")
             
         if frame.dtype != np.uint8:
             raise ValueError(f"Frame dtype {frame.dtype} is not uint8")
@@ -154,10 +152,6 @@ class VideoRecorder:
             # Control frame rate
             current_time = time.time()
             time_since_last_frame = current_time - self.last_frame_time
-            
-            # If we're falling behind, log a warning
-            if time_since_last_frame > self.frame_interval * 2:
-                print(f"Warning: Frame rate falling behind. Last frame was {time_since_last_frame:.3f}s ago")
             
             # Skip frame if too soon
             if time_since_last_frame < self.frame_interval:
@@ -186,7 +180,6 @@ class VideoRecorder:
             raise  # Re-raise the exception to handle it in the calling code
                 
         if time.time() - self.last_chunk_time > self.chunk_duration:
-            print("Starting new chunk...")
             self.stop_recording()
             self.start_recording()  # new chunk
                 
