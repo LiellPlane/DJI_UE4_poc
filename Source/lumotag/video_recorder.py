@@ -134,6 +134,9 @@ class VideoRecorder:
         if not isinstance(frame, np.ndarray):
             raise ValueError("Frame must be a numpy array")
             
+        # Print debug information about frame dimensions
+        print(f"Frame shape: {frame.shape}, Expected: {(self.height, self.width, 3)}")
+        
         if frame.shape != (self.height, self.width, 3):
             raise ValueError(f"Frame shape {frame.shape} does not match expected shape {(self.height, self.width, 3)}")
             
