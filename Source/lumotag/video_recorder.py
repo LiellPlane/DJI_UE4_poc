@@ -139,6 +139,13 @@ class VideoRecorder:
             raise ValueError(f"Frame dtype {frame.dtype} is not uint8")
             
         try:
+            # Check if FFmpeg is still running before writing
+            if self.process.poll() is not None:
+                error = self.process.stderr.read().decode('utf-8', errors='replace')
+                if not error:
+                    error = "FFmpeg process terminated unexpectedly"
+                raise RuntimeError(f"FFmpeg process died: {error}")
+            
             # Control frame rate
             current_time = time.time()
             time_since_last_frame = current_time - self.last_frame_time
@@ -156,11 +163,12 @@ class VideoRecorder:
                 self.process.stdin.write(frame.tobytes())
                 self.process.stdin.flush()
             except BrokenPipeError as e:
+                # Check FFmpeg's status and get any error output
                 if self.process.poll() is not None:
                     error = self.process.stderr.read().decode('utf-8', errors='replace')
                     if not error:
-                        error = "Unknown error - FFmpeg process died unexpectedly"
-                    raise RuntimeError(f"FFmpeg process died with error: {error}") from e
+                        error = "FFmpeg process terminated unexpectedly"
+                    raise RuntimeError(f"FFmpeg process died: {error}") from e
                 raise RuntimeError("Broken pipe to FFmpeg process") from e
             except Exception as e:
                 raise RuntimeError(f"Error writing to FFmpeg: {str(e)}") from e
@@ -168,13 +176,6 @@ class VideoRecorder:
             # Update last frame time
             self.last_frame_time = current_time
             
-            # Check if FFmpeg is still running
-            if self.process.poll() is not None:
-                error = self.process.stderr.read().decode('utf-8', errors='replace')
-                if not error:
-                    error = "Unknown error - FFmpeg process died unexpectedly"
-                raise RuntimeError(f"FFmpeg process died: {error}")
-                
         except Exception as e:
             self.stop_recording()
             raise  # Re-raise the exception to handle it in the calling code
@@ -187,8 +188,20 @@ class VideoRecorder:
     def stop_recording(self):
         if self.is_recording and self.process is not None:
             try:
-                self.process.stdin.close()
-                self.process.wait()
+                # Check if FFmpeg is still running
+                if self.process.poll() is None:
+                    try:
+                        self.process.stdin.close()
+                        self.process.wait(timeout=2)  # Wait up to 2 seconds for FFmpeg to finish
+                    except subprocess.TimeoutExpired:
+                        print("FFmpeg did not finish in time, forcing termination")
+                        self.process.kill()
+                        self.process.wait()
+                else:
+                    # FFmpeg already died, get the error
+                    error = self.process.stderr.read().decode('utf-8', errors='replace')
+                    if error:
+                        print(f"FFmpeg terminated with error: {error}")
             except Exception as e:
                 # Try to kill the process if it's still running
                 if self.process.poll() is None:
