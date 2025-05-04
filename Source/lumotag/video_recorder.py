@@ -35,7 +35,9 @@ class VideoRecorder:
             
         output_path = self.output_dir / filename
         
-        # FFmpeg command with minimal settings
+        print(f"Starting FFmpeg with dimensions: {self.width}x{self.height}")
+        
+        # FFmpeg command with lightweight software encoding
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
@@ -49,7 +51,7 @@ class VideoRecorder:
             '-b:v', '500k',  # lower bitrate
             '-pix_fmt', 'yuv420p',
             '-preset', 'ultrafast',  # fastest encoding preset
-            '-loglevel', 'debug',  # Show all debug info
+            '-loglevel', 'warning',  # Show warnings and errors
             str(output_path)
         ]
         
@@ -143,7 +145,7 @@ class VideoRecorder:
             if self.process.poll() is not None:
                 error = self.process.stderr.read().decode('utf-8', errors='replace')
                 if not error:
-                    error = "FFmpeg process terminated unexpectedly"
+                    error = f"FFmpeg process terminated unexpectedly. Frame dimensions: {frame.shape}, FFmpeg expected: {self.width}x{self.height}"
                 raise RuntimeError(f"FFmpeg process died: {error}")
             
             # Control frame rate
@@ -167,7 +169,7 @@ class VideoRecorder:
                 if self.process.poll() is not None:
                     error = self.process.stderr.read().decode('utf-8', errors='replace')
                     if not error:
-                        error = "FFmpeg process terminated unexpectedly"
+                        error = f"FFmpeg process terminated unexpectedly. Frame dimensions: {frame.shape}, FFmpeg expected: {self.width}x{self.height}"
                     raise RuntimeError(f"FFmpeg process died: {error}") from e
                 raise RuntimeError("Broken pipe to FFmpeg process") from e
             except Exception as e:
