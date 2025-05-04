@@ -44,7 +44,7 @@ class VideoRecorder:
             '-y',  # overwrite output file if it exists
             '-f', 'rawvideo',
             '-vcodec', 'rawvideo',
-            '-s', f'{self.width}x{self.height}',
+            '-s', f'{self.height}x{self.width}',  # Swap width and height to match frame shape
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
