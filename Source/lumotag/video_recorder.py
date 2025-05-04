@@ -44,14 +44,14 @@ class VideoRecorder:
             '-y',  # overwrite output file if it exists
             '-f', 'rawvideo',
             '-vcodec', 'rawvideo',
-            '-s', f'{self.height}x{self.width}',  # Swap width and height to match frame shape
+            '-s', f'{self.width}x{self.height}',  # Fixed: Use width x height
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
             '-c:v', 'libx264',  # software encoder
-            '-b:v', '500k',  # lower bitrate
+            '-b:v', '2000k',  # increased bitrate for better quality
             '-pix_fmt', 'yuv420p',
-            '-preset', 'ultrafast',  # fastest encoding preset
+            '-preset', 'medium',  # better quality preset
             '-loglevel', 'warning',  # Show warnings and errors
             str(output_path)
         ]
@@ -149,14 +149,6 @@ class VideoRecorder:
                     error = f"FFmpeg process terminated unexpectedly. Frame dimensions: {frame.shape}, FFmpeg expected: {self.width}x{self.height}"
                 raise RuntimeError(f"FFmpeg process died: {error}")
             
-            # Control frame rate
-            current_time = time.time()
-            time_since_last_frame = current_time - self.last_frame_time
-            
-            # Skip frame if too soon
-            if time_since_last_frame < self.frame_interval:
-                return  # Skip this frame to maintain target FPS
-                
             # Write frame and flush to ensure it's sent
             try:
                 self.process.stdin.write(frame.tobytes())
@@ -173,7 +165,7 @@ class VideoRecorder:
                 raise RuntimeError(f"Error writing to FFmpeg: {str(e)}") from e
             
             # Update last frame time
-            self.last_frame_time = current_time
+            self.last_frame_time = time.time()
             
         except Exception as e:
             self.stop_recording()
