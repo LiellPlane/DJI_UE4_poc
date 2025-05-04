@@ -125,7 +125,7 @@ class display(factory.display):
     def display_method(self, image):
         if self.video_recorder is None:
             # image.shape is (height, width, channels)
-            height, width = image.shape[:2]
+            height, width = image.shape[:2].copy()
             self.video_recorder = video_recorder.VideoRecorder(
                 width=height,    # width is second dimension
                 height=width,  # height is first dimension
