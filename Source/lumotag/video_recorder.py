@@ -35,7 +35,7 @@ class VideoRecorder:
             
         output_path = self.output_dir / filename
         
-        # FFmpeg command with standard encoding
+        # FFmpeg command with lightweight software encoding
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
@@ -45,10 +45,12 @@ class VideoRecorder:
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
-            '-c:v', 'libx264',  # software encoder - watch out
-            '-b:v', '2M',  # bitrate
+            '-c:v', 'libx264',  # software encoder
+            '-b:v', '500k',  # lower bitrate
             '-pix_fmt', 'yuv420p',
-            '-preset', 'ultrafast',  # faster encoding preset
+            '-preset', 'ultrafast',  # fastest encoding preset
+            '-tune', 'zerolatency',  # optimize for low latency
+            '-crf', '28',  # higher CRF for lower quality but better performance
             '-loglevel', 'error',  # Only show errors
             str(output_path)
         ]
