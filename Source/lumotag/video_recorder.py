@@ -78,6 +78,7 @@ class VideoRecorder:
             
             # Start a thread to monitor FFmpeg's output
             def monitor_output():
+                error_buffer = []
                 while self.is_recording and self.process.poll() is None:
                     try:
                         # Read both stdout and stderr
@@ -87,9 +88,21 @@ class VideoRecorder:
                         if stdout_line:
                             print(f"FFmpeg stdout: {stdout_line.decode('utf-8', errors='replace').strip()}")
                         if stderr_line:
-                            print(f"FFmpeg stderr: {stderr_line.decode('utf-8', errors='replace').strip()}")
+                            error_msg = stderr_line.decode('utf-8', errors='replace').strip()
+                            error_buffer.append(error_msg)
+                            print(f"FFmpeg stderr: {error_msg}")
+                            
+                            # If we see a critical error, store it
+                            if "error" in error_msg.lower():
+                                self.last_error = error_msg
                     except Exception as e:
                         print(f"Error reading FFmpeg output: {e}")
+                
+                # If process died, print all accumulated errors
+                if self.process.poll() is not None:
+                    print("\nFFmpeg process died. Last errors:")
+                    for error in error_buffer[-5:]:  # Show last 5 errors
+                        print(f"  {error}")
             
             self.output_monitor = threading.Thread(target=monitor_output, daemon=True)
             self.output_monitor.start()
@@ -133,7 +146,7 @@ class VideoRecorder:
                 self.process.stdin.flush()
             except BrokenPipeError as e:
                 if self.process.poll() is not None:
-                    error = self.process.stderr.read().decode()
+                    error = self.process.stderr.read().decode('utf-8', errors='replace')
                     raise RuntimeError(f"FFmpeg process died with error: {error}") from e
                 raise RuntimeError("Broken pipe to FFmpeg process") from e
             except Exception as e:
@@ -144,7 +157,7 @@ class VideoRecorder:
             
             # Check if FFmpeg is still running
             if self.process.poll() is not None:
-                error = self.process.stderr.read().decode()
+                error = self.process.stderr.read().decode('utf-8', errors='replace')
                 raise RuntimeError(f"FFmpeg process died: {error}")
                 
         except Exception as e:
