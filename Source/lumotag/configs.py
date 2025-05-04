@@ -290,7 +290,7 @@ class TZAR_config(gun_config):
     
     @property
     def screen_recording(self):
-        return False
+        return True
 
     # @property
     # def ui_overlay(self) -> dict:
