@@ -133,7 +133,7 @@ class display(factory.display):
             )
             self.video_recorder.start_recording()
         # Write frame to recorder
-        self.video_recorder.write_frame(image[0:200, 0:200, :].copy())
+        self.video_recorder.write_frame(image[:, 0:200, :].copy())
         try:
 
             
