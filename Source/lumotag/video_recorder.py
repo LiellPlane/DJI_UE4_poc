@@ -64,12 +64,12 @@ class VideoRecorder:
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,  # Capture stdout as well
                 stderr=stderr_pipe,
-                text=True  # Enable text mode for easier error handling
+                text=False  # Keep binary mode for stdin
             )
             
             # Check if FFmpeg started successfully
             if self.process.poll() is not None:
-                error = self.process.stderr.read()
+                error = self.process.stderr.read().decode('utf-8', errors='replace')
                 raise Exception(f"FFmpeg failed to start: {error}")
                 
             self.is_recording = True
@@ -85,9 +85,9 @@ class VideoRecorder:
                         stderr_line = self.process.stderr.readline()
                         
                         if stdout_line:
-                            print(f"FFmpeg stdout: {stdout_line.strip()}")
+                            print(f"FFmpeg stdout: {stdout_line.decode('utf-8', errors='replace').strip()}")
                         if stderr_line:
-                            print(f"FFmpeg stderr: {stderr_line.strip()}")
+                            print(f"FFmpeg stderr: {stderr_line.decode('utf-8', errors='replace').strip()}")
                     except Exception as e:
                         print(f"Error reading FFmpeg output: {e}")
             
