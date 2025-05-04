@@ -243,6 +243,10 @@ class display(ABC):
             self.display_with_recording(image)
 
     def display_with_recording(self, image):
+        if image.shape[0:2] not in self.dim_check:
+            self.dim_check[image.shape[0:2]] = True
+        if len(self.dim_check) > 1:
+            raise Exception(f"display_with_recording: dimensions changed: {self.dim_check}")
         if self.video_recorder is None:
             height, width = image.shape[:2]
             # Make dimensions even (required for some codecs)
@@ -251,14 +255,14 @@ class display(ABC):
             
             print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
             self.video_recorder = video_recorder.VideoRecorder(
-                width=height,# for some stupid fucking reason this needs reversed on the pi. fuck off
-                height=width, # bullshit
+                width=width,# for some stupid fucking reason this needs reversed on the pi. fuck off
+                height=height, # bullshit
                 fps=30
             )
             self.video_recorder.start_recording()
         self.video_recorder.write_frame(
-            image[0:self.video_recorder.width,
-                  0:self.video_recorder.height,
+            image[0:self.video_recorder.height,
+                  0:self.video_recorder.width,
                   :
                   ])
         self.display_method(image)
