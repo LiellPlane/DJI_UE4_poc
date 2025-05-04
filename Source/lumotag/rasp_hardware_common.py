@@ -127,13 +127,13 @@ class display(factory.display):
             # image.shape is (height, width, channels)
             height, width = image.shape[:2]
             self.video_recorder = video_recorder.VideoRecorder(
-                width=width,    # width is second dimension
-                height=height,  # height is first dimension
+                width=200,    # width is second dimension
+                height=200,  # height is first dimension
                 fps=30
             )
             self.video_recorder.start_recording()
         # Write frame to recorder
-        self.video_recorder.write_frame(image.copy())
+        self.video_recorder.write_frame(image[0:200, 0:200, :].copy())
         try:
 
             
