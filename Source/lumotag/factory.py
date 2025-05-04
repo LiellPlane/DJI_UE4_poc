@@ -1643,7 +1643,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
                 filters=["2025"]#quadrocode_corners
             )
  
-            repeats = 1
+            repeats = 100
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]

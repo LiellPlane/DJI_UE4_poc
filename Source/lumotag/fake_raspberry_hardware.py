@@ -10,7 +10,7 @@ import json
 import img_processing
 import os
 from configs import Fake_Cam_vidmodes_longrangeFILES, Fake_Cam_vidmodes_closerangeFILES
-
+import video_recorder
 
 def lumo_viewer(
         inputimage,
@@ -193,10 +193,32 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
             super().__init__(video_modes, factory.ImageLibrary_closerange)
         else:
             raise Exception("no match for video mode input")
-        
-class display(factory.display):
 
+
+class display(factory.display):
+    def __init__(self, _gun_config: factory.gun_config):
+        super().__init__(_gun_config)
+        self.video_recorder = None
+        self.dim_check = {}
     def display_method(self, image):
+        if self.video_recorder is None:
+            # image.shape is (height, width, channels)
+            self.ffmpeg_height, self.ffmpeg_width = image.shape[:2]
+            self.ffmpeg_width = (self.ffmpeg_width -1) if self.ffmpeg_width % 2 == 1 else self.ffmpeg_width
+            self.ffmpeg_height = (self.ffmpeg_height -1) if self.ffmpeg_height % 2 == 1 else self.ffmpeg_height
+            print(f"Initializing VideoRecorder with frame dimensions: {self.ffmpeg_height}x{self.ffmpeg_width}")
+            self.video_recorder = video_recorder.VideoRecorder(
+                width=self.ffmpeg_width,    # width is second dimension
+                height=self.ffmpeg_height,  # height is first dimension
+                fps=30
+            )
+            self.video_recorder.start_recording()
+        # Write frame to recorder
+        self.video_recorder.write_frame(image[0:self.ffmpeg_height, 0:self.ffmpeg_width, :])
+        self.dim_check[f"{self.ffmpeg_height}x{self.ffmpeg_width}"] = image.shape[:2]
+        if len(self.dim_check) > 1:
+            raise Exception(f"Frame dimensions have changed {self.dim_check}")
+        
         lumo_viewer(
             inputimage=image,
             move_windowx=self.opencv_win_pos[0],

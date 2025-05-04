@@ -79,47 +79,47 @@ class VideoRecorder:
             self.last_chunk_time = time.time()
             print(f"Started recording to {output_path}")
             
-            # Start a thread to monitor FFmpeg's output
-            def monitor_output():
-                error_buffer = []
-                while self.is_recording and self.process.poll() is None:
-                    try:
-                        # Read both stdout and stderr
-                        stdout_line = self.process.stdout.readline()
-                        stderr_line = self.process.stderr.readline()
+            # # Start a thread to monitor FFmpeg's output
+            # def monitor_output():
+            #     error_buffer = []
+            #     while self.is_recording and self.process.poll() is None:
+            #         try:
+            #             # Read both stdout and stderr
+            #             stdout_line = self.process.stdout.readline()
+            #             stderr_line = self.process.stderr.readline()
                         
-                        if stdout_line:
-                            msg = stdout_line.decode('utf-8', errors='replace').strip()
-                            print(f"FFmpeg stdout: {msg}")
-                            error_buffer.append(f"stdout: {msg}")
-                        if stderr_line:
-                            msg = stderr_line.decode('utf-8', errors='replace').strip()
-                            print(f"FFmpeg stderr: {msg}")
-                            error_buffer.append(f"stderr: {msg}")
+            #             if stdout_line:
+            #                 msg = stdout_line.decode('utf-8', errors='replace').strip()
+            #                 print(f"FFmpeg stdout: {msg}")
+            #                 error_buffer.append(f"stdout: {msg}")
+            #             if stderr_line:
+            #                 msg = stderr_line.decode('utf-8', errors='replace').strip()
+            #                 print(f"FFmpeg stderr: {msg}")
+            #                 error_buffer.append(f"stderr: {msg}")
                             
-                            # If we see a critical error, store it
-                            if "error" in msg.lower():
-                                self.last_error = msg
-                    except Exception as e:
-                        print(f"Error reading FFmpeg output: {e}")
+            #                 # If we see a critical error, store it
+            #                 if "error" in msg.lower():
+            #                     self.last_error = msg
+            #         except Exception as e:
+            #             print(f"Error reading FFmpeg output: {e}")
                 
-                # If process died, print all accumulated errors
-                if self.process.poll() is not None:
-                    print("\nFFmpeg process died. Last errors:")
-                    for error in error_buffer[-10:]:  # Show last 10 messages
-                        print(f"  {error}")
+            #     # If process died, print all accumulated errors
+            #     if self.process.poll() is not None:
+            #         print("\nFFmpeg process died. Last errors:")
+            #         for error in error_buffer[-10:]:  # Show last 10 messages
+            #             print(f"  {error}")
                     
-                    # Try to read any remaining error output
-                    try:
-                        remaining_error = self.process.stderr.read().decode('utf-8', errors='replace')
-                        if remaining_error:
-                            print("\nRemaining error output:")
-                            print(remaining_error)
-                    except Exception as e:
-                        print(f"Error reading remaining output: {e}")
+            #         # Try to read any remaining error output
+            #         try:
+            #             remaining_error = self.process.stderr.read().decode('utf-8', errors='replace')
+            #             if remaining_error:
+            #                 print("\nRemaining error output:")
+            #                 print(remaining_error)
+            #         except Exception as e:
+            #             print(f"Error reading remaining output: {e}")
             
-            self.output_monitor = threading.Thread(target=monitor_output, daemon=True)
-            self.output_monitor.start()
+            # self.output_monitor = threading.Thread(target=monitor_output, daemon=True)
+            # self.output_monitor.start()
             
         except Exception as e:
             print(f"Error starting recording: {e}")
