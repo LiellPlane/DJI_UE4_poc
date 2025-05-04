@@ -137,7 +137,7 @@ class display(factory.display):
         # Write frame to recorder
         self.video_recorder.write_frame(image.copy())
         self.dim_check[f"{height}x{width}"] = image.shape[:2]
-        if len(self.dim_check) > 0:
+        if len(self.dim_check) > 1:
             raise Exception(f"Frame dimensions have changed {self.dim_check}")
         
         try:
