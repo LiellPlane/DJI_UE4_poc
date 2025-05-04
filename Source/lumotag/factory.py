@@ -36,6 +36,7 @@ import re
 import itertools
 from functools import reduce
 from dataclasses import dataclass
+import video_recorder
 try:
     pass
 except Exception as e:
@@ -163,6 +164,11 @@ class gun_config(ABC):
             return self.screen_size[::-1]
         return self.screen_size
     
+    @property
+    @abstractmethod
+    def screen_recording(self):
+        ...
+    
 
 class filesystem(ABC):
     @abstractmethod
@@ -189,6 +195,9 @@ class filesystem(ABC):
 class display(ABC):
     
     def __init__(self,  _gun_config: gun_config) -> None:
+        self.video_recorder = None
+        self.dim_check = {}
+        self.recorder_screen = _gun_config.screen_recording
         self.display_rotate = _gun_config.screen_rotation
         self.screen_size = _gun_config.screen_size
         self.opencv_win_pos = _gun_config.opencv_window_pos
@@ -227,7 +236,32 @@ class display(ABC):
                 flow_direction=0
                 )
 
+    def display(self, image):
+        if self.recorder_screen is False:
+            self.display_method(image)
+        else:
+            self.display_with_recording(image)
 
+    def display_with_recording(self, image):
+        if self.video_recorder is None:
+            height, width = image.shape[:2]
+            # Make dimensions even (required for some codecs)
+            width = width - 1 if width % 2 == 1 else width
+            height = height - 1 if height % 2 == 1 else height
+            
+            print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
+            self.video_recorder = video_recorder.VideoRecorder(
+                width=width,     # width is second dimension
+                height=height,   # height is first dimension
+                fps=30
+            )
+            self.video_recorder.start_recording()
+        self.video_recorder.write_frame(
+            image[0:self.video_recorder.height,
+                  0:self.video_recorder.width,
+                  :
+                  ])
+        self.display_method(image)
 
     @abstractmethod
     def display_method(image, self):

@@ -119,27 +119,8 @@ class Accelerometer(factory.Accelerometer):
 
 class display(factory.display):
 
-    def __init__(self, _gun_config: factory.gun_config):
-        super().__init__(_gun_config)
-        self.video_recorder = None
-        self.dim_check = {}
     def display_method(self, image):
-        if self.video_recorder is None:
-            # image.shape is (height, width, channels)
-            height, width = image.shape[:2]
-            print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
-            self.video_recorder = video_recorder.VideoRecorder(
-                width=height,    # width is second dimension
-                height=width,  # height is first dimension
-                fps=30
-            )
-            self.video_recorder.start_recording()
-        # Write frame to recorder
-        self.video_recorder.write_frame(image.copy())
-        self.dim_check[f"{height}x{width}"] = image.shape[:2]
-        if len(self.dim_check) > 1:
-            raise Exception(f"Frame dimensions have changed {self.dim_check}")
-        
+
         try:
             # Display the image
             lumo_viewer(

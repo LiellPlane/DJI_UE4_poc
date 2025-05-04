@@ -1,10 +1,7 @@
 import subprocess
 import numpy as np
 import time
-import os
 from pathlib import Path
-import threading
-import cv2
 
 class VideoRecorder:
     def __init__(self, width, height, fps=30):

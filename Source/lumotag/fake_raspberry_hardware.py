@@ -196,43 +196,9 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
 
 
 class display(factory.display):
-    def __init__(self, _gun_config: factory.gun_config):
-        super().__init__(_gun_config)
-        self.video_recorder = None
-        self.dim_check = {}
+
     def display_method(self, image):
-        if self.video_recorder is None:
-            # image.shape is (height, width, channels)
-            height, width = image.shape[:2]
-            
-            # Make dimensions even (required for some codecs)
-            width = width - 1 if width % 2 == 1 else width
-            height = height - 1 if height % 2 == 1 else height
-            
-            print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
-            self.video_recorder = video_recorder.VideoRecorder(
-                width=width,     # width is second dimension
-                height=height,   # height is first dimension
-                fps=30
-            )
-            self.video_recorder.start_recording()
-            
-        # Ensure frame dimensions match what FFmpeg expects
-        height, width = image.shape[:2]
-        if height % 2 == 1 or width % 2 == 1:
-            # Crop to even dimensions if needed
-            height = height - 1 if height % 2 == 1 else height
-            width = width - 1 if width % 2 == 1 else width
-            image = image[:height, :width, :]
-            
-        # Write frame to recorder
-        self.video_recorder.write_frame(image)
-        
-        # Track dimensions to ensure consistency
-        self.dim_check[f"{height}x{width}"] = image.shape[:2]
-        if len(self.dim_check) > 1:
-            raise Exception(f"Frame dimensions have changed {self.dim_check}")
-        
+
         lumo_viewer(
             inputimage=image,
             move_windowx=self.opencv_win_pos[0],

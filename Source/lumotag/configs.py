@@ -288,6 +288,10 @@ class TZAR_config(gun_config):
     def video_modes_closerange(self):
         return RPICAMv2Noir_Cam_vidmodes
     
+    @property
+    def screen_recording(self):
+        return False
+
     # @property
     # def ui_overlay(self) -> dict:
     #     if self._UI_overlay is None:
@@ -364,7 +368,9 @@ class simitzar_config(gun_config):
     @property
     def video_modes_closerange(self):
         return Fake_Cam_vidmodes_closerangeFILES
-
+    @property
+    def screen_recording(self):
+        return True
     # @property
     # def ui_overlay(self) -> dict:
     #     if self._UI_overlay is None:
