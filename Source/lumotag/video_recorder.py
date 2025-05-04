@@ -35,7 +35,7 @@ class VideoRecorder:
             
         output_path = self.output_dir / filename
         
-        # FFmpeg command with lightweight software encoding
+        # FFmpeg command with minimal settings
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
@@ -49,9 +49,7 @@ class VideoRecorder:
             '-b:v', '500k',  # lower bitrate
             '-pix_fmt', 'yuv420p',
             '-preset', 'ultrafast',  # fastest encoding preset
-            '-tune', 'zerolatency',  # optimize for low latency
-            '-crf', '28',  # higher CRF for lower quality but better performance
-            '-loglevel', 'warning',  # Show warnings and errors
+            '-loglevel', 'debug',  # Show all debug info
             str(output_path)
         ]
         
@@ -62,14 +60,16 @@ class VideoRecorder:
             self.process = subprocess.Popen(
                 command,
                 stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,  # Capture stdout as well
+                stdout=subprocess.PIPE,
                 stderr=stderr_pipe,
-                text=False  # Keep binary mode for stdin
+                text=False,  # Keep binary mode for stdin
+                bufsize=10*1024*1024  # Increase buffer size
             )
             
             # Check if FFmpeg started successfully
             if self.process.poll() is not None:
                 error = self.process.stderr.read().decode('utf-8', errors='replace')
+                print(f"FFmpeg startup error: {error}")
                 raise Exception(f"FFmpeg failed to start: {error}")
                 
             self.is_recording = True
@@ -86,23 +86,34 @@ class VideoRecorder:
                         stderr_line = self.process.stderr.readline()
                         
                         if stdout_line:
-                            print(f"FFmpeg stdout: {stdout_line.decode('utf-8', errors='replace').strip()}")
+                            msg = stdout_line.decode('utf-8', errors='replace').strip()
+                            print(f"FFmpeg stdout: {msg}")
+                            error_buffer.append(f"stdout: {msg}")
                         if stderr_line:
-                            error_msg = stderr_line.decode('utf-8', errors='replace').strip()
-                            error_buffer.append(error_msg)
-                            print(f"FFmpeg stderr: {error_msg}")
+                            msg = stderr_line.decode('utf-8', errors='replace').strip()
+                            print(f"FFmpeg stderr: {msg}")
+                            error_buffer.append(f"stderr: {msg}")
                             
                             # If we see a critical error, store it
-                            if "error" in error_msg.lower():
-                                self.last_error = error_msg
+                            if "error" in msg.lower():
+                                self.last_error = msg
                     except Exception as e:
                         print(f"Error reading FFmpeg output: {e}")
                 
                 # If process died, print all accumulated errors
                 if self.process.poll() is not None:
                     print("\nFFmpeg process died. Last errors:")
-                    for error in error_buffer[-5:]:  # Show last 5 errors
+                    for error in error_buffer[-10:]:  # Show last 10 messages
                         print(f"  {error}")
+                    
+                    # Try to read any remaining error output
+                    try:
+                        remaining_error = self.process.stderr.read().decode('utf-8', errors='replace')
+                        if remaining_error:
+                            print("\nRemaining error output:")
+                            print(remaining_error)
+                    except Exception as e:
+                        print(f"Error reading remaining output: {e}")
             
             self.output_monitor = threading.Thread(target=monitor_output, daemon=True)
             self.output_monitor.start()
@@ -147,6 +158,8 @@ class VideoRecorder:
             except BrokenPipeError as e:
                 if self.process.poll() is not None:
                     error = self.process.stderr.read().decode('utf-8', errors='replace')
+                    if not error:
+                        error = "Unknown error - FFmpeg process died unexpectedly"
                     raise RuntimeError(f"FFmpeg process died with error: {error}") from e
                 raise RuntimeError("Broken pipe to FFmpeg process") from e
             except Exception as e:
@@ -158,6 +171,8 @@ class VideoRecorder:
             # Check if FFmpeg is still running
             if self.process.poll() is not None:
                 error = self.process.stderr.read().decode('utf-8', errors='replace')
+                if not error:
+                    error = "Unknown error - FFmpeg process died unexpectedly"
                 raise RuntimeError(f"FFmpeg process died: {error}")
                 
         except Exception as e:
