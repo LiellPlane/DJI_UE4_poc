@@ -129,8 +129,8 @@ class display(factory.display):
             height, width = image.shape[:2]
             print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
             self.video_recorder = video_recorder.VideoRecorder(
-                width=width,    # width is second dimension
-                height=height,  # height is first dimension
+                width=height,    # width is second dimension
+                height=width,  # height is first dimension
                 fps=30
             )
             self.video_recorder.start_recording()
