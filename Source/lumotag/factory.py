@@ -164,11 +164,7 @@ class gun_config(ABC):
             return self.screen_size[::-1]
         return self.screen_size
     
-    @property
-    @abstractmethod
-    def screen_recording(self):
-        ...
-    
+
 
 class filesystem(ABC):
     @abstractmethod
@@ -194,10 +190,10 @@ class filesystem(ABC):
 
 class display(ABC):
     
-    def __init__(self,  _gun_config: gun_config) -> None:
+    def __init__(self,  _gun_config: gun_config, recorder_screen: bool = False) -> None:
         self.video_recorder = None
         self.dim_check = {}
-        self.recorder_screen = _gun_config.screen_recording
+        self.recorder_screen = recorder_screen
         self.display_rotate = _gun_config.screen_rotation
         self.screen_size = _gun_config.screen_size
         self.opencv_win_pos = _gun_config.opencv_window_pos

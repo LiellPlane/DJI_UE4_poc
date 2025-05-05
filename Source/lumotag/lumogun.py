@@ -194,7 +194,7 @@ def main():
     # if img is None:
     #     raise Exception("Error with camera")
     
-    display = lumogun.display(GUN_CONFIGURATION)
+    display = lumogun.display(GUN_CONFIGURATION, configs.get_lumofind_config(PLATFORM).SAVE_STREAM)
     # this generates the affine transform dictionary key, which
     # is used by other processes for annotating the screen such as found targets
     # so best to do it before any other processes come back with data

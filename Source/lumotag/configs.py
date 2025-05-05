@@ -19,24 +19,31 @@ class base_find_lumotag_config():
     SAVE_IMAGES_DEBUG: bool
     SAVE_IMAGES_PATH: str
     PRINT_DEBUG: bool
+    SAVE_STREAM: bool
 
 
 def get_lumofind_config(platform):
     if platform == _OS.RASPBERRY:
         return base_find_lumotag_config(
-            SAVE_IMAGES_DEBUG=False,
+            SAVE_IMAGES_DEBUG=True,
             SAVE_IMAGES_PATH=r"dunno",
-            PRINT_DEBUG=False)
+            PRINT_DEBUG=False,
+            SAVE_STREAM=False
+            )
     elif platform == _OS.WINDOWS:
         return base_find_lumotag_config(
             SAVE_IMAGES_DEBUG=False,
             SAVE_IMAGES_PATH=r"D:/lumodebug/",
-            PRINT_DEBUG=False)
+            PRINT_DEBUG=False,
+            SAVE_STREAM=True
+            )
     elif platform == _OS.MAC_OS:
         return base_find_lumotag_config(
             SAVE_IMAGES_DEBUG=False,
             SAVE_IMAGES_PATH=r"/Users/liell_p/lumodebug/",
-            PRINT_DEBUG=False)
+            PRINT_DEBUG=False,
+            SAVE_STREAM=False
+            )
     else:
         raise Exception(f"Platform {platform} not supported")
 
@@ -288,9 +295,7 @@ class TZAR_config(gun_config):
     def video_modes_closerange(self):
         return RPICAMv2Noir_Cam_vidmodes
     
-    @property
-    def screen_recording(self):
-        return True
+
 
     # @property
     # def ui_overlay(self) -> dict:
@@ -368,9 +373,7 @@ class simitzar_config(gun_config):
     @property
     def video_modes_closerange(self):
         return Fake_Cam_vidmodes_closerangeFILES
-    @property
-    def screen_recording(self):
-        return True
+
     # @property
     # def ui_overlay(self) -> dict:
     #     if self._UI_overlay is None:
