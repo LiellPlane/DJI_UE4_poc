@@ -25,7 +25,7 @@ class base_find_lumotag_config():
 def get_lumofind_config(platform):
     if platform == _OS.RASPBERRY:
         return base_find_lumotag_config(
-            SAVE_IMAGES_DEBUG=True,
+            SAVE_IMAGES_DEBUG=False,
             SAVE_IMAGES_PATH=r"dunno",
             PRINT_DEBUG=False,
             SAVE_STREAM=False
