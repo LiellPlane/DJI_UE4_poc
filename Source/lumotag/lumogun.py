@@ -235,14 +235,14 @@ def main():
     players = {
         "demoplayer":
         factory.PlayerInfoBoxv2(
-            playername="demoplayer",
+            playername="testplayer",
             playergraphic=None,
             _gun_config=GUN_CONFIGURATION,
             _UI_overlay=configs.otherPlayers_ui_overlay
         ),
         "me":
         factory.LocalPlayerCard(
-            playername="me",
+            playername="self",
             playergraphic=None,
             _gun_config=GUN_CONFIGURATION,
             _UI_overlay=configs.Player_ui_overlay

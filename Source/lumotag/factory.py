@@ -448,7 +448,7 @@ class PlayerInfoBoxv2:
                 )
         if UI_Element.USER_INFO.value in self._UI_overlay:
             self.ui_elements.append(self.prepare_UI_element(
-                self.create_player_text(playername="some player info"),
+                self.create_player_text(playername=">>live player data<<"),
                 element_name=UI_Element.USER_INFO.value)
                 )
 
