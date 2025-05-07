@@ -6,6 +6,7 @@ from pathlib import Path
 class VideoRecorder:
     def __init__(self, width, height, fps=30):
         # Initialize all attributes first
+        self.sequence_number = 0
         self.width = width
         self.height = height
         self.fps = fps
@@ -29,7 +30,8 @@ class VideoRecorder:
             
         if filename is None:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
-            filename = f"recording_{timestamp}.mp4"
+            filename = f"recording_{timestamp}_{self.sequence_number}.mp4"
+            self.sequence_number += 1
             
         output_path = self.output_dir / filename
         
