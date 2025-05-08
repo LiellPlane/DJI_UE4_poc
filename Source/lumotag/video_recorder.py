@@ -12,10 +12,13 @@ class VideoRecorder:
         self.fps = fps
         self.process = None
         self.is_recording = False
-        self.chunk_duration = 30      # seconds
+        self.chunk_duration = 10      # reduced from 30 to 10 seconds
+        self.overlap_duration = 1     # 1 second overlap between chunks
         self.last_chunk_time = None
         self.last_frame_time = 0
         self.frame_interval = 1.0 / fps  # time between frames
+        self.frame_buffer = []        # buffer for overlap frames
+        self.max_buffer_frames = int(self.fps * self.overlap_duration)  # number of frames to buffer
         
         # Always use home directory for recordings
         home_dir = Path.home()
@@ -37,21 +40,24 @@ class VideoRecorder:
         
         print(f"Starting FFmpeg with dimensions: {self.width}x{self.height}")
         
-        # FFmpeg command with lightweight software encoding
+        # FFmpeg command with hardware acceleration
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
             '-f', 'rawvideo',
             '-vcodec', 'rawvideo',
-            '-s', f'{self.width}x{self.height}',  # Fixed: Use width x height
+            '-s', f'{self.width}x{self.height}',
             '-pix_fmt', 'bgr24',
             '-r', str(self.fps),
             '-i', '-',  # input from pipe
             '-c:v', 'libx264',  # software encoder
-            '-b:v', '2000k',  # increased bitrate for better quality
+            '-preset', 'ultrafast',  # fastest encoding preset
+            '-tune', 'zerolatency',  # minimize latency
+            '-b:v', '1000k',  # reduced bitrate
             '-pix_fmt', 'yuv420p',
-            '-preset', 'medium',  # better quality preset
-            '-loglevel', 'warning',  # Show warnings and errors
+            '-threads', '2',  # reduced thread count
+            '-cpu-used', '8',  # maximum CPU usage reduction
+            '-loglevel', 'warning',
             str(output_path)
         ]
         
@@ -152,6 +158,12 @@ class VideoRecorder:
             try:
                 self.process.stdin.write(frame.tobytes())
                 self.process.stdin.flush()
+                
+                # Store frame in buffer for overlap
+                self.frame_buffer.append(frame.copy())
+                if len(self.frame_buffer) > self.max_buffer_frames:
+                    self.frame_buffer.pop(0)
+                
             except BrokenPipeError as e:
                 # Check FFmpeg's status and get any error output
                 if self.process.poll() is not None:
@@ -171,8 +183,20 @@ class VideoRecorder:
             raise  # Re-raise the exception to handle it in the calling code
                 
         if time.time() - self.last_chunk_time > self.chunk_duration:
+            # First stop the current recording
             self.stop_recording()
-            self.start_recording()  # new chunk
+            
+            # Then start a new recording
+            self.start_recording()
+            
+            # Write buffered frames to the new recording
+            for buffered_frame in self.frame_buffer:
+                try:
+                    self.process.stdin.write(buffered_frame.tobytes())
+                    self.process.stdin.flush()
+                except Exception as e:
+                    print(f"Error writing buffered frame: {e}")
+                    break  # Stop if we encounter an error
                 
     def stop_recording(self):
         if self.is_recording and self.process is not None:
