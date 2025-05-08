@@ -4,12 +4,12 @@ import time
 from pathlib import Path
 
 class VideoRecorder:
-    def __init__(self, width, height, fps=29.98):
+    def __init__(self, width, height, fps=29.97):
         # Initialize all attributes first
         self.sequence_number = 0
         self.width = width
         self.height = height
-        self.target_fps = fps  # Target FPS
+        self.target_fps = fps  # Target FPS (29.97 for Samsung FHD)
         self.process = None
         self.is_recording = False
         self.chunk_duration = 30      # seconds
