@@ -4,21 +4,27 @@ import time
 from pathlib import Path
 
 class VideoRecorder:
-    def __init__(self, width, height, fps=30):
+    def __init__(self, width, height, fps=29.98):
         # Initialize all attributes first
         self.sequence_number = 0
         self.width = width
         self.height = height
-        self.fps = fps
+        self.target_fps = fps  # Target FPS
         self.process = None
         self.is_recording = False
-        self.chunk_duration = 10      # reduced from 30 to 10 seconds
+        self.chunk_duration = 30      # seconds
         self.overlap_duration = 1     # 1 second overlap between chunks
         self.last_chunk_time = None
-        self.last_frame_time = 0
-        self.frame_interval = 1.0 / fps  # time between frames
         self.frame_buffer = []        # buffer for overlap frames
-        self.max_buffer_frames = int(self.fps * self.overlap_duration)  # number of frames to buffer
+        self.max_buffer_frames = int(self.target_fps * self.overlap_duration)  # number of frames to buffer
+        self.frame_count = 0
+        self.start_time = None
+        self.actual_fps = None  # Will be calculated based on actual frame delivery
+        self.fps_window = 100  # Number of frames to use for FPS calculation
+        self.frame_times = []  # Store recent frame times for FPS calculation
+        self.last_frame = None  # Store the last frame for potential duplication
+        self.min_frame_interval = 1.0 / (self.target_fps * 1.5)  # Minimum time between frames (50% faster than target)
+        self.max_frame_interval = 1.0 / (self.target_fps * 0.5)  # Maximum time between frames (50% slower than target)
         
         # Always use home directory for recordings
         home_dir = Path.home()
@@ -48,7 +54,7 @@ class VideoRecorder:
             '-vcodec', 'rawvideo',
             '-s', f'{self.width}x{self.height}',
             '-pix_fmt', 'bgr24',
-            '-r', str(self.fps),
+            '-r', str(self.target_fps),
             '-i', '-',  # input from pipe
             '-c:v', 'libx264',  # software encoder
             '-preset', 'ultrafast',  # fastest encoding preset
@@ -84,48 +90,6 @@ class VideoRecorder:
             self.last_chunk_time = time.time()
             print(f"Started recording to {output_path}")
             
-            # # Start a thread to monitor FFmpeg's output
-            # def monitor_output():
-            #     error_buffer = []
-            #     while self.is_recording and self.process.poll() is None:
-            #         try:
-            #             # Read both stdout and stderr
-            #             stdout_line = self.process.stdout.readline()
-            #             stderr_line = self.process.stderr.readline()
-                        
-            #             if stdout_line:
-            #                 msg = stdout_line.decode('utf-8', errors='replace').strip()
-            #                 print(f"FFmpeg stdout: {msg}")
-            #                 error_buffer.append(f"stdout: {msg}")
-            #             if stderr_line:
-            #                 msg = stderr_line.decode('utf-8', errors='replace').strip()
-            #                 print(f"FFmpeg stderr: {msg}")
-            #                 error_buffer.append(f"stderr: {msg}")
-                            
-            #                 # If we see a critical error, store it
-            #                 if "error" in msg.lower():
-            #                     self.last_error = msg
-            #         except Exception as e:
-            #             print(f"Error reading FFmpeg output: {e}")
-                
-            #     # If process died, print all accumulated errors
-            #     if self.process.poll() is not None:
-            #         print("\nFFmpeg process died. Last errors:")
-            #         for error in error_buffer[-10:]:  # Show last 10 messages
-            #             print(f"  {error}")
-                    
-            #         # Try to read any remaining error output
-            #         try:
-            #             remaining_error = self.process.stderr.read().decode('utf-8', errors='replace')
-            #             if remaining_error:
-            #                 print("\nRemaining error output:")
-            #                 print(remaining_error)
-            #         except Exception as e:
-            #             print(f"Error reading remaining output: {e}")
-            
-            # self.output_monitor = threading.Thread(target=monitor_output, daemon=True)
-            # self.output_monitor.start()
-            
         except Exception as e:
             print(f"Error starting recording: {e}")
             self.is_recording = False
@@ -135,6 +99,10 @@ class VideoRecorder:
     def write_frame(self, frame):
         if not self.is_recording or self.process is None:
             raise RuntimeError("Not recording or process not started!")
+            
+        # Initialize start time if this is the first frame
+        if self.start_time is None:
+            self.start_time = time.time()
             
         # Validate frame format
         if not isinstance(frame, np.ndarray):
@@ -175,8 +143,8 @@ class VideoRecorder:
             except Exception as e:
                 raise RuntimeError(f"Error writing to FFmpeg: {str(e)}") from e
             
-            # Update last frame time
-            self.last_frame_time = time.time()
+            # Update frame count
+            self.frame_count += 1
             
         except Exception as e:
             self.stop_recording()
