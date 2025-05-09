@@ -2,14 +2,14 @@ import subprocess
 import numpy as np
 import time
 from pathlib import Path
-
+SAMSUNG_GALAXY_S20_FPS = 29.98
 class VideoRecorder:
-    def __init__(self, width, height, fps=29.97):
+    def __init__(self, width, height, fps=SAMSUNG_GALAXY_S20_FPS):
         # Initialize all attributes first
         self.sequence_number = 0
         self.width = width
         self.height = height
-        self.target_fps = fps  # Target FPS (29.97 for Samsung FHD)
+        self.target_fps = fps 
         self.process = None
         self.is_recording = False
         self.chunk_duration = 30      # seconds

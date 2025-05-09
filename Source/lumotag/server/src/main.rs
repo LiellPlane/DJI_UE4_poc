@@ -10,8 +10,9 @@ use tokio::time::{sleep, Duration};
 use axum::{routing::get, Router};
 use anyhow::Result;
 
+#[derive(Debug)]
 struct GameState {
-    // positions, scores, etc.
+    healthpoints: Vec<u8>,
 }
 // Interior mutability with concurrency:
 type SharedState = Arc<tokio::sync::RwLock<GameState>>;

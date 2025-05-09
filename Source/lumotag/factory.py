@@ -252,8 +252,7 @@ class display(ABC):
             print(f"Initializing VideoRecorder with frame dimensions: {height}x{width}")
             self.video_recorder = video_recorder.VideoRecorder(
                 width=width,
-                height=height,
-                fps=30
+                height=height
             )
             self.video_recorder.start_recording()
         self.video_recorder.write_frame(
