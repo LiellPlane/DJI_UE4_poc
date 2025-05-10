@@ -10,8 +10,72 @@ import time
 from enum import Enum, auto
 from json.decoder import JSONDecodeError
 from my_collections import AutoStrEnum
+import hashlib
+from pathlib import Path
+import re
+import subprocess
 #import numpy.typing as npt
 
+# def _compile_proto_file(proto_file: Path):
+#     """Compiles a proto file and adds its hash to the generated file."""
+#     # Calculate hash before compilation
+#     proto_hash = hashlib.md5(proto_file.read_bytes()).hexdigest()
+    
+#     # Compile the proto file
+#     result = subprocess.run(
+#         ['protoc', f'--python_out=.', str(proto_file)],
+#         capture_output=True,
+#         text=True
+#     )
+    
+#     if result.returncode != 0:
+#         raise RuntimeError(f"Failed to compile {proto_file}: {result.stderr}")
+    
+#     # Add the hash to the generated file
+#     generated_file = proto_file.parent / f"{proto_file.stem}_pb2.py"
+#     with open(generated_file, 'r') as f:
+#         content = f.read()
+    
+#     with open(generated_file, 'w') as f:
+#         f.write(f'# Proto file hash: {proto_hash}\n')
+#         f.write(content)
+
+# # Validate proto files on module import
+# def _validate_proto_files():
+#     """Validates that the generated Python files match their proto definitions."""
+#     proto_dir = Path(__file__).parent / 'protobuffers'
+#     proto_files = list(proto_dir.glob('*.proto'))
+    
+#     for proto_file in proto_files:
+#         # Change the suffix to _pb2.py for the generated file
+#         generated_file = proto_file.parent / f"{proto_file.stem}_pb2.py"
+        
+#         if not generated_file.exists():
+#             print(f"Compiling {proto_file} as generated file doesn't exist...")
+#             _compile_proto_file(proto_file)
+#             continue
+            
+#         # Calculate current proto file hash
+#         current_hash = hashlib.md5(proto_file.read_bytes()).hexdigest()
+        
+#         # Read the generated file and extract the stored hash
+#         generated_content = generated_file.read_text()
+#         hash_match = re.search(r'# Proto file hash: ([a-f0-9]{32})', generated_content)
+        
+#         if not hash_match:
+#             print(f"Recompiling {proto_file} as generated file doesn't contain a valid hash...")
+#             _compile_proto_file(proto_file)
+#             continue
+            
+#         stored_hash = hash_match.group(1)
+        
+#         # Compare hashes
+#         if current_hash != stored_hash:
+#             print(f"Recompiling {proto_file} as it has changed...")
+#             _compile_proto_file(proto_file)
+
+# # Run validation on import
+# _validate_proto_files()
 
 class MessageTypes(AutoStrEnum):
     ERROR = auto()

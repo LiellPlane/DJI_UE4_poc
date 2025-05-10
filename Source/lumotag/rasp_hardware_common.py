@@ -11,7 +11,7 @@ import functools
 import pickle
 import time
 import factory
-import rabbit_mq
+# import rabbit_mq
 from picamera2 import Picamera2
 from libcamera import controls
 #accelerometer
@@ -354,7 +354,7 @@ class KillProcess(factory.KillProcess):
                 break
 
 
-Messenger = rabbit_mq.Messenger
+# Messenger = rabbit_mq.Messenger
 
 
 def get_my_info(file):

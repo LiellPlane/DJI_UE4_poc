@@ -5,7 +5,7 @@ import numpy as np
 import time
 import factory
 import math
-import rabbit_mq
+# import rabbit_mq
 import json
 import img_processing
 import os
@@ -267,7 +267,7 @@ class Accelerometer(factory.Accelerometer):
             self.round(math.sin(self._y)*real_accel_range),
             self.round(math.sin(self._z)*real_accel_range))
 
-Messenger = rabbit_mq.Messenger
+# Messenger = rabbit_mq.Messenger
 
 # class Messenger(factory.Messenger):
 
