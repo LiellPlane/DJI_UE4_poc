@@ -1,0 +1,6 @@
+use UV
+uv sync will discover the pyproject.toml if you are in the correct folder and install it
+\now activate the environment if you don't have folders in the suggested structure - source .venv/bin/activate
+now go the rust folder and maturin develop build the rust code so its available to python as a module
+cd DJI_UE4_poc/rust/led_sender
+maturin develop --release

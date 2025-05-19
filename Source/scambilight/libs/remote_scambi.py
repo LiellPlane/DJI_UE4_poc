@@ -80,6 +80,7 @@ class UDPTrasmit_RUSTsync(UDPTransmitProcess):
 
     def send_scambis(self, scambis: list[Scambi_unit_LED_only]):
         if scambis is not None and len(scambis)>0:
+            breakpoint()
             self.sender.send_udp_scambis(
                 scambis,
                 f"{self.host}:{self.port}"
