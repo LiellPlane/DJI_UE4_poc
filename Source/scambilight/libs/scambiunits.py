@@ -5,12 +5,12 @@ import math
 import uuid
 from dataclasses import dataclass
 import random
-import libs.fisheye_lib as fisheye_lib
+from . import fisheye_lib
 from typing import Optional
-import libs.async_cam_lib as async_cam_lib
-from libs.utils import  convert_pts_to_convex_hull
-from libs.collections import lens_details, config_regions, Edges
-from libs.lighting import get_led_perimeter_pos
+from . import async_cam_lib
+from .utils import  convert_pts_to_convex_hull
+from .collections import lens_details, config_regions, Edges
+from .lighting import get_led_perimeter_pos
 from collections import deque
 
 

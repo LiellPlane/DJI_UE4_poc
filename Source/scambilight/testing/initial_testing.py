@@ -9,7 +9,7 @@ from time import perf_counter
 from contextlib import contextmanager
 import random
 import enum
-import fisheye_lib
+from scambilight.libs import fisheye_lib
 from typing import Optional
 
 class Camera(ABC):

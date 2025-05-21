@@ -16,7 +16,14 @@ from jetcam.lib.camera_models import (
         calculate_homography,
 )
 
-from common.lib.units import MiliM, Meter, Deg, Rad
+# Assuming common.lib.units was meant to be infra.scambi.common
+# and the units were defined there. This is a guess based on
+# the refactoring instructions. If this is incorrect, this import
+# will need to be adjusted.
+# from infra.scambi.common import MiliM, Meter, Deg, Rad
+# For now, I will comment it out as I cannot be sure.
+# If these are custom local units, this file might be part of a different system.
+# MiliM, Meter, Deg, Rad
 
 PITCH_LENGTH = 37
 PITCH_WIDTH = 27

@@ -5,9 +5,9 @@ import numpy as np
 import time
 import random
 from abc import ABC, abstractmethod
-#from factory import filesystem_scambilight
+from lumotag.factory import filesystem_scambilight
 
-from libs.utils import (
+from .utils import (
     encode_img_to_str,
     decode_image_from_str,
     str_to_bytes,
@@ -16,7 +16,7 @@ from libs.utils import (
     img_width,
     get_platform)
 
-from libs.collections import (
+from .collections import (
     config_corner,
     clicked_xy,
     lens_details,
@@ -25,10 +25,10 @@ from libs.collections import (
     AllConfiguration,
     PhysicalTV_details)
 
-from img_processing import clahe_equalisation
+from lumotag.img_processing import clahe_equalisation
 from multiprocessing import Process, Queue
-from common import cors_headers
-import libs.configs as configs
+from infra.scambi.common import cors_headers
+from . import configs
 
 
 class filesystem_scambilight(ABC):

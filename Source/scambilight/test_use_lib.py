@@ -1,4 +1,4 @@
-import async_cam_lib
+from scambilight.libs import async_cam_lib
 import cv2
 from time import perf_counter
 from contextlib import contextmanager

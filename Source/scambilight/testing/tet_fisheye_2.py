@@ -7,7 +7,7 @@ import numpy as np
 import time
 import math
 import numpy as np
-import fisheye_lib
+from scambilight.libs import fisheye_lib
 
 def ImageViewer_Quick_no_resize(winname, inputimage,pausetime_Secs=0,presskey=False,destroyWindow=True):
     if inputimage is None:

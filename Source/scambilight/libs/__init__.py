@@ -1,14 +1,38 @@
-import os
-from pathlib import Path
-import imp
-# getting the name of the directory
-# where the this file is present.
-current = os.path.dirname(os.path.realpath(__file__))
-parent = os.path.dirname(current)
-#sys.path.append(str(Path(parent).resolve().parents[0]) + "\\lumotag\\factory.py")
-module_name = imp.load_source('video_recorder', str(Path(parent).resolve().parents[0]) + "/lumotag/video_recorder.py")
-module_name = imp.load_source('my_collections', str(Path(parent).resolve().parents[0]) + "/lumotag/my_collections.py")
-module_name = imp.load_source('img_processing', str(Path(parent).resolve().parents[0]) + "/lumotag/img_processing.py")
-module_name = imp.load_source('factory', str(Path(parent).resolve().parents[0]) + "/lumotag/factory.py")
-module_name = imp.load_source('lumotag_utils', str(Path(parent).resolve().parents[0]) + "/lumotag/utils.py")
-module_name = imp.load_source('common', str(Path(parent).resolve().parents[0]) + "/infra/scambilight/scambi/common.py")
+from lumotag import video_recorder
+from lumotag import my_collections
+from lumotag import img_processing
+from lumotag import factory
+from lumotag import utils as lumotag_utils
+from infra.scambi import common
+
+from . import async_cam_lib
+from . import collections
+from . import configs
+from . import external_data
+from . import fisheye_lib
+from . import lighting
+from . import maybe_useful
+from . import remote_scambi
+from . import scambiunits
+from . import temptemp
+from . import utils
+
+__all__ = [
+    "video_recorder",
+    "my_collections",
+    "img_processing",
+    "factory",
+    "lumotag_utils",
+    "common",
+    "async_cam_lib",
+    "collections",
+    "configs",
+    "external_data",
+    "fisheye_lib",
+    "lighting",
+    "maybe_useful",
+    "remote_scambi",
+    "scambiunits",
+    "temptemp",
+    "utils"
+]

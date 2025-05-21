@@ -18,8 +18,8 @@ import struct
 import os
 import json
 from typing import Literal
-from libs.utils import img_height, img_width
-from libs.collections import (
+from .utils import img_height, img_width
+from .collections import (
     LedSpacing,
     Edges,
     lens_details,
@@ -28,17 +28,17 @@ from libs.collections import (
     Scambi_unit_LED_only)
 
 
-from libs.utils import (
+from .utils import (
     get_platform,
     _OS,
     time_it_sparse,
     )
 
-from factory import TimeDiffObject
+from lumotag.factory import TimeDiffObject
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from remote_scambi import (
+from .remote_scambi import (
     transform_scambits_for_UDP,
     transform_UDP_message_to_scambis,
     UDPMessageSender,

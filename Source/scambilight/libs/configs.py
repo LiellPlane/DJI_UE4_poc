@@ -1,5 +1,5 @@
 import enum
-from libs.collections import (
+from .collections import (
     Edges,
     lens_details,
     LedsLayout,
@@ -7,7 +7,7 @@ from libs.collections import (
     LensConfigs,
     PhysicalTV_details)
 from dataclasses import dataclass
-from my_collections import ImagingMode
+from lumotag.my_collections import ImagingMode
 
 # good youtube videos to try:
 #fluid sim

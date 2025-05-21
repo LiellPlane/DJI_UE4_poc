@@ -2,7 +2,7 @@
 import os
 
 # factory is imported from another directory by module load
-from factory import (
+from lumotag.factory import (
     Camera_async,
     Camera_synchronous,
     ImageGenerator,
@@ -15,7 +15,7 @@ import os
 import cv2
 from contextlib import contextmanager
 from multiprocessing import Process, Queue
-from libs.utils import (
+from .utils import (
     get_platform,
     _OS,
     time_it_sparse)

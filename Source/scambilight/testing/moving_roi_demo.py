@@ -9,7 +9,7 @@ import os
 import json
 import cv2
 import numpy as np
-import fisheye_lib
+from scambilight.libs import fisheye_lib
 
 def GetAllFilesInFolder_Recursive(root):
     ListOfFiles=[]
