@@ -2,7 +2,12 @@ import subprocess
 import numpy as np
 import time
 from pathlib import Path
-SAMSUNG_GALAXY_S20_FPS = 29.98
+import threading
+from collections import deque
+
+# Correct Samsung Galaxy S20 FPS - NTSC standard
+SAMSUNG_GALAXY_S20_FPS = 29.97  # Corrected to match actual Samsung timing
+
 class VideoRecorder:
     def __init__(self, width, height, fps=SAMSUNG_GALAXY_S20_FPS):
         # Initialize all attributes first
@@ -10,21 +15,23 @@ class VideoRecorder:
         self.width = width
         self.height = height
         self.target_fps = fps 
+        self.frame_interval = 1.0 / fps  # Time between frames
         self.process = None
         self.is_recording = False
         self.chunk_duration = 30      # seconds
         self.overlap_duration = 1     # 1 second overlap between chunks
         self.last_chunk_time = None
         self.frame_buffer = []        # buffer for overlap frames
-        self.max_buffer_frames = int(self.target_fps * self.overlap_duration)  # number of frames to buffer
+        self.max_buffer_frames = int(self.target_fps * self.overlap_duration)
         self.frame_count = 0
         self.start_time = None
-        self.actual_fps = None  # Will be calculated based on actual frame delivery
-        self.fps_window = 100  # Number of frames to use for FPS calculation
-        self.frame_times = []  # Store recent frame times for FPS calculation
-        self.last_frame = None  # Store the last frame for potential duplication
-        self.min_frame_interval = 1.0 / (self.target_fps * 1.5)  # Minimum time between frames (50% faster than target)
-        self.max_frame_interval = 1.0 / (self.target_fps * 0.5)  # Maximum time between frames (50% slower than target)
+        
+        # Timing control variables
+        self.last_frame_time = None
+        self.recording_start_time = None
+        self.frame_queue = deque()
+        self.frame_thread = None
+        self.stop_thread = False
         
         # Always use home directory for recordings
         home_dir = Path.home()
@@ -44,9 +51,10 @@ class VideoRecorder:
             
         output_path = self.output_dir / filename
         
-        print(f"Starting FFmpeg with dimensions: {self.width}x{self.height}")
+        print(f"Starting FFmpeg with dimensions: {self.width}x{self.height} at {self.target_fps} fps")
+        print(f"Output file: {output_path}")
         
-        # FFmpeg command with hardware acceleration
+        # FFmpeg command - let FFmpeg handle frame rate conversion
         command = [
             'ffmpeg',
             '-y',  # overwrite output file if it exists
@@ -54,31 +62,31 @@ class VideoRecorder:
             '-vcodec', 'rawvideo',
             '-s', f'{self.width}x{self.height}',
             '-pix_fmt', 'bgr24',
-            '-r', str(self.target_fps),
-            '-i', '-',  # input from pipe
-            '-c:v', 'libx264',  # software encoder
-            '-preset', 'ultrafast',  # fastest encoding preset
-            '-tune', 'zerolatency',  # minimize latency
-            '-b:v', '1000k',  # reduced bitrate
+            '-i', '-',  # input from pipe - no input frame rate specified
+            '-c:v', 'libx264',
+            '-preset', 'ultrafast',
+            '-tune', 'zerolatency',
+            '-r', str(self.target_fps),  # Output frame rate
+            '-b:v', '1000k',
             '-pix_fmt', 'yuv420p',
-            '-threads', '2',  # reduced thread count
-            '-cpu-used', '8',  # maximum CPU usage reduction
-            '-loglevel', 'warning',
+            '-threads', '2',
+            '-loglevel', 'error',  # Only show errors
             str(output_path)
         ]
         
         try:
-            print(f"Starting FFmpeg with command: {' '.join(command)}")
-            # Create a pipe for stderr to capture FFmpeg errors
-            stderr_pipe = subprocess.PIPE
+            print(f"Starting FFmpeg...")
             self.process = subprocess.Popen(
                 command,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
-                stderr=stderr_pipe,
-                text=False,  # Keep binary mode for stdin
-                bufsize=10*1024*1024  # Increase buffer size
+                stderr=subprocess.PIPE,
+                text=False,
+                bufsize=10*1024*1024
             )
+            
+            # Give FFmpeg a moment to start
+            time.sleep(0.1)
             
             # Check if FFmpeg started successfully
             if self.process.poll() is not None:
@@ -88,17 +96,89 @@ class VideoRecorder:
                 
             self.is_recording = True
             self.last_chunk_time = time.time()
-            print(f"Started recording to {output_path}")
+            self.recording_start_time = time.time()
+            self.last_frame_time = None
+            
+            # Clear any existing queue
+            self.frame_queue.clear()
+            
+            # Start frame timing thread
+            self.stop_thread = False
+            self.frame_thread = threading.Thread(target=self._frame_writer_thread)
+            self.frame_thread.daemon = True
+            self.frame_thread.start()
+            
+            print(f"Successfully started recording to {output_path}")
             
         except Exception as e:
             print(f"Error starting recording: {e}")
             self.is_recording = False
+            if self.process:
+                try:
+                    self.process.kill()
+                except:
+                    pass
             self.process = None
-            raise  # Re-raise the exception to handle it in the calling code
+            raise
+    
+    def _frame_writer_thread(self):
+        """Thread that writes frames to FFmpeg at the correct timing."""
+        thread_start_time = time.time()
+        expected_frame_time = thread_start_time
+        
+        while not self.stop_thread and self.is_recording:
+            current_time = time.time()
+            
+            # Check if it's time for the next frame
+            if current_time >= expected_frame_time:
+                if self.frame_queue:
+                    try:
+                        frame = self.frame_queue.popleft()
+                        if self.process and self.process.poll() is None:
+                            self.process.stdin.write(frame.tobytes())
+                            self.process.stdin.flush()
+                            
+                            # Store frame in buffer for overlap
+                            self.frame_buffer.append(frame.copy())
+                            if len(self.frame_buffer) > self.max_buffer_frames:
+                                self.frame_buffer.pop(0)
+                                
+                            self.frame_count += 1
+                            
+                    except Exception as e:
+                        print(f"Error writing frame in thread: {e}")
+                        break
+                
+                # Calculate next frame time
+                expected_frame_time += self.frame_interval
+                
+                # If we're falling behind significantly, skip to current time
+                if expected_frame_time < current_time - (self.frame_interval * 2):
+                    expected_frame_time = current_time
+                    print("Warning: Frame timing fell behind, resynchronizing")
+            
+            # Small sleep to prevent busy waiting
+            time.sleep(0.001)  # 1ms
         
     def write_frame(self, frame):
-        if not self.is_recording or self.process is None:
-            raise RuntimeError("Not recording or process not started!")
+        """Queue a frame for writing at the correct timing."""
+        # Better error reporting
+        if not self.is_recording:
+            raise RuntimeError("Not recording! Call start_recording() first.")
+        
+        if self.process is None:
+            raise RuntimeError("FFmpeg process not started!")
+            
+        # Check if FFmpeg process died
+        if self.process.poll() is not None:
+            try:
+                error = self.process.stderr.read().decode('utf-8', errors='replace')
+                error_msg = f"FFmpeg process died unexpectedly. Exit code: {self.process.returncode}"
+                if error:
+                    error_msg += f"\nFFmpeg error: {error}"
+                raise RuntimeError(error_msg)
+            except Exception as e:
+                raise RuntimeError(f"FFmpeg process died and couldn't read error: {e}")
             
         # Initialize start time if this is the first frame
         if self.start_time is None:
@@ -113,88 +193,131 @@ class VideoRecorder:
             
         if frame.dtype != np.uint8:
             raise ValueError(f"Frame dtype {frame.dtype} is not uint8")
-            
-        try:
-            # Check if FFmpeg is still running before writing
-            if self.process.poll() is not None:
-                error = self.process.stderr.read().decode('utf-8', errors='replace')
-                if not error:
-                    error = f"FFmpeg process terminated unexpectedly. Frame dimensions: {frame.shape}, FFmpeg expected: {self.width}x{self.height}"
-                raise RuntimeError(f"FFmpeg process died: {error}")
-            
-            # Write frame and flush to ensure it's sent
-            try:
-                self.process.stdin.write(frame.tobytes())
-                self.process.stdin.flush()
+        
+        # Add frame to queue (limit queue size to prevent memory issues)
+        if len(self.frame_queue) < 100:  # Limit queue size
+            self.frame_queue.append(frame.copy())
+        else:
+            print("Warning: Frame queue full, dropping frame")
                 
-                # Store frame in buffer for overlap
-                self.frame_buffer.append(frame.copy())
-                if len(self.frame_buffer) > self.max_buffer_frames:
-                    self.frame_buffer.pop(0)
-                
-            except BrokenPipeError as e:
-                # Check FFmpeg's status and get any error output
-                if self.process.poll() is not None:
-                    error = self.process.stderr.read().decode('utf-8', errors='replace')
-                    if not error:
-                        error = f"FFmpeg process terminated unexpectedly. Frame dimensions: {frame.shape}, FFmpeg expected: {self.width}x{self.height}"
-                    raise RuntimeError(f"FFmpeg process died: {error}") from e
-                raise RuntimeError("Broken pipe to FFmpeg process") from e
-            except Exception as e:
-                raise RuntimeError(f"Error writing to FFmpeg: {str(e)}") from e
-            
-            # Update frame count
-            self.frame_count += 1
-            
-        except Exception as e:
-            self.stop_recording()
-            raise  # Re-raise the exception to handle it in the calling code
-                
+        # Check for chunk duration
         if time.time() - self.last_chunk_time > self.chunk_duration:
-            # First stop the current recording
-            self.stop_recording()
+            try:
+                self._new_chunk()
+            except Exception as e:
+                print(f"Error during chunk transition: {e}")
+                # Try to restart recording
+                try:
+                    self.start_recording()
+                except Exception as restart_error:
+                    print(f"Failed to restart recording: {restart_error}")
+                    raise RuntimeError(f"Chunk transition failed and couldn't restart: {restart_error}")
+    
+    def _new_chunk(self):
+        """Start a new chunk while maintaining overlap."""
+        if not self.is_recording:
+            return
             
-            # Then start a new recording
+        print(f"Starting new chunk after {self.chunk_duration} seconds")
+        
+        # Save current state
+        saved_buffer = self.frame_buffer.copy()
+        current_sequence = self.sequence_number
+        
+        # Stop current recording cleanly
+        self._stop_current_chunk()
+        
+        # Temporarily disable recording to prevent frame writes during transition
+        self.is_recording = False
+        
+        try:
+            # Start new recording
             self.start_recording()
             
-            # Write buffered frames to the new recording
-            for buffered_frame in self.frame_buffer:
-                try:
-                    self.process.stdin.write(buffered_frame.tobytes())
-                    self.process.stdin.flush()
-                except Exception as e:
-                    print(f"Error writing buffered frame: {e}")
-                    break  # Stop if we encounter an error
+            # Re-queue buffered overlap frames at the beginning
+            temp_queue = deque()
+            for buffered_frame in saved_buffer:
+                temp_queue.append(buffered_frame.copy())
+            
+            # Add current queue contents after the overlap frames
+            while self.frame_queue:
+                temp_queue.append(self.frame_queue.popleft())
                 
-    def stop_recording(self):
-        if self.is_recording and self.process is not None:
+            self.frame_queue = temp_queue
+            
+            print(f"New chunk started with {len(saved_buffer)} overlap frames")
+        except Exception as e:
+            print(f"Error during chunk transition: {e}")
+            # Try to restart recording
             try:
-                # Check if FFmpeg is still running
+                self.start_recording()
+            except Exception as restart_error:
+                print(f"Failed to restart recording: {restart_error}")
+                raise RuntimeError(f"Chunk transition failed and couldn't restart: {restart_error}")
+        finally:
+            # Re-enable recording
+            self.is_recording = True
+    
+    def _stop_current_chunk(self):
+        """Stop current chunk without clearing frame queue."""
+        if not self.is_recording:
+            return
+            
+        # Stop the frame writer thread
+        self.stop_thread = True
+        
+        # Wait for frame thread to finish
+        if self.frame_thread and self.frame_thread.is_alive():
+            self.frame_thread.join(timeout=2.0)
+        
+        # Close FFmpeg process
+        if self.process is not None:
+            try:
                 if self.process.poll() is None:
                     try:
                         self.process.stdin.close()
-                        self.process.wait(timeout=2)  # Wait up to 2 seconds for FFmpeg to finish
+                        self.process.wait(timeout=3)
                     except subprocess.TimeoutExpired:
                         print("FFmpeg did not finish in time, forcing termination")
                         self.process.kill()
                         self.process.wait()
                 else:
-                    # FFmpeg already died, get the error
                     error = self.process.stderr.read().decode('utf-8', errors='replace')
                     if error:
                         print(f"FFmpeg terminated with error: {error}")
             except Exception as e:
-                # Try to kill the process if it's still running
+                print(f"Error stopping chunk: {e}")
                 if self.process.poll() is None:
                     try:
                         self.process.kill()
-                    except Exception as kill_error:
-                        raise RuntimeError(f"Failed to stop recording and kill process: {str(e)}, kill error: {str(kill_error)}") from e
-                raise RuntimeError(f"Failed to stop recording: {str(e)}") from e
+                    except Exception:
+                        pass
             finally:
                 self.process = None
-                self.is_recording = False
                 
+    def stop_recording(self):
+        if self.is_recording:
+            self._stop_current_chunk()
+            self.is_recording = False
+            self.frame_queue.clear()
+            print("Recording stopped")
+                
+    def get_status(self):
+        """Get current recording status for debugging."""
+        status = {
+            'is_recording': self.is_recording,
+            'process_alive': self.process is not None and self.process.poll() is None,
+            'thread_alive': self.frame_thread is not None and self.frame_thread.is_alive(),
+            'queue_size': len(self.frame_queue),
+            'frame_count': self.frame_count,
+            'buffer_size': len(self.frame_buffer)
+        }
+        
+        if self.process is not None:
+            status['process_returncode'] = self.process.returncode
+            
+        return status
+    
     def __del__(self):
-        if hasattr(self, 'is_recording'):  # Check if attribute exists
-            self.stop_recording() 
+        if hasattr(self, 'is_recording'):
+            self.stop_recording()
