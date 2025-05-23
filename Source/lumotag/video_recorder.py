@@ -6,7 +6,7 @@ import threading
 from collections import deque
 
 # Correct Samsung Galaxy S20 FPS - NTSC standard
-SAMSUNG_GALAXY_S20_FPS = 29.97  # Corrected to match actual Samsung timing
+SAMSUNG_GALAXY_S20_FPS = 29.98  # Corrected to match actual Samsung timing
 
 class VideoRecorder:
     def __init__(self, width, height, fps=SAMSUNG_GALAXY_S20_FPS):
@@ -18,7 +18,7 @@ class VideoRecorder:
         self.frame_interval = 1.0 / fps  # Time between frames
         self.process = None
         self.is_recording = False
-        self.chunk_duration = 30      # seconds
+        self.chunk_duration = 60 * 3     # seconds
         self.overlap_duration = 1     # 1 second overlap between chunks
         self.last_chunk_time = None
         self.frame_buffer = []        # buffer for overlap frames
