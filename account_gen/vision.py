@@ -62,25 +62,42 @@ def generate_string_pattern(string: str, fontinfo: FontConfig):
         # If we can't find Arial, we should fail explicitly rather than silently using a different font
         raise OSError("Could not load Arial font. This is required for pattern matching to work correctly with interactions.py")
     
-    # Create a fixed size image with plenty of room
-    img = Image.new('L', (200, 100), 0)
+    # Create an absolutely massive image (8K size)
+    img = Image.new('L', (7680, 4320), 0)  # 8K resolution
     draw = ImageDraw.Draw(img)
-    draw.text((10, 10), string, font=font, fill=255)
+    
+    # Draw text in the center of this massive space
+    draw.text((3840, 2160), string, font=font, fill=255, anchor="mm")  # Center text using anchor
     
     # Convert to numpy array
     img_np = np.array(img)
+    
+    # Convert to pure binary (0 or 255) using a higher threshold
+    img_np = (img_np > 200).astype(np.uint8) * 255
     
     # Find non-zero elements and get their bounding box
     coords = np.nonzero(img_np)
     if len(coords[0]) == 0:  # If no text was found
         return img_np
-        
+    
     top = np.min(coords[0])
     bottom = np.max(coords[0])
     left = np.min(coords[1])
     right = np.max(coords[1])
     
-    # Return the exact bounds of the text
-    return img_np[top:bottom+1, left:right+1]
+    # Add a small safety margin, but ensure we stay in bounds
+    margin = 5
+    top = max(0, top - margin)
+    bottom = min(img_np.shape[0] - 1, bottom + margin)
+    left = max(0, left - margin)
+    right = min(img_np.shape[1] - 1, right + margin)
+    
+    cropped = img_np[top:bottom+1, left:right+1]
+    
+    # Debug: Save the image to see what's happening
+    debug_img = Image.fromarray(cropped)
+    debug_img.save('debug_crop.png')
+    
+    return cropped
 
     

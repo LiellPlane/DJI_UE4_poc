@@ -179,11 +179,21 @@ class WebInteraction:
             const textDiv = document.createElement('div');
             textDiv.textContent = '{text}';
             textDiv.style.position = 'fixed';
-            textDiv.style.top = '50px';
-            textDiv.style.left = '50px';
-            textDiv.style.zIndex = '9999';
+            textDiv.style.top = '50%';
+            textDiv.style.left = '50%';
+            textDiv.style.transform = 'translate(-50%, -50%)';
+            textDiv.style.zIndex = '999999';
             textDiv.style.backgroundColor = 'white';
-            textDiv.style.padding = '20px';
+            textDiv.style.width = '1000px';
+            textDiv.style.height = '500px';
+            textDiv.style.display = 'flex';
+            textDiv.style.alignItems = 'center';
+            textDiv.style.justifyContent = 'center';
+            textDiv.style.pointerEvents = 'none';
+            textDiv.style.isolation = 'isolate';
+            textDiv.style.willChange = 'transform';
+            textDiv.style.backfaceVisibility = 'hidden';
+            textDiv.style.transformStyle = 'preserve-3d';
             textDiv.style.fontFamily = '{FontConfig.FONT_FAMILY}';
             textDiv.style.fontSize = '{FontConfig.FONT_SIZE}';
             textDiv.style.textTransform = '{FontConfig.TEXT_TRANSFORM}';
@@ -195,20 +205,13 @@ class WebInteraction:
             textDiv.style.whiteSpace = 'nowrap';
             document.body.appendChild(textDiv);
             
-            // Get computed styles
-            const computedStyle = window.getComputedStyle(textDiv);
-            const fontSize = parseFloat(computedStyle.fontSize);
-            const lineHeight = parseFloat(computedStyle.lineHeight);
-            
             // Get the dimensions
             const rect = textDiv.getBoundingClientRect();
             return {{
                 width: Math.ceil(rect.width),
                 height: Math.ceil(rect.height),
                 left: Math.ceil(rect.left),
-                top: Math.ceil(rect.top),
-                fontSize: fontSize,
-                lineHeight: lineHeight
+                top: Math.ceil(rect.top)
             }};
             """
             
@@ -225,49 +228,55 @@ class WebInteraction:
             # Get the scale factor of the page
             scale_script = "return window.devicePixelRatio;"
             scale = self.driver.execute_script(scale_script)
+            print(f"Device pixel ratio: {scale}")
             
-            # Calculate crop coordinates
+            # Calculate initial crop coordinates
             x = int(dimensions['left'] * scale)
             y = int(dimensions['top'] * scale)
             w = int(dimensions['width'] * scale)
             h = int(dimensions['height'] * scale)
+            print(f"Initial crop dimensions (physical pixels): x={x}, y={y}, w={w}, h={h}")
             
             # Ensure we don't go out of bounds
             h_img, w_img = image_np.shape[:2]
+            print(f"Image dimensions: {w_img}x{h_img}")
             x = max(0, min(x, w_img - 1))
             y = max(0, min(y, h_img - 1))
             w = min(w, w_img - x)
             h = min(h, h_img - y)
+            print(f"Adjusted crop dimensions: x={x}, y={y}, w={w}, h={h}")
             
             if w <= 0 or h <= 0:
                 raise Exception(f"Invalid crop dimensions: x={x}, y={y}, w={w}, h={h}")
             
-            # Crop the image
+            # Initial crop
             cropped = image_np[y:y+h, x:x+w]
+            print(f"Cropped image shape: {cropped.shape}")
             
-            # Convert to grayscale for better text detection
+            # Aggressive crop in from edges (50 CSS pixels worth)
+            edge_margin = int(50 * scale)
+            cropped = cropped[edge_margin:-edge_margin, edge_margin:-edge_margin]
+            print(f"After aggressive crop shape: {cropped.shape}")
+            
+            # Now find the actual text area
             gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
-            
-            # Threshold to get binary image
             _, binary = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
-            
-            # Find non-zero points
             coords = np.nonzero(binary)
             
-            if len(coords[0]) > 0:  # If we found any non-zero points
-                # Get bounding box of non-zero points
+            if len(coords[0]) > 0:
                 y_min, y_max = coords[0].min(), coords[0].max()
                 x_min, x_max = coords[1].min(), coords[1].max()
                 
                 # Add small padding
                 padding = 1
                 y_min = max(0, y_min - padding)
-                y_max = min(h, y_max + padding)
+                y_max = min(cropped.shape[0], y_max + padding)
                 x_min = max(0, x_min - padding)
-                x_max = min(w, x_max + padding)
+                x_max = min(cropped.shape[1], x_max + padding)
                 
-                # Crop to the bounding box
+                # Final crop to text area
                 cropped = cropped[y_min:y_max, x_min:x_max]
+                print(f"Final text area shape: {cropped.shape}")
             
             if save_to_disk:
                 if filename is None:
