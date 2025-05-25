@@ -21,7 +21,8 @@ def display_image(image: np.ndarray, window_name: str = "Debug View", wait_for_k
         window_name: Name of the window to display the image in
         wait_for_key: If True, waits for any key press. If False, waits 20ms
     """
-    cv2.imshow(window_name, cv2.resize(image,(800,800)))
+    cv2.imshow(window_name, image)
+    # cv2.imshow(window_name, cv2.resize(image,(800,800)))
     if wait_for_key:
         cv2.waitKey(0)  # Wait for any key press
     else:

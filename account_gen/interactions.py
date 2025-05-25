@@ -13,6 +13,8 @@ import cv2
 import numpy as np
 from io import BytesIO
 import os
+import base64
+import json
 from typing import Literal
 
 class FontConfig:
@@ -153,6 +155,144 @@ class WebInteraction:
             
         except Exception as e:
             raise
+
+    def get_text_area_screenshot(self, url, text, save_to_disk=False, filename=None) -> np.array:
+        """Load a URL, add custom text, and return a screenshot of the area containing that text.
+        
+        Args:
+            url (str): The URL to load
+            text (str): The text to display and capture
+            save_to_disk (bool): Whether to save the screenshot to disk
+            filename (str): Optional filename to save the screenshot as. If None and save_to_disk is True,
+                          generates a timestamp-based filename.
+            
+        Returns:
+            numpy.ndarray: Screenshot of the area containing the text
+        """
+        try:
+            # Load the URL
+            self.driver.get(url)
+            self.wait_for_page_load()
+            
+            # Create an isolated div
+            create_div_script = f"""
+            const textDiv = document.createElement('div');
+            textDiv.textContent = '{text}';
+            textDiv.style.position = 'fixed';
+            textDiv.style.top = '50px';
+            textDiv.style.left = '50px';
+            textDiv.style.zIndex = '9999';
+            textDiv.style.backgroundColor = 'white';
+            textDiv.style.padding = '20px';
+            textDiv.style.fontFamily = '{FontConfig.FONT_FAMILY}';
+            textDiv.style.fontSize = '{FontConfig.FONT_SIZE}';
+            textDiv.style.textTransform = '{FontConfig.TEXT_TRANSFORM}';
+            textDiv.style.fontWeight = '{FontConfig.FONT_WEIGHT}';
+            textDiv.style.fontStyle = '{FontConfig.FONT_STYLE}';
+            textDiv.style.color = 'black';
+            textDiv.style.lineHeight = '1';
+            textDiv.style.letterSpacing = 'normal';
+            textDiv.style.whiteSpace = 'nowrap';
+            document.body.appendChild(textDiv);
+            
+            // Get computed styles
+            const computedStyle = window.getComputedStyle(textDiv);
+            const fontSize = parseFloat(computedStyle.fontSize);
+            const lineHeight = parseFloat(computedStyle.lineHeight);
+            
+            // Get the dimensions
+            const rect = textDiv.getBoundingClientRect();
+            return {{
+                width: Math.ceil(rect.width),
+                height: Math.ceil(rect.height),
+                left: Math.ceil(rect.left),
+                top: Math.ceil(rect.top),
+                fontSize: fontSize,
+                lineHeight: lineHeight
+            }};
+            """
+            
+            # Get the dimensions of the text div
+            dimensions = self.driver.execute_script(create_div_script)
+            
+            # Wait a moment for the div to be fully rendered
+            time.sleep(0.5)
+            
+            # Take screenshot of the entire page
+            screenshot = self.driver.get_screenshot_as_png()
+            image_np = cv2.imdecode(np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR)
+            
+            # Get the scale factor of the page
+            scale_script = "return window.devicePixelRatio;"
+            scale = self.driver.execute_script(scale_script)
+            
+            # Calculate crop coordinates
+            x = int(dimensions['left'] * scale)
+            y = int(dimensions['top'] * scale)
+            w = int(dimensions['width'] * scale)
+            h = int(dimensions['height'] * scale)
+            
+            # Ensure we don't go out of bounds
+            h_img, w_img = image_np.shape[:2]
+            x = max(0, min(x, w_img - 1))
+            y = max(0, min(y, h_img - 1))
+            w = min(w, w_img - x)
+            h = min(h, h_img - y)
+            
+            if w <= 0 or h <= 0:
+                raise Exception(f"Invalid crop dimensions: x={x}, y={y}, w={w}, h={h}")
+            
+            # Crop the image
+            cropped = image_np[y:y+h, x:x+w]
+            
+            # Convert to grayscale for better text detection
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+            
+            # Threshold to get binary image
+            _, binary = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
+            
+            # Find non-zero points
+            coords = np.nonzero(binary)
+            
+            if len(coords[0]) > 0:  # If we found any non-zero points
+                # Get bounding box of non-zero points
+                y_min, y_max = coords[0].min(), coords[0].max()
+                x_min, x_max = coords[1].min(), coords[1].max()
+                
+                # Add small padding
+                padding = 1
+                y_min = max(0, y_min - padding)
+                y_max = min(h, y_max + padding)
+                x_min = max(0, x_min - padding)
+                x_max = min(w, x_max + padding)
+                
+                # Crop to the bounding box
+                cropped = cropped[y_min:y_max, x_min:x_max]
+            
+            if save_to_disk:
+                if filename is None:
+                    filename = f'text_area_screenshot_{int(time.time())}.png'
+                cv2.imwrite(filename, cropped)
+            
+            # Remove the div
+            cleanup_script = """
+            const textDiv = document.querySelector('div[style*="z-index: 9999"]');
+            if (textDiv) textDiv.remove();
+            """
+            self.driver.execute_script(cleanup_script)
+            
+            return cropped
+            
+        except Exception as e:
+            # Clean up div if it exists
+            try:
+                self.driver.execute_script("""
+                    const textDiv = document.querySelector('div[style*="z-index: 9999"]');
+                    if (textDiv) textDiv.remove();
+                """)
+            except:
+                pass
+            raise Exception(f"Error in get_text_area_screenshot: {str(e)}")
 
     def human_like_delay(self, min_delay=1, max_delay=3):
         """Add random delay to simulate human behavior"""
