@@ -62,6 +62,8 @@ class WebInteraction:
                 options.add_argument('--start-maximized')
                 options.add_argument('--log-level=3')  # Suppress logging
                 options.add_argument('--silent')
+                # Force 1:1 device pixel ratio
+                options.add_argument('--force-device-scale-factor=1')
                 options.add_experimental_option('excludeSwitches', ['enable-logging'])  # Suppress DevTools logging
                 
                 self.driver = webdriver.Chrome(options=options)
@@ -155,6 +157,41 @@ class WebInteraction:
             
         except Exception as e:
             raise
+
+    def get_raw_screenshot(self, save_to_disk=False, filename=None) -> tuple[np.array, float]:
+        """Get a raw screenshot of the current page that maintains coordinate consistency for mouse interactions.
+        
+        This method ensures that the screenshot coordinates will match what's used for mouse interactions
+        by accounting for device pixel ratio and window scaling.
+        
+        Args:
+            save_to_disk (bool): Whether to save the screenshot to disk
+            filename (str): Optional filename to save the screenshot as. If None and save_to_disk is True,
+                          generates a timestamp-based filename.
+            
+        Returns:
+            tuple[np.array, float]: A tuple containing:
+                - numpy.ndarray: The raw screenshot
+                - float: The device pixel ratio (scale factor) that should be used to convert between
+                        screenshot coordinates and actual mouse coordinates
+        """
+        try:
+            # Get the device pixel ratio before taking screenshot
+            scale = self.driver.execute_script("return window.devicePixelRatio;")
+            
+            # Take screenshot
+            screenshot = self.driver.get_screenshot_as_png()
+            image_np = cv2.imdecode(np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR)
+            
+            if save_to_disk:
+                if filename is None:
+                    filename = f'raw_screenshot_{int(time.time())}.png'
+                cv2.imwrite(filename, image_np)
+            
+            return image_np, scale
+            
+        except Exception as e:
+            raise Exception(f"Error in get_raw_screenshot: {str(e)}")
 
     def get_text_area_screenshot(self, url, text, save_to_disk=False, filename=None) -> np.array:
         """Load a URL, add custom text, and return a screenshot of the area containing that text.

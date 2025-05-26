@@ -2,9 +2,26 @@ import cv2
 import numpy as np
 from interactions import FontConfig
 from PIL import Image, ImageDraw, ImageFont
+from dataclasses import dataclass
+
 import os
 
+@dataclass
+class PatternMatch:
+    debug_image: np.ndarray | None
+    x: int
+    y: int
+    width: int
+    height: int
+    score: float = 0.0
+    
 
+    def __post_init__(self):
+        # Validate score is between 0 and 1
+        if not 0 <= self.score <= 1:
+            raise ValueError("Score must be between 0 and 1")
+
+    
 class FindText():
     def __init__(self) -> None:
         font_info = None
@@ -101,3 +118,176 @@ def generate_string_pattern(string: str, fontinfo: FontConfig):
     return cropped
 
     
+def gaussian_blur(img: np.ndarray, kernel_size: tuple = (5, 5), sigma: float = 0) -> np.ndarray:
+    """
+    Apply Gaussian blur to an image.
+    Args:
+        img: Input image as numpy array
+        kernel_size: Tuple of (width, height) for the Gaussian kernel
+        sigma: Standard deviation in X direction. If 0, calculated from kernel size
+    Returns:
+        Blurred image as numpy array
+    """
+    return cv2.GaussianBlur(img, kernel_size, sigma)
+
+
+
+def pattern_match(img: np.ndarray, pattern: np.ndarray) -> PatternMatch:
+    """
+    Find the best match for a pattern in an input image using OpenCV template matching.
+    Args:
+        img: Input image to search in
+        pattern: Pattern to search for
+    Returns:
+        PatternMatch: Object containing match location and confidence score
+    """
+    # Convert images to grayscale if they aren't already
+    if len(img.shape) == 3:
+        img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        img_gray = img.copy()
+        
+    if len(pattern.shape) == 3:
+        pattern = cv2.cvtColor(pattern, cv2.COLOR_BGR2GRAY)
+    
+    # Perform template matching
+    result = cv2.matchTemplate(img_gray, pattern, cv2.TM_CCOEFF_NORMED)
+    
+    # Get the best match location
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+    
+    # Get the pattern dimensions
+    h, w = pattern.shape
+    
+    print(f"Pattern dimensions: {w}x{h}")
+    print(f"Match location: {max_loc}")
+    print(f"Input image shape: {img.shape}")
+    print(f"Match score: {max_val}")
+    
+    # Create a copy of the input image for visualization
+    if len(img.shape) == 3:
+        vis_img = img.copy()
+    else:
+        vis_img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+    
+    # Create PatternMatch object first
+    match = PatternMatch(
+        x=max_loc[0],
+        y=max_loc[1],
+        width=w,
+        height=h,
+        score=max_val,
+        debug_image=None  # We'll set this after cropping
+    )
+    
+    # Extract the matched region using the exact coordinates from PatternMatch
+    matched_region = vis_img[match.y:match.y + match.height, match.x:match.x + match.width]
+    print(f"Cropping region: x={match.x}:{match.x + match.width}, y={match.y}:{match.y + match.height}")
+    print(f"Matched region shape: {matched_region.shape}")
+    
+    # Convert pattern to BGR if it's grayscale
+    if len(pattern.shape) == 2:
+        pattern_bgr = cv2.cvtColor(pattern, cv2.COLOR_GRAY2BGR)
+    else:
+        pattern_bgr = pattern.copy()
+    
+    # Resize pattern to match the matched region's dimensions
+    pattern_resized = cv2.resize(pattern_bgr, (matched_region.shape[1], matched_region.shape[0]))
+    
+    # Stack them side by side
+    comparison = np.hstack((pattern_resized, matched_region))
+    
+    # Set the debug image in the PatternMatch object
+    match.debug_image = comparison
+    
+    return match
+    
+
+def find_searchpattern_scale(img, pattern) -> PatternMatch:
+    """
+    Find the best scale for pattern matching using binary search
+    """
+    best_score = 0
+    best_match = None
+    
+    # Define the scale range to search
+    min_scale = 50
+    max_scale = 150
+    step = 5
+    
+    # First pass: try all scales to find approximate best region
+    for scale_percent in range(min_scale, max_scale + 1, step):
+        print(f"calculating for {scale_percent}% scale")
+        # Calculate new dimensions based on percentage
+        width = int(pattern.shape[1] * scale_percent / 100)
+        height = int(pattern.shape[0] * scale_percent / 100)
+        
+        # Resize pattern
+        scaled_pattern = cv2.resize(pattern, (width, height))
+        
+        # Try to match
+        match = pattern_match(img, scaled_pattern)
+        print(f"Match score: {match.score}")
+        
+        # Keep track of best match
+        if match.score > best_score:
+            best_score = match.score
+            best_match = match
+            print(f"New best match found at {scale_percent}% scale with score {best_score}")
+            print(f"Match location: ({best_match.x}, {best_match.y})")
+            print(f"Match dimensions: {best_match.width}x{best_match.height}")
+    
+    # If we found a good match, do a finer search around that scale
+    if best_match and best_score > 0.5:
+        best_scale = (best_match.width / pattern.shape[1]) * 100
+        print(f"\nDoing fine search around best scale: {best_scale:.1f}%")
+        
+        # Search in smaller steps around the best scale
+        fine_min = max(min_scale, best_scale - 10)
+        fine_max = min(max_scale, best_scale + 10)
+        
+        for scale_percent in range(int(fine_min), int(fine_max) + 1, 1):
+            print(f"Fine search at {scale_percent}% scale")
+            width = int(pattern.shape[1] * scale_percent / 100)
+            height = int(pattern.shape[0] * scale_percent / 100)
+            
+            scaled_pattern = cv2.resize(pattern, (width, height))
+            match = pattern_match(img, scaled_pattern)
+            print(f"Match score: {match.score}")
+            
+            if match.score > best_score:
+                best_score = match.score
+                best_match = match
+                print(f"New best match found at {scale_percent}% scale with score {best_score}")
+                print(f"Match location: ({best_match.x}, {best_match.y})")
+                print(f"Match dimensions: {best_match.width}x{best_match.height}")
+    
+    # Convert the final match coordinates back to original pattern scale
+    if best_match:
+        original_scale = 100 / (best_match.width / pattern.shape[1])
+        best_match.x = int(best_match.x * original_scale / 100)
+        best_match.y = int(best_match.y * original_scale / 100)
+        best_match.width = pattern.shape[1]
+        best_match.height = pattern.shape[0]
+        print(f"\nFinal match after scale conversion:")
+        print(f"Location: ({best_match.x}, {best_match.y})")
+        print(f"Dimensions: {best_match.width}x{best_match.height}")
+        
+        # Save debug images for the best match
+        # if len(pattern.shape) == 2:
+        #     pattern_bgr = cv2.cvtColor(pattern, cv2.COLOR_GRAY2BGR)
+        # else:
+        #     pattern_bgr = pattern.copy()
+            
+        # if len(img.shape) == 3:
+        #     vis_img = img.copy()
+        # else:
+        #     vis_img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+            
+        # matched_region = vis_img[best_match.y:best_match.y + best_match.height, 
+        #                        best_match.x:best_match.x + best_match.width]
+        
+        # cv2.imwrite('debug_pattern.png', pattern_bgr)
+        # cv2.imwrite('debug_matched.png', matched_region)
+    
+    return best_match
