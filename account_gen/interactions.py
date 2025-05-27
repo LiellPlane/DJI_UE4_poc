@@ -373,15 +373,23 @@ class WebInteraction:
             print(f"Error clicking coordinate: {str(e)}")
             return False
 
-    def scroll_page(self, amount=None, direction: Literal["down","up"]='down', unit='pixels'):
+    def scroll_page(self, amount=None, direction: Literal["down","up"]='down', unit='half_page'):
         """Scroll the page with human-like behavior
         
         Args:
             amount: The amount to scroll. If None, uses a random amount.
             direction: 'up' or 'down'
             unit: 'pixels', 'half_page', or 'full_page'
+            
+        Returns:
+            bool: True if the page was successfully scrolled, False if:
+                - An error occurred during scrolling
+                - The page could not be scrolled further in the requested direction
         """
         try:
+            # Get current scroll position
+            current_scroll = self.driver.execute_script("return window.pageYOffset;")
+            
             if amount is None:
                 if unit == 'pixels':
                     amount = random.randint(300, 700)
@@ -405,6 +413,16 @@ class WebInteraction:
             # Scroll with smooth behavior
             self.driver.execute_script(f"window.scrollBy({{top: {scroll_amount}, behavior: 'smooth'}});")
             self.human_like_delay(0.5, 1.5)
+            
+            # Get new scroll position
+            new_scroll = self.driver.execute_script("return window.pageYOffset;")
+            
+            # Check if we actually scrolled
+            if direction == 'down' and new_scroll <= current_scroll:
+                return False  # Couldn't scroll down further
+            elif direction == 'up' and new_scroll >= current_scroll:
+                return False  # Couldn't scroll up further
+                
             return True
         except Exception as e:
             print(f"Error scrolling page: {str(e)}")

@@ -203,7 +203,7 @@ def pattern_match(img: np.ndarray, pattern: np.ndarray) -> PatternMatch:
     return match
     
 
-def find_searchpattern_scale(img, pattern) -> PatternMatch:
+def find_searchpattern_scale(img, pattern, save_debug_imgs=False) -> PatternMatch:
     """
     Find the best scale for pattern matching using binary search
     """
@@ -273,21 +273,22 @@ def find_searchpattern_scale(img, pattern) -> PatternMatch:
         print(f"Location: ({best_match.x}, {best_match.y})")
         print(f"Dimensions: {best_match.width}x{best_match.height}")
         
-        # Save debug images for the best match
-        # if len(pattern.shape) == 2:
-        #     pattern_bgr = cv2.cvtColor(pattern, cv2.COLOR_GRAY2BGR)
-        # else:
-        #     pattern_bgr = pattern.copy()
+        if save_debug_imgs:
+            # Save debug images for the best match
+            if len(pattern.shape) == 2:
+                pattern_bgr = cv2.cvtColor(pattern, cv2.COLOR_GRAY2BGR)
+            else:
+                pattern_bgr = pattern.copy()
+                
+            if len(img.shape) == 3:
+                vis_img = img.copy()
+            else:
+                vis_img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+                
+            matched_region = vis_img[best_match.y:best_match.y + best_match.height, 
+                                best_match.x:best_match.x + best_match.width]
             
-        # if len(img.shape) == 3:
-        #     vis_img = img.copy()
-        # else:
-        #     vis_img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
-            
-        # matched_region = vis_img[best_match.y:best_match.y + best_match.height, 
-        #                        best_match.x:best_match.x + best_match.width]
-        
-        # cv2.imwrite('debug_pattern.png', pattern_bgr)
-        # cv2.imwrite('debug_matched.png', matched_region)
+            cv2.imwrite('debug_pattern.png', pattern_bgr)
+            cv2.imwrite('debug_matched.png', matched_region)
     
     return best_match
