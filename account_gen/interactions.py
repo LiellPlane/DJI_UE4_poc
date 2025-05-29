@@ -87,6 +87,7 @@ class WebInteraction:
         document.body.style.textTransform = '{FontConfig.TEXT_TRANSFORM}';
         document.body.style.fontWeight = '{FontConfig.FONT_WEIGHT}';
         document.body.style.fontStyle = '{FontConfig.FONT_STYLE}';
+        document.body.style.color = 'black';
         
         const elements = document.getElementsByTagName('*');
         for (let element of elements) {{
@@ -95,6 +96,7 @@ class WebInteraction:
             element.style.textTransform = '{FontConfig.TEXT_TRANSFORM}';
             element.style.fontWeight = '{FontConfig.FONT_WEIGHT}';
             element.style.fontStyle = '{FontConfig.FONT_STYLE}';
+            element.style.color = 'black';
         }}
         """
         self.driver.execute_script(normalize_script)
@@ -368,6 +370,32 @@ class WebInteraction:
             self.human_like_delay(0.3, 0.7)
             actions.click()
             actions.perform()
+
+            # Add visual indicator of click location
+            indicator_script = f"""
+            const indicator = document.createElement('div');
+            indicator.style.position = 'fixed';
+            indicator.style.left = '{x}px';
+            indicator.style.top = '{y}px';
+            indicator.style.width = '20px';
+            indicator.style.height = '20px';
+            indicator.style.backgroundColor = 'red';
+            indicator.style.borderRadius = '50%';
+            indicator.style.opacity = '0.5';
+            indicator.style.pointerEvents = 'none';
+            indicator.style.zIndex = '999999';
+            document.body.appendChild(indicator);
+            
+            // Remove indicator after 2 seconds
+            setTimeout(() => {{
+                indicator.remove();
+            }}, 2000);
+            """
+            self.driver.execute_script(indicator_script)
+            
+            # Ensure page remains normalised after click
+            self.normalize_page()
+            
             return True
         except Exception as e:
             print(f"Error clicking coordinate: {str(e)}")
