@@ -2,9 +2,11 @@ from reddit_bot import RedditBot
 import random
 import string
 
+
 def generate_random_string(length=10):
     """Generate a random string for usernames and passwords"""
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    return "".join(random.choices(string.ascii_letters + string.digits, k=length))
+
 
 def main():
     # Initialize the bot with your Reddit clone's base URL
@@ -33,12 +35,16 @@ def main():
                 # Add a comment
                 comment = "This is a test comment."
                 print("Adding comment...")
-                if bot.comment_on_post(f"{base_url}/r/{subreddit}/comments/your-post-id", comment):
+                if bot.comment_on_post(
+                    f"{base_url}/r/{subreddit}/comments/your-post-id", comment
+                ):
                     print("Comment added successfully!")
 
                 # Vote on the post
                 print("Voting on post...")
-                if bot.vote_on_post(f"{base_url}/r/{subreddit}/comments/your-post-id", "up"):
+                if bot.vote_on_post(
+                    f"{base_url}/r/{subreddit}/comments/your-post-id", "up"
+                ):
                     print("Vote recorded successfully!")
 
     except Exception as e:
@@ -46,5 +52,6 @@ def main():
     finally:
         bot.close()
 
+
 if __name__ == "__main__":
-    main() 
+    main()

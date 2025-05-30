@@ -9,6 +9,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from fake_useragent import UserAgent
 import undetected_chromedriver as uc
 
+
 class RedditBot:
     def __init__(self, base_url):
         self.base_url = base_url
@@ -19,8 +20,8 @@ class RedditBot:
     def setup_driver(self):
         """Setup the Chrome driver with human-like settings"""
         options = uc.ChromeOptions()
-        options.add_argument(f'user-agent={UserAgent().random}')
-        options.add_argument('--disable-blink-features=AutomationControlled')
+        options.add_argument(f"user-agent={UserAgent().random}")
+        options.add_argument("--disable-blink-features=AutomationControlled")
         self.driver = uc.Chrome(options=options)
         self.wait = WebDriverWait(self.driver, 10)
         self.driver.maximize_window()
@@ -49,7 +50,9 @@ class RedditBot:
             self.human_like_delay()
 
             # Fill in registration form
-            username_field = self.wait.until(EC.presence_of_element_located((By.NAME, "username")))
+            username_field = self.wait.until(
+                EC.presence_of_element_located((By.NAME, "username"))
+            )
             self.move_to_element(username_field)
             self.human_like_typing(username_field, username)
 
@@ -62,7 +65,9 @@ class RedditBot:
             self.human_like_typing(password_field, password)
 
             # Submit form
-            submit_button = self.driver.find_element(By.XPATH, "//button[@type='submit']")
+            submit_button = self.driver.find_element(
+                By.XPATH, "//button[@type='submit']"
+            )
             self.move_to_element(submit_button)
             self.human_like_delay()
             submit_button.click()
@@ -79,7 +84,9 @@ class RedditBot:
             self.human_like_delay()
 
             # Fill in post form
-            title_field = self.wait.until(EC.presence_of_element_located((By.NAME, "title")))
+            title_field = self.wait.until(
+                EC.presence_of_element_located((By.NAME, "title"))
+            )
             self.move_to_element(title_field)
             self.human_like_typing(title_field, title)
 
@@ -88,7 +95,9 @@ class RedditBot:
             self.human_like_typing(content_field, content)
 
             # Submit post
-            submit_button = self.driver.find_element(By.XPATH, "//button[@type='submit']")
+            submit_button = self.driver.find_element(
+                By.XPATH, "//button[@type='submit']"
+            )
             self.move_to_element(submit_button)
             self.human_like_delay()
             submit_button.click()
@@ -104,11 +113,15 @@ class RedditBot:
             self.driver.get(post_url)
             self.human_like_delay()
 
-            comment_field = self.wait.until(EC.presence_of_element_located((By.NAME, "comment")))
+            comment_field = self.wait.until(
+                EC.presence_of_element_located((By.NAME, "comment"))
+            )
             self.move_to_element(comment_field)
             self.human_like_typing(comment_field, comment_text)
 
-            submit_button = self.driver.find_element(By.XPATH, "//button[@type='submit']")
+            submit_button = self.driver.find_element(
+                By.XPATH, "//button[@type='submit']"
+            )
             self.move_to_element(submit_button)
             self.human_like_delay()
             submit_button.click()
@@ -124,8 +137,11 @@ class RedditBot:
             self.driver.get(post_url)
             self.human_like_delay()
 
-            vote_button = self.wait.until(EC.presence_of_element_located(
-                (By.XPATH, f"//button[contains(@class, 'vote-{vote_type}')]")))
+            vote_button = self.wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, f"//button[contains(@class, 'vote-{vote_type}')]")
+                )
+            )
             self.move_to_element(vote_button)
             self.human_like_delay()
             vote_button.click()
@@ -138,4 +154,4 @@ class RedditBot:
     def close(self):
         """Close the browser"""
         if self.driver:
-            self.driver.quit() 
+            self.driver.quit()

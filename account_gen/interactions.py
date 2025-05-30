@@ -17,13 +17,15 @@ import base64
 import json
 from typing import Literal
 
+
 class FontConfig:
     """Configuration for font settings used across the application"""
-    FONT_FAMILY = 'Arial, sans-serif'
-    FONT_SIZE = '16px'
-    TEXT_TRANSFORM = 'uppercase'
-    FONT_WEIGHT = 'normal'
-    FONT_STYLE = 'normal'
+
+    FONT_FAMILY = "Arial, sans-serif"
+    FONT_SIZE = "16px"
+    TEXT_TRANSFORM = "uppercase"
+    FONT_WEIGHT = "normal"
+    FONT_STYLE = "normal"
 
     @classmethod
     def get_font_style_js(cls) -> str:
@@ -35,6 +37,7 @@ class FontConfig:
             fontWeight: '{cls.FONT_WEIGHT}',
             fontStyle: '{cls.FONT_STYLE}'
         """
+
 
 class WebInteraction:
     def __init__(self, url):
@@ -48,24 +51,26 @@ class WebInteraction:
         """Setup the Chrome driver with human-like settings"""
         max_retries = 3
         retry_delay = 2
-        
+
         for attempt in range(max_retries):
             try:
                 options = Options()
-                options.add_argument(f'user-agent={UserAgent().random}')
-                options.add_argument('--disable-blink-features=AutomationControlled')
-                options.add_argument('--no-sandbox')
-                options.add_argument('--disable-dev-shm-usage')
-                options.add_argument('--disable-gpu')
-                options.add_argument('--disable-extensions')
-                options.add_argument('--disable-notifications')
-                options.add_argument('--start-maximized')
-                options.add_argument('--log-level=3')  # Suppress logging
-                options.add_argument('--silent')
+                options.add_argument(f"user-agent={UserAgent().random}")
+                options.add_argument("--disable-blink-features=AutomationControlled")
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
+                options.add_argument("--disable-gpu")
+                options.add_argument("--disable-extensions")
+                options.add_argument("--disable-notifications")
+                options.add_argument("--start-maximized")
+                options.add_argument("--log-level=3")  # Suppress logging
+                options.add_argument("--silent")
                 # Force 1:1 device pixel ratio
-                options.add_argument('--force-device-scale-factor=1')
-                options.add_experimental_option('excludeSwitches', ['enable-logging'])  # Suppress DevTools logging
-                
+                options.add_argument("--force-device-scale-factor=1")
+                options.add_experimental_option(
+                    "excludeSwitches", ["enable-logging"]
+                )  # Suppress DevTools logging
+
                 self.driver = webdriver.Chrome(options=options)
                 self.wait = WebDriverWait(self.driver, 10)
                 self.driver.get(self.url)
@@ -77,7 +82,9 @@ class WebInteraction:
                     print(f"Retrying in {retry_delay} seconds...")
                     time.sleep(retry_delay)
                 else:
-                    raise Exception(f"Failed to setup Chrome driver after {max_retries} attempts: {str(e)}")
+                    raise Exception(
+                        f"Failed to setup Chrome driver after {max_retries} attempts: {str(e)}"
+                    )
 
     def normalize_page(self):
         """Normalize all text on the page to make it easier for computer vision."""
@@ -101,25 +108,27 @@ class WebInteraction:
         """
         self.driver.execute_script(normalize_script)
 
-    def get_calibration_screenshot(self, url, save_to_disk=False, filename=None) -> tuple[np.array, str]:
+    def get_calibration_screenshot(
+        self, url, save_to_disk=False, filename=None
+    ) -> tuple[np.array, str]:
         """Load a URL, add calibration text, and return a screenshot for vision system calibration.
-        
+
         Args:
             url (str): The URL to load for calibration
             save_to_disk (bool): Whether to save the screenshot to disk
             filename (str): Optional filename to save the screenshot as. If None and save_to_disk is True,
                           generates a timestamp-based filename.
-            
+
         Returns:
             numpy.ndarray: Screenshot with calibration text, or None if failed
-        
-        
+
+
         """
         try:
             # Load the URL
             self.driver.get(url)
             self.wait_for_page_load()
-            
+
             # Add calibration text with same font settings as normalize_page
             calibration_script = f"""
             const calibertDiv = document.createElement('div');
@@ -138,39 +147,43 @@ class WebInteraction:
             document.body.insertBefore(calibertDiv, document.body.firstChild);
             """
             self.driver.execute_script(calibration_script)
-            
+
             # Take screenshot
             screenshot = self.driver.get_screenshot_as_png()
-            image_np = cv2.imdecode(np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR)
-            
+            image_np = cv2.imdecode(
+                np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR
+            )
+
             if save_to_disk:
                 if filename is None:
-                    filename = f'calibration_screenshot_{int(time.time())}.png'
+                    filename = f"calibration_screenshot_{int(time.time())}.png"
                 cv2.imwrite(filename, image_np)
-            
+
             # Remove calibration text
             cleanup_script = """
             const calibertDiv = document.querySelector('div[style*="CALIBERT"]');
             if (calibertDiv) calibertDiv.remove();
             """
             self.driver.execute_script(cleanup_script)
-            
+
             return image_np, "CALIBERT"
-            
+
         except Exception as e:
             raise
 
-    def get_raw_screenshot(self, save_to_disk=False, filename=None) -> tuple[np.array, float]:
+    def get_raw_screenshot(
+        self, save_to_disk=False, filename=None
+    ) -> tuple[np.array, float]:
         """Get a raw screenshot of the current page that maintains coordinate consistency for mouse interactions.
-        
+
         This method ensures that the screenshot coordinates will match what's used for mouse interactions
         by accounting for device pixel ratio and window scaling.
-        
+
         Args:
             save_to_disk (bool): Whether to save the screenshot to disk
             filename (str): Optional filename to save the screenshot as. If None and save_to_disk is True,
                           generates a timestamp-based filename.
-            
+
         Returns:
             tuple[np.array, float]: A tuple containing:
                 - numpy.ndarray: The raw screenshot
@@ -180,31 +193,35 @@ class WebInteraction:
         try:
             # Get the device pixel ratio before taking screenshot
             scale = self.driver.execute_script("return window.devicePixelRatio;")
-            
+
             # Take screenshot
             screenshot = self.driver.get_screenshot_as_png()
-            image_np = cv2.imdecode(np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR)
-            
+            image_np = cv2.imdecode(
+                np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR
+            )
+
             if save_to_disk:
                 if filename is None:
-                    filename = f'raw_screenshot_{int(time.time())}.png'
+                    filename = f"raw_screenshot_{int(time.time())}.png"
                 cv2.imwrite(filename, image_np)
-            
+
             return image_np, scale
-            
+
         except Exception as e:
             raise Exception(f"Error in get_raw_screenshot: {str(e)}")
 
-    def get_text_area_screenshot(self, url, text, save_to_disk=False, filename=None) -> np.array:
+    def get_text_area_screenshot(
+        self, url, text, save_to_disk=False, filename=None
+    ) -> np.array:
         """Load a URL, add custom text, and return a screenshot of the area containing that text.
-        
+
         Args:
             url (str): The URL to load
             text (str): The text to display and capture
             save_to_disk (bool): Whether to save the screenshot to disk
             filename (str): Optional filename to save the screenshot as. If None and save_to_disk is True,
                           generates a timestamp-based filename.
-            
+
         Returns:
             numpy.ndarray: Screenshot of the area containing the text
         """
@@ -212,7 +229,7 @@ class WebInteraction:
             # Load the URL
             self.driver.get(url)
             self.wait_for_page_load()
-            
+
             # Create an isolated div
             create_div_script = f"""
             const textDiv = document.createElement('div');
@@ -253,29 +270,33 @@ class WebInteraction:
                 top: Math.ceil(rect.top)
             }};
             """
-            
+
             # Get the dimensions of the text div
             dimensions = self.driver.execute_script(create_div_script)
-            
+
             # Wait a moment for the div to be fully rendered
             time.sleep(0.5)
-            
+
             # Take screenshot of the entire page
             screenshot = self.driver.get_screenshot_as_png()
-            image_np = cv2.imdecode(np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR)
-            
+            image_np = cv2.imdecode(
+                np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR
+            )
+
             # Get the scale factor of the page
             scale_script = "return window.devicePixelRatio;"
             scale = self.driver.execute_script(scale_script)
             print(f"Device pixel ratio: {scale}")
-            
+
             # Calculate initial crop coordinates
-            x = int(dimensions['left'] * scale)
-            y = int(dimensions['top'] * scale)
-            w = int(dimensions['width'] * scale)
-            h = int(dimensions['height'] * scale)
-            print(f"Initial crop dimensions (physical pixels): x={x}, y={y}, w={w}, h={h}")
-            
+            x = int(dimensions["left"] * scale)
+            y = int(dimensions["top"] * scale)
+            w = int(dimensions["width"] * scale)
+            h = int(dimensions["height"] * scale)
+            print(
+                f"Initial crop dimensions (physical pixels): x={x}, y={y}, w={w}, h={h}"
+            )
+
             # Ensure we don't go out of bounds
             h_img, w_img = image_np.shape[:2]
             print(f"Image dimensions: {w_img}x{h_img}")
@@ -284,53 +305,53 @@ class WebInteraction:
             w = min(w, w_img - x)
             h = min(h, h_img - y)
             print(f"Adjusted crop dimensions: x={x}, y={y}, w={w}, h={h}")
-            
+
             if w <= 0 or h <= 0:
                 raise Exception(f"Invalid crop dimensions: x={x}, y={y}, w={w}, h={h}")
-            
+
             # Initial crop
-            cropped = image_np[y:y+h, x:x+w]
+            cropped = image_np[y : y + h, x : x + w]
             print(f"Cropped image shape: {cropped.shape}")
-            
+
             # Aggressive crop in from edges (50 CSS pixels worth)
             edge_margin = int(50 * scale)
             cropped = cropped[edge_margin:-edge_margin, edge_margin:-edge_margin]
             print(f"After aggressive crop shape: {cropped.shape}")
-            
+
             # Now find the actual text area
             gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
             _, binary = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
             coords = np.nonzero(binary)
-            
+
             if len(coords[0]) > 0:
                 y_min, y_max = coords[0].min(), coords[0].max()
                 x_min, x_max = coords[1].min(), coords[1].max()
-                
+
                 # Add small padding
                 padding = 1
                 y_min = max(0, y_min - padding)
                 y_max = min(cropped.shape[0], y_max + padding)
                 x_min = max(0, x_min - padding)
                 x_max = min(cropped.shape[1], x_max + padding)
-                
+
                 # Final crop to text area
                 cropped = cropped[y_min:y_max, x_min:x_max]
                 print(f"Final text area shape: {cropped.shape}")
-            
+
             if save_to_disk:
                 if filename is None:
-                    filename = f'text_area_screenshot_{int(time.time())}.png'
+                    filename = f"text_area_screenshot_{int(time.time())}.png"
                 cv2.imwrite(filename, cropped)
-            
+
             # Remove the div
             cleanup_script = """
             const textDiv = document.querySelector('div[style*="z-index: 9999"]');
             if (textDiv) textDiv.remove();
             """
             self.driver.execute_script(cleanup_script)
-            
+
             return cropped
-            
+
         except Exception as e:
             # Clean up div if it exists
             try:
@@ -392,23 +413,25 @@ class WebInteraction:
             }}, 2000);
             """
             self.driver.execute_script(indicator_script)
-            
+
             # Ensure page remains normalised after click
             self.normalize_page()
-            
+
             return True
         except Exception as e:
             print(f"Error clicking coordinate: {str(e)}")
             return False
 
-    def scroll_page(self, amount=None, direction: Literal["down","up"]='down', unit='half_page'):
+    def scroll_page(
+        self, amount=None, direction: Literal["down", "up"] = "down", unit="half_page"
+    ):
         """Scroll the page with human-like behavior
-        
+
         Args:
             amount: The amount to scroll. If None, uses a random amount.
             direction: 'up' or 'down'
             unit: 'pixels', 'half_page', or 'full_page'
-            
+
         Returns:
             bool: True if the page was successfully scrolled, False if:
                 - An error occurred during scrolling
@@ -417,40 +440,42 @@ class WebInteraction:
         try:
             # Get current scroll position
             current_scroll = self.driver.execute_script("return window.pageYOffset;")
-            
+
             if amount is None:
-                if unit == 'pixels':
+                if unit == "pixels":
                     amount = random.randint(300, 700)
-                elif unit == 'half_page':
+                elif unit == "half_page":
                     amount = 0.5
                 else:  # full_page
                     amount = 1.0
-            
+
             # Get viewport height
             viewport_height = self.driver.execute_script("return window.innerHeight")
-            
+
             # Calculate scroll amount based on unit
-            if unit == 'pixels':
+            if unit == "pixels":
                 scroll_amount = amount
             else:  # half_page or full_page
                 scroll_amount = int(viewport_height * amount)
-            
-            if direction == 'up':
+
+            if direction == "up":
                 scroll_amount = -scroll_amount
 
             # Scroll with smooth behavior
-            self.driver.execute_script(f"window.scrollBy({{top: {scroll_amount}, behavior: 'smooth'}});")
+            self.driver.execute_script(
+                f"window.scrollBy({{top: {scroll_amount}, behavior: 'smooth'}});"
+            )
             self.human_like_delay(0.5, 1.5)
-            
+
             # Get new scroll position
             new_scroll = self.driver.execute_script("return window.pageYOffset;")
-            
+
             # Check if we actually scrolled
-            if direction == 'down' and new_scroll <= current_scroll:
+            if direction == "down" and new_scroll <= current_scroll:
                 return False  # Couldn't scroll down further
-            elif direction == 'up' and new_scroll >= current_scroll:
+            elif direction == "up" and new_scroll >= current_scroll:
                 return False  # Couldn't scroll up further
-                
+
             return True
         except Exception as e:
             print(f"Error scrolling page: {str(e)}")
@@ -471,15 +496,17 @@ class WebInteraction:
         try:
             # Take screenshot
             screenshot = self.driver.get_screenshot_as_png()
-            
+
             # Convert to numpy array for processing
-            image_np = cv2.imdecode(np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR)
-            
+            image_np = cv2.imdecode(
+                np.frombuffer(screenshot, np.uint8), cv2.IMREAD_COLOR
+            )
+
             if save_to_disk:
                 if filename is None:
-                    filename = f'screenshot_{int(time.time())}.png'
+                    filename = f"screenshot_{int(time.time())}.png"
                 cv2.imwrite(filename, image_np)
-            
+
             return image_np
         except Exception as e:
             print(f"Error taking screenshot: {str(e)}")
@@ -523,10 +550,13 @@ class WebInteraction:
             self.move_to_element(dropdown_element)
             dropdown_element.click()
             self.human_like_delay(0.3, 0.7)
-            
+
             # Find and click the option
-            option = self.wait.until(EC.element_to_be_clickable(
-                (By.XPATH, f"//option[contains(text(), '{option_text}')]")))
+            option = self.wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, f"//option[contains(text(), '{option_text}')]")
+                )
+            )
             self.move_to_element(option)
             option.click()
             return True
@@ -582,7 +612,10 @@ class WebInteraction:
     def wait_for_page_load(self):
         """Wait for page to load and normalize it"""
         try:
-            self.wait.until(lambda driver: driver.execute_script('return document.readyState') == 'complete')
+            self.wait.until(
+                lambda driver: driver.execute_script("return document.readyState")
+                == "complete"
+            )
             self.normalize_page()
         except Exception as e:
             print(f"Error waiting for page load: {str(e)}")
