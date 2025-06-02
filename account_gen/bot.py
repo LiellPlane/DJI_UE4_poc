@@ -44,7 +44,7 @@ def get_text_matches_in_page(
         res_scroll: bool = bot.scroll_page(direction="down", unit="half_page")
         if res_scroll is False:
             break
-
+    return matches
 
 def draw_match_results(
     screenshot: np.ndarray, res_patmatch, scale: float
@@ -101,31 +101,9 @@ def main():
     known_scale = res.scale
     # display_image(res.debug_image,wait_for_key=True)
 
-    get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
-    # res_scroll = True
-    # while True:
-    #     screenshot, scale = bot.get_raw_screenshot()
-    #     res_patmatch: PatternMatchScale = find_searchpattern_scale(
-    #         img=screenshot,
-    #         pattern=text_img,
-    #         save_debug_imgs=True,
-    #         known_scale=known_scale,  # we know the scale of the text area, so we can use it to find the search pattern and reduce seektime
-    #     )
-
-    #     # Draw the match results
-    #     screenshot = draw_match_results(screenshot, res_patmatch, scale)
-    #     display_image(screenshot)
-
-    #     if res_scroll is False:
-    #         break
-    #     res_scroll: bool = bot.scroll_page(direction="down", unit="half_page")
-    # for testing - we know ABOUT is at the bottom of the page
-    # lets see if we can click it using our new output
-    # bot.click_coordinate(
-    #     x=res_patmatch.x + res_patmatch.width // 2,
-    #     y=res_patmatch.y + res_patmatch.height // 2,
-    # )
-    time.sleep(10)
+    res = get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
+    res = get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
+    breakpoint()
 
     print(res_patmatch.score)
 
