@@ -211,13 +211,13 @@ class WebInteraction:
             raise Exception(f"Error in get_raw_screenshot: {str(e)}")
 
     def get_text_area_screenshot(
-        self, url, text, save_to_disk=False, filename=None
+        self, text, url=None, save_to_disk=False, filename=None
     ) -> np.array:
-        """Load a URL, add custom text, and return a screenshot of the area containing that text.
+        """Load a URL (if provided), add custom text, and return a screenshot of the area containing that text.
 
         Args:
-            url (str): The URL to load
             text (str): The text to display and capture
+            url (str, optional): The URL to load. If None, uses the current page.
             save_to_disk (bool): Whether to save the screenshot to disk
             filename (str): Optional filename to save the screenshot as. If None and save_to_disk is True,
                           generates a timestamp-based filename.
@@ -226,9 +226,10 @@ class WebInteraction:
             numpy.ndarray: Screenshot of the area containing the text
         """
         try:
-            # Load the URL
-            self.driver.get(url)
-            self.wait_for_page_load()
+            # Load the URL if provided
+            if url is not None:
+                self.driver.get(url)
+                self.wait_for_page_load()
 
             # Create an isolated div
             create_div_script = f"""
@@ -689,3 +690,15 @@ class WebInteraction:
         except Exception as e:
             print(f"Error right clicking: {str(e)}")
             return False
+
+    def get_scroll_position(self) -> int:
+        """Get the current scroll position in pixels from the top of the page.
+
+        Returns:
+            int: The number of pixels scrolled from the top of the page
+        """
+        try:
+            return self.driver.execute_script("return window.pageYOffset;")
+        except Exception as e:
+            print(f"Error getting scroll position: {str(e)}")
+            return 0

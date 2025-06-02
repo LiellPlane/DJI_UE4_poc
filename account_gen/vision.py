@@ -27,6 +27,11 @@ class PatternMatchScale(PatternMatch):
             raise ValueError("Score must be between 0 and 1")
 
 
+@dataclass
+class PatternMatchScroll(PatternMatchScale):
+    scroll_position_Y: int
+
+
 class FindText:
     def __init__(self) -> None:
         font_info = None
