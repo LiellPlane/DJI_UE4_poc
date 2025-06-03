@@ -702,3 +702,67 @@ class WebInteraction:
         except Exception as e:
             print(f"Error getting scroll position: {str(e)}")
             return 0
+
+    def scroll_to_position(self, offset: int) -> bool:
+        """Scroll to a specific absolute position on the page using successive 
+        approximation for exact positioning.
+
+        Args:
+            offset (int): The absolute position in pixels from the top of the 
+                         page to scroll to
+
+        Returns:
+            bool: True if successfully scrolled to exact position, False otherwise
+        """
+        try:
+            target_position = offset
+            max_attempts = 10
+            final_tolerance = 2  # Final precision within 2 pixels
+            
+            for attempt in range(max_attempts):
+                current_position = self.get_scroll_position()
+                difference = target_position - current_position
+                
+                # If we're within final tolerance, we're done
+                if abs(difference) <= final_tolerance:
+                    return True
+                
+                # Determine scroll behaviour based on distance
+                if abs(difference) > 100:
+                    # Large distance - use smooth scrolling directly to target
+                    scroll_behaviour = "smooth"
+                    scroll_target = target_position
+                    delay = 0.8  # Longer delay for smooth scroll
+                elif abs(difference) > 20:
+                    # Medium distance - scroll most of the way
+                    scroll_behaviour = "auto"
+                    scroll_target = current_position + int(difference * 0.8)
+                    delay = 0.3
+                else:
+                    # Small distance - precise pixel-by-pixel adjustment
+                    scroll_behaviour = "auto"
+                    scroll_target = target_position
+                    delay = 0.2
+                
+                # Execute the scroll
+                self.driver.execute_script(
+                    f"window.scrollTo({{top: {scroll_target}, "
+                    f"behavior: '{scroll_behaviour}'}});"
+                )
+                
+                # Wait for scroll to complete
+                self.human_like_delay(delay, delay + 0.2)
+                
+                # Check if we've made progress
+                new_position = self.get_scroll_position()
+                if new_position == current_position and abs(difference) > final_tolerance:
+                    # No movement and still not at target - might be at page limit
+                    return False
+            
+            # Final check after all attempts
+            final_position = self.get_scroll_position()
+            return abs(final_position - target_position) <= final_tolerance
+            
+        except Exception as e:
+            print(f"Error scrolling to position: {str(e)}")
+            return False

@@ -90,8 +90,9 @@ def main():
     # calib_img, calib_str = bot.get_calibration_screenshot(url="https://old.reddit.com",save_to_disk=False)
     # str_pattern = generate_string_pattern("CALIBERT", FontConfig)
 
+
     # CALIBRATION STAGE
-    text_img = bot.get_text_area_screenshot(url="https://old.reddit.com", text="BABY")
+    text_img = bot.get_text_area_screenshot(url="https://old.reddit.com", text="NONMATCHYSTRING")
     screenshot, scale = bot.get_raw_screenshot()
 
     # display_image(text_img,wait_for_key=True)
@@ -101,11 +102,15 @@ def main():
     known_scale = res.scale
     # display_image(res.debug_image,wait_for_key=True)
 
-    res = get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
-    res = get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
-    breakpoint()
+    res = get_text_matches_in_page(bot, text="COMMENTS", known_scale=known_scale)
+    # test scrolling back to position works
+    bot.scroll_to_position(offset=res[2].scroll_position_Y)
+    bot.click_coordinate(x=res[2].x, y=res[2].y)
+    time.sleep(100)
+    # res = get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
 
-    print(res_patmatch.score)
+
+    # print(res_patmatch.score)
 
 
 if __name__ == "__main__":
