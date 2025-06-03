@@ -106,10 +106,12 @@ def main():
     # test scrolling back to position works
     bot.scroll_to_position(offset=res[2].scroll_position_Y)
     bot.click_coordinate(x=res[2].x, y=res[2].y)
-    time.sleep(100)
+    time.sleep(3) #TODO can this be done better
     # res = get_text_matches_in_page(bot, text="REPORT", known_scale=known_scale)
-
-
+    res = get_text_matches_in_page(bot, text="REPLY", known_scale=known_scale)
+    bot.scroll_to_position(offset=res[5].scroll_position_Y)
+    bot.click_coordinate(x=res[5].x, y=res[5].y)
+    time.sleep(100)
     # print(res_patmatch.score)
 
 
