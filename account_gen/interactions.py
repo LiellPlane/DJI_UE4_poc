@@ -399,11 +399,11 @@ class WebInteraction:
             indicator.style.position = 'fixed';
             indicator.style.left = '{x}px';
             indicator.style.top = '{y}px';
-            indicator.style.width = '20px';
-            indicator.style.height = '20px';
+            indicator.style.width = '50px';
+            indicator.style.height = '50px';
             indicator.style.backgroundColor = 'red';
             indicator.style.borderRadius = '50%';
-            indicator.style.opacity = '0.5';
+            indicator.style.opacity = '0.7';
             indicator.style.pointerEvents = 'none';
             indicator.style.zIndex = '999999';
             document.body.appendChild(indicator);
