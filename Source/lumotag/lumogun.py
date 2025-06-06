@@ -500,6 +500,7 @@ def main():
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
                 perfmonitor.manual_measure("check_scale2", 50)
                 with time_it("display image", debug=PRINT_DEBUG):
+                    display.test_status_bar(output_image)
                     display.display(output_image)
                 
                 if len(analysis) > 0:

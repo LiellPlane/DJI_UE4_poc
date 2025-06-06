@@ -117,7 +117,7 @@ class Accelerometer(factory.Accelerometer):
         return super().get_visual()
 
 
-class display(factory.display):
+class display(factory.display_TEST_STATUSBAR):
 
     def display_method(self, image):
 

@@ -238,6 +238,7 @@ class display(ABC):
         else:
             self.display_with_recording(image)
 
+
     def display_with_recording(self, image):
         if image.shape[0:2] not in self.dim_check:
             self.dim_check[image.shape[0:2]] = True
@@ -396,8 +397,48 @@ class display(ABC):
                         channel=element.element_specifics.channel,
                         fade_norm=fade_norm
                         )
+    
 
+class display_TEST_STATUSBAR(display):
+    """testing inherited class to test status bar"""
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.statusbar_img = self.load_doom_statusbar()
 
+    def rotate_status_bar(self, statusbar: np.ndarray):
+        """Cheat and just rotate the status bar 270 or whatever for now to prove it works"""
+        return cv2.rotate(statusbar, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+    @staticmethod
+    def load_doom_statusbar() -> np.ndarray:
+        current_script_path = os.path.abspath(__file__)
+        parent_dir = os.path.dirname(current_script_path)
+        doom_statusbar_path = os.path.join(parent_dir,"media", "doom_statusbar.jpg")
+        print(f"Opening transform file {doom_statusbar_path}")
+        try:
+            img = cv2.imread(doom_statusbar_path)
+        except Exception as e:
+            raise Exception(f"could not load status bar {e}")
+        return img
+
+    def test_status_bar(self, base_image: np.ndarray):
+        # Get dimensions of both images
+        base_h, base_w = base_image.shape[:2]
+        bar_h, bar_w = self.statusbar_img.shape[:2]
+        
+        # Calculate position to place the status bar (centered vertically)
+        # After rotation, the dimensions will be swapped
+        y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation
+        x_start = 0
+        
+        # Create a view of the target region in base_image
+        target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
+        
+        # Rotate the status bar first to get the correct dimensions
+        rotated_bar = cv2.rotate(self.statusbar_img, cv2.ROTATE_90_CLOCKWISE)
+        
+        # Copy the rotated bar into the target region
+        target_region[:] = rotated_bar
 
 
 class PlayerInfoBoxv2:
