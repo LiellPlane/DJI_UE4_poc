@@ -2205,38 +2205,44 @@ class CardioGramDisplay:
         return background
 
 class LumoUI:
+    class pixel(int):
+        pass
+
     def __init__(self) -> None:
         self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
-        self.numerics = self.load_media_image("doom_numerals_font.jpg")
+        self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
+        self.shieldstatus_img = self.load_media_image("shield_status.jpg")
+
 
     @staticmethod
     def load_media_image(filename: str) -> np.ndarray:
         current_script_path = os.path.abspath(__file__)
         parent_dir = os.path.dirname(current_script_path)
         doom_statusbar_path = os.path.join(parent_dir,"media", filename)
-        print(f"Opening transform file {doom_statusbar_path}")
+        print(f"Opening media file {doom_statusbar_path}")
         try:
             img = cv2.imread(doom_statusbar_path)
         except Exception as e:
             raise Exception(f"could not load media file {filename}")
+        if img is None:
+            raise Exception(f"Img load fail {filename}")
         return img
+    
 
-    def create_shield_meter(normalised_health:float)->np.ndarray:
-        # create a black rectangle, add green light elements and blur
-        # Create a 100x20 pixel black image (3 channels for BGR)
-        canvas = np.zeros((150, 60, 3), dtype=np.uint8)
+    def create_shield_meter(self, normalised_health: float)->np.ndarray:
+        """
+        use shield meter image to pre-render each metric indicator and save to memory.
+        The shield status image has 21 segments - we are working to known specifications
+        """
+        output_img : np.ndarray = self.shieldstatus_img.copy()
+        offset_y = self.pixel(15)
+        offset_x = self.pixel(20)
+        width = self.pixel(44)
+        height = self.pixel(58)
+        pitch = self.pixel(53)
         
-        offset_height = 20
-        offset_width = 20
 
-        segments_width = canvas.shape(0) - (offset_width*2)
-        for i in range(0,10):
-            1
         
-        # # Apply Gaussian blur for a glowing effect
-        # canvas = cv2.GaussianBlur(canvas, (5, 5), 0)
-        
-        # return canvas
 
     def get_transition_red_to_green(normalised_metric: float) -> tuple[int,int,int]:
         # BGR
@@ -2263,6 +2269,8 @@ class LumoUI:
 
 
 if __name__ == '__main__':
+
+    test_ui = LumoUI()
 
     # run tests
     top = 0
