@@ -742,7 +742,7 @@ class LocalPlayerCard(PlayerInfoBoxv2):
         self.torchstate = False
 
     def get_min_max_torchenergy(self):
-        return(0, 300)
+        return(0, 100)
     
     def torch_energy_update(self, deplete:bool):
         """update when energy used and recovery"""
@@ -2308,7 +2308,7 @@ class LumoUI:
         # Calculate position to place the status bar in top right
         # After rotation, the dimensions will be swapped
         y_start = 0  # Top of the image
-        x_start = base_w - bar_h  # Right side, using bar_h since it becomes width after rotation
+        x_start = base_w - bar_h - 30  # Right side, using bar_h since it becomes width after rotation
         
         # Create a view of the target region in base_image
         target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
