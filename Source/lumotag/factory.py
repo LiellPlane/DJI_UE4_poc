@@ -2218,12 +2218,12 @@ class LumoUI:
         self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
-        self.shieldstatus_cache: dict[str, np.ndarray] = {}
+        self._shieldstatus_cache: dict[str, np.ndarray] = {}
         # build the shield status image cache
         for i in range (0,100):
             normalised = i/100
             _ = self.create_shield_meter(normalised)
-
+        self.get_number_img(1)
 
     @staticmethod
     def load_media_image(filename: str) -> np.ndarray:
@@ -2238,8 +2238,32 @@ class LumoUI:
         if img is None:
             raise Exception(f"Img load fail {filename}")
         return img
+        
     
+    def get_number_img(self, number: int):
+        """Return an image for the incoming number - this has to be cached!"""
+        h, w = self.numerics_img.shape[:2]
+        active_high = False
+        colcnt = 0
+        spans = []
+        for col in range(0, w):
+            
+            has_non_white = np.any(np.any(self.numerics_img[:, col, :] < 220, axis=1))
+            if bool(has_non_white) is True:
+                if colcnt == 0:
+                    colcnt += 1
+                    spans.append(col)
+            elif bool(has_non_white) is False and colcnt > 0:
+                spans.append(-col)
+                colcnt = 0
+            
+        
 
+        #     if has_non_white:
+        #         self.numerics_img[:, col, 1] = 100
+        # cv2.imshow(f'Shield Meter Debug', self.numerics_img)
+        # cv2.waitKey(0)
+        print(spans)   
     def create_shield_meter(self, normalised_health: float)->np.ndarray:
         """
         use shield meter image to pre-render each metric indicator and save to memory.
@@ -2249,8 +2273,8 @@ class LumoUI:
             raise ValueError("bad normalised value")
         segments = 21 # Known figure from the image - has to be configured manually
         meters_to_light = ceil(normalised_health*segments)
-        if str(meters_to_light) in self.shieldstatus_cache:
-            return self.shieldstatus_cache[str(meters_to_light)]
+        if str(meters_to_light) in self._shieldstatus_cache:
+            return self._shieldstatus_cache[str(meters_to_light)]
         output_img : np.ndarray = self.shieldstatus_img.copy()
         offset_y = self.pixel(17)
         offset_x = self.pixel(19)
@@ -2289,8 +2313,8 @@ class LumoUI:
         # cv2.waitKey(0)
         # # cv2.destroyAllWindows()
         output_img = cv2.resize(output_img, None, fx=0.4, fy=0.4)
-        self.shieldstatus_cache[str(meters_to_light)] = output_img.copy()
-        return self.shieldstatus_cache[str(meters_to_light)]
+        self._shieldstatus_cache[str(meters_to_light)] = output_img.copy()
+        return self._shieldstatus_cache[str(meters_to_light)]
         
         
 
