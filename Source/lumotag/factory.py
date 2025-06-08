@@ -768,6 +768,12 @@ class LocalPlayerCard(PlayerInfoBoxv2):
     def get_torch_energy(self):
         return self.torchenergy
 
+    def get_normalised_torchenergy(self):
+        """Get torch energy as a normalized value between 0 and 1"""
+        min_energy, max_energy = self.get_min_max_torchenergy()
+        current_energy = self.get_torch_energy()
+        return round((current_energy - min_energy) / (max_energy - min_energy), 2)
+
     def _update_torch_energy(self, diff: float):
         min, max = self.get_min_max_torchenergy()
         self.torchenergy = self.torchenergy + diff
@@ -2239,22 +2245,24 @@ class LumoUI:
         use shield meter image to pre-render each metric indicator and save to memory.
         The shield status image has 21 segments - we are working to known specifications
         """
-        if str(normalised_health) in self.shieldstatus_cache:
-            return self.shieldstatus_cache[str(normalised_health)]
+        if not(0 <= normalised_health <= 1):
+            raise ValueError("bad normalised value")
+        segments = 21 # Known figure from the image - has to be configured manually
+        meters_to_light = ceil(normalised_health*segments)
+        if str(meters_to_light) in self.shieldstatus_cache:
+            return self.shieldstatus_cache[str(meters_to_light)]
         output_img : np.ndarray = self.shieldstatus_img.copy()
         offset_y = self.pixel(17)
         offset_x = self.pixel(19)
         width = self.pixel(24)
         height = self.pixel(38)
         pitch = self.pixel(33)
-        segments = 21 # Known figure from the image - has to be configured manually
+        
         lowest_green_shade = 60
         warning_lower_limit_pc = 0.20
         blur_buffer = 5
         red = (0,0,255)
-        if not(0 <= normalised_health <= 1):
-            raise ValueError("bad normalised value")
-        meters_to_light = ceil(normalised_health*segments)
+
         
         for meter_index in range(0, meters_to_light):
             total_offset_x = offset_x
@@ -2280,8 +2288,9 @@ class LumoUI:
         # cv2.imshow(f'Shield Meter Debug', output_img)
         # cv2.waitKey(0)
         # # cv2.destroyAllWindows()
-        self.shieldstatus_cache[str(normalised_health)] = output_img.copy()
-        return self.shieldstatus_cache[str(normalised_health)]
+        output_img = cv2.resize(output_img, None, fx=0.4, fy=0.4)
+        self.shieldstatus_cache[str(meters_to_light)] = output_img.copy()
+        return self.shieldstatus_cache[str(meters_to_light)]
         
         
 
@@ -2289,21 +2298,23 @@ class LumoUI:
         # BGR
         return (0, int((1-normalised_metric) * 255), int(normalised_metric * 255))
 
-    def add_status_bar(self, base_image: np.ndarray):
+    def add_status_bar(self, base_image: np.ndarray, normalised_metric: float):
+
+        status_bar = self.create_shield_meter(normalised_health=normalised_metric)
         # Get dimensions of both images
         base_h, base_w = base_image.shape[:2]
-        bar_h, bar_w = self.statusbar_img.shape[:2]
+        bar_h, bar_w = status_bar.shape[:2]
         
-        # Calculate position to place the status bar (centered vertically)
+        # Calculate position to place the status bar in top right
         # After rotation, the dimensions will be swapped
-        y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation
-        x_start = 0
+        y_start = 0  # Top of the image
+        x_start = base_w - bar_h  # Right side, using bar_h since it becomes width after rotation
         
         # Create a view of the target region in base_image
         target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
         
         # Rotate the status bar first to get the correct dimensions
-        rotated_bar = cv2.rotate(self.statusbar_img, cv2.ROTATE_90_CLOCKWISE)
+        rotated_bar = cv2.rotate(status_bar, cv2.ROTATE_90_CLOCKWISE)
         
         # Copy the rotated bar into the target region
         target_region[:] = rotated_bar

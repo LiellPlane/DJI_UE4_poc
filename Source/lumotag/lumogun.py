@@ -81,7 +81,7 @@ def main():
     # application
     # initialise components of lumogun
     voice = sound.Voice()
-
+    status_bar = factory.LumoUI()
     if get_platform() == _OS.RASPBERRY:
         for _ in range(0, 2):
             voice.speak("cancel")
@@ -500,7 +500,11 @@ def main():
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
                 perfmonitor.manual_measure("check_scale2", 50)
                 with time_it("display image", debug=PRINT_DEBUG):
+                    # test try out new UI (doom bar)
                     display.test_status_bar(output_image)
+                    
+                    status_bar.add_status_bar(output_image, players["me"].get_normalised_torchenergy())
+                    # original display output before new UI stuff (doom bar, graphic meters)
                     display.display(output_image)
                 
                 if len(analysis) > 0:
