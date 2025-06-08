@@ -19,7 +19,7 @@ from enum import Enum
 from multiprocessing import Process, Queue, shared_memory
 from functools import reduce
 import img_processing
-from math import floor
+from math import floor, ceil
 from functools import reduce
 from my_collections import (
     ShapeItem,
@@ -2211,7 +2211,12 @@ class LumoUI:
     def __init__(self) -> None:
         self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
-        self.shieldstatus_img = self.load_media_image("shield_status.jpg")
+        self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
+        self.shieldstatus_cache: dict[str, np.ndarray] = {}
+        # build the shield status image cache
+        for i in range (0,100):
+            normalised = i/100
+            _ = self.create_shield_meter(normalised)
 
 
     @staticmethod
@@ -2234,14 +2239,50 @@ class LumoUI:
         use shield meter image to pre-render each metric indicator and save to memory.
         The shield status image has 21 segments - we are working to known specifications
         """
+        if str(normalised_health) in self.shieldstatus_cache:
+            return self.shieldstatus_cache[str(normalised_health)]
         output_img : np.ndarray = self.shieldstatus_img.copy()
-        offset_y = self.pixel(15)
-        offset_x = self.pixel(20)
-        width = self.pixel(44)
-        height = self.pixel(58)
-        pitch = self.pixel(53)
+        offset_y = self.pixel(17)
+        offset_x = self.pixel(19)
+        width = self.pixel(24)
+        height = self.pixel(38)
+        pitch = self.pixel(33)
+        segments = 21 # Known figure from the image - has to be configured manually
+        lowest_green_shade = 60
+        warning_lower_limit_pc = 0.20
+        blur_buffer = 5
+        red = (0,0,255)
+        if not(0 <= normalised_health <= 1):
+            raise ValueError("bad normalised value")
+        meters_to_light = ceil(normalised_health*segments)
         
-
+        for meter_index in range(0, meters_to_light):
+            total_offset_x = offset_x
+            total_offset_x +=  pitch * meter_index
+            green_shades = ((255-lowest_green_shade) / segments) * meter_index
+            shade = (0, lowest_green_shade + green_shades, 0)
+            if meters_to_light/segments < warning_lower_limit_pc:
+                shade = red
+            section = output_img[offset_y:offset_y + height, total_offset_x: total_offset_x + width]
+            section [:] = shade
+            # Extract the section to blur
+            blur_section = output_img[
+                offset_y - blur_buffer :offset_y + height + blur_buffer,
+                total_offset_x - blur_buffer: total_offset_x + width + blur_buffer
+                ]
+            # Apply blur and assign back to the original image
+            output_img[
+                offset_y - blur_buffer :offset_y + height + blur_buffer,
+                total_offset_x - blur_buffer: total_offset_x + width + blur_buffer
+                ] = cv2.GaussianBlur(blur_section, (9, 9), 0)
+            
+        # # Debug display - show the shield meter output
+        # cv2.imshow(f'Shield Meter Debug', output_img)
+        # cv2.waitKey(0)
+        # # cv2.destroyAllWindows()
+        self.shieldstatus_cache[str(normalised_health)] = output_img.copy()
+        return self.shieldstatus_cache[str(normalised_health)]
+        
         
 
     def get_transition_red_to_green(normalised_metric: float) -> tuple[int,int,int]:
