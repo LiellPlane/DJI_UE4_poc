@@ -2219,6 +2219,7 @@ class LumoUI:
         self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
+        self.ammo_section_template = self.load_media_image("ammo_section_template.jpg")
         self._shieldstatus_cache: dict[str, np.ndarray] = {}
         self._numberstatus_cache: dict[str, np.ndarray] = {}
         # build the shield status image cache
@@ -2284,7 +2285,9 @@ class LumoUI:
                     temp_img = char_img[int(char)]
                 else:
                     temp_img = np.concatenate((temp_img, char_img[int(char)]), axis=1)
-            self._numberstatus_cache[i] = temp_img
+            target_height = 28
+            resize = target_height/temp_img.shape[0]
+            self._numberstatus_cache[i] = cv2.resize(temp_img, None, fx=resize, fy=resize)
             # cv2.imshow(f'Character Debug', self._numberstatus_cache[i])
             # cv2.waitKey(0)
 
