@@ -2215,10 +2215,12 @@ class LumoUI:
         pass
 
     def __init__(self) -> None:
+        self._number_limit = 200
         self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
         self._shieldstatus_cache: dict[str, np.ndarray] = {}
+        self._numberstatus_cache: dict[str, np.ndarray] = {}
         # build the shield status image cache
         for i in range (0,100):
             normalised = i/100
@@ -2256,14 +2258,37 @@ class LumoUI:
             elif bool(has_non_white) is False and colcnt > 0:
                 spans.append(-col)
                 colcnt = 0
-            
+        # get rid of empty space (assumed to be white)
+        if spans[0] < 0:
+            spans.pop(0)
         
+        # now move in pairs and get start/end cols of each character
+        if len(spans) % 2 != 0:
+            spans.pop()
+        known_chars = [1,2,3,4,5,6,7,8,9,0]
+        char_img: dict[int, np.ndarray] = {}
+        span_indexer = 0
+        for index, char in enumerate(known_chars):
+            start_col = abs(spans[span_indexer])
+            end_col = abs(spans[span_indexer+1])
+            char_img[char] = self.numerics_img[:, start_col:end_col, :]
+            span_indexer += 2
+            # cv2.imshow(f'Character Debug', char_img[char])
+            # cv2.waitKey(0)
+        # now create a dictionary of all the images
+        for i in range(0, self._number_limit):
+            num_as_str = str(i)
+            temp_img = None
+            for char in num_as_str:
+                if temp_img is None:
+                    temp_img = char_img[int(char)]
+                else:
+                    temp_img = np.concatenate((temp_img, char_img[int(char)]), axis=1)
+            self._numberstatus_cache[i] = temp_img
+            # cv2.imshow(f'Character Debug', self._numberstatus_cache[i])
+            # cv2.waitKey(0)
 
-        #     if has_non_white:
-        #         self.numerics_img[:, col, 1] = 100
-        # cv2.imshow(f'Shield Meter Debug', self.numerics_img)
-        # cv2.waitKey(0)
-        print(spans)   
+
     def create_shield_meter(self, normalised_health: float)->np.ndarray:
         """
         use shield meter image to pre-render each metric indicator and save to memory.
