@@ -360,6 +360,7 @@ def main():
                 # any other behaviour during refractory period is ignored
                 is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if is_trigger_pressed is True:
+                    players["me"].update_ammo(-1)
                     #file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     #file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     #voice.speak("wut")
@@ -371,8 +372,8 @@ def main():
                     # debugging code to capture images
                     #if cap_img is not None:
                     TEMP_DEBUG_trigger_cnt += 1
-                    file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-                    file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    # file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
+                    # file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate(),
                     strobe_cnt=0
@@ -500,10 +501,9 @@ def main():
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
                 perfmonitor.manual_measure("check_scale2", 50)
                 with time_it("display image", debug=PRINT_DEBUG):
-                    # test try out new UI (doom bar)
-                    display.test_status_bar(output_image)
-                    
-                    status_bar.add_status_bar(output_image, players["me"].get_normalised_torchenergy())
+
+                    status_bar.draw_status_bar(output_image, players["me"].ammo)
+                    status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
                     # original display output before new UI stuff (doom bar, graphic meters)
                     display.display(output_image)
                 

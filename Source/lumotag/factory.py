@@ -399,42 +399,42 @@ class display(ABC):
                         )
     
 
-class display_TEST_STATUSBAR(display):
-    """testing inherited class to test status bar"""
-    def __init__(self, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-        self.statusbar_img = self.load_doom_statusbar()
+# class display_TEST_STATUSBAR(display):
+#     """testing inherited class to test status bar"""
+#     def __init__(self, *args, **kwargs) -> None:
+#         super().__init__(*args, **kwargs)
+#         self.statusbar_img = self.load_doom_statusbar()
 
-    @staticmethod
-    def load_doom_statusbar() -> np.ndarray:
-        current_script_path = os.path.abspath(__file__)
-        parent_dir = os.path.dirname(current_script_path)
-        doom_statusbar_path = os.path.join(parent_dir,"media", "doom_statusbar.jpg")
-        print(f"Opening transform file {doom_statusbar_path}")
-        try:
-            img = cv2.imread(doom_statusbar_path)
-        except Exception as e:
-            raise Exception(f"could not load status bar {e}")
-        return img
+#     @staticmethod
+#     def load_doom_statusbar() -> np.ndarray:
+#         current_script_path = os.path.abspath(__file__)
+#         parent_dir = os.path.dirname(current_script_path)
+#         doom_statusbar_path = os.path.join(parent_dir,"media", "doom_statusbar.jpg")
+#         print(f"Opening transform file {doom_statusbar_path}")
+#         try:
+#             img = cv2.imread(doom_statusbar_path)
+#         except Exception as e:
+#             raise Exception(f"could not load status bar {e}")
+#         return img
 
-    def test_status_bar(self, base_image: np.ndarray):
-        # Get dimensions of both images
-        base_h, base_w = base_image.shape[:2]
-        bar_h, bar_w = self.statusbar_img.shape[:2]
+#     def test_status_bar(self, base_image: np.ndarray):
+#         # Get dimensions of both images
+#         base_h, base_w = base_image.shape[:2]
+#         bar_h, bar_w = self.statusbar_img.shape[:2]
         
-        # Calculate position to place the status bar (centered vertically)
-        # After rotation, the dimensions will be swapped
-        y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation
-        x_start = 0
+#         # Calculate position to place the status bar (centered vertically)
+#         # After rotation, the dimensions will be swapped
+#         y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation
+#         x_start = 0
         
-        # Create a view of the target region in base_image
-        target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
+#         # Create a view of the target region in base_image
+#         target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
         
-        # Rotate the status bar first to get the correct dimensions
-        rotated_bar = cv2.rotate(self.statusbar_img, cv2.ROTATE_90_CLOCKWISE)
+#         # Rotate the status bar first to get the correct dimensions
+#         rotated_bar = cv2.rotate(self.statusbar_img, cv2.ROTATE_90_CLOCKWISE)
         
-        # Copy the rotated bar into the target region
-        target_region[:] = rotated_bar
+#         # Copy the rotated bar into the target region
+#         target_region[:] = rotated_bar
 
 
 class PlayerInfoBoxv2:
@@ -737,13 +737,22 @@ class LocalPlayerCard(PlayerInfoBoxv2):
         super().__init__(*args, **kwargs)
         
         self.torchenergy = self.get_min_max_torchenergy()[1]
+        self.ammo = self.get_min_max_ammo()[1]
         self.timer_torch_deplete = TimeDiffObject()
         self.timer_energy_recover = TimeDiffObject()
         self.torchstate = False
 
     def get_min_max_torchenergy(self):
         return(0, 100)
+
+    def get_min_max_ammo(self):
+        return(0, 300)
     
+    def update_ammo(self, ammo:int):
+        self.ammo += ammo
+        min_, max_ = self.get_min_max_ammo()
+        self.ammo = max(min(max_, self.ammo), min_)
+
     def torch_energy_update(self, deplete:bool):
         """update when energy used and recovery"""
         if deplete is False and self.torchstate is False:
@@ -2215,7 +2224,7 @@ class LumoUI:
         pass
 
     def __init__(self) -> None:
-        self._number_limit = 200
+        self._number_limit = 500
         self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
@@ -2227,6 +2236,33 @@ class LumoUI:
             normalised = i/100
             _ = self.create_shield_meter(normalised)
         self.get_number_img(1)
+
+        print(f"total size for shield status image cache = {round(self.get_image_cache_size_mb(self._shieldstatus_cache))} Mb")
+    
+    def draw_status_bar(self, base_image: np.ndarray, ammo: int | None = None):
+        # Get dimensions of both images
+        base_h, base_w = base_image.shape[:2]
+        bar_h, bar_w = self.statusbar_img.shape[:2]
+        
+
+        # plop in the ammo section
+        if ammo is not None:
+            number_img = self.get_number_img(ammo)
+            h, w = number_img.shape[:2]
+            self.statusbar_img[0:h, 0:w] = number_img
+        # Calculate position to place the status bar (centered vertically)
+        # After rotation, the dimensions will be swapped
+        y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation
+        x_start = 0
+        
+        # Create a view of the target region in base_image
+        target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
+        
+        # Rotate the status bar first to get the correct dimensions
+        rotated_bar = cv2.rotate(self.statusbar_img, cv2.ROTATE_90_CLOCKWISE)
+        
+        # Copy the rotated bar into the target region
+        target_region[:] = rotated_bar
 
     @staticmethod
     def load_media_image(filename: str) -> np.ndarray:
@@ -2243,8 +2279,10 @@ class LumoUI:
         return img
         
     
-    def get_number_img(self, number: int):
+    def get_number_img(self, number: int) -> np.ndarray:
         """Return an image for the incoming number - this has to be cached!"""
+        if str(number) in self._numberstatus_cache:
+            return self._numberstatus_cache[str(number)]
         h, w = self.numerics_img.shape[:2]
         active_high = False
         colcnt = 0
@@ -2277,7 +2315,7 @@ class LumoUI:
             # cv2.imshow(f'Character Debug', char_img[char])
             # cv2.waitKey(0)
         # now create a dictionary of all the images
-        for i in range(0, self._number_limit):
+        for i in range(0, self._number_limit+1):
             num_as_str = str(i)
             temp_img = None
             for char in num_as_str:
@@ -2285,12 +2323,35 @@ class LumoUI:
                     temp_img = char_img[int(char)]
                 else:
                     temp_img = np.concatenate((temp_img, char_img[int(char)]), axis=1)
-            target_height = 28
+            target_height = 32
             resize = target_height/temp_img.shape[0]
-            self._numberstatus_cache[i] = cv2.resize(temp_img, None, fx=resize, fy=resize)
-            # cv2.imshow(f'Character Debug', self._numberstatus_cache[i])
-            # cv2.waitKey(0)
+            isolated_number = cv2.resize(temp_img, None, fx=resize, fy=resize)
+            
+            # Create mask for non-white pixels (number pixels vs background)
+            mask = np.any(isolated_number < 200, axis=2)
+            
+            # Convert boolean mask to 3-channel uint8 image for visualization
+            mask_visual = (mask.astype(np.uint8) * 255)
+            # mask_visual_3ch = np.stack([mask_visual, mask_visual, mask_visual], axis=2)
+            
+            # Combine cached_img with background using mask as alpha layer
+            background = self.ammo_section_template.copy()
+            h, w = isolated_number.shape[:2]
+            
+            # Put the text on the image
+            composite = background.copy()
+            h_comp, w_comp = composite.shape[:2]
+            top_offset = 4
+            width_offset = int((w_comp - w) / 2)
+            composite[top_offset:h+top_offset, width_offset:w+ width_offset][mask] = isolated_number[mask]
 
+            self._numberstatus_cache[str(i)] = composite
+            # cv2.imshow(f'Character Debug', self._numberstatus_cache[i] )
+            # cv2.waitKey(0)
+        print(f"total size for ammo image cache = {round(self.get_image_cache_size_mb(self._numberstatus_cache))} Mb")
+        if str(number) not in self._numberstatus_cache:
+            raise Exception(f"bad logic after generating and caching numbers:input = {number}")
+        return self._numberstatus_cache[str(number)]
 
     def create_shield_meter(self, normalised_health: float)->np.ndarray:
         """
@@ -2344,17 +2405,12 @@ class LumoUI:
         self._shieldstatus_cache[str(meters_to_light)] = output_img.copy()
         return self._shieldstatus_cache[str(meters_to_light)]
         
-        
 
-    def get_transition_red_to_green(normalised_metric: float) -> tuple[int,int,int]:
-        # BGR
-        return (0, int((1-normalised_metric) * 255), int(normalised_metric * 255))
+    def draw_shieldtorch_bar(self, base_image: np.ndarray, normalised_shield_torch: float):
 
-    def add_status_bar(self, base_image: np.ndarray, normalised_metric: float):
-
-        status_bar = self.create_shield_meter(normalised_health=normalised_metric)
+        status_bar = self.create_shield_meter(normalised_health=normalised_shield_torch)
         # Get dimensions of both images
-        base_h, base_w = base_image.shape[:2]
+        _, base_w = base_image.shape[:2]
         bar_h, bar_w = status_bar.shape[:2]
         
         # Calculate position to place the status bar in top right
@@ -2370,6 +2426,26 @@ class LumoUI:
         
         # Copy the rotated bar into the target region
         target_region[:] = rotated_bar
+
+
+    @staticmethod
+    def get_image_cache_size_mb(imagedict: dict[str|int, np.ndarray]) -> float:
+        """
+        Calculate the memory usage of the _numberstatus_cache dictionary in megabytes.
+        """
+        total_bytes = 0
+        
+        # Calculate size of numpy arrays
+        for key, array in imagedict.items():
+            if isinstance(array, np.ndarray):
+                total_bytes += array.nbytes
+            total_bytes += sys.getsizeof(key)
+        
+        # Add dictionary overhead
+        total_bytes += sys.getsizeof(imagedict)
+        
+        # Convert to megabytes
+        return total_bytes / (1024 * 1024)
 
 
 if __name__ == '__main__':

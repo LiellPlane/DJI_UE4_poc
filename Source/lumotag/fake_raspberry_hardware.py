@@ -195,7 +195,7 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
             raise Exception("no match for video mode input")
 
 
-class display(factory.display_TEST_STATUSBAR):
+class display(factory.display):
 
     def display_method(self, image):
 
