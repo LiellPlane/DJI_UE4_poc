@@ -13,7 +13,7 @@ import analyse_lumotag
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
-from my_collections import _OS
+from my_collections import _OS, HeightWidth
 # need this import to detect lumogun types (subclasses)
 import configs
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
@@ -236,16 +236,12 @@ def main():
         "demoplayer":
         factory.PlayerInfoBoxv2(
             playername="testplayer",
-            playergraphic=None,
-            _gun_config=GUN_CONFIGURATION,
-            _UI_overlay=configs.otherPlayers_ui_overlay
+            avatar_canvas= HeightWidth(100,100), # get this from the status bar class
+            info_box = HeightWidth(100,100)
         ),
         "me":
         factory.LocalPlayerCard(
-            playername="self",
-            playergraphic=None,
-            _gun_config=GUN_CONFIGURATION,
-            _UI_overlay=configs.Player_ui_overlay
+            playername="self"
         ),
 
         }
@@ -408,9 +404,6 @@ def main():
                         output_image = img_processing.gray2rgb(combo_image)
 
                     
-                # with time_it("execute affine transform", debug=PRINT_DEBUG):
-                #     img = display.TESTgenerate_output_affine2cam(cap_img,cap_img_closerange)
-
             perfmonitor.get_time("complete_cycle", reset=True)
             with time_it("wait for image analysis", debug=PRINT_DEBUG), perfmonitor.measure("wait image_analysis"):
                 analysis = {}
@@ -423,7 +416,7 @@ def main():
                     try:
                         result = img_analyser.analysis_output_q.get(block=True, timeout=0)
                         if isinstance(result, Exception):
-                            raise Exception(result)# this is really shit but better than nothing or dying downstream in a confusing way
+                            raise result# this is really shit but better than nothing or dying downstream in a confusing way
                         perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}", img_analyser.get_analysis_time_ms())
                         if result:
                             
@@ -484,29 +477,23 @@ def main():
                                 }
                             )
 
-                with time_it("add graphics: player info", debug=PRINT_DEBUG):
-                    display.add_playerinfo_graphics(
-                        output=output_image,
-                        players=players,
-                        analysis=analysis
-                        )
 
                 if is_trigger_pressed:
                     output_image[:] = 255
-                perfmonitor.manual_measure("check_scale", 50)
+                perfmonitor.manual_measure("check_scale", 25)
                 with perfmonitor.measure("show_metrics"):
                     
                     # display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
-                perfmonitor.manual_measure("check_scale2", 50)
+                
                 with time_it("display image", debug=PRINT_DEBUG):
 
                     status_bar.draw_status_bar(output_image, players["me"].ammo)
                     status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
                     # original display output before new UI stuff (doom bar, graphic meters)
                     display.display(output_image)
-                
+                perfmonitor.manual_measure("check_scale2", 25)
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:
                         if "demoplayer" in players:

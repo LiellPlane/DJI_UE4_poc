@@ -25,12 +25,12 @@ from my_collections import (
     ShapeItem,
     CropSlicing,
     UI_ready_element,
-    UI_Element,
     SharedMem_ImgTicket,
     ScreenPixelPositions,
     UI_Behaviour_static,
     UI_Behaviour_dynamic,
-    ScreenNormalisedPositions
+    ScreenNormalisedPositions,
+    HeightWidth
     )
 import re
 import itertools
@@ -288,32 +288,7 @@ class display(ABC):
             image[:height, start_pos:end_pos, 0] = red    # Red channel
             image[:height, start_pos:end_pos, 1] = green  # Green channel
             image[:height, start_pos:end_pos, 2] = blue   # Blue channel
-    def TESTgenerate_output_affine2cam(self, cam_capture1, cam_2capture):
-        """use affine transform to resize and rotate image in one calculation
-        need 2 sets of 3 corresponding points to create calculation"""
-        crop = 400
-        cam_2capture= cam_2capture[
-            crop:cam_2capture.shape[0]-crop,
-            crop:cam_2capture.shape[1]-crop]
-        concatted = img_processing.concat_image(cam_capture1, cam_2capture)
 
-        if self._affine_transform is None:
-            self._affine_transform = img_processing.get_fitted_affine_transform(
-                cam_image_shape=concatted.shape,
-                display_image_shape=self.emptyscreen.shape,
-                rotation=self.display_rotate
-            )
-
-        row_cols = self.emptyscreen.shape[0:2][::-1]
-        outptu_img = img_processing.do_affine(concatted, self._affine_transform, row_cols)
-        outptu_img = cv2.cvtColor(outptu_img, cv2.COLOR_GRAY2BGR)
-        #height, width = outptu_img.shape
-        #three_channel_image = np.zeros((height, width, 3), dtype=outptu_img.dtype)
-        #three_channel_image[:, :, 2] = outptu_img
-        return outptu_img
-    
-
-    
     def generate_output_affine(self, cam_capture):
         """use affine transform to resize and rotate image in one calculation
         need 2 sets of 3 corresponding points to create calculation"""
@@ -369,150 +344,47 @@ class display(ABC):
         else:
             return player.elements_fadeout()
 
-    def add_playerinfo_graphics(self, output, players: dict, analysis: ShapeItem):
 
-        for player in players.values():
-            fade_norm = self.get_norm_fade_val(player, analysis)
-            if fade_norm < 0.01 :
-                # continue rather than break as some elements have to be on screen all the time
-                continue
-            for element in player.ui_elements:
-
-                if isinstance(element.element_specifics, UI_Behaviour_dynamic):
-                    custom_dynamic_UI_element_callback(
-                        playercard_ref_check=id(player),
-                        element_name=element.name,
-                        player_card=player,
-                        ui_element=element,
-                        gunconfig=player.gun_config,
-                        gunconfig_ref_check=id(player.gun_config),
-                        image=output,
-                        fade_norm=fade_norm
-                        )
-                if isinstance(element.element_specifics, UI_Behaviour_static):
-                    img_processing.add_ui_elementsv2(
-                        image=output,
-                        position=element.rotated_position,
-                        image_to_insert=element.rotated_image,
-                        channel=element.element_specifics.channel,
-                        fade_norm=fade_norm
-                        )
-    
-
-# class display_TEST_STATUSBAR(display):
-#     """testing inherited class to test status bar"""
-#     def __init__(self, *args, **kwargs) -> None:
-#         super().__init__(*args, **kwargs)
-#         self.statusbar_img = self.load_doom_statusbar()
-
-#     @staticmethod
-#     def load_doom_statusbar() -> np.ndarray:
-#         current_script_path = os.path.abspath(__file__)
-#         parent_dir = os.path.dirname(current_script_path)
-#         doom_statusbar_path = os.path.join(parent_dir,"media", "doom_statusbar.jpg")
-#         print(f"Opening transform file {doom_statusbar_path}")
-#         try:
-#             img = cv2.imread(doom_statusbar_path)
-#         except Exception as e:
-#             raise Exception(f"could not load status bar {e}")
-#         return img
-
-#     def test_status_bar(self, base_image: np.ndarray):
-#         # Get dimensions of both images
-#         base_h, base_w = base_image.shape[:2]
-#         bar_h, bar_w = self.statusbar_img.shape[:2]
-        
-#         # Calculate position to place the status bar (centered vertically)
-#         # After rotation, the dimensions will be swapped
-#         y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation
-#         x_start = 0
-        
-#         # Create a view of the target region in base_image
-#         target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
-        
-#         # Rotate the status bar first to get the correct dimensions
-#         rotated_bar = cv2.rotate(self.statusbar_img, cv2.ROTATE_90_CLOCKWISE)
-        
-#         # Copy the rotated bar into the target region
-#         target_region[:] = rotated_bar
 
 
 class PlayerInfoBoxv2:
     def __init__(
             self,
             playername,
-            playergraphic,
-            _gun_config: gun_config,
-            _UI_overlay: dict
+            avatar_canvas: HeightWidth = None,
+            info_box: HeightWidth = None
             ) -> None:
         """object to persist player name and graphic
        
         params:
 
         cam_img_res: resolution of the image capture device, to calculate affine transforms
-        playergraphic: PNG file (with alpha channel)"""
+        """
 
         self.timer = TimeDiffObject()
         self.playername = playername
-        self.playergraphic = playergraphic
-        self.gun_config: gun_config = _gun_config
-        self._UI_overlay = _UI_overlay
-        self.unrotated_display_canvas = img_processing.get_empty_lumodisplay_img(
-            self.gun_config.get_unrotated_UI_canvas()
-            )
-        self.gray_image, self.alphamask = self.create_player_image_and_mask()
+
+        self.col_image, self.alphamask = self.create_player_image_and_mask()
+
         self.max_healthpoints = 100
         self.min_healthpoints = 0
         self.fade_ms = 250
         self.current_fade_ms = 0
         #self.fade_direction = 1
         self.healthpoints = 100
-        self.ui_elements = []
 
-        # load up array with UI element object
-        # because this class is used for non-players and the player
-        # we require this stage to check what elements are needed, as have unique processes
-        if UI_Element.PHOTO.value in self._UI_overlay:
-            self.ui_elements.append(self.prepare_UI_element(
-                self.gray_image,
-                element_name=UI_Element.PHOTO.value)
+        if avatar_canvas is not None:
+            # for local player we are not doing anything yet
+            self.col_image = img_processing.get_resized_equalaspect(
+                self.col_image,
+                (avatar_canvas.height, avatar_canvas.width)
                 )
-        if UI_Element.USER_ID.value in self._UI_overlay:
-            self.ui_elements.append(self.prepare_UI_element(
-                self.create_player_text(self.playername),
-                element_name=UI_Element.USER_ID.value)
-                )
-        if UI_Element.USER_INFO.value in self._UI_overlay:
-            self.ui_elements.append(self.prepare_UI_element(
-                self.create_player_text(playername=">>live player data<<"),
-                element_name=UI_Element.USER_INFO.value)
-                )
-
-        # add health bar
-        # this is a little funky as we want to make sure its the same aspect ratio
-        # as depicted in the UI configuration for this platform.
-        for dynamic_elm in [UI_Element.BARMETRIC_RL.value, UI_Element.ENERGY_LR.value, UI_Element.BARMETRIC_LR.value]: 
-            if dynamic_elm in self._UI_overlay:
-                normalised_desired_positions = self._UI_overlay[dynamic_elm].screen_normed_pos
-                self.ui_elements.append(self.prepare_UI_element(
-                    self.generate_healthbar(normalised_desired_positions, self.unrotated_display_canvas.shape),
-                    element_name=dynamic_elm)
-                    )
+            self.alphamask = img_processing.get_resized_equalaspect(
+                self.alphamask,
+                (avatar_canvas.height, avatar_canvas.width)
+                )  
 
 
-        #self.static_canvas = self.create_canvas_elements()
-
-    @staticmethod
-    def generate_healthbar(
-        normalised_pos: ScreenNormalisedPositions,
-        imageshape: np.ndarray
-        ):
-        """Create a healthbar - but we need to have correct aspect ratio"""
-        # multiply by arbitrary number to have something we can
-        # verify visually
-        x = int((normalised_pos.right - normalised_pos.left) * imageshape[1])
-        y = int((normalised_pos.lower - normalised_pos.top) * imageshape[0])
-        return np.full((y, x), 255, dtype=np.uint8)
 
 
     def get_healthpoints(self):
@@ -527,63 +399,7 @@ class PlayerInfoBoxv2:
     def get_max_min_healthpoints(self)->tuple[int, int]:
         return self.max_healthpoints, self.min_healthpoints
 
-    def create_canvas_elements(self):
-        """for the elements that are not going to change, such
-        as avatar and player name"""
-
-        time.sleep(0.1)
-        temp = self.unrotated_display_canvas.copy()
-
-        # unmem this for unrotated canvas
-        # but dynamic elements do not work in unrotated
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-            print(elm.name)
-            img_processing.add_ui_elementsv2(
-                image=temp,
-                position=elm.position,
-                image_to_insert=elm.image,
-                channel=elm.element_specifics.channel,
-                fade_norm=1
-            )
-
-        # for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-        #     custom_dynamic_UI_element_callback(
-        #         playercard_ref_check=id(self),
-        #         element_name=elm.name,
-        #         player_card=self,
-        #         ui_element=elm,
-        #         gunconfig=self.gun_config,
-        #         gunconfig_ref_check=id(self.gun_config),
-        #         image=temp
-        #         )
-
-        img_processing.quick_image_viewer(temp)
-        # temp[:] = 0
-        temp = img_processing.rotate_img_orthogonal(temp, self.gun_config.screen_rotation)
-
-        # test adding rotated elements
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_static)]:
-            img_processing.add_ui_elementsv2(
-                image=temp,
-                position=elm.rotated_position,
-                image_to_insert=elm.rotated_image,
-                channel=elm.element_specifics.channel,
-                fade_norm=1
-            )
-        for elm in [i for i in self.ui_elements if isinstance(i.element_specifics, UI_Behaviour_dynamic)]:
-            custom_dynamic_UI_element_callback(
-                playercard_ref_check=id(self),
-                element_name=elm.name,
-                player_card=self,
-                ui_element=elm,
-                gunconfig=self.gun_config,
-                gunconfig_ref_check=id(self.gun_config),
-                image=temp,
-                fade_norm=1
-                )
-        img_processing.quick_image_viewer(temp)
-        return temp
-
+   
     def elements_fadein(self):
         return self.calculate_fade(direction=1,fade_ms= self.fade_ms)
 
@@ -627,109 +443,11 @@ class PlayerInfoBoxv2:
     def create_player_image_and_mask(self):
         """get the transparent player custom graphic"""
         img = img_processing.load_img_set_transparency()
-        gray_image = cv2.cvtColor(img[:,:,0:3], cv2.COLOR_BGR2GRAY)
+        col_image = img[:,:,0:3]
         alpha_mask = img[:,:,3]
-
         #img_processing.test_viewer(gray_image, 0, True, True)
-        return gray_image, alpha_mask
+        return col_image, alpha_mask
 
-
-    def prepare_UI_element(
-            self,
-            ui_element,
-            element_name: UI_Element) -> UI_ready_element:
-
-
-        # ui_element = img_processing.rotate_img_orthogonal(
-        #     ui_element,
-        #     (360-self.gun_config.screen_rotation)
-        #     )
-
-        # get points from original input material
-        # do not need to modify these
-        input_pts = img_processing.AffinePoints(
-            top_left_w_h=[0, 0],
-            top_right_w_h=[ui_element.shape[1], 0],
-            lower_right_w_h=[ui_element.shape[1], ui_element.shape[0]]
-        )
-
-        # get pixel positions for display output from normalised positions
-        # here we can modify the pixels to keep the image ratio
-        pixel_pos = self._UI_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
-            self.unrotated_display_canvas.shape,
-            ui_element.shape
-            )
-
-        # check_ratio = (np.array(ui_element.shape) / np.array((pixel_pos.lower-pixel_pos.top, pixel_pos.right-pixel_pos.left))).astype("float")
-        # if abs(check_ratio[0] - check_ratio[1]) > 0.5:
-        #     raise Exception(f"bad ratio!! something weird happening for {element_name}")
-
-        output_pts = img_processing.AffinePoints(
-            top_left_w_h=[pixel_pos.left, pixel_pos.top],
-            top_right_w_h=[pixel_pos.right, pixel_pos.top],
-            lower_right_w_h=[pixel_pos.right, pixel_pos.lower]
-        )
-
-        transfrm = img_processing.get_affine_transform(
-            pts1=np.asarray(input_pts.as_array(), dtype="float32"),
-            pts2=np.asarray(output_pts.as_array(), dtype="float32"))
-
-        #row_cols = self.output_display_shape[0:2][::-1]
-        #outptu_img = img_processing.do_affine(ui_element, transfrm, row_cols)
-
-        #img_processing.test_viewer(outptu_img, 0, True, True)
-        rotated_points = img_processing.rotate_points_right_angle(
-            ((pixel_pos.top, pixel_pos.left),(pixel_pos.lower, pixel_pos.right), (0,0)),
-            self.gun_config.screen_rotation,
-            self.unrotated_display_canvas.shape[0],
-            self.unrotated_display_canvas.shape[1]
-            )
-        rotated_position = ScreenPixelPositions(
-            left=int(min(rotated_points[0][1], rotated_points[1][1])),
-            right=int(max(rotated_points[0][1], rotated_points[1][1])),
-            top=int(min(rotated_points[0][0], rotated_points[1][0])),
-            lower=int(max(rotated_points[0][0], rotated_points[1][0])),
-        )
-        resized_element = img_processing.resize_image(
-            ui_element,
-            pixel_pos.right-pixel_pos.left,
-            pixel_pos.lower-pixel_pos.top
-            )
-
-        ui_element_rotated = img_processing.rotate_img_orthogonal(
-            resized_element,
-            (360-self.gun_config.screen_rotation)
-            )
-
-        # check_ratio = (np.array(ui_element.shape) / np.array(resized_element.shape)).astype("float")
-        # if abs(check_ratio[0] - check_ratio[1]) > 0.01:
-        #     raise Exception("bad ratio!! something weird happening")
-        #img_processing.test_viewer(resized_element, 0, True, True)
-        #test_grab = outptu_img[pixel_pos.top:pixel_pos.lower, pixel_pos.left:pixel_pos.right]
-        #print("test grab")
-        #img_processing.test_viewer(test_grab, 0, True, True)
-        #img_processing.test_viewer(resized_element, 0, True, True)
-
-        # plops = UI_ready_element(
-        #     name=element_name,
-        #     position=pixel_pos,
-        #     image=resized_element,
-        #     transform=transfrm
-        # )
-
-        # testempty = img_processing.get_empty_lumodisplay_img(self.gun_config.screen_size)
-        # img_processing.add_ui_elements(testempty, plops)
-        # img_processing.test_viewer(testempty, 0, True, True)
-
-        return UI_ready_element(
-            name=element_name,
-            position=pixel_pos,
-            rotated_position=rotated_position,
-            image=resized_element,
-            rotated_image=ui_element_rotated,
-            transform=transfrm,
-            element_specifics=self._UI_overlay[element_name]
-        )
 
 
 class LocalPlayerCard(PlayerInfoBoxv2):
@@ -793,78 +511,6 @@ class LocalPlayerCard(PlayerInfoBoxv2):
 
     def calculate_fade(self, direction: Literal[-1, 1], fade_ms, multiplier=1):
         return 1
-
-def custom_dynamic_UI_element_callback(
-        playercard_ref_check: int,
-        element_name: UI_Element,
-        player_card: Union[PlayerInfoBoxv2, LocalPlayerCard],
-        ui_element: UI_Element,
-        gunconfig: gun_config,
-        gunconfig_ref_check:int,
-        image: np.ndarray,
-        fade_norm: float
-        ):
-    """This function is used to define the specific behaviour for drawing the UI element"""
-    if playercard_ref_check != id(player_card):
-        raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
-    if gunconfig_ref_check != id(gunconfig):
-        raise Exception("PASSING BY VALUE NAUGHTY NAUGHTY")
-    if element_name in {UI_Element.BARMETRIC_RL.value, UI_Element.ENERGY_LR.value, UI_Element.BARMETRIC_LR.value}:
-        if element_name in {UI_Element.ENERGY_LR.value}:
-            # looking at LocalPlayerCard
-            hp = player_card.get_torch_energy()
-            _, max_hp= player_card.get_min_max_torchenergy()
-        else:
-            # looking at PlayerInfoBoxv2
-            hp = player_card.get_healthpoints()
-            max_hp, _ = player_card.get_max_min_healthpoints()
-        # get_pixel_positions_with_ratio is cached - but lets think how
-        # to get the changing HP bar - we only want to catch the max length of the bar
-        # and modify pixel_pos afterwards - otherwise we will have to cache every degree of the HP
-        # whjich isn't ideal
-
-        unrotated_screen_size = gunconfig.get_unrotated_UI_canvas()
-        # get cached pixel positions
-        pixel_pos = player_card._UI_overlay[element_name].screen_normed_pos.get_pixel_positions_with_ratio(
-            unrotated_screen_size,
-            ui_element.image.shape
-            )
-
-        # now we have UNrotated denormalised screen position of the healthbar,
-        # as this traditionally decreases right to left,
-        # we now reduce the distance to the right scaling with the healthpoints
-        image_distance = pixel_pos.right - pixel_pos.left
-        hp_ratio = hp/max_hp
-        new_img_distance = image_distance * hp_ratio
-        new_right = int(pixel_pos.left + new_img_distance)
-        
-        rotated_points = img_processing.rotate_points_right_angle(
-            ((pixel_pos.top, pixel_pos.left),(pixel_pos.lower, new_right), (0,0)),
-            gunconfig.screen_rotation,
-            unrotated_screen_size[0],
-            unrotated_screen_size[1]
-            )
-
-        left=int(min(rotated_points[0][1], rotated_points[1][1]))
-        right=int(max(rotated_points[0][1], rotated_points[1][1]))
-        top=int(min(rotated_points[0][0], rotated_points[1][0]))
-        lower=int(max(rotated_points[0][0], rotated_points[1][0]))
-
-        # image[
-        #         ui_element.rotated_position.top_frame: ui_element.rotated_position.lower_frame,
-        #         ui_element.rotated_position.left_frame: ui_element.rotated_position.right_frame,
-        #         :
-        #     ] = 0
-
-        image[
-                top: lower,
-                left: right,
-                ui_element.element_specifics.get_channel(normalised_input_value=hp/max_hp)
-            ] = int(254 * fade_norm)
-
-
-    else:
-        raise Exception(f"UI element {element_name} not handled yet")
 
 
 class Accelerometer(ABC):
@@ -2225,7 +1871,7 @@ class LumoUI:
 
     def __init__(self) -> None:
         self._number_limit = 500
-        self.statusbar_img = self.load_media_image("doom_statusbar.jpg")
+        self.statusbar_img = self.load_media_image("doom_statusbar_blank.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
         self.ammo_section_template = self.load_media_image("ammo_section_template.jpg")
@@ -2539,27 +2185,6 @@ if __name__ == '__main__':
     img_shape=(480, 775, 3)
     test_pos = ScreenNormalisedPositions(top=0.9, lower=0.95, left=0.75, right=1)
 
-    generated_barmetric =PlayerInfoBoxv2.generate_healthbar(test_pos, img_shape).shape
-
-    expected_image_width = int((test_pos.right - test_pos.left) * img_shape[1])
-    expected_image_height = int((test_pos.lower - test_pos.top) * img_shape[0])
-    bar_width = generated_barmetric[1]
-    bar_height = generated_barmetric[0]
-    assert abs((expected_image_width/bar_width) - (expected_image_height/bar_height)) < 0.1
-
-
-    res = test_pos.get_pixel_positions_with_ratio(img_shape=img_shape, element_shape=generated_barmetric)
-    assert abs((expected_image_width/generated_barmetric[1]) - (expected_image_height/generated_barmetric[0])) < 0.1
-    # sanity check the input ratios are the same
-    ratio2 = (test_pos.lower - test_pos.top)  / (test_pos.right - test_pos.left)
-    assert abs((generated_barmetric[0]/generated_barmetric[1]) - ratio2) < 0.1
-
-    ratio2 = (res.lower - res.top)  / (res.right - res.left)
-    assert abs((generated_barmetric[0]/generated_barmetric[1]) - ratio2) < 0.1
-    res_height = (res.lower - res.top)
-    res_width = (res.right - res.left)
-
-    assert abs(res_width - (expected_image_width)) <= 1 # can have one pixel error
 
 
 

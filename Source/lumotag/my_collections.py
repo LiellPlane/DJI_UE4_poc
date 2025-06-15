@@ -28,15 +28,10 @@ class CHANNEL_COLOUR(Enum):
     RED_CHANNEL = 2
     GREEN_CHANNEL = 1
 
-class UI_Element(Enum):
-    PHOTO = "PHOTO"
-    USER_ID = "USER_ID"
-    USER_INFO = "USER_INFO"
-    BARMETRIC_RL = "BARMETRIC_RL"
-    BARMETRIC_LR = "BARMETRIC_LR"
-    ENERGY_LR = "ENERGY_LR"
-
-
+@dataclass
+class HeightWidth:
+    height: int
+    width: int
 
 class Shapes(AutoStrEnum):
     ALMOST_ID = auto()
