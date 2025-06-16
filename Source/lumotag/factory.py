@@ -399,7 +399,6 @@ class PlayerInfoBoxv2:
     def get_max_min_healthpoints(self)->tuple[int, int]:
         return self.max_healthpoints, self.min_healthpoints
 
-   
     def elements_fadein(self):
         return self.calculate_fade(direction=1,fade_ms= self.fade_ms)
 
@@ -409,7 +408,7 @@ class PlayerInfoBoxv2:
     def calculate_fade(self, direction: Literal[-1, 1], fade_ms, multiplier=1):
         if direction not in [-1, 1]:
             raise Exception("bad input to calculate fade", direction)
-        time_diff_ms = self.timer.get_dt() * (1000 *multiplier)
+        time_diff_ms = self.timer.get_dt() * (1000 * multiplier)
         self.timer.reset()
         self.current_fade_ms += (time_diff_ms * direction)
         # limit working fade value
@@ -1885,6 +1884,21 @@ class LumoUI:
 
         print(f"total size for shield status image cache = {round(self.get_image_cache_size_mb(self._shieldstatus_cache))} Mb")
     
+    def load_player_image(self, playerimage: np.ndarray, normalised_fade: float):
+        # Get dimensions of the status bar image
+        bar_h, bar_w = self.statusbar_img.shape[:2]
+        player_h, player_w = playerimage.shape[:2]
+        
+        # Calculate center position
+        y_start = (bar_h - player_h) // 2
+        x_start = (bar_w - player_w) // 2
+        
+        # Apply simple fade by multiplication
+        faded_image = playerimage * normalised_fade
+        
+        # Place the faded image in the center of the status bar
+        self.statusbar_img[y_start:y_start + player_h, x_start:x_start + player_w] = faded_image
+
     def draw_status_bar(self, base_image: np.ndarray, ammo: int | None = None):
         # Get dimensions of both images
         base_h, base_w = base_image.shape[:2]

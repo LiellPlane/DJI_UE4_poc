@@ -481,8 +481,14 @@ def main():
                 if is_trigger_pressed:
                     output_image[:] = 255
                 perfmonitor.manual_measure("check_scale", 25)
+
+                # calculate the fade for test player - needs to be called to determine what direction of fade
+                fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
+
                 with perfmonitor.measure("show_metrics"):
+
                     
+
                     # display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
@@ -498,6 +504,7 @@ def main():
                     if is_trigger_pressed is True:
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
+                            
 
                 # if is_trigger_pressed is True:
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
