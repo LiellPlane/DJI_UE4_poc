@@ -1870,6 +1870,7 @@ class LumoUI:
 
     def __init__(self) -> None:
         self._number_limit = 500
+        self.doomstatus_offset_for_avatar = 285
         self.statusbar_img = self.load_media_image("doom_statusbar_blank.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
@@ -1888,16 +1889,24 @@ class LumoUI:
         # Get dimensions of the status bar image
         bar_h, bar_w = self.statusbar_img.shape[:2]
         player_h, player_w = playerimage.shape[:2]
-        
+ 
+        avatar_area_width = 70 #width of the area where we want the avatar
         # Calculate center position
         y_start = (bar_h - player_h) // 2
         x_start = (bar_w - player_w) // 2
         
         # Apply simple fade by multiplication
-        faded_image = playerimage * normalised_fade
-        
-        # Place the faded image in the center of the status bar
-        self.statusbar_img[y_start:y_start + player_h, x_start:x_start + player_w] = faded_image
+        faded_image = (playerimage * normalised_fade).astype(np.uint8)
+        try:
+            # Place the faded image in the center of the status bar
+            off = self.doomstatus_offset_for_avatar + int((avatar_area_width-player_w)/2)
+            self.statusbar_img[
+                1:player_h+1,
+                off:player_w+off
+                ] = faded_image[:]
+            plop=1
+        except Exception as e:
+            raise Exception(f"check the sizes of the statusbar and the area the PlayerCard is permitted  {e}")
 
     def draw_status_bar(self, base_image: np.ndarray, ammo: int | None = None):
         # Get dimensions of both images

@@ -236,8 +236,8 @@ def main():
         "demoplayer":
         factory.PlayerInfoBoxv2(
             playername="testplayer",
-            avatar_canvas= HeightWidth(100,100), # get this from the status bar class
-            info_box = HeightWidth(100,100)
+            avatar_canvas= HeightWidth(60,60), # get this from the status bar class
+            info_box = HeightWidth(60,60)
         ),
         "me":
         factory.LocalPlayerCard(
@@ -484,17 +484,16 @@ def main():
 
                 # calculate the fade for test player - needs to be called to determine what direction of fade
                 fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
+                
+
 
                 with perfmonitor.measure("show_metrics"):
-
-                    
-
                     # display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
                 
                 with time_it("display image", debug=PRINT_DEBUG):
-
+                    status_bar.load_player_image(players["demoplayer"].col_image, fade_norm)
                     status_bar.draw_status_bar(output_image, players["me"].ammo)
                     status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
                     # original display output before new UI stuff (doom bar, graphic meters)
