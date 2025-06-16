@@ -484,8 +484,6 @@ def main():
 
                 # calculate the fade for test player - needs to be called to determine what direction of fade
                 fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
-                
-
 
                 with perfmonitor.measure("show_metrics"):
                     # display.debug_add_imgpro_wait([perfmonitor.get_average(el) for el in perfmonitor.measurements.keys()], output_image)
