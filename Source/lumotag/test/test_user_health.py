@@ -150,10 +150,10 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
     # Apply bloom effect with different parameters for low health
     if health_value <= threshold:
         # Extra intense bloom for low health
-        canvas = apply_bloom_effect(canvas, threshold=100, blur_size=15, intensity=2.0)
+        canvas = apply_bloom_effect(canvas, threshold=100, blur_size=20, intensity=2.0)
     else:
         # Normal bloom for high health
-        canvas = apply_bloom_effect(canvas, threshold=100, blur_size=10, intensity=1.8)
+        canvas = apply_bloom_effect(canvas, threshold=100, blur_size=15, intensity=1.8)
     
     return canvas
 
@@ -167,7 +167,7 @@ def main():
     
     for health in health_values:
         print(health)
-        health_bar = create_health_bar(health, use_anti_aliasing=True, use_noise=True, high_health_color='green')  # You can change to 'green' or 'blue'
+        health_bar = create_health_bar(health, use_anti_aliasing=True, use_noise=True, high_health_color='blue')  # You can change to 'green' or 'blue'
         cv2.imshow('Health Bar', cv2.resize(health_bar,(80,80)))
         
         # Wait for any key press to continue
