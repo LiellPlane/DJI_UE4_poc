@@ -59,6 +59,9 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
     low_health_colour = (0, 0, 255)   # Pure Red
     threshold = 0.4
     
+    # Calculate corner radius (make it proportional to segment height)
+    corner_radius = int(segment_height * 0.4)  # 40% of segment height for more prominent rounding
+    
     # Draw segments from bottom to top
     for i in range(num_segments):
         if i < active_segments:
@@ -72,23 +75,63 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
             
             # Create segment with gradient
             segment = np.zeros((segment_height, segment_width, 3), dtype=np.uint8)
-            # Fill with pure colour first
-            cv2.rectangle(segment, (0, 0), (segment_width, segment_height), colour, -1)
-            # Add black border
-            cv2.rectangle(segment, (0, 0), (segment_width, segment_height), (0, 0, 0), 2)
-            # Add yellow highlight line
-            cv2.line(segment, (0, int(segment_height * 0.3)), 
-                    (segment_width, int(segment_height * 0.3)), (0, 255, 255), 2)
+            
+            # Draw the main rounded rectangle
+            # Draw the center rectangle
+            cv2.rectangle(segment, (corner_radius, 0), (segment_width - corner_radius, segment_height), colour, -1)
+            cv2.rectangle(segment, (0, corner_radius), (segment_width, segment_height - corner_radius), colour, -1)
+            
+            # Draw the four rounded corners using ellipses
+            # Top-left corner
+            cv2.ellipse(segment, (corner_radius, corner_radius), (corner_radius, corner_radius), 180, 0, 90, colour, -1)
+            # Top-right corner
+            cv2.ellipse(segment, (segment_width - corner_radius, corner_radius), (corner_radius, corner_radius), 270, 0, 90, colour, -1)
+            # Bottom-left corner
+            cv2.ellipse(segment, (corner_radius, segment_height - corner_radius), (corner_radius, corner_radius), 90, 0, 90, colour, -1)
+            # Bottom-right corner
+            cv2.ellipse(segment, (segment_width - corner_radius, segment_height - corner_radius), (corner_radius, corner_radius), 0, 0, 90, colour, -1)
+            
+            # Add yellow highlight line (adjusted for rounded corners)
+            highlight_y = int(segment_height * 0.3)
+            cv2.line(segment, (corner_radius, highlight_y), 
+                    (segment_width - corner_radius, highlight_y), (0, 255, 255), 2)
             
             # Add enhanced highlight effect
             highlight = np.zeros_like(segment)
-            # Create a much larger highlight area with white for more intensity
-            cv2.rectangle(highlight, (0, 0), 
-                         (segment_width, int(segment_height * 0.7)), (255, 255, 255), -1)
+            highlight_height = int(segment_height * 0.7)
+            
+            # Draw the highlight with rounded corners
+            # Center rectangle
+            cv2.rectangle(highlight, (corner_radius, 0), (segment_width - corner_radius, highlight_height), (255, 255, 255), -1)
+            cv2.rectangle(highlight, (0, corner_radius), (segment_width, highlight_height - corner_radius), (255, 255, 255), -1)
+            
+            # Rounded corners for highlight
+            # Top-left corner
+            cv2.ellipse(highlight, (corner_radius, corner_radius), (corner_radius, corner_radius), 180, 0, 90, (255, 255, 255), -1)
+            # Top-right corner
+            cv2.ellipse(highlight, (segment_width - corner_radius, corner_radius), (corner_radius, corner_radius), 270, 0, 90, (255, 255, 255), -1)
+            
             # Apply stronger blur for more glow
             highlight = cv2.GaussianBlur(highlight, (0, 0), 60)
             # Increase highlight intensity significantly
             segment = cv2.addWeighted(segment, 2.0, highlight, 0.4, 0)
+            
+            # Draw the border after the highlight effect
+            # Draw the straight edges
+            cv2.line(segment, (corner_radius, 0), (segment_width - corner_radius, 0), (0, 0, 0), 2)
+            cv2.line(segment, (corner_radius, segment_height), (segment_width - corner_radius, segment_height), (0, 0, 0), 2)
+            cv2.line(segment, (0, corner_radius), (0, segment_height - corner_radius), (0, 0, 0), 2)
+            cv2.line(segment, (segment_width, corner_radius), (segment_width, segment_height - corner_radius), (0, 0, 0), 2)
+            
+            # Draw the rounded corners for the border
+            # Top-left corner
+            cv2.ellipse(segment, (corner_radius, corner_radius), (corner_radius, corner_radius), 180, 0, 90, (0, 0, 0), 2)
+            # Top-right corner
+            cv2.ellipse(segment, (segment_width - corner_radius, corner_radius), (corner_radius, corner_radius), 270, 0, 90, (0, 0, 0), 2)
+            # Bottom-left corner
+            cv2.ellipse(segment, (corner_radius, segment_height - corner_radius), (corner_radius, corner_radius), 90, 0, 90, (0, 0, 0), 2)
+            # Bottom-right corner
+            cv2.ellipse(segment, (segment_width - corner_radius, segment_height - corner_radius), (corner_radius, corner_radius), 0, 0, 90, (0, 0, 0), 2)
             
             # Apply noise if enabled
             if use_noise:
