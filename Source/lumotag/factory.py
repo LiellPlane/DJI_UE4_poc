@@ -206,11 +206,11 @@ class display(ABC):
         # this is lazy - if we find we rotate a lot then do this properly
         if self.display_rotate == 270:
             self.cardio_gram_display =CardioGramDisplay(
-                pos_x=50,
-                pos_y=10,
-                width=self.screen_size[1]//7,
-                height=self.screen_size[0]//2,
-                value_range=(0, 100),
+                pos_x=0,
+                pos_y=567,
+                width=60,
+                height=138,
+                value_range=(0, 50),
                 flow_direction=90
                 )
         if self.display_rotate == 0:
@@ -229,7 +229,7 @@ class display(ABC):
                 pos_y=self.screen_size[0]-80,
                 width=self.screen_size[0]//2,
                 height=60,
-                value_range=(0, 50),
+                value_range=(0, 137),
                 flow_direction=0
                 )
 
@@ -1848,6 +1848,15 @@ class CardioGramDisplay:
         h, w = self.height, self.width
         roi = background[self.pos_y:self.pos_y+h, self.pos_x:self.pos_x+w]
         
+        # Apply fast box blur to ROI for smoother appearance
+        # Use a 3x3 kernel for minimal performance impact
+        kernel = np.array([[1, 1, 1],
+                          [1, 1, 1], 
+                          [1, 1, 1]], dtype=np.float32) / 9.0
+        
+        # Apply blur only to the region we're about to modify
+        blurred_roi = cv2.filter2D(roi, -1, kernel)
+        
         # Find pixels with non-zero alpha
         alpha_mask = overlay[:,:,3] > 0
         
@@ -1859,7 +1868,7 @@ class CardioGramDisplay:
                 # This avoids expensive float conversions
                 roi[:,:,c][alpha_mask] = (
                     (overlay[:,:,c][alpha_mask].astype(np.uint16) * overlay[:,:,3][alpha_mask].astype(np.uint16) + 
-                     roi[:,:,c][alpha_mask].astype(np.uint16) * (255 - overlay[:,:,3][alpha_mask].astype(np.uint16))) 
+                     blurred_roi[:,:,c][alpha_mask].astype(np.uint16) * (255 - overlay[:,:,3][alpha_mask].astype(np.uint16))) 
                     // 255
                 ).astype(np.uint8)
         
