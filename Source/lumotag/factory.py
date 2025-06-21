@@ -1883,36 +1883,34 @@ class LumoUI:
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.ammo_section_template = self.load_media_image("ammo_section_template.jpg")
         self._numberstatus_cache: dict[str, np.ndarray] = {}
-        self._shieldstatus_cache: dict[float, np.ndarray] = {}
-        self.get_shield_status_img(normalised_health=0.1)
-        plop=1
+        self._shieldstatus_cache: list[np.ndarray] = []
 
-    @staticmethod
-    def quantise_shieldstatus(normalised_health: float):
-        """consistently quantize the incoming number rather than making weird mini nearest K database"""
-        # round to 0.05
-        return round(math.ceil(normalised_health * 20) / 20, 2)
 
     def get_shield_status_img(self, normalised_health: float):
-        normalised_health = self.quantise_shieldstatus(normalised_health)
         if not(0 <= normalised_health <= 1):
             raise ValueError(f"normalised health out of range: {normalised_health}")
 
-        if normalised_health in self._shieldstatus_cache:
-            return self._shieldstatus_cache[normalised_health]
+        if self._shieldstatus_cache is not None and len(self._shieldstatus_cache) > 0:
+            # get normalised position in list
+            normed = 1/(len(self._shieldstatus_cache)-1)
+            index = int(normalised_health/normed)
+            return self._shieldstatus_cache[index]
 
         # arbitrary image generation steps
         for gen_shield_status in np.arange(0, 1.01, 0.05):
             
             shieldstatus_img = img_processing.create_health_bar(
-                health_value=self.quantise_shieldstatus(gen_shield_status),
-                width=self.shieldstatus_dims.width,
-                height=self.shieldstatus_dims.height,
+                health_value=gen_shield_status,
+                width=600,
+                height=600,
                 use_anti_aliasing=True,
                 use_noise=True,
                 high_health_color='green'
             )
-            self._shieldstatus_cache[self.quantise_shieldstatus(gen_shield_status)] = shieldstatus_img
+            self._shieldstatus_cache.append(cv2.resize(
+                shieldstatus_img,
+                (self.shieldstatus_dims.height, self.shieldstatus_dims.width)
+                ))
         
         # For now, return a placeholder
         return np.zeros((60, 60, 3), dtype=np.uint8)
@@ -1943,6 +1941,11 @@ class LumoUI:
             number_img = self.get_number_img(ammo)
             h, w = number_img.shape[:2]
             self.statusbar_img[0:h, 0:w] = number_img
+        if normalised_health is not None:
+            status_img = self.get_shield_status_img(normalised_health=normalised_health)
+            h, w = status_img.shape[:2]
+            self.statusbar_img[0:h, 0:w] = status_img
+
         # Calculate position to place the status bar (centered vertically)
         # After rotation, the dimensions will be swapped
         y_start = (base_h - bar_w) // 2  # Center vertically, using bar_w since it will be height after rotation

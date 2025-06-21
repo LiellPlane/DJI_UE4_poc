@@ -492,7 +492,7 @@ def main():
                 
                 with time_it("display image", debug=PRINT_DEBUG):
                     status_bar.load_player_image(players["demoplayer"].col_image, fade_norm)
-                    status_bar.draw_status_bar(output_image, players["me"].ammo)
+                    status_bar.draw_status_bar(output_image, players["me"].ammo, players["me"].get_normalised_torchenergy())
                     # status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
                     # original display output before new UI stuff (doom bar, graphic meters)
                     display.display(output_image)
