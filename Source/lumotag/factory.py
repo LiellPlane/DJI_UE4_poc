@@ -1850,9 +1850,10 @@ class CardioGramDisplay:
         
         # Apply fast box blur to ROI for smoother appearance
         # Use a 3x3 kernel for minimal performance impact
+        # some random kernel for fun
         kernel = np.array([[1, 1, 1],
-                          [1, 1, 1], 
-                          [1, 1, 1]], dtype=np.float32) / 9.0
+                          [9, 1, 1], 
+                          [9, 9, 1]], dtype=np.float32) / 9.0
         
         # Apply blur only to the region we're about to modify
         blurred_roi = cv2.filter2D(roi, -1, kernel)
