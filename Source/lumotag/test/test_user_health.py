@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import math
 
 
 def apply_bloom_effect(image, threshold=200, blur_size=7, intensity=1.5):
@@ -40,10 +41,10 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
     # Create a black canvas
     canvas = np.zeros((height, width, 3), dtype=np.uint8)
     
-    # Calculate segment height and add padding
-    padding_top = 40  # pixels of padding at top
-    padding_bottom = 40  # pixels of padding at bottom
-    padding_sides = 40  # pixels of padding on sides
+    # Calculate segment height and add padding using percentages
+    padding_top = int(math.ceil(height * 0.067))  # 6.7% of height
+    padding_bottom = int(math.ceil(height * 0.067))  # 6.7% of height
+    padding_sides = int(math.ceil(width * 0.1))  # 10% of width
     usable_height = height - (padding_top + padding_bottom)
     segment_height = usable_height // num_segments
     segment_width = width - (2 * padding_sides)  # Leave margin on both sides
@@ -60,7 +61,7 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
     threshold = 0.4
     
     # Calculate corner radius (make it proportional to segment height)
-    corner_radius = int(segment_height * 0.4)  # 40% of segment height for more prominent rounding
+    corner_radius = int(math.ceil(segment_height * 0.4))  # 40% of segment height for more prominent rounding
     
     # Draw segments from bottom to top
     for i in range(num_segments):
@@ -92,13 +93,13 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
             cv2.ellipse(segment, (segment_width - corner_radius, segment_height - corner_radius), (corner_radius, corner_radius), 0, 0, 90, colour, -1)
             
             # Add yellow highlight line (adjusted for rounded corners)
-            highlight_y = int(segment_height * 0.3)
+            highlight_y = int(math.ceil(segment_height * 0.3))
             cv2.line(segment, (corner_radius, highlight_y), 
                     (segment_width - corner_radius, highlight_y), (0, 255, 255), 2)
             
             # Add enhanced highlight effect
             highlight = np.zeros_like(segment)
-            highlight_height = int(segment_height * 0.7)
+            highlight_height = int(math.ceil(segment_height * 0.7))
             
             # Draw the highlight with rounded corners
             # Center rectangle
@@ -167,8 +168,14 @@ def main():
     
     for health in health_values:
         print(health)
-        health_bar = create_health_bar(health, use_anti_aliasing=True, use_noise=True, high_health_color='blue')  # You can change to 'green' or 'blue'
-        cv2.imshow('Health Bar', cv2.resize(health_bar,(80,80)))
+        health_bar = create_health_bar(
+            health,
+            use_anti_aliasing=True,
+            use_noise=True,
+            high_health_color='green',
+            width=600,
+            height=600)  # You can change to 'green' or 'blue'
+        cv2.imshow('Health Bar', cv2.resize(health_bar,(60,60)))
         
         # Wait for any key press to continue
         key = cv2.waitKey(0)
