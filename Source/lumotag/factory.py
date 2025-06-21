@@ -1874,7 +1874,7 @@ class LumoUI:
         width: int = 70
 
     # class members
-    shieldstatus_dims = HeightWidth(60,60)
+    shieldstatus_dims = HeightWidth(height=59,width=70)
 
     def __init__(self) -> None:
         self._number_limit = 500
@@ -1909,11 +1909,10 @@ class LumoUI:
             )
             self._shieldstatus_cache.append(cv2.resize(
                 shieldstatus_img,
-                (self.shieldstatus_dims.height, self.shieldstatus_dims.width)
+                (self.shieldstatus_dims.width, self.shieldstatus_dims.height)
                 ))
         
-        # For now, return a placeholder
-        return np.zeros((60, 60, 3), dtype=np.uint8)
+        return self.get_shield_status_img(normalised_health)
 
     def load_player_image(self, playerimage: np.ndarray, normalised_fade: float):
 
@@ -1944,7 +1943,9 @@ class LumoUI:
         if normalised_health is not None:
             status_img = self.get_shield_status_img(normalised_health=normalised_health)
             h, w = status_img.shape[:2]
-            self.statusbar_img[0:h, 0:w] = status_img
+            offset_along_statusbar = 212
+            offset_from_top = 2
+            self.statusbar_img[offset_from_top:h+offset_from_top, offset_along_statusbar:w+offset_along_statusbar] = status_img
 
         # Calculate position to place the status bar (centered vertically)
         # After rotation, the dimensions will be swapped
