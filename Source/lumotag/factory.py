@@ -7,6 +7,7 @@ from functools import lru_cache
 from typing import Literal, Optional, Union
 import cv2
 import os
+import math
 from contextlib import contextmanager
 from collections import deque
 import threading
@@ -1872,23 +1873,50 @@ class LumoUI:
         offset_y: int = 285
         width: int = 70
 
+    # class members
+    shieldstatus_dims = HeightWidth(60,60)
+
     def __init__(self) -> None:
         self._number_limit = 500
         self.enemy_avatar_area = self.EnemyAvatarArea()
         self.statusbar_img = self.load_media_image("doom_statusbar_blank.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
-        self.shieldstatus_img = self.load_media_image("shield_status_no_lights.jpg")
         self.ammo_section_template = self.load_media_image("ammo_section_template.jpg")
-        self._shieldstatus_cache: dict[str, np.ndarray] = {}
         self._numberstatus_cache: dict[str, np.ndarray] = {}
-        # build the shield status image cache
-        for i in range (0,100):
-            normalised = i/100
-            _ = self.create_shield_meter(normalised)
-        self.get_number_img(1)
+        self._shieldstatus_cache: dict[float, np.ndarray] = {}
+        self.get_shield_status_img(normalised_health=0.1)
+        plop=1
 
-        print(f"total size for shield status image cache = {round(self.get_image_cache_size_mb(self._shieldstatus_cache))} Mb")
-    
+    @staticmethod
+    def quantise_shieldstatus(normalised_health: float):
+        """consistently quantize the incoming number rather than making weird mini nearest K database"""
+        # round to 0.05
+        return round(math.ceil(normalised_health * 20) / 20, 2)
+
+    def get_shield_status_img(self, normalised_health: float):
+        normalised_health = self.quantise_shieldstatus(normalised_health)
+        if not(0 <= normalised_health <= 1):
+            raise ValueError(f"normalised health out of range: {normalised_health}")
+
+        if normalised_health in self._shieldstatus_cache:
+            return self._shieldstatus_cache[normalised_health]
+
+        # arbitrary image generation steps
+        for gen_shield_status in np.arange(0, 1.01, 0.05):
+            
+            shieldstatus_img = img_processing.create_health_bar(
+                health_value=self.quantise_shieldstatus(gen_shield_status),
+                width=self.shieldstatus_dims.width,
+                height=self.shieldstatus_dims.height,
+                use_anti_aliasing=True,
+                use_noise=True,
+                high_health_color='green'
+            )
+            self._shieldstatus_cache[self.quantise_shieldstatus(gen_shield_status)] = shieldstatus_img
+        
+        # For now, return a placeholder
+        return np.zeros((60, 60, 3), dtype=np.uint8)
+
     def load_player_image(self, playerimage: np.ndarray, normalised_fade: float):
 
         player_h, player_w = playerimage.shape[:2]
@@ -1904,7 +1932,7 @@ class LumoUI:
         except Exception as e:
             raise Exception(f"check the sizes of the statusbar and the area the PlayerCard is permitted  {e}")
 
-    def draw_status_bar(self, base_image: np.ndarray, ammo: int | None = None):
+    def draw_status_bar(self, base_image: np.ndarray, ammo: int | None = None, normalised_health: float | None = None):
         # Get dimensions of both images
         base_h, base_w = base_image.shape[:2]
         bar_h, bar_w = self.statusbar_img.shape[:2]
@@ -1945,7 +1973,8 @@ class LumoUI:
         
     
     def get_number_img(self, number: int) -> np.ndarray:
-        """Return an image for the incoming number - this has to be cached!"""
+        """Return an image for the incoming number
+        create cache for range on first call"""
         if str(number) in self._numberstatus_cache:
             return self._numberstatus_cache[str(number)]
         h, w = self.numerics_img.shape[:2]
@@ -2017,80 +2046,6 @@ class LumoUI:
         if str(number) not in self._numberstatus_cache:
             raise Exception(f"bad logic after generating and caching numbers:input = {number}")
         return self._numberstatus_cache[str(number)]
-
-    def create_shield_meter(self, normalised_health: float)->np.ndarray:
-        """
-        use shield meter image to pre-render each metric indicator and save to memory.
-        The shield status image has 21 segments - we are working to known specifications
-        """
-        if not(0 <= normalised_health <= 1):
-            raise ValueError("bad normalised value")
-        segments = 21 # Known figure from the image - has to be configured manually
-        meters_to_light = ceil(normalised_health*segments)
-        if str(meters_to_light) in self._shieldstatus_cache:
-            return self._shieldstatus_cache[str(meters_to_light)]
-        output_img : np.ndarray = self.shieldstatus_img.copy()
-        offset_y = self.pixel(17)
-        offset_x = self.pixel(19)
-        width = self.pixel(24)
-        height = self.pixel(38)
-        pitch = self.pixel(33)
-        
-        lowest_green_shade = 60
-        warning_lower_limit_pc = 0.20
-        blur_buffer = 5
-        red = (0,0,255)
-
-        
-        for meter_index in range(0, meters_to_light):
-            total_offset_x = offset_x
-            total_offset_x +=  pitch * meter_index
-            green_shades = ((255-lowest_green_shade) / segments) * meter_index
-            shade = (0, lowest_green_shade + green_shades, 0)
-            if meters_to_light/segments < warning_lower_limit_pc:
-                shade = red
-            section = output_img[offset_y:offset_y + height, total_offset_x: total_offset_x + width]
-            section [:] = shade
-            # Extract the section to blur
-            blur_section = output_img[
-                offset_y - blur_buffer :offset_y + height + blur_buffer,
-                total_offset_x - blur_buffer: total_offset_x + width + blur_buffer
-                ]
-            # Apply blur and assign back to the original image
-            output_img[
-                offset_y - blur_buffer :offset_y + height + blur_buffer,
-                total_offset_x - blur_buffer: total_offset_x + width + blur_buffer
-                ] = cv2.GaussianBlur(blur_section, (9, 9), 0)
-            
-        # # Debug display - show the shield meter output
-        # cv2.imshow(f'Shield Meter Debug', output_img)
-        # cv2.waitKey(0)
-        # # cv2.destroyAllWindows()
-        output_img = cv2.resize(output_img, None, fx=0.4, fy=0.4)
-        self._shieldstatus_cache[str(meters_to_light)] = output_img.copy()
-        return self._shieldstatus_cache[str(meters_to_light)]
-        
-
-    def draw_shieldtorch_bar(self, base_image: np.ndarray, normalised_shield_torch: float):
-
-        status_bar = self.create_shield_meter(normalised_health=normalised_shield_torch)
-        # Get dimensions of both images
-        _, base_w = base_image.shape[:2]
-        bar_h, bar_w = status_bar.shape[:2]
-        
-        # Calculate position to place the status bar in top right
-        # After rotation, the dimensions will be swapped
-        y_start = 0  # Top of the image
-        x_start = base_w - bar_h - 30  # Right side, using bar_h since it becomes width after rotation
-        
-        # Create a view of the target region in base_image
-        target_region = base_image[y_start:y_start + bar_w, x_start:x_start + bar_h]
-        
-        # Rotate the status bar first to get the correct dimensions
-        rotated_bar = cv2.rotate(status_bar, cv2.ROTATE_90_CLOCKWISE)
-        
-        # Copy the rotated bar into the target region
-        target_region[:] = rotated_bar
 
 
     @staticmethod

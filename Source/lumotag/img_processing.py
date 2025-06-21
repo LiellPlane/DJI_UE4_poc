@@ -1,6 +1,5 @@
-import sys
 import cv2
-import shutil
+import math
 from collections import deque
 from functools import lru_cache
 from enum import Enum, auto
