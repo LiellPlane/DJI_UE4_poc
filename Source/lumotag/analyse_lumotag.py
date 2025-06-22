@@ -49,7 +49,7 @@ class ImageAnalyser_shared_mem():
 
         process.start()
     def check_if_timed_out(self):
-        if time.perf_counter() - self.last_analysis_time > 2: # wait in seconds
+        if time.perf_counter() - self.last_analysis_time > 5: # wait in seconds
             return True
         return False
     def get_analysis_time_ms(self):
