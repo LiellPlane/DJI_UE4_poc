@@ -2113,7 +2113,7 @@ class LumoUI:
 
 
     @staticmethod
-    def get_image_cache_size_mb(imagedict: dict[str|int, np.ndarray]) -> float:
+    def get_image_cache_size_mb(imagedict: dict[str, np.ndarray]) -> float:
         """
         Calculate the memory usage of the _numberstatus_cache dictionary in megabytes.
         """
