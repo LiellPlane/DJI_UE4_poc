@@ -1883,11 +1883,38 @@ class LumoUI:
         offset_y: int = 285
         width: int = 70
 
+    @dataclass
+    class StatusBarArea:
+        name: str
+        offset_y: int
+        offset_x: int
+        width: int
+        height: int
+        def implant_image(self, base_image: np.ndarray, image: np.ndarray):
+            # use this to implant an image into a base image
+            h, w = image.shape[:2]
+            base_image[self.offset_y:self.offset_y+h, self.offset_x:self.offset_x+w] = image
+
+
     # class members
     shieldstatus_dims = HeightWidth(height=59,width=70)
 
     def __init__(self) -> None:
         self._number_limit = 500
+        self.statusbar_area_AMMO = self.StatusBarArea(
+            name="AMMO",
+            offset_y=0,
+            offset_x=0,
+            width=93,
+            height=61
+        )
+        self.statusbar_area_HEALTH = self.StatusBarArea(
+            name="HEALTH",
+            offset_y=0,
+            offset_x=93,
+            width=93,
+            height=61
+        )
         self.enemy_avatar_area = self.EnemyAvatarArea()
         self.statusbar_img = self.load_media_image("doom_statusbar_blank.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
@@ -1939,7 +1966,12 @@ class LumoUI:
         except Exception as e:
             raise Exception(f"check the sizes of the statusbar and the area the PlayerCard is permitted  {e}")
 
-    def draw_status_bar(self, base_image: np.ndarray, ammo: int | None = None, normalised_health: float | None = None):
+    def draw_status_bar(
+            self,
+            base_image: np.ndarray,
+            ammo: int | None = None,
+            normalised_shieldstatus: float | None = None,
+            health_pts: int | None = None):
         # Get dimensions of both images
         base_h, base_w = base_image.shape[:2]
         bar_h, bar_w = self.statusbar_img.shape[:2]
@@ -1947,11 +1979,13 @@ class LumoUI:
 
         # plop in the ammo section
         if ammo is not None:
-            number_img = self.get_number_img(ammo)
-            h, w = number_img.shape[:2]
-            self.statusbar_img[0:h, 0:w] = number_img
-        if normalised_health is not None:
-            status_img = self.get_shield_status_img(normalised_health=normalised_health)
+            
+            number_img = self.get_number_img(ammo, self.statusbar_area_AMMO)
+            # h, w = number_img.shape[:2]
+            self.statusbar_area_AMMO.implant_image(self.statusbar_img, number_img)
+            # self.statusbar_img[0:h, 0:w] = number_img
+        if normalised_shieldstatus is not None:
+            status_img = self.get_shield_status_img(normalised_health=normalised_shieldstatus)
             h, w = status_img.shape[:2]
             offset_along_statusbar = 212
             offset_from_top = 2
@@ -1986,13 +2020,12 @@ class LumoUI:
         return img
         
     
-    def get_number_img(self, number: int) -> np.ndarray:
+    def get_number_img(self, number: int, area: StatusBarArea) -> np.ndarray:
         """Return an image for the incoming number
         create cache for range on first call"""
         if str(number) in self._numberstatus_cache:
             return self._numberstatus_cache[str(number)]
         h, w = self.numerics_img.shape[:2]
-        active_high = False
         colcnt = 0
         spans = []
         for col in range(0, w):
@@ -2044,6 +2077,7 @@ class LumoUI:
             
             # Combine cached_img with background using mask as alpha layer
             background = self.ammo_section_template.copy()
+ 
             h, w = isolated_number.shape[:2]
             
             # Put the text on the image
