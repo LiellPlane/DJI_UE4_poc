@@ -1900,7 +1900,7 @@ class LumoUI:
     shieldstatus_dims = HeightWidth(height=59,width=70)
 
     def __init__(self) -> None:
-        self._number_limit = 500
+        self._number_limit = 300
         self.statusbar_area_AMMO = self.StatusBarArea(
             name="AMMO",
             offset_y=0,
@@ -1912,7 +1912,7 @@ class LumoUI:
             name="HEALTH",
             offset_y=0,
             offset_x=93,
-            width=93,
+            width=114,
             height=61
         )
         self.enemy_avatar_area = self.EnemyAvatarArea()
@@ -1978,6 +1978,9 @@ class LumoUI:
         
 
         # plop in the ammo section
+        if health_pts is not None:
+            number_img = self.get_number_img(health_pts, self.statusbar_area_HEALTH)
+            self.statusbar_area_HEALTH.implant_image(self.statusbar_img, number_img)
         if ammo is not None:
             
             number_img = self.get_number_img(ammo, self.statusbar_area_AMMO)
@@ -2022,9 +2025,12 @@ class LumoUI:
     
     def get_number_img(self, number: int, area: StatusBarArea) -> np.ndarray:
         """Return an image for the incoming number
-        create cache for range on first call"""
-        if str(number) in self._numberstatus_cache:
-            return self._numberstatus_cache[str(number)]
+        create cache for range on first call
+        provide an Area, this means the background of the number will be 
+        harvested from the area in the base status bar image"""
+        key_ = str(number) + area.name
+        if key_ in self._numberstatus_cache:
+            return self._numberstatus_cache[key_]
         h, w = self.numerics_img.shape[:2]
         colcnt = 0
         spans = []
@@ -2067,7 +2073,9 @@ class LumoUI:
             target_height = 32
             resize = target_height/temp_img.shape[0]
             isolated_number = cv2.resize(temp_img, None, fx=resize, fy=resize)
-            
+            if i < 20:
+                # give warning glow when low, see what this looks like
+                isolated_number = img_processing.apply_bloom_effect(isolated_number, threshold=80, blur_size=5, intensity=0.5)
             # Create mask for non-white pixels (number pixels vs background)
             mask = np.any(isolated_number < 200, axis=2)
             
@@ -2076,7 +2084,15 @@ class LumoUI:
             # mask_visual_3ch = np.stack([mask_visual, mask_visual, mask_visual], axis=2)
             
             # Combine cached_img with background using mask as alpha layer
-            background = self.ammo_section_template.copy()
+            # Use the StatusBarArea to extract background from status bar image
+            background = self.statusbar_img[
+                area.offset_y:area.offset_y + area.height,
+                area.offset_x:area.offset_x + area.width
+            ].copy()
+            
+            # # Debug display to show the extracted background
+            # cv2.imshow(f'Background from {area.name} area', background)
+            # cv2.waitKey(1)  # Show for 1ms, non-blocking
  
             h, w = isolated_number.shape[:2]
             
@@ -2087,13 +2103,13 @@ class LumoUI:
             width_offset = int((w_comp - w) / 2)
             composite[top_offset:h+top_offset, width_offset:w+ width_offset][mask] = isolated_number[mask]
 
-            self._numberstatus_cache[str(i)] = composite
-            # cv2.imshow(f'Character Debug', self._numberstatus_cache[i] )
+            self._numberstatus_cache[str(i) + area.name] = composite
+            # cv2.imshow(f'Character Debug', self._numberstatus_cache[str(i) + area.name] )
             # cv2.waitKey(0)
         print(f"total size for ammo image cache = {round(self.get_image_cache_size_mb(self._numberstatus_cache))} Mb")
-        if str(number) not in self._numberstatus_cache:
+        if key_ not in self._numberstatus_cache:
             raise Exception(f"bad logic after generating and caching numbers:input = {number}")
-        return self._numberstatus_cache[str(number)]
+        return self._numberstatus_cache[key_]
 
 
     @staticmethod
