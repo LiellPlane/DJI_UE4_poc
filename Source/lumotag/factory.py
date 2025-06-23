@@ -1969,9 +1969,9 @@ class LumoUI:
     def draw_status_bar(
             self,
             base_image: np.ndarray,
-            ammo: int | None = None,
-            normalised_shieldstatus: float | None = None,
-            health_pts: int | None = None):
+            ammo: int = None,
+            normalised_shieldstatus: float  = None,
+            health_pts: int = None):
         # Get dimensions of both images
         base_h, base_w = base_image.shape[:2]
         bar_h, bar_w = self.statusbar_img.shape[:2]
