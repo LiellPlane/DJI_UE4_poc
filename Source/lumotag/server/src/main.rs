@@ -11,8 +11,23 @@ use axum::{routing::get, Router};
 use anyhow::Result;
 
 #[derive(Debug)]
+struct PlayerHeartbeat {
+    id: String,
+    timestamp: u64,
+    cached_avatars: Vec<String>,
+}
+
+#[derive(Debug)]
+struct PlayerState {
+    healthpoints: u32,
+    id: String,
+    name: String,
+    avatar_image: Vec<u8>, 
+}
+
+#[derive(Debug)]
 struct GameState {
-    healthpoints: Vec<u8>,
+    players: Vec<PlayerState>,
 }
 // Interior mutability with concurrency:
 type SharedState = Arc<tokio::sync::RwLock<GameState>>;
