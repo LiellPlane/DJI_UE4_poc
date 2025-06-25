@@ -1,20 +1,22 @@
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::{accept_async, tungstenite::protocol::Message};
 use futures::{StreamExt, SinkExt};
+use std::env;
 use std::net::SocketAddr;
 use log::{info, error};
 use tokio::sync::broadcast;
 use std::sync::Arc;
+use tokio::time::{sleep, Duration};
 use axum::{routing::get, Router};
 use anyhow::Result;
-use prost::Message as ProstMessage;
+use bytes::Bytes;
 
 // Include the generated protobuf code
 pub mod messages {
-    include!(concat!(env!("OUT_DIR"), "/_.rs"));
+    include!(concat!(env!("OUT_DIR"), "/lumotag.comms.rs"));
 }
 
-use messages::{GameMessage, GameStatus};
+use messages::{GameMessage, PlayerConnection, TagEvent, TagImage, GameStatus, PlayerStatus};
 
 // Interior mutability with concurrency:
 type SharedState = Arc<tokio::sync::RwLock<GameStatus>>;
@@ -128,7 +130,7 @@ async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sende
                         info!("Received binary message of {} bytes", data.len());
 
                         // Try to decode the protobuf message
-                        match ProstMessage::decode(data.as_slice()) {
+                        match GameMessage::decode(data.as_slice()) {
                             Ok(game_message) => {
                                 // Handle the decoded protobuf message
                                 if let Err(e) = handle_websocket_message(game_message).await {
