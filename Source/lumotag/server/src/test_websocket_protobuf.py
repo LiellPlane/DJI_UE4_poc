@@ -17,11 +17,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..',
 
 def generate_protobuf_if_needed():
     """Generate protobuf files if they don't exist or are outdated."""
-    proto_file = os.path.join(os.path.dirname(__file__), '..', 'common',
-                              'messages.proto')
+    # Base directory for proto files (Source/lumotag)
+    proto_base_dir = os.path.join(os.path.dirname(__file__), '..', '..')
+    proto_file = os.path.join(proto_base_dir, 'protobuffers', 'messages.proto')
     output_dir = os.path.join(os.path.dirname(__file__), '..',
                               'generated_protobuffs')
-    output_file = os.path.join(output_dir, 'comms_pb2.py')
+    output_file = os.path.join(output_dir, 'protobuffers', 'messages_pb2.py')
     
     # Check if output file exists and is newer than proto file
     if os.path.exists(output_file):
@@ -33,13 +34,14 @@ def generate_protobuf_if_needed():
     
     # Create output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
-    
+
     print("Generating protobuf files...")
     try:
         subprocess.run([
             'protoc',
+            f'--proto_path={proto_base_dir}',
             f'--python_out={output_dir}',
-            proto_file
+            'protobuffers/messages.proto'
         ], capture_output=True, text=True, check=True)
         print("Protobuf generation successful")
     except subprocess.CalledProcessError as e:
@@ -59,12 +61,12 @@ def generate_protobuf_if_needed():
 generate_protobuf_if_needed()
 
 try:
-    import comms_pb2
+    from protobuffers import messages_pb2
 except ImportError:
-    print("Error: Could not import comms_pb2. "
+    print("Error: Could not import messages_pb2. "
           "Make sure protobuf is generated.")
-    print("Run: protoc --python_out=../generated_protobuffs "
-          "../common/messages.proto")
+    print("Run: protoc --proto_path=../../ --python_out=../generated_protobuffs "
+          "protobuffers/messages.proto")
     sys.exit(1)
 
 
@@ -76,29 +78,29 @@ async def test_protobuf_websocket():
             print(f"Connected to {uri}")
             
             # Create a player connection message
-            connection_msg = comms_pb2.GameMessage()
+            connection_msg = messages_pb2.GameMessage()
             connection_msg.timestamp = 1234567890
             connection_msg.connection.player_id = "player123"
             connection_msg.connection.player_name = "TestPlayer"
-            connection_msg.connection.model = comms_pb2.DEFAULT
-            connection_msg.connection.team = comms_pb2.RED
+            connection_msg.connection.model = messages_pb2.DEFAULT
+            connection_msg.connection.team = messages_pb2.RED
             
             # Create a tag event message
-            tag_msg = comms_pb2.GameMessage()
+            tag_msg = messages_pb2.GameMessage()
             tag_msg.timestamp = 1234567891
             tag_msg.tag.tagger_id = "player123"
             tag_msg.tag.tagged_id = "player456"
             tag_msg.tag.image_id = "tag_image_001"
             
             # Create a tag image message
-            image_msg = comms_pb2.GameMessage()
+            image_msg = messages_pb2.GameMessage()
             image_msg.timestamp = 1234567892
             image_msg.tag_image.image_id = "tag_image_001"
             image_msg.tag_image.player_id = "player456"
             image_msg.tag_image.image_data = b"fake_image_data_here"
             
             # Create a game status message
-            status_msg = comms_pb2.GameMessage()
+            status_msg = messages_pb2.GameMessage()
             status_msg.timestamp = 1234567893
             status_msg.game_status.red_team_score = 10
             status_msg.game_status.blue_team_score = 5
@@ -108,8 +110,8 @@ async def test_protobuf_websocket():
             player_status = status_msg.game_status.players.add()
             player_status.player_id = "player123"
             player_status.hitpoints = 100
-            player_status.active_power_up = comms_pb2.NONE
-            player_status.team = comms_pb2.RED
+            player_status.active_power_up = messages_pb2.NONE
+            player_status.team = messages_pb2.RED
             player_status.is_alive = True
             player_status.score = 10
             
@@ -140,7 +142,7 @@ async def test_protobuf_websocket():
                     if isinstance(message, bytes):
                         try:
                             # Try to decode as protobuf
-                            decoded = comms_pb2.GameMessage()
+                            decoded = messages_pb2.GameMessage()
                             decoded.ParseFromString(message)
                             print(f"Decoded protobuf: {decoded}")
                         except Exception as e:

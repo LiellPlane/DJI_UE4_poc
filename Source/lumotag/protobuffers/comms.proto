@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package lumotag.comms;
-
-message Hello {
-  string device_id = 1;
-}
