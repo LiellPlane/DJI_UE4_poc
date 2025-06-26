@@ -38,6 +38,13 @@ message TagEvent {
   optional string image_id = 3;  // Optional reference to a TagImage
 }
 
+// When a player farts on another player
+message Ferts {
+  string tagger_id = 1;
+  string tagged_id = 2;
+  optional string image_id = 3;  // Optional reference to a TagImage
+}
+
 // The actual tag image data
 message TagImage {
   string image_id = 1;
