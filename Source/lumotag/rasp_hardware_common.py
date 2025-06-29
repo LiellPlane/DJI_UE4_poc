@@ -193,7 +193,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         self.cam_res = tuple(reversed(res))
         self.picam2 = Picamera2()
         _config = self.picam2.create_video_configuration(
-                    main={"size": res,  "format": "YUV420"})# , controls={'FrameRate': 40}, controls={"FrameDurationLimits": (233333, 233333)})
+                    main={"size": res,  "format": "YUV420"}, controls={'FrameRate': 40})# , controls={'FrameRate': 40}, controls={"FrameDurationLimits": (233333, 233333)})
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
@@ -211,6 +211,26 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         #print("get_image", output.shape, output.dtype)
         return self.picam2.capture_array("main")[0: x, 0: y]
 
+
+class CsiCameraImageGen_GS_RGB8(factory.ImageGenerator):
+    
+    def __init__(self, res) -> None:
+        self.cam_res = tuple(reversed(res))
+        self.picam2 = Picamera2()
+        _config = self.picam2.create_video_configuration(
+                    main={"size": res,  "format": "RGB888"}, controls={'FrameRate': 40})
+        self.picam2.configure(_config)
+        self.picam2.set_controls({"AwbEnable": 0, "AeMeteringMode": controls.AeMeteringModeEnum.Spot})
+        self.picam2.start()
+        time.sleep(0.2)
+
+    def get_image(self):
+ 
+        x = self.cam_res[0]
+        y = self.cam_res[1]
+        #output = output[0: y, 0: x]#  Need to do this for YUV!
+        #print("get_image", output.shape, output.dtype)
+        return self.picam2.capture_array("main")[0: x, 0: y, 0]  # Returns red channel only
 
 class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
     
@@ -315,7 +335,7 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_HQ)
+            super().__init__(video_modes, CsiCameraImageGen_GS_RGB8)
         elif video_modes == RPICAMv2Noir_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
         else:
