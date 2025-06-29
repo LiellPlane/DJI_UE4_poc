@@ -197,9 +197,13 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
-        self.picam2.set_controls({"AwbEnable": 0, "AeMeteringMode": controls.AeMeteringModeEnum.Spot})
-        #self.picam2.set_controls({"AeMeteringMode": controls.AeMeteringModeEnum.Spot})
-        #self.picam2.set_controls({"AnalogueGain": 10.0})
+        self.picam2.set_controls(
+            {
+                "AwbEnable": 0,
+                "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+                "AnalogueGain": 5.0
+             }
+             )
         self.picam2.start()
         time.sleep(0.2)
 
@@ -335,7 +339,7 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_HQ)
+            super().__init__(video_modes, CsiCameraImageGen_GS)
         elif video_modes == RPICAMv2Noir_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
         else:
