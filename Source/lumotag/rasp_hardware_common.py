@@ -232,8 +232,8 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
                     main={"size": res, "format": "YUV420"}, 
                     lores={"size": lores_res, "format": "YUV420"},
                     controls={'FrameRate': 50})
-        self.picam2.align_configuration(_config) # this helps fix bad alignment for our lowres image
-        self.picam2.configure(_config)
+        # self.picam2.align_configuration(_config) # this helps fix bad alignment for our lowres image
+        # self.picam2.configure(_config)
 
         #  set_controls must come after config!!
         self.picam2.set_controls(
@@ -253,7 +253,7 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
         yuv_image = self.picam2.capture_array("main")
-        test_img = self.picam2.capture_array("lores")
+        # test_img = self.picam2.capture_array("lores")
         
         # Write debug info to file instead of raising exception
         # debug_info = f"test_img debug info - Type: {type(test_img)}"
