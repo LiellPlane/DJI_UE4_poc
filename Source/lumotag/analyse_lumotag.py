@@ -10,9 +10,9 @@ from my_collections import (
     CropSlicing)
 from typing import Callable
 import configs
-from cv2 import resize, INTER_NEAREST
+# from cv2 import resize, INTER_NEAREST
 import time
-
+import cv2
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
     using shared memory as the input"""
@@ -112,7 +112,15 @@ class ImageAnalyser_shared_mem():
                     #     )
                     #img_buff = resize(img_buff.copy(), dim, interpolation=INTER_NEAREST)
                     # might not be optimal putting this here rather than when grabbing the array
-                    img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
+
+                    # was using step sampling before - this is way slower than resize
+                    target_size = (
+                        int(img_buff.shape[1] // self.img_shrink_factor),
+                        int(img_buff.shape[0] // self.img_shrink_factor)
+                    )
+                    img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)
+                    
+                    # img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
                 try:
                     contour_data = self.lumotag_func(
