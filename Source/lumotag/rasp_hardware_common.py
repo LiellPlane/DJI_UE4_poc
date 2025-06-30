@@ -253,7 +253,18 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
         yuv_image = self.picam2.capture_array("main")
+        test_img = self.picam2.capture_array("lores")
         
+        # Check if test_img is a numpy array and provide detailed debugging info
+        if hasattr(test_img, 'shape') and hasattr(test_img, 'dtype'):
+            # It's likely a numpy array, print detailed info
+            raise Exception(f"test_img debug info - Type: {type(test_img)}, Shape: {test_img.shape}, Dtype: {test_img.dtype}")
+        else:
+            # Not a numpy array
+            raise Exception(f"test_img is not a numpy array - Type: {type(test_img)}")
+        
+        if test_img is None:
+            raise Exception("SOMETHING IS GAY")
         return yuv_image[0: x, 0: y]
     
     def get_lores_image(self):
