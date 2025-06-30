@@ -213,7 +213,8 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         y = self.cam_res[1]
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
-        return self.picam2.capture_array("main")[0: x, 0: y]
+        yuv_image = self.picam2.capture_array("main")
+        return yuv_image[0: x, 0: y]
 
 
 class CsiCameraImageGen_GS_RGB8(factory.ImageGenerator):
