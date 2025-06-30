@@ -1367,8 +1367,17 @@ class ImageLibraryMeta(type(ImageGenerator)):
             raise TypeError(f"Class {name} must define 'cam_name'")
         if 'image_id_to_use' not in attrs:
             raise TypeError(f"Class {name} must define 'image_id_to_use'")
+        if 'YUV420_source' not in attrs:
+            raise TypeError(f"Class {name} must define 'YUV420_source'")
         def init(self, res):
-            self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
+            if self.YUV420_source is True:
+                height, width = tuple(reversed(res))
+                # Create a blank RGB image first
+                self.blank_image = np.zeros((height, width, 3), np.uint8)
+                # Convert to YUV420 format
+                self.blank_image = cv2.cvtColor(self.blank_image, cv2.COLOR_BGR2YUV_I420)
+            else:
+                self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
                 filters=["70"]#quadrocode_corners
@@ -1395,9 +1404,12 @@ class ImageLibraryMeta(type(ImageGenerator)):
             if img_to_load is None:
                 return self.blank_image.copy()
             img = cv2.imread(img_to_load)
-            if len(img.shape) == 3:
-                img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            self.blank_image[:] = img
+            if self.YUV420_source is True:
+                self.blank_image[:] = cv2.cvtColor(img, cv2.COLOR_BGR2YUV_I420)
+            else:
+                if len(img.shape) == 3:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                self.blank_image[:] = img
             time.sleep(0.03)
             return self.blank_image
 
@@ -1410,11 +1422,13 @@ class ImageLibraryMeta(type(ImageGenerator)):
 class ImageLibrary_longrange(ImageGenerator, metaclass=ImageLibraryMeta):
     cam_name = "long"
     image_id_to_use = None#"3786"
+    YUV420_source = True
 
 
 class ImageLibrary_closerange(ImageGenerator, metaclass=ImageLibraryMeta):
     cam_name = "close"
     image_id_to_use = None#"3786"
+    YUV420_source = True
 
 
 class ImageLibrary(ImageGenerator):
