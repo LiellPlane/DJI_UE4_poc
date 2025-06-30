@@ -214,28 +214,56 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
         yuv_image = self.picam2.capture_array("main")
+        
         return yuv_image[0: x, 0: y]
 
 
-class CsiCameraImageGen_GS_RGB8(factory.ImageGenerator):
+class CsiCameraImageGen_GS_test(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
         self.cam_res = tuple(reversed(res))
+        # Calculate lores resolution (approximately 1/4 of main resolution)
+        lores_width = int(res[0] // 2)
+        lores_height = int(res[1] // 2)
+        lores_res = (lores_width, lores_height)
+        
         self.picam2 = Picamera2()
         _config = self.picam2.create_video_configuration(
-                    main={"size": res,  "format": "RGB888"}, controls={'FrameRate': 40})
+                    main={"size": res, "format": "YUV420"}, 
+                    lores={"size": lores_res, "format": "YUV420"},
+                    controls={'FrameRate': 50})
+        self.picam2.align_configuration(_config) # this helps fix bad alignment for our lowres image
         self.picam2.configure(_config)
-        self.picam2.set_controls({"AwbEnable": 0, "AeMeteringMode": controls.AeMeteringModeEnum.Spot})
+
+        #  set_controls must come after config!!
+        self.picam2.set_controls(
+            {
+                "AwbEnable": 0,
+                "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+                "AnalogueGain": 5.0
+             }
+             )
         self.picam2.start()
         time.sleep(0.2)
 
     def get_image(self):
- 
+        #output = 
         x = self.cam_res[0]
         y = self.cam_res[1]
         #output = output[0: y, 0: x]#  Need to do this for YUV!
         #print("get_image", output.shape, output.dtype)
-        return self.picam2.capture_array("main")[0: x, 0: y, 0]  # Returns red channel only
+        yuv_image = self.picam2.capture_array("main")
+        
+        return yuv_image[0: x, 0: y]
+    
+    def get_lores_image(self):
+        """Get the low resolution image stream"""
+        lores_x = self.lores_res[1]  # height for YUV420 format
+        lores_y = self.lores_res[0]  # width for YUV420 format
+        yuv_lores_image = self.picam2.capture_array("lores")
+        
+        return yuv_lores_image[0: lores_x, 0: lores_y]
+
 
 class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
     
@@ -352,7 +380,7 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS)
+            super().__init__(video_modes, CsiCameraImageGen_GS_test)
         elif video_modes == RPICAMv2Noir_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
         else:
