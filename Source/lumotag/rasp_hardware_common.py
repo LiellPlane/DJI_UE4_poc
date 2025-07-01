@@ -380,7 +380,7 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
         if video_modes == HQ_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGen_GS_test)
+            super().__init__(video_modes, CsiCameraImageGen_GS)
         elif video_modes == RPICAMv2Noir_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
         else:
