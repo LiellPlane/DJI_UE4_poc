@@ -216,8 +216,8 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         yuv_image = self.picam2.capture_array("main")
         
         # Save raw YUV420 as monochrome image for debugging
-        timestamp = int(time.time())
-        cv2.imwrite(f"yuv420_raw_{timestamp}.jpg", yuv_image)
+        # timestamp = int(time.time())
+        # cv2.imwrite(f"yuv420_raw_{timestamp}.jpg", yuv_image)
         
         return yuv_image[0: x, 0: y]
 
@@ -316,8 +316,8 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
         # Save raw YUV420 as monochrome image for debugging
         yuv_img = self.picam2.capture_array("main")
-        timestamp = int(time.time())
-        cv2.imwrite(f"yuv420_raw_{timestamp}.jpg", yuv_img)
+        # timestamp = int(time.time())
+        # cv2.imwrite(f"yuv420_raw_{timestamp}.jpg", yuv_img)
         return yuv_img[0: x, 0: y] # DO not change!!
         # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
         # comes in at shape = (1080, 2020)
