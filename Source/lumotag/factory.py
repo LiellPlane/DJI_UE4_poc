@@ -855,7 +855,6 @@ class Camera_async_flipflop(Camera):
 
         while True:
             img = _img_gen.get_image()
-            
             # one-time initialise buffer
             if shared_mem_0 is None:
                 shared_mem_0: np.ndarray = np.ndarray(
@@ -1392,26 +1391,35 @@ class ImageLibraryMeta(type(ImageGenerator)):
                         raise Exception(f"could not find image id {self.image_id_to_use}")
             sorted_files = reduce(lambda acc, s: acc + [s] * repeats, sorted_files, [])
             self.cycled_files_generator = itertools.chain(
-                itertools.repeat(None, 5),
+                # itertools.repeat(None, 5),
                 iter(sorted_files)
             )
             self.res = res
 
         def get_image(self):
+            
             img_to_load = next(self.cycled_files_generator)
             # we are preloading the first 5 images as otherwise
             # during system initialise these are not analysed
-            if img_to_load is None:
-                return self.blank_image.copy()
+            print(img_to_load)
+            # if img_to_load is None:
+            #     return self.blank_image.copy()
             img = cv2.imread(img_to_load)
+            # breakpoint()
+            
             if self.YUV420_source is True:
+                
+                print("img.shape", img.shape)
                 self.blank_image[:] = cv2.cvtColor(img, cv2.COLOR_BGR2YUV_I420)
+                x = img.shape[0]
+                y = img.shape[1]
+                print("plop", self.blank_image[0:y, 0:x].shape)
+                return self.blank_image[0:y, 0:x]
             else:
                 if len(img.shape) == 3:
                     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 self.blank_image[:] = img
-            time.sleep(0.03)
-            return self.blank_image
+                return self.blank_image
 
         attrs['__init__'] = init
         attrs['get_image'] = get_image
