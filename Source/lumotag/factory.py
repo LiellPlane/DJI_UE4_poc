@@ -1401,14 +1401,15 @@ class ImageLibraryMeta(type(ImageGenerator)):
             img_to_load = next(self.cycled_files_generator)
             # we are preloading the first 5 images as otherwise
             # during system initialise these are not analysed
-            print(img_to_load)
             # if img_to_load is None:
             #     return self.blank_image.copy()
             img = cv2.imread(img_to_load)
             # breakpoint()
             
             if self.YUV420_source is True:
-                
+                # Convert BGR to RGB if the image has 3 channels (is colour)
+                if img is not None and len(img.shape) == 3 and img.shape[2] == 3:
+                    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
                 print("img.shape", img.shape)
                 self.blank_image[:] = cv2.cvtColor(img, cv2.COLOR_BGR2YUV_I420)
                 x = img.shape[0]
