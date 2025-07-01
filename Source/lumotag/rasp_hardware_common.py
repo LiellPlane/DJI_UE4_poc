@@ -215,6 +215,10 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         #print("get_image", output.shape, output.dtype)
         yuv_image = self.picam2.capture_array("main")
         
+        # Save raw YUV420 as monochrome image for debugging
+        timestamp = int(time.time())
+        cv2.imwrite(f"/tmp/yuv420_raw_{timestamp}.jpg", yuv_image)
+        
         return yuv_image[0: x, 0: y]
 
 
