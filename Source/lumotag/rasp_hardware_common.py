@@ -314,7 +314,11 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
         # return self.picam2.capture_array("main")[0: x, 0: y] VVVV MUST BE THE SAME!!
         # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
-        return self.picam2.capture_array("main")[0: x, 0: y] # DO not change!!
+        # Save raw YUV420 as monochrome image for debugging
+        yuv_img = self.picam2.capture_array("main")
+        timestamp = int(time.time())
+        cv2.imwrite(f"yuv420_raw_{timestamp}.jpg", yuv_img)
+        return yuv_img[0: x, 0: y] # DO not change!!
         # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
         # comes in at shape = (1080, 2020)
         # return self.picam2.capture_array("main")[0: x, 0: y] ^^^ MUST BE THE SAME
