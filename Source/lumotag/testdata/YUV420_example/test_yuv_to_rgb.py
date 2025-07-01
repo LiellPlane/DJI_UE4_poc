@@ -13,7 +13,7 @@ for i, jpg_file in enumerate(jpg_files):
     # Just open the image with OpenCV
     yuv420 = cv2.imread(jpg_file)
     GRAY = cv2.cvtColor(yuv420, cv2.COLOR_BGR2GRAY)
-    rgb = cv2.cvtColor(GRAY, cv2.COLOR_YUV2RGB_I420)
+    rgb = cv2.cvtColor(GRAY, cv2.COLOR_YUV420P2BGR  )
     
     print(f"RGB shape: {rgb.shape}")
     print(f"RGB min/max: {rgb.min()}/{rgb.max()}")
