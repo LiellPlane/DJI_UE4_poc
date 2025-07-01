@@ -322,7 +322,7 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         import random
         if random.randint(0,10) < 2:
             cv2.imwrite(f"yuv420_longrange_cnt2104cnt{timestamp}.jpg", yuv_img)
-            return yuv_img[0: x, 0: y] # DO not change!!
+        return yuv_img[0: x, 0: y] # DO not change!!
         # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
         # comes in at shape = (1080, 2020)
         # return self.picam2.capture_array("main")[0: x, 0: y] ^^^ MUST BE THE SAME
