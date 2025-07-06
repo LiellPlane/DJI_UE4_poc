@@ -1,5 +1,5 @@
 //! Example that definitely works on Raspberry Pi.
-//! Make sure you have "SPI" on your Pi enabled and that MOSI-Pin is connected
+//! Make sure you have "SPI" on your Pi enabled and that MOSI-Pin is connected (GPIO:10)
 //! with DIN-Pin. You just need DIN pin, no clock. WS2818 uses one-wire-protocol.
 //! See the specification for details
 use std::time::Instant;

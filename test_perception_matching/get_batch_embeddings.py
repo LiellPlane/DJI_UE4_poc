@@ -163,7 +163,7 @@ def worker(queue_in, queue_out):
                     params=params,
                     mask=mask
                 )
-                
+                print(len(embedding))
                 # Create an EmbeddingResult with the numpy array
                 result = HSEmbeddingResult(
                     filename=filepath,
@@ -408,7 +408,7 @@ def main():
     try:
         # # Get all image filepaths
         
-        image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
+        image_paths = get_image_filepaths_from_folders([r"D:\match_images_output"])
         # image_paths = get_image_filepaths_from_folders(
         #     [
         #         r"D:\temp_match_imgs\matchable",
