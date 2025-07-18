@@ -1,3 +1,29 @@
+// Type definitions that are referenced in game_types.rs
+use serde::{Deserialize, Serialize};
+
+// Shared types that are referenced in game_types.rs
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Team {
+    Red,
+    Blue,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Player {
+    pub id: String,
+    pub name: String,
+    pub health: u8,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GameStatus {
+    pub players: Vec<Player>,
+    pub game_time: u64,
+    pub status: String,
+}
+
+mod game_types;
+use game_types::{GameMessage, GameMessagePayload, Connection, Tag, TagImage};
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::{accept_async, tungstenite::protocol::Message};
 use futures::{StreamExt, SinkExt};
@@ -7,63 +33,6 @@ use tokio::sync::broadcast;
 use std::sync::Arc;
 use axum::{routing::get, Router};
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
-
-// Simple struct placeholders replacing protobuf messages
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GameMessage {
-    pub timestamp: u64,
-    pub payload: Option<GameMessagePayload>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum GameMessagePayload {
-    Connection(Connection),
-    Tag(Tag),
-    TagImage(TagImage),
-    GameStatus(GameStatus),
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Connection {
-    pub player_name: String,
-    pub model: String,
-    pub team: Team,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Tag {
-    pub tagger_id: String,
-    pub tagged_id: String,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct TagImage {
-    pub player_id: String,
-    pub image_data: Vec<u8>,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GameStatus {
-    pub players: Vec<Player>,
-    pub red_team_score: i32,
-    pub blue_team_score: i32,
-    pub time_remaining: i32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Player {
-    pub id: String,
-    pub name: String,
-    pub team: Team,
-    pub score: i32,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum Team {
-    Red,
-    Blue,
-}
 
 // Interior mutability with concurrency:
 type SharedState = Arc<tokio::sync::RwLock<GameStatus>>;
@@ -90,7 +59,7 @@ async fn main() {
     // Spawn the HTTP server task
     let http_server_handle = tokio::spawn(async {
         if let Err(e) = start_http_server().await {
-            error!("HTTP server failed: {}", e);
+            error!("HTTP server failed: {e}");
             // Optionally, return the error if needed elsewhere, though JoinHandle captures panic/completion
             // Err(e)
         }
@@ -103,7 +72,7 @@ async fn main() {
     tokio::spawn(async move {
         match http_server_handle.await {
             Ok(_) => info!("HTTP server task completed successfully."), // This implies the server stopped gracefully or the task finished.
-            Err(e) => error!("HTTP server task failed: {}", e), // This catches panics or cancellations.
+            Err(e) => error!("HTTP server task failed: {e}"), // This catches panics or cancellations.
         }
     });
 
@@ -112,7 +81,7 @@ async fn main() {
     let addr: SocketAddr = match addr_str.parse() {
         Ok(parsed_addr) => parsed_addr,
         Err(e) => {
-            error!("Failed to parse hardcoded address \"{}\" : {}", addr_str, e);
+            error!("Failed to parse hardcoded address \"{addr_str}\" : {e}");
             std::process::exit(1); 
         }
     };
@@ -120,7 +89,7 @@ async fn main() {
     // Create the TCP listener for WebSockets
     let listener = TcpListener::bind(&addr).await.expect("Failed to bind WebSocket listener");
 
-    info!("WebSocket server listening on: {}", addr);
+    info!("WebSocket server listening on: {addr}");
 
     // Create a broadcast channel with a capacity of 100 messages
     let (broadcast_tx, _) = broadcast::channel(100);
@@ -137,7 +106,7 @@ async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sende
     let ws_stream = match accept_async(stream).await {
         Ok(ws) => ws,
         Err(e) => {
-            error!("Error during the websocket handshake: {}", e);
+            error!("Error during the websocket handshake: {e}");
             return;
         }
     };
@@ -152,7 +121,7 @@ async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sende
 
     // Send a welcome message to the newly connected client
     if let Err(e) = ws_sender.send(Message::Text("Welcome to the WebSocket server!".to_string())).await {
-        error!("Error sending welcome message: {}", e);
+        error!("Error sending welcome message: {e}");
         return;
     }
 
@@ -161,7 +130,7 @@ async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sende
     let send_task = tokio::spawn(async move {
         while let Ok(message) = broadcast_rx.recv().await {
             if let Err(e) = ws_sender.send(message).await {
-                error!("Error sending broadcast message to client: {}", e);
+                error!("Error sending broadcast message to client: {e}");
                 break;
             }
         }
@@ -181,41 +150,41 @@ async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sende
                             Ok(game_message) => {
                                 // Handle the decoded message
                                 if let Err(e) = handle_websocket_message(game_message).await {
-                                    error!("Error handling WebSocket message: {}", e);
+                                    error!("Error handling WebSocket message: {e}");
                                 }
                                 
                                 // Optionally broadcast the original message to other clients
                                 if let Err(e) = broadcast_tx.send(Message::Binary(data)) {
-                                    error!("Error broadcasting message: {}", e);
+                                    error!("Error broadcasting message: {e}");
                                 }
                             }
                             Err(e) => {
-                                error!("Failed to decode JSON message: {}", e);
+                                error!("Failed to decode JSON message: {e}");
                                 // Still broadcast the original message if decoding fails
                                 if let Err(e) = broadcast_tx.send(Message::Binary(data)) {
-                                    error!("Error broadcasting message: {}", e);
+                                    error!("Error broadcasting message: {e}");
                                 }
                             }
                         }
                     }
                     Ok(Message::Text(text)) => {
-                        info!("Received text message: {}", text);
+                        info!("Received text message: {text}");
                         
                         // Try to parse text as JSON GameMessage
                         match serde_json::from_str::<GameMessage>(&text) {
                             Ok(game_message) => {
                                 if let Err(e) = handle_websocket_message(game_message).await {
-                                    error!("Error handling WebSocket message: {}", e);
+                                    error!("Error handling WebSocket message: {e}");
                                 }
                             }
                             Err(e) => {
-                                error!("Failed to decode JSON text message: {}", e);
+                                error!("Failed to decode JSON text message: {e}");
                             }
                         }
                         
                         // Broadcast the text message
                         if let Err(e) = broadcast_tx.send(Message::Text(text)) {
-                            error!("Error broadcasting text message: {}", e);
+                            error!("Error broadcasting text message: {e}");
                         }
                     }
                     Ok(Message::Close(_)) => {
@@ -224,7 +193,7 @@ async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sende
                     }
                     Ok(_) => (), // Handle other message types if needed
                     Err(e) => {
-                        error!("Error receiving message: {}", e);
+                        error!("Error receiving message: {e}");
                         break;
                     }
                 }
@@ -252,22 +221,20 @@ async fn handle_websocket_message(message: GameMessage) -> Result<(), Box<dyn st
                 connection.player_name, connection.model, connection.team);
         }
         Some(GameMessagePayload::Tag(tag)) => {
-            println!("🏷️ Tag event: {} tagged {}", tag.tagger_id, tag.tagged_id);
-            info!("Tag event: {} tagged {}", tag.tagger_id, tag.tagged_id);
+            println!("🏷️ Tag event: {} (health: {})", tag.id, tag.health);
+            info!("Tag event: {} (health: {})", tag.id, tag.health);
         }
         Some(GameMessagePayload::TagImage(tag_image)) => {
             println!("📸 Tag image from {}: {} bytes", 
-                tag_image.player_id, tag_image.image_data.len());
+                tag_image.id, tag_image.image_data.len());
             info!("Tag image from {}: {} bytes", 
-                tag_image.player_id, tag_image.image_data.len());
+                tag_image.id, tag_image.image_data.len());
         }
         Some(GameMessagePayload::GameStatus(game_status)) => {
-            println!("🎯 Game status: {} players, Red: {}, Blue: {}, Time: {}s", 
-                game_status.players.len(), game_status.red_team_score, 
-                game_status.blue_team_score, game_status.time_remaining);
-            info!("Game status: {} players, Red: {}, Blue: {}, Time: {}s", 
-                game_status.players.len(), game_status.red_team_score, 
-                game_status.blue_team_score, game_status.time_remaining);
+            println!("🎯 Game status: {} players", 
+                game_status.players.len());
+            info!("Game status: {} players", 
+                game_status.players.len());
         }
         None => {
             println!("⚠️ Received GameMessage with no payload");
