@@ -1,30 +1,11 @@
 // Type definitions that are referenced in game_types.rs
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
+use rand::Rng;
 
-// Define types that are referenced in game_types.rs but not defined there
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum Team {
-    Red,
-    Blue,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Player {
-    pub id: String,
-    pub name: String,
-    pub health: u8,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GameStatus {
-    pub players: Vec<Player>,
-    pub game_time: u64,
-    pub status: String,
-}
 
 mod game_types;
-use game_types::{GameMessage, GameMessagePayload};
+use game_types::{GameMessage, GameMessagePayload, GameStatus};
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::{accept_async, tungstenite::protocol::Message};
 use futures::{StreamExt, SinkExt};
@@ -35,8 +16,37 @@ use std::sync::Arc;
 use axum::{routing::get, Router};
 use anyhow::Result;
 
-// Interior mutability with concurrency:
+// Shared state pattern for concurrent access:
+// - Arc = Multiple owners across threads
+// - RwLock = Multiple readers OR one writer
+// - GameStatus = Our actual game data
 type SharedState = Arc<tokio::sync::RwLock<GameStatus>>;
+
+// Helper function to create new shared state
+fn create_shared_game_status() -> SharedState {
+    Arc::new(                           // Layer 3: Multiple ownership
+        tokio::sync::RwLock::new(       // Layer 2: Thread-safe access
+            GameStatus {                // Layer 1: Your actual data
+                players: vec![],
+            }
+        )
+    )
+}
+
+// Why each layer is needed:
+// 
+// Layer 1 - GameStatus: Your actual game data
+// 
+// Layer 2 - RwLock: Protects against data races
+//   - Multiple tasks can read at the same time
+//   - Only one task can write at a time
+//   - Prevents crashes from concurrent access
+//
+// Layer 3 - Arc: Allows multiple ownership
+//   - Each task gets its own "handle" to the same data
+//   - When all tasks finish, the data is automatically cleaned up
+//   - "Arc" = "Atomically Reference Counted"
+
 
 async fn start_http_server() -> Result<()> {
     let app = Router::new().route("/", get(|| async { "plz go away" }));
@@ -49,25 +59,26 @@ async fn start_http_server() -> Result<()> {
     Ok(())
 }
 
-async fn start_periodic_broadcast(broadcast_tx: Arc<broadcast::Sender<Message>>) {
+async fn start_periodic_broadcast(broadcast_tx: Arc<broadcast::Sender<Message>>, state: SharedState) {
     let mut interval = tokio::time::interval(tokio::time::Duration::from_millis(50));
     let mut counter = 0u64;
 
     loop {
         interval.tick().await;
         
-        // Create a placeholder GameStatus message
+        // Create a placeholder GameStatus message with random health values
+        let mut rng = rand::thread_rng();
         let game_status = game_types::GameStatus {
             players: vec![
                 game_types::Player {
                     id: "player1".to_string(),
                     name: "Alice".to_string(),
-                    health: 100,
+                    health: rng.gen_range(1..=100),
                 },
                 game_types::Player {
                     id: "player2".to_string(),
                     name: "Bob".to_string(),
-                    health: 85,
+                    health: rng.gen_range(1..=100),
                 },
             ],
         };
@@ -112,6 +123,9 @@ async fn main() {
     }
     env_logger::init();
 
+    // Create the shared state
+    let shared_state = create_shared_game_status();
+
     // Spawn the HTTP server task
     let http_server_handle = tokio::spawn(async {
         if let Err(e) = start_http_server().await {
@@ -152,16 +166,28 @@ async fn main() {
     let broadcast_tx = Arc::new(broadcast_tx);
 
     // Spawn a task to periodically broadcast game status updates
-    let periodic_broadcast_handle = tokio::spawn(start_periodic_broadcast(broadcast_tx.clone()));
-    info!("Periodic broadcast task started - sending GameStatus every 5 seconds");
+    let periodic_broadcast_handle = tokio::spawn(start_periodic_broadcast(
+        broadcast_tx.clone(), 
+        shared_state.clone()
+    ));
+    info!("Periodic broadcast task started - sending GameStatus hf");
+
+    // Monitor the periodic broadcast task
+    tokio::spawn(async move {
+        match periodic_broadcast_handle.await {
+            Ok(_) => info!("Periodic broadcast task completed (this shouldn't happen)"),
+            Err(e) => error!("Periodic broadcast task failed: {e}"),
+        }
+    });
 
     while let Ok((stream, _)) = listener.accept().await {
         let tx = broadcast_tx.clone();
-        tokio::spawn(handle_connection(stream, tx));
+        let state = shared_state.clone();
+        tokio::spawn(handle_connection(stream, tx, state));
     }
 }
 
-async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sender<Message>>) {
+async fn handle_connection(stream: TcpStream, broadcast_tx: Arc<broadcast::Sender<Message>>, state: SharedState) {
     // Accept the WebSocket connection
     let ws_stream = match accept_async(stream).await {
         Ok(ws) => ws,
