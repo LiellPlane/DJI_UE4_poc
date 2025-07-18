@@ -1,5 +1,6 @@
 // Type definitions that are referenced in game_types.rs
 use serde::{Deserialize, Serialize};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 // Define types that are referenced in game_types.rs but not defined there
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -48,6 +49,61 @@ async fn start_http_server() -> Result<()> {
     Ok(())
 }
 
+async fn start_periodic_broadcast(broadcast_tx: Arc<broadcast::Sender<Message>>) {
+    let mut interval = tokio::time::interval(tokio::time::Duration::from_millis(50));
+    let mut counter = 0u64;
+
+    loop {
+        interval.tick().await;
+        
+        // Create a placeholder GameStatus message
+        let game_status = game_types::GameStatus {
+            players: vec![
+                game_types::Player {
+                    id: "player1".to_string(),
+                    name: "Alice".to_string(),
+                    health: 100,
+                },
+                game_types::Player {
+                    id: "player2".to_string(),
+                    name: "Bob".to_string(),
+                    health: 85,
+                },
+            ],
+        };
+
+        let game_message = GameMessage {
+            timestamp: SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .unwrap()
+                .as_secs(),
+            payload: Some(GameMessagePayload::GameStatus(game_status)),
+        };
+
+        // Only broadcast if there are active connections
+        if broadcast_tx.receiver_count() > 0 {
+            // Serialize the message to JSON
+            match serde_json::to_string(&game_message) {
+                Ok(json_message) => {
+                    counter += 1;
+                    info!("Broadcasting periodic message #{counter}: GameStatus update to {} clients", broadcast_tx.receiver_count());
+                    
+                    // Send the message to all connected clients
+                    if let Err(e) = broadcast_tx.send(Message::Text(json_message)) {
+                        error!("Failed to broadcast periodic message: {e}");
+                    }
+                }
+                Err(e) => {
+                    error!("Failed to serialize periodic message: {e}");
+                }
+            }
+        } else {
+            // Optionally log that we're skipping broadcast (you might want to remove this in production)
+            // info!("Skipping broadcast - no active connections");
+        }
+    }
+}
+
 #[tokio::main]
 async fn main() {
     // Initialize the logger with info level if RUST_LOG is not set
@@ -94,6 +150,10 @@ async fn main() {
     // Create a broadcast channel with a capacity of 100 messages
     let (broadcast_tx, _) = broadcast::channel(100);
     let broadcast_tx = Arc::new(broadcast_tx);
+
+    // Spawn a task to periodically broadcast game status updates
+    let periodic_broadcast_handle = tokio::spawn(start_periodic_broadcast(broadcast_tx.clone()));
+    info!("Periodic broadcast task started - sending GameStatus every 5 seconds");
 
     while let Ok((stream, _)) = listener.accept().await {
         let tx = broadcast_tx.clone();
