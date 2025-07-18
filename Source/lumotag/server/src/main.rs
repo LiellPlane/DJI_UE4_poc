@@ -1,7 +1,7 @@
 // Type definitions that are referenced in game_types.rs
 use serde::{Deserialize, Serialize};
 
-// Shared types that are referenced in game_types.rs
+// Define types that are referenced in game_types.rs but not defined there
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Team {
     Red,
@@ -23,7 +23,7 @@ pub struct GameStatus {
 }
 
 mod game_types;
-use game_types::{GameMessage, GameMessagePayload, Connection, Tag, TagImage};
+use game_types::{GameMessage, GameMessagePayload};
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::{accept_async, tungstenite::protocol::Message};
 use futures::{StreamExt, SinkExt};
@@ -215,10 +215,10 @@ async fn handle_websocket_message(message: GameMessage) -> Result<(), Box<dyn st
     
     match message.payload {
         Some(GameMessagePayload::Connection(connection)) => {
-            println!("👤 Player connected: {} ({}) - Team: {:?}", 
-                connection.player_name, connection.model, connection.team);
-            info!("Player connected: {} ({}) - Team: {:?}", 
-                connection.player_name, connection.model, connection.team);
+            println!("👤 Player connected: {}", 
+                connection.player_name,);
+            info!("Player connected: {}", 
+                connection.player_name,);
         }
         Some(GameMessagePayload::Tag(tag)) => {
             println!("🏷️ Tag event: {} (health: {})", tag.id, tag.health);

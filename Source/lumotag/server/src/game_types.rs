@@ -10,6 +10,12 @@ pub struct Player {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct GameStatus {
+    pub players: Vec<Player>,
+}
+
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Tag {
     pub id: String,
     pub name: String,
@@ -41,7 +47,6 @@ pub enum GameMessagePayload {
 pub struct Connection {
     pub player_name: String,
     pub model: String,
-    pub team: Team,
 }
 
 
