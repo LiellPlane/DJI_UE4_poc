@@ -1,7 +1,6 @@
 // Type definitions that are referenced in game_types.rs
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
-use rand::Rng;
 
 
 mod game_types;
@@ -66,21 +65,10 @@ async fn start_periodic_broadcast(broadcast_tx: Arc<broadcast::Sender<Message>>,
     loop {
         interval.tick().await;
         
-        // Create a placeholder GameStatus message with random health values
-        let mut rng = rand::thread_rng();
-        let game_status = game_types::GameStatus {
-            players: vec![
-                game_types::Player {
-                    id: "player1".to_string(),
-                    name: "Alice".to_string(),
-                    health: rng.gen_range(1..=100),
-                },
-                game_types::Player {
-                    id: "player2".to_string(),
-                    name: "Bob".to_string(),
-                    health: rng.gen_range(1..=100),
-                },
-            ],
+        // Read the real game state from shared state
+        let game_status = {
+            let state_read = state.read().await; // get read lock
+            state_read.clone()
         };
 
         let game_message = GameMessage {
