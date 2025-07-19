@@ -75,6 +75,9 @@ sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
 sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
 #sudo bash -c "sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart"
 
+
+# this is new - sometimes wayfire.ini is not working and this fixes it somethow
+echo "=== Fixing Auto-Login Session ===" && echo "Current session:" && sudo grep "autologin-session" /etc/lightdm/lightdm.conf && echo "Changing to wayfire..." && sudo sed -i 's/autologin-session=LXDE-pi-labwc/autologin-session=LXDE-pi-wayfire/' /etc/lightdm/lightdm.conf && echo "New setting:" && sudo grep "autologin-session" /etc/lightdm/lightdm.conf
 # these instructions for stopping the screen blanking might be temporary only
 #export DISPLAY=:0;
 #xset s noblank;
