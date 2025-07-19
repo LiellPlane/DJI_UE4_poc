@@ -49,10 +49,12 @@ print(f"MY_ID: {MY_ID} url: {url}")
 #codepath = "/home/scambilight/DJI_UE4_poc"
 # **** might need sudo git config --global --add safe.directory /home/scambilight/DJI_UE4_poc
 # clean
-fetch_result = subprocess.run(['rm', '/home/lumotag/*.cunt'], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-now = datetime.now()
 printabletime = now.strftime("%Y-%m-%d_%H-%M-%S")
+fetch_result = subprocess.run(['rm', '/home/lumotag/*.cunt'], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+with open('/home/lumotag/startupfileworking.cunt', 'w') as file:
+    file.write(f"{printabletime}starting start up script")
+now = datetime.now()
+
 
 print(fetch_result)
 if skip_update is False:

@@ -1,8 +1,9 @@
 
 #!/bin/bash
-# run this on raspberry pi in user folder (~/)
-# maybe use sudo bash -c  if any permission problems
-# do not run from within repo so copy the file out into ~/
+# run this on raspberry pi in user folder (~/) - copy it there while sshed
+
+# maybe use sudo bash -c  if any permission problems CAREFUL! Might break auto-start stuff
+
 
 
 sudo apt update
@@ -59,7 +60,7 @@ sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 sudo python3 -m pip install pika
 #-----------------------------
 
-sudo apt-get install imutils
+# sudo apt-get install imutils
 #pip install imutils
 
 # this is for autostart- works for raspberry pi 4 only!
@@ -85,7 +86,9 @@ sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayf
 
 # raspberry pi 4
 #echo turn on hdmi_force_hotplug in /boot/config.txt
-
+cat /home/lumotag/.config/wayfire.ini
+ls /boot/bootstrap.py
+cat /home/lumotag/MY_INFO.txt
 echo '/home/lumotag/MY_INFO.txt'
 echo 'please check info is correct, such as lumotag gun model"
 
