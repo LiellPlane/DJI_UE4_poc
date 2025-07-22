@@ -1,5 +1,6 @@
 
 import decode_clothID_v2 as decode_clothID
+from factory import decode_image_id
 from multiprocessing import Process, Queue
 from dataclasses import dataclass
 import numpy as np
@@ -7,12 +8,19 @@ from functools import reduce
 from utils import time_it
 from my_collections import (
     SharedMem_ImgTicket,
-    CropSlicing)
+    CropSlicing,
+    ShapeItem)
 from typing import Callable
 import configs
 # from cv2 import resize, INTER_NEAREST
 import time
 import cv2
+
+@dataclass
+class AnalysisOutput():
+    imageid: str
+    Results: list[ShapeItem | None]
+
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
     using shared memory as the input"""
@@ -97,6 +105,8 @@ class ImageAnalyser_shared_mem():
                     self.sharedmem_bufs[shared_details.index].buf,
                     dtype=('uint8')
                         )[0:bytesize].reshape(shared_details.res)
+                # have to get id here before image is cropped or decimated
+                embedded_id = decode_image_id(img_buff)
             #with time_it("analyse lumotag:crop"):
                 # add any cropping
                 if self.img_crop is not None:
@@ -123,7 +133,7 @@ class ImageAnalyser_shared_mem():
                     # img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
            # with time_it("analyse lumotag: find lumotag"):
                 try:
-                    contour_data = self.lumotag_func(
+                    contour_data: list[ShapeItem | None] = self.lumotag_func(
                         img_buff, workingdata)
                 except Exception as e:
                     print(f"Error finding lumotag: {e}")
@@ -143,4 +153,5 @@ class ImageAnalyser_shared_mem():
             # import random
             # randimtew = random.randint(10,50)
             # time.sleep(randimtew/1000)
-            analysis_output_q.put(contour_data, block=True, timeout=None)
+
+            analysis_output_q.put(AnalysisOutput(embedded_id, contour_data), block=True, timeout=None)

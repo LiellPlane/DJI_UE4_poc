@@ -95,7 +95,6 @@ class WorkingData():
             self,
             OS_friendly_name: str,
             debugdetails: base_find_lumotag_config) -> None:
-
         self.debug_img_cnt = 0
         self.debug_subfldr = None
         self.debug_details = debugdetails

@@ -414,18 +414,19 @@ def main():
                     # protected member :(
                     res_for_affine_transform_lookup = img_analyser.camera_source_class_ref._store_res #BAD LIELL!!! 
                     try:
-                        result = img_analyser.analysis_output_q.get(block=True, timeout=0)
+                        result: analyse_lumotag.AnalysisOutput = img_analyser.analysis_output_q.get(block=True, timeout=0)
                         if isinstance(result, Exception):
                             raise result# this is really shit but better than nothing or dying downstream in a confusing way
                         perfmonitor.manual_measure(f"{img_analyser.OS_friendly_name}", img_analyser.get_analysis_time_ms())
-                        if result:
+
+                        if result.Results:
                             
                             #file_system.save_barcodepair(result, message="falsepos")
                             #save_analysis(result)
 
                             if res_for_affine_transform_lookup not in analysis:
                                 analysis[res_for_affine_transform_lookup] = []
-                            analysis[res_for_affine_transform_lookup].extend(result)
+                            analysis[res_for_affine_transform_lookup].extend(result.Results)
                     except queue.Empty:
                         # raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
                         # print(f"waiting for analysis {img_analyser.OS_friendly_name}")

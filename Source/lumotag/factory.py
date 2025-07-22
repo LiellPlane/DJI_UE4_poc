@@ -58,14 +58,18 @@ def create_image_id(alphanumeric_chars=(
     """Create strictly alphanumeric ID with LID markers"""
     # Randomly select 10 alphanumeric characters
     random_id = np.array(np.random.choice(alphanumeric_chars, 10), dtype=np.uint8)
-    lid_array = np.array([76, 73, 68], dtype=np.uint8)
+    lid_array = np.array([76, 73, 68], dtype=np.uint8) # LID in ascii!
     stacked_id = np.concatenate([lid_array, random_id, lid_array])
     return stacked_id
 
 def decode_image_id(image: np.ndarray) -> str:
     # Extract the full ID row (now 16 elements: LID + 10 random + LID)
     id_row = image[0, 0:16]
-    return id_row.tobytes().decode('utf-8')
+    decoded = id_row.tobytes().decode('utf-8')
+    # see create_image_id how ID is created
+    if decoded[0:3] != "LID" or decoded[-3:] != "LID":
+        raise ValueError(f"image embedded ID not correctly formed: {decoded}")
+    return decoded
 
 
 class RelayFunction(Enum):
