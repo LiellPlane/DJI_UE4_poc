@@ -100,7 +100,7 @@ class CardioGraph:
             # Update last point for next iteration.
             self.last_points[i] = y
 
-    def get_image(self):
+    def _get_image(self):
         """Return the current graph image."""
         return self.img
 

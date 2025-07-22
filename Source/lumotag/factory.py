@@ -621,12 +621,18 @@ class Triggers(ABC):
     def test_states(self):
         pass
 
-
 class ImageGenerator(ABC):
     @abstractmethod
-    def get_image(self):
+    def _get_image(self):
         pass
-
+    def get_image(self):
+        img = self._get_image()
+        img_id = self.create_image_id(255, 10)
+        img[0, 0:img_id.shape[0]] = img_id
+        return img
+    @staticmethod
+    def create_image_id(base_, elements):
+        return np.random.randint(0, base_, (elements), dtype=np.uint8)
 
 class Camera(ABC):
 
@@ -1388,7 +1394,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
             )
             self.res = res
 
-        def get_image(self):
+        def _get_image(self):
             img_to_load = next(self.cycled_files_generator)
             # we are preloading the first 5 images as otherwise
             # during system initialise these are not analysed
@@ -1402,7 +1408,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
             return self.blank_image
 
         attrs['__init__'] = init
-        attrs['get_image'] = get_image
+        attrs['_get_image'] = _get_image
         
         return super().__new__(cls, name, bases, attrs)
 
@@ -1431,7 +1437,7 @@ class ImageLibrary(ImageGenerator):
         if len(self.images) < 1:
             raise Exception("could not find images in folder")
 
-    def get_image(self):
+    def _get_image(self):
         img_to_load = random.choice(self.images)
         
         img = cv2.imread(img_to_load)
@@ -1456,7 +1462,7 @@ class test_ui_elements(ImageGenerator):
             raise Exception("could not find images in folder")
 
 
-    def get_image(self):
+    def _get_image(self):
         self.image_freq -= 1
         print(self.image_freq)
         if self.image_freq == 0:

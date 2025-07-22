@@ -207,7 +207,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         self.picam2.start()
         time.sleep(0.2)
 
-    def get_image(self):
+    def _get_image(self):
         #output = 
         x = self.cam_res[0]
         y = self.cam_res[1]
@@ -252,7 +252,7 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         self.picam2.start()
         time.sleep(0.2)
 
-    def get_image(self):
+    def _get_image(self):
         #output = 
         x = self.cam_res[0]
         y = self.cam_res[1]
@@ -304,7 +304,7 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         self.picam2.start()
         time.sleep(0.2)
 
-    def get_image(self):
+    def _get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
 
@@ -349,7 +349,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         self.picam2.start()
         time.sleep(0.2)
 
-    def get_image(self):
+    def _get_image(self):
         x = self.cam_res[0]
         y = self.cam_res[1]
 

@@ -142,7 +142,7 @@ class SynthImgGen(factory.ImageGenerator):
         self.blank_image = np.zeros(res, np.uint8)
         self.res = res
 
-    def get_image(self):
+    def _get_image(self):
         if len(self.res) == 3:
             self.blank_image[:,:,:] = random.randint(0,255)
         else:
