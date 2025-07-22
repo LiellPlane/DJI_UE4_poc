@@ -49,6 +49,25 @@ from lumotag import get_perspectivewarp_dictkey, get_perspectivewarp_filename
 
 RELAY_BOUNCE_S = 0.02
 
+def create_image_id(alphanumeric_chars=(
+    # put these here so we can cache it without using a global
+    list(range(48, 58)) +    # 0-9
+    list(range(65, 91)) +    # A-Z
+    list(range(97, 123))     # a-z
+)):
+    """Create strictly alphanumeric ID with LID markers"""
+    # Randomly select 10 alphanumeric characters
+    random_id = np.array(np.random.choice(alphanumeric_chars, 10), dtype=np.uint8)
+    lid_array = np.array([76, 73, 68], dtype=np.uint8)
+    stacked_id = np.concatenate([lid_array, random_id, lid_array])
+    return stacked_id
+
+def decode_image_id(image: np.ndarray) -> str:
+    # Extract the full ID row (now 16 elements: LID + 10 random + LID)
+    id_row = image[0, 0:16]
+    return id_row.tobytes().decode('utf-8')
+
+
 class RelayFunction(Enum):
     torch = 1
     unused_1 = 2
@@ -627,12 +646,10 @@ class ImageGenerator(ABC):
         pass
     def get_image(self):
         img = self._get_image()
-        img_id = self.create_image_id(255, 10)
+        img_id = create_image_id()
         img[0, 0:img_id.shape[0]] = img_id
+        decoded_id = decode_image_id(img)
         return img
-    @staticmethod
-    def create_image_id(base_, elements):
-        return np.random.randint(0, base_, (elements), dtype=np.uint8)
 
 class Camera(ABC):
 
