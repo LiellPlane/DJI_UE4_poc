@@ -16,6 +16,27 @@ import configs
 import time
 import cv2
 
+
+def debuffer_image(img_buff: memoryview, res: tuple[int, int]) -> np.ndarray:
+    # common function to rebuild image from shared memory buffer
+    bytesize = reduce((lambda x, y: x * y), res)
+    
+    # ORIGINAL CODE (commented out for reference):
+    # img_buff = np.frombuffer(
+    #     img_buff,
+    #     dtype=('uint8')
+    #         )[0:bytesize].reshape(res)
+    # return img_buff
+    
+    # Create array with correct shape directly to avoid multiple copies
+    # WARNING: THIS IS A VIEW INTO THE ORIGINAL IMAGE BUFFER
+    return np.ndarray(
+        shape=res,
+        dtype=np.uint8,
+        buffer=img_buff[:bytesize]
+    )
+
+
 @dataclass
 class AnalysisOutput():
     imageid: str
@@ -94,19 +115,25 @@ class ImageAnalyser_shared_mem():
             # print(f"ANALOL received analysis details {self.OS_friendly_name}")
             #print("ANALOL received analysis details", shared_details)
             with time_it(f"analyse lumotag{self.OS_friendly_name}: total", workingdata.debug_details.PRINT_DEBUG):
-
-                # shared memory is in chunks of 4096 - so have to slice it
-                bytesize = reduce((lambda x, y: x * y), shared_details.res)
-                # grab the image out of shared memory using the
-                # information (index, resolution of image)
-                # from the input queue (usually from image generator)
                 
-                img_buff = np.frombuffer(
+                img_buff = debuffer_image(
                     self.sharedmem_bufs[shared_details.index].buf,
-                    dtype=('uint8')
-                        )[0:bytesize].reshape(shared_details.res)
+                    shared_details.res
+                    )
+
+                # # shared memory is in chunks of 4096 - so have to slice it
+                # bytesize = reduce((lambda x, y: x * y), shared_details.res)
+                # # grab the image out of shared memory using the
+                # # information (index, resolution of image)
+                # # from the input queue (usually from image generator)
+                
+                # img_buff = np.frombuffer(
+                #     self.sharedmem_bufs[shared_details.index].buf,
+                #     dtype=('uint8')
+                #         )[0:bytesize].reshape(shared_details.res)
                 # have to get id here before image is cropped or decimated
                 embedded_id = decode_image_id(img_buff)
+                print(f"embedded id: {embedded_id}")
             #with time_it("analyse lumotag:crop"):
                 # add any cropping
                 if self.img_crop is not None:
