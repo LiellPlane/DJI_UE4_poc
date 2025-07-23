@@ -158,6 +158,18 @@ class ImageAnalyser_shared_mem():
                     img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)
                     
                     # img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
+                else:
+                    # If no shrink factor, we still need to copy to protect against shared memory overwrites
+                    img_buff = img_buff.copy()
+
+                # Verify we have a copy (not a view into shared memory)
+                # Check if the numpy array owns its data (is a copy, not a view)
+                if not img_buff.flags.owndata:
+                    error_msg = f"Image buffer is still a view into shared memory! {self.OS_friendly_name}"
+                    print(f"ERROR: {error_msg}")
+                    analysis_output_q.put(RuntimeError(error_msg), block=True, timeout=None)
+                    raise RuntimeError(error_msg)
+
            # with time_it("analyse lumotag: find lumotag"):
                 try:
                     contour_data: list[ShapeItem | None] = self.lumotag_func(

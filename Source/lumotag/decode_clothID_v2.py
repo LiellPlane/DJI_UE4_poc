@@ -1545,9 +1545,9 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
     with time_it("pre-processing msers: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
-                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY).copy()
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
             else:
-                img_grayscale = inputimg.copy() # get the image source changing here sometimes
+                img_grayscale = inputimg # get the image source changing here sometimes
         dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
     # with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
     #     #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
@@ -1618,9 +1618,9 @@ def find_lumotag(inputimg, dataobject : WorkingData):
     with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
-                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY).copy()
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
             else:
-                img_grayscale = inputimg.copy()
+                img_grayscale = inputimg
         dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
         #copy original image into folder
         #orig_img = img.copy()
