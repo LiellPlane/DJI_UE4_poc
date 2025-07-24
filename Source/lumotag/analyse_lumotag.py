@@ -99,8 +99,6 @@ class ImageAnalyser_shared_mem():
                 self.safe_mem_details_func(),
                 block=True,
                 timeout=None)
-        else:
-            plop=1
 
 
     def async_imganalysis_loop(
