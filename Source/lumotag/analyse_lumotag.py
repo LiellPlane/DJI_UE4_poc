@@ -42,6 +42,7 @@ class AnalysisOutput():
     imageid: str
     Results: list[ShapeItem | None]
 
+
 class ImageAnalyser_shared_mem():
     """class to provide image analysis results
     using shared memory as the input"""
@@ -57,7 +58,6 @@ class ImageAnalyser_shared_mem():
             lumotag_func: Callable[[np.ndarray, decode_clothID.WorkingData], list]) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.lumotag_func = lumotag_func
-        self.safe_index = None
         self.camera_source_class_ref = camera_source_class_ref
         self.OS_friendly_name = OS_friendly_name
         self.safe_mem_details_func = safe_mem_details_func
@@ -86,12 +86,22 @@ class ImageAnalyser_shared_mem():
     def trigger_analysis(self):
         
         #print("putting record for analyis", mapped_details)
-        if self.input_shared_mem_index_q.empty():# skip if procesing something already
+        # if self.input_shared_mem_index_q.empty():# skip if procesing something already
+        #     self.last_analysis_time = time.perf_counter() # reset time out
+        #     self.input_shared_mem_index_q.put(
+        #         self.safe_mem_details_func(),
+        #         block=True,
+        #         timeout=None)
+        #print("putting record for analyis", mapped_details)
+        if not self.input_shared_mem_index_q.full():# skip if procesing something already
             self.last_analysis_time = time.perf_counter() # reset time out
             self.input_shared_mem_index_q.put(
                 self.safe_mem_details_func(),
                 block=True,
                 timeout=None)
+        else:
+            plop=1
+
 
     def async_imganalysis_loop(
             self,
@@ -133,13 +143,13 @@ class ImageAnalyser_shared_mem():
                 #         )[0:bytesize].reshape(shared_details.res)
                 # have to get id here before image is cropped or decimated
                 embedded_id = decode_image_id(img_buff)
-                print(f"embedded id: {embedded_id}")
+                # print(f"embedded id: {embedded_id}")
             #with time_it("analyse lumotag:crop"):
                 # add any cropping
                 if self.img_crop is not None:
                     img_buff = img_buff[
                             self.img_crop.top:self.img_crop.lower,
-                            self.img_crop.left:self.img_crop.right]
+                            self.img_crop.left:self.img_crop.right].copy()
 
                 if self.img_shrink_factor is not None:
                     # keep this handy incase we want more flexible resizing
@@ -160,6 +170,7 @@ class ImageAnalyser_shared_mem():
                     # img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
                 else:
                     # If no shrink factor, we still need to copy to protect against shared memory overwrites
+                    # copying is implict if we resize the image
                     img_buff = img_buff.copy()
 
                 # Verify we have a copy (not a view into shared memory)
