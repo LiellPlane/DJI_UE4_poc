@@ -11,6 +11,7 @@ from my_collections import (
     CropSlicing,
     ShapeItem)
 from typing import Callable
+from collections import OrderedDict
 import configs
 # from cv2 import resize, INTER_NEAREST
 import time
@@ -67,6 +68,7 @@ class ImageAnalyser_shared_mem():
         self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
         self.last_analysis_time = time.perf_counter()
+        self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -111,6 +113,8 @@ class ImageAnalyser_shared_mem():
             debugdetails=self.debug_config)
 
         while True:
+
+
             # get index of last image buffer - this will be safe
             # until two conditions are met:
             # 1: a new asynchronous image has been generated
@@ -145,7 +149,7 @@ class ImageAnalyser_shared_mem():
             #with time_it("analyse lumotag:crop"):
                 # add any cropping
                 if self.img_crop is not None:
-                    img_buff = img_buff[
+                    self.ImageMem[embedded_id] = img_buff[
                             self.img_crop.top:self.img_crop.lower,
                             self.img_crop.left:self.img_crop.right].copy()
 
@@ -163,17 +167,17 @@ class ImageAnalyser_shared_mem():
                         int(img_buff.shape[1] // self.img_shrink_factor),
                         int(img_buff.shape[0] // self.img_shrink_factor)
                     )
-                    img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)
+                    self.ImageMem[embedded_id] = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)
                     
                     # img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
                 else:
                     # If no shrink factor, we still need to copy to protect against shared memory overwrites
                     # copying is implict if we resize the image
-                    img_buff = img_buff.copy()
+                    self.ImageMem[embedded_id] = img_buff.copy()
 
                 # Verify we have a copy (not a view into shared memory)
                 # Check if the numpy array owns its data (is a copy, not a view)
-                if not img_buff.flags.owndata:
+                if not self.ImageMem[embedded_id].flags.owndata:
                     error_msg = f"Image buffer is still a view into shared memory! {self.OS_friendly_name}"
                     print(f"ERROR: {error_msg}")
                     analysis_output_q.put(RuntimeError(error_msg), block=True, timeout=None)
@@ -182,7 +186,7 @@ class ImageAnalyser_shared_mem():
            # with time_it("analyse lumotag: find lumotag"):
                 try:
                     contour_data: list[ShapeItem | None] = self.lumotag_func(
-                        img_buff, workingdata)
+                        self.ImageMem[embedded_id], workingdata)
                 except Exception as e:
                     print(f"Error finding lumotag: {e}")
                     # this will explode but at least we get something back
@@ -195,7 +199,12 @@ class ImageAnalyser_shared_mem():
                         contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
 
                 # correct contour data here? not sure if correct place
+                if len(contour_data) == 0:
+                    # no results - not interesting to us (yet)
+                    del self.ImageMem[embedded_id]
                 
+                if len(self.ImageMem)> 100:
+                    _, _ = self.ImageMem.popitem(last=False)
             #print("ANALOL waiting to put response")
             # import time
             # import random
