@@ -169,7 +169,7 @@ def main():
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
     
-    image_analysis = []
+    # image_analysis = []
 
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
