@@ -13,24 +13,13 @@ from my_collections import (
 from typing import Callable
 from collections import OrderedDict
 import configs
-# from cv2 import resize, INTER_NEAREST
 import time
 import cv2
 
 
 def debuffer_image(img_buff: memoryview, res: tuple[int, int]) -> np.ndarray:
     # common function to rebuild image from shared memory buffer
-    bytesize = reduce((lambda x, y: x * y), res)
-    
-    # ORIGINAL CODE (commented out for reference):
-    # img_buff = np.frombuffer(
-    #     img_buff,
-    #     dtype=('uint8')
-    #         )[0:bytesize].reshape(res)
-    # return img_buff
-    
-    # Create array with correct shape directly to avoid multiple copies
-    # WARNING: THIS IS A VIEW INTO THE ORIGINAL IMAGE BUFFER
+    bytesize = res[0] * res[1]
     return np.ndarray(
         shape=res,
         dtype=np.uint8,
@@ -132,56 +121,25 @@ class ImageAnalyser_shared_mem():
                     self.sharedmem_bufs[shared_details.index].buf,
                     shared_details.res
                     )
-
-                # # shared memory is in chunks of 4096 - so have to slice it
-                # bytesize = reduce((lambda x, y: x * y), shared_details.res)
-                # # grab the image out of shared memory using the
-                # # information (index, resolution of image)
-                # # from the input queue (usually from image generator)
-                
-                # img_buff = np.frombuffer(
-                #     self.sharedmem_bufs[shared_details.index].buf,
-                #     dtype=('uint8')
-                #         )[0:bytesize].reshape(shared_details.res)
-                # have to get id here before image is cropped or decimated
                 embedded_id = decode_image_id(img_buff)
-                # print(f"embedded id: {embedded_id}")
-            #with time_it("analyse lumotag:crop"):
                 # add any cropping
                 if self.img_crop is not None:
-                    self.ImageMem[embedded_id] = img_buff[
+                    img_buff = img_buff[
                             self.img_crop.top:self.img_crop.lower,
-                            self.img_crop.left:self.img_crop.right].copy()
+                            self.img_crop.left:self.img_crop.right]
 
                 if self.img_shrink_factor is not None:
-                    # keep this handy incase we want more flexible resizing
-                    # dim = (
-                    #     int(img_buff.shape[0] * self.img_shrink_factor),
-                    #     int(img_buff.shape[0] * self.img_shrink_factor)
-                    #     )
-                    #img_buff = resize(img_buff.copy(), dim, interpolation=INTER_NEAREST)
-                    # might not be optimal putting this here rather than when grabbing the array
-
                     # was using step sampling before - this is way slower than resize
                     target_size = (
                         int(img_buff.shape[1] // self.img_shrink_factor),
                         int(img_buff.shape[0] // self.img_shrink_factor)
                     )
-                    self.ImageMem[embedded_id] = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)
-                    
-                    # img_buff = img_buff[::self.img_shrink_factor,::self.img_shrink_factor]
-                else:
-                    # If no shrink factor, we still need to copy to protect against shared memory overwrites
-                    # copying is implict if we resize the image
-                    self.ImageMem[embedded_id] = img_buff.copy()
+                    img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)  # type: ignore
 
-                # Verify we have a copy (not a view into shared memory)
-                # Check if the numpy array owns its data (is a copy, not a view)
-                if not self.ImageMem[embedded_id].flags.owndata:
-                    error_msg = f"Image buffer is still a view into shared memory! {self.OS_friendly_name}"
-                    print(f"ERROR: {error_msg}")
-                    analysis_output_q.put(RuntimeError(error_msg), block=True, timeout=None)
-                    raise RuntimeError(error_msg)
+                if img_buff.flags.owndata:
+                    self.ImageMem[embedded_id] = img_buff
+                else:
+                    self.ImageMem[embedded_id] = img_buff.copy()
 
            # with time_it("analyse lumotag: find lumotag"):
                 try:
