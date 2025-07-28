@@ -651,8 +651,10 @@ class ImageGenerator(ABC):
     def get_image(self):
         img = self._get_image()
         img_id = create_image_id()
-        img[0, 0:img_id.shape[0]] = img_id
-        decoded_id = decode_image_id(img)
+        if len(img.shape) == 2:
+            img[0, 0:img_id.shape[0]] = img_id
+        else:
+            img[0, 0:img_id.shape[0], 0] = img_id
         return img
 
 class Camera(ABC):
