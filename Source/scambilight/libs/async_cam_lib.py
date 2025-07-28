@@ -138,7 +138,7 @@ class SynthImgGen(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(res, np.uint8)
 
-    def get_image(self):
+    def _get_image(self):
         self.blank_image[:,:,:] = random.randint(0,255)
         self.blank_image = cv2.circle(
             self.blank_image,
@@ -163,7 +163,7 @@ class RandomColour(ImageGenerator):
     def __init__(self, res) -> None:
         self.blank_image = np.zeros(res, np.uint8)
 
-    def get_image(self):
+    def _get_image(self):
         self.blank_image[:] = random.randint(20,255)
         return self.blank_image
     
@@ -182,7 +182,7 @@ class ImageLibrary(ImageGenerator):
         self.latch = cv2.imread(self.img_to_load)
         self.latch = cv2.resize(self.latch, list(reversed(self.res[0:2])))
 
-    def get_image(self):
+    def _get_image(self):
         
         latch = self.latch.copy()
         #random.randint(0,255)
@@ -223,7 +223,7 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         self.picam2.start("video")
         time.sleep(0.2)
 
-    def get_image(self):
+    def _get_image(self):
         output = self.picam2.capture_array("main")
         return output
     
@@ -253,7 +253,7 @@ class ScambilightCamImageGen(ImageGenerator):
         self.picam2.start()
         time.sleep(0.2)
 
-    def get_image(self):
+    def _get_image(self):
         output = self.picam2.capture_array("main")
         return output
 
