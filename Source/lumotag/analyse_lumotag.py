@@ -84,7 +84,7 @@ class ImageAnalyser_shared_mem():
         #         block=True,
         #         timeout=None)
         #print("putting record for analyis", mapped_details)
-        if self.input_shared_mem_index_q.empty():# skip if procesing something already
+        if not self.input_shared_mem_index_q.full():# skip if procesing something already
             self.last_analysis_time = time.perf_counter() # reset time out
             self.input_shared_mem_index_q.put(
                 self.safe_mem_details_func(),

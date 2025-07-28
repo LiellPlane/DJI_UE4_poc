@@ -1,77 +1,212 @@
+import time
+import cv2
+import requests
+from multiprocessing import Process, Queue
+from typing import Callable
+from dataclasses import dataclass
+from collections import OrderedDict
+import numpy as np
 
-# WEBSOCKET COMMUNICATION STRATEGY FOR LUMOTAG
-# =============================================
+from analyse_lumotag import debuffer_image
+from factory import decode_image_id
+from my_collections import SharedMem_ImgTicket
 
-# PROBLEM: WebSockets are bidirectional but we want send-only for image streams
-# - Server broadcasts game state to all connected devices
-# - If we don't read incoming messages, TCP buffers fill up and cause issues
-# - Need to maintain WebSocket standard for consistency across the system
 
-# SOLUTION: Parallel Async Handlers
-# =================================
-# Use asyncio.gather() to run send and receive handlers simultaneously:
-# 
-# await asyncio.gather(
-#     self._send_handler(websocket, send_queue),     # Sends our images
-#     self._discard_handler(websocket),              # Reads and throws away incoming
-#     return_exceptions=True
-# )
-#
-# This runs both handlers in parallel - neither blocks the other
-# When one is waiting for I/O, the other runs (event loop interleaving)
+@dataclass
+class UploadResult:
+    """Result of an upload operation"""
+    imageid: str
+    success: bool
+    error_message: str = None
+    upload_time_ms: float = 0
 
-# KEY INSIGHTS:
-# =============
-# 1. Async/await yields control - doesn't block the main thread
-# 2. asyncio.gather() runs tasks concurrently, not sequentially  
-# 3. WebSocket reads and writes can happen simultaneously
-# 4. Discarding incoming data prevents buffer buildup without blocking sends
 
-# IMPLEMENTATION PATTERN:
-# ======================
-# 1. Create separate Process for each WebSocket (like analyse_lumotag.py)
-# 2. Use Queue for communication between main process and WebSocket process
-# 3. In WebSocket process, use asyncio.gather() for parallel send/receive
-# 4. Send handler: get data from queue, send via websocket.send()
-# 5. Discard handler: async for message in websocket, do nothing with it
-# 6. Main process just copies data and puts in queue (sub-millisecond)
+class ImageUploader_shared_mem:
+    """Class to handle image uploads using shared memory as input"""
+    
+    def __init__(
+            self,
+            sharedmem_buffs: dict,
+            safe_mem_details_func: Callable[[], SharedMem_ImgTicket],
+            upload_url: str,
+            OS_friendly_name: str,
+            max_queue_size: int = 100) -> None:
+        
+        self.sharedmem_bufs = sharedmem_buffs
+        self.upload_url = upload_url
+        self.OS_friendly_name = OS_friendly_name
+        self.safe_mem_details_func = safe_mem_details_func
+        self.input_shared_mem_index_q = Queue(maxsize=max_queue_size)
+        self.upload_request_q = Queue(maxsize=50)  # Queue for specific upload requests
+        self.upload_result_q = Queue(maxsize=1)
+        self.last_capture_time = time.perf_counter()
+        self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
+        
+        func_args = (
+            self.input_shared_mem_index_q,
+            self.upload_request_q,
+            self.upload_result_q)
 
-# ARCHITECTURE:
-# =============
-# - ImageWebSocket: Send-only, discards incoming (for camera streams)
-# - GameStateWebSocket: Bidirectional, processes incoming (for game events)
-# - LumotagComms: Manager class that coordinates multiple WebSockets
-#
-# Each WebSocket runs in its own Process to avoid GIL blocking
-# Main loop stays responsive - just copies and queues data
+        process = Process(
+            target=self.async_upload_loop,
+            args=func_args,
+            daemon=True)
 
-# WHY THIS WORKS:
-# ===============
-# - WebSocket protocol compliance (handles control frames properly)
-# - No buffer buildup (incoming data immediately discarded)
-# - No blocking (parallel handlers via asyncio)
-# - Real-time friendly (drops frames if queue full)
-# - Follows existing pattern (same as ImageAnalyser_shared_mem)
+        process.start()
 
-# INTEGRATION:
-# ============
-# In lumogun.py main loop:
-# 1. Create LumotagComms instance after other components
-# 2. Call send_trigger_event() when trigger pressed (instant, non-blocking)
-# 3. Call get_game_updates() each loop to check for server updates
-# 4. Process any received game state updates
+    def check_if_timed_out(self):
+        """Check if capture process has timed out"""
+        if time.perf_counter() - self.last_capture_time > 10:  # wait in seconds
+            return True
+        return False
 
-# TCP OPTIMIZATION (optional):
-# ===========================
-# - Set small receive buffer: sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4096)
-# - Disable Nagle: sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-# - Large send buffer: sock.setsockopt(socket.SOL_SOCKET, socket.SO_SNDBUF, 1048576)
-# - Disable ping/pong: ping_interval=None, ping_timeout=None
+    def get_capture_time_ms(self):
+        """Get time since last capture in milliseconds"""
+        return (time.perf_counter() - self.last_capture_time) * 1000
 
-# NEXT STEPS:
-# ===========
-# 1. Implement the classes above with proper error handling
-# 2. Add logging for connection status and errors
-# 3. Test with your game server endpoints
-# 4. Integrate into lumogun.py main loop
-# 5. Monitor performance and adjust queue sizes as needed
+    def trigger_capture(self):
+        """Trigger capture of current shared memory buffer to store in ImageMem"""
+        if not self.input_shared_mem_index_q.full():  # skip if queue is full
+            self.last_capture_time = time.perf_counter()  # reset timeout
+            self.input_shared_mem_index_q.put(
+                self.safe_mem_details_func(),
+                block=False,
+                timeout=None)
+
+    def upload_image_by_id(self, image_id: str):
+        """Queue a specific image ID for upload"""
+        if not self.upload_request_q.full():
+            self.upload_request_q.put(image_id, block=False)
+
+    def get_stored_image_ids(self) -> list[str]:
+        """Get list of currently stored image IDs"""
+        return list(self.ImageMem.keys())
+
+    def async_upload_loop(
+            self,
+            input_shared_mem_index_q,
+            upload_request_q,
+            upload_result_q):
+        """Main loop running in separate process - handles both image storage and uploads"""
+        
+        while True:
+            # Check for new images to store (non-blocking)
+            try:
+                shared_details = input_shared_mem_index_q.get(block=False)
+                self._store_image_from_shared_mem(shared_details)
+            except:
+                pass  # No new images to store
+            
+            # Check for upload requests (non-blocking)
+            try:
+                image_id = upload_request_q.get(block=False)
+                self._handle_upload_request(image_id, upload_result_q)
+            except:
+                pass  # No upload requests
+            
+            # Clean up old images (same as analyse_lumotag.py)
+            if len(self.ImageMem) > 100:
+                _, _ = self.ImageMem.popitem(last=False)
+            
+            # Small sleep to prevent busy waiting
+            time.sleep(0.001)
+
+    def _store_image_from_shared_mem(self, shared_details):
+        """Store image from shared memory into ImageMem"""
+        try:
+            # Read image from shared memory (zero copy)
+            img_buff = debuffer_image(
+                self.sharedmem_bufs[shared_details.index].buf,
+                shared_details.res)
+            
+            # Get embedded image ID
+            embedded_id = decode_image_id(img_buff)
+            
+            # Store image (copy if needed, same as analyse_lumotag.py)
+            if img_buff.flags.owndata:
+                self.ImageMem[embedded_id] = img_buff
+            else:
+                self.ImageMem[embedded_id] = img_buff.copy()
+                
+        except Exception as e:
+            print(f"Error storing image: {e}")
+
+    def _handle_upload_request(self, image_id: str, upload_result_q):
+        """Handle upload request for specific image ID"""
+        start_time = time.perf_counter()
+        
+        try:
+            if image_id in self.ImageMem:
+                # Upload the image
+                success = self._upload_image(image_id, self.ImageMem[image_id])
+                
+                # Remove from memory after upload attempt
+                del self.ImageMem[image_id]
+                
+                upload_time_ms = (time.perf_counter() - start_time) * 1000
+                result = UploadResult(
+                    imageid=image_id,
+                    success=success,
+                    upload_time_ms=upload_time_ms)
+            else:
+                # Image not found
+                result = UploadResult(
+                    imageid=image_id,
+                    success=False,
+                    error_message="Image not found in memory",
+                    upload_time_ms=0)
+                
+        except Exception as e:
+            upload_time_ms = (time.perf_counter() - start_time) * 1000
+            result = UploadResult(
+                imageid=image_id,
+                success=False,
+                error_message=str(e),
+                upload_time_ms=upload_time_ms)
+        
+        # Send result back (non-blocking)
+        try:
+            upload_result_q.put(result, block=False)
+        except:
+            pass  # Queue full, skip result
+
+    def _upload_image(self, image_id: str, img_array) -> bool:
+        """Upload image to server"""
+        try:
+            # Encode image as JPEG
+            success, buffer = cv2.imencode('.jpg', img_array)
+            if not success:
+                print(f"Failed to encode image {image_id}")
+                return False
+            
+            # Prepare upload data
+            files = {
+                'image': (f'{image_id}.jpg', buffer.tobytes(), 'image/jpeg')
+            }
+            data = {
+                'image_id': image_id,
+                'timestamp': time.time(),
+                'source': self.OS_friendly_name
+            }
+            
+            # Upload with timeout
+            response = requests.post(
+                self.upload_url, 
+                files=files, 
+                data=data, 
+                timeout=5)
+            response.raise_for_status()
+            
+            print(f"Successfully uploaded {image_id} from {self.OS_friendly_name}")
+            return True
+            
+        except Exception as e:
+            print(f"Upload failed for {image_id}: {e}")
+            return False
+
+    def get_upload_result(self) -> UploadResult | None:
+        """Get upload result if available (non-blocking)"""
+        try:
+            return self.upload_result_q.get(block=False)
+        except:
+            return None
