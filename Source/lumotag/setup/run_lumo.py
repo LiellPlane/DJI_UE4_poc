@@ -84,4 +84,4 @@ except Exception as e:
         file.write(f"{printabletime}linux retarded cunt failure: {e}")
 
 with open('/home/lumotag/finished.cunt', 'w') as file:
-    file.write(f"{printabletime} finished script {plop}")
+    file.write(f"{printabletime} finished script")
