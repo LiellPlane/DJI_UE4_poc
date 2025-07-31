@@ -1,5 +1,4 @@
-#pip install pyttsx3
-import pyttsx3
+import subprocess
 import factory
 
 
@@ -7,14 +6,15 @@ class Voice(factory.VoiceBase):
     # Note - if this fails it might be because the speaker isn't plugged in
     # on Raspberry pi 5 you need to USB to 3.5mm jack converter, and it should
     # just work
+    
     def speaker(self, in_box):
-        #  TODO
         """Ideally this should inherit from threading.thread
         and override init and run - but w/e this works for now"""
-        engine = pyttsx3.init(driverName='espeak')
-        engine.setProperty('rate', 200)
-        engine.setProperty('volume', 10)
+        
         while True:
             message = in_box.get(block=True)
-            engine.say(message)
-            engine.runAndWait()
+            try:
+                # Use espeak directly via subprocess - simple and works!
+                subprocess.run(['espeak', '-s', '200', message], check=True)
+            except Exception as e:
+                print(f"espeak failed: {e}, message was: {message}")

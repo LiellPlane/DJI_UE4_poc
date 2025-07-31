@@ -50,7 +50,7 @@ sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
 
 sudo apt install espeak -y
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-sudo pip install pyttsx3
+# sudo pip install pyttsx3 - removed this bullshit doesnt work half the time
 
 
 # rabbit MQ - seem to need this disabled again because 
