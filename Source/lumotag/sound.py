@@ -15,6 +15,6 @@ class Voice(factory.VoiceBase):
             message = in_box.get(block=True)
             try:
                 # Use espeak directly via subprocess - simple and works!
-                subprocess.run(['espeak', '-s', '200', message], check=True)
+                subprocess.run(['espeak', '-s', '200', '-a', '200', message], check=True)
             except Exception as e:
                 print(f"espeak failed: {e}, message was: {message}")
