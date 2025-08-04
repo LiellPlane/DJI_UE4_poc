@@ -59,7 +59,7 @@ class TestManualCrop:
                 "crop_box": json.dumps(crop_box)
             }
         )
-        assert response.status_code == 422  # Validation error
+        assert response.status_code == 422
         assert "Invalid JSON in product_info" in response.json()["detail"]
     
 #     def test_manual_crop_missing_file(self, client):

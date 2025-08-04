@@ -9,10 +9,30 @@ from io import BytesIO
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, BackgroundTasks
 from fastapi.responses import JSONResponse, Response
 from PIL import Image
+import logging
 
 from app.models import CropBox, ImageResponse, Settings
 
 app = FastAPI(title="Product Image Processor")
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """Global exception handler to catch any unhandled exceptions."""
+    logger.error(f"Unhandled exception occurred: {exc}", exc_info=True)
+    
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": "Internal server error",
+            "message": "An unexpected error occurred while processing your request",
+            "detail": str(exc) if app.debug else "Please try again later"
+        }
+    )
 
 
 def crop_image(image: Image.Image, crop_box: CropBox) -> Image.Image:
