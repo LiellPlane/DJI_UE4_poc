@@ -47,19 +47,20 @@ class TestManualCrop:
         
         assert image_response.content == expected_bytes
 
-
-#     def test_manual_crop_invalid_json(self, client, sample_image):
-#         """Test manual crop with invalid JSON in form data."""
-#         response = client.post(
-#             "/images/manual-crop",
-#             files={"source_image": ("test.jpg", sample_image, "image/jpeg")},
-#             data={
-#                 "product_info": "invalid-json",
-#                 "crop_box": json.dumps({"x": 10, "y": 10, "width": 50, "height": 50})
-#             }
-#         )
+    def test_manual_crop_invalid_json(self, client, sample_image):
+        """Test manual crop with invalid JSON in form data."""
+        crop_box = {"x": 10, "y": 10, "width": 50, "height": 50}
         
-#         assert response.status_code == 422  # Validation error
+        response = client.post(
+            "/images/manual-crop",
+            files={"source_image": ("test.jpg", sample_image, "image/jpeg")},
+            data={
+                "product_info": "invalid-json",
+                "crop_box": json.dumps(crop_box)
+            }
+        )
+        assert response.status_code == 422  # Validation error
+        assert "Invalid JSON in product_info" in response.json()["detail"]
     
 #     def test_manual_crop_missing_file(self, client):
 #         """Test manual crop without uploading a file."""

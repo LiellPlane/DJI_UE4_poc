@@ -61,8 +61,15 @@ async def manual_crop(
     product_info: str = Form(...),
     crop_box: str = Form(...)
 ) -> ImageResponse:
-    product_data = json.loads(product_info)
-    crop_data = json.loads(crop_box)
+    try:
+        product_data = json.loads(product_info)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=422, detail="Invalid JSON in product_info")
+    
+    try:
+        crop_data = json.loads(crop_box)
+    except json.JSONDecodeError:
+        raise HTTPException(status_code=422, detail="Invalid JSON in crop_box")
 
     # Use CropBox model for validation
     crop_box_model = CropBox(**crop_data)
