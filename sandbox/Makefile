@@ -9,7 +9,7 @@ deploy-infra:
 	terraform apply -auto-approve
 
 test:
-	uv run -m pytest -s
+	uv run -m pytest --cov=app tests/ --cov-report=term-missing
 
 clean:
 	docker compose down

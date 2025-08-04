@@ -32,20 +32,15 @@ def client():
 
 @pytest.fixture(scope="session")
 def mock_ai_server():
-    """Start a simple HTTP server to mock external AI API."""
+    """Spin up a server to mock the external mock-ai endpoint."""
     
     class MockAIHandler(BaseHTTPRequestHandler):
         def do_POST(self):
             if self.path == '/mock-ai/find-main-object':
-                # Simulate processing time
                 time.sleep(2)
-                
-                # Read the request body (we don't actually process it)
                 content_length = int(self.headers.get('Content-Length', 0))
                 if content_length > 0:
                     _ = self.rfile.read(content_length)
-                
-                # Send response
                 response = {
                     "bounding_box": {
                         "x": 50, "y": 50, "width": 150, "height": 150
@@ -61,7 +56,6 @@ def mock_ai_server():
                 self.end_headers()
         
         def log_message(self, format, *args):
-            # Suppress server logs during tests
             pass
     
     port = 8001
