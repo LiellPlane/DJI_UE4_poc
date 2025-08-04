@@ -7,6 +7,8 @@ WORKDIR /app
 
 # Set environment variables
 ENV PROCESSED_IMAGES_DIR=/app/processed_images
+ENV BASE_URL=http://127.0.0.1:8000
+ENV CROP_ENDPOINT_URL=http://127.0.0.1:8000/mock-ai/find-main-object
 
 # Copy the application
 COPY . /app

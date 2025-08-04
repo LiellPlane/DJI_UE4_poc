@@ -35,5 +35,6 @@ class ImageResponse(BaseModel):
 
 
 class Settings(BaseSettings):
-    processed_images_dir: str = Field(default="processed_images")
-    base_url: str = Field(default="http://127.0.0.1:8000")
+    processed_images_dir: str
+    base_url: str
+    crop_endpoint_url: str

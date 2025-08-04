@@ -8,19 +8,14 @@ from PIL import Image
 from io import BytesIO
 
 
-def wait_for_processing_completion(live_server, image_id, timeout=10):
-    """Wait for background processing to complete by polling status endpoint."""
-    import requests
+def wait_for_file(file_path, timeout=10):
+    """Wait for file to exist with timeout."""
     start_time = time.time()
     while time.time() - start_time < timeout:
-        response = requests.get(f"{live_server}/images/{image_id}/status")
-        if response.status_code == 200:
-            status_data = response.json()
-            status = status_data["status"]
-            if status in ["completed", "failed"]:
-                return status, status_data.get("error")
+        if os.path.exists(file_path):
+            return True
         time.sleep(0.5)
-    return "timeout", None
+    return False
 
 
 class TestManualCrop:
@@ -114,11 +109,7 @@ class TestSmartCrop:
         assert "retrieval_url" in data
         assert data["status"] == "processing"
 
-        # Wait for background processing to complete using status endpoint
-        status, error = wait_for_processing_completion(live_server, data['image_id'])
-        assert status == "completed", f"Processing failed with error: {error}"
-        
-        # Check if the processed image was created
+        # Wait for background processing to complete
         settings = Settings()
         processed_image_path = f"{settings.processed_images_dir}/{data['image_id']}.jpg"
-        assert os.path.exists(processed_image_path)
+        assert wait_for_file(processed_image_path, timeout=10), "Background processing timed out"

@@ -27,8 +27,7 @@ app = FastAPI(title="Product Image Processor")
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Status tracking for background tasks
-processing_status: Dict[str, Dict[str, Any]] = {}
+
 
 
 @app.exception_handler(Exception)
@@ -65,13 +64,12 @@ os.makedirs(settings.processed_images_dir, exist_ok=True)
 
 def process_image_in_background(image_id: str, image_data: bytes, product_data: dict):
     """A background task to process the smart crop."""
-    processing_status[image_id] = {"status": "processing", "error": None}
-    
+
     # want structured logging here
     print(f"Starting background processing for image {image_id}")
     try:
         ai_response = requests.post(
-            "http://127.0.0.1:8000/mock-ai/find-main-object",
+            settings.crop_endpoint_url,
             files={"image_file": ("image.jpg", image_data, "image/jpeg")},
             timeout=10,
         )
@@ -89,12 +87,8 @@ def process_image_in_background(image_id: str, image_data: bytes, product_data: 
         output_path = f"{settings.processed_images_dir}/{image_id}.jpg"
         cropped_image.save(output_path, "JPEG")
         print(f"Successfully processed and saved image {image_id} to {output_path}")
-        
-        processing_status[image_id] = {"status": "completed", "error": None}
     except Exception as e:
-        error_msg = str(e)
-        print(f"Error processing image {image_id}: {error_msg}")
-        processing_status[image_id] = {"status": "failed", "error": error_msg}
+        print(f"Error processing image {image_id}: {str(e)}")
 
 
 @app.post("/images/manual-crop")
@@ -155,13 +149,6 @@ async def smart_crop(
         raise HTTPException(
             status_code=500, detail=f"Error starting image processing: {str(e)}"
         )
-
-
-@app.get("/images/{image_id}/status")
-async def get_processing_status(image_id: str):
-    """Get the processing status of a background task."""
-    status = processing_status.get(image_id, {"status": "not_found", "error": None})
-    return status
 
 
 @app.get("/images/{image_path:path}")
