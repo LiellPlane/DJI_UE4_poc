@@ -7,7 +7,9 @@ from fastapi.testclient import TestClient
 
 # Set env variable - this can be done a bit tidier with a fixture
 
-os.environ["PROCESSED_IMAGES_DIR"] = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "processed_images")
+os.environ["PROCESSED_IMAGES_DIR"] = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "processed_images"
+)
 
 from app.main import app
 
@@ -23,9 +25,9 @@ def client():
 def sample_image():
     """Create a sample test image."""
     # Create a simple test image
-    image = Image.new('RGB', (200, 200), color='red')
+    image = Image.new("RGB", (200, 200), color="red")
     image_bytes = BytesIO()
-    image.save(image_bytes, format='JPEG')
+    image.save(image_bytes, format="JPEG")
     image_bytes.seek(0)
     return image_bytes
 
@@ -47,9 +49,9 @@ def temp_image_dir():
 def cleanup_processed_images():
     """Clean up the processed images directory after tests."""
     import shutil
-    
+
     yield  # Run the test first
-    
+
     # Clean up after test
     processed_dir = os.environ.get("PROCESSED_IMAGES_DIR")
     if processed_dir and os.path.exists(processed_dir) and os.path.isdir(processed_dir):
@@ -62,4 +64,4 @@ def cleanup_processed_images():
                 elif os.path.isdir(file_path):
                     shutil.rmtree(file_path)
             except Exception as e:
-                print(f'Failed to delete {file_path}. Reason: {e}') 
+                print(f"Failed to delete {file_path}. Reason: {e}")

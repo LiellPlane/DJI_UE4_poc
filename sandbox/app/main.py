@@ -6,7 +6,15 @@ import time
 from typing import Dict, Any
 from io import BytesIO
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, BackgroundTasks
+from fastapi import (
+    FastAPI,
+    File,
+    UploadFile,
+    Form,
+    HTTPException,
+    Request,
+    BackgroundTasks,
+)
 from fastapi.responses import JSONResponse, Response
 from PIL import Image
 import logging
@@ -15,7 +23,7 @@ from app.models import CropBox, ImageResponse, Settings
 
 app = FastAPI(title="Product Image Processor")
 
-# Set up logging
+# Set up logging - NB - this would be improved as structured logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -24,22 +32,28 @@ logger = logging.getLogger(__name__)
 async def global_exception_handler(request: Request, exc: Exception):
     """Global exception handler to catch any unhandled exceptions."""
     logger.error(f"Unhandled exception occurred: {exc}", exc_info=True)
-    
+
     return JSONResponse(
         status_code=500,
         content={
             "error": "Internal server error",
             "message": "An unexpected error occurred while processing your request",
-            "detail": str(exc) if app.debug else "Please try again later"
-        }
+            "detail": str(exc) if app.debug else "Please try again later",
+        },
     )
 
 
 def crop_image(image: Image.Image, crop_box: CropBox) -> Image.Image:
     """Crop an image using the provided crop box coordinates."""
-    return image.crop((crop_box.x, crop_box.y, 
-                      crop_box.x + crop_box.width, 
-                      crop_box.y + crop_box.height))
+    return image.crop(
+        (
+            crop_box.x,
+            crop_box.y,
+            crop_box.x + crop_box.width,
+            crop_box.y + crop_box.height,
+        )
+    )
+
 
 settings = Settings()
 
@@ -55,17 +69,17 @@ def process_image_in_background(image_id: str, image_data: bytes, product_data: 
         ai_response = requests.post(
             "http://127.0.0.1:8000/mock-ai/find-main-object",
             files={"image_file": ("image.jpg", image_data, "image/jpeg")},
-            timeout=10
+            timeout=10,
         )
         ai_response.raise_for_status()
         crop_box_data = ai_response.json()["bounding_box"]
         crop_box = CropBox(**crop_box_data)
 
         image = Image.open(BytesIO(image_data))
-        
+
         # Validate crop box against image dimensions
         crop_box.validate_against_image(image.width, image.height)
-        
+
         cropped_image = image.crop(crop_box.to_pil_coords())
 
         output_path = f"{settings.processed_images_dir}/{image_id}.jpg"
@@ -79,13 +93,13 @@ def process_image_in_background(image_id: str, image_data: bytes, product_data: 
 async def manual_crop(
     source_image: UploadFile = File(...),
     product_info: str = Form(...),
-    crop_box: str = Form(...)
+    crop_box: str = Form(...),
 ) -> ImageResponse:
     try:
         product_data = json.loads(product_info)
     except json.JSONDecodeError:
         raise HTTPException(status_code=422, detail="Invalid JSON in product_info")
-    
+
     try:
         crop_data = json.loads(crop_box)
     except json.JSONDecodeError:
@@ -102,10 +116,7 @@ async def manual_crop(
     output_path = f"{settings.processed_images_dir}/{image_id}.jpg"
     cropped_image.save(output_path, "JPEG")
 
-    return ImageResponse(
-        image_id=image_id,
-        retrieval_url=f"/images/{image_id}.jpg"
-    )
+    return ImageResponse(image_id=image_id, retrieval_url=f"/images/{image_id}.jpg")
 
 
 @app.post("/images/smart-crop")
@@ -113,25 +124,29 @@ async def smart_crop(
     request: Request,
     background_tasks: BackgroundTasks,
     source_image: UploadFile = File(...),
-    product_info: str = Form(...)
+    product_info: str = Form(...),
 ):
     try:
         product_data = json.loads(product_info)
         image_data = await source_image.read()
         image_id = str(uuid.uuid4())
 
-        background_tasks.add_task(process_image_in_background, image_id, image_data, product_data)
+        background_tasks.add_task(
+            process_image_in_background, image_id, image_data, product_data
+        )
 
         return JSONResponse(
             status_code=202,
             content={
                 "image_id": image_id,
                 "retrieval_url": f"/images/{image_id}.jpg",
-                "status": "processing"
-            }
+                "status": "processing",
+            },
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error starting image processing: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error starting image processing: {str(e)}"
+        )
 
 
 @app.get("/images/{image_path:path}")
@@ -148,6 +163,4 @@ async def mock_ai_endpoint(image_file: UploadFile = File(...)):
     # Simulate a slow, blocking process
     time.sleep(2)
     _ = await image_file.read()
-    return {
-        "bounding_box": { "x": 50, "y": 50, "width": 150, "height": 150 }
-    }
+    return {"bounding_box": {"x": 50, "y": 50, "width": 150, "height": 150}}
