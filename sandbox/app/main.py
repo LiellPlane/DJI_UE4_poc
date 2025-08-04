@@ -1,0 +1,126 @@
+import os
+import uuid
+import json
+import requests
+import time
+from typing import Dict, Any
+from io import BytesIO
+
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, BackgroundTasks
+from fastapi.responses import JSONResponse, Response
+from PIL import Image
+
+from app.models import CropBox, ImageResponse, Settings
+
+app = FastAPI(title="Product Image Processor")
+
+
+def crop_image(image: Image.Image, crop_box: CropBox) -> Image.Image:
+    """Crop an image using the provided crop box coordinates."""
+    return image.crop((crop_box.x, crop_box.y, 
+                      crop_box.x + crop_box.width, 
+                      crop_box.y + crop_box.height))
+
+settings = Settings()
+
+os.makedirs(settings.processed_images_dir, exist_ok=True)
+
+
+def process_image_in_background(image_id: str, image_data: bytes, product_data: dict):
+    """A background task to process the smart crop."""
+
+    # want structured logging here
+    print(f"Starting background processing for image {image_id}")
+    try:
+        ai_response = requests.post(
+            "http://127.0.0.1:8000/mock-ai/find-main-object",
+            files={"image_file": ("image.jpg", image_data, "image/jpeg")},
+            timeout=10
+        )
+        ai_response.raise_for_status()
+        crop_box_data = ai_response.json()["bounding_box"]
+        crop_box = CropBox(**crop_box_data)
+
+        image = Image.open(BytesIO(image_data))
+        
+        # Validate crop box against image dimensions
+        crop_box.validate_against_image(image.width, image.height)
+        
+        cropped_image = image.crop(crop_box.to_pil_coords())
+
+        output_path = f"{settings.processed_images_dir}/{image_id}.jpg"
+        cropped_image.save(output_path, "JPEG")
+        print(f"Successfully processed and saved image {image_id} to {output_path}")
+    except Exception as e:
+        print(f"Error processing image {image_id}: {str(e)}")
+
+
+@app.post("/images/manual-crop")
+async def manual_crop(
+    source_image: UploadFile = File(...),
+    product_info: str = Form(...),
+    crop_box: str = Form(...)
+) -> ImageResponse:
+    product_data = json.loads(product_info)
+    crop_data = json.loads(crop_box)
+
+    # Use CropBox model for validation
+    crop_box_model = CropBox(**crop_data)
+
+    image_data = await source_image.read()
+    image = Image.open(BytesIO(image_data))
+    cropped_image = crop_image(image, crop_box_model)
+
+    image_id = str(uuid.uuid4())
+    output_path = f"{settings.processed_images_dir}/{image_id}.jpg"
+    cropped_image.save(output_path, "JPEG")
+
+    return ImageResponse(
+        image_id=image_id,
+        retrieval_url=f"/images/{image_id}.jpg"
+    )
+
+
+@app.post("/images/smart-crop")
+async def smart_crop(
+    request: Request,
+    background_tasks: BackgroundTasks,
+    source_image: UploadFile = File(...),
+    product_info: str = Form(...)
+):
+    try:
+        product_data = json.loads(product_info)
+        image_data = await source_image.read()
+        image_id = str(uuid.uuid4())
+
+        background_tasks.add_task(process_image_in_background, image_id, image_data, product_data)
+
+        return JSONResponse(
+            status_code=202,
+            content={
+                "image_id": image_id,
+                "retrieval_url": f"/images/{image_id}.jpg",
+                "status": "processing"
+            }
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error starting image processing: {str(e)}")
+
+
+@app.get("/images/{image_path:path}")
+async def get_image(image_path: str):
+    full_image_path = f"{settings.processed_images_dir}/{image_path}"
+
+    with open(full_image_path, "rb") as f:
+        return Response(content=f.read(), media_type="image/jpeg")
+
+
+# Mock AI endpoint for smart-crop to call
+@app.post("/mock-ai/find-main-object")
+async def mock_ai_endpoint(image_file: UploadFile = File(...)):
+    # Simulate a slow, blocking process
+    time.sleep(2)
+    _ = await image_file.read()
+    return {
+        "bounding_box": { "x": 50, "y": 50, "width": 150, "height": 150 }
+    }
