@@ -1,10 +1,26 @@
 import json
 import os
+import time
 from unittest.mock import patch, Mock
 from app.models import Settings, CropBox
 from app.main import crop_image
 from PIL import Image
 from io import BytesIO
+
+
+def wait_for_processing_completion(live_server, image_id, timeout=10):
+    """Wait for background processing to complete by polling status endpoint."""
+    import requests
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        response = requests.get(f"{live_server}/images/{image_id}/status")
+        if response.status_code == 200:
+            status_data = response.json()
+            status = status_data["status"]
+            if status in ["completed", "failed"]:
+                return status, status_data.get("error")
+        time.sleep(0.5)
+    return "timeout", None
 
 
 class TestManualCrop:
@@ -83,7 +99,6 @@ class TestSmartCrop:
     def test_smart_crop_with_live_server(self, live_server, sample_image):
         """Test smart crop with real HTTP calls using live server."""
         import requests
-        import time
         
         product_info = {"product_id": "test-integration"}
 
@@ -99,8 +114,9 @@ class TestSmartCrop:
         assert "retrieval_url" in data
         assert data["status"] == "processing"
 
-        # Wait for background processing to complete (mock AI takes 2 seconds)
-        time.sleep(4)
+        # Wait for background processing to complete using status endpoint
+        status, error = wait_for_processing_completion(live_server, data['image_id'])
+        assert status == "completed", f"Processing failed with error: {error}"
         
         # Check if the processed image was created
         settings = Settings()
