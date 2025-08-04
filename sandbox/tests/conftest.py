@@ -12,12 +12,9 @@ from fastapi.testclient import TestClient
 # Set env variable - this can be done a bit tidier with a fixture
 
 os.environ["PROCESSED_IMAGES_DIR"] = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
-    "processed_images"
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "processed_images"
 )
-os.environ["crop_endpoint_url"] = (
-    "http://127.0.0.1:8001/mock-ai/find-main-object"
-)
+os.environ["crop_endpoint_url"] = "http://127.0.0.1:8001/mock-ai/find-main-object"
 os.environ["base_url"] = "http://127.0.0.1:8000"
 
 from app.main import app
@@ -33,43 +30,41 @@ def client():
 @pytest.fixture(scope="session")
 def mock_ai_server():
     """Spin up a server to mock the external mock-ai endpoint."""
-    
+
     class MockAIHandler(BaseHTTPRequestHandler):
         def do_POST(self):
-            if self.path == '/mock-ai/find-main-object':
+            if self.path == "/mock-ai/find-main-object":
                 time.sleep(2)
-                content_length = int(self.headers.get('Content-Length', 0))
+                content_length = int(self.headers.get("Content-Length", 0))
                 if content_length > 0:
                     _ = self.rfile.read(content_length)
                 response = {
-                    "bounding_box": {
-                        "x": 50, "y": 50, "width": 150, "height": 150
-                    }
+                    "bounding_box": {"x": 50, "y": 50, "width": 150, "height": 150}
                 }
-                
+
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
+                self.send_header("Content-Type", "application/json")
                 self.end_headers()
                 self.wfile.write(json.dumps(response).encode())
             else:
                 self.send_response(404)
                 self.end_headers()
-        
+
         def log_message(self, format, *args):
             pass
-    
+
     port = 8001
-    server = HTTPServer(('127.0.0.1', port), MockAIHandler)
-    
+    server = HTTPServer(("127.0.0.1", port), MockAIHandler)
+
     def run_server():
         server.serve_forever()
-    
+
     server_thread = threading.Thread(target=run_server, daemon=True)
     server_thread.start()
-    
+
     time.sleep(1)  # Give server time to start
     yield f"http://127.0.0.1:{port}"
-    
+
     server.shutdown()
 
 
@@ -105,8 +100,7 @@ def cleanup_processed_images():
 
     # Clean up after test
     processed_dir = os.environ.get("PROCESSED_IMAGES_DIR")
-    if (processed_dir and os.path.exists(processed_dir) 
-            and os.path.isdir(processed_dir)):
+    if processed_dir and os.path.exists(processed_dir) and os.path.isdir(processed_dir):
         # Remove all files but keep the directory
         for filename in os.listdir(processed_dir):
             file_path = os.path.join(processed_dir, filename)

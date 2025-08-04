@@ -1,9 +1,9 @@
 import os
 import uuid
 import json
-import requests
 import time
-from typing import Dict, Any
+import httpx
+import asyncio
 from io import BytesIO
 
 from fastapi import (
@@ -26,8 +26,6 @@ app = FastAPI(title="Product Image Processor")
 # Set up logging - NB - this would be improved as structured logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-
 
 
 @app.exception_handler(Exception)
@@ -62,20 +60,22 @@ settings = Settings()
 os.makedirs(settings.processed_images_dir, exist_ok=True)
 
 
-def process_image_in_background(image_id: str, image_data: bytes, product_data: dict):
+async def process_image_in_background(
+    image_id: str, image_data: bytes, product_data: dict
+):
     """A background task to process the smart crop."""
 
-    # want structured logging here
-    print(f"Starting background processing for image {image_id}")
+    logger.info(f"Starting background processing for image {image_id}")
     try:
-        ai_response = requests.post(
-            settings.crop_endpoint_url,
-            files={"image_file": ("image.jpg", image_data, "image/jpeg")},
-            timeout=10,
-        )
-        ai_response.raise_for_status()
-        crop_box_data = ai_response.json()["bounding_box"]
-        crop_box = CropBox(**crop_box_data)
+        async with httpx.AsyncClient() as client:
+            ai_response = await client.post(
+                settings.crop_endpoint_url,
+                files={"image_file": ("image.jpg", image_data, "image/jpeg")},
+                timeout=10.0,
+            )
+            ai_response.raise_for_status()
+            crop_box_data = ai_response.json()["bounding_box"]
+            crop_box = CropBox(**crop_box_data)
 
         image = Image.open(BytesIO(image_data))
 
@@ -86,9 +86,11 @@ def process_image_in_background(image_id: str, image_data: bytes, product_data: 
 
         output_path = f"{settings.processed_images_dir}/{image_id}.jpg"
         cropped_image.save(output_path, "JPEG")
-        print(f"Successfully processed and saved image {image_id} to {output_path}")
+        logger.info(
+            f"Successfully processed and saved image {image_id} to {output_path}"
+        )
     except Exception as e:
-        print(f"Error processing image {image_id}: {str(e)}")
+        logger.error(f"Error processing image {image_id}: {str(e)}")
 
 
 @app.post("/images/manual-crop")
@@ -162,7 +164,7 @@ async def get_image(image_path: str):
 # Mock AI endpoint for smart-crop to call
 @app.post("/mock-ai/find-main-object")
 async def mock_ai_endpoint(image_file: UploadFile = File(...)):
-    # Simulate a slow, blocking process
+    # Simulate a slow, non-blocking process
     time.sleep(2)
     _ = await image_file.read()
     return {"bounding_box": {"x": 50, "y": 50, "width": 150, "height": 150}}

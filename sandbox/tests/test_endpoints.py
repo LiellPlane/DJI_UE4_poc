@@ -81,26 +81,30 @@ class TestManualCrop:
             "/images/manual-crop",
             data={
                 "product_info": json.dumps(product_info),
-                "crop_box": json.dumps(crop_box)
-            }
+                "crop_box": json.dumps(crop_box),
+            },
         )
 
         assert response.status_code == 422  # Missing required file
 
 
 class TestSmartCrop:
-    """Tests for the smart crop endpoint."""
+    """
+    Tests for the smart crop endpoint
+
+    this is more an integration test but we will leave it here due to time constraints
+    """
 
     def test_smart_crop_with_mock_ai(self, client, mock_ai_server, sample_image):
         """Test smart crop with mock AI server."""
         import json
-        
+
         product_info = {"product_id": "test-integration"}
 
         response = client.post(
             "/images/smart-crop",
             files={"source_image": ("test.jpg", sample_image.getvalue(), "image/jpeg")},
-            data={"product_info": json.dumps(product_info)}
+            data={"product_info": json.dumps(product_info)},
         )
 
         assert response.status_code == 202
@@ -109,7 +113,8 @@ class TestSmartCrop:
         assert "retrieval_url" in data
         assert data["status"] == "processing"
 
-        # Wait for background processing to complete
         settings = Settings()
         processed_image_path = f"{settings.processed_images_dir}/{data['image_id']}.jpg"
-        assert wait_for_file(processed_image_path, timeout=10), "Background processing timed out"
+        assert wait_for_file(
+            processed_image_path, timeout=10
+        ), "Background processing timed out"
