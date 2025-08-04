@@ -77,75 +77,32 @@ class TestManualCrop:
         assert response.status_code == 422  # Missing required file
 
 
-# class TestSmartCrop:
-#     """Tests for the smart crop endpoint."""
+class TestSmartCrop:
+    """Tests for the smart crop endpoint."""
 
-#     @patch('app.main.requests.post')
-#     def test_smart_crop_success(self, mock_post, client, sample_image):
-#         """Test successful smart crop with mocked AI response."""
-#         # Mock the AI response
-#         mock_response = Mock()
-#         mock_response.json.return_value = {
-#             "bounding_box": {"x": 50, "y": 50, "width": 100, "height": 100}
-#         }
-#         mock_response.raise_for_status.return_value = None
-#         mock_post.return_value = mock_response
+    def test_smart_crop_with_live_server(self, live_server, sample_image):
+        """Test smart crop with real HTTP calls using live server."""
+        import requests
+        import time
+        
+        product_info = {"product_id": "test-integration"}
 
-#         product_info = {"product_id": "test-123"}
+        response = requests.post(
+            f"{live_server}/images/smart-crop",
+            files={"source_image": ("test.jpg", sample_image.getvalue(), "image/jpeg")},
+            data={"product_info": json.dumps(product_info)}
+        )
 
-#         response = client.post(
-#             "/images/smart-crop",
-#             files={"source_image": ("test.jpg", sample_image, "image/jpeg")},
-#             data={"product_info": json.dumps(product_info)}
-#         )
+        assert response.status_code == 202
+        data = response.json()
+        assert "image_id" in data
+        assert "retrieval_url" in data
+        assert data["status"] == "processing"
 
-#         assert response.status_code == 202
-#         data = response.json()
-#         assert "image_id" in data
-#         assert "retrieval_url" in data
-#         assert data["status"] == "processing"
-
-#     def test_smart_crop_invalid_product_info(self, client, sample_image):
-#         """Test smart crop with invalid product info."""
-#         response = client.post(
-#             "/images/smart-crop",
-#             files={"source_image": ("test.jpg", sample_image, "image/jpeg")},
-#             data={"product_info": "invalid-json"}
-#         )
-
-#         assert response.status_code == 500  # JSON decode error
-
-
-# class TestImageRetrieval:
-#     """Tests for image retrieval endpoint."""
-
-#     def test_get_nonexistent_image(self, client):
-#         """Test retrieving a non-existent image."""
-#         response = client.get("/images/nonexistent.jpg")
-#         assert response.status_code == 500  # File not found
-
-#     # Note: Testing successful image retrieval would require
-#     # setting up actual processed images in the test environment
-
-
-# class TestMockAIEndpoint:
-#     """Tests for the mock AI endpoint."""
-
-#     def test_mock_ai_endpoint(self, client, sample_image):
-#         """Test the mock AI endpoint."""
-#         response = client.post(
-#             "/mock-ai/find-main-object",
-#             files={"image_file": ("test.jpg", sample_image, "image/jpeg")}
-#         )
-
-#         assert response.status_code == 200
-#         data = response.json()
-#         assert "bounding_box" in data
-#         bbox = data["bounding_box"]
-#         assert all(key in bbox for key in ["x", "y", "width", "height"])
-#         assert bbox == {"x": 50, "y": 50, "width": 150, "height": 150}
-
-#     def test_mock_ai_endpoint_no_file(self, client):
-#         """Test mock AI endpoint without file."""
-#         response = client.post("/mock-ai/find-main-object")
-#         assert response.status_code == 422  # Missing required file
+        # Wait for background processing to complete (mock AI takes 2 seconds)
+        time.sleep(4)
+        
+        # Check if the processed image was created
+        settings = Settings()
+        processed_image_path = f"{settings.processed_images_dir}/{data['image_id']}.jpg"
+        assert os.path.exists(processed_image_path)

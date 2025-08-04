@@ -1,6 +1,9 @@
 import pytest
 import tempfile
 import os
+import threading
+import time
+import uvicorn
 from io import BytesIO
 from PIL import Image
 from fastapi.testclient import TestClient
@@ -19,6 +22,21 @@ def client():
     """FastAPI test client."""
     with TestClient(app) as client:
         yield client
+
+
+@pytest.fixture(scope="session")
+def live_server():
+    """Start a real FastAPI server for integration tests."""
+    port = 8000
+    def run_server():
+        uvicorn.run(app, host="127.0.0.1", port=port, log_level="warning")
+
+    server_thread = threading.Thread(target=run_server, daemon=True)
+    server_thread.start()
+
+    time.sleep(2)
+    yield f"http://127.0.0.1:{port}"
+
 
 
 @pytest.fixture
