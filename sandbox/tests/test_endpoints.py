@@ -91,14 +91,14 @@ class TestManualCrop:
 class TestSmartCrop:
     """Tests for the smart crop endpoint."""
 
-    def test_smart_crop_with_live_server(self, live_server, sample_image):
-        """Test smart crop with real HTTP calls using live server."""
-        import requests
+    def test_smart_crop_with_mock_ai(self, client, mock_ai_server, sample_image):
+        """Test smart crop with mock AI server."""
+        import json
         
         product_info = {"product_id": "test-integration"}
 
-        response = requests.post(
-            f"{live_server}/images/smart-crop",
+        response = client.post(
+            "/images/smart-crop",
             files={"source_image": ("test.jpg", sample_image.getvalue(), "image/jpeg")},
             data={"product_info": json.dumps(product_info)}
         )

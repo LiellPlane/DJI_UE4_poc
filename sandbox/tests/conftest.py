@@ -3,7 +3,8 @@ import tempfile
 import os
 import threading
 import time
-import uvicorn
+import json
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from io import BytesIO
 from PIL import Image
 from fastapi.testclient import TestClient
@@ -11,8 +12,13 @@ from fastapi.testclient import TestClient
 # Set env variable - this can be done a bit tidier with a fixture
 
 os.environ["PROCESSED_IMAGES_DIR"] = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "processed_images"
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 
+    "processed_images"
 )
+os.environ["crop_endpoint_url"] = (
+    "http://127.0.0.1:8001/mock-ai/find-main-object"
+)
+os.environ["base_url"] = "http://127.0.0.1:8000"
 
 from app.main import app
 
@@ -25,18 +31,52 @@ def client():
 
 
 @pytest.fixture(scope="session")
-def live_server():
-    """Start a real FastAPI server for integration tests."""
-    port = 8000
+def mock_ai_server():
+    """Start a simple HTTP server to mock external AI API."""
+    
+    class MockAIHandler(BaseHTTPRequestHandler):
+        def do_POST(self):
+            if self.path == '/mock-ai/find-main-object':
+                # Simulate processing time
+                time.sleep(2)
+                
+                # Read the request body (we don't actually process it)
+                content_length = int(self.headers.get('Content-Length', 0))
+                if content_length > 0:
+                    _ = self.rfile.read(content_length)
+                
+                # Send response
+                response = {
+                    "bounding_box": {
+                        "x": 50, "y": 50, "width": 150, "height": 150
+                    }
+                }
+                
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.end_headers()
+                self.wfile.write(json.dumps(response).encode())
+            else:
+                self.send_response(404)
+                self.end_headers()
+        
+        def log_message(self, format, *args):
+            # Suppress server logs during tests
+            pass
+    
+    port = 8001
+    server = HTTPServer(('127.0.0.1', port), MockAIHandler)
+    
     def run_server():
-        uvicorn.run(app, host="127.0.0.1", port=port, log_level="warning")
-
+        server.serve_forever()
+    
     server_thread = threading.Thread(target=run_server, daemon=True)
     server_thread.start()
-
-    time.sleep(2)
+    
+    time.sleep(1)  # Give server time to start
     yield f"http://127.0.0.1:{port}"
-
+    
+    server.shutdown()
 
 
 @pytest.fixture
@@ -55,7 +95,6 @@ def temp_image_dir():
     """Create a temporary directory for processed images."""
     with tempfile.TemporaryDirectory() as temp_dir:
         # Mock the processed images directory
-        original_dir = "/app/processed_images"
         os.environ["PROCESSED_IMAGES_DIR"] = temp_dir
         yield temp_dir
         # Clean up
@@ -72,7 +111,8 @@ def cleanup_processed_images():
 
     # Clean up after test
     processed_dir = os.environ.get("PROCESSED_IMAGES_DIR")
-    if processed_dir and os.path.exists(processed_dir) and os.path.isdir(processed_dir):
+    if (processed_dir and os.path.exists(processed_dir) 
+            and os.path.isdir(processed_dir)):
         # Remove all files but keep the directory
         for filename in os.listdir(processed_dir):
             file_path = os.path.join(processed_dir, filename)

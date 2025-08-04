@@ -9,7 +9,7 @@ deploy-infra:
 	terraform apply -auto-approve
 
 test:
-	pytest
+	uv run -m pytest -s
 
 clean:
 	docker compose down
