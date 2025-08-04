@@ -1,6 +1,7 @@
 import json
 import os
 import time
+import json
 from unittest.mock import patch, Mock
 from app.models import Settings, CropBox
 from app.main import crop_image
@@ -97,7 +98,6 @@ class TestSmartCrop:
 
     def test_smart_crop_with_mock_ai(self, client, mock_ai_server, sample_image):
         """Test smart crop with mock AI server."""
-        import json
 
         product_info = {"product_id": "test-integration"}
 
