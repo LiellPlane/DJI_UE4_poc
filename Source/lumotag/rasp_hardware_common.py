@@ -57,6 +57,81 @@ class filesystem(factory.filesystem):
         with open(filename, 'rb') as file:
             check_data= pickle.load(file)
 
+    def save_numberstatus_cache(self, cache_data: dict[str, np.ndarray]) -> bool:
+        """Save the _numberstatus_cache to temporary storage. Returns True if successful, False otherwise."""
+        try:
+            cache_path = os.path.join(self.images_folder, "numberstatus_cache.pkl")
+            with open(cache_path, 'wb') as f:
+                pickle.dump(cache_data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            print(f"Successfully saved numberstatus cache to {cache_path}")
+            return True
+        except Exception as e:
+            print(f"Error saving numberstatus cache: {e}")
+            return False
+
+    def load_numberstatus_cache(self) -> dict[str, np.ndarray] | None:
+        """Load the _numberstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
+        try:
+            cache_path = os.path.join(self.images_folder, "numberstatus_cache.pkl")
+            if not os.path.exists(cache_path):
+                print(f"Numberstatus cache file does not exist: {cache_path}")
+                return None
+            
+            with open(cache_path, 'rb') as f:
+                cache_data = pickle.load(f)
+            
+            # Validate that we got the expected data structure
+            if not isinstance(cache_data, dict):
+                print(f"Invalid cache data type: expected dict, got {type(cache_data)}")
+                return None
+            
+            print(f"Successfully loaded numberstatus cache from {cache_path}")
+            return cache_data
+            
+        except Exception as e:
+            print(f"Error loading numberstatus cache: {e}")
+            return None
+
+    def save_shieldstatus_cache(self, cache_data: list[np.ndarray]) -> bool:
+        """Save the _shieldstatus_cache to temporary storage. Returns True if successful, False otherwise."""
+        try:
+            cache_path = os.path.join(self.images_folder, "shieldstatus_cache.pkl")
+            with open(cache_path, 'wb') as f:
+                pickle.dump(cache_data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            print(f"Successfully saved shieldstatus cache to {cache_path}")
+            return True
+        except Exception as e:
+            print(f"Error saving shieldstatus cache: {e}")
+            return False
+
+    def load_shieldstatus_cache(self) -> list[np.ndarray] | None:
+        """Load the _shieldstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
+        try:
+            cache_path = os.path.join(self.images_folder, "shieldstatus_cache.pkl")
+            if not os.path.exists(cache_path):
+                print(f"Shieldstatus cache file does not exist: {cache_path}")
+                return None
+            
+            with open(cache_path, 'rb') as f:
+                cache_data = pickle.load(f)
+            
+            # Validate that we got the expected data structure
+            if not isinstance(cache_data, list):
+                print(f"Invalid cache data type: expected list, got {type(cache_data)}")
+                return None
+            
+            # Validate that all items in the list are numpy arrays
+            if not all(isinstance(item, np.ndarray) for item in cache_data):
+                print("Invalid cache data: not all items in list are numpy arrays")
+                return None
+            
+            print(f"Successfully loaded shieldstatus cache from {cache_path}")
+            return cache_data
+            
+        except Exception as e:
+            print(f"Error loading shieldstatus cache: {e}")
+            return None
+
     
 def lumo_viewer(
         inputimage,

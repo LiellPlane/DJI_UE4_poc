@@ -47,6 +47,26 @@ class filesystem(factory.filesystem):
     def save_barcodepair(self, barcodepair:list, message=None):
         pass
 
+    def save_numberstatus_cache(self, cache_data: dict[str, np.ndarray]) -> bool:
+        """Stub implementation for fake hardware. Always returns True."""
+        print("Fake hardware: save_numberstatus_cache called")
+        return True
+
+    def load_numberstatus_cache(self) -> dict[str, np.ndarray] | None:
+        """Stub implementation for fake hardware. Always returns None."""
+        print("Fake hardware: load_numberstatus_cache called")
+        return None
+
+    def save_shieldstatus_cache(self, cache_data: list[np.ndarray]) -> bool:
+        """Stub implementation for fake hardware. Always returns True."""
+        print("Fake hardware: save_shieldstatus_cache called")
+        return True
+
+    def load_shieldstatus_cache(self) -> list[np.ndarray] | None:
+        """Stub implementation for fake hardware. Always returns None."""
+        print("Fake hardware: load_shieldstatus_cache called")
+        return None
+
 class Triggers(factory.Triggers):
     def __init__(self, _gun_config) -> None:
         super().__init__(_gun_config)

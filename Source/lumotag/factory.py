@@ -199,6 +199,26 @@ class filesystem(ABC):
     def save_barcodepair(self):
         pass
 
+    @abstractmethod
+    def save_numberstatus_cache(self, cache_data: dict[str, np.ndarray]) -> bool:
+        """Save the _numberstatus_cache to temporary storage. Returns True if successful, False otherwise."""
+        pass
+
+    @abstractmethod
+    def load_numberstatus_cache(self) -> dict[str, np.ndarray] | None:
+        """Load the _numberstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
+        pass
+
+    @abstractmethod
+    def save_shieldstatus_cache(self, cache_data: list[np.ndarray]) -> bool:
+        """Save the _shieldstatus_cache to temporary storage. Returns True if successful, False otherwise."""
+        pass
+
+    @abstractmethod
+    def load_shieldstatus_cache(self) -> list[np.ndarray] | None:
+        """Load the _shieldstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
+        pass
+
     @staticmethod
     def get_closerange_to_longrange_transform():
         script_path = os.path.abspath(__file__)
@@ -1924,11 +1944,11 @@ class LumoUI:
             h, w = image.shape[:2]
             base_image[self.offset_y:self.offset_y+h, self.offset_x:self.offset_x+w] = image
 
-
     # class members
     shieldstatus_dims = HeightWidth(height=59,width=70)
 
-    def __init__(self) -> None:
+    def __init__(self, filesystem_: filesystem | None = None) -> None:
+        self.filesystem = filesystem_
         self._number_limit = 300
         self.statusbar_area_AMMO = self.StatusBarArea(
             name="AMMO",
@@ -2159,6 +2179,52 @@ class LumoUI:
         
         # Convert to megabytes
         return total_bytes / (1024 * 1024)
+
+    def save_caches_to_filesystem(self) -> bool:
+        """Save both _numberstatus_cache and _shieldstatus_cache to filesystem if available.
+        Returns True if both caches were saved successfully, False otherwise."""
+        if self.filesystem is None:
+            print("No filesystem available for cache saving")
+            return False
+        
+        success = True
+        
+        # Save numberstatus cache
+        if self._numberstatus_cache:
+            if not self.filesystem.save_numberstatus_cache(self._numberstatus_cache):
+                success = False
+        
+        # Save shieldstatus cache
+        if self._shieldstatus_cache:
+            if not self.filesystem.save_shieldstatus_cache(self._shieldstatus_cache):
+                success = False
+        
+        return success
+
+    def load_caches_from_filesystem(self) -> bool:
+        """Load both _numberstatus_cache and _shieldstatus_cache from filesystem if available.
+        Returns True if at least one cache was loaded successfully, False otherwise."""
+        if self.filesystem is None:
+            print("No filesystem available for cache loading")
+            return False
+        
+        success = False
+        
+        # Load numberstatus cache
+        loaded_numberstatus = self.filesystem.load_numberstatus_cache()
+        if loaded_numberstatus is not None:
+            self._numberstatus_cache = loaded_numberstatus
+            print(f"Loaded numberstatus cache with {len(loaded_numberstatus)} entries")
+            success = True
+        
+        # Load shieldstatus cache
+        loaded_shieldstatus = self.filesystem.load_shieldstatus_cache()
+        if loaded_shieldstatus is not None:
+            self._shieldstatus_cache = loaded_shieldstatus
+            print(f"Loaded shieldstatus cache with {len(loaded_shieldstatus)} entries")
+            success = True
+        
+        return success
 
 
 if __name__ == '__main__':
