@@ -93,7 +93,7 @@ def main():
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
 
-    voice.speak(f"{GUN_CONFIGURATION.model}")
+    voice.speak(f"{GUN_CONFIGURATION.model}, version zero one")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
     #accelerometer = lumogun.Accelerometer()

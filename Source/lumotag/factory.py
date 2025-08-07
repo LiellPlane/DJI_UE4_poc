@@ -1982,6 +1982,16 @@ class LumoUI:
             index = int(normalised_health/normed)
             return self._shieldstatus_cache[index]
 
+        # Only try persisted cache after first early-return check
+        if self.filesystem is not None:
+            loaded_shieldstatus = self.filesystem.load_shieldstatus_cache()
+            if loaded_shieldstatus is not None and isinstance(loaded_shieldstatus, list) and len(loaded_shieldstatus) > 0:
+                self._shieldstatus_cache = loaded_shieldstatus
+                normed = 1/(len(self._shieldstatus_cache)-1)
+                index = int(normalised_health/normed)
+                return self._shieldstatus_cache[index]
+
+        
         # arbitrary image generation steps
         for gen_shield_status in np.arange(0, 1.01, 0.05):
             
@@ -1997,6 +2007,12 @@ class LumoUI:
                 shieldstatus_img,
                 (self.shieldstatus_dims.width, self.shieldstatus_dims.height)
                 ))
+        # Persist the shield cache once generated
+        if self.filesystem is not None and self._shieldstatus_cache:
+            try:
+                self.filesystem.save_shieldstatus_cache(self._shieldstatus_cache)
+            except Exception as e:
+                print(f"Warning: failed to save shieldstatus cache: {e}")
         
         return self.get_shield_status_img(normalised_health)
 
@@ -2080,6 +2096,13 @@ class LumoUI:
         key_ = str(number) + area.name
         if key_ in self._numberstatus_cache:
             return self._numberstatus_cache[key_]
+        # Only try persisted cache after first early-return check
+        if self.filesystem is not None:
+            loaded_numberstatus = self.filesystem.load_numberstatus_cache()
+            if loaded_numberstatus is not None and isinstance(loaded_numberstatus, dict) and len(loaded_numberstatus) > 0:
+                self._numberstatus_cache = loaded_numberstatus
+                if key_ in self._numberstatus_cache:
+                    return self._numberstatus_cache[key_]
         h, w = self.numerics_img.shape[:2]
         colcnt = 0
         spans = []
@@ -2156,6 +2179,12 @@ class LumoUI:
             # cv2.imshow(f'Character Debug', self._numberstatus_cache[str(i) + area.name] )
             # cv2.waitKey(0)
         print(f"total size for ammo image cache = {round(self.get_image_cache_size_mb(self._numberstatus_cache))} Mb")
+        # Persist the number cache once generated
+        if self.filesystem is not None and self._numberstatus_cache:
+            try:
+                self.filesystem.save_numberstatus_cache(self._numberstatus_cache)
+            except Exception as e:
+                print(f"Warning: failed to save numberstatus cache: {e}")
         if key_ not in self._numberstatus_cache:
             raise Exception(f"bad logic after generating and caching numbers:input = {number}")
         return self._numberstatus_cache[key_]
