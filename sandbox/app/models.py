@@ -38,3 +38,8 @@ class Settings(BaseSettings):
     processed_images_dir: str
     base_url: str
     crop_endpoint_url: str
+    
+    # DynamoDB settings
+    dynamodb_endpoint_url: str
+    dynamodb_table_name: str
+    rate_limit_requests_per_hour: int

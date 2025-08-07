@@ -9,13 +9,18 @@ from io import BytesIO
 from PIL import Image
 from fastapi.testclient import TestClient
 
-# Set env variable - this can be done a bit tidier with a fixture
+# Set env variables - this can be done a bit tidier with a fixture
 
 os.environ["PROCESSED_IMAGES_DIR"] = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "processed_images"
 )
-os.environ["crop_endpoint_url"] = "http://127.0.0.1:8001/mock-ai/find-main-object"
-os.environ["base_url"] = "http://127.0.0.1:8000"
+os.environ["CROP_ENDPOINT_URL"] = "http://127.0.0.1:8001/mock-ai/find-main-object"
+os.environ["BASE_URL"] = "http://127.0.0.1:8000"
+
+# DynamoDB settings for testing
+os.environ["DYNAMODB_ENDPOINT_URL"] = "http://localhost:4566"  # LocalStack default
+os.environ["DYNAMODB_TABLE_NAME"] = "rate_limits"
+os.environ["RATE_LIMIT_REQUESTS_PER_HOUR"] = "20"
 
 from app.main import app
 
