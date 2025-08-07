@@ -3,7 +3,7 @@ import uuid
 import json
 import time
 import httpx
-import asyncio
+import aiofiles
 from io import BytesIO
 
 from fastapi import (
@@ -67,6 +67,7 @@ async def process_image_in_background(
 
     logger.info(f"Starting background processing for image {image_id}")
     try:
+        # use connection pool if we want higher throughput
         async with httpx.AsyncClient() as client:
             ai_response = await client.post(
                 settings.crop_endpoint_url,
@@ -157,8 +158,12 @@ async def smart_crop(
 async def get_image(image_path: str):
     full_image_path = f"{settings.processed_images_dir}/{image_path}"
 
-    with open(full_image_path, "rb") as f:
-        return Response(content=f.read(), media_type="image/jpeg")
+    try:
+        async with aiofiles.open(full_image_path, "rb") as f:
+            content = await f.read()
+            return Response(content=content, media_type="image/jpeg")
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Image not found")
 
 
 # Mock AI endpoint for smart-crop to call

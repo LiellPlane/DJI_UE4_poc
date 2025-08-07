@@ -1,8 +1,6 @@
 import json
 import os
 import time
-import json
-from unittest.mock import patch, Mock
 from app.models import Settings, CropBox
 from app.main import crop_image
 from PIL import Image
