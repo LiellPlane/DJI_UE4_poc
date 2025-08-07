@@ -11,4 +11,23 @@ provider "aws" {
   }
 }
 
-# TODO: Define the aws_dynamodb_table resource for rate limiting.
+resource "aws_dynamodb_table" "rate_limits" {
+  name           = "rate_limits"
+  billing_mode   = "PAY_PER_REQUEST"
+  hash_key       = "rate_limit_key"
+
+  attribute {
+    name = "rate_limit_key"
+    type = "S"
+  }
+
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
+
+  tags = {
+    Name        = "RateLimits"
+    Environment = "development"
+  }
+}
