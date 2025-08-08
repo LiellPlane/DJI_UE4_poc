@@ -84,10 +84,8 @@ async def rate_limit_middleware(request: Request, call_next):
     path = request.url.path
     method = request.method.upper()
 
-    # Bypass retrieval and mock endpoints
-    if path.startswith("/mock-ai"):
-        return await call_next(request)
-    if method == "GET" and path.startswith("/images/"):
+    # Only protect the automatic crop endpoint
+    if not (method == "POST" and path == "/images/smart-crop"):
         return await call_next(request)
 
     ip_address = get_client_ip(request)
@@ -112,7 +110,7 @@ async def rate_limit_middleware(request: Request, call_next):
 
     response = await call_next(request)
 
-    # Best-effort headers
+    # Best-effort headers for smart-crop endpoint only
     try:
         remaining = await rate_limiter.get_remaining_requests(ip_address)
         response.headers["X-RateLimit-Limit"] = str(rate_limiter.requests_per_hour)
@@ -124,6 +122,11 @@ async def rate_limit_middleware(request: Request, call_next):
         pass
 
     return response
+
+
+@app.get("/health")
+async def health() -> dict:
+    return {"status": "ok"}
 
 
 async def process_image_in_background(
