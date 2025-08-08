@@ -20,6 +20,12 @@ from PIL import Image
 import logging
 
 from app.models import CropBox, ImageResponse, Settings
+from app.rate_limiter import (
+    create_rate_limiter,
+    get_client_ip,
+    RateLimitExceededException,
+)
+from datetime import datetime, timedelta, timezone
 
 app = FastAPI(title="Product Image Processor")
 
@@ -58,6 +64,66 @@ def crop_image(image: Image.Image, crop_box: CropBox) -> Image.Image:
 settings = Settings()
 
 os.makedirs(settings.processed_images_dir, exist_ok=True)
+
+# Configure rate limiter
+rate_limiter = create_rate_limiter(
+    table_name=os.environ.get("DYNAMODB_TABLE_NAME", "rate_limits"),
+    requests_per_hour=int(os.environ.get("RATE_LIMIT_REQUESTS_PER_HOUR", "20")),
+    endpoint_url=os.environ.get("DYNAMODB_ENDPOINT_URL"),
+)
+
+
+def _seconds_until_next_hour_utc() -> int:
+    now = datetime.now(timezone.utc)
+    next_hour = (now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1))
+    return int((next_hour - now).total_seconds())
+
+
+@app.middleware("http")
+async def rate_limit_middleware(request: Request, call_next):
+    path = request.url.path
+    method = request.method.upper()
+
+    # Bypass retrieval and mock endpoints
+    if path.startswith("/mock-ai"):
+        return await call_next(request)
+    if method == "GET" and path.startswith("/images/"):
+        return await call_next(request)
+
+    ip_address = get_client_ip(request)
+
+    try:
+        await rate_limiter.check_and_update_rate_limit(ip_address)
+    except RateLimitExceededException as e:
+        retry_after = _seconds_until_next_hour_utc()
+        return JSONResponse(
+            status_code=429,
+            content={"detail": str(e)},
+            headers={
+                "Retry-After": str(retry_after),
+                "X-RateLimit-Limit": str(rate_limiter.requests_per_hour),
+                "X-RateLimit-Remaining": "0",
+                "X-RateLimit-Reset-Seconds": str(retry_after),
+            },
+        )
+    except Exception as e:
+        # Fail open for any unexpected error
+        logger.error(f"Rate limit middleware error: {e}")
+
+    response = await call_next(request)
+
+    # Best-effort headers
+    try:
+        remaining = await rate_limiter.get_remaining_requests(ip_address)
+        response.headers["X-RateLimit-Limit"] = str(rate_limiter.requests_per_hour)
+        response.headers["X-RateLimit-Remaining"] = str(remaining)
+        response.headers["X-RateLimit-Reset-Seconds"] = str(
+            _seconds_until_next_hour_utc()
+        )
+    except Exception:
+        pass
+
+    return response
 
 
 async def process_image_in_background(

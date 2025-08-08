@@ -7,6 +7,9 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 from fastapi import Request
+import anyio
+from botocore.config import Config as BotoConfig
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -18,6 +21,10 @@ class DynamoDBClient(ABC):
 
     @abstractmethod
     def put_item(self, **kwargs) -> dict:
+        pass
+
+    @abstractmethod
+    def update_item(self, **kwargs) -> dict:
         pass
 
 
@@ -60,6 +67,9 @@ class RateLimiter:
     async def check_and_update_rate_limit(self, ip_address: str) -> None:
         """Check if IP address is within rate limit and update counter.
 
+        Uses a single atomic UpdateItem with conditional expression to avoid
+        race conditions and minimise round trips.
+
         Args:
             ip_address: Client IP address to check
 
@@ -68,52 +78,55 @@ class RateLimiter:
         """
         rate_limit_key = self._get_rate_limit_key(ip_address)
 
-        try:
-            # Try to get existing record
-            response = self.dynamodb_client.get_item(
-                TableName=self.table_name, Key={"rate_limit_key": {"S": rate_limit_key}}
+        hour_key = self._get_current_hour_key()
+        current_timestamp = int(time.time())
+        ttl_seconds = 7200  # 2 hours TTL for cleanup
+
+        def _update_item():
+            return self.dynamodb_client.update_item(
+                TableName=self.table_name,
+                Key={"rate_limit_key": {"S": rate_limit_key}},
+                UpdateExpression=(
+                    "ADD request_count :inc "
+                    "SET ip_address = if_not_exists(ip_address, :ip), "
+                    "hour_key = :hour, last_updated = :now, ttl = :ttl"
+                ),
+                ExpressionAttributeValues={
+                    ":inc": {"N": "1"},
+                    ":ip": {"S": ip_address},
+                    ":hour": {"S": hour_key},
+                    ":now": {"N": str(current_timestamp)},
+                    ":ttl": {"N": str(current_timestamp + ttl_seconds)},
+                    ":limit": {"N": str(self.requests_per_hour)},
+                },
+                ConditionExpression=(
+                    "attribute_not_exists(request_count) OR request_count < :limit"
+                ),
+                ReturnValues="UPDATED_NEW",
             )
 
-            current_count = 0
-            if "Item" in response:
-                current_count = int(response["Item"]["request_count"]["N"])
-
-            # Check if limit exceeded
-            if current_count >= self.requests_per_hour:
+        try:
+            await anyio.to_thread.run_sync(_update_item)
+            logger.info(
+                f"Rate limit check passed for IP {ip_address}. "
+                f"Key: {rate_limit_key}"
+            )
+        except ClientError as e:
+            error_code = e.response.get("Error", {}).get("Code")
+            if error_code == "ConditionalCheckFailedException":
                 logger.warning(
                     f"Rate limit exceeded for IP {ip_address}. "
-                    f"Count: {current_count}/{self.requests_per_hour}"
+                    f"Key: {rate_limit_key}"
                 )
                 raise RateLimitExceededException(
                     f"Rate limit exceeded. Maximum {self.requests_per_hour} requests per hour allowed."
                 )
-
-            # Update counter
-            new_count = current_count + 1
-            current_timestamp = int(time.time())
-
-            self.dynamodb_client.put_item(
-                TableName=self.table_name,
-                Item={
-                    "rate_limit_key": {"S": rate_limit_key},
-                    "ip_address": {"S": ip_address},
-                    "request_count": {"N": str(new_count)},
-                    "hour_key": {"S": self._get_current_hour_key()},
-                    "last_updated": {"N": str(current_timestamp)},
-                    "ttl": {
-                        "N": str(current_timestamp + 7200)
-                    },  # 2 hours TTL for cleanup
-                },
-            )
-
-            logger.info(
-                f"Rate limit check passed for IP {ip_address}. "
-                f"Count: {new_count}/{self.requests_per_hour}"
-            )
-
-        except ClientError as e:
             logger.error(f"DynamoDB error during rate limit check: {e}")
             logger.warning("Allowing request due to DynamoDB error (failing open)")
+        except Exception as e:
+            # Fail open for any unexpected exception (e.g., endpoint connection error)
+            logger.error(f"Unexpected error during rate limit check: {e}")
+            logger.warning("Allowing request due to unexpected error (failing open)")
 
     async def get_remaining_requests(self, ip_address: str) -> int:
         """Get remaining requests for an IP address in current hour.
@@ -126,19 +139,25 @@ class RateLimiter:
         """
         rate_limit_key = self._get_rate_limit_key(ip_address)
 
-        try:
-            response = self.dynamodb_client.get_item(
+        def _get_item():
+            return self.dynamodb_client.get_item(
                 TableName=self.table_name, Key={"rate_limit_key": {"S": rate_limit_key}}
             )
 
+        try:
+            response = await anyio.to_thread.run_sync(_get_item)
+
             current_count = 0
             if "Item" in response:
-                current_count = int(response["Item"]["request_count"]["N"])
+                current_count = int(response["Item"].get("request_count", {}).get("N", "0"))
 
             return max(0, self.requests_per_hour - current_count)
 
         except ClientError as e:
             logger.error(f"DynamoDB error getting remaining requests: {e}")
+            return self.requests_per_hour  # Fail open
+        except Exception as e:
+            logger.error(f"Unexpected error getting remaining requests: {e}")
             return self.requests_per_hour  # Fail open
 
 
@@ -150,6 +169,12 @@ class BotoDynamoDBClient(DynamoDBClient):
         aws_access_key_id: Optional[str] = None,
         aws_secret_access_key: Optional[str] = None,
     ):
+        # Aggressive timeouts and minimal retries so tests don’t hang if endpoint is down
+        client_config = BotoConfig(
+            connect_timeout=float(os.environ.get("DDB_CONNECT_TIMEOUT", "0.3")),
+            read_timeout=float(os.environ.get("DDB_READ_TIMEOUT", "0.3")),
+            retries={"max_attempts": int(os.environ.get("DDB_MAX_ATTEMPTS", "1")), "mode": "standard"},
+        )
         self._client = boto3.client(
             "dynamodb",
             endpoint_url=endpoint_url,
@@ -157,6 +182,7 @@ class BotoDynamoDBClient(DynamoDBClient):
             aws_access_key_id=aws_access_key_id
             or "test",  # LocalStack doesn't need real creds
             aws_secret_access_key=aws_secret_access_key or "test",
+            config=client_config,
         )
 
     def get_item(self, **kwargs) -> dict:
@@ -164,6 +190,9 @@ class BotoDynamoDBClient(DynamoDBClient):
 
     def put_item(self, **kwargs) -> dict:
         return self._client.put_item(**kwargs)
+
+    def update_item(self, **kwargs) -> dict:
+        return self._client.update_item(**kwargs)
 
 
 class MockDynamoDBClient(DynamoDBClient):
@@ -213,6 +242,58 @@ class MockDynamoDBClient(DynamoDBClient):
             self._storage[storage_key] = item
 
         return {"ResponseMetadata": {"HTTPStatusCode": 200}}
+
+    def update_item(self, **kwargs) -> dict:
+        if self._fail_on_error:
+            raise ClientError(
+                error_response={"Error": {"Code": "ServiceUnavailable"}},
+                operation_name="UpdateItem",
+            )
+
+        table_name = kwargs.get("TableName")
+        key = kwargs.get("Key", {})
+        expr_values = kwargs.get("ExpressionAttributeValues", {})
+
+        rate_limit_key = None
+        if "rate_limit_key" in key and "S" in key["rate_limit_key"]:
+            rate_limit_key = key["rate_limit_key"]["S"]
+
+        if not rate_limit_key:
+            raise ClientError(
+                error_response={"Error": {"Code": "ValidationException"}},
+                operation_name="UpdateItem",
+            )
+
+        storage_key = f"{table_name}#{rate_limit_key}"
+        item = self._storage.get(storage_key, {})
+
+        current_count = int(item.get("request_count", {}).get("N", "0"))
+        limit = int(expr_values.get(":limit", {}).get("N", "0"))
+        inc = int(expr_values.get(":inc", {}).get("N", "1"))
+
+        if current_count >= limit and limit > 0:
+            # Simulate conditional check failure
+            raise ClientError(
+                error_response={
+                    "Error": {"Code": "ConditionalCheckFailedException"}
+                },
+                operation_name="UpdateItem",
+            )
+
+        # Apply update
+        new_count = current_count + inc
+        updated_item = {
+            "rate_limit_key": {"S": rate_limit_key},
+            "ip_address": item.get("ip_address")
+            or {"S": expr_values.get(":ip", {}).get("S", "")},
+            "request_count": {"N": str(new_count)},
+            "hour_key": {"S": expr_values.get(":hour", {}).get("S", "")},
+            "last_updated": {"N": expr_values.get(":now", {}).get("N", "0")},
+            "ttl": {"N": expr_values.get(":ttl", {}).get("N", "0")},
+        }
+        self._storage[storage_key] = updated_item
+
+        return {"Attributes": {"request_count": {"N": str(new_count)}}}
 
     def clear_storage(self):
         self._storage.clear()
