@@ -205,7 +205,7 @@ class filesystem(ABC):
         pass
 
     @abstractmethod
-    def load_numberstatus_cache(self) -> Optional[dict[str, np.ndarray]]:
+    def load_numberstatus_cache(self) -> dict[str, np.ndarray] | None:
         """Load the _numberstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
         pass
 
@@ -215,7 +215,7 @@ class filesystem(ABC):
         pass
 
     @abstractmethod
-    def load_shieldstatus_cache(self) -> Optional[list[np.ndarray]]:
+    def load_shieldstatus_cache(self) -> list[np.ndarray] | None:
         """Load the _shieldstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
         pass
 
@@ -352,7 +352,7 @@ class display(ABC):
         #three_channel_image[:, :, 2] = outptu_img
         return outptu_img
 
-    def add_internal_section_region(self, source_image_shape, inputimg, _slice: CropSlicing, affinetransform: Optional[np.ndarray]):
+    def add_internal_section_region(self, source_image_shape, inputimg, _slice: CropSlicing, affinetransform: Optional):
         """Draw the white square which is the inner zone for detecting patterns
         either use the image shape which is used as a dictionary look-up for previously calculated affine transforms
         or provide the affine transform itself
@@ -1947,7 +1947,7 @@ class LumoUI:
     # class members
     shieldstatus_dims = HeightWidth(height=59,width=70)
 
-    def __init__(self, filesystem_: Optional[filesystem] = None) -> None:
+    def __init__(self, filesystem_: filesystem | None = None) -> None:
         self.filesystem = filesystem_
         self._number_limit = 300
         self.statusbar_area_AMMO = self.StatusBarArea(
