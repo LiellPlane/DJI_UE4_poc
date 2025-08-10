@@ -33,12 +33,13 @@ class Voice(factory.VoiceBase):
         super().__init__()
 
     def _build_cmd(self, message: str) -> list[str]:
+        self._selected_profile = random.choice(self.VOICE_PROFILES)
         return ['espeak', *self._selected_profile, message]
 
     def speaker(self, in_box):
         """Ideally this should inherit from threading.thread
         and override init and run - but w/e this works for now"""
-        self._selected_profile = random.choice(self.VOICE_PROFILES)
+        
         while True:
             message = in_box.get(block=True)
             try:
