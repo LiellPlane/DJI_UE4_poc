@@ -38,7 +38,7 @@ class Voice(factory.VoiceBase):
     def speaker(self, in_box):
         """Ideally this should inherit from threading.thread
         and override init and run - but w/e this works for now"""
-
+        self._selected_profile = random.choice(self.VOICE_PROFILES)
         while True:
             message = in_box.get(block=True)
             try:
