@@ -81,7 +81,8 @@ def main():
     # application
     # initialise components of lumogun
     voice = sound.Voice()
-    status_bar = factory.LumoUI()
+    file_system = lumogun.filesystem()
+    status_bar = factory.LumoUI(filesystem_=file_system)
     if get_platform() == _OS.RASPBERRY:
         for _ in range(0, 2):
             voice.speak("cancel")
@@ -93,7 +94,7 @@ def main():
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
 
-    voice.speak(f"{GUN_CONFIGURATION.model}, version zero one")
+    voice.speak(f"{GUN_CONFIGURATION.model}, V zero three.")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
     #accelerometer = lumogun.Accelerometer()
@@ -205,7 +206,7 @@ def main():
 
     # messenger = lumogun.Messenger(GUN_CONFIGURATION)
     #workingdata = decode_clothID.WorkingData()
-    file_system = lumogun.filesystem()
+    
 
     # display.display_output(img)
     # while True:
