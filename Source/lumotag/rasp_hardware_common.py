@@ -28,7 +28,7 @@ from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv2Noir_Cam_vidmod
 #import imutils
 
 
-class filesystem(factory.filesystem):
+class filesystem(factory.FileSystemABC):
     
 
     def __init__(self) -> None:

@@ -190,7 +190,7 @@ class gun_config(ABC):
     
 
 
-class filesystem(ABC):
+class FileSystemABC(ABC):
     @abstractmethod
     def save_image(self):
         pass
