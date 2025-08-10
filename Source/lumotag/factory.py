@@ -1947,7 +1947,7 @@ class LumoUI:
     # class members
     shieldstatus_dims = HeightWidth(height=59,width=70)
 
-    def __init__(self, filesystem_: Optional[filesystem] = None) -> None:
+    def __init__(self, filesystem_: Optional[FileSystemABC] = None) -> None:
         self.filesystem = filesystem_
         self._number_limit = 300
         self.statusbar_area_AMMO = self.StatusBarArea(
