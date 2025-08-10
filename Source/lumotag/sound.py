@@ -1,6 +1,6 @@
 import subprocess
 import random
-from . import factory
+import factory
 
 
 class Voice(factory.VoiceBase):
