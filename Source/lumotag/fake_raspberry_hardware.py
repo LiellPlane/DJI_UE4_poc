@@ -36,7 +36,7 @@ def lumo_viewer(
         print(e)
 
 
-class filesystem(factory.filesystem):
+class filesystem(factory.FileSystemABC):
     def save_image(self,img,message=None):
         if img is None:
             raise Exception("save debug; img is None")
