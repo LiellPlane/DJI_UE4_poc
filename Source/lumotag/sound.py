@@ -12,14 +12,14 @@ class Voice(factory.VoiceBase):
     # Each profile is a flat list of CLI args (excluding the message)
     VOICE_PROFILES = [
         # male voices
-        ['-v', 'en+m1', '-s', '170', '-a', '190', '-p', '40'],
-        ['-v', 'en+m7', '-s', '150', '-a', '200', '-p', '20'],  # low male
+        ['-v', 'en+m1', '-s', '200', '-a', '190', '-p', '40'],
+        ['-v', 'en+m7', '-s', '200', '-a', '200', '-p', '20'],  # low male
         # female voices
-        ['-v', 'en+f2', '-s', '190', '-a', '200', '-p', '60'],
+        ['-v', 'en+f2', '-s', '200', '-a', '200', '-p', '60'],
         ['-v', 'en+f3', '-s', '200', '-a', '200', '-p', '65'],
         # novelty voices (commonly available variants)
-        ['-v', 'en+croak', '-s', '160', '-a', '180', '-p', '50'],
-        ['-v', 'en+whisper', '-s', '180', '-a', '170', '-p', '50'],
+        ['-v', 'en+croak', '-s', '200', '-a', '180', '-p', '50'],
+        ['-v', 'en+whisper', '-s', '200', '-a', '170', '-p', '50'],
     ]
 
     def __init__(self) -> None:
@@ -33,7 +33,7 @@ class Voice(factory.VoiceBase):
         super().__init__()
 
     def _build_cmd(self, message: str) -> list[str]:
-        self._selected_profile = random.choice(self.VOICE_PROFILES)
+        # self._selected_profile = random.choice(self.VOICE_PROFILES)
         return ['espeak', *self._selected_profile, message]
 
     def speaker(self, in_box):
