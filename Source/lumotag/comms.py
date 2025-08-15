@@ -22,7 +22,6 @@ class UploadRequest(BaseModel):
     """Pydantic model for validating upload request data"""
     image_id: str = Field(..., description="Unique identifier for the image")
     timestamp: float = Field(..., description="Unix timestamp when upload was initiated")
-    source: str = Field(..., description="Source device/OS friendly name")
     
 
 class ImageUploaderThreaded_shared_mem:
@@ -38,6 +37,7 @@ class ImageUploaderThreaded_shared_mem:
     Public API:
       - trigger_capture()
       - upload_image_by_id(image_id)
+      - delete_image_by_id(image_id)
       - get_stored_image_ids()
       - raise_thread_error_if_any()
     """
@@ -88,6 +88,11 @@ class ImageUploaderThreaded_shared_mem:
     def upload_image_by_id(self, image_id: str) -> None:
         """Queue a specific image ID for upload - will crash if queue is full"""
         self._control_q.put_nowait(image_id)
+
+    def delete_image_by_id(self, image_id: str) -> bool:
+        """Delete a specific image ID from storage - returns True if deleted, False if not found"""
+        with self._mem_lock:
+            return self.ImageMem.pop(image_id, None) is not None
 
     def get_stored_image_ids(self) -> list[str]:
         with self._mem_lock:
@@ -141,7 +146,6 @@ class ImageUploaderThreaded_shared_mem:
                     upload_request = UploadRequest(
                         image_id=image_id,
                         timestamp=time.time(),
-                        source=self.OS_friendly_name,
                     )
                     
                     resp = session.post(
@@ -304,14 +308,12 @@ if __name__ == "__main__":
                 # Extract the expected fields
                 image_id = form_data.get('image_id')
                 timestamp = form_data.get('timestamp')
-                source = form_data.get('source')
                 
                 if image_id:
                     UploadHandler.uploads_received.append(image_id)
                     print(f"📤 HTTP Server received upload:")
                     print(f"   - image_id: {image_id}")
                     print(f"   - timestamp: {timestamp}")
-                    print(f"   - source: {source}")
                     if image_data and image_filename:
                         print(f"   - image_file: {image_filename} ({len(image_data)} bytes)")
                 else:
@@ -434,6 +436,41 @@ if __name__ == "__main__":
         uploader.raise_thread_error_if_any()
         print("✅ Threads still healthy after all operations")
         
+        # Test delete function
+        print("\n🗑️  Testing delete_image_by_id function...")
+        
+        # Capture some images first
+        for i in range(2):
+            uploader.trigger_capture()
+            time.sleep(0.05)
+        
+        stored_ids = uploader.get_stored_image_ids()
+        print(f"✅ Captured {len(stored_ids)} images for deletion test: {stored_ids}")
+        assert len(stored_ids) >= 1, "Need at least 1 image to test deletion"
+        
+        # Test deleting existing image
+        test_id = stored_ids[0]
+        result = uploader.delete_image_by_id(test_id)
+        print(f"✅ Delete existing image '{test_id}': {result}")
+        assert result == True, f"Expected True when deleting existing image, got {result}"
+        
+        # Verify image was actually removed
+        updated_ids = uploader.get_stored_image_ids()
+        print(f"✅ Images after deletion: {updated_ids}")
+        assert test_id not in updated_ids, f"Image {test_id} still exists after deletion"
+        assert len(updated_ids) == len(stored_ids) - 1, f"Expected {len(stored_ids) - 1} images, got {len(updated_ids)}"
+        
+        # Test deleting non-existent image
+        result = uploader.delete_image_by_id("nonexistent_id")
+        print(f"✅ Delete non-existent image: {result}")
+        assert result == False, f"Expected False when deleting non-existent image, got {result}"
+        
+        # Verify no images were affected
+        final_ids = uploader.get_stored_image_ids()
+        assert final_ids == updated_ids, "Image count changed when deleting non-existent image"
+        
+        print("✅ Delete function tests passed!")
+
         print(f"\n🎉 Comprehensive test completed!")
         print(f"   📊 Images uploaded: {len(UploadHandler.uploads_received)}")
         print(f"   📊 Server responses: {UploadHandler.uploads_received}")
