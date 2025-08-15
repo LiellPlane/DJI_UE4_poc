@@ -12,11 +12,18 @@ import traceback
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
-
+from pydantic import BaseModel, Field
 
 # UploadResult removed - we no longer track upload results
 # Network failures are expected and ignored, encoding failures crash immediately
 
+
+class UploadRequest(BaseModel):
+    """Pydantic model for validating upload request data"""
+    image_id: str = Field(..., description="Unique identifier for the image")
+    timestamp: float = Field(..., description="Unix timestamp when upload was initiated")
+    source: str = Field(..., description="Source device/OS friendly name")
+    
 
 class ImageUploaderThreaded_shared_mem:
     """Ultra-lightweight, threaded uploader for grayscale frames from shared memory.
@@ -129,13 +136,20 @@ class ImageUploaderThreaded_shared_mem:
                 # Try upload - distinguish client errors from network errors
                 try:
                     files = {"image": (f"{image_id}.jpg", buffer.tobytes(), "image/jpeg")}
-                    data = {
-                        "image_id": image_id,
-                        "timestamp": time.time(),
-                        "source": self.OS_friendly_name,
-                        "mono": 1,
-                    }
-                    resp = session.post(self.upload_url, files=files, data=data, timeout=2)
+                    
+                    # Validate upload data using Pydantic model
+                    upload_request = UploadRequest(
+                        image_id=image_id,
+                        timestamp=time.time(),
+                        source=self.OS_friendly_name,
+                    )
+                    
+                    resp = session.post(
+                        self.upload_url, 
+                        files=files, 
+                        data=upload_request.model_dump(), 
+                        timeout=2
+                    )
                     resp.raise_for_status()
                     # Upload successful - no result tracking needed
                     
@@ -255,7 +269,6 @@ if __name__ == "__main__":
                 image_id = form.getvalue('image_id')
                 timestamp = form.getvalue('timestamp')
                 source = form.getvalue('source')
-                mono = form.getvalue('mono')
                 
                 # Get the uploaded image file - check if field exists first
                 image_field = None
@@ -268,7 +281,6 @@ if __name__ == "__main__":
                     print(f"   - image_id: {image_id}")
                     print(f"   - timestamp: {timestamp}")
                     print(f"   - source: {source}")
-                    print(f"   - mono: {mono}")
                     if image_field is not None and hasattr(image_field, 'filename'):
                         image_data = image_field.file.read()
                         print(f"   - image_file: {image_field.filename} ({len(image_data)} bytes)")
