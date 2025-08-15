@@ -381,29 +381,24 @@ if __name__ == "__main__":
         
         stored_ids = uploader.get_stored_image_ids()
         print(f"✅ Captured {len(stored_ids)} images: {stored_ids}")
+        assert len(stored_ids) > 0, "No images were captured - capture test failed"
         
         # Test upload of image
-        if stored_ids:
-            print(f"\n📤 Testing upload of image: {stored_ids[0]}")
-            initial_uploads = len(UploadHandler.uploads_received)
-            uploader.upload_image_by_id(stored_ids[0])
-            
-            # Wait for upload to complete and check server response
-            # Check multiple times with small delays to handle timing issues
-            success = False
-            for attempt in range(50):  # Try for up to 2 seconds
-                time.sleep(0.2)
-                if len(UploadHandler.uploads_received) > initial_uploads:
-                    success = True
-                    break
-            
-            if success:
-                print(f"✅ Upload successful! Server received: {UploadHandler.uploads_received}")
-            else:
-                print("❌ Upload failed: Server did not receive the image ID")
-                print(f"   Debug: Expected uploads > {initial_uploads}, got {len(UploadHandler.uploads_received)}")
-        else:
-            print("❌ No images to upload")
+        print(f"\n📤 Testing upload of image: {stored_ids[0]}")
+        initial_uploads = len(UploadHandler.uploads_received)
+        uploader.upload_image_by_id(stored_ids[0])
+        
+        # Wait for upload to complete and check server response
+        # Check multiple times with small delays to handle timing issues
+        success = False
+        for attempt in range(50):  # Try for up to 2 seconds
+            time.sleep(0.2)
+            if len(UploadHandler.uploads_received) > initial_uploads:
+                success = True
+                break
+        
+        assert success, f"Upload failed: Server did not receive the image ID. Expected uploads > {initial_uploads}, got {len(UploadHandler.uploads_received)}"
+        print(f"✅ Upload successful! Server received: {UploadHandler.uploads_received}")
         
         # Test multiple captures and uploads
         print("\n🔄 Testing multiple operations...")
@@ -413,16 +408,27 @@ if __name__ == "__main__":
         
         stored_ids = uploader.get_stored_image_ids()
         print(f"✅ Multiple captures: {len(stored_ids)} images stored")
+        # Note: Since we're using the same image data, we get the same embedded ID each time
+        # So we expect only 1 unique image ID, not 3 separate ones
+        assert len(stored_ids) >= 1, f"Expected at least 1 image from multiple captures, got {len(stored_ids)}"
         
         # Upload all stored images
+        initial_upload_count = len(UploadHandler.uploads_received)
         for img_id in stored_ids:
             uploader.upload_image_by_id(img_id)
         
         # Wait and check results
         time.sleep(2.0)
         final_stored = uploader.get_stored_image_ids()
+        final_upload_count = len(UploadHandler.uploads_received)
         print(f"✅ After uploads: {len(final_stored)} images remaining")
-        print(f"✅ Total uploads received by server: {len(UploadHandler.uploads_received)}")
+        print(f"✅ Total uploads received by server: {final_upload_count}")
+        
+        # Assert that uploads were processed (images should be removed from storage after upload)
+        # Since we're uploading the same image ID that was already uploaded before, 
+        # it gets removed from storage when uploaded, so no new uploads are expected
+        # The key test is that images are removed from storage after upload
+        assert len(final_stored) == 0, f"Expected 0 images remaining after upload, got {len(final_stored)}"
         
         # Final health check
         uploader.raise_thread_error_if_any()
@@ -443,118 +449,124 @@ if __name__ == "__main__":
         print("🧹 HTTP server stopped")
 
     # Test broken thread detection with nonsense URL
+    print("\n🔄 Testing broken thread detection with nonsense URL...")
+    uploader_broken_url = ImageUploaderThreaded_shared_mem(
+        sharedmem_buffs=sharedmem_buffs,
+        safe_mem_details_func=safe_mem_details_func,
+        upload_url="http://invalid-url",  # Clearly invalid URL
+        OS_friendly_name="test_pi",
+        max_store=5
+    )
+    uploader_broken_url.trigger_capture()
+    time.sleep(0.1)  # Let capture process
+    stored_ids = uploader_broken_url.get_stored_image_ids()
+    assert len(stored_ids) > 0, "No images captured for broken URL test"
+    
+    uploader_broken_url.upload_image_by_id(stored_ids[0])
+    time.sleep(1.0)
+    
+    # Expecting an exception here due to nonsense URL
     try:
-        print("\n🔄 Testing broken thread detection with nonsense URL...")
-        uploader_broken_url = ImageUploaderThreaded_shared_mem(
-            sharedmem_buffs=sharedmem_buffs,
-            safe_mem_details_func=safe_mem_details_func,
-            upload_url="http://invalid-url",  # Clearly invalid URL
-            OS_friendly_name="test_pi",
-            max_store=5
-        )
-        uploader_broken_url.trigger_capture()
-        time.sleep(0.1)  # Let capture process
-        stored_ids = uploader_broken_url.get_stored_image_ids()
-        if stored_ids:
-            uploader_broken_url.upload_image_by_id(stored_ids[0])
-        time.sleep(1.0)
-        # Expecting an exception here due to nonsense URL
         uploader_broken_url.raise_thread_error_if_any()
-        print("⚠️  Nonsense URL test failed: No thread errors detected")
-        print("   ℹ️  This error is hard to detect because network failures are")
-        print("   ℹ️  intentionally ignored by design - only 4xx client errors crash")
+        # If we reach here, no thread error was detected
+        print("⚠️  Nonsense URL test: No thread errors detected")
+        print("   ℹ️  This is expected because network failures are intentionally ignored")
+        print("   ℹ️  by design - only 4xx client errors crash the thread")
+        # This is actually expected behavior, so we don't assert failure here
     except RuntimeError as e:
         if "Invalid URL" in str(e):
             print(f"✅ Nonsense URL test passed: {e}")
         else:
-            print(f"❌ Nonsense URL test failed: Unexpected error type: {e}")
+            assert False, f"Nonsense URL test failed: Unexpected error type: {e}"
     except Exception as e:
-        print(f"❌ Nonsense URL test failed: Unexpected exception: {e}")
+        assert False, f"Nonsense URL test failed: Unexpected exception: {e}"
 
     # Test broken thread detection with nonsense image
+    print("\n🔄 Testing broken thread detection with nonsense image...")
+    def create_nonsense_image(width=640, height=480):
+        """Create a nonsense image that will fail debuffering"""
+        img = np.zeros((height, width), dtype=np.uint8)
+        img[0, 0:16] = np.random.randint(0, 256, size=16, dtype=np.uint8)  # Random bytes
+        return img
+    
+    nonsense_img = create_nonsense_image()
+    nonsense_img_bytes = nonsense_img.tobytes()
+    sharedmem_buffs_nonsense = {0: MockSharedMem(nonsense_img_bytes)}
+    
+    uploader_nonsense_img = ImageUploaderThreaded_shared_mem(
+        sharedmem_buffs=sharedmem_buffs_nonsense,
+        safe_mem_details_func=safe_mem_details_func,
+        upload_url=f"http://localhost:{server_port}/upload",
+        OS_friendly_name="test_pi",
+        max_store=5
+    )
+    uploader_nonsense_img.trigger_capture()
+    time.sleep(0.1)  # Let capture process
+    
+    # Expecting an exception here due to nonsense image
+    thread_error_detected = False
     try:
-        print("\n🔄 Testing broken thread detection with nonsense image...")
-        def create_nonsense_image(width=640, height=480):
-            """Create a nonsense image that will fail debuffering"""
-            img = np.zeros((height, width), dtype=np.uint8)
-            img[0, 0:16] = np.random.randint(0, 256, size=16, dtype=np.uint8)  # Random bytes
-            return img
-        
-        nonsense_img = create_nonsense_image()
-        nonsense_img_bytes = nonsense_img.tobytes()
-        sharedmem_buffs_nonsense = {0: MockSharedMem(nonsense_img_bytes)}
-        
-        uploader_nonsense_img = ImageUploaderThreaded_shared_mem(
-            sharedmem_buffs=sharedmem_buffs_nonsense,
-            safe_mem_details_func=safe_mem_details_func,
-            upload_url=f"http://localhost:{server_port}/upload",
-            OS_friendly_name="test_pi",
-            max_store=5
-        )
-        uploader_nonsense_img.trigger_capture()
-        time.sleep(0.1)  # Let capture process
-        # Expecting an exception here due to nonsense image
         uploader_nonsense_img.raise_thread_error_if_any()
-        print("❌ Nonsense image test failed: No thread errors detected")
     except RuntimeError as e:
         if "decode" in str(e):
             print(f"✅ Nonsense image test passed: {e}")
+            thread_error_detected = True
         else:
-            print(f"❌ Nonsense image test failed: Unexpected error type: {e}")
+            assert False, f"Nonsense image test failed: Unexpected error type: {e}"
     except Exception as e:
-        print(f"❌ Nonsense image test failed: Unexpected exception: {e}")
+        assert False, f"Nonsense image test failed: Unexpected exception: {e}"
+    
+    assert thread_error_detected, "Nonsense image test failed: No thread errors detected when one was expected"
 
     # Test queue overflow protection
-    try:
-        print("\n🔄 Testing upload queue overflow protection...")
-        
-        # Create uploader for overflow testing
-        uploader_overflow = ImageUploaderThreaded_shared_mem(
-            sharedmem_buffs=sharedmem_buffs,
-            safe_mem_details_func=safe_mem_details_func,
-            upload_url="http://127.0.0.1:99999/blocked",  # This will fail fast
-            OS_friendly_name="test_pi",
-            max_store=10
-        )
-        
-        # Capture one image to have something to upload
-        uploader_overflow.trigger_capture()
-        time.sleep(0.1)
-        stored_ids = uploader_overflow.get_stored_image_ids()
-        print(f"   ✅ Captured {len(stored_ids)} images for testing")
-        
-        if not stored_ids:
-            print("   ❌ No images captured for overflow test")
-            raise Exception("No images available for overflow test")
-        
-        # Blast the queue with requests in a tight loop (maxsize=5)
-        print("   💥 Blasting queue with rapid upload requests...")
-        test_image_id = stored_ids[0]
-        queue_full_detected = False
-        upload_attempts = 0
-        
-        # Try to queue 10 uploads of the same image as fast as possible
-        for i in range(10):
-            try:
-                uploader_overflow.upload_image_by_id(test_image_id)
-                upload_attempts += 1
-                print(f"      ✓ Queued upload #{upload_attempts}")
-                
-            except Exception as e:
-                queue_full_detected = True
-                print(f"   ✅ Queue overflow detected after {upload_attempts} uploads!")
-                print(f"   ✅ Exception: {e}")
-                break
-        
-        if not queue_full_detected:
-            print(f"   ⚠️  Queue overflow not detected after {upload_attempts} rapid uploads")
-            print("   ℹ️  Worker thread may be processing too quickly")
-        
-        print("   ✅ Queue blast test completed")
-        
-    except Exception as e:
-        if "Full" in str(e) or "queue" in str(e).lower():
-            print(f"✅ Queue overflow test passed: {e}")
-        else:
-            print(f"❌ Queue overflow test failed: {e}")
+    print("\n🔄 Testing upload queue overflow protection...")
+    
+    # Create uploader for overflow testing
+    uploader_overflow = ImageUploaderThreaded_shared_mem(
+        sharedmem_buffs=sharedmem_buffs,
+        safe_mem_details_func=safe_mem_details_func,
+        upload_url="http://127.0.0.1:99999/blocked",  # This will fail fast
+        OS_friendly_name="test_pi",
+        max_store=10
+    )
+    
+    # Capture one image to have something to upload
+    uploader_overflow.trigger_capture()
+    time.sleep(0.1)
+    stored_ids = uploader_overflow.get_stored_image_ids()
+    print(f"   ✅ Captured {len(stored_ids)} images for testing")
+    assert len(stored_ids) > 0, "No images captured for overflow test"
+    
+    # Blast the queue with requests in a tight loop (maxsize=5)
+    print("   💥 Blasting queue with rapid upload requests...")
+    test_image_id = stored_ids[0]
+    queue_full_detected = False
+    upload_attempts = 0
+    
+    # Try to queue 10 uploads of the same image as fast as possible
+    for i in range(10):
+        try:
+            uploader_overflow.upload_image_by_id(test_image_id)
+            upload_attempts += 1
+            print(f"      ✓ Queued upload #{upload_attempts}")
+            
+        except Exception as e:
+            queue_full_detected = True
+            print(f"   ✅ Queue overflow detected after {upload_attempts} uploads!")
+            print(f"   ✅ Exception: {e}")
+            # Verify it's actually a queue full error - check exception type and string representation
+            exception_str = str(e)
+            exception_type = type(e).__name__
+            is_queue_full = ("Full" in exception_str or "queue" in exception_str.lower() or 
+                           exception_type == "Full" or "Full" in exception_type)
+            assert is_queue_full, f"Expected queue full error, got: {exception_type}: {exception_str}"
+            break
+    
+    # Note: Queue overflow might not always be detected if the worker thread processes too quickly
+    # This is acceptable behavior, so we don't assert failure if no overflow is detected
+    if not queue_full_detected:
+        print(f"   ⚠️  Queue overflow not detected after {upload_attempts} rapid uploads")
+        print("   ℹ️  Worker thread may be processing too quickly - this is acceptable")
+    
+    print("   ✅ Queue blast test completed")
     
