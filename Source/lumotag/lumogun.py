@@ -10,6 +10,7 @@ import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
+from comms import ImageUploaderThreaded_shared_mem
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
@@ -150,6 +151,8 @@ def main():
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
 
+
+
     # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
     #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
     #     safe_mem_details_func = image_capture_shortrange.get_safe_mem_details,
@@ -170,6 +173,12 @@ def main():
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
     
+    img_uploaders = []
+    img_uploaders.append(ImageUploaderThreaded_shared_mem(
+        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+        upload_url= "http://www.poiujhjkihgujhjuijhj.com",
+        OS_friendly_name="shortrange_img_uploader"))
     # image_analysis = []
 
     for image_analyser in image_analysis:
@@ -292,7 +301,9 @@ def main():
     cnt = 0 
     TEMP_DEBUG_trigger_cnt = 0
     TEMP_fake_light = False
+    
     while True:
+        imageIDs = []
         TEMP_DEBUG_trigger_cnt += 1
         #print(TEMP_DEBUG_trigger_cnt)
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
@@ -300,12 +311,17 @@ def main():
             with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure("get next image"):
                 cap_img = next(image_capture_longrange)
                 cap_img_closerange = next(image_capture_shortrange)
+                if len(img_uploaders) > 0:
+                    # use these for uploading images of interest to the server
+                    imageIDs.append(factory.decode_image_id(cap_img))
+                    imageIDs.append(factory.decode_image_id(cap_img_closerange))
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis()
-
+                for img_uploader in img_uploaders:
+                    img_uploader.trigger_capture()
 
 
             GUN_CONFIGURATION.loop_wait()
@@ -510,6 +526,11 @@ def main():
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
                             
+                else:
+                    for img_uploader in img_uploaders:
+                        # get rid of uninteresting images
+                        for img_id in imageIDs:
+                            img_uploader.delete_image_by_id(img_id)
 
                 # if is_trigger_pressed is True:
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")

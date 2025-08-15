@@ -48,13 +48,12 @@ class ImageUploaderThreaded_shared_mem:
         safe_mem_details_func: Callable[[], SharedMem_ImgTicket],
         upload_url: str,
         OS_friendly_name: str,
-        max_store: int = 20,
     ) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_mem_details_func = safe_mem_details_func
         self.upload_url = upload_url
         self.OS_friendly_name = OS_friendly_name
-        self.max_store = max_store
+        self.max_store = 100
 
         # Keep raw grayscale frames by embedded image id
         self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
@@ -367,8 +366,7 @@ if __name__ == "__main__":
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             upload_url=f"http://localhost:{server_port}/upload",
-            OS_friendly_name="test_pi",
-            max_store=5
+            OS_friendly_name="test_pi"
         )
         print("✅ Uploader created with real image data")
         
@@ -491,8 +489,7 @@ if __name__ == "__main__":
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         upload_url="http://invalid-url",  # Clearly invalid URL
-        OS_friendly_name="test_pi",
-        max_store=5
+        OS_friendly_name="test_pi"
     )
     uploader_broken_url.trigger_capture()
     time.sleep(0.1)  # Let capture process
@@ -534,8 +531,7 @@ if __name__ == "__main__":
         sharedmem_buffs=sharedmem_buffs_nonsense,
         safe_mem_details_func=safe_mem_details_func,
         upload_url=f"http://localhost:{server_port}/upload",
-        OS_friendly_name="test_pi",
-        max_store=5
+        OS_friendly_name="test_pi"
     )
     uploader_nonsense_img.trigger_capture()
     time.sleep(0.1)  # Let capture process
@@ -563,8 +559,7 @@ if __name__ == "__main__":
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         upload_url="http://127.0.0.1:99999/blocked",  # This will fail fast
-        OS_friendly_name="test_pi",
-        max_store=10
+        OS_friendly_name="test_pi"
     )
     
     # Capture one image to have something to upload
