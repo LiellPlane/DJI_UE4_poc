@@ -240,40 +240,71 @@ if __name__ == "__main__":
     class UploadHandler(BaseHTTPRequestHandler):
         uploads_received = []
         
-        def do_POST(self):
+        def do_POST(self) -> None:
             try:
-                import cgi
+                import email.message
+                import email.parser
                 import io
                 
-                # Parse multipart form data properly
+                # Parse multipart form data using modern email.message approach
                 content_type = self.headers.get('Content-Type', '')
                 if not content_type.startswith('multipart/form-data'):
                     self.send_error(400, "Expected multipart/form-data")
                     return
                 
-                # Create a proper environment for cgi.FieldStorage
-                environ = {
-                    'REQUEST_METHOD': 'POST',
-                    'CONTENT_TYPE': content_type,
-                    'CONTENT_LENGTH': self.headers.get('Content-Length', '0')
-                }
+                # Get content length
+                content_length = int(self.headers.get('Content-Length', '0'))
+                if content_length == 0:
+                    self.send_error(400, "Empty request body")
+                    return
                 
-                # Parse the form data
-                form = cgi.FieldStorage(
-                    fp=self.rfile,
-                    headers=self.headers,
-                    environ=environ
-                )
+                # Read the raw request body
+                raw_data = self.rfile.read(content_length)
                 
-                # Extract fields that match what _worker_loop sends
-                image_id = form.getvalue('image_id')
-                timestamp = form.getvalue('timestamp')
-                source = form.getvalue('source')
+                # Create email message with proper headers for parsing
+                msg_str = f"Content-Type: {content_type}\r\n\r\n"
+                msg_str = msg_str.encode('ascii') + raw_data
                 
-                # Get the uploaded image file - check if field exists first
-                image_field = None
-                if 'image' in form:
-                    image_field = form['image']
+                # Parse using modern email parser
+                parser = email.parser.BytesParser()
+                msg = parser.parsebytes(msg_str)
+                
+                # Extract form fields
+                form_data = {}
+                image_data = None
+                image_filename = None
+                
+                for part in msg.walk():
+                    if part.get_content_maintype() == 'multipart':
+                        continue
+                        
+                    content_disposition = part.get('Content-Disposition', '')
+                    if 'form-data' not in content_disposition:
+                        continue
+                    
+                    # Parse the Content-Disposition header to get field name
+                    name = None
+                    filename = None
+                    for param in content_disposition.split(';'):
+                        param = param.strip()
+                        if param.startswith('name='):
+                            name = param.split('=', 1)[1].strip('"')
+                        elif param.startswith('filename='):
+                            filename = param.split('=', 1)[1].strip('"')
+                    
+                    if name:
+                        content = part.get_payload(decode=True)
+                        if name == 'image' and filename:
+                            image_data = content
+                            image_filename = filename
+                        else:
+                            # Regular form field
+                            form_data[name] = content.decode('utf-8') if content else ''
+                
+                # Extract the expected fields
+                image_id = form_data.get('image_id')
+                timestamp = form_data.get('timestamp')
+                source = form_data.get('source')
                 
                 if image_id:
                     UploadHandler.uploads_received.append(image_id)
@@ -281,10 +312,8 @@ if __name__ == "__main__":
                     print(f"   - image_id: {image_id}")
                     print(f"   - timestamp: {timestamp}")
                     print(f"   - source: {source}")
-                    if image_field is not None and hasattr(image_field, 'filename'):
-                        image_data = image_field.file.read()
-                        print(f"   - image_file: {image_field.filename} ({len(image_data)} bytes)")
-                        image_field.file.seek(0)  # Reset file pointer
+                    if image_data and image_filename:
+                        print(f"   - image_file: {image_filename} ({len(image_data)} bytes)")
                 else:
                     print("❌ No image_id found in upload")
                 
@@ -296,9 +325,11 @@ if __name__ == "__main__":
                 
             except Exception as e:
                 print(f"❌ Error in UploadHandler: {e}")
+                import traceback
+                traceback.print_exc()
                 self.send_error(500, f"Server error: {e}")
         
-        def log_message(self, format, *args):
+        def log_message(self, format: str, *args) -> None:
             pass  # Suppress HTTP server logs
     
     # Start HTTP server in background
@@ -360,7 +391,7 @@ if __name__ == "__main__":
             # Wait for upload to complete and check server response
             # Check multiple times with small delays to handle timing issues
             success = False
-            for attempt in range(10):  # Try for up to 2 seconds
+            for attempt in range(50):  # Try for up to 2 seconds
                 time.sleep(0.2)
                 if len(UploadHandler.uploads_received) > initial_uploads:
                     success = True
