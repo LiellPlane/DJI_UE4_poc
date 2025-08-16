@@ -41,7 +41,7 @@ elif PLATFORM == _OS.MAC_OS:
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
-    raise ValueError("wut")
+    raise ValueError(f"Unknown platform detected: {PLATFORM}")
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 
