@@ -166,63 +166,67 @@ class WebSocketUploaderThreaded_shared_mem:
                     # Mark as connected
                     self._is_connected = True
                     
-                    while True:  # Message processing loop
-                        # Block until an image_id arrives
-                        image_id: str = self._control_q.get()
+                    try:
+                        while True:  # Message processing loop
+                            # Block until an image_id arrives
+                            image_id: str = self._control_q.get()
 
-                        # Get image data WITHOUT removing it (keep for retry if needed)
-                        with self._mem_lock:
-                            img_array = self.ImageMem.get(image_id, None)
-                        
-                        if img_array is None:
-                            continue  # Image not found - skip silently
-
-                        # Convert to grayscale if needed
-                        if img_array.ndim == 3:
-                            img_gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)  # type: ignore
-                        else:
-                            img_gray = img_array
-
-                        # CRASH on encoding failure (definitely malformed data)
-                        ok, buffer = cv2.imencode(".jpg", img_gray)  # type: ignore
-                        if not ok:
-                            raise RuntimeError(f"JPEG encode failed for {image_id} - corrupt image data")
-
-                        # Try upload - distinguish client errors from network errors
-                        try:
-                            # Validate upload data using Pydantic model
-                            upload_request = UploadRequest(
-                                image_id=image_id,
-                                timestamp=time.time(),
-                            )
-                            
-                            # Create WebSocket message instead of HTTP request
-                            message = {
-                                "type": "image_upload",
-                                "image_id": image_id,
-                                "timestamp": upload_request.timestamp,
-                                "image_data": base64.b64encode(buffer.tobytes()).decode()
-                            }
-                            
-                            await websocket.send(json.dumps(message))
-                            
-                            # Upload successful - NOW remove from memory
+                            # Get image data WITHOUT removing it (keep for retry if needed)
                             with self._mem_lock:
-                                self.ImageMem.pop(image_id, None)
+                                img_array = self.ImageMem.get(image_id, None)
                             
-                        except websockets.exceptions.InvalidURI:
-                            # Invalid WebSocket URL - report as a critical error (same as InvalidURL before)
-                            raise RuntimeError(f"Invalid WebSocket URL: {self.websocket_url}")
+                            if img_array is None:
+                                continue  # Image not found - skip silently
 
-                        except (websockets.exceptions.WebSocketException, 
-                                websockets.exceptions.ConnectionClosed,
-                                ConnectionRefusedError, 
-                                OSError):
-                            # Network issues - mark as disconnected, put message back in queue and break connection loop
-                            # Image data stays in ImageMem for retry
-                            self._is_connected = False
-                            self._control_q.put_nowait(image_id)  # Put message back for retry
-                            break  # Exit inner loop to trigger reconnection
+                            # Convert to grayscale if needed
+                            if img_array.ndim == 3:
+                                img_gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)  # type: ignore
+                            else:
+                                img_gray = img_array
+
+                            # CRASH on encoding failure (definitely malformed data)
+                            ok, buffer = cv2.imencode(".jpg", img_gray)  # type: ignore
+                            if not ok:
+                                raise RuntimeError(f"JPEG encode failed for {image_id} - corrupt image data")
+
+                            # Try upload - distinguish client errors from network errors
+                            try:
+                                # Validate upload data using Pydantic model
+                                upload_request = UploadRequest(
+                                    image_id=image_id,
+                                    timestamp=time.time(),
+                                )
+                                
+                                # Create WebSocket message instead of HTTP request
+                                message = {
+                                    "type": "image_upload",
+                                    "image_id": image_id,
+                                    "timestamp": upload_request.timestamp,
+                                    "image_data": base64.b64encode(buffer.tobytes()).decode()
+                                }
+                                
+                                await websocket.send(json.dumps(message))
+                                
+                                # Upload successful - NOW remove from memory
+                                with self._mem_lock:
+                                    self.ImageMem.pop(image_id, None)
+                                
+                            except websockets.exceptions.InvalidURI:
+                                # Invalid WebSocket URL - report as a critical error (same as InvalidURL before)
+                                raise RuntimeError(f"Invalid WebSocket URL: {self.websocket_url}")
+
+                            except (websockets.exceptions.WebSocketException, 
+                                    websockets.exceptions.ConnectionClosed,
+                                    ConnectionRefusedError, 
+                                    OSError):
+                                # Network issues - mark as disconnected, put message back in queue and break connection loop
+                                # Image data stays in ImageMem for retry
+                                self._is_connected = False
+                                self._control_q.put_nowait(image_id)  # Put message back for retry
+                                break  # Exit inner loop to trigger reconnection
+                    finally:
+                        # Always mark as disconnected when exiting the message processing loop
+                        self._is_connected = False
                             
             except websockets.exceptions.InvalidURI:
                 # Invalid WebSocket URL - report as a critical error
@@ -392,6 +396,8 @@ if __name__ == "__main__":
         )
         print("✅ Uploader created with real image data")
         
+
+        
         # Threads are already started thanks to built-in sleep
         uploader.raise_thread_error_if_any()
         print("✅ Threads are healthy")
@@ -512,6 +518,9 @@ if __name__ == "__main__":
         websocket_url="ws://invalid-url",  # Clearly invalid URL
         OS_friendly_name="test_pi"
     )
+    
+
+    
     uploader_broken_url.trigger_capture()
     time.sleep(0.1)  # Let capture process
     stored_ids = uploader_broken_url.get_stored_image_ids()
@@ -706,6 +715,7 @@ if __name__ == "__main__":
             )
             
             time.sleep(1.0)
+            
             test_uploader.trigger_capture()
             time.sleep(0.2)  # Give capture time to process
             stored_ids = test_uploader.get_stored_image_ids()
@@ -733,6 +743,8 @@ if __name__ == "__main__":
             # Phase 3: Restart server and verify reconnection
             server.start()
             time.sleep(3.0)  # Wait for reconnection and message processing
+            
+
             
             final_uploads = len(server.uploads_received)
             remaining_queued = len(test_uploader.get_stored_image_ids())
@@ -763,4 +775,89 @@ if __name__ == "__main__":
         traceback.print_exc()
     
     print("   ✅ Automated reconnection tests completed")
+
+    # CONNECTION STATUS TESTS
+    print("\n🔄 Testing connection status functionality...")
+    
+    def test_connection_status():
+        """Test the is_connected() method with realistic timing expectations"""
+        print("\n📡 Test: Connection Status Detection")
+        
+        # Test 1: Invalid URL should stay False
+        print("   1️⃣ Testing invalid URL (should stay False)...")
+        uploader_invalid = WebSocketUploaderThreaded_shared_mem(
+            sharedmem_buffs=sharedmem_buffs,
+            safe_mem_details_func=safe_mem_details_func,
+            websocket_url="ws://nonexistent-host-12345:9999",
+            OS_friendly_name="test_invalid"
+        )
+        
+        # Check immediately and after wait
+        status_immediate = uploader_invalid.is_connected()
+        time.sleep(2.0)  # Give it time to try and fail
+        status_after_wait = uploader_invalid.is_connected()
+        
+        print(f"      📡 Immediate status: {status_immediate}")
+        print(f"      📡 Status after 2s: {status_after_wait}")
+        
+        assert status_immediate == False, f"Expected False immediately, got {status_immediate}"
+        assert status_after_wait == False, f"Expected False after wait, got {status_after_wait}"
+        print("      ✅ Invalid URL test passed")
+        
+        # Test 2: Valid connection should become True
+        print("   2️⃣ Testing valid connection (should become True)...")
+        uploader_valid = WebSocketUploaderThreaded_shared_mem(
+            sharedmem_buffs=sharedmem_buffs,
+            safe_mem_details_func=safe_mem_details_func,
+            websocket_url=f"ws://localhost:{server_port}",
+            OS_friendly_name="test_valid"
+        )
+        
+        # Wait for connection with generous timeout
+        connected = False
+        for i in range(50):  # Wait up to 5 seconds
+            time.sleep(0.1)
+            if uploader_valid.is_connected():
+                connected = True
+                print(f"      📡 Connected after {(i+1)*0.1:.1f}s")
+                break
+        
+        assert connected, "Should have connected to valid server within 5 seconds"
+        print("      ✅ Valid connection test passed")
+        
+        # Test 3: Connection status during activity
+        print("   3️⃣ Testing status during normal operation...")
+        
+        # Do some normal operations and verify status stays True
+        uploader_valid.trigger_capture()
+        time.sleep(0.2)
+        stored_ids = uploader_valid.get_stored_image_ids()
+        
+        status_during_activity = uploader_valid.is_connected()
+        print(f"      📡 Status during activity: {status_during_activity}")
+        assert status_during_activity == True, "Should stay connected during normal operations"
+        
+        if stored_ids:
+            uploader_valid.upload_image_by_id(stored_ids[0])
+            time.sleep(0.5)
+            status_after_upload = uploader_valid.is_connected()
+            print(f"      📡 Status after upload: {status_after_upload}")
+            assert status_after_upload == True, "Should stay connected after uploads"
+        
+        print("      ✅ Normal operation test passed")
+        
+        return True
+    
+    # Run connection status tests
+    try:
+        if test_connection_status():
+            print("   ✅ Connection status tests PASSED")
+        else:
+            print("   ❌ Connection status tests FAILED")
+    except Exception as e:
+        print(f"   ❌ Connection status test ERROR: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    print("   ✅ Connection status testing completed")
     
