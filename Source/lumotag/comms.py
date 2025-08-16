@@ -66,7 +66,7 @@ class WebSocketUploaderThreaded_shared_mem:
         # Small queues like ImageAnalyser - should be empty if processing fast enough
         self._capture_q: threading_queue.Queue = threading_queue.Queue(maxsize=1)
         # Upload control: image_id strings only - small queue to detect performance issues
-        self._control_q: threading_queue.Queue = threading_queue.Queue(maxsize=5)
+        self._control_q: threading_queue.Queue = threading_queue.Queue(maxsize=15)
         # upload_result_q removed - no longer tracking upload results
         self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
 
@@ -111,6 +111,10 @@ class WebSocketUploaderThreaded_shared_mem:
     def is_connected(self) -> bool:
         """Check if WebSocket is connected - extremely cheap to call"""
         return self._is_connected
+
+    def get_upload_queue_size(self) -> int:
+        """Get current upload queue size - extremely cheap to call"""
+        return self._control_q.qsize()
 
     # get_upload_result() removed - no longer tracking upload results
 

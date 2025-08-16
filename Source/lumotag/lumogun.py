@@ -17,23 +17,31 @@ from utils import time_it, get_platform
 from my_collections import _OS, HeightWidth
 # need this import to detect lumogun types (subclasses)
 import configs
+# Import fake websocket server for testing
+
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 PLATFORM = get_platform()
 PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 
-if PLATFORM == [_OS.WINDOWS]:
+if PLATFORM == _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
+    import test_fake_websocket_server
+    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
+    WEBSCKT_URL = "ws://12345678"
     import raspberry5_hardware as lumogun
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
+    import test_fake_websocket_server
+    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
+    raise ValueError("wut")
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 
@@ -43,6 +51,7 @@ else:
 # model ID from file on device
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
+
 
 
 class AnalysisTimeoutException(Exception):
@@ -177,7 +186,7 @@ def main():
     img_uploaders.append(WebSocketUploaderThreaded_shared_mem(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-        websocket_url = "wss://plop.com",
+        websocket_url = "ws://127.0.0.1:8765",
         OS_friendly_name="shortrange_img_uploader"))
     image_analysis = []
 
@@ -322,7 +331,7 @@ def main():
                     img_analyser.trigger_analysis()
                 for img_uploader in img_uploaders:
                     img_uploader.trigger_capture()
-
+                    perfmonitor.manual_measure("MsgUploadQueue", img_uploader.get_upload_queue_size())
 
             GUN_CONFIGURATION.loop_wait()
             
@@ -538,7 +547,7 @@ def main():
                         # get rid of uninteresting images
                         for img_id in imageIDs:
                             img_uploader.delete_image_by_id(img_id)
-
+                
                 # if is_trigger_pressed is True:
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
