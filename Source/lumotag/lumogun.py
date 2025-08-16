@@ -525,7 +525,14 @@ def main():
                     if is_trigger_pressed is True:
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
-                            
+
+
+                if is_trigger_pressed is True:
+                    # upload all images during trigger event
+                    # 
+                    for img_uploader in img_uploaders:
+                        for img_id in imageIDs:
+                            img_uploader.upload_image_by_id(img_id)
                 else:
                     for img_uploader in img_uploaders:
                         # get rid of uninteresting images

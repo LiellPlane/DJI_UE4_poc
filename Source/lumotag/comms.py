@@ -70,6 +70,9 @@ class WebSocketUploaderThreaded_shared_mem:
         # upload_result_q removed - no longer tracking upload results
         self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
 
+        # Connection status tracking for cheap health checks
+        self._is_connected = False
+
         self._capture_thread = threading.Thread(target=self._capture_loop, name="uploader-capture", daemon=True)
         self._upload_thread = threading.Thread(target=self._worker_loop, name="uploader-worker", daemon=True)
         self._capture_thread.start()
@@ -89,8 +92,12 @@ class WebSocketUploaderThreaded_shared_mem:
             self.raise_thread_error_if_any()
 
     def upload_image_by_id(self, image_id: str) -> None:
-        """Queue a specific image ID for upload - will crash if queue is full"""
-        self._control_q.put_nowait(image_id)
+        """Queue a specific image ID for upload
+        we have to handle being disconnected but user still keeps shooting - so let this silently fail for now"""
+        try:
+            self._control_q.put_nowait(image_id)
+        except threading_queue.Full:
+            pass
 
     def delete_image_by_id(self, image_id: str) -> bool:
         """Delete a specific image ID from storage - returns True if deleted, False if not found"""
@@ -100,6 +107,10 @@ class WebSocketUploaderThreaded_shared_mem:
     def get_stored_image_ids(self) -> list[str]:
         with self._mem_lock:
             return list(self.ImageMem.keys())
+
+    def is_connected(self) -> bool:
+        """Check if WebSocket is connected - extremely cheap to call"""
+        return self._is_connected
 
     # get_upload_result() removed - no longer tracking upload results
 
@@ -145,9 +156,15 @@ class WebSocketUploaderThreaded_shared_mem:
         
         while True:  # Reconnection loop
             try:
+                # Mark as attempting connection (not connected yet)
+                self._is_connected = False
+                
                 async with websockets.connect(self.websocket_url) as websocket:
                     print(f"🔗 WebSocket connected to {self.websocket_url}")
                     reconnect_delay = 1.0  # Reset delay on successful connection
+                    
+                    # Mark as connected
+                    self._is_connected = True
                     
                     while True:  # Message processing loop
                         # Block until an image_id arrives
@@ -201,8 +218,9 @@ class WebSocketUploaderThreaded_shared_mem:
                                 websockets.exceptions.ConnectionClosed,
                                 ConnectionRefusedError, 
                                 OSError):
-                            # Network issues - put message back in queue and break connection loop
+                            # Network issues - mark as disconnected, put message back in queue and break connection loop
                             # Image data stays in ImageMem for retry
+                            self._is_connected = False
                             self._control_q.put_nowait(image_id)  # Put message back for retry
                             break  # Exit inner loop to trigger reconnection
                             
@@ -214,7 +232,9 @@ class WebSocketUploaderThreaded_shared_mem:
                     websockets.exceptions.ConnectionClosed,
                     ConnectionRefusedError,
                     OSError) as e:
-                # Connection failed - wait before retrying
+                # Connection failed - mark as disconnected and wait before retrying
+                self._is_connected = False
+                    
                 print(f"🔄 WebSocket connection failed, retrying in {reconnect_delay:.1f}s: {e}")
                 await asyncio.sleep(reconnect_delay)
                 continue  # Try reconnecting
