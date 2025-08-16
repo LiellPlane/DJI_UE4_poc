@@ -10,7 +10,7 @@ import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
-from comms import WebSocketUploaderThreaded_shared_mem
+from comms import WebSocketComms
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
@@ -183,7 +183,7 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
     
     img_uploaders = []
-    img_uploaders.append(WebSocketUploaderThreaded_shared_mem(
+    img_uploaders.append(WebSocketComms(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
         websocket_url = "ws://127.0.0.1:8765",

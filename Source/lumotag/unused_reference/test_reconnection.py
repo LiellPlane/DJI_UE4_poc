@@ -13,7 +13,7 @@ import websockets
 import json
 import signal
 import sys
-from comms import WebSocketUploaderThreaded_shared_mem
+from comms import WebSocketComms
 from my_collections import SharedMem_ImgTicket
 import numpy as np
 
@@ -126,7 +126,7 @@ def test_scenario_1_server_restart():
     sharedmem_buffs, safe_mem_details_func, embedded_id = create_test_setup()
     
     # Create uploader
-    uploader = WebSocketUploaderThreaded_shared_mem(
+    uploader = WebSocketComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url=f"ws://localhost:{server.port}",
@@ -186,7 +186,7 @@ def test_scenario_2_intermittent_connectivity():
     
     sharedmem_buffs, safe_mem_details_func, embedded_id = create_test_setup()
     
-    uploader = WebSocketUploaderThreaded_shared_mem(
+    uploader = WebSocketComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url=f"ws://localhost:{server.port}",
@@ -243,7 +243,7 @@ def test_scenario_3_thread_restart():
     
     sharedmem_buffs, safe_mem_details_func, embedded_id = create_test_setup()
     
-    uploader = WebSocketUploaderThreaded_shared_mem(
+    uploader = WebSocketComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url=f"ws://localhost:{server.port}",

@@ -25,7 +25,7 @@ class UploadRequest(BaseModel):
     timestamp: float = Field(..., description="Unix timestamp when upload was initiated")
     
 
-class WebSocketUploaderThreaded_shared_mem:
+class WebSocketComms:
     """Ultra-lightweight, threaded uploader for grayscale frames from shared memory.
 
     Design goals:
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     import json
     from my_collections import SharedMem_ImgTicket
     
-    print("🧪 Testing WebSocketUploaderThreaded_shared_mem with real data...")
+    print("🧪 Testing WebSocketComms with real data...")
     
     # Create a test rectangle image with embedded ID using real factory functions
     def create_test_image_with_id(width=640, height=480):
@@ -392,7 +392,7 @@ if __name__ == "__main__":
             )
         
         # Create uploader with local WebSocket server
-        uploader = WebSocketUploaderThreaded_shared_mem(
+        uploader = WebSocketComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url=f"ws://localhost:{server_port}",
@@ -516,7 +516,7 @@ if __name__ == "__main__":
 
     # Test broken thread detection with nonsense URL
     print("\n🔄 Testing broken thread detection with nonsense URL...")
-    uploader_broken_url = WebSocketUploaderThreaded_shared_mem(
+    uploader_broken_url = WebSocketComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url="ws://invalid-url",  # Clearly invalid URL
@@ -561,7 +561,7 @@ if __name__ == "__main__":
     nonsense_img_bytes = nonsense_img.tobytes()
     sharedmem_buffs_nonsense = {0: MockSharedMem(nonsense_img_bytes)}
     
-    uploader_nonsense_img = WebSocketUploaderThreaded_shared_mem(
+    uploader_nonsense_img = WebSocketComms(
         sharedmem_buffs=sharedmem_buffs_nonsense,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url=f"ws://localhost:{server_port}",
@@ -589,7 +589,7 @@ if __name__ == "__main__":
     print("\n🔄 Testing upload queue overflow protection...")
     
     # Create uploader for overflow testing
-    uploader_overflow = WebSocketUploaderThreaded_shared_mem(
+    uploader_overflow = WebSocketComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url="ws://127.0.0.1:65534/blocked",  # This will fail fast
@@ -711,7 +711,7 @@ if __name__ == "__main__":
         try:
             # Phase 1: Establish connection and test upload
             server.start()
-            test_uploader = WebSocketUploaderThreaded_shared_mem(
+            test_uploader = WebSocketComms(
                 sharedmem_buffs=sharedmem_buffs,
                 safe_mem_details_func=safe_mem_details_func,
                 websocket_url=server.get_url(),
@@ -789,7 +789,7 @@ if __name__ == "__main__":
         
         # Test 1: Invalid URL should stay False
         print("   1️⃣ Testing invalid URL (should stay False)...")
-        uploader_invalid = WebSocketUploaderThreaded_shared_mem(
+        uploader_invalid = WebSocketComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url="ws://nonexistent-host-12345:9999",
@@ -810,7 +810,7 @@ if __name__ == "__main__":
         
         # Test 2: Valid connection should become True
         print("   2️⃣ Testing valid connection (should become True)...")
-        uploader_valid = WebSocketUploaderThreaded_shared_mem(
+        uploader_valid = WebSocketComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url=f"ws://localhost:{server_port}",
