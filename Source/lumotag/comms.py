@@ -60,11 +60,7 @@ class WebSocketUploaderThreaded_shared_mem:
         self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
         self._mem_lock = threading.Lock()
         
-        # Reconnection state  
-        self._connection_healthy = False
-        self._reconnect_delay = 1.0
-        self._max_reconnect_delay = 30.0
-        self._backoff_multiplier = 1.5
+
 
         # Separate queues to decouple capture (debuffer+copy) and upload (encode+HTTP)
         # Small queues like ImageAnalyser - should be empty if processing fast enough
@@ -87,9 +83,10 @@ class WebSocketUploaderThreaded_shared_mem:
         ticket = self.safe_mem_details_func()
         self._capture_q.put_nowait(ticket)  # Will raise queue.Full if queue is full
         
-        # Check for thread errors after every trigger for performance characterization
-        # TODO: Consider pseudo-random checking (e.g., 1 in 50 calls) for production to reduce overhead
-        self.raise_thread_error_if_any()
+        # Check for thread errors periodically to reduce overhead at high frequencies
+        self._error_check_counter = getattr(self, '_error_check_counter', 0) + 1
+        if self._error_check_counter % 20 == 0:  # Check every 20th call (~500ms at 40Hz)
+            self.raise_thread_error_if_any()
 
     def upload_image_by_id(self, image_id: str) -> None:
         """Queue a specific image ID for upload - will crash if queue is full"""
@@ -107,45 +104,27 @@ class WebSocketUploaderThreaded_shared_mem:
     # get_upload_result() removed - no longer tracking upload results
 
     def raise_thread_error_if_any(self) -> None:
-        """Check for thread errors and restart WebSocket thread on network issues"""
-        # Check for caught exceptions first
+        """Lightweight check for thread errors and restart WebSocket thread on network issues"""
+        # Check for caught exceptions first (non-blocking)
         if not self._error_q.empty():
             thread_name, exc, tb_str = self._error_q.get_nowait()
             
-            # If it's a network-related WebSocket error, restart the thread
-            if thread_name == "uploader-worker" and self._is_network_error(exc):
-                print(f"🔄 WebSocket thread died from network error, restarting: {exc}")
-                self._restart_upload_thread()
-                return
+            # WebSocket worker should handle its own reconnections for network errors
+            # If it crashed, that indicates a serious programming bug that should not be hidden
+            if thread_name == "uploader-worker":
+                raise RuntimeError(f"WebSocket worker thread crashed unexpectedly: {exc}\n{tb_str}") from exc
             
             # For data errors or capture thread errors, still crash (preserve test behavior)
             raise RuntimeError(f"{thread_name} failed: {exc}\n{tb_str}") from exc
         
-        # Check for silent thread death (threads died without raising exceptions)
+        # Check for silent thread death (these calls might be expensive, so we do them less frequently)
         if not self._capture_thread.is_alive():
             raise RuntimeError("Capture thread died silently (no exception caught)")
         if not self._upload_thread.is_alive():
-            print("🔄 WebSocket thread died silently, restarting...")
-            self._restart_upload_thread()
+            raise RuntimeError("WebSocket worker thread died silently (no exception caught)")
 
-    def _is_network_error(self, exc: Exception) -> bool:
-        """Check if exception is network-related (should restart) vs data-related (should crash)"""
-        error_str = str(exc).lower()
-        network_keywords = ["connection", "network", "websocket", "timeout", "refused", "unreachable"]
-        return any(keyword in error_str for keyword in network_keywords)
-    
-    def _restart_upload_thread(self) -> None:
-        """Restart the WebSocket upload thread with exponential backoff"""
-        # Wait before restarting to avoid rapid restart loops
-        time.sleep(self._reconnect_delay)
-        
-        # Exponential backoff for next restart
-        self._reconnect_delay = min(self._reconnect_delay * self._backoff_multiplier, self._max_reconnect_delay)
-        
-        # Create and start new thread
-        self._upload_thread = threading.Thread(target=self._worker_loop, name="uploader-worker", daemon=True)
-        self._upload_thread.start()
-        print(f"✅ WebSocket thread restarted (next delay: {self._reconnect_delay:.1f}s)")
+
+
 
     def _worker_loop(self) -> None:
         loop = asyncio.new_event_loop()
