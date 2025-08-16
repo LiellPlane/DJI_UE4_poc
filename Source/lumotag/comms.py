@@ -142,8 +142,6 @@ class WebSocketUploaderThreaded_shared_mem:
 
     async def _ws_worker(self) -> None:
         reconnect_delay = 1.0
-        max_delay = 30.0
-        backoff_multiplier = 1.5
         
         while True:  # Reconnection loop
             try:
@@ -219,7 +217,6 @@ class WebSocketUploaderThreaded_shared_mem:
                 # Connection failed - wait before retrying
                 print(f"🔄 WebSocket connection failed, retrying in {reconnect_delay:.1f}s: {e}")
                 await asyncio.sleep(reconnect_delay)
-                reconnect_delay = min(reconnect_delay * backoff_multiplier, max_delay)
                 continue  # Try reconnecting
                 
             except Exception as e:

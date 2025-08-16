@@ -10,7 +10,7 @@ import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
-from comms import ImageUploaderThreaded_shared_mem
+from comms import WebSocketUploaderThreaded_shared_mem
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
@@ -174,12 +174,12 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
     
     img_uploaders = []
-    img_uploaders.append(ImageUploaderThreaded_shared_mem(
+    img_uploaders.append(WebSocketUploaderThreaded_shared_mem(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-        upload_url= "http://www.poiujhjkihgujhjuijhj.com",
+        websocket_url = "wss://plop.com",
         OS_friendly_name="shortrange_img_uploader"))
-    # image_analysis = []
+    image_analysis = []
 
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
