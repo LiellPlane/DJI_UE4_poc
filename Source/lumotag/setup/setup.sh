@@ -6,11 +6,11 @@
 
 
 
-sudo apt update
+sudo apt update -y
 sudo apt full-upgrade -y
 #sudo apt upgrade -y
 #sudo rpi-update -y
-sudo apt-get update
+sudo apt-get update -y
 sudo apt-get install python3-numpy -y
 sudo apt-get install python3-opencv -y
 sudo apt install ffmpeg -y
@@ -57,7 +57,7 @@ sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
 # hey lets make everything more complicated for zero
 # added value, idiots
 sudo rm -rf /usr/lib/python3.11/EXTERNALLY-MANAGED
-sudo python3 -m pip install pika
+# sudo python3 -m pip install pika
 #-----------------------------
 
 # sudo apt-get install imutils
