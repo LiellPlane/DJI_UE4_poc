@@ -1,5 +1,10 @@
-Add POST for images rather than websocket
-tag images with hidden ID
+need to fix the new UV managed stuff
+
+adafruit-circuitpython-lis3dh seems to be working installed in system packages
+now need to make a shell script in the wayfire autostart that does what bootstrap does, but does not start lumotag
+we can start that with the current command
+so we just need a stage before it that updates/clones the repo and creates the venv (if it doesnt exist)
+and install it (see the experiemntal setup script)
 
 
 

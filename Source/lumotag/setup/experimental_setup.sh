@@ -41,31 +41,40 @@ sudo apt-get install build-essential cmake pkg-config libjpeg-dev libtiff5-dev l
 
 sudo apt install espeak -y
 
-# might need this bullshit
-sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
+
 
 cd /home/lumotag/
 
 # ignore failure
 sudo rm -r /home/lumotag/DJI_UE4_poc  || true
 git clone https://github.com/LiellPlane/DJI_UE4_poc.git
-sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/bootstrap.py /boot/bootstrap.py
+sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/bootstrap.py /home/lumotag/bootstrap.py
 sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /home/lumotag/MY_INFO.txt
 
+# might need this bullshit
+sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
 
-cd /home/lumotag/DJI_UE4_poc/Source/lumotag
-# need this to access gpiozero and camera libraries
+# we need to override managed environments protection so our venv can access this (has trouble installing)
+sudo pip3 install adafruit-circuitpython-lis3dh --break-system-packages
+# cd /home/lumotag/DJI_UE4_poc/Source/lumotag
+
+cd /home/lumotag/
+cd /home/lumotag/DJI_UE4_poc/Source/lumotag/
+# need this to access gpiozero and camera libraries, hard for UV to manage it seems
 uv venv lumotagvenv --system-site-packages
 source lumotagvenv/bin/activate
 uv pip install -r pyproject.toml
+# uv pip install -r /home/lumotag/DJI_UE4_poc/Source/lumotag/pyproject.toml
 
+# might need  --active ??
+# uv pip install adafruit-circuitpython-lis3dh
+cd /home/lumotag/
 
 sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
-sudo sh -c "echo '1 = python3 /boot/bootstrap.py' >>  /home/lumotag/.config/wayfire.ini"
+sudo sh -c "echo '1 = /bin/bash -l -c "cd /home/lumotag/DJI_UE4_poc/Source/lumotag/ && source lumotagvenv/bin/activate && python lumogun.py" > /home/lumotag/autostart.log 2>&1"
 
 # this is new - sometimes wayfire.ini is not working and this fixes it somehow
 echo "=== Fixing Auto-Login Session ===" && echo "Current session:" && sudo grep "autologin-session" /etc/lightdm/lightdm.conf && echo "Changing to wayfire..." && sudo sed -i 's/autologin-session=LXDE-pi-labwc/autologin-session=LXDE-pi-wayfire/' /etc/lightdm/lightdm.conf && echo "New setting:" && sudo grep "autologin-session" /etc/lightdm/lightdm.conf
-
 
 # remove the repo so the autoboot process can recreate it and own the folder
 # otherwise permission issues pulling repo

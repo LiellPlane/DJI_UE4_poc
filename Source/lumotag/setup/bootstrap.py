@@ -51,7 +51,7 @@ print(f"MY_ID: {MY_ID} url: {url}")
 # clean
 now = datetime.now()
 printabletime = now.strftime("%Y-%m-%d_%H-%M-%S")
-fetch_result = subprocess.run(['rm', '/home/lumotag/*.cunt'], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+fetch_result = subprocess.run(['rm /home/lumotag/*.cunt'], shell=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 with open('/home/lumotag/startupfileworking.cunt', 'w') as file:
     file.write(f"{printabletime}starting start up script")
 
