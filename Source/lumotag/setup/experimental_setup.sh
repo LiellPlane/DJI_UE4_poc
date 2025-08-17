@@ -4,9 +4,7 @@ sudo apt update
 sudo apt full-upgrade -y
 sudo apt-get update -y
 
-# maybe have to do for both??
-curl -LsSf https://astral.sh/uv/install.sh | sh
-sudo curl -LsSf https://astral.sh/uv/install.sh | sh
+
 
 # # need to get UV path without rebooting??
 # source $HOME/.cargo/env
@@ -23,6 +21,9 @@ if [ ! -f "$FLAG_FILE" ]; then
     read -p "Do you want to continue and reboot now? (y/N): " -n 1 -r
     echo ""
     if [[ $REPLY =~ ^[Yy]$ ]]; then
+            # maybe have to do for both??
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        sudo curl -LsSf https://astral.sh/uv/install.sh | sh
         # Create flag file to indicate first run is complete
         sudo touch "$FLAG_FILE"
         echo "Rebooting in 3 seconds..."
