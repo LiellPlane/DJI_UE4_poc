@@ -1,7 +1,13 @@
 #!/bin/bash
 #  RUN ME AS NORMAL USER! Not SUDO!
 
-
+# Check if running as sudo/root and exit if so
+if [[ $EUID -eq 0 ]] || [[ -n "$SUDO_USER" ]]; then
+    echo "ERROR: This script should NOT be run as sudo or root!"
+    echo "Please run as a normal user: ./NEW_UNIT_SETUP_SCRIPT.sh"
+    echo "The script will use sudo internally when needed."
+    exit 1
+fi
 
 
 
@@ -14,8 +20,10 @@
 # if [ ! -f "$FLAG_FILE" ]; then
 
 # expect a fresh bookworm 
+# Configure dpkg to automatically use new config files from packages
+export DEBIAN_FRONTEND=noninteractive
 sudo apt update
-sudo apt full-upgrade -y
+sudo apt full-upgrade -y -o Dpkg::Options::="--force-confnew"
 sudo apt-get update -y
 # Install UV for user first
 curl -LsSf https://astral.sh/uv/install.sh | sh
