@@ -7,6 +7,18 @@ LOG_FILE="/home/lumotag/setup_update.log"
 CONFIG_FILE="/home/lumotag/MY_INFO.txt"
 BASE_DIR="/home/lumotag"
 
+# Rotate log file if it gets too large (>10MB)
+rotate_log() {
+    if [ -f "$LOG_FILE" ] && [ $(stat -c%s "$LOG_FILE") -gt 10485760 ]; then
+        # Remove oldest backup
+        rm -f "${LOG_FILE}.old.1" 2>/dev/null
+        # Move previous backup to oldest
+        [ -f "${LOG_FILE}.old" ] && mv "${LOG_FILE}.old" "${LOG_FILE}.old.1"
+        # Move current log to previous backup
+        mv "$LOG_FILE" "${LOG_FILE}.old"
+    fi
+}
+
 # Log function
 log() {
     echo "$(date): $1" >> "$LOG_FILE"
@@ -48,6 +60,9 @@ read_config() {
     return 0
 }
 
+# Rotate log if needed
+rotate_log
+
 log "Starting update and setup process..."
 
 # Check internet connection with retry logic
@@ -76,17 +91,17 @@ if [ -d "$CODE_PATH" ]; then
         exit 1
     }
     
-    if sudo git pull --ff-only >> "$LOG_FILE" 2>&1; then
+    if git pull --ff-only >> "$LOG_FILE" 2>&1; then
         log "Successfully pulled updates from repository"
     else
         log "WARNING: Git pull failed, but continuing..."
     fi
 else
     log "Repository does not exist, cloning from $REPO_URL..."
-    if sudo git clone "$REPO_URL" >> "$LOG_FILE" 2>&1; then
+    if git clone "$REPO_URL" >> "$LOG_FILE" 2>&1; then
         log "Successfully cloned repository"
         # Set safe directory
-        sudo git config --global --add safe.directory "$CODE_PATH" >> "$LOG_FILE" 2>&1
+        git config --global --add safe.directory "$CODE_PATH" >> "$LOG_FILE" 2>&1
     else
         log "ERROR: Failed to clone repository"
         exit 1

@@ -7,11 +7,26 @@ LOG_FILE="/home/lumotag/app_launch.log"
 APP_DIR="/home/lumotag/DJI_UE4_poc/Source/lumotag"
 VENV_PATH="$APP_DIR/lumotagvenv"
 
+# Rotate log file if it gets too large (>10MB)
+rotate_log() {
+    if [ -f "$LOG_FILE" ] && [ $(stat -c%s "$LOG_FILE") -gt 10485760 ]; then
+        # Remove oldest backup
+        rm -f "${LOG_FILE}.old.1" 2>/dev/null
+        # Move previous backup to oldest
+        [ -f "${LOG_FILE}.old" ] && mv "${LOG_FILE}.old" "${LOG_FILE}.old.1"
+        # Move current log to previous backup
+        mv "$LOG_FILE" "${LOG_FILE}.old"
+    fi
+}
+
 # Log function
 log() {
     echo "$(date): $1" >> "$LOG_FILE"
     echo "$1"  # Also print to stdout
 }
+
+# Rotate log if needed
+rotate_log
 
 log "Starting lumogun launcher..."
 

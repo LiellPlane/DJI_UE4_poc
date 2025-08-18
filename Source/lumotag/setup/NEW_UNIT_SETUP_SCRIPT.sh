@@ -85,7 +85,7 @@ sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
 
 
 # App launch using dedicated launcher script with delay
-sudo sh -c "echo '1 = sleep 10 && /home/lumotag/launch_lumogun.sh' >> /home/lumotag/.config/wayfire.ini"
+sudo sh -c "echo '1 = /home/lumotag/launch_lumogun.sh' >> /home/lumotag/.config/wayfire.ini"
 # Sanity check (commented out - confirmed working):
 # sudo sh -c "echo '1 = echo \"Autostart executed at: \$(date)\" > /home/lumotag/autostart_test_\$(date +%Y%m%d_%H%M%S).txt' >>  /home/lumotag/.config/wayfire.ini"
 
