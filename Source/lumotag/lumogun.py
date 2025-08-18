@@ -10,29 +10,38 @@ import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
+from comms import WebSocketComms
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
 from my_collections import _OS, HeightWidth
 # need this import to detect lumogun types (subclasses)
 import configs
+# Import fake websocket server for testing
+
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 PLATFORM = get_platform()
 PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 
-if PLATFORM == [_OS.WINDOWS]:
+if PLATFORM == _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
+    import test_fake_websocket_server
+    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
+    WEBSCKT_URL = "ws://12345678"
     import raspberry5_hardware as lumogun
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
+    import test_fake_websocket_server
+    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
+    raise ValueError(f"Unknown platform detected: {PLATFORM}")
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 
@@ -42,6 +51,7 @@ else:
 # model ID from file on device
 model = lumogun.get_my_info(factory.gun_config.DETAILS_FILE)
 GUN_CONFIGURATION  = factory.get_config(model)
+
 
 
 class AnalysisTimeoutException(Exception):
@@ -150,6 +160,8 @@ def main():
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
 
+
+
     # image_analysis.append(analyse_lumotag.ImageAnalyser_shared_mem(
     #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
     #     safe_mem_details_func = image_capture_shortrange.get_safe_mem_details,
@@ -170,7 +182,13 @@ def main():
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
     
-    # image_analysis = []
+    img_uploaders = []
+    # img_uploaders.append(WebSocketComms(
+    #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+    #     safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+    #     websocket_url = "ws://127.0.0.1:8765",
+    #     OS_friendly_name="shortrange_img_uploader"))
+    image_analysis = []
 
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
@@ -292,7 +310,9 @@ def main():
     cnt = 0 
     TEMP_DEBUG_trigger_cnt = 0
     TEMP_fake_light = False
+    
     while True:
+        imageIDs = []
         TEMP_DEBUG_trigger_cnt += 1
         #print(TEMP_DEBUG_trigger_cnt)
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
@@ -300,13 +320,18 @@ def main():
             with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure("get next image"):
                 cap_img = next(image_capture_longrange)
                 cap_img_closerange = next(image_capture_shortrange)
+                if len(img_uploaders) > 0:
+                    # use these for uploading images of interest to the server
+                    imageIDs.append(factory.decode_image_id(cap_img))
+                    imageIDs.append(factory.decode_image_id(cap_img_closerange))
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis()
-
-
+                for img_uploader in img_uploaders:
+                    img_uploader.trigger_capture()
+                    perfmonitor.manual_measure("MsgUploadQueue", img_uploader.get_upload_queue_size())
 
             GUN_CONFIGURATION.loop_wait()
             
@@ -509,8 +534,20 @@ def main():
                     if is_trigger_pressed is True:
                         if "demoplayer" in players:
                             players["demoplayer"].update_healthpoints(diff=-10)
-                            
 
+
+                if is_trigger_pressed is True:
+                    # upload all images during trigger event
+                    # 
+                    for img_uploader in img_uploaders:
+                        for img_id in imageIDs:
+                            img_uploader.upload_image_by_id(img_id)
+                else:
+                    for img_uploader in img_uploaders:
+                        # get rid of uninteresting images
+                        for img_id in imageIDs:
+                            img_uploader.delete_image_by_id(img_id)
+                
                 # if is_trigger_pressed is True:
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
