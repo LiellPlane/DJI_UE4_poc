@@ -53,8 +53,11 @@ cd /home/lumotag/
 # ignore failure
 sudo rm -r /home/lumotag/DJI_UE4_poc  || true
 git clone https://github.com/LiellPlane/DJI_UE4_poc.git
-sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/bootstrap.py /home/lumotag/bootstrap.py
 sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/MY_INFO.txt /home/lumotag/MY_INFO.txt
+sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/update_and_setup.sh /home/lumotag/update_and_setup.sh
+sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/launch_lumogun.sh /home/lumotag/launch_lumogun.sh
+sudo chmod +x /home/lumotag/update_and_setup.sh
+sudo chmod +x /home/lumotag/launch_lumogun.sh
 
 # might need this bullshit
 sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
@@ -69,16 +72,17 @@ cd /home/lumotag/DJI_UE4_poc/Source/lumotag/
 uv venv lumotagvenv --system-site-packages
 source lumotagvenv/bin/activate
 uv pip install -r pyproject.toml
+deactivate
 # uv pip install -r /home/lumotag/DJI_UE4_poc/Source/lumotag/pyproject.toml
 
 # might need  --active ??
 # uv pip install adafruit-circuitpython-lis3dh
-cd /home/lumotag/
+
 
 sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
 # Copy and setup launcher script
-sudo cp /home/lumotag/DJI_UE4_poc/Source/lumotag/setup/launch_lumogun.sh /home/lumotag/launch_lumogun.sh
-sudo chmod +x /home/lumotag/launch_lumogun.sh
+
+
 # App launch using dedicated launcher script with delay
 sudo sh -c "echo '1 = sleep 10 && /home/lumotag/launch_lumogun.sh' >> /home/lumotag/.config/wayfire.ini"
 # Sanity check (commented out - confirmed working):

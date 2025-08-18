@@ -10,9 +10,25 @@ VENV_PATH="$APP_DIR/lumotagvenv"
 # Log function
 log() {
     echo "$(date): $1" >> "$LOG_FILE"
+    echo "$1"  # Also print to stdout
 }
 
 log "Starting lumogun launcher..."
+
+# Run update and setup script first
+UPDATE_SCRIPT="/home/lumotag/update_and_setup.sh"
+if [ -f "$UPDATE_SCRIPT" ]; then
+    log "Running update and setup script..."
+    if bash "$UPDATE_SCRIPT"; then
+        log "Update and setup completed successfully"
+    else
+        log "ERROR: Update and setup script failed, cannot continue"
+        exit 1
+    fi
+else
+    log "ERROR: Update script not found at $UPDATE_SCRIPT"
+    exit 1
+fi
 
 # Check if directory exists
 if [ ! -d "$APP_DIR" ]; then
@@ -47,4 +63,15 @@ source "$VENV_PATH/bin/activate" || {
 log "Environment setup complete, starting application..."
 
 # Run the application
-python lumogun.py >> "$LOG_FILE" 2>&1
+log "Launching lumogun.py..."
+if python lumogun.py >> "$LOG_FILE" 2>&1; then
+    log "Application exited successfully"
+else
+    log "ERROR: Application exited with error code $?"
+    exit 1
+fi
+
+# Deactivate virtual environment
+deactivate
+
+log "Lumogun launcher completed"
