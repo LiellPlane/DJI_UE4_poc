@@ -183,11 +183,11 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
     
     img_uploaders = []
-    img_uploaders.append(WebSocketComms(
-        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
-        safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-        websocket_url = "ws://127.0.0.1:8765",
-        OS_friendly_name="shortrange_img_uploader"))
+    # img_uploaders.append(WebSocketComms(
+    #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+    #     safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+    #     websocket_url = "ws://127.0.0.1:8765",
+    #     OS_friendly_name="shortrange_img_uploader"))
     image_analysis = []
 
     for image_analyser in image_analysis:
