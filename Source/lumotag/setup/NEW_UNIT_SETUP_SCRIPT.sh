@@ -20,7 +20,8 @@ fi
 # if [ ! -f "$FLAG_FILE" ]; then
 
 # expect a fresh bookworm 
-# Configure dpkg to automatically use new config files from packages
+# Configure dpkg to automatically use new config files from packages 
+# otherwise the installation will need human intervention to continue
 export DEBIAN_FRONTEND=noninteractive
 sudo apt update
 sudo apt full-upgrade -y -o Dpkg::Options::="--force-confnew"
