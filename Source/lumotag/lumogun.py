@@ -1,6 +1,6 @@
 # need to add switch for reversed camera in shared memory
 # its a bad technique but will have to make do
-import pyjokes
+
 import factory
 import random
 from functools import partial

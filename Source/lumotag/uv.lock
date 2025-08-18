@@ -93,7 +93,6 @@ dependencies = [
     { name = "pika" },
     { name = "protobuf" },
     { name = "pydantic" },
-    { name = "pyjokes" },
     { name = "requests" },
     { name = "scikit-image" },
     { name = "websockets" },
@@ -106,7 +105,6 @@ requires-dist = [
     { name = "pika", specifier = ">=1.3.2" },
     { name = "protobuf", specifier = ">=6.30.2" },
     { name = "pydantic", specifier = "==2.0" },
-    { name = "pyjokes", specifier = ">=0.8.3" },
     { name = "requests", specifier = ">=2.32.4" },
     { name = "scikit-image", specifier = ">=0.25.2" },
     { name = "websockets", specifier = ">=15.0.1" },
@@ -245,15 +243,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/1c/f4/a725d5e9a4bef5d077726deb9c0c5eff03b046aa5019b0ec3dedcb3695b3/pydantic_core-2.0.1-cp311-cp311-musllinux_1_1_x86_64.whl", hash = "sha256:f9452d470012ee86a00a36f7673843038fd1a88661a28c72e65e7f3f084da8d8", size = 1698714 },
     { url = "https://files.pythonhosted.org/packages/03/da/4eb4406f908f670edb8927d5600000ba5272f8e32d8dca6f4cfb9076c89a/pydantic_core-2.0.1-cp311-none-win32.whl", hash = "sha256:0872a1c52da4cfc494e23c83532c7fc1313de311a14334b7a58216a8dea828e0", size = 1366235 },
     { url = "https://files.pythonhosted.org/packages/9f/57/739d59da677c8288aa9bea9d7446ee72acd2bc37210f350668a498683eea/pydantic_core-2.0.1-cp311-none-win_amd64.whl", hash = "sha256:7a4fc3e8c788798739f4aa6772d994e4453a17dadb1b8eea4582a31cdfe683d2", size = 1499219 },
-]
-
-[[package]]
-name = "pyjokes"
-version = "0.8.3"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/30/cc/2d25e5397d7a6d362971f23b42c8b624c5298c0864a1000cd587f39e6748/pyjokes-0.8.3.tar.gz", hash = "sha256:5735d31e973d5b6934b46b89431505733c3110f9b66eac0ff0be86f7f3646423", size = 44617 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/1d/dd/2495fe4d1ff804ec3094ad4c76cd0fcfb8902d630ce690118560a40df171/pyjokes-0.8.3-py3-none-any.whl", hash = "sha256:12836e61bc7a2c1ff302604a040f0f63ac36c5c947c20319fcb5d1ab37bac46e", size = 47563 },
 ]
 
 [[package]]
