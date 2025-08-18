@@ -76,17 +76,17 @@ if [ -d "$CODE_PATH" ]; then
         exit 1
     }
     
-    if sudo git pull --ff-only; then
+    if sudo git pull --ff-only >> "$LOG_FILE" 2>&1; then
         log "Successfully pulled updates from repository"
     else
         log "WARNING: Git pull failed, but continuing..."
     fi
 else
     log "Repository does not exist, cloning from $REPO_URL..."
-    if sudo git clone "$REPO_URL"; then
+    if sudo git clone "$REPO_URL" >> "$LOG_FILE" 2>&1; then
         log "Successfully cloned repository"
         # Set safe directory
-        sudo git config --global --add safe.directory "$CODE_PATH"
+        sudo git config --global --add safe.directory "$CODE_PATH" >> "$LOG_FILE" 2>&1
     else
         log "ERROR: Failed to clone repository"
         exit 1
@@ -110,7 +110,7 @@ cd "$APP_DIR" || {
 log "Setting up virtual environment and dependencies..."
 
 # Create virtual environment with system site packages
-if ! uv venv lumotagvenv --system-site-packages --clear ; then
+if ! uv venv lumotagvenv --system-site-packages --clear >> "$LOG_FILE" 2>&1; then
     log "ERROR: Failed to create virtual environment"
     exit 1
 fi
@@ -121,7 +121,7 @@ source "$VENV_PATH/bin/activate" || {
     exit 1
 }
 
-if uv pip install -r pyproject.toml; then
+if uv pip install -r pyproject.toml >> "$LOG_FILE" 2>&1; then
     log "Successfully installed dependencies"
 else
     log "ERROR: Failed to install dependencies"

@@ -15,10 +15,11 @@
 sudo apt update
 sudo apt full-upgrade -y
 sudo apt-get update -y
-# maybe have to do for both??
+# Install UV for user first
 curl -LsSf https://astral.sh/uv/install.sh | sh
-sudo curl -LsSf https://astral.sh/uv/install.sh | sh
-source $HOME/.local/bin/env 
+# Create system-wide symlink so sudo can access it
+sudo ln -sf ~/.local/bin/uv /usr/local/bin/uv 2>/dev/null || sudo ln -sf ~/.cargo/bin/uv /usr/local/bin/uv
+source $HOME/.cargo/env 
 #     echo "=== IMPORTANT: REBOOT REQUIRED ==="
 #     echo "This script needs to reboot the system to complete the UV installation."
 #     echo "Its a path thing - if you can figure it out and avoid this stage"
