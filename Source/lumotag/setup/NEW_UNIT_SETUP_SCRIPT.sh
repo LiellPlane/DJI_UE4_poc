@@ -1,4 +1,6 @@
 #!/bin/bash
+#  RUN ME AS NORMAL USER! Not SUDO!
+
 
 
 
@@ -67,6 +69,8 @@ sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
 sudo pip3 install adafruit-circuitpython-lis3dh --break-system-packages
 # cd /home/lumotag/DJI_UE4_poc/Source/lumotag
 
+
+# this is to check that uv works - although may be issues with sudo blah blah
 cd /home/lumotag/
 cd /home/lumotag/DJI_UE4_poc/Source/lumotag/
 # need this to access gpiozero and camera libraries, hard for UV to manage it seems
