@@ -36,8 +36,8 @@ elif PLATFORM == _OS.RASPBERRY:
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
-    import test_fake_websocket_server
-    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
+    # import test_fake_websocket_server
+    # WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
@@ -183,12 +183,12 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
     
     img_uploaders = []
-    # img_uploaders.append(WebSocketComms(
-    #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
-    #     safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-    #     websocket_url = "ws://127.0.0.1:8765",
-    #     OS_friendly_name="shortrange_img_uploader"))
-    image_analysis = []
+    img_uploaders.append(WebSocketComms(
+        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+        websocket_url = "ws://127.0.0.1:8765",
+        OS_friendly_name="shortrange_img_uploader"))
+
 
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
