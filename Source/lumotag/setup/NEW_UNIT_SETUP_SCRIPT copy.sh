@@ -1,4 +1,5 @@
 #!/bin/bash
+#  RUN ME AS NORMAL USER! Not SUDO!
 
 # Check if running as sudo/root and exit if so
 if [[ $EUID -eq 0 ]] || [[ -n "$SUDO_USER" ]]; then
@@ -29,6 +30,7 @@ sudo apt install espeak -y
 # Set system volume to maximum for espeak events
 amixer set Master 100%
 
+
 cd /home/lumotag/
 
 # ignore failure
@@ -47,6 +49,7 @@ sudo git config --global --add safe.directory /home/lumotag/DJI_UE4_poc
 sudo pip3 install adafruit-circuitpython-lis3dh --break-system-packages
 # cd /home/lumotag/DJI_UE4_poc/Source/lumotag
 
+
 # this is to check that uv works - although may be issues with sudo blah blah
 cd /home/lumotag/
 cd /home/lumotag/DJI_UE4_poc/Source/lumotag/
@@ -57,6 +60,8 @@ uv pip install -r pyproject.toml
 deactivate
 
 sudo sh -c "echo '[autostart]' >>  /home/lumotag/.config/wayfire.ini"
+# Copy and setup launcher script
+
 
 # App launch using dedicated launcher script with delay
 sudo sh -c "echo '1 = /home/lumotag/launch_lumogun.sh' >> /home/lumotag/.config/wayfire.ini"
