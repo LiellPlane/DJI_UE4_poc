@@ -430,7 +430,7 @@ def main():
                         output_image = img_processing.gray2rgb(combo_image)
 
                     
-            perfmonitor.get_time("complete_cycle", reset=True)
+            
             with time_it("wait for image analysis", debug=PRINT_DEBUG), perfmonitor.measure("wait image_analysis"):
                 analysis = {}
                 for img_analyser in image_analysis:
@@ -528,7 +528,7 @@ def main():
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
                     display.display(output_image)
-
+                perfmonitor.get_time("complete_cycle", reset=True)
                 perfmonitor.manual_measure("check_scale2", 25)
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:
