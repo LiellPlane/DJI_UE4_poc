@@ -298,6 +298,21 @@ class TransformManager:
         ]
         return np.array(interpolated_points)
 
+def draw_border_rectangle(image, thickness=2, color=(255, 255, 255)):
+    """Draw a rectangle outline around the border of an image.
+    
+    Args:
+        image: Input image (modified in-place)
+        thickness: Thickness of the border rectangle outline
+        color: Color of the rectangle outline (B, G, R) for BGR images
+    
+    Returns:
+        None (modifies image in-place for maximum speed)
+    """
+    height, width = image.shape[:2]
+    cv2.rectangle(image, (0, 0), (width - 1, height - 1), color, thickness)
+
+
 def lerp_arrays(a, b, num_points):
     t = np.linspace(0, 1, num_points)
     return np.array([np.interp(t, [0, 1], [a_i, b_i]) for a_i, b_i in zip(a, b)])

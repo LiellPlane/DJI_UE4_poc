@@ -72,7 +72,6 @@ class WebSocketComms:
 
         # Connection status tracking for cheap health checks
         self._is_connected = False
-
         self._capture_thread = threading.Thread(target=self._capture_loop, name="uploader-capture", daemon=True)
         self._upload_thread = threading.Thread(target=self._worker_loop, name="uploader-worker", daemon=True)
         self._capture_thread.start()

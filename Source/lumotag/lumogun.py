@@ -36,8 +36,8 @@ elif PLATFORM == _OS.RASPBERRY:
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
-    # import test_fake_websocket_server
-    # WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
+    import test_fake_websocket_server
+    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
@@ -505,8 +505,7 @@ def main():
                             )
 
 
-                if is_trigger_pressed:
-                    output_image[:] = 255
+
                 perfmonitor.manual_measure("check_scale", 25)
 
                 # calculate the fade for test player - needs to be called to determine what direction of fade
@@ -527,6 +526,14 @@ def main():
                     
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
+                    
+                    if img_uploaders:
+                        if not img_uploaders[0].is_connected():
+                            img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
+                    if is_trigger_pressed:
+                        # screen flash on trigger - do we want this to hide the UI?
+                        output_image[:] = 255
+                    
                     display.display(output_image)
                 perfmonitor.get_time("complete_cycle", reset=True)
                 perfmonitor.manual_measure("check_scale2", 25)
@@ -547,7 +554,8 @@ def main():
                         # get rid of uninteresting images
                         for img_id in imageIDs:
                             img_uploader.delete_image_by_id(img_id)
-                
+
+
                 # if is_trigger_pressed is True:
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
