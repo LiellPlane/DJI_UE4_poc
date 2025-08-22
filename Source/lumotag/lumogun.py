@@ -2,6 +2,7 @@
 # its a bad technique but will have to make do
 
 import factory
+import emoji
 import random
 from functools import partial
 import msgs
@@ -104,7 +105,7 @@ def main():
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
 
-    voice.speak(f"{GUN_CONFIGURATION.model}, V zero four.")
+    voice.speak(f"{GUN_CONFIGURATION.model}, V zero five.")
     relay = lumogun.Relay(GUN_CONFIGURATION)
     
     #accelerometer = lumogun.Accelerometer()
