@@ -2,10 +2,7 @@
 # its a bad technique but will have to make do
 
 import factory
-import emoji
-import random
 from functools import partial
-import msgs
 import queue
 import datetime
 import time
