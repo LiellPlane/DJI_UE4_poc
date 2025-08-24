@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
-import { logger } from '@/utils/logger';
+import { logger } from '../utils/logger';
 
 interface AppError extends Error {
   statusCode?: number;
@@ -11,7 +11,7 @@ export const errorHandler = (
   err: AppError | ZodError,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): void => {
   // Default error values
   let statusCode = 500;

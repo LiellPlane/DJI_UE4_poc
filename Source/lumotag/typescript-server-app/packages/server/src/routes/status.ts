@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
-import { logger } from '@/utils/logger';
+import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 interface SystemStatus {
   server: {
@@ -37,7 +37,7 @@ let totalResponseTime = 0;
 const startTime = new Date();
 
 // Middleware to track metrics
-export const metricsMiddleware = (req: Request, res: Response, next: Function) => {
+export const metricsMiddleware = (_req: Request, res: Response, next: Function) => {
   const start = Date.now();
   requestCount++;
   

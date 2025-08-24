@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { z } from 'zod';
-import { logger } from '@/utils/logger';
+import { logger } from '../utils/logger';
 
-const router = Router();
+const router: Router = Router();
 
 interface HealthStatus {
   status: 'UP' | 'DOWN';
@@ -46,10 +46,10 @@ router.get('/', (req: Request, res: Response) => {
       return res.status(200).json(detailedStatus);
     }
     
-    res.status(200).json(healthStatus);
+    return res.status(200).json(healthStatus);
   } catch (error) {
     logger.error('Health check failed', { error, ip: req.ip });
-    res.status(503).json({
+    return res.status(503).json({
       status: 'DOWN',
       timestamp: new Date().toISOString(),
       error: 'Health check failed',
@@ -58,7 +58,7 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 // Readiness probe
-router.get('/ready', (req: Request, res: Response) => {
+router.get('/ready', (_req: Request, res: Response) => {
   // Add any readiness checks here (database connectivity, etc.)
   res.status(200).json({
     status: 'READY',
@@ -67,7 +67,7 @@ router.get('/ready', (req: Request, res: Response) => {
 });
 
 // Liveness probe
-router.get('/live', (req: Request, res: Response) => {
+router.get('/live', (_req: Request, res: Response) => {
   res.status(200).json({
     status: 'ALIVE',
     timestamp: new Date().toISOString(),

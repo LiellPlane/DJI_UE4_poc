@@ -4,10 +4,10 @@ import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import { logger } from '@/utils/logger';
-import { errorHandler } from '@/middlewares/errorHandler';
-import { healthRouter } from '@/routes/health';
-import { statusRouter } from '@/routes/status';
+import { logger } from './utils/logger';
+import { errorHandler } from './middlewares/errorHandler';
+import { healthRouter } from './routes/health';
+import { statusRouter } from './routes/status';
 
 // Load environment variables
 dotenv.config();
@@ -65,7 +65,7 @@ app.use('/api/health', healthRouter);
 app.use('/api/status', statusRouter);
 
 // Root endpoint
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({
     message: 'TypeScript Server API',
     version: '1.0.0',
@@ -92,7 +92,7 @@ app.use('*', (req: Request, res: Response) => {
 
 // Start server
 const server = app.listen(PORT, () => {
-  logger.info(`🚀 Server running on port ${PORT}`, {
+  logger.info(`Server running on port ${PORT}`, {
     environment: process.env.NODE_ENV || 'development',
     port: PORT,
   });

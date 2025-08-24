@@ -47,7 +47,7 @@ export const ServerStatus: React.FC = () => {
           <h2>Server Status</h2>
         </div>
         <div className="error-message">
-          ❌ Failed to fetch server status
+          Failed to fetch server status
           <p className="error-details">{error?.toString()}</p>
         </div>
       </div>
@@ -63,7 +63,7 @@ export const ServerStatus: React.FC = () => {
       
       <div className="status-content">
         <div className={`status-badge ${status?.status.toLowerCase()}`}>
-          {status?.status === 'UP' ? '✅' : '❌'} {status?.status}
+          {status?.status}
         </div>
         
         <div className="status-grid">

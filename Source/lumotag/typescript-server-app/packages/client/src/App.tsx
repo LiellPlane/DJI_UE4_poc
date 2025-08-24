@@ -1,4 +1,4 @@
-import React from 'react';
+// React import not needed with JSX Transform
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ServerStatus } from '@/components/ServerStatus';
 import { SystemMetrics } from '@/components/SystemMetrics';
@@ -18,7 +18,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <div className="App">
         <header className="App-header">
-          <h1>🚀 Server Status Dashboard</h1>
+          <h1>Server Status Dashboard</h1>
           <p>Real-time monitoring of your TypeScript server</p>
         </header>
         

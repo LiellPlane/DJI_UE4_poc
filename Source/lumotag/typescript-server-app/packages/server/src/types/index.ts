@@ -1,4 +1,5 @@
 // Common types used across the application
+import { Request } from 'express';
 
 export interface ApiResponse<T = any> {
   success: boolean;

@@ -14,8 +14,6 @@ export const SystemMetrics: React.FC = () => {
     }
   );
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
-
   const memoryData = metrics?.system.memory ? [
     {
       name: 'Used Memory',
@@ -52,7 +50,7 @@ export const SystemMetrics: React.FC = () => {
           <h2>System Metrics</h2>
         </div>
         <div className="error-message">
-          ❌ Failed to fetch system metrics
+          Failed to fetch system metrics
           <p className="error-details">{error?.toString()}</p>
         </div>
       </div>

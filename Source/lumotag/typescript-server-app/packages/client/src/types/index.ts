@@ -1,8 +1,21 @@
+interface MemoryUsage {
+  rss: number;
+  heapTotal: number;
+  heapUsed: number;
+  external: number;
+  arrayBuffers: number;
+}
+
+interface CpuUsage {
+  user: number;
+  system: number;
+}
+
 export interface HealthStatus {
   status: 'UP' | 'DOWN';
   timestamp: string;
   uptime: number;
-  memory: NodeJS.MemoryUsage;
+  memory: MemoryUsage;
   environment: string;
   version: string;
 }
@@ -25,7 +38,7 @@ export interface SystemStatus {
       total: string;
       percentage: string;
     };
-    cpu: NodeJS.CpuUsage;
+    cpu: CpuUsage;
   };
   metrics: {
     requestCount: number;

@@ -1,0 +1,112 @@
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:42:52'
+}
+{
+  message: '::1 - - [24/Aug/2025:15:42:54 +0000] "GET /api/health HTTP/1.1" 200 226 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-08-24 16:42:54'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '::1',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'GET /api/health',
+  timestamp: '2025-08-24 16:42:54'
+}
+{
+  message: '::1 - - [24/Aug/2025:15:45:13 +0000] "GET /api/health HTTP/1.1" 200 227 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-08-24 16:45:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '::1',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'GET /api/health',
+  timestamp: '2025-08-24 16:45:13'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:45:34'
+}
+{
+  message: '::ffff:127.0.0.1 - - [24/Aug/2025:15:45:34 +0000] "GET /api/health HTTP/1.1" 200 226 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-08-24 16:45:34'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '6ms',
+  ip: '::ffff:127.0.0.1',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'GET /api/health',
+  timestamp: '2025-08-24 16:45:34'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:45:42'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:45:42'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:45:49'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:45:51'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: '🚀 Server running on port 3000',
+  timestamp: '2025-08-24 16:45:52'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  port: 3000,
+  level: 'info',
+  message: 'Server running on port 3000',
+  timestamp: '2025-08-24 16:46:27'
+}

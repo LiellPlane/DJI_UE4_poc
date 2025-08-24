@@ -2,7 +2,7 @@
 
 A modern full-stack TypeScript application featuring an Express.js server with a React frontend for real-time server status monitoring.
 
-## 🚀 Features
+## Features
 
 - **Modern TypeScript Stack**: Full TypeScript setup with strict type checking
 - **Express.js Server**: Secure, production-ready API server with middleware
@@ -43,7 +43,7 @@ typescript-server-app/
 └── README.md
 ```
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 - **Node.js** >= 18.0.0
 - **pnpm** >= 8.0.0 (recommended) or npm/yarn
@@ -53,7 +53,7 @@ Install pnpm globally:
 npm install -g pnpm
 ```
 
-## 🚦 Quick Start
+## Quick Start
 
 1. **Clone and navigate to the project:**
    ```bash
@@ -86,7 +86,7 @@ npm install -g pnpm
    - Health Check: http://localhost:3000/api/health
    - System Status: http://localhost:3000/api/status
 
-## 📊 API Endpoints
+## API Endpoints
 
 ### Health Endpoints
 - `GET /api/health` - Basic health check
@@ -115,7 +115,7 @@ npm install -g pnpm
 }
 ```
 
-## 🏗️ Build & Deployment
+## Build & Deployment
 
 ### Development
 ```bash
@@ -154,7 +154,7 @@ pnpm --filter client dev
 pnpm --filter client preview
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -183,25 +183,25 @@ LOG_LEVEL=info
 - **Auto-refresh**: Dashboard updates every 5-10 seconds
 - **Responsive**: Mobile-friendly design
 
-## 📈 Dashboard Features
+## Dashboard Features
 
 The React dashboard provides:
 
 ### Server Status Card
-- ✅ Server UP/DOWN status
-- ⏱️ Uptime tracking
-- 💾 Memory usage
-- 🌍 Environment info
-- 🕐 Last update timestamp
+- Server UP/DOWN status
+- Uptime tracking
+- Memory usage
+- Environment info
+- Last update timestamp
 
 ### System Metrics Card
-- 📊 Memory usage pie chart
-- 📈 Request statistics bar chart
-- ⚡ Average response time
-- 🚨 Error rate monitoring
-- 💻 System information (platform, Node version, PID)
+- Memory usage pie chart
+- Request statistics bar chart
+- Average response time
+- Error rate monitoring
+- System information (platform, Node version, PID)
 
-## 🔒 Security Features
+## Security Features
 
 - **Helmet**: Security headers and CSP policies
 - **CORS**: Configurable cross-origin resource sharing
@@ -226,7 +226,7 @@ pnpm --filter client test
 pnpm --filter server test:watch
 ```
 
-## 📝 Development Guidelines
+## Development Guidelines
 
 ### Code Style
 - **ESLint**: Configured with TypeScript rules
@@ -241,7 +241,7 @@ Add pre-commit hooks for:
 - Tests
 - Formatting
 
-## 🚀 Production Deployment
+## Production Deployment
 
 ### Docker (Recommended)
 ```dockerfile
@@ -290,7 +290,7 @@ pm2 start dist/app.js --name "typescript-server"
 | `pnpm format` | Format code |
 | `pnpm clean` | Clean build artifacts |
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -349,7 +349,7 @@ pm2 start dist/app.js --name "typescript-server"
 
 This project is licensed under the MIT License.
 
-## 🙋‍♂️ Support
+## Support
 
 For questions or issues:
 1. Check the troubleshooting section
@@ -359,4 +359,4 @@ For questions or issues:
 
 ---
 
-**Happy coding! 🎉**
+**Happy coding!**
