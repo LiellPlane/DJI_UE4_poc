@@ -1,0 +1,27 @@
+{
+  "name": "typescript-server-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "TypeScript server with React frontend for status monitoring",
+  "scripts": {
+    "dev": "pnpm --parallel run dev",
+    "build": "pnpm --recursive run build",
+    "start": "pnpm --filter server start",
+    "test": "pnpm --recursive run test",
+    "lint": "pnpm --recursive run lint",
+    "format": "pnpm --recursive run format",
+    "clean": "pnpm --recursive run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "pnpm": "^8.15.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
