@@ -24,18 +24,15 @@ PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 if PLATFORM == _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
     import test_fake_websocket_server
-    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 elif PLATFORM == _OS.RASPBERRY:
     print("raspberry presence detected, loading hardware libraries")
-    WEBSCKT_URL = "ws://12345678"
     import raspberry5_hardware as lumogun
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
     import test_fake_websocket_server
-    WEBSCKT_URL = test_fake_websocket_server.get_fake_websocket_url()
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
