@@ -14,15 +14,12 @@ from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
 from pydantic import BaseModel, Field
-
+from lumotag_events import UploadRequest
 # UploadResult removed - we no longer track upload results
 # Network failures are expected and ignored, encoding failures crash immediately
 
 
-class UploadRequest(BaseModel):
-    """Pydantic model for validating upload request data"""
-    image_id: str = Field(..., description="Unique identifier for the image")
-    timestamp: float = Field(..., description="Unix timestamp when upload was initiated")
+
     
 
 class WebSocketComms:
@@ -197,7 +194,6 @@ class WebSocketComms:
                                 # Validate upload data using Pydantic model
                                 upload_request = UploadRequest(
                                     image_id=image_id,
-                                    timestamp=time.time(),
                                 )
                                 
                                 # Create WebSocket message instead of HTTP request
