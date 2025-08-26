@@ -12,7 +12,7 @@ import websockets
 import json
 import sys
 import socket
-from comms import WebSocketComms
+from comms import WebSocketImageComms
 from my_collections import SharedMem_ImgTicket
 import numpy as np
 
@@ -140,7 +140,7 @@ def test_connection_death_recovery_cycle():
         print("\n1️⃣ PHASE 1: Server startup and successful connection")
         server.start()
         
-        uploader = WebSocketComms(
+        uploader = WebSocketImageComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url=server.get_url(),

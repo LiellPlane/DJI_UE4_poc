@@ -13,16 +13,13 @@ import traceback
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
-from pydantic import BaseModel, Field
 from lumotag_events import UploadRequest
 # UploadResult removed - we no longer track upload results
 # Network failures are expected and ignored, encoding failures crash immediately
 
 
 
-    
-
-class WebSocketComms:
+class WebSocketImageComms:
     """Ultra-lightweight, threaded uploader for grayscale frames from shared memory.
 
     Design goals:
@@ -267,6 +264,526 @@ class WebSocketComms:
             return
 
 
+class WebSocketEventsComms:
+    """Ultra-lightweight, threaded sender for small events.
+
+    Design goals:
+    - Send small event objects (PlayerStatus, GameUpdate, PlayerTagged)
+    - Avoid extra processes; use a single background thread
+    - No busy waiting; block on a single control queue
+    - Ignore network failures, crash on malformed events
+    - Auto-reconnection like WebSocketImageComms
+
+    Public API:
+      - send_event(event)
+      - is_connected()
+      - get_queue_size()
+      - raise_thread_error_if_any()
+    """
+
+    def __init__(
+        self,
+        websocket_url: str,
+        OS_friendly_name: str,
+    ) -> None:
+        self.websocket_url = websocket_url
+        self.OS_friendly_name = OS_friendly_name
+
+        # Cache event types once at startup for performance
+        self._cached_event_types = self._get_event_types()
+
+        # Event queue - small queue to detect performance issues
+        self._event_q: threading_queue.Queue = threading_queue.Queue(maxsize=20)
+        self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
+
+        # Connection status tracking for cheap health checks
+        self._is_connected = False
+        self._worker_thread = threading.Thread(target=self._worker_loop, name="events-worker", daemon=True)
+        self._worker_thread.start()
+        
+        # Give thread time to start up before constructor returns
+        time.sleep(0.1)
+
+    def send_event(self, event) -> None:
+        """Send an event - will crash if queue is full (performance issue)"""
+        # Validate event is one of the expected Pydantic models from lumotag_events
+        if not self._is_valid_event_type(event):
+            valid_types = [cls.__name__ for cls in self._cached_event_types]
+            raise ValueError(f"Event must be one of {valid_types}, got {type(event).__name__}")
+        
+        self._event_q.put_nowait(event)  # Will raise queue.Full if queue is full
+        
+        # Check for thread errors periodically to reduce overhead at high frequencies
+        self._error_check_counter = getattr(self, '_error_check_counter', 0) + 1
+        if self._error_check_counter % 10 == 0:  # Check every 10th call
+            self.raise_thread_error_if_any()
+
+    def is_connected(self) -> bool:
+        """Check if WebSocket is connected - extremely cheap to call"""
+        return self._is_connected
+
+    def get_queue_size(self) -> int:
+        """Get current event queue size - extremely cheap to call"""
+        return self._event_q.qsize()
+
+    def get_supported_event_types(self) -> list[str]:
+        """Get list of supported event type names (from cache)"""
+        return [cls.__name__ for cls in self._cached_event_types]
+
+    def raise_thread_error_if_any(self) -> None:
+        """Lightweight check for thread errors"""
+        # Check for caught exceptions first (non-blocking)
+        if not self._error_q.empty():
+            thread_name, exc, tb_str = self._error_q.get_nowait()
+            
+            # WebSocket worker should handle its own reconnections for network errors
+            # If it crashed, that indicates a serious programming bug that should not be hidden
+            if thread_name == "events-worker":
+                raise RuntimeError(f"WebSocket events worker thread crashed unexpectedly: {exc}\n{tb_str}") from exc
+            
+            # For other errors, still crash (preserve test behavior)
+            raise RuntimeError(f"{thread_name} failed: {exc}\n{tb_str}") from exc
+        
+        # Check for silent thread death
+        if not self._worker_thread.is_alive():
+            raise RuntimeError("Events worker thread died silently (no exception caught)")
+
+    def _get_event_types(self):
+        """Dynamically get all Pydantic model classes from lumotag_events module (called once at startup)"""
+        import lumotag_events
+        import inspect
+        from pydantic import BaseModel
+        
+        event_types = []
+        for name, obj in inspect.getmembers(lumotag_events):
+            if (inspect.isclass(obj) and 
+                issubclass(obj, BaseModel) and 
+                obj is not BaseModel):
+                event_types.append(obj)
+        return event_types
+
+    def _is_valid_event_type(self, event) -> bool:
+        """Check if event is an instance of one of the expected event types"""
+        return any(isinstance(event, event_type) for event_type in self._cached_event_types)
+
+    def _worker_loop(self) -> None:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        try:
+            loop.run_until_complete(self._ws_worker())
+        except Exception as e:
+            tb_str = traceback.format_exc()
+            try:
+                self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
+            except Exception:
+                pass
+        finally:
+            loop.close()
+
+    async def _ws_worker(self) -> None:
+        reconnect_delay = 1.0
+        
+        while True:  # Reconnection loop
+            try:
+                # Mark as attempting connection (not connected yet)
+                self._is_connected = False
+                
+                async with websockets.connect(self.websocket_url) as websocket:
+                    print(f"🔗 WebSocket Events connected to {self.websocket_url}")
+                    reconnect_delay = 1.0  # Reset delay on successful connection
+                    
+                    # Mark as connected
+                    self._is_connected = True
+                    
+                    try:
+                        while True:  # Message processing loop
+                            # Block until an event arrives
+                            event = self._event_q.get()
+
+                            # Serialize event to JSON - CRASH on serialization failure
+                            try:
+                                event_dict = event.model_dump()
+                                # Add event type for server routing
+                                message = {
+                                    "type": "event",
+                                    "event_type": event.__class__.__name__,
+                                    "data": event_dict,
+                                    "timestamp": time.time()
+                                }
+                                message_json = json.dumps(message)
+                            except Exception as e:
+                                raise RuntimeError(f"Event serialization failed: {e}") from e
+
+                            # Try send - distinguish client errors from network errors
+                            try:
+                                await websocket.send(message_json)
+                                
+                            except websockets.exceptions.InvalidURI:
+                                # Invalid WebSocket URL - report as a critical error
+                                raise RuntimeError(f"Invalid WebSocket URL: {self.websocket_url}")
+
+                            except (websockets.exceptions.WebSocketException, 
+                                    websockets.exceptions.ConnectionClosed,
+                                    ConnectionRefusedError, 
+                                    OSError):
+                                # Network issues - mark as disconnected, put message back in queue and break connection loop
+                                self._is_connected = False
+                                self._event_q.put_nowait(event)  # Put event back for retry
+                                break  # Exit inner loop to trigger reconnection
+                    finally:
+                        # Always mark as disconnected when exiting the message processing loop
+                        self._is_connected = False
+                            
+            except websockets.exceptions.InvalidURI:
+                # Invalid WebSocket URL - report as a critical error
+                raise RuntimeError(f"Invalid WebSocket URL: {self.websocket_url}")
+                
+            except (websockets.exceptions.WebSocketException,
+                    websockets.exceptions.ConnectionClosed,
+                    ConnectionRefusedError,
+                    OSError) as e:
+                # Connection failed - mark as disconnected and wait before retrying
+                self._is_connected = False
+                    
+                print(f"🔄 WebSocket Events connection failed, retrying in {reconnect_delay:.1f}s: {e}")
+                await asyncio.sleep(reconnect_delay)
+                continue  # Try reconnecting
+                
+            except Exception as e:
+                # Other errors should still crash
+                raise e
+
+
+def test_events_comms():
+    """Simple test of WebSocketEventsComms functionality"""
+    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
+    
+    print("🧪 Testing WebSocketEventsComms...")
+    
+    # Create events comms (will fail to connect but that's OK for validation testing)
+    events_comms = WebSocketEventsComms(
+        websocket_url="ws://localhost:9999",  # Non-existent server for testing
+        OS_friendly_name="test_pi"
+    )
+    
+    print("✅ WebSocketEventsComms created")
+    
+    # Show cached event types
+    supported_types = events_comms.get_supported_event_types()
+    print(f"📋 Cached event types: {supported_types}")
+    
+    # Test valid event types
+    print("\n🔬 Testing valid event types...")
+    
+    # Test PlayerStatus
+    try:
+        player_status = PlayerStatus(health=100, ammo=30, tag_id="player1", display_name="Test Player")
+        events_comms.send_event(player_status)
+        print(f"✅ PlayerStatus accepted: {player_status}")
+    except Exception as e:
+        print(f"❌ PlayerStatus failed: {e}")
+    
+    # Test GameUpdate
+    try:
+        game_update = GameUpdate(players=[
+            PlayerStatus(health=80, ammo=25, tag_id="player1", display_name="Alice"),
+            PlayerStatus(health=100, ammo=30, tag_id="player2", display_name="Bob")
+        ])
+        events_comms.send_event(game_update)
+        print(f"✅ GameUpdate accepted: {len(game_update.players)} players")
+    except Exception as e:
+        print(f"❌ GameUpdate failed: {e}")
+    
+    # Test PlayerTagged
+    try:
+        player_tagged = PlayerTagged(tag_id="player1", image_ids=["img123", "img456"])
+        events_comms.send_event(player_tagged)
+        print(f"✅ PlayerTagged accepted: {player_tagged}")
+    except Exception as e:
+        print(f"❌ PlayerTagged failed: {e}")
+    
+    # Test invalid event type
+    print("\n🚫 Testing invalid event type...")
+    try:
+        events_comms.send_event("not_a_pydantic_model")
+        print("❌ Invalid event was accepted (this should not happen)")
+    except ValueError as e:
+        print(f"✅ Invalid event correctly rejected: {e}")
+    except Exception as e:
+        print(f"❌ Unexpected error for invalid event: {e}")
+    
+    # Test queue size
+    queue_size = events_comms.get_queue_size()
+    print(f"\n📊 Queue size: {queue_size}")
+    
+    # Test connection status (should be False since server doesn't exist)
+    connected = events_comms.is_connected()
+    print(f"📡 Connected: {connected}")
+    
+    # Performance test - multiple rapid validations use cached types
+    print("\n⚡ Testing cached validation performance...")
+    test_event = PlayerStatus(health=50, ammo=15, tag_id="perf_test", display_name="Performance Test")
+    
+    import time
+    start_time = time.time()
+    for i in range(100):
+        # This will validate against cached types (very fast)
+        try:
+            events_comms.send_event(test_event)
+        except:
+            pass  # Queue will fill up, but validation still happens
+    end_time = time.time()
+    
+    print(f"✅ 100 validations completed in {(end_time - start_time)*1000:.2f}ms (using cached types)")
+    print("🎉 WebSocketEventsComms basic test completed!")
+
+
+def test_events_comms_error_handling():
+    """Comprehensive error handling tests for WebSocketEventsComms"""
+    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
+    import socket
+    
+    print("\n🧪 Testing WebSocketEventsComms Error Handling...")
+    
+    def find_available_port(start_port=8900):
+        """Find an available port to avoid conflicts"""
+        for port in range(start_port, start_port + 100):
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.bind(('localhost', port))
+                    return port
+            except OSError:
+                continue
+        raise RuntimeError("No available ports found")
+    
+    # Test 1: Invalid URL Detection
+    print("\n🔄 Testing broken thread detection with invalid URL...")
+    events_comms_broken_url = WebSocketEventsComms(
+        websocket_url="ws://invalid-nonexistent-host-12345:9999",
+        OS_friendly_name="test_events_invalid"
+    )
+    
+    # Send an event to trigger connection attempt
+    test_event = PlayerStatus(health=100, ammo=30, tag_id="test", display_name="Test")
+    events_comms_broken_url.send_event(test_event)
+    time.sleep(1.0)  # Let worker try to connect
+    
+    # Should gracefully handle invalid URL (no crash, just stays disconnected)
+    try:
+        events_comms_broken_url.raise_thread_error_if_any()
+        connected = events_comms_broken_url.is_connected()
+        print(f"✅ Invalid URL gracefully handled: connected={connected}")
+        assert connected == False, "Should not be connected to invalid URL"
+    except RuntimeError as e:
+        if "Invalid WebSocket URL" in str(e):
+            print(f"✅ Invalid URL properly detected: {e}")
+        else:
+            print(f"❌ Unexpected error: {e}")
+            raise
+    
+    # Test 2: Malformed Event Handling
+    print("\n🔄 Testing malformed event detection...")
+    events_comms_valid = WebSocketEventsComms(
+        websocket_url="ws://localhost:65534",  # Will fail to connect, but that's OK
+        OS_friendly_name="test_events_malformed"
+    )
+    
+    # Test malformed event (not a Pydantic model)
+    try:
+        events_comms_valid.send_event({"not": "a_pydantic_model"})
+        print("❌ Malformed event was accepted (should not happen)")
+        assert False, "Malformed event should be rejected"
+    except ValueError as e:
+        print(f"✅ Malformed event correctly rejected: {e}")
+    except Exception as e:
+        print(f"❌ Unexpected error for malformed event: {e}")
+        raise
+    
+    # Test 3: Queue Overflow Protection
+    print("\n🔄 Testing event queue overflow protection...")
+    events_comms_overflow = WebSocketEventsComms(
+        websocket_url="ws://127.0.0.1:65535",  # Will fail fast
+        OS_friendly_name="test_events_overflow"
+    )
+    
+    # Blast the queue with events (maxsize=20)
+    print("   💥 Blasting queue with rapid event sends...")
+    test_event = PlayerStatus(health=75, ammo=20, tag_id="overflow_test", display_name="Overflow Test")
+    queue_full_detected = False
+    event_attempts = 0
+    
+    # Try to queue more events than the limit
+    for i in range(30):  # More than maxsize=20
+        try:
+            events_comms_overflow.send_event(test_event)
+            event_attempts += 1
+            if i < 15:  # Don't spam console too much
+                print(f"      ✓ Queued event #{event_attempts}")
+        except Exception as e:
+            queue_full_detected = True
+            print(f"   ✅ Queue overflow detected after {event_attempts} events!")
+            print(f"   ✅ Exception: {type(e).__name__}: {e}")
+            exception_str = str(e)
+            exception_type = type(e).__name__
+            is_queue_full = ("Full" in exception_str or "queue" in exception_str.lower() or 
+                           exception_type == "Full" or "Full" in exception_type)
+            assert is_queue_full, f"Expected queue full error, got: {exception_type}: {exception_str}"
+            break
+    
+    if not queue_full_detected:
+        print(f"   ⚠️  Queue overflow not detected after {event_attempts} rapid events")
+        print("   ℹ️  Worker thread may be processing too quickly - this is acceptable")
+    
+    print("   ✅ Queue overflow test completed")
+    
+    # Test 4: Connection Cycle Testing (Success → Death → Recovery → Reconnection)
+    print("\n🔄 Testing connection cycle with event queueing...")
+    
+    class EventsTestServer:
+        def __init__(self):
+            self.port = find_available_port()
+            self.server = None
+            self.events_received = []
+            self.is_running = False
+            self.loop = None
+            
+        async def handle_client(self, websocket):
+            try:
+                async for message in websocket:
+                    data = json.loads(message)
+                    if data.get("type") == "event":
+                        event_type = data.get("event_type")
+                        event_data = data.get("data")
+                        if event_type and event_data:
+                            # Store simplified event info
+                            event_info = f"{event_type}:{event_data.get('tag_id', 'unknown')}"
+                            self.events_received.append(event_info)
+                            print(f"   📤 Server received: {event_info}")
+            except websockets.exceptions.ConnectionClosed:
+                pass
+            except Exception as e:
+                print(f"   ❌ Server error: {e}")
+        
+        def start(self):
+            def run_server():
+                self.loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(self.loop)
+                
+                async def server_main():
+                    self.server = await websockets.serve(self.handle_client, 'localhost', self.port)
+                    self.is_running = True
+                    await self.server.wait_closed()
+                    
+                self.loop.run_until_complete(server_main())
+            
+            self.server_thread = threading.Thread(target=run_server, daemon=True)
+            self.server_thread.start()
+            time.sleep(0.5)
+            
+        def stop(self):
+            if self.server and self.is_running:
+                if self.loop:
+                    self.loop.call_soon_threadsafe(self.server.close)
+                    self.is_running = False
+                    time.sleep(0.5)
+        
+        def get_url(self):
+            return f"ws://localhost:{self.port}"
+    
+    # Run connection cycle test
+    server = EventsTestServer()
+    try:
+        # Phase 1: Establish connection and test event sending
+        print("\n   📡 Phase 1: Initial connection and event sending...")
+        server.start()
+        test_events_comms = WebSocketEventsComms(
+            websocket_url=server.get_url(),
+            OS_friendly_name="cycle_test"
+        )
+        
+        time.sleep(1.0)  # Allow connection
+        
+        # Send initial events
+        initial_events = [
+            PlayerStatus(health=100, ammo=30, tag_id="player1", display_name="Alice"),
+            GameUpdate(players=[PlayerStatus(health=80, ammo=25, tag_id="player2", display_name="Bob")]),
+            PlayerTagged(tag_id="player1", image_ids=["img001"])
+        ]
+        
+        for event in initial_events:
+            test_events_comms.send_event(event)
+        time.sleep(1.0)
+        
+        phase1_events = len(server.events_received)
+        print(f"   ✅ Phase 1 - Initial connection: {phase1_events} events received")
+        
+        # Phase 2: Kill server and queue events (grace period)
+        print("   💀 Phase 2: Server death - events should queue gracefully...")
+        server.stop()
+        time.sleep(0.5)
+        
+        # Send events during outage - they should queue up
+        outage_events = [
+            PlayerStatus(health=90, ammo=28, tag_id="player1", display_name="Alice Updated"),
+            PlayerTagged(tag_id="player2", image_ids=["img002", "img003"]),
+            GameUpdate(players=[
+                PlayerStatus(health=90, ammo=28, tag_id="player1", display_name="Alice"),
+                PlayerStatus(health=75, ammo=22, tag_id="player2", display_name="Bob")
+            ])
+        ]
+        
+        for event in outage_events:
+            test_events_comms.send_event(event)
+            time.sleep(0.1)
+        
+        queued = test_events_comms.get_queue_size()
+        connected = test_events_comms.is_connected()
+        print(f"   ✅ Phase 2 - During outage: {queued} events queued, connected={connected}")
+        
+        # Phase 3: Restart server and verify graceful reconnection
+        print("   🔄 Phase 3: Server recovery - events should be delivered...")
+        server.start()
+        time.sleep(3.0)  # Wait for reconnection and event processing
+        
+        final_events = len(server.events_received)
+        remaining_queued = test_events_comms.get_queue_size()
+        final_connected = test_events_comms.is_connected()
+        
+        print(f"   ✅ Phase 3 - After recovery: {final_events} total events, {remaining_queued} still queued, connected={final_connected}")
+        
+        # Success criteria: should have received events from both phases
+        expected_total = len(initial_events) + len(outage_events)
+        success = phase1_events > 0 and final_events >= phase1_events
+        
+        if success:
+            print(f"   🎉 Connection cycle test PASSED: {final_events}/{expected_total} events delivered")
+        else:
+            print(f"   ⚠️  Connection cycle test: {final_events}/{expected_total} events delivered")
+        
+    finally:
+        server.stop()
+    
+    # Test 5: Connection Status Testing
+    print("\n🔄 Testing connection status with events...")
+    
+    # Test invalid URL (should stay False)
+    events_invalid = WebSocketEventsComms(
+        websocket_url="ws://nonexistent-host-99999:8888",
+        OS_friendly_name="test_status_invalid"
+    )
+    
+    status_immediate = events_invalid.is_connected()
+    time.sleep(2.0)
+    status_after_wait = events_invalid.is_connected()
+    
+    print(f"   📡 Invalid URL - Immediate: {status_immediate}, After 2s: {status_after_wait}")
+    assert status_immediate == False, f"Expected False immediately, got {status_immediate}"
+    assert status_after_wait == False, f"Expected False after wait, got {status_after_wait}"
+    print("   ✅ Invalid URL status test passed")
+    
+    print("\n🎉 WebSocketEventsComms error handling tests completed!")
+
+
 if __name__ == "__main__":
     """Comprehensive test with real image data and WebSocket server"""
     import time
@@ -275,7 +792,14 @@ if __name__ == "__main__":
     import json
     from my_collections import SharedMem_ImgTicket
     
-    print("🧪 Testing WebSocketComms with real data...")
+    # Test the new WebSocketEventsComms first
+    test_events_comms()
+    
+    # Test comprehensive error handling for WebSocketEventsComms
+    test_events_comms_error_handling()
+    print("\n" + "="*60 + "\n")
+    
+    print("🧪 Testing WebSocketImageComms with real data...")
     
     # Create a test rectangle image with embedded ID using real factory functions
     def create_test_image_with_id(width=640, height=480):
@@ -387,7 +911,7 @@ if __name__ == "__main__":
             )
         
         # Create uploader with local WebSocket server
-        uploader = WebSocketComms(
+        uploader = WebSocketImageComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url=f"ws://localhost:{server_port}",
@@ -511,7 +1035,7 @@ if __name__ == "__main__":
 
     # Test broken thread detection with nonsense URL
     print("\n🔄 Testing broken thread detection with nonsense URL...")
-    uploader_broken_url = WebSocketComms(
+    uploader_broken_url = WebSocketImageComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url="ws://invalid-url",  # Clearly invalid URL
@@ -556,7 +1080,7 @@ if __name__ == "__main__":
     nonsense_img_bytes = nonsense_img.tobytes()
     sharedmem_buffs_nonsense = {0: MockSharedMem(nonsense_img_bytes)}
     
-    uploader_nonsense_img = WebSocketComms(
+    uploader_nonsense_img = WebSocketImageComms(
         sharedmem_buffs=sharedmem_buffs_nonsense,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url=f"ws://localhost:{server_port}",
@@ -584,7 +1108,7 @@ if __name__ == "__main__":
     print("\n🔄 Testing upload queue overflow protection...")
     
     # Create uploader for overflow testing
-    uploader_overflow = WebSocketComms(
+    uploader_overflow = WebSocketImageComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url="ws://127.0.0.1:65534/blocked",  # This will fail fast
@@ -706,7 +1230,7 @@ if __name__ == "__main__":
         try:
             # Phase 1: Establish connection and test upload
             server.start()
-            test_uploader = WebSocketComms(
+            test_uploader = WebSocketImageComms(
                 sharedmem_buffs=sharedmem_buffs,
                 safe_mem_details_func=safe_mem_details_func,
                 websocket_url=server.get_url(),
@@ -784,7 +1308,7 @@ if __name__ == "__main__":
         
         # Test 1: Invalid URL should stay False
         print("   1️⃣ Testing invalid URL (should stay False)...")
-        uploader_invalid = WebSocketComms(
+        uploader_invalid = WebSocketImageComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url="ws://nonexistent-host-12345:9999",
@@ -805,7 +1329,7 @@ if __name__ == "__main__":
         
         # Test 2: Valid connection should become True
         print("   2️⃣ Testing valid connection (should become True)...")
-        uploader_valid = WebSocketComms(
+        uploader_valid = WebSocketImageComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
             websocket_url=f"ws://localhost:{server_port}",

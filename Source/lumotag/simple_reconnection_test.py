@@ -9,7 +9,7 @@ import time
 import threading
 import subprocess
 import sys
-from comms import WebSocketComms
+from comms import WebSocketImageComms
 from my_collections import SharedMem_ImgTicket
 import numpy as np
 
@@ -50,7 +50,7 @@ def test_reconnection_behavior():
     
     # Create uploader pointing to non-existent server
     print("1️⃣ Creating uploader with unreachable server")
-    uploader = WebSocketComms(
+    uploader = WebSocketImageComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url="ws://localhost:65533",  # Non-existent server
@@ -92,7 +92,7 @@ def test_thread_restart_timing():
     
     sharedmem_buffs, safe_mem_details_func, embedded_id = create_test_setup()
     
-    uploader = WebSocketComms(
+    uploader = WebSocketImageComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
         websocket_url="ws://localhost:65532",  # Another non-existent server
