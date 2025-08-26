@@ -14,6 +14,11 @@ from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
 from lumotag_events import UploadRequest
+
+import lumotag_events
+import inspect
+from pydantic import BaseModel
+        
 # UploadResult removed - we no longer track upload results
 # Network failures are expected and ignored, encoding failures crash immediately
 
@@ -369,10 +374,7 @@ class WebSocketEventsComms:
 
     def _get_event_types(self):
         """Dynamically get all Pydantic model classes from lumotag_events module (called once at startup)"""
-        import lumotag_events
-        import inspect
-        from pydantic import BaseModel
-        
+
         event_types = []
         for _, obj in inspect.getmembers(lumotag_events):
             if (inspect.isclass(obj) and 
@@ -447,23 +449,7 @@ class WebSocketEventsComms:
             print(f"💥 Raw message: {message_json}")
             raise RuntimeError(f"Failed to parse incoming message: {e}") from e
 
-    async def _send_event(self, websocket, event):
-        """Send a single event through the websocket. Raises exceptions on errors."""
-        # Serialize event to JSON - CRASH on serialization failure
-        try:
-            event_dict = event.model_dump()
-            # The event_type is now included in the data itself
-            message = {
-                "type": "event",
-                "data": event_dict,
-                "timestamp": time.time()
-            }
-            message_json = json.dumps(message)
-        except Exception as e:
-            raise RuntimeError(f"Event serialization failed: {e}") from e
 
-        # Send the message
-        await websocket.send(message_json)
 
     def _worker_loop(self) -> None:
         loop = asyncio.new_event_loop()
@@ -495,67 +481,92 @@ class WebSocketEventsComms:
                     self._is_connected = True
                     
                     try:
-                        # Create tasks for concurrent send/receive
-                        send_task = None
+                        # Always have a receive task running
                         receive_task = asyncio.create_task(websocket.recv())
                         
                         while True:  # Message processing loop
-                            # Handle sending if we have an event to send
-                            if send_task is None:
-                                # Check for events to send (non-blocking)
-                                try:
+                            # Check for events to send (non-blocking)
+                            events_to_send = []
+                            try:
+                                # Batch up to 5 events for efficiency (smaller batch for better responsiveness)
+                                while len(events_to_send) < 5:
                                     event = self._send_q.get_nowait()
-                                    send_task = asyncio.create_task(self._send_event(websocket, event))
-                                except threading_queue.Empty:
-                                    pass  # No events to send right now
+                                    events_to_send.append(event)
+                            except threading_queue.Empty:
+                                pass  # No events to send right now
                             
-                            # Wait for either send completion or incoming message
-                            tasks = [receive_task]
-                            if send_task is not None:
-                                tasks.append(send_task)
-                            
-                            done, pending = await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-                            
-                            # Handle completed tasks
-                            for task in done:
-                                if task == send_task:
-                                    # Send completed
+                            # Create send tasks if we have events (minimal task overhead)
+                            send_tasks = []
+                            if events_to_send:
+                                for event in events_to_send:
                                     try:
-                                        await task  # Re-raise any exceptions
-                                        send_task = None  # Ready for next send
-                                    except (websockets.exceptions.WebSocketException, 
-                                            websockets.exceptions.ConnectionClosed,
-                                            ConnectionRefusedError, 
-                                            OSError):
-                                        # Network issues - put event back and break
-                                        event = task.get_coro().cr_frame.f_locals.get('event')
-                                        if event:
-                                            self._send_q.put_nowait(event)
-                                        self._is_connected = False
-                                        # Cancel pending tasks
-                                        for p in pending:
-                                            p.cancel()
-                                        break
-                                        
-                                elif task == receive_task:
-                                    # Receive completed
-                                    try:
-                                        message = await task
-                                        self._handle_received_message(message)
-                                        # Create new receive task for next message
-                                        receive_task = asyncio.create_task(websocket.recv())
-                                    except websockets.exceptions.ConnectionClosed:
-                                        # Connection closed - break to trigger reconnection
-                                        self._is_connected = False
-                                        # Cancel pending tasks
-                                        for p in pending:
-                                            p.cancel()
-                                        break
+                                        # Pre-serialize to catch errors early
+                                        event_dict = event.model_dump()
+                                        message = {
+                                            "type": "event",
+                                            "data": event_dict,
+                                            "timestamp": time.time()
+                                        }
+                                        message_json = json.dumps(message)
+                                        # Create lightweight send task
+                                        send_task = asyncio.create_task(websocket.send(message_json))
+                                        send_tasks.append((send_task, event))
                                     except Exception as e:
-                                        # Other receive errors - log and continue
-                                        print(f"⚠️ WebSocket receive error: {e}")
-                                        # Create new receive task to continue listening
-                                        receive_task = asyncio.create_task(websocket.recv())
+                                        # Serialization errors - crash immediately
+                                        raise RuntimeError(f"Event serialization failed: {e}") from e
+                            
+                            # Wait for EITHER sends to complete OR incoming message
+                            all_tasks = [receive_task] + [task for task, _ in send_tasks]
+                            
+                            if all_tasks:
+                                done, pending = await asyncio.wait(all_tasks, return_when=asyncio.FIRST_COMPLETED)
+                                
+                                # Handle completed tasks
+                                for task in done:
+                                    if task == receive_task:
+                                        # Incoming message received
+                                        try:
+                                            message = await task
+                                            self._handle_received_message(message)
+                                            # Create new receive task immediately
+                                            receive_task = asyncio.create_task(websocket.recv())
+                                        except websockets.exceptions.ConnectionClosed:
+                                            # Connection closed - break to trigger reconnection
+                                            self._is_connected = False
+                                            # Cancel all pending tasks
+                                            for p in pending:
+                                                p.cancel()
+                                            break
+                                        except Exception as e:
+                                            # Other receive errors - log and continue
+                                            print(f"⚠️ WebSocket receive error: {e}")
+                                            # Create new receive task
+                                            receive_task = asyncio.create_task(websocket.recv())
+                                    
+                                    else:
+                                        # Send task completed - find which event it was
+                                        for send_task, event in send_tasks:
+                                            if task == send_task:
+                                                try:
+                                                    await task  # Re-raise any send errors
+                                                except (websockets.exceptions.WebSocketException,
+                                                        websockets.exceptions.ConnectionClosed,
+                                                        ConnectionRefusedError,
+                                                        OSError):
+                                                    # Network error - put event back and break
+                                                    self._send_q.put_nowait(event)
+                                                    self._is_connected = False
+                                                    # Cancel all pending tasks
+                                                    for p in pending:
+                                                        p.cancel()
+                                                    break
+                                                break
+                                        else:
+                                            # Connection broken during sends
+                                            break
+                            else:
+                                # No tasks - small yield to prevent busy loop
+                                await asyncio.sleep(0.001)
                     finally:
                         # Always mark as disconnected when exiting the message processing loop
                         self._is_connected = False
