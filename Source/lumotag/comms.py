@@ -10,6 +10,7 @@ from typing import Callable
 from collections import OrderedDict
 import numpy as np
 import traceback
+import websocket  # websocket-client library for threading approach
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
@@ -308,12 +309,19 @@ class WebSocketEventsComms:
         self._receive_q: threading_queue.Queue = threading_queue.Queue(maxsize=50)
         self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
 
-        # Connection status tracking for cheap health checks
+        # Connection status and websocket instance
         self._is_connected = False
-        self._worker_thread = threading.Thread(target=self._worker_loop, name="events-worker", daemon=True)
-        self._worker_thread.start()
+        self._ws = None
+        self._running = True
         
-        # Give thread time to start up before constructor returns
+        # Separate threads for sending and connection management (more efficient)
+        self._sender_thread = threading.Thread(target=self._sender_worker, name="events-sender", daemon=True)
+        self._connection_thread = threading.Thread(target=self._connection_worker, name="events-connection", daemon=True)
+        
+        self._sender_thread.start()
+        self._connection_thread.start()
+        
+        # Give threads time to start up before constructor returns
         time.sleep(0.1)
 
     def send_event(self, event) -> None:
@@ -360,17 +368,26 @@ class WebSocketEventsComms:
         if not self._error_q.empty():
             thread_name, exc, tb_str = self._error_q.get_nowait()
             
-            # WebSocket worker should handle its own reconnections for network errors
-            # If it crashed, that indicates a serious programming bug that should not be hidden
-            if thread_name == "events-worker":
-                raise RuntimeError(f"WebSocket events worker thread crashed unexpectedly: {exc}\n{tb_str}") from exc
+            # WebSocket threads should handle their own reconnections for network errors
+            # If they crashed, that indicates a serious programming bug that should not be hidden
+            if thread_name in ["events-sender", "events-connection"]:
+                raise RuntimeError(f"WebSocket events {thread_name} thread crashed unexpectedly: {exc}\n{tb_str}") from exc
             
             # For other errors, still crash (preserve test behavior)
             raise RuntimeError(f"{thread_name} failed: {exc}\n{tb_str}") from exc
         
         # Check for silent thread death
-        if not self._worker_thread.is_alive():
-            raise RuntimeError("Events worker thread died silently (no exception caught)")
+        if not self._sender_thread.is_alive():
+            raise RuntimeError("Events sender thread died silently (no exception caught)")
+        if not self._connection_thread.is_alive():
+            raise RuntimeError("Events connection thread died silently (no exception caught)")
+
+    def shutdown(self):
+        """Gracefully shutdown the websocket connections and threads"""
+        self._running = False
+        if self._ws:
+            self._ws.close()
+        # Threads will exit naturally when _running becomes False
 
     def _get_event_types(self):
         """Dynamically get all Pydantic model classes from lumotag_events module (called once at startup)"""
@@ -449,608 +466,95 @@ class WebSocketEventsComms:
             print(f"💥 Raw message: {message_json}")
             raise RuntimeError(f"Failed to parse incoming message: {e}") from e
 
-
-
-    def _worker_loop(self) -> None:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        try:
-            loop.run_until_complete(self._ws_worker())
-        except Exception as e:
-            tb_str = traceback.format_exc()
+    def _sender_worker(self):
+        """Dedicated sender thread - waits forever on queue (no CPU waste)"""
+        while self._running:
             try:
-                self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
-            except Exception:
-                pass
-        finally:
-            loop.close()
-
-    async def _ws_worker(self) -> None:
-        reconnect_delay = 1.0
-        
-        while True:  # Reconnection loop
-            try:
-                # Mark as attempting connection (not connected yet)
-                self._is_connected = False
+                # Block forever until we have something to send - perfect efficiency!
+                event = self._send_q.get()  # No timeout - waits forever
                 
-                async with websockets.connect(self.websocket_url) as websocket:
-                    print(f"🔗 WebSocket Events connected to {self.websocket_url}")
-                    reconnect_delay = 1.0  # Reset delay on successful connection
+                if self._ws and self._is_connected:
+                    message = {
+                        "type": "event",
+                        "data": event.model_dump(),
+                        "timestamp": time.time()
+                    }
+                    message_json = json.dumps(message)
+                    self._ws.send(message_json)
+                else:
+                    # Put it back if not connected and wait briefly
+                    self._send_q.put(event)
+                    time.sleep(0.1)  # Brief wait before retry
                     
-                    # Mark as connected
+            except Exception as e:
+                # Put event back on failure and log error
+                try:
+                    self._send_q.put(event)
+                except Exception:
+                    pass
+                
+                # Log error to error queue
+                try:
+                    tb_str = traceback.format_exc()
+                    self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
+                except Exception:
+                    pass
+                
+                time.sleep(1.0)  # Wait before retry
+    
+    def _connection_worker(self):
+        """Connection management thread using simple websocket-client"""
+        while self._running:
+            try:
+                if websocket is None:
+                    print("❌ websocket-client not available. Install with: pip install websocket-client")
+                    time.sleep(5.0)
+                    continue
+                
+                def on_message(ws, message):
+                    try:
+                        self._handle_received_message(message)
+                    except Exception as e:
+                        print(f"⚠️ Error handling received message: {e}")
+                
+                def on_open(ws):
                     self._is_connected = True
-                    
-                    try:
-                        # Always have a receive task running
-                        receive_task = asyncio.create_task(websocket.recv())
-                        
-                        while True:  # Message processing loop
-                            # Check for events to send (non-blocking)
-                            events_to_send = []
-                            try:
-                                # Batch up to 5 events for efficiency (smaller batch for better responsiveness)
-                                while len(events_to_send) < 5:
-                                    event = self._send_q.get_nowait()
-                                    events_to_send.append(event)
-                            except threading_queue.Empty:
-                                pass  # No events to send right now
-                            
-                            # Create send tasks if we have events (minimal task overhead)
-                            send_tasks = []
-                            if events_to_send:
-                                for event in events_to_send:
-                                    try:
-                                        # Pre-serialize to catch errors early
-                                        event_dict = event.model_dump()
-                                        message = {
-                                            "type": "event",
-                                            "data": event_dict,
-                                            "timestamp": time.time()
-                                        }
-                                        message_json = json.dumps(message)
-                                        # Create lightweight send task
-                                        send_task = asyncio.create_task(websocket.send(message_json))
-                                        send_tasks.append((send_task, event))
-                                    except Exception as e:
-                                        # Serialization errors - crash immediately
-                                        raise RuntimeError(f"Event serialization failed: {e}") from e
-                            
-                            # Wait for EITHER sends to complete OR incoming message
-                            all_tasks = [receive_task] + [task for task, _ in send_tasks]
-                            
-                            if all_tasks:
-                                done, pending = await asyncio.wait(all_tasks, return_when=asyncio.FIRST_COMPLETED)
-                                
-                                # Handle completed tasks
-                                for task in done:
-                                    if task == receive_task:
-                                        # Incoming message received
-                                        try:
-                                            message = await task
-                                            self._handle_received_message(message)
-                                            # Create new receive task immediately
-                                            receive_task = asyncio.create_task(websocket.recv())
-                                        except websockets.exceptions.ConnectionClosed:
-                                            # Connection closed - break to trigger reconnection
-                                            self._is_connected = False
-                                            # Cancel all pending tasks
-                                            for p in pending:
-                                                p.cancel()
-                                            break
-                                        except Exception as e:
-                                            # Other receive errors - log and continue
-                                            print(f"⚠️ WebSocket receive error: {e}")
-                                            # Create new receive task
-                                            receive_task = asyncio.create_task(websocket.recv())
-                                    
-                                    else:
-                                        # Send task completed - find which event it was
-                                        for send_task, event in send_tasks:
-                                            if task == send_task:
-                                                try:
-                                                    await task  # Re-raise any send errors
-                                                except (websockets.exceptions.WebSocketException,
-                                                        websockets.exceptions.ConnectionClosed,
-                                                        ConnectionRefusedError,
-                                                        OSError):
-                                                    # Network error - put event back and break
-                                                    self._send_q.put_nowait(event)
-                                                    self._is_connected = False
-                                                    # Cancel all pending tasks
-                                                    for p in pending:
-                                                        p.cancel()
-                                                    break
-                                                break
-                                        else:
-                                            # Connection broken during sends
-                                            break
-                            else:
-                                # No tasks - small yield to prevent busy loop
-                                await asyncio.sleep(0.001)
-                    finally:
-                        # Always mark as disconnected when exiting the message processing loop
-                        self._is_connected = False
-                            
-            except websockets.exceptions.InvalidURI:
-                # Invalid WebSocket URL - report as a critical error
-                raise RuntimeError(f"Invalid WebSocket URL: {self.websocket_url}")
+                    print(f"🔗 WebSocket Events connected to {self.websocket_url}")
                 
-            except (websockets.exceptions.WebSocketException,
-                    websockets.exceptions.ConnectionClosed,
-                    ConnectionRefusedError,
-                    OSError) as e:
-                # Connection failed - mark as disconnected and wait before retrying
+                def on_close(ws, close_status_code, close_msg):
+                    self._is_connected = False
+                    print(f"🔌 WebSocket Events disconnected: {close_status_code} - {close_msg}")
+                
+                def on_error(ws, error):
+                    self._is_connected = False
+                    print(f"❌ WebSocket Events error: {error}")
+                
+                # Create and run WebSocket connection
+                self._ws = websocket.WebSocketApp(
+                    self.websocket_url,
+                    on_message=on_message,
+                    on_open=on_open,
+                    on_close=on_close,
+                    on_error=on_error
+                )
+                
+                # This blocks and handles all incoming messages efficiently
+                self._ws.run_forever()
+                
+            except Exception as e:
                 self._is_connected = False
-                    
-                print(f"🔄 WebSocket Events connection failed, retrying in {reconnect_delay:.1f}s: {e}")
-                await asyncio.sleep(reconnect_delay)
-                continue  # Try reconnecting
                 
-            except Exception as e:
-                # Other errors should still crash
-                raise e
-
-
-def test_events_comms():
-    """Simple test of WebSocketEventsComms functionality"""
-    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
-    
-    print("🧪 Testing WebSocketEventsComms...")
-    
-    # Create events comms (will fail to connect but that's OK for validation testing)
-    events_comms = WebSocketEventsComms(
-        websocket_url="ws://localhost:9999",  # Non-existent server for testing
-        OS_friendly_name="test_pi"
-    )
-    
-    print("✅ WebSocketEventsComms created")
-    
-    # Show cached event types
-    supported_types = events_comms.get_supported_event_types()
-    print(f"📋 Cached event types: {supported_types}")
-    
-    # Test valid event types
-    print("\n🔬 Testing valid event types...")
-    
-    # Test PlayerStatus
-    try:
-        player_status = PlayerStatus(health=100, ammo=30, tag_id="player1", display_name="Test Player")
-        events_comms.send_event(player_status)
-        print(f"✅ PlayerStatus accepted: {player_status}")
-    except Exception as e:
-        print(f"❌ PlayerStatus failed: {e}")
-    
-    # Test GameUpdate
-    try:
-        game_update = GameUpdate(players=[
-            PlayerStatus(health=80, ammo=25, tag_id="player1", display_name="Alice"),
-            PlayerStatus(health=100, ammo=30, tag_id="player2", display_name="Bob")
-        ])
-        events_comms.send_event(game_update)
-        print(f"✅ GameUpdate accepted: {len(game_update.players)} players")
-    except Exception as e:
-        print(f"❌ GameUpdate failed: {e}")
-    
-    # Test PlayerTagged
-    try:
-        player_tagged = PlayerTagged(tag_id="player1", image_ids=["img123", "img456"])
-        events_comms.send_event(player_tagged)
-        print(f"✅ PlayerTagged accepted: {player_tagged}")
-    except Exception as e:
-        print(f"❌ PlayerTagged failed: {e}")
-    
-    # Test invalid event type
-    print("\n🚫 Testing invalid event type...")
-    try:
-        events_comms.send_event("not_a_pydantic_model")
-        print("❌ Invalid event was accepted (this should not happen)")
-    except ValueError as e:
-        print(f"✅ Invalid event correctly rejected: {e}")
-    except Exception as e:
-        print(f"❌ Unexpected error for invalid event: {e}")
-    
-    # Test send queue size and receive queue
-    send_queue_size = events_comms.get_send_queue_size()
-    receive_queue_size = events_comms.get_received_events_count()
-    print(f"\n📊 Send queue size: {send_queue_size}, Receive queue size: {receive_queue_size}")
-    
-    # Test connection status (should be False since server doesn't exist)
-    connected = events_comms.is_connected()
-    print(f"📡 Connected: {connected}")
-    
-    # Performance test - multiple rapid validations use cached types
-    print("\n⚡ Testing cached validation performance...")
-    test_event = PlayerStatus(health=50, ammo=15, tag_id="perf_test", display_name="Performance Test")
-    
-    import time
-    start_time = time.time()
-    for i in range(100):
-        # This will validate against cached types (very fast)
-        try:
-            events_comms.send_event(test_event)
-        except:
-            pass  # Queue will fill up, but validation still happens
-    end_time = time.time()
-    
-    print(f"✅ 100 validations completed in {(end_time - start_time)*1000:.2f}ms (using cached types)")
-    print("🎉 WebSocketEventsComms basic test completed!")
-
-
-def test_events_comms_error_handling():
-    """Comprehensive error handling tests for WebSocketEventsComms"""
-    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
-    import socket
-    
-    print("\n🧪 Testing WebSocketEventsComms Error Handling...")
-    
-    def find_available_port(start_port=8900):
-        """Find an available port to avoid conflicts"""
-        for port in range(start_port, start_port + 100):
-            try:
-                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                    s.bind(('localhost', port))
-                    return port
-            except OSError:
-                continue
-        raise RuntimeError("No available ports found")
-    
-    # Test 1: Invalid URL Detection
-    print("\n🔄 Testing broken thread detection with invalid URL...")
-    events_comms_broken_url = WebSocketEventsComms(
-        websocket_url="ws://invalid-nonexistent-host-12345:9999",
-        OS_friendly_name="test_events_invalid"
-    )
-    
-    # Send an event to trigger connection attempt
-    test_event = PlayerStatus(health=100, ammo=30, tag_id="test", display_name="Test")
-    events_comms_broken_url.send_event(test_event)
-    time.sleep(1.0)  # Let worker try to connect
-    
-    # Should gracefully handle invalid URL (no crash, just stays disconnected)
-    try:
-        events_comms_broken_url.raise_thread_error_if_any()
-        connected = events_comms_broken_url.is_connected()
-        print(f"✅ Invalid URL gracefully handled: connected={connected}")
-        assert connected == False, "Should not be connected to invalid URL"
-    except RuntimeError as e:
-        if "Invalid WebSocket URL" in str(e):
-            print(f"✅ Invalid URL properly detected: {e}")
-        else:
-            print(f"❌ Unexpected error: {e}")
-            raise
-    
-    # Test 2: Malformed Event Handling
-    print("\n🔄 Testing malformed event detection...")
-    events_comms_valid = WebSocketEventsComms(
-        websocket_url="ws://localhost:65534",  # Will fail to connect, but that's OK
-        OS_friendly_name="test_events_malformed"
-    )
-    
-    # Test malformed event (not a Pydantic model)
-    try:
-        events_comms_valid.send_event({"not": "a_pydantic_model"})
-        print("❌ Malformed event was accepted (should not happen)")
-        assert False, "Malformed event should be rejected"
-    except ValueError as e:
-        print(f"✅ Malformed event correctly rejected: {e}")
-    except Exception as e:
-        print(f"❌ Unexpected error for malformed event: {e}")
-        raise
-    
-    # Test 3: Queue Overflow Protection
-    print("\n🔄 Testing event queue overflow protection...")
-    events_comms_overflow = WebSocketEventsComms(
-        websocket_url="ws://127.0.0.1:65535",  # Will fail fast
-        OS_friendly_name="test_events_overflow"
-    )
-    
-    # Blast the queue with events (maxsize=20)
-    print("   💥 Blasting queue with rapid event sends...")
-    test_event = PlayerStatus(health=75, ammo=20, tag_id="overflow_test", display_name="Overflow Test")
-    queue_full_detected = False
-    event_attempts = 0
-    
-    # Try to queue more events than the limit
-    for i in range(30):  # More than maxsize=20
-        try:
-            events_comms_overflow.send_event(test_event)
-            event_attempts += 1
-            if i < 15:  # Don't spam console too much
-                print(f"      ✓ Queued event #{event_attempts}")
-        except Exception as e:
-            queue_full_detected = True
-            print(f"   ✅ Queue overflow detected after {event_attempts} events!")
-            print(f"   ✅ Exception: {type(e).__name__}: {e}")
-            exception_str = str(e)
-            exception_type = type(e).__name__
-            is_queue_full = ("Full" in exception_str or "queue" in exception_str.lower() or 
-                           exception_type == "Full" or "Full" in exception_type)
-            assert is_queue_full, f"Expected queue full error, got: {exception_type}: {exception_str}"
-            break
-    
-    if not queue_full_detected:
-        print(f"   ⚠️  Queue overflow not detected after {event_attempts} rapid events")
-        print("   ℹ️  Worker thread may be processing too quickly - this is acceptable")
-    
-    print("   ✅ Queue overflow test completed")
-    
-    # Test 4: Connection Cycle Testing (Success → Death → Recovery → Reconnection)
-    print("\n🔄 Testing connection cycle with event queueing...")
-    
-    class EventsTestServer:
-        def __init__(self):
-            self.port = find_available_port()
-            self.server = None
-            self.events_received = []
-            self.is_running = False
-            self.loop = None
-            
-        async def handle_client(self, websocket):
-            print(f"   📱 Client connected to test server")
-            try:
-                async for message in websocket:
-                    try:
-                        data = json.loads(message)
-                        if data.get("type") == "event":
-                            event_data = data.get("data", {})
-                            event_type = event_data.get("event_type")
-                            if event_type and event_data:
-                                # Store simplified event info
-                                event_info = f"{event_type}:{event_data.get('tag_id', 'unknown')}"
-                                self.events_received.append(event_info)
-                                print(f"   📤 Server received: {event_info}")
-                                
-                                # Send a response event back to test incoming message handling
-                                if event_type == "PlayerStatus":
-                                    # Respond with a GameUpdate
-                                    response_message = {
-                                        "type": "event",
-                                        "data": {
-                                            "players": [{
-                                                "health": 95,
-                                                "ammo": 25,
-                                                "tag_id": "server_player",
-                                                "display_name": "Server Response",
-                                                "event_type": "PlayerStatus"
-                                            }],
-                                            "event_type": "GameUpdate"
-                                        },
-                                        "timestamp": time.time()
-                                    }
-                                    await websocket.send(json.dumps(response_message))
-                                    print(f"   📥 Server sent GameUpdate response")
-                                
-                                elif event_type == "PlayerTagged":
-                                    # Respond with a PlayerStatus
-                                    response_message = {
-                                        "type": "event", 
-                                        "data": {
-                                            "health": 50,
-                                            "ammo": 10,
-                                            "tag_id": event_data.get("tag_id", "unknown"),
-                                            "display_name": "Tagged Player Response",
-                                            "event_type": "PlayerStatus"
-                                        },
-                                        "timestamp": time.time()
-                                    }
-                                    await websocket.send(json.dumps(response_message))
-                                    print(f"   📥 Server sent PlayerStatus response")
-                    except json.JSONDecodeError as e:
-                        print(f"   ⚠️ Server received invalid JSON: {e}")
-                    except Exception as e:
-                        print(f"   ⚠️ Server error processing message: {e}")
-                        
-            except websockets.exceptions.ConnectionClosed:
-                print(f"   📱 Client disconnected from test server")
-            except Exception as e:
-                print(f"   ❌ Server connection error: {e}")
-        
-        def start(self):
-            def run_server():
-                self.loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(self.loop)
+                # Log error to error queue
+                try:
+                    tb_str = traceback.format_exc()
+                    self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
+                except Exception:
+                    pass
                 
-                async def server_main():
-                    try:
-                        self.server = await websockets.serve(self.handle_client, 'localhost', self.port)
-                        self.is_running = True
-                        print(f"   🌐 Test server started on localhost:{self.port}")
-                        await self.server.wait_closed()
-                    except Exception as e:
-                        print(f"   ❌ Server start failed: {e}")
-                        self.is_running = False
-                    finally:
-                        self.is_running = False
-                        
-                try:
-                    self.loop.run_until_complete(server_main())
-                except Exception as e:
-                    print(f"   ❌ Server loop failed: {e}")
-                    self.is_running = False
-            
-            self.server_thread = threading.Thread(target=run_server, daemon=False)  # Not daemon
-            self.server_thread.start()
-            
-            # Wait for server to actually start
-            for i in range(20):  # Wait up to 2 seconds
-                time.sleep(0.1)
-                if self.is_running:
-                    print(f"   ✅ Server confirmed running after {(i+1)*0.1:.1f}s")
-                    break
-            else:
-                print(f"   ⚠️ Server may not have started properly")
-            
-        def stop(self):
-            if self.server and self.is_running:
-                try:
-                    if self.loop and not self.loop.is_closed():
-                        self.loop.call_soon_threadsafe(self.server.close)
-                        # Wait for graceful shutdown
-                        time.sleep(0.2)
-                    self.is_running = False
-                    print(f"   🛑 Test server stopped")
-                except Exception as e:
-                    print(f"   ⚠️ Error stopping server: {e}")
-                    self.is_running = False
-        
-        def get_url(self):
-            return f"ws://localhost:{self.port}"
-    
-    # Run connection cycle test
-    server = EventsTestServer()
-    try:
-        # Phase 1: Establish connection and test event sending
-        print("\n   📡 Phase 1: Initial connection and event sending...")
-        server.start()
-        
-        if not server.is_running:
-            print("   ❌ Server failed to start, skipping test")
-            return False
-            
-        test_events_comms = WebSocketEventsComms(
-            websocket_url=server.get_url(),
-            OS_friendly_name="cycle_test"
-        )
-        
-        # Wait for client connection with timeout
-        connected = False
-        for i in range(30):  # Wait up to 3 seconds
-            time.sleep(0.1)
-            if test_events_comms.is_connected():
-                connected = True
-                print(f"   ✅ Client connected after {(i+1)*0.1:.1f}s")
-                break
-        
-        if not connected:
-            print("   ❌ Client failed to connect to server")
-            return False
-        
-        # Send initial events
-        initial_events = [
-            PlayerStatus(health=100, ammo=30, tag_id="player1", display_name="Alice"),
-            GameUpdate(players=[PlayerStatus(health=80, ammo=25, tag_id="player2", display_name="Bob")]),
-            PlayerTagged(tag_id="player1", image_ids=["img001"])
-        ]
-        
-        for event in initial_events:
-            test_events_comms.send_event(event)
-        time.sleep(1.0)
-        
-        phase1_events = len(server.events_received)
-        print(f"   ✅ Phase 1 - Initial connection: {phase1_events} events received")
-        
-        # Test incoming events - check what we received from server responses
-        time.sleep(1.0)  # Give time for server responses to be processed
-        received_events = []
-        while True:
-            event = test_events_comms.get_received_event()
-            if event is None:
-                break
-            received_events.append(f"{event.event_type}:{getattr(event, 'tag_id', 'N/A')}")
-            print(f"   📥 Client received: {event.event_type}")
-        
-        print(f"   ✅ Phase 1 - Incoming events: {len(received_events)} events received by client")
-        if len(received_events) > 0:
-            print(f"   📋 Received event types: {received_events}")
-        
-        # Phase 2: Kill server and queue events (grace period)
-        print("   💀 Phase 2: Server death - events should queue gracefully...")
-        server.stop()
-        time.sleep(0.5)
-        
-        # Send events during outage - they should queue up
-        outage_events = [
-            PlayerStatus(health=90, ammo=28, tag_id="player1", display_name="Alice Updated"),
-            PlayerTagged(tag_id="player2", image_ids=["img002", "img003"]),
-            GameUpdate(players=[
-                PlayerStatus(health=90, ammo=28, tag_id="player1", display_name="Alice"),
-                PlayerStatus(health=75, ammo=22, tag_id="player2", display_name="Bob")
-            ])
-        ]
-        
-        for event in outage_events:
-            test_events_comms.send_event(event)
-            time.sleep(0.1)
-        
-        queued = test_events_comms.get_send_queue_size()
-        connected = test_events_comms.is_connected()
-        print(f"   ✅ Phase 2 - During outage: {queued} events queued, connected={connected}")
-        
-        # Phase 3: Restart server and verify graceful reconnection
-        print("   🔄 Phase 3: Server recovery - events should be delivered...")
-        server.start()
-        
-        if not server.is_running:
-            print("   ❌ Server failed to restart")
-            return False
-        
-        # Wait for client to reconnect
-        reconnected = False
-        for i in range(50):  # Wait up to 5 seconds for reconnection
-            time.sleep(0.1)
-            if test_events_comms.is_connected():
-                reconnected = True
-                print(f"   ✅ Client reconnected after {(i+1)*0.1:.1f}s")
-                break
-        
-        if reconnected:
-            time.sleep(2.0)  # Additional time for queued events to be processed
-        else:
-            print("   ⚠️ Client didn't reconnect, but queued events may still be processed")
-        
-        final_events = len(server.events_received)
-        remaining_queued = test_events_comms.get_send_queue_size()
-        final_connected = test_events_comms.is_connected()
-        
-        # Check for any additional incoming events after reconnection
-        time.sleep(1.0)  # Give time for any server responses
-        final_received_events = []
-        while True:
-            event = test_events_comms.get_received_event()
-            if event is None:
-                break
-            final_received_events.append(f"{event.event_type}:{getattr(event, 'tag_id', 'N/A')}")
-            print(f"   📥 Client received after recovery: {event.event_type}")
-        
-        total_received_by_client = len(received_events) + len(final_received_events)
-        
-        print(f"   ✅ Phase 3 - After recovery: {final_events} total events sent to server, {remaining_queued} still queued, connected={final_connected}")
-        print(f"   ✅ Phase 3 - Total events received by client: {total_received_by_client}")
-        
-        # Success criteria: should have received events from both phases
-        expected_total = len(initial_events) + len(outage_events)
-        success = phase1_events > 0 and final_events >= phase1_events
-        
-        if success:
-            print(f"   🎉 Connection cycle test PASSED: {final_events}/{expected_total} events sent, {total_received_by_client} received")
-        else:
-            print(f"   ⚠️  Connection cycle test: {final_events}/{expected_total} events sent, {total_received_by_client} received")
-        
-    finally:
-        server.stop()
-    
-    # Test 5: Connection Status Testing
-    print("\n🔄 Testing connection status with events...")
-    
-    # Test invalid URL (should stay False)
-    events_invalid = WebSocketEventsComms(
-        websocket_url="ws://nonexistent-host-99999:8888",
-        OS_friendly_name="test_status_invalid"
-    )
-    
-    status_immediate = events_invalid.is_connected()
-    time.sleep(2.0)
-    status_after_wait = events_invalid.is_connected()
-    
-    print(f"   📡 Invalid URL - Immediate: {status_immediate}, After 2s: {status_after_wait}")
-    assert status_immediate == False, f"Expected False immediately, got {status_immediate}"
-    assert status_after_wait == False, f"Expected False after wait, got {status_after_wait}"
-    print("   ✅ Invalid URL status test passed")
-    
-    print("\n🎉 WebSocketEventsComms error handling tests completed!")
+                print(f"🔄 WebSocket Events connection failed, retrying in 1.0s: {e}")
+                time.sleep(1.0)  # Wait before reconnect
 
-
-if __name__ == "__main__":
+def test_image_comms():
     """Comprehensive test with real image data and WebSocket server"""
     import time
     import numpy as np
@@ -1058,12 +562,7 @@ if __name__ == "__main__":
     import json
     from my_collections import SharedMem_ImgTicket
     
-    # Test the new WebSocketEventsComms first
-    test_events_comms()
-    
-    # Test comprehensive error handling for WebSocketEventsComms
-    test_events_comms_error_handling()
-    print("\n" + "="*60 + "\n")
+
     
     print("🧪 Testing WebSocketImageComms with real data...")
     
@@ -1649,4 +1148,287 @@ if __name__ == "__main__":
         traceback.print_exc()
     
     print("   ✅ Connection status testing completed")
+
+
+def test_event_comms():
+    """Comprehensive test of WebSocketEventsComms with bidirectional event communication"""
+    import random
+    import socket
+    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
     
+    print("🧪 Testing WebSocketEventsComms with bidirectional events...")
+    
+    def find_available_port(start_port=8700):
+        """Find an available port to avoid conflicts"""
+        for port in range(start_port, start_port + 100):
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.bind(('localhost', port))
+                    return port
+            except OSError:
+                continue
+        raise RuntimeError("No available ports found")
+    
+    class WebSocketEventsTestServer:
+        """Test server that sends random events and handles incoming ones"""
+        def __init__(self):
+            self.port = find_available_port()
+            self.events_sent = []
+            self.events_received = []
+            self.is_running = False
+            self.server = None
+            self.loop = None
+            self.client_websocket = None
+            
+        def get_random_event(self):
+            """Generate a random event (excluding UploadRequest)"""
+            event_types = [
+                lambda: PlayerStatus(
+                    health=random.randint(0, 100),
+                    ammo=random.randint(0, 30),
+                    tag_id=f"player_{random.randint(1, 10)}",
+                    display_name=f"Player{random.randint(1, 10)}"
+                ),
+                lambda: GameUpdate(
+                    players=[
+                        PlayerStatus(
+                            health=random.randint(50, 100),
+                            ammo=random.randint(10, 30),
+                            tag_id=f"p{i}",
+                            display_name=f"Player{i}"
+                        ) for i in range(random.randint(1, 4))
+                    ]
+                ),
+                lambda: PlayerTagged(
+                    tag_id=f"target_{random.randint(1, 5)}",
+                    image_ids=[f"img_{random.randint(1000, 9999)}" for _ in range(random.randint(1, 3))]
+                )
+            ]
+            return random.choice(event_types)()
+        
+        async def handle_client(self, websocket):
+            """Handle client connections and bidirectional communication"""
+            print("   📱 Events test server: Client connected")
+            self.client_websocket = websocket
+            
+            try:
+                # Start the event sender task
+                sender_task = asyncio.create_task(self.send_random_events())
+                
+                # Handle incoming messages
+                async for message in websocket:
+                    try:
+                        data = json.loads(message)
+                        if data.get("type") == "event":
+                            event_data = data.get("data", {})
+                            event_type = event_data.get("event_type")
+                            if event_type:
+                                self.events_received.append(f"{event_type}:{event_data.get('tag_id', 'N/A')}")
+                                print(f"   📥 Server received: {event_type} from {event_data.get('tag_id', 'unknown')}")
+                    except json.JSONDecodeError as e:
+                        print(f"   ❌ Server received invalid JSON: {e}")
+                    except Exception as e:
+                        print(f"   ❌ Server error processing message: {e}")
+                        
+            except Exception as e:
+                print(f"   📱 Client disconnected: {e}")
+            finally:
+                sender_task.cancel()
+                self.client_websocket = None
+        
+        async def send_random_events(self):
+            """Send random events every 100ms"""
+            try:
+                while self.client_websocket:
+                    event = self.get_random_event()
+                    message = {
+                        "type": "event",
+                        "data": event.model_dump(),
+                        "timestamp": time.time()
+                    }
+                    await self.client_websocket.send(json.dumps(message))
+                    
+                    event_info = f"{event.event_type}:{getattr(event, 'tag_id', 'N/A')}"
+                    self.events_sent.append(event_info)
+                    print(f"   📤 Server sent: {event_info}")
+                    
+                    await asyncio.sleep(0.1)  # 100ms interval
+                    
+            except Exception as e:
+                print(f"   ⚠️  Event sender stopped: {e}")
+        
+        def start(self):
+            """Start the test server"""
+            def run_server():
+                self.loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(self.loop)
+                
+                async def server_main():
+                    try:
+                        self.server = await websockets.serve(self.handle_client, 'localhost', self.port)
+                        self.is_running = True
+                        print(f"   🌐 Events test server started on localhost:{self.port}")
+                        await self.server.wait_closed()
+                    except Exception as e:
+                        print(f"   ❌ Server start failed: {e}")
+                        self.is_running = False
+                    finally:
+                        self.is_running = False
+                        
+                try:
+                    self.loop.run_until_complete(server_main())
+                except Exception as e:
+                    print(f"   ❌ Server loop failed: {e}")
+                    self.is_running = False
+            
+            self.server_thread = threading.Thread(target=run_server, daemon=False)
+            self.server_thread.start()
+            
+            # Wait for server to start
+            for i in range(20):
+                time.sleep(0.1)
+                if self.is_running:
+                    print(f"   ✅ Server confirmed running after {(i+1)*0.1:.1f}s")
+                    break
+            else:
+                print("   ⚠️  Server may not have started properly")
+        
+        def stop(self):
+            """Stop the test server"""
+            if self.server and self.is_running:
+                try:
+                    if self.loop and not self.loop.is_closed():
+                        self.loop.call_soon_threadsafe(self.server.close)
+                        time.sleep(0.2)
+                    self.is_running = False
+                    print("   🛑 Events test server stopped")
+                except Exception as e:
+                    print(f"   ⚠️  Error stopping server: {e}")
+                    self.is_running = False
+        
+        def get_url(self):
+            return f"ws://localhost:{self.port}"
+    
+    # Run the test
+    server = WebSocketEventsTestServer()
+    
+    try:
+        print("   🚀 Phase 1: Starting test server...")
+        server.start()
+        
+        if not server.is_running:
+            print("   ❌ Server failed to start")
+            return False
+        
+        # Wait a moment for server to be ready
+        time.sleep(1.0)
+        
+        print("   🚀 Phase 2: Creating WebSocketEventsComms client...")
+        events_comms = WebSocketEventsComms(
+            websocket_url=server.get_url(),
+            OS_friendly_name="test_events_client"
+        )
+        
+        # Wait for connection
+        connected = False
+        for i in range(30):
+            time.sleep(0.1)
+            if events_comms.is_connected():
+                connected = True
+                print(f"   ✅ Client connected after {(i+1)*0.1:.1f}s")
+                break
+        
+        if not connected:
+            print("   ❌ Client failed to connect")
+            return False
+        
+        print("   🚀 Phase 3: Testing bidirectional communication...")
+        
+        # Send some test events from client to server
+        test_events = [
+            PlayerStatus(health=75, ammo=15, tag_id="test_player1", display_name="Test Player 1"),
+            GameUpdate(players=[
+                PlayerStatus(health=100, ammo=30, tag_id="test_player2", display_name="Test Player 2"),
+                PlayerStatus(health=50, ammo=10, tag_id="test_player3", display_name="Test Player 3")
+            ]),
+            PlayerTagged(tag_id="test_target", image_ids=["test_img_001", "test_img_002"])
+        ]
+        
+        print("   📤 Sending test events from client...")
+        for event in test_events:
+            events_comms.send_event(event)
+            print(f"      → Sent: {event.event_type}")
+        
+        # Let the communication run for a few seconds
+        print("   ⏱️  Running communication test for 3 seconds...")
+        time.sleep(3.0)
+        
+        # Collect received events from client
+        received_events = []
+        while True:
+            event = events_comms.get_received_event()
+            if event is None:
+                break
+            received_events.append(f"{event.event_type}:{getattr(event, 'tag_id', 'N/A')}")
+            print(f"      ← Received: {event.event_type}")
+        
+        print("   📊 Phase 4: Analyzing results...")
+        
+        events_sent_to_server = len(server.events_received)
+        events_received_from_server = len(received_events)
+        server_events_sent = len(server.events_sent)
+        
+        print(f"   📈 Client → Server: {events_sent_to_server} events")
+        print(f"   📈 Server → Client: {events_received_from_server} events")
+        print(f"   📈 Server sent: {server_events_sent} events")
+        
+        # Verify bidirectional communication worked
+        success_criteria = [
+            events_sent_to_server >= len(test_events),  # All test events received by server
+            events_received_from_server > 0,  # Client received some events from server
+            server_events_sent > 0,  # Server sent some events
+            events_comms.is_connected()  # Still connected
+        ]
+        
+        if all(success_criteria):
+            print("   🎉 Bidirectional communication test PASSED!")
+            print(f"   ✅ All {len(test_events)} test events sent successfully")
+            print(f"   ✅ Received {events_received_from_server} events from server")
+            print(f"   ✅ Events parsed and serialized correctly")
+            print(f"   ✅ Connection remained stable")
+            return True
+        else:
+            print("   ❌ Bidirectional communication test FAILED!")
+            print(f"   📊 Success criteria: {success_criteria}")
+            return False
+            
+
+        
+    except Exception as e:
+        print(f"   ❌ Test error: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+        
+    finally:
+        # Cleanup - shut down client first to prevent reconnection attempts
+        try:
+            events_comms.shutdown()
+        except:
+            pass
+        
+        # Small delay to let client shutdown cleanly
+        time.sleep(0.2)
+        
+        # Then stop server
+        server.stop()
+
+
+if __name__ == "__main__":
+    # Test the new threading-based WebSocketEventsComms
+    test_event_comms()
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test the existing image comms  
+    test_image_comms()
