@@ -1151,7 +1151,8 @@ def test_image_comms():
 
 
 def test_event_comms():
-    """Comprehensive test of WebSocketEventsComms with bidirectional event communication"""
+    """Comprehensive test of WebSocketEventsComms with bidirectional event communication.
+    Raises exceptions on test failures."""
     import random
     import socket
     from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
@@ -1317,8 +1318,7 @@ def test_event_comms():
         server.start()
         
         if not server.is_running:
-            print("   ❌ Server failed to start")
-            return False
+            raise RuntimeError("Events test server failed to start")
         
         # Wait a moment for server to be ready
         time.sleep(1.0)
@@ -1339,8 +1339,7 @@ def test_event_comms():
                 break
         
         if not connected:
-            print("   ❌ Client failed to connect")
-            return False
+            raise RuntimeError("WebSocketEventsComms client failed to connect to test server")
         
         print("   🚀 Phase 3: Testing bidirectional communication...")
         
@@ -1396,11 +1395,68 @@ def test_event_comms():
             print(f"   ✅ Received {events_received_from_server} events from server")
             print(f"   ✅ Events parsed and serialized correctly")
             print(f"   ✅ Connection remained stable")
-            return True
+            
+            # Phase 5: Real game loop simulation - simultaneous send/receive
+            print("   🚀 Phase 5: Game loop simulation (simultaneous send/receive)...")
+            
+            game_loop_events_sent = 0
+            game_loop_events_received = 0
+            
+            for i in range(20):
+                # Check for incoming events (non-blocking) - simulate reading game state
+                incoming_event = events_comms.get_received_event()
+                if incoming_event:
+                    game_loop_events_received += 1
+                    print(f"      🎮 Loop {i+1}: Received {incoming_event.event_type}")
+                
+                # Send a player status update - simulate sending game state
+                player_update = PlayerStatus(
+                    health=random.randint(1, 100),
+                    ammo=random.randint(0, 30),
+                    tag_id=f"game_loop_player",
+                    display_name=f"GameLoopPlayer"
+                )
+                events_comms.send_event(player_update)
+                game_loop_events_sent += 1
+                print(f"      🎮 Loop {i+1}: Sent PlayerStatus (health={player_update.health})")
+                
+                # Simulate game loop timing (50ms = 20 FPS)
+                time.sleep(0.05)
+            
+            # Give a moment for any final events to arrive
+            time.sleep(0.2)
+            
+            # Collect any remaining events
+            while True:
+                event = events_comms.get_received_event()
+                if event is None:
+                    break
+                game_loop_events_received += 1
+                print(f"      🎮 Final: Received {event.event_type}")
+            
+            print(f"   📊 Game loop results:")
+            print(f"      📤 Sent: {game_loop_events_sent} events")
+            print(f"      📥 Received: {game_loop_events_received} events")
+            
+            # Verify game loop worked
+            game_loop_success = (
+                game_loop_events_sent == 20 and  # All sends succeeded
+                game_loop_events_received > 0 and  # Received some events during loop
+                events_comms.is_connected()  # Still connected
+            )
+            
+            if game_loop_success:
+                print("   🎉 Game loop simulation PASSED!")
+                print("   ✅ Simultaneous send/receive works perfectly")
+                print("   ✅ No blocking between send and receive operations")
+                print("   ✅ Ready for real-time game communication")
+                print("   🎉 All tests completed successfully!")
+                return
+            else:
+                raise AssertionError(f"Game loop simulation FAILED! Criteria: sent={game_loop_events_sent==20}, received={game_loop_events_received>0}, connected={events_comms.is_connected()}")
+                
         else:
-            print("   ❌ Bidirectional communication test FAILED!")
-            print(f"   📊 Success criteria: {success_criteria}")
-            return False
+            raise AssertionError(f"Bidirectional communication test FAILED! Success criteria: {success_criteria}")
             
 
         
@@ -1408,7 +1464,7 @@ def test_event_comms():
         print(f"   ❌ Test error: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        raise
         
     finally:
         # Cleanup - shut down client first to prevent reconnection attempts
@@ -1424,9 +1480,272 @@ def test_event_comms():
         server.stop()
 
 
+def test_reconnection_resilience():
+    """Test WebSocketEventsComms reconnection and event queueing during outages.
+    Raises exceptions on test failures."""
+    import random
+    import socket
+    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
+    
+    print("🧪 Testing WebSocketEventsComms reconnection resilience...")
+    
+    def find_available_port(start_port=8800):
+        """Find an available port to avoid conflicts"""
+        for port in range(start_port, start_port + 100):
+            try:
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                    s.bind(('localhost', port))
+                    return port
+            except OSError:
+                continue
+        raise RuntimeError("No available ports found")
+    
+    class ReconnectionTestServer:
+        """Simple server for reconnection testing"""
+        def __init__(self):
+            self.port = find_available_port()
+            self.events_received = []
+            self.is_running = False
+            self.server = None
+            self.loop = None
+            
+        async def handle_client(self, websocket):
+            """Handle client connections"""
+            print(f"   📱 Reconnection server: Client connected")
+            
+            try:
+                async for message in websocket:
+                    try:
+                        data = json.loads(message)
+                        if data.get("type") == "event":
+                            event_data = data.get("data", {})
+                            event_type = event_data.get("event_type")
+                            if event_type:
+                                self.events_received.append(f"{event_type}:{event_data.get('tag_id', 'N/A')}")
+                                print(f"   📥 Server received: {event_type} from {event_data.get('tag_id', 'unknown')}")
+                    except json.JSONDecodeError as e:
+                        print(f"   ❌ Server received invalid JSON: {e}")
+                    except Exception as e:
+                        print(f"   ❌ Server error processing message: {e}")
+                        
+            except Exception as e:
+                print(f"   📱 Client disconnected: {e}")
+        
+        def start(self):
+            """Start the test server"""
+            def run_server():
+                self.loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(self.loop)
+                
+                async def server_main():
+                    try:
+                        self.server = await websockets.serve(self.handle_client, 'localhost', self.port)
+                        self.is_running = True
+                        print(f"   🌐 Reconnection server started on localhost:{self.port}")
+                        await self.server.wait_closed()
+                    except Exception as e:
+                        print(f"   ❌ Server start failed: {e}")
+                        self.is_running = False
+                    finally:
+                        self.is_running = False
+                        
+                try:
+                    self.loop.run_until_complete(server_main())
+                except Exception as e:
+                    print(f"   ❌ Server loop failed: {e}")
+                    self.is_running = False
+            
+            self.server_thread = threading.Thread(target=run_server, daemon=False)
+            self.server_thread.start()
+            
+            # Wait for server to start
+            for i in range(20):
+                time.sleep(0.1)
+                if self.is_running:
+                    print(f"   ✅ Server confirmed running after {(i+1)*0.1:.1f}s")
+                    break
+            else:
+                print("   ⚠️  Server may not have started properly")
+        
+        def stop(self):
+            """Stop the test server"""
+            if self.server and self.is_running:
+                try:
+                    if self.loop and not self.loop.is_closed():
+                        self.loop.call_soon_threadsafe(self.server.close)
+                        time.sleep(0.2)
+                    self.is_running = False
+                    print("   🛑 Reconnection server stopped")
+                except Exception as e:
+                    print(f"   ⚠️  Error stopping server: {e}")
+                    self.is_running = False
+        
+        def get_url(self):
+            return f"ws://localhost:{self.port}"
+        
+        def reset_events(self):
+            """Reset event counter for new test phase"""
+            self.events_received = []
+    
+    # Run the reconnection test
+    server = ReconnectionTestServer()
+    
+    try:
+        print("   🚀 Phase 1: Initial connection and event sending...")
+        server.start()
+        
+        if not server.is_running:
+            raise RuntimeError("Reconnection test server failed to start")
+        
+        # Create client
+        events_comms = WebSocketEventsComms(
+            websocket_url=server.get_url(),
+            OS_friendly_name="reconnection_test_client"
+        )
+        
+        # Wait for connection
+        connected = False
+        for i in range(30):
+            time.sleep(0.1)
+            if events_comms.is_connected():
+                connected = True
+                print(f"   ✅ Client connected after {(i+1)*0.1:.1f}s")
+                break
+        
+        if not connected:
+            raise RuntimeError("Reconnection test client failed to connect to server")
+        
+        # Send initial events
+        phase1_events = []
+        for i in range(5):
+            event = PlayerStatus(
+                health=random.randint(50, 100),
+                ammo=random.randint(10, 30),
+                tag_id=f"phase1_player_{i}",
+                display_name=f"Phase1Player{i}"
+            )
+            events_comms.send_event(event)
+            phase1_events.append(event)
+            print(f"      📤 Sent event {i+1}: PlayerStatus")
+            time.sleep(0.1)
+        
+        time.sleep(0.5)  # Let events arrive
+        phase1_received = len(server.events_received)
+        print(f"   📊 Phase 1: {phase1_received}/{len(phase1_events)} events received")
+        
+        print("   💀 Phase 2: Server outage - killing server...")
+        server.stop()
+        time.sleep(0.5)
+        
+        # Send events during outage (should queue)
+        outage_events = []
+        for i in range(3):
+            event = PlayerStatus(
+                health=random.randint(1, 50),
+                ammo=random.randint(0, 10),
+                tag_id=f"outage_player_{i}",
+                display_name=f"OutagePlayer{i}"
+            )
+            events_comms.send_event(event)
+            outage_events.append(event)
+            print(f"      📤 Queued during outage {i+1}: PlayerStatus (should queue)")
+            time.sleep(0.1)
+        
+        connection_status = events_comms.is_connected()
+        queue_size = events_comms.get_send_queue_size()
+        print(f"   📊 During outage: connected={connection_status}, queue_size={queue_size}")
+        
+        print("   🔄 Phase 3: Server recovery - restarting server...")
+        server.reset_events()  # Reset counter for phase 3
+        server.start()
+        
+        if not server.is_running:
+            raise RuntimeError("Reconnection test server failed to restart")
+        
+        # Wait for reconnection
+        reconnected = False
+        for i in range(50):  # Wait up to 5 seconds
+            time.sleep(0.1)
+            if events_comms.is_connected():
+                reconnected = True
+                print(f"   ✅ Client reconnected after {(i+1)*0.1:.1f}s")
+                break
+        
+        if not reconnected:
+            print("   ⚠️  Client didn't reconnect, but queued events may still be processed")
+        
+        # Send more events after reconnection
+        phase3_events = []
+        for i in range(3):
+            event = PlayerStatus(
+                health=random.randint(75, 100),
+                ammo=random.randint(20, 30),
+                tag_id=f"phase3_player_{i}",
+                display_name=f"Phase3Player{i}"
+            )
+            events_comms.send_event(event)
+            phase3_events.append(event)
+            print(f"      📤 Sent after recovery {i+1}: PlayerStatus")
+            time.sleep(0.1)
+        
+        # Wait for all events to arrive
+        time.sleep(2.0)
+        
+        final_received = len(server.events_received)
+        final_queue_size = events_comms.get_send_queue_size()
+        final_connected = events_comms.is_connected()
+        
+        print(f"   📊 Phase 3: {final_received} events received after recovery")
+        print(f"   📊 Final state: queue_size={final_queue_size}, connected={final_connected}")
+        
+        # Calculate expected events (outage + phase3 events should be received)
+        expected_events = len(outage_events) + len(phase3_events)
+        
+        # Success criteria
+        success_criteria = [
+            phase1_received >= 3,  # Initial events worked
+            final_received >= expected_events - 1,  # Most/all queued events delivered (allow 1 loss)
+            final_queue_size <= 1,  # Queue mostly drained
+            final_connected  # Reconnected successfully
+        ]
+        
+        if all(success_criteria):
+            print("   🎉 Reconnection resilience test PASSED!")
+            print(f"   ✅ Survived server outage and reconnected")
+            print(f"   ✅ Queued {len(outage_events)} events during outage")
+            print(f"   ✅ Delivered {final_received}/{expected_events} events after recovery")
+            print(f"   ✅ Queue drained successfully (size: {final_queue_size})")
+            print(f"   ✅ Connection restored and stable")
+            print("   🎉 Reconnection test completed successfully!")
+            return
+        else:
+            raise AssertionError(f"Reconnection resilience test FAILED! Success criteria: {success_criteria}, Phase1: {phase1_received}/{len(phase1_events)}, Recovery: {final_received}/{expected_events}")
+            
+    except Exception as e:
+        print(f"   ❌ Reconnection test error: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
+        
+    finally:
+        # Cleanup
+        try:
+            events_comms.shutdown()
+        except:
+            pass
+        
+        time.sleep(0.2)
+        server.stop()
+
+
 if __name__ == "__main__":
     # Test the new threading-based WebSocketEventsComms
     test_event_comms()
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test reconnection resilience
+    test_reconnection_resilience()
     
     print("\n" + "="*60 + "\n")
     
