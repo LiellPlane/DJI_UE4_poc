@@ -8,7 +8,7 @@ import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
-from comms import WebSocketImageComms
+from comms import WebSocketImageComms, WebSocketEventsComms
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
@@ -32,7 +32,7 @@ elif PLATFORM == _OS.RASPBERRY:
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
-    import test_fake_websocket_server
+    # import test_fake_websocket_server
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
@@ -184,6 +184,10 @@ def main():
         websocket_url = "ws://127.0.0.1:8765",
         OS_friendly_name="shortrange_img_uploader"))
 
+
+    events_comms = WebSocketEventsComms(
+        websocket_url = "ws://127.0.0.1:8765",
+        OS_friendly_name="events_comms")
 
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
@@ -522,9 +526,20 @@ def main():
                     image_actions = display.cardio_gram_display.update_metrics({i:perfmonitor.get_average(i) for i in perfmonitor.measurements.keys()})
                     output_image = display.cardio_gram_display.composite_onto_inplace(output_image, image_actions)
                     
-                    if img_uploaders:
-                        if not img_uploaders[0].is_connected():
-                            img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
+
+                    # use the event comms and event sender to check connectivity
+                    # both should have the same connection status, but we can check both for sanity
+
+
+                    if not img_uploaders[0].is_connected() and not events_comms.is_connected():
+                        img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
+                    elif not img_uploaders[0].is_connected() != events_comms.is_connected(): # exclusive or
+                        # this should never happen - if it does flash blue? I think this colour is blue
+                        # not particularly useful but it's a good indicator of a problem with the comms libraries,
+                        # as both should have the same connection status
+                        img_processing.draw_border_rectangle(output_image, thickness=10, color=(255, 0, 0))
+
+
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
                         output_image[:] = 255

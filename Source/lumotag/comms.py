@@ -277,6 +277,7 @@ class WebSocketEventsComms:
     - Ignore network failures, crash on malformed events
     - Auto-reconnection like WebSocketImageComms
     - Crash on queue overflow or parsing errors (don't hide errors)
+    - Rate-limited logging to prevent stdout flooding
 
     Public API:
       - send_event(event)
@@ -285,15 +286,24 @@ class WebSocketEventsComms:
       - is_connected()
       - get_send_queue_size()
       - raise_thread_error_if_any()
+    
+    Example:
+        # Production use (quiet, minimal output):
+        comms = WebSocketEventsComms("ws://server:8080", "device_01")
+        
+        # Development/debugging (verbose output):
+        comms = WebSocketEventsComms("ws://server:8080", "device_01", verbose=True)
     """
 
     def __init__(
         self,
         websocket_url: str,
         OS_friendly_name: str,
+        verbose: bool = False,
     ) -> None:
         self.websocket_url = websocket_url
         self.OS_friendly_name = OS_friendly_name
+        self.verbose = verbose
 
         # Cache event types once at startup for performance
         self._cached_event_types = self._get_event_types()
@@ -309,6 +319,11 @@ class WebSocketEventsComms:
         self._is_connected = False
         self._ws = None
         self._running = True
+        
+        # Rate limiting for noisy messages
+        self._last_error_time = 0
+        self._last_disconnect_time = 0
+        self._error_count = 0
         
         # Separate threads for sending and connection management (more efficient)
         self._sender_thread = threading.Thread(target=self._sender_worker, name="events-sender", daemon=True)
@@ -384,6 +399,31 @@ class WebSocketEventsComms:
         if self._ws:
             self._ws.close()
         # Threads will exit naturally when _running becomes False
+
+    def _log_if_verbose(self, message: str):
+        """Log message only if verbose mode is enabled"""
+        if self.verbose:
+            print(message)
+    
+    def _log_error_limited(self, message: str, min_interval: float = 5.0):
+        """Log error message with rate limiting to prevent spam"""
+        current_time = time.time()
+        if current_time - self._last_error_time > min_interval:
+            print(message)
+            self._last_error_time = current_time
+            self._error_count = 1
+        else:
+            self._error_count += 1
+            # Only show "continuing" message in verbose mode for debugging
+            if self.verbose and self._error_count % 20 == 0:
+                print(f"⚠️  WebSocket errors continuing... (count: {self._error_count})")
+    
+    def _log_disconnect_limited(self, message: str, min_interval: float = 10.0):
+        """Log disconnect message with rate limiting"""
+        current_time = time.time()
+        if current_time - self._last_disconnect_time > min_interval:
+            print(message)
+            self._last_disconnect_time = current_time
 
     def _get_event_types(self):
         """Dynamically get all Pydantic model classes from lumotag_events module (called once at startup)"""
@@ -506,19 +546,25 @@ class WebSocketEventsComms:
                     try:
                         self._handle_received_message(message)
                     except Exception as e:
-                        print(f"⚠️ Error handling received message: {e}")
+                        self._log_error_limited(f"⚠️ Error handling received message: {e}")
                 
                 def on_open(ws):
                     self._is_connected = True
-                    print(f"🔗 WebSocket Events connected to {self.websocket_url}")
+                    # Log successful connections (always show first connection, then respect verbose mode)
+                    if self._error_count == 0 or self.verbose:
+                        print(f"🔗 WebSocket Events connected to {self.websocket_url}")
+                    # Reset error count on successful connection
+                    self._error_count = 0
                 
                 def on_close(ws, close_status_code, close_msg):
                     self._is_connected = False
-                    print(f"🔌 WebSocket Events disconnected: {close_status_code} - {close_msg}")
+                    # Rate limit disconnect messages to prevent spam during network issues
+                    self._log_disconnect_limited(f"🔌 WebSocket Events disconnected: {close_status_code} - {close_msg}")
                 
                 def on_error(ws, error):
                     self._is_connected = False
-                    print(f"❌ WebSocket Events error: {error}")
+                    # Rate limit error messages to prevent flooding
+                    self._log_error_limited(f"❌ WebSocket Events error: {error}")
                 
                 # Create and run WebSocket connection
                 self._ws = websocket.WebSocketApp(
@@ -542,7 +588,8 @@ class WebSocketEventsComms:
                 except Exception:
                     pass
                 
-                print(f"🔄 WebSocket Events connection failed, retrying in 1.0s: {e}")
+                # Rate limit reconnection messages
+                self._log_error_limited(f"🔄 WebSocket Events connection failed, retrying in 1.0s: {e}")
                 time.sleep(1.0)  # Wait before reconnect
 
 def test_image_comms():
@@ -1317,7 +1364,8 @@ def test_event_comms():
         print("   🚀 Phase 2: Creating WebSocketEventsComms client...")
         events_comms = WebSocketEventsComms(
             websocket_url=server.get_url(),
-            OS_friendly_name="test_events_client"
+            OS_friendly_name="test_events_client",
+            verbose=True  # Enable verbose mode for testing
         )
         
         # Wait for connection
@@ -1591,7 +1639,8 @@ def test_reconnection_resilience():
         # Create client
         events_comms = WebSocketEventsComms(
             websocket_url=server.get_url(),
-            OS_friendly_name="reconnection_test_client"
+            OS_friendly_name="reconnection_test_client",
+            verbose=True  # Enable verbose mode for testing
         )
         
         # Wait for connection
