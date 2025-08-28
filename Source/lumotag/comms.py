@@ -19,10 +19,6 @@ from lumotag_events import UploadRequest
 import lumotag_events
 import inspect
 from pydantic import BaseModel
-        
-# UploadResult removed - we no longer track upload results
-# Network failures are expected and ignored, encoding failures crash immediately
-
 
 
 class WebSocketImageComms:
@@ -470,7 +466,6 @@ class WebSocketEventsComms:
         """Dedicated sender thread - waits forever on queue (no CPU waste)"""
         while self._running:
             try:
-                # Block forever until we have something to send - perfect efficiency!
                 event = self._send_q.get()  # No timeout - waits forever
                 
                 if self._ws and self._is_connected:
@@ -506,10 +501,6 @@ class WebSocketEventsComms:
         """Connection management thread using simple websocket-client"""
         while self._running:
             try:
-                if websocket is None:
-                    print("❌ websocket-client not available. Install with: pip install websocket-client")
-                    time.sleep(5.0)
-                    continue
                 
                 def on_message(ws, message):
                     try:
@@ -1615,6 +1606,12 @@ def test_reconnection_resilience():
         if not connected:
             raise RuntimeError("Reconnection test client failed to connect to server")
         
+        # ASSERT: Connection status should correctly report connected
+        initial_status = events_comms.is_connected()
+        if not initial_status:
+            raise AssertionError("is_connected() reports False despite successful connection")
+        print("   ✅ is_connected() correctly reports True after initial connection")
+        
         # Send initial events
         phase1_events = []
         for i in range(5):
@@ -1655,6 +1652,12 @@ def test_reconnection_resilience():
         queue_size = events_comms.get_send_queue_size()
         print(f"   📊 During outage: connected={connection_status}, queue_size={queue_size}")
         
+        # ASSERT: Connection status should correctly report disconnected
+        if connection_status:
+            raise AssertionError("is_connected() still reports True during server outage - status reporting broken")
+        else:
+            print("   ✅ is_connected() correctly reports False during outage")
+        
         print("   🔄 Phase 3: Server recovery - restarting server...")
         server.reset_events()  # Reset counter for phase 3
         server.start()
@@ -1673,6 +1676,12 @@ def test_reconnection_resilience():
         
         if not reconnected:
             print("   ⚠️  Client didn't reconnect, but queued events may still be processed")
+        else:
+            # ASSERT: Connection status should correctly report reconnected
+            reconnect_status = events_comms.is_connected()
+            if not reconnect_status:
+                raise AssertionError("is_connected() reports False despite successful reconnection")
+            print("   ✅ is_connected() correctly reports True after reconnection")
         
         # Send more events after reconnection
         phase3_events = []
@@ -1697,6 +1706,11 @@ def test_reconnection_resilience():
         
         print(f"   📊 Phase 3: {final_received} events received after recovery")
         print(f"   📊 Final state: queue_size={final_queue_size}, connected={final_connected}")
+        
+        # ASSERT: Final connection status validation
+        if not final_connected:
+            raise AssertionError("is_connected() reports False at end of test - connection should be stable")
+        print("   ✅ is_connected() correctly reports True at test completion")
         
         # Calculate expected events (outage + phase3 events should be received)
         expected_events = len(outage_events) + len(phase3_events)
