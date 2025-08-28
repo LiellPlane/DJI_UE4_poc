@@ -19,9 +19,46 @@ from lumotag_events import UploadRequest
 import lumotag_events
 import inspect
 from pydantic import BaseModel
+from abc import ABC, abstractmethod
 
 
-class WebSocketImageComms:
+class AbstractImageComms(ABC):
+    @abstractmethod
+    def __init__(self, sharedmem_buffs: dict, safe_mem_details_func: Callable, websocket_url: str, OS_friendly_name: str):
+        pass
+    
+    @abstractmethod
+    def trigger_capture(self) -> None:
+        pass
+    
+    @abstractmethod
+    def get_upload_queue_size(self) -> int:
+        pass
+    
+    @abstractmethod
+    def is_connected(self) -> bool:
+        pass
+    
+    @abstractmethod
+    def upload_image_by_id(self, image_id: str) -> None:
+        pass
+    
+    @abstractmethod
+    def delete_image_by_id(self, image_id: str) -> bool:
+        pass
+
+
+class AbstractEventsComms(ABC):
+    @abstractmethod
+    def __init__(self, websocket_url: str, OS_friendly_name: str):
+        pass
+    
+    @abstractmethod
+    def is_connected(self) -> bool:
+        pass
+
+
+class WebSocketImageComms(AbstractImageComms):
     """Ultra-lightweight, threaded uploader for grayscale frames from shared memory.
 
     Design goals:
@@ -266,7 +303,7 @@ class WebSocketImageComms:
             return
 
 
-class WebSocketEventsComms:
+class WebSocketEventsComms(AbstractEventsComms):
     """Ultra-lightweight, threaded sender and receiver for small events.
 
     Design goals:
