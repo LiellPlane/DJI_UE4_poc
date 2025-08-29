@@ -32,15 +32,11 @@ elif PLATFORM == _OS.RASPBERRY:
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
-    # import test_fake_websocket_server
+    import test_fake_websocket_server
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
     raise ValueError(f"Unknown platform detected: {PLATFORM}")
-    import fake_raspberry_hardware as lumogun
-    import sound_fake as sound
-
-    #raise Exception("Could not detect platform")
 
 # load config depending on if simulated, or if on hardware,
 # model ID from file on device
@@ -176,7 +172,9 @@ def main():
         camera_source_class_ref = image_capture_shortrange,
         lumotag_func=find_lumotag,
         config=configs.get_lumofind_config(PLATFORM)))
-    
+
+
+
     img_uploaders = []
     img_uploaders.append(WebSocketImageComms(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
@@ -184,11 +182,10 @@ def main():
         websocket_url = "ws://127.0.0.1:8765",
         OS_friendly_name="shortrange_img_uploader"))
 
-
     events_comms = WebSocketEventsComms(
         websocket_url = "ws://127.0.0.1:8765",
         OS_friendly_name="events_comms")
-
+    
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
         perfmonitor.manual_measure(f"{image_analyser.OS_friendly_name}", 10)
@@ -533,7 +530,7 @@ def main():
 
                     if not img_uploaders[0].is_connected() and not events_comms.is_connected():
                         img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
-                    elif not img_uploaders[0].is_connected() != events_comms.is_connected(): # exclusive or
+                    elif img_uploaders[0].is_connected() != events_comms.is_connected(): # exclusive or
                         # this should never happen - if it does flash blue? I think this colour is blue
                         # not particularly useful but it's a good indicator of a problem with the comms libraries,
                         # as both should have the same connection status
@@ -559,6 +556,7 @@ def main():
                     for img_uploader in img_uploaders:
                         for img_id in imageIDs:
                             img_uploader.upload_image_by_id(img_id)
+                            print(f"upload queue size: {img_uploader.get_upload_queue_size()}")
                 else:
                     for img_uploader in img_uploaders:
                         # get rid of uninteresting images

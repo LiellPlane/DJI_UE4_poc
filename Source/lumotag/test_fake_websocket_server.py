@@ -14,7 +14,10 @@ import base64
 import threading
 import time
 import socket
-from typing import Dict, Any
+import random
+from typing import Dict, Any, Set
+import lumotag_events as events
+
 
 class FakeWebSocketServer:
     def __init__(self, host='127.0.0.1', port=None):
@@ -24,11 +27,27 @@ class FakeWebSocketServer:
         self.loop = None
         self.server_thread = None
         self.is_running = False
+        self.connected_clients: Set[websockets.WebSocketServerProtocol] = set()
+        self.image_only_clients: Set[websockets.WebSocketServerProtocol] = set()
+        self.bidirectional_clients: Set[websockets.WebSocketServerProtocol] = set()
+        self.unclassified_clients: Set[websockets.WebSocketServerProtocol] = set()
+        self.slow_clients: Dict[websockets.WebSocketServerProtocol, int] = {}
+        self.broadcast_task = None
+        self.status_task = None
+        self.recent_errors: list = []
+        self.client_info: Dict[websockets.WebSocketServerProtocol, Dict] = {}
+        self.last_activity: Dict[str, float] = {}
         self.stats = {
             'messages_received': 0,
             'valid_uploads': 0,
             'invalid_messages': 0,
-            'connections': 0
+            'connections': 0,
+            'broadcasts_sent': 0,
+            'slow_clients_dropped': 0,
+            'send_timeouts': 0,
+            'image_only_connections': 0,
+            'bidirectional_connections': 0,
+            'unclassified_connections': 0
         }
         
     def _find_free_port(self, start_port=8765):
@@ -42,6 +61,18 @@ class FakeWebSocketServer:
                 continue
         raise RuntimeError("No free ports found")
     
+    def _log_error(self, error_msg: str):
+        """Log error with timestamp for status reporting"""
+        error_entry = {
+            'timestamp': time.time(),
+            'error': error_msg,
+            'time_str': time.strftime('%H:%M:%S')
+        }
+        self.recent_errors.append(error_entry)
+        # Keep only last 10 errors
+        if len(self.recent_errors) > 10:
+            self.recent_errors.pop(0)
+    
     async def handle_client(self, websocket, path=None):
         """Handle incoming WebSocket connections"""
         self.stats['connections'] += 1
@@ -51,23 +82,133 @@ class FakeWebSocketServer:
             client_addr = "unknown"
         print(f"🔗 FakeWS: Client connected from {client_addr}")
         
+        # Add client to connected set and unclassified (will be classified on first message)
+        self.connected_clients.add(websocket)
+        self.unclassified_clients.add(websocket)
+        
+        # Track client information
+        self.client_info[websocket] = {
+            'address': client_addr,
+            'connected_at': time.time(),
+            'last_message': None,
+            'message_count': 0,
+            'client_type': 'unclassified',
+            'last_activity': time.time()
+        }
+        
         try:
             async for message in websocket:
                 self.stats['messages_received'] += 1
-                await self._process_message(message, client_addr)
+                await self._process_message(message, client_addr, websocket)
                 
         except websockets.exceptions.ConnectionClosed:
             print(f"📱 FakeWS: Client {client_addr} disconnected")
         except Exception as e:
             print(f"❌ FakeWS: Error handling client {client_addr}: {e}")
-            
             traceback.print_exc()
+        finally:
+            # Remove client from all sets and tracking
+            self.connected_clients.discard(websocket)
+            self.image_only_clients.discard(websocket)
+            self.bidirectional_clients.discard(websocket)
+            self.unclassified_clients.discard(websocket)
+            self.client_info.pop(websocket, None)
+            self.slow_clients.pop(websocket, None)
     
-    async def _process_message(self, message: str, client_addr: str):
+    def _classify_client_from_message(self, websocket: websockets.WebSocketServerProtocol, data: Dict[str, Any]):
+        """Classify client based on message type using Pydantic models"""
+        if websocket not in self.unclassified_clients:
+            return  # Already classified
+        
+        # Remove from unclassified
+        self.unclassified_clients.discard(websocket)
+        
+        try:
+            # Try to determine message type
+            message_type = data.get('type')  # For image uploads
+            event_type = data.get('event_type')  # For events
+            
+            # Check if it's an image upload message
+            if message_type == 'image_upload' or 'image_data' in data:
+                self.image_only_clients.add(websocket)
+                self.stats['image_only_connections'] += 1
+                if websocket in self.client_info:
+                    self.client_info[websocket]['client_type'] = 'image_only'
+                print(f"📷 FakeWS: Classified client as IMAGE_ONLY")
+                return
+            
+            # Try to parse as event types from lumotag_events
+            if event_type:
+                # Check if it matches any of our event types
+                if event_type in ['PlayerStatus', 'GameUpdate', 'PlayerTagged', 'UploadRequest']:
+                    if event_type == 'UploadRequest':
+                        # UploadRequest is for images, but it's bidirectional capable
+                        self.bidirectional_clients.add(websocket)
+                        self.stats['bidirectional_connections'] += 1
+                        if websocket in self.client_info:
+                            self.client_info[websocket]['client_type'] = 'bidirectional'
+                        print(f"🔄 FakeWS: Classified client as BIDIRECTIONAL (UploadRequest)")
+                    else:
+                        self.bidirectional_clients.add(websocket)
+                        self.stats['bidirectional_connections'] += 1
+                        if websocket in self.client_info:
+                            self.client_info[websocket]['client_type'] = 'bidirectional'
+                        print(f"🔄 FakeWS: Classified client as BIDIRECTIONAL ({event_type})")
+                    return
+            
+            # Try to validate against our Pydantic models
+            try:
+                events.UploadRequest(**data)
+                self.bidirectional_clients.add(websocket)
+                self.stats['bidirectional_connections'] += 1
+                if websocket in self.client_info:
+                    self.client_info[websocket]['client_type'] = 'bidirectional'
+                print(f"🔄 FakeWS: Classified client as BIDIRECTIONAL (valid UploadRequest)")
+                return
+            except:
+                pass
+                
+            try:
+                events.PlayerStatus(**data)
+                self.bidirectional_clients.add(websocket)
+                self.stats['bidirectional_connections'] += 1
+                if websocket in self.client_info:
+                    self.client_info[websocket]['client_type'] = 'bidirectional'
+                print(f"🔄 FakeWS: Classified client as BIDIRECTIONAL (valid PlayerStatus)")
+                return
+            except:
+                pass
+                
+            # Default to bidirectional if we can't determine
+            self.bidirectional_clients.add(websocket)
+            self.stats['bidirectional_connections'] += 1
+            if websocket in self.client_info:
+                self.client_info[websocket]['client_type'] = 'bidirectional'
+            print(f"🔄 FakeWS: Classified client as BIDIRECTIONAL (default)")
+            
+        except Exception as e:
+            # Default to bidirectional on error
+            self.bidirectional_clients.add(websocket)
+            self.stats['bidirectional_connections'] += 1
+            if websocket in self.client_info:
+                self.client_info[websocket]['client_type'] = 'bidirectional'
+            self._log_error(f"Classification error: {e}")
+            print(f"⚠️ FakeWS: Classification error, defaulting to BIDIRECTIONAL: {e}")
+
+    async def _process_message(self, message: str, client_addr: str, websocket: websockets.WebSocketServerProtocol):
         """Process and validate incoming messages"""
         try:
             # Parse JSON
             data = json.loads(message)
+            
+            # Update client activity tracking
+            if websocket in self.client_info:
+                self.client_info[websocket]['last_activity'] = time.time()
+                self.client_info[websocket]['message_count'] += 1
+                self.client_info[websocket]['last_message'] = data.get('type', data.get('event_type', 'unknown'))
+            
+            # Classify client based on first message
+            self._classify_client_from_message(websocket, data)
             
             # Validate message structure
             if not self._validate_upload_message(data):
@@ -97,10 +238,14 @@ class FakeWebSocketServer:
             
         except json.JSONDecodeError as e:
             self.stats['invalid_messages'] += 1
-            print(f"❌ FakeWS: JSON decode error from {client_addr}: {e}")
+            error_msg = f"JSON decode error from {client_addr}: {e}"
+            self._log_error(error_msg)
+            print(f"❌ FakeWS: {error_msg}")
         except Exception as e:
             self.stats['invalid_messages'] += 1
-            print(f"❌ FakeWS: Unexpected error processing message from {client_addr}: {e}")
+            error_msg = f"Unexpected error processing message from {client_addr}: {e}"
+            self._log_error(error_msg)
+            print(f"❌ FakeWS: {error_msg}")
     
     def _validate_upload_message(self, data: Dict[str, Any]) -> bool:
         """Validate the structure of an upload message"""
@@ -141,6 +286,155 @@ class FakeWebSocketServer:
             
         return True
     
+    def _generate_random_player_status(self, player_id: int) -> events.PlayerStatus:
+        """Generate random PlayerStatus data for testing"""
+        names = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Henry"]
+        return events.PlayerStatus(
+            health=random.randint(0, 100),
+            ammo=random.randint(0, 30),
+            tag_id=f"player_{player_id}",
+            display_name=random.choice(names) + f"_{player_id}"
+        )
+    
+    def _generate_game_update(self) -> events.GameUpdate:
+        """Generate a GameUpdate with 5 random PlayerStatus objects"""
+        players = [self._generate_random_player_status(i) for i in range(1, 6)]
+        return events.GameUpdate(players=players)
+    
+    async def _broadcast_game_update(self):
+        """Broadcast GameUpdate to bidirectional clients only (not image-only clients)"""
+        if not self.bidirectional_clients:
+            return
+            
+        game_update = self._generate_game_update()
+        message = game_update.model_dump_json()
+        
+        # Send to bidirectional clients only (skip image-only clients)
+        disconnected_clients = set()
+        for client in self.bidirectional_clients.copy():
+            try:
+                # Use timeout to prevent hanging on slow clients
+                await asyncio.wait_for(client.send(message), timeout=0.05)  # 50ms timeout
+                
+                # Reset slow client counter if send succeeded
+                if client in self.slow_clients:
+                    del self.slow_clients[client]
+                    
+            except asyncio.TimeoutError:
+                # Client is too slow - track it
+                self.stats['send_timeouts'] += 1
+                self.slow_clients[client] = self.slow_clients.get(client, 0) + 1
+                
+                # Drop client after 3 consecutive slow responses (300ms total)
+                if self.slow_clients[client] >= 3:
+                    print(f"⚠️ FakeWS: Dropping slow client (buffer full after 3 timeouts)")
+                    disconnected_clients.add(client)
+                    self.stats['slow_clients_dropped'] += 1
+                else:
+                    print(f"⚠️ FakeWS: Client slow to receive (timeout {self.slow_clients[client]}/3)")
+                    
+            except websockets.exceptions.ConnectionClosed:
+                disconnected_clients.add(client)
+            except Exception as e:
+                # Could be buffer overflow or other send errors
+                error_msg = f"Error broadcasting to client: {e}"
+                self._log_error(error_msg)
+                print(f"❌ FakeWS: {error_msg}")
+                if "buffer" in str(e).lower() or "full" in str(e).lower():
+                    print(f"💾 FakeWS: Likely buffer overflow - dropping client")
+                    self.stats['slow_clients_dropped'] += 1
+                disconnected_clients.add(client)
+        
+        # Clean up disconnected clients from all sets
+        for client in disconnected_clients:
+            self.connected_clients.discard(client)
+            self.bidirectional_clients.discard(client)
+            self.image_only_clients.discard(client)
+            self.unclassified_clients.discard(client)
+            self.slow_clients.pop(client, None)  # Remove from slow clients tracking
+            
+        self.stats['broadcasts_sent'] += 1
+        if len(self.bidirectional_clients) > 0:
+            slow_count = len(self.slow_clients)
+            total_clients = len(self.connected_clients)
+            bidirectional_count = len(self.bidirectional_clients)
+            image_only_count = len(self.image_only_clients)
+            
+            status_msg = f"📡 FakeWS: Broadcast to {bidirectional_count}/{total_clients} clients"
+            status_msg += f" (📷 {image_only_count} image-only skipped)"
+            if slow_count > 0:
+                status_msg += f" ({slow_count} slow)"
+            print(status_msg)
+    
+    async def _broadcast_loop(self):
+        """Periodic broadcast loop - sends GameUpdate every 100ms"""
+        while self.is_running:
+            try:
+                await self._broadcast_game_update()
+                await asyncio.sleep(0.1)  # 100ms
+            except Exception as e:
+                error_msg = f"Broadcast loop error: {e}"
+                self._log_error(error_msg)
+                print(f"❌ FakeWS: {error_msg}")
+                await asyncio.sleep(0.1)
+    
+    async def _status_loop(self):
+        """Periodic status reporting - shows connection status every second"""
+        while self.is_running:
+            try:
+                await asyncio.sleep(1.0)  # Every second
+                self._print_status()
+            except Exception as e:
+                error_msg = f"Status loop error: {e}"
+                self._log_error(error_msg)
+                print(f"❌ FakeWS: {error_msg}")
+                await asyncio.sleep(1.0)
+    
+    def _print_status(self):
+        """Print current server status"""
+        current_time = time.strftime('%H:%M:%S')
+        total_clients = len(self.connected_clients)
+        
+        if total_clients == 0 and len(self.recent_errors) == 0:
+            return  # Don't spam when nothing is happening
+        
+        print(f"\n📊 [{current_time}] FakeWS Status:")
+        
+        # Connection summary
+        image_count = len(self.image_only_clients)
+        bidirectional_count = len(self.bidirectional_clients)
+        unclassified_count = len(self.unclassified_clients)
+        
+        print(f"   🔗 Total Connections: {total_clients}")
+        if total_clients > 0:
+            print(f"   📷 Image-only: {image_count}")
+            print(f"   🔄 Bidirectional: {bidirectional_count}")
+            if unclassified_count > 0:
+                print(f"   ❓ Unclassified: {unclassified_count}")
+        
+        # Individual client details
+        if total_clients > 0:
+            print(f"   📋 Client Details:")
+            for client, info in self.client_info.items():
+                age = time.time() - info['connected_at']
+                last_activity = time.time() - info['last_activity']
+                print(f"      {info['address']} ({info['client_type']}) - "
+                      f"Age: {age:.1f}s, Last: {last_activity:.1f}s ago, "
+                      f"Msgs: {info['message_count']}, Type: {info.get('last_message', 'none')}")
+        
+        # Recent errors
+        if self.recent_errors:
+            print(f"   ❌ Recent Errors ({len(self.recent_errors)}):")
+            for error in self.recent_errors[-3:]:  # Show last 3 errors
+                print(f"      [{error['time_str']}] {error['error']}")
+        
+        # Key stats
+        active_stats = {k: v for k, v in self.stats.items() if v > 0}
+        if active_stats:
+            print(f"   📈 Stats: {active_stats}")
+        
+        print()  # Empty line for readability
+    
     def start(self):
         """Start the WebSocket server in a background thread"""
         if self.is_running:
@@ -163,6 +457,15 @@ class FakeWebSocketServer:
                         self.is_running = True
                         print(f"🚀 FakeWS: Server started on {self.host}:{self.port}")
                         print(f"🔗 FakeWS: Use URL: ws://{self.host}:{self.port}")
+                        
+                        # Start the broadcast loop
+                        self.broadcast_task = asyncio.create_task(self._broadcast_loop())
+                        print(f"📡 FakeWS: Broadcast loop started (GameUpdate every 100ms)")
+                        
+                        # Start the status loop
+                        self.status_task = asyncio.create_task(self._status_loop())
+                        print(f"📊 FakeWS: Status loop started (reports every 1s)")
+                        
                         await self.server.wait_closed()
                     except Exception as e:
                         print(f"❌ FakeWS: Server main error: {e}")
@@ -198,6 +501,11 @@ class FakeWebSocketServer:
         """Stop the WebSocket server"""
         if self.server and self.is_running:
             if self.loop:
+                # Cancel tasks
+                if self.broadcast_task and not self.broadcast_task.done():
+                    self.loop.call_soon_threadsafe(self.broadcast_task.cancel)
+                if self.status_task and not self.status_task.done():
+                    self.loop.call_soon_threadsafe(self.status_task.cancel)
                 self.loop.call_soon_threadsafe(self.server.close)
                 self.is_running = False
                 print(f"🛑 FakeWS: Server stopped")
@@ -217,7 +525,7 @@ def get_fake_server():
     """Get the global fake server instance, starting it if needed"""
     global _fake_server
     if _fake_server is None:
-        _fake_server = FakeWebSocketServer()
+        _fake_server = FakeWebSocketServer(port=8765)
         _fake_server.start()
     return _fake_server
 
@@ -256,8 +564,10 @@ if __name__ == "__main__":
         while True:
             time.sleep(1)
             stats = get_server_stats()
-            if stats['messages_received'] > 0:
-                print(f"📊 FakeWS: Stats: {stats}")
+            if stats['messages_received'] > 0 or stats['broadcasts_sent'] > 0:
+                # Show relevant stats only
+                active_stats = {k: v for k, v in stats.items() if v > 0}
+                print(f"📊 FakeWS: Stats: {active_stats}")
     except KeyboardInterrupt:
         print("\n🛑 FakeWS: Shutting down...")
         _fake_server.stop()
