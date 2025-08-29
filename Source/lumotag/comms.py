@@ -105,6 +105,11 @@ class WebSocketImageComms(AbstractImageComms):
 
         # Connection status tracking for cheap health checks
         self._is_connected = False
+        
+        # Flow control to prevent network buffer overflow
+        self._last_send_time = 0
+        self._send_rate_limit = 0.1  # Max 10 images/sec to prevent buffer overflow
+        
         self._capture_thread = threading.Thread(target=self._capture_loop, name="uploader-capture", daemon=True)
         self._upload_thread = threading.Thread(target=self._worker_loop, name="uploader-worker", daemon=True)
         self._capture_thread.start()
@@ -208,8 +213,15 @@ class WebSocketImageComms(AbstractImageComms):
                         consume_task = asyncio.create_task(self._consume_incoming_messages(websocket))
                         
                         while True:  # Message processing loop
-                            # Block until an image_id arrives
-                            image_id: str = self._control_q.get()
+                            # Non-blocking queue get with timeout to prevent 18+ second gaps
+                            try:
+                                image_id: str = self._control_q.get(timeout=1.0)
+                            except threading_queue.Empty:
+                                # Check if connection is still alive during wait
+                                if websocket.closed:
+                                    print("🔌 Connection closed during wait")
+                                    break
+                                continue  # No images to send, check connection and continue
 
                             # Get image data WITHOUT removing it (keep for retry if needed)
                             with self._mem_lock:
@@ -244,11 +256,30 @@ class WebSocketImageComms(AbstractImageComms):
                                     "image_data": base64.b64encode(buffer.tobytes()).decode()
                                 }
                                 
-                                await websocket.send(json.dumps(message))
+                                # Flow control - prevent sending too fast and overwhelming network buffer
+                                current_time = time.time()
+                                time_since_last = current_time - self._last_send_time
+                                if time_since_last < self._send_rate_limit:
+                                    sleep_time = self._send_rate_limit - time_since_last
+                                    await asyncio.sleep(sleep_time)
+                                self._last_send_time = time.time()
+                                
+                                # Send with timeout to prevent network buffer blocking (prevents abnormal closures)
+                                await asyncio.wait_for(
+                                    websocket.send(json.dumps(message)), 
+                                    timeout=2.0  # 2 second send timeout
+                                )
                                 
                                 # Upload successful - NOW remove from memory
                                 with self._mem_lock:
                                     self.ImageMem.pop(image_id, None)
+                                
+                            except asyncio.TimeoutError:
+                                # Send timeout - network buffer full, reconnect immediately
+                                print("⚠️ Send timeout - network buffer full, reconnecting")
+                                self._is_connected = False
+                                self._control_q.put_nowait(image_id)  # Put message back for retry
+                                break  # Exit inner loop to trigger reconnection
                                 
                             except websockets.exceptions.InvalidURI:
                                 # Invalid WebSocket URL - report as a critical error (same as InvalidURL before)
