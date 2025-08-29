@@ -120,7 +120,7 @@ class WebSocketImageComms(AbstractImageComms):
         
         # Check for thread errors periodically to reduce overhead at high frequencies
         self._error_check_counter = getattr(self, '_error_check_counter', 0) + 1
-        if self._error_check_counter % 20 == 0:  # Check every 20th call (~500ms at 40Hz)
+        if self._error_check_counter % 20 == 0:  # Check every 20th call
             self.raise_thread_error_if_any()
 
     def upload_image_by_id(self, image_id: str) -> None:
@@ -203,6 +203,10 @@ class WebSocketImageComms(AbstractImageComms):
                     self._is_connected = True
                     
                     try:
+                        # Start background task to consume incoming messages (prevent buffer overflow)
+                        # there shouldn't be any incoming messages, but we'll consume them anyway
+                        consume_task = asyncio.create_task(self._consume_incoming_messages(websocket))
+                        
                         while True:  # Message processing loop
                             # Block until an image_id arrives
                             image_id: str = self._control_q.get()
@@ -260,6 +264,14 @@ class WebSocketImageComms(AbstractImageComms):
                                 self._control_q.put_nowait(image_id)  # Put message back for retry
                                 break  # Exit inner loop to trigger reconnection
                     finally:
+                        # Cancel the consume task
+                        if 'consume_task' in locals():
+                            consume_task.cancel()
+                            try:
+                                await consume_task
+                            except asyncio.CancelledError:
+                                pass
+                        
                         # Always mark as disconnected when exiting the message processing loop
                         self._is_connected = False
                             
@@ -281,6 +293,24 @@ class WebSocketImageComms(AbstractImageComms):
             except Exception as e:
                 # Other errors should still crash
                 raise e
+
+    async def _consume_incoming_messages(self, websocket) -> None:
+        """
+        Consume incoming messages to prevent receive buffer overflow.
+        The server broadcasts GameUpdate messages every 100ms that we need to drain
+        to prevent the WebSocket receive buffer from filling up and causing stutters.
+        """
+        try:
+            async for message in websocket:
+                # Just consume and discard - we don't need these messages for image uploading
+                # This prevents receive buffer overflow from server broadcasts
+                pass
+        except websockets.exceptions.ConnectionClosed:
+            # Connection closed - this is expected when websocket closes
+            pass
+        except Exception as e:
+            # Log other errors but don't crash the main upload loop
+            print(f"⚠️ Error consuming incoming messages: {e}")
 
     def _capture_loop(self) -> None:
         try:

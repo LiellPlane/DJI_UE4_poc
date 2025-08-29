@@ -528,13 +528,15 @@ def main():
                     # both should have the same connection status, but we can check both for sanity
 
 
-                    if not img_uploaders[0].is_connected() and not events_comms.is_connected():
-                        img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
-                    elif img_uploaders[0].is_connected() != events_comms.is_connected(): # exclusive or
-                        # this should never happen - if it does flash blue? I think this colour is blue
-                        # not particularly useful but it's a good indicator of a problem with the comms libraries,
-                        # as both should have the same connection status
-                        img_processing.draw_border_rectangle(output_image, thickness=10, color=(255, 0, 0))
+                    # check if local variables have been defined
+                    if "img_uploaders" in locals() and "events_comms" in locals():
+                        if not img_uploaders[0].is_connected() and not events_comms.is_connected():
+                            img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
+                        elif img_uploaders[0].is_connected() != events_comms.is_connected(): # exclusive or
+                            # this should never happen - if it does flash blue? I think this colour is blue
+                            # not particularly useful but it's a good indicator of a problem with the comms libraries,
+                            # as both should have the same connection status
+                            img_processing.draw_border_rectangle(output_image, thickness=10, color=(255, 0, 0))
 
 
                     if is_trigger_pressed:
