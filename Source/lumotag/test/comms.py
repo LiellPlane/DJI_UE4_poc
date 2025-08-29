@@ -1900,4 +1900,15 @@ def test_reconnection_resilience():
 
 
 if __name__ == "__main__":
-    pass
+    # Test the new threading-based WebSocketEventsComms
+    test_event_comms()
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test reconnection resilience
+    test_reconnection_resilience()
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test the existing image comms  
+    test_image_comms()

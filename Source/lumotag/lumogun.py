@@ -23,7 +23,6 @@ PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 
 if PLATFORM == _OS.WINDOWS:
     print("raspberry presence failed, loading test libraries")
-    import test_fake_websocket_server
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 elif PLATFORM == _OS.RASPBERRY:
@@ -32,7 +31,6 @@ elif PLATFORM == _OS.RASPBERRY:
     import sound as sound
 elif PLATFORM == _OS.MAC_OS:
     print("disgusting Mac detected, loading fake hardware libraries")
-    import test_fake_websocket_server
     import fake_raspberry_hardware as lumogun
     import sound_fake as sound
 else:
@@ -176,15 +174,15 @@ def main():
 
 
     img_uploaders = []
-    img_uploaders.append(WebSocketImageComms(
-        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
-        safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-        websocket_url = "ws://LiellOMEN.local:8765",
-        OS_friendly_name="shortrange_img_uploader"))
+    # img_uploaders.append(WebSocketImageComms(
+    #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+    #     safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+    #     websocket_url = "ws://LiellOMEN.local:8765",
+    #     OS_friendly_name="shortrange_img_uploader"))
 
-    events_comms = WebSocketEventsComms(
-        websocket_url = "ws://LiellOMEN.local:8765",
-        OS_friendly_name="events_comms")
+    # events_comms = WebSocketEventsComms(
+    #     websocket_url = "ws://LiellOMEN.local:8765",
+    #     OS_friendly_name="events_comms")
     
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")

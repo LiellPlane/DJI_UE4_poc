@@ -110,13 +110,19 @@ class WebSocketImageComms(AbstractImageComms):
         self._last_send_time = 0
         self._send_rate_limit = 0.1  # Max 10 images/sec to prevent buffer overflow
         
+        print(f"🔄 Creating WebSocket threads for {self.websocket_url}")
         self._capture_thread = threading.Thread(target=self._capture_loop, name="uploader-capture", daemon=True)
         self._upload_thread = threading.Thread(target=self._worker_loop, name="uploader-worker", daemon=True)
+        
+        print("🔄 Starting capture thread...")
         self._capture_thread.start()
+        print("🔄 Starting upload thread...")
         self._upload_thread.start()
         
+        print("🔄 Waiting for threads to initialize...")
         # Give threads time to start up before constructor returns
         time.sleep(0.1)
+        print("✅ WebSocketImageComms constructor completed")
 
     def trigger_capture(self) -> None:
         """Trigger capture - will crash if queue is full (performance issue)"""
@@ -195,12 +201,19 @@ class WebSocketImageComms(AbstractImageComms):
     async def _ws_worker(self) -> None:
         reconnect_delay = 1.0
         
+        print(f"🔄 Starting WebSocket worker for {self.websocket_url}")
+        
         while True:  # Reconnection loop
             try:
                 # Mark as attempting connection (not connected yet)
                 self._is_connected = False
                 
-                async with websockets.connect(self.websocket_url) as websocket:
+                print(f"🔄 Attempting to connect to {self.websocket_url}...")
+                # Add connection timeout to prevent hanging on unreachable servers
+                async with asyncio.wait_for(
+                    websockets.connect(self.websocket_url),
+                    timeout=1.0  # 5 second connection timeout
+                ) as websocket:
                     print(f"🔗 WebSocket connected to {self.websocket_url}")
                     reconnect_delay = 1.0  # Reset delay on successful connection
                     
@@ -213,15 +226,16 @@ class WebSocketImageComms(AbstractImageComms):
                         consume_task = asyncio.create_task(self._consume_incoming_messages(websocket))
                         
                         while True:  # Message processing loop
-                            # Non-blocking queue get with timeout to prevent 18+ second gaps
+                            # Non-blocking queue check to prevent 18+ second gaps
                             try:
-                                image_id: str = self._control_q.get(timeout=1.0)
+                                image_id: str = self._control_q.get_nowait()
                             except threading_queue.Empty:
-                                # Check if connection is still alive during wait
+                                # No images to send, check connection and wait briefly
                                 if websocket.closed:
                                     print("🔌 Connection closed during wait")
                                     break
-                                continue  # No images to send, check connection and continue
+                                await asyncio.sleep(0.1)  # Brief async wait instead of blocking
+                                continue
 
                             # Get image data WITHOUT removing it (keep for retry if needed)
                             with self._mem_lock:
@@ -306,6 +320,13 @@ class WebSocketImageComms(AbstractImageComms):
                         # Always mark as disconnected when exiting the message processing loop
                         self._is_connected = False
                             
+            except asyncio.TimeoutError:
+                # Connection timeout - mark as disconnected and retry
+                self._is_connected = False
+                print(f"🔄 Connection timeout to {self.websocket_url}, retrying in {reconnect_delay:.1f}s")
+                await asyncio.sleep(reconnect_delay)
+                continue
+                
             except websockets.exceptions.InvalidURI:
                 # Invalid WebSocket URL - report as a critical error
                 raise RuntimeError(f"Invalid WebSocket URL: {self.websocket_url}")
@@ -1900,4 +1921,15 @@ def test_reconnection_resilience():
 
 
 if __name__ == "__main__":
-    pass
+    # Test the new threading-based WebSocketEventsComms
+    test_event_comms()
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test reconnection resilience
+    test_reconnection_resilience()
+    
+    print("\n" + "="*60 + "\n")
+    
+    # Test the existing image comms  
+    test_image_comms()
