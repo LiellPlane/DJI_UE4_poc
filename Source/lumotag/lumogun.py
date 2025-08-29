@@ -179,11 +179,11 @@ def main():
     img_uploaders.append(WebSocketImageComms(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-        websocket_url = "ws://127.0.0.1:8765",
+        websocket_url = "ws://LiellOMEN.local:8765",
         OS_friendly_name="shortrange_img_uploader"))
 
     events_comms = WebSocketEventsComms(
-        websocket_url = "ws://127.0.0.1:8765",
+        websocket_url = "ws://LiellOMEN.local:8765",
         OS_friendly_name="events_comms")
     
     for image_analyser in image_analysis:

@@ -17,16 +17,19 @@ import socket
 import random
 from typing import Dict, Any, Set
 import lumotag_events as events
+import cv2
+import numpy as np
 
 
 class FakeWebSocketServer:
-    def __init__(self, host='127.0.0.1', port=None):
+    def __init__(self, host='0.0.0.0', port=None):
         self.host = host
         self.port = port or self._find_free_port()
         self.server = None
         self.loop = None
         self.server_thread = None
         self.is_running = False
+        self.opencv_window_created = False
         self.connected_clients: Set[websockets.WebSocketServerProtocol] = set()
         self.image_only_clients: Set[websockets.WebSocketServerProtocol] = set()
         self.bidirectional_clients: Set[websockets.WebSocketServerProtocol] = set()
@@ -222,12 +225,18 @@ class FakeWebSocketServer:
             timestamp = data.get('timestamp', 0)
             image_data = data.get('image_data', '')
             
-            # Decode image data to get size (but don't store it)
+            # Decode image data and display
             try:
                 img_bytes = base64.b64decode(image_data)
                 img_size = len(img_bytes)
-            except:
+                
+                # Display image
+                if img_size > 0:
+                    self._display_image_fast(img_bytes, client_addr, image_id)
+                    
+            except Exception as e:
                 img_size = -1
+                print(f"⚠️ FakeWS: Error decoding image from {client_addr}: {e}")
                 
             print(f"✅ FakeWS: Valid upload from {client_addr}")
             print(f"   🌐 server: {self.host}:{self.port}")
@@ -285,6 +294,34 @@ class FakeWebSocketServer:
             return False
             
         return True
+    
+    def _display_image_fast(self, img_bytes: bytes, client_addr: str, image_id: str):
+        """Fast, non-blocking image display using OpenCV"""
+        try:
+            # Convert bytes to numpy array and decode image
+            img_array = np.frombuffer(img_bytes, dtype=np.uint8)
+            img = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            
+            if img is None:
+                return
+            
+            # Create window once
+            window_name = "Lumotag Images"
+            if not self.opencv_window_created:
+                cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
+                cv2.resizeWindow(window_name, 800, 600)
+                self.opencv_window_created = True
+            
+            # Add overlay text
+            overlay_text = f"{client_addr} | {image_id} | {img.shape[1]}x{img.shape[0]}"
+            cv2.putText(img, overlay_text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+            
+            # Display image
+            cv2.imshow(window_name, img)
+            cv2.waitKey(1)
+            
+        except Exception as e:
+            print(f"❌ FakeWS: Error displaying image: {e}")
     
     def _generate_random_player_status(self, player_id: int) -> events.PlayerStatus:
         """Generate random PlayerStatus data for testing"""
@@ -545,6 +582,7 @@ try:
     _auto_server = get_fake_server()
     if _auto_server.is_running:
         print(f"✅ FakeWS: Ready! Use URL: {_auto_server.get_url()}")
+        print(f"🖼️ FakeWS: Images will be displayed in OpenCV window")
         FAKE_WEBSOCKET_URL = _auto_server.get_url()
     else:
         print("⚠️ FakeWS: Server failed to start, using fallback URL")
