@@ -8,7 +8,7 @@ import datetime
 import time
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
-from comms import WebSocketImageComms, WebSocketEventsComms
+# from comms import WebSocketImageComms, WebSocketEventsComms
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
