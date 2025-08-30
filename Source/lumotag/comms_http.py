@@ -13,7 +13,7 @@ from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
 from lumotag_events import UploadRequest
-
+from utils import time_it
 import lumotag_events
 import inspect
 from pydantic import BaseModel
@@ -183,7 +183,8 @@ class HTTPComms(AbstractHTTPComms):
             return self._is_connected
     
     def get_latest_gamestate(self):
-        """Get most recent game state (non-blocking, thread-safe)"""
+        """Get most recent game state (non-blocking, thread-safe)
+        Returns validated GameUpdate Pydantic object"""
         with self._gamestate_lock:
             return self._latest_gamestate
 
@@ -251,8 +252,23 @@ class HTTPComms(AbstractHTTPComms):
 
     def _upload_worker(self) -> None:
         """Upload worker thread - handles HTTP POST requests for images"""
-        session = requests.Session()  # Reuse connections for better performance
-        session.timeout = self.upload_timeout  # Configurable timeout for uploads
+        # Optimized session for fast image uploads
+        session = requests.Session()
+        session.headers.update({
+            "X-User-ID": self.user_id,
+            "X-Device-Name": self.OS_friendly_name,
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"  # Keep connections open
+        })
+        
+        # Configure connection pooling for speed
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=1,    # Only need 1 connection to image server
+            pool_maxsize=1,        # Keep 1 connection alive
+            max_retries=0          # No retries - fail fast
+        )
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         
         try:
             while True:
@@ -290,17 +306,10 @@ class HTTPComms(AbstractHTTPComms):
                     }
                     
 
-                    # HTTP POST request with user identification in headers
-                    headers = {
-                        "X-User-ID": self.user_id,
-                        "X-Device-Name": self.OS_friendly_name,
-                        "Content-Type": "application/json"
-                    }
-                    
+                    # Fast HTTP POST - headers already set in session
                     response = session.post(
                         self.images_url,
                         json=post_data,
-                        headers=headers,
                         timeout=self.upload_timeout
                     )
                     
@@ -317,10 +326,15 @@ class HTTPComms(AbstractHTTPComms):
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Image upload failed: HTTP {response.status_code}")
                         
+                except requests.exceptions.Timeout:
+                    # Timeout - keep image for retry, mark disconnected, no log spam
+                    self._set_connected(False)
+                    time.sleep(0.1)  # Shorter delay for faster recovery
+                    
                 except requests.exceptions.RequestException as e:
                     # Network error - keep image for retry and mark as disconnected
                     self._set_connected(False)
-                    time.sleep(0.5)  # Small delay to prevent tight retry loops
+                    time.sleep(0.1)  # Shorter delay for faster recovery
                     print(f"⚠️ Image upload network error: {e}")
                     
                 except Exception as e:
@@ -337,8 +351,23 @@ class HTTPComms(AbstractHTTPComms):
 
     def _events_worker(self) -> None:
         """Events worker thread - handles HTTP POST requests for events"""
-        session = requests.Session()  # Reuse connections
-        session.timeout = 2.0  # Shorter timeout for events (more frequent)
+        # Optimized session for fast event sending
+        session = requests.Session()
+        session.headers.update({
+            "X-User-ID": self.user_id,
+            "X-Device-Name": self.OS_friendly_name,
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"  # Keep connections open
+        })
+        
+        # Configure connection pooling for speed
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=1,    # Only need 1 connection to events server
+            pool_maxsize=1,        # Keep 1 connection alive
+            max_retries=0          # No retries - fail fast
+        )
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         
         try:
             while True:
@@ -354,18 +383,11 @@ class HTTPComms(AbstractHTTPComms):
                         "timestamp": time.time()
                     }
                     
-                    # HTTP POST request with user identification in headers
-                    headers = {
-                        "X-User-ID": self.user_id,
-                        "X-Device-Name": self.OS_friendly_name,
-                        "Content-Type": "application/json"
-                    }
-                    
+                    # Fast HTTP POST - headers already set in session
                     response = session.post(
                         self.events_url,
                         json=post_data,
-                        headers=headers,
-                        timeout=2.0
+                        timeout=0.2  # Fast timeout for events (200ms)
                     )
                     
                     # Check response
@@ -378,10 +400,14 @@ class HTTPComms(AbstractHTTPComms):
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Event send failed: HTTP {response.status_code}")
                         
+                except requests.exceptions.Timeout:
+                    # Timeout - mark disconnected, no log spam for frequent events
+                    self._set_connected(False)
+                    
                 except requests.exceptions.RequestException as e:
                     # Network error - mark as disconnected
                     self._set_connected(False)
-                    time.sleep(0.5)  # Small delay to prevent tight retry loops
+                    time.sleep(0.1)  # Shorter delay for faster recovery
                     # Don't print every network error to avoid spam
                     if self._last_events_error_time is None or time.time() - self._last_events_error_time > 10.0:
                         print(f"⚠️ Events network error: {e}")
@@ -401,32 +427,46 @@ class HTTPComms(AbstractHTTPComms):
 
     def _gamestate_worker(self) -> None:
         """Gamestate worker thread - polls server for game updates every poll_interval"""
-        from lumotag_events import GameUpdate
         
-        session = requests.Session()  # Reuse connections
-        session.timeout = 2.0  # Timeout for gamestate requests
+        # Optimized session for fast polling
+        session = requests.Session()
+        session.headers.update({
+            "X-User-ID": self.user_id,
+            "X-Device-Name": self.OS_friendly_name,
+            "Connection": "keep-alive",  # Keep connections open
+            "Cache-Control": "no-cache"   # Don't cache responses
+        })
+        
+        # Configure connection pooling for speed
+        adapter = requests.adapters.HTTPAdapter(
+            pool_connections=1,    # Only need 1 connection to gamestate server
+            pool_maxsize=1,        # Keep 1 connection alive
+            max_retries=0          # No retries - fail fast
+        )
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
         
         try:
             while True:
                 try:
-                    # HTTP GET request for game state
-                    headers = {
-                        "X-User-ID": self.user_id,
-                        "X-Device-Name": self.OS_friendly_name,
-                    }
-                    
-                    response = session.get(
-                        self.gamestate_url,
-                        headers=headers,
-                        timeout=2.0
-                    )
+                    # Fast HTTP GET with minimal timeout for LAN
+                    with time_it("get gamestate", debug=True):
+                        response = session.get(
+                            self.gamestate_url,
+                            timeout=0.1  # 100ms timeout for LAN - fail fast
+                        )
                     
                     # Check response - only accept 200 OK
                     if response.status_code == 200:
-                        # Parse and validate response as GameUpdate
+                        # Parse and validate response as GameUpdate (Pydantic validation kept for strict data integrity)
                         try:
-                            gamestate_data = response.json()
-                            game_update = GameUpdate(**gamestate_data)
+                            from lumotag_events import GameUpdate
+                            
+                            with time_it("json parse", debug=True):
+                                gamestate_data = response.json()
+                            
+                            with time_it("pydantic validation", debug=True):
+                                game_update = GameUpdate(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
                             
                             # Store validated game state
                             with self._gamestate_lock:
@@ -436,24 +476,26 @@ class HTTPComms(AbstractHTTPComms):
                             
                         except Exception as e:
                             # JSON parsing or validation error - this is a serious issue
-                            raise RuntimeError(f"Invalid gamestate response format: {e}") from e
+                            print(f"⚠️ Invalid gamestate response format: {e}")
+                            self._set_connected(False)
                             
                     else:
-                        # Any non-200 response is an error - mark as disconnected and apply delay
+                        # Any non-200 response is an error - mark as disconnected
                         self._set_connected(False)
-                        time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Gamestate fetch failed: HTTP {response.status_code}")
+                        # Don't call raise_for_status() - it's slow and unnecessary
                         
-                        # Raise for status to trigger proper error handling for 3xx, 4xx, 5xx
-                        response.raise_for_status()
-                        
+                except requests.exceptions.Timeout:
+                    # Timeout - mark as disconnected but don't spam logs
+                    self._set_connected(False)
+                    
                 except requests.exceptions.RequestException as e:
                     # Network error - mark as disconnected
                     self._set_connected(False)
-                    time.sleep(0.5)  # Small delay to prevent tight retry loops
                     print(f"⚠️ Gamestate network error: {e}")
                     
                 except Exception as e:
+                    # Unexpected error - reraise to be caught by outer handler
                     raise
                 
                 # Wait for next poll cycle

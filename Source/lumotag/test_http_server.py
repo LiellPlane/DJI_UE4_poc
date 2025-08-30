@@ -134,9 +134,15 @@ class GameTestServer(BaseHTTPRequestHandler):
             "map": "urban_warfare"
         }
         
-        print(f"[{timestamp}] 🎮 Gamestate request - returning {len(self.players_data)} players")
-        for player in self.players_data:
-            print(f"    👤 {player['display_name']}: HP={player['health']}, Ammo={player['ammo']}")
+        # Minimal logging for performance - only log occasionally
+        if hasattr(self, '_gamestate_counter'):
+            self._gamestate_counter += 1
+        else:
+            self._gamestate_counter = 1
+            
+        # Only log every 10th request to reduce console spam
+        if self._gamestate_counter % 10 == 0:
+            print(f"[{timestamp}] 🎮 Gamestate request #{self._gamestate_counter} - returning {len(self.players_data)} players")
         
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
