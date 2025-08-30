@@ -177,9 +177,9 @@ def main():
     comms.append(HTTPComms(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-        images_url="http://localhost:8080/api/v1/images/upload",
-        events_url="http://localhost:8080/api/v1/events",
-        gamestate_url="http://localhost:8080/api/v1/gamestate",
+        images_url="http://LIELLOMEN:8080/api/v1/images/upload",
+        events_url="http://LIELLOMEN:8080/api/v1/events",
+        gamestate_url="http://LIELLOMEN:8080/api/v1/gamestate",
         OS_friendly_name="shortrange_img_uploader",
         user_id="player_1",
         upload_timeout=1.0,
@@ -554,7 +554,6 @@ def main():
                     for img_uploader in comms:
                         for img_id in imageIDs:
                             img_uploader.upload_image_by_id(img_id)
-                            print(f"upload queue size: {img_uploader.get_upload_queue_size()}")
                 else:
                     for img_uploader in comms:
                         # get rid of uninteresting images
