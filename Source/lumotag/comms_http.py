@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from abc import ABC, abstractmethod
 
 
-class AbstractImageComms(ABC):
+class AbstractHTTPComms(ABC):
     @abstractmethod
     def __init__(self, sharedmem_buffs: dict, safe_mem_details_func: Callable, base_url: str, OS_friendly_name: str):
         pass
@@ -46,7 +46,7 @@ class AbstractImageComms(ABC):
         pass
 
 
-class HTTPComms(AbstractImageComms):
+class HTTPComms(AbstractHTTPComms):
     """Ultra-lightweight, threaded HTTP uploader for grayscale frames from shared memory.
 
     Design goals:
@@ -239,8 +239,7 @@ class HTTPComms(AbstractImageComms):
                     self.ImageMem[embedded_id] = img_copy
                     # Remove oldest images if cache is full (FIFO eviction)
                     while len(self.ImageMem) > self.max_cached_images:
-                        oldest_image_id, _ = self.ImageMem.popitem(last=False)
-                        print(f"📦 Cache full: dropped oldest image {oldest_image_id}")
+                        _ , _ = self.ImageMem.popitem(last=False)
                         
         except Exception as e:
             tb_str = traceback.format_exc()

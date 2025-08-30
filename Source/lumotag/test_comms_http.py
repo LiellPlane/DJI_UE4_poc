@@ -466,6 +466,43 @@ try:
     
     print("✅ Non-existent server handling test completed")
     
+    # Test 7: Gamestate Retrieval
+    print("\n📝 Test 7: Gamestate Retrieval (Client-side)...")
+    
+    # Give the gamestate thread time to poll and store data
+    time.sleep(1.0)  # Wait for at least one gamestate poll cycle
+    
+    # Get the latest gamestate from the client
+    latest_gamestate = http_comms.get_latest_gamestate()
+    
+    if latest_gamestate is None:
+        raise AssertionError("No gamestate retrieved from server")
+    
+    # Verify it's a proper GameUpdate object
+    from lumotag_events import GameUpdate
+    if not isinstance(latest_gamestate, GameUpdate):
+        raise AssertionError(f"Expected GameUpdate object, got {type(latest_gamestate)}")
+    
+    # Verify it matches the mock server data
+    expected_players = 2
+    if len(latest_gamestate.players) != expected_players:
+        raise AssertionError(f"Expected {expected_players} players, got {len(latest_gamestate.players)}")
+    
+    # Check specific player data matches mock server
+    player1 = latest_gamestate.players[0]
+    if player1.tag_id != "player1" or player1.health != 100 or player1.ammo != 30:
+        raise AssertionError(f"Player 1 data doesn't match mock server: {player1}")
+    
+    player2 = latest_gamestate.players[1]  
+    if player2.tag_id != "player2" or player2.health != 75 or player2.ammo != 15:
+        raise AssertionError(f"Player 2 data doesn't match mock server: {player2}")
+    
+    print(f"✅ Gamestate retrieved successfully: {len(latest_gamestate.players)} players")
+    print(f"   Player 1: {player1.display_name} (HP: {player1.health}, Ammo: {player1.ammo})")
+    print(f"   Player 2: {player2.display_name} (HP: {player2.health}, Ammo: {player2.ammo})")
+    
+    print("✅ Gamestate retrieval test completed")
+    
     # Test Summary
     print("\n🎉 ALL TESTS PASSED!")
     print(f"📊 Test Results:")
@@ -475,8 +512,8 @@ try:
     print(f"   ✅ Data validation working")
     print(f"   ✅ User identification working")
     print(f"   ✅ Connection state tracking working")
-    print(f"   ✅ Non-existent server handling working")
-    print(f"   ✅ API version mismatch handling working")
+    print(f"   ✅ Non-existent server handling working") 
+    print(f"   ✅ Gamestate retrieval working")
     
 except Exception as e:
     print(f"\n💥 TEST FAILED: {e}")

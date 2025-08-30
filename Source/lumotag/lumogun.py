@@ -6,9 +6,9 @@ from functools import partial
 import queue
 import datetime
 import time
+from comms_http import HTTPComms
 #import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
-# from comms import WebSocketImageComms, WebSocketEventsComms
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
@@ -173,12 +173,18 @@ def main():
 
 
 
-    img_uploaders = []
-    # img_uploaders.append(WebSocketImageComms(
-    #     sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
-    #     safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
-    #     websocket_url = "ws://LiellOMEN.local:8765",
-    #     OS_friendly_name="shortrange_img_uploader"))
+    comms = []
+    comms.append(HTTPComms(
+        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+        images_url="http://localhost:8080/api/v1/images/upload",
+        events_url="http://localhost:8080/api/v1/events",
+        gamestate_url="http://localhost:8080/api/v1/gamestate",
+        OS_friendly_name="shortrange_img_uploader",
+        user_id="player_1",
+        upload_timeout=1.0,
+        poll_interval_seconds=0.3
+    ))
 
     # events_comms = WebSocketEventsComms(
     #     websocket_url = "ws://LiellOMEN.local:8765",
@@ -314,18 +320,16 @@ def main():
             with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure("get next image"):
                 cap_img = next(image_capture_longrange)
                 cap_img_closerange = next(image_capture_shortrange)
-                if len(img_uploaders) > 0:
+                if len(comms) > 0:
                     # use these for uploading images of interest to the server
                     imageIDs.append(factory.decode_image_id(cap_img))
-                    imageIDs.append(factory.decode_image_id(cap_img_closerange))
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis()
-                for img_uploader in img_uploaders:
+                for img_uploader in comms:
                     img_uploader.trigger_capture()
-                    perfmonitor.manual_measure("MsgUploadQueue", img_uploader.get_upload_queue_size())
 
             GUN_CONFIGURATION.loop_wait()
             
@@ -527,15 +531,9 @@ def main():
 
 
                     # check if local variables have been defined
-                    if "img_uploaders" in locals() and "events_comms" in locals():
-                        if not img_uploaders[0].is_connected() and not events_comms.is_connected():
+                    if "comms" in locals():
+                        if not comms[0].is_connected():
                             img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
-                        elif img_uploaders[0].is_connected() != events_comms.is_connected(): # exclusive or
-                            # this should never happen - if it does flash blue? I think this colour is blue
-                            # not particularly useful but it's a good indicator of a problem with the comms libraries,
-                            # as both should have the same connection status
-                            img_processing.draw_border_rectangle(output_image, thickness=10, color=(255, 0, 0))
-
 
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
@@ -553,12 +551,12 @@ def main():
                 if is_trigger_pressed is True:
                     # upload all images during trigger event
                     # 
-                    for img_uploader in img_uploaders:
+                    for img_uploader in comms:
                         for img_id in imageIDs:
                             img_uploader.upload_image_by_id(img_id)
                             print(f"upload queue size: {img_uploader.get_upload_queue_size()}")
                 else:
-                    for img_uploader in img_uploaders:
+                    for img_uploader in comms:
                         # get rid of uninteresting images
                         for img_id in imageIDs:
                             img_uploader.delete_image_by_id(img_id)
