@@ -186,10 +186,6 @@ def main():
         poll_interval_seconds=0.3
     ))
 
-    # events_comms = WebSocketEventsComms(
-    #     websocket_url = "ws://LiellOMEN.local:8765",
-    #     OS_friendly_name="events_comms")
-    
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
         perfmonitor.manual_measure(f"{image_analyser.OS_friendly_name}", 10)
@@ -322,7 +318,9 @@ def main():
                 cap_img_closerange = next(image_capture_shortrange)
                 if len(comms) > 0:
                     # use these for uploading images of interest to the server
+                    # IDs that don't match will be ignored, so just grab all valid ones for now
                     imageIDs.append(factory.decode_image_id(cap_img))
+                    imageIDs.append(factory.decode_image_id(cap_img_closerange))
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
@@ -557,6 +555,7 @@ def main():
                 else:
                     for img_uploader in comms:
                         # get rid of uninteresting images
+                        # might not exist at this point though!!
                         for img_id in imageIDs:
                             img_uploader.delete_image_by_id(img_id)
 
