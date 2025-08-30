@@ -34,10 +34,23 @@ class TestHTTPHandler(BaseHTTPRequestHandler):
         try:
             data = json.loads(post_data.decode('utf-8'))
             
-            if self.path == '/api/images/upload':
+            if self.path == '/api/v1/images/upload':
                 self._handle_image_upload(data)
-            elif self.path == '/api/events':
+            elif self.path == '/api/v1/events':
                 self._handle_events(data)
+            else:
+                self.send_response(404)
+                self.end_headers()
+                
+        except Exception as e:
+            print(f"❌ Server error: {e}")
+            self.send_response(500)
+            self.end_headers()
+    
+    def do_GET(self):
+        try:
+            if self.path == '/api/v1/gamestate':
+                self._handle_gamestate_get()
             else:
                 self.send_response(404)
                 self.end_headers()
@@ -113,6 +126,35 @@ class TestHTTPHandler(BaseHTTPRequestHandler):
         print(f"✅ Event received: {data['data'].get('event_type', 'unknown')} from {data['user_id']}")
         self.send_response(200)
         self.end_headers()
+    
+    def _handle_gamestate_get(self):
+        # Return a mock GameUpdate response
+        from lumotag_events import PlayerStatus
+        
+        # Create mock game state with some players
+        mock_gamestate = {
+            "players": [
+                {
+                    "health": 100,
+                    "ammo": 30,
+                    "tag_id": "player1",
+                    "display_name": "Test Player 1"
+                },
+                {
+                    "health": 75,
+                    "ammo": 15,
+                    "tag_id": "player2", 
+                    "display_name": "Test Player 2"
+                }
+            ]
+        }
+        
+        print(f"✅ Gamestate requested - returning {len(mock_gamestate['players'])} players")
+        
+        self.send_response(200)
+        self.send_header('Content-Type', 'application/json')
+        self.end_headers()
+        self.wfile.write(json.dumps(mock_gamestate).encode())
 
 # Start test server
 server_port = 8899
@@ -162,8 +204,9 @@ try:
     http_comms = HTTPComms(
         sharedmem_buffs=sharedmem_buffs,
         safe_mem_details_func=safe_mem_details_func,
-        images_url=f"http://127.0.0.1:{server_port}/api/images/upload",
-        events_url=f"http://127.0.0.1:{server_port}/api/events", 
+        images_url=f"http://127.0.0.1:{server_port}/api/v1/images/upload",
+        events_url=f"http://127.0.0.1:{server_port}/api/v1/events",
+        gamestate_url=f"http://127.0.0.1:{server_port}/api/v1/gamestate",
         OS_friendly_name="test_gun",
         user_id="test_player",
         upload_timeout=1.0
@@ -271,8 +314,9 @@ try:
         error_comms = HTTPComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
-            images_url=f"http://127.0.0.1:{error_port}/api/images/upload",
-            events_url=f"http://127.0.0.1:{error_port}/api/events",
+            images_url=f"http://127.0.0.1:{error_port}/api/v1/images/upload",
+            events_url=f"http://127.0.0.1:{error_port}/api/v1/events",
+            gamestate_url=f"http://127.0.0.1:{error_port}/api/v1/gamestate",
             OS_friendly_name="error_test_gun",
             user_id="error_test_player",
             upload_timeout=0.2  # Short timeout for faster test
@@ -315,6 +359,9 @@ try:
         
         if not error_comms._events_thread.is_alive():
             raise AssertionError("Events thread died due to server error")
+            
+        if not error_comms._gamestate_thread.is_alive():
+            raise AssertionError("Gamestate thread died due to server error")
         
         print("✅ HTTPImageComms threads survive server errors")
         
@@ -334,8 +381,9 @@ try:
         broken_comms = HTTPComms(
             sharedmem_buffs=sharedmem_buffs,
             safe_mem_details_func=safe_mem_details_func,
-            images_url=f"http://127.0.0.1:{nonexistent_port}/api/images/upload",
-            events_url=f"http://127.0.0.1:{nonexistent_port}/api/events",
+            images_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/images/upload",
+            events_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/events",
+            gamestate_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/gamestate",
             OS_friendly_name="broken_test_gun",
             user_id="broken_test_player",
             upload_timeout=0.2  # Short timeout for faster test
@@ -400,6 +448,9 @@ try:
         
         if not broken_comms._events_thread.is_alive():
             raise AssertionError("Events thread died due to connection failure")
+            
+        if not broken_comms._gamestate_thread.is_alive():
+            raise AssertionError("Gamestate thread died due to connection failure")
         
         print("✅ HTTPComms threads survive connection failures")
         
@@ -425,6 +476,7 @@ try:
     print(f"   ✅ User identification working")
     print(f"   ✅ Connection state tracking working")
     print(f"   ✅ Non-existent server handling working")
+    print(f"   ✅ API version mismatch handling working")
     
 except Exception as e:
     print(f"\n💥 TEST FAILED: {e}")

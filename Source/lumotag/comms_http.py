@@ -51,7 +51,7 @@ class HTTPComms(AbstractImageComms):
 
     Design goals:
     - Use HTTP POST requests instead of WebSocket
-    - Three separate threads: capture, image upload, event sending
+    - Four separate threads: capture, image upload, event sending, gamestate polling
     - No busy waiting; block on queues
     - Keep a bounded cache of most recent frames (raw grayscale)
     - Encode and POST only on explicit request
@@ -72,18 +72,22 @@ class HTTPComms(AbstractImageComms):
         safe_mem_details_func: Callable[[], SharedMem_ImgTicket],
         images_url: str,
         events_url: str,
+        gamestate_url: str,
         OS_friendly_name: str,
         user_id: str = None,
         upload_timeout: float = 0.5,
+        poll_interval_seconds: float = 0.3,
     ) -> None:
         self.sharedmem_bufs = sharedmem_buffs
         self.safe_mem_details_func = safe_mem_details_func
         self.images_url = images_url.rstrip('/')  # Remove trailing slash
         self.events_url = events_url.rstrip('/')  # Remove trailing slash
+        self.gamestate_url = gamestate_url.rstrip('/')  # Remove trailing slash
         self.OS_friendly_name = OS_friendly_name
         self.user_id = user_id or OS_friendly_name  # Default to OS_friendly_name if no user_id
         self.upload_timeout = upload_timeout
         self.max_cached_images = 100  # Maximum number of images to keep in memory before dropping oldest
+        self.poll_interval_seconds = poll_interval_seconds
 
         # Keep raw grayscale frames by embedded image id
         self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
@@ -94,6 +98,10 @@ class HTTPComms(AbstractImageComms):
         self._connection_lock = threading.Lock()
         self._last_success_time = time.time()
         self._last_events_error_time = None  # Initialize to avoid linter error
+        
+        # Game state tracking (thread-safe)
+        self._latest_gamestate = None
+        self._gamestate_lock = threading.Lock()
         
 
         
@@ -112,15 +120,17 @@ class HTTPComms(AbstractImageComms):
         # Error checking counter
         self._error_check_counter = 0
         
-        # Three worker threads
+        # Worker threads
         self._capture_thread = threading.Thread(target=self._capture_loop, name="http-capture", daemon=True)
         self._upload_thread = threading.Thread(target=self._upload_worker, name="http-upload", daemon=True)
         self._events_thread = threading.Thread(target=self._events_worker, name="http-events", daemon=True)
+        self._gamestate_thread = threading.Thread(target=self._gamestate_worker, name="http-gamestate", daemon=True)
         
         # Start all threads
         self._capture_thread.start()
         self._upload_thread.start()
         self._events_thread.start()
+        self._gamestate_thread.start()
         
         # Give threads time to start up before constructor returns
         time.sleep(0.1)
@@ -171,6 +181,11 @@ class HTTPComms(AbstractImageComms):
         """Check if currently connected - thread-safe"""
         with self._connection_lock:
             return self._is_connected
+    
+    def get_latest_gamestate(self):
+        """Get most recent game state (non-blocking, thread-safe)"""
+        with self._gamestate_lock:
+            return self._latest_gamestate
 
     def _set_connected(self, connected: bool) -> None:
         """Internal method to update connection state - thread-safe"""
@@ -194,6 +209,8 @@ class HTTPComms(AbstractImageComms):
             raise RuntimeError("Upload worker thread died silently (no exception caught)")
         if not self._events_thread.is_alive():
             raise RuntimeError("Events worker thread died silently (no exception caught)")
+        if not self._gamestate_thread.is_alive():
+            raise RuntimeError("Gamestate worker thread died silently (no exception caught)")
 
     def _get_event_types(self):
         """Dynamically get all Pydantic model classes from lumotag_events module (called once at startup)"""
@@ -374,6 +391,74 @@ class HTTPComms(AbstractImageComms):
                 except Exception as e:
                     # Other errors - log and continue
                     print(f"⚠️ Event send error: {e}")
+                    
+        except Exception as e:
+            tb_str = traceback.format_exc()
+            try:
+                self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
+            except Exception:
+                pass
+            return
+
+    def _gamestate_worker(self) -> None:
+        """Gamestate worker thread - polls server for game updates every poll_interval"""
+        from lumotag_events import GameUpdate
+        
+        session = requests.Session()  # Reuse connections
+        session.timeout = 2.0  # Timeout for gamestate requests
+        
+        try:
+            while True:
+                try:
+                    # HTTP GET request for game state
+                    headers = {
+                        "X-User-ID": self.user_id,
+                        "X-Device-Name": self.OS_friendly_name,
+                    }
+                    
+                    response = session.get(
+                        self.gamestate_url,
+                        headers=headers,
+                        timeout=2.0
+                    )
+                    
+                    # Check response - only accept 200 OK
+                    if response.status_code == 200:
+                        # Parse and validate response as GameUpdate
+                        try:
+                            gamestate_data = response.json()
+                            game_update = GameUpdate(**gamestate_data)
+                            
+                            # Store validated game state
+                            with self._gamestate_lock:
+                                self._latest_gamestate = game_update
+                            
+                            self._set_connected(True)  # Success - mark as connected
+                            
+                        except Exception as e:
+                            # JSON parsing or validation error - this is a serious issue
+                            raise RuntimeError(f"Invalid gamestate response format: {e}") from e
+                            
+                    else:
+                        # Any non-200 response is an error - mark as disconnected and apply delay
+                        self._set_connected(False)
+                        time.sleep(0.5)  # Small delay to prevent tight retry loops
+                        print(f"⚠️ Gamestate fetch failed: HTTP {response.status_code}")
+                        
+                        # Raise for status to trigger proper error handling for 3xx, 4xx, 5xx
+                        response.raise_for_status()
+                        
+                except requests.exceptions.RequestException as e:
+                    # Network error - mark as disconnected
+                    self._set_connected(False)
+                    time.sleep(0.5)  # Small delay to prevent tight retry loops
+                    print(f"⚠️ Gamestate network error: {e}")
+                    
+                except Exception as e:
+                    raise
+                
+                # Wait for next poll cycle
+                time.sleep(self.poll_interval_seconds)
                     
         except Exception as e:
             tb_str = traceback.format_exc()
