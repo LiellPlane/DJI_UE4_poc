@@ -535,11 +535,13 @@ def main():
                     if "comms" in locals():
                         if not comms[0].is_connected():
                             img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
-                            
+                            players["testself"].set_healthpoints(None)
                         else:
                         # probably shoudl get the player card here
-                            if (my_stats := comms[0].get_latest_gamestate().players.get("testself")) is not None:
-                                players["testself"].set_healthpoints(my_stats.health)
+                            if comms[0].get_latest_gamestate() is not None:
+                                players["testself"].set_healthpoints(
+                                    comms[0].get_latest_gamestate().players.get("testself").health
+                                    )
 
 
                     if is_trigger_pressed:

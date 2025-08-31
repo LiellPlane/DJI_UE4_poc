@@ -429,18 +429,19 @@ class PlayerInfoBoxv2:
                 )  
 
 
-
-
     def get_healthpoints(self):
         
-        if self.healthpoints < 0:
+        if self.healthpoints is None:
+            return None
+        if self.healthpoints < 1:
             self.healthpoints = self.max_healthpoints
         return self.healthpoints
 
     def update_healthpoints(self, diff: int):
-        self.healthpoints = self.healthpoints + diff
+        if self.healthpoints is not None:
+            self.healthpoints = self.healthpoints + diff
 
-    def set_healthpoints(self, new_hps: int):
+    def set_healthpoints(self, new_hps: Optional[int]):
         self.healthpoints = new_hps
 
     def get_max_min_healthpoints(self)->tuple[int, int]:
@@ -2046,9 +2047,12 @@ class LumoUI:
         
 
         # plop in the ammo section
-        if health_pts is not None:
+        if health_pts is None:
+            number_img = self.get_number_img("NONE", self.statusbar_area_HEALTH)
+        else:
             number_img = self.get_number_img(health_pts, self.statusbar_area_HEALTH)
-            self.statusbar_area_HEALTH.implant_image(self.statusbar_img, number_img)
+        self.statusbar_area_HEALTH.implant_image(self.statusbar_img, number_img)
+
         if ammo is not None:
             
             number_img = self.get_number_img(ammo, self.statusbar_area_AMMO)
@@ -2179,6 +2183,10 @@ class LumoUI:
             composite[top_offset:h+top_offset, width_offset:w+ width_offset][mask] = isolated_number[mask]
 
             self._numberstatus_cache[str(i) + area.name] = composite
+
+            # When we need a blank area
+            if str("NONE" + area.name) not in self._numberstatus_cache:
+                self._numberstatus_cache["NONE"+ area.name] = background.copy()
             # cv2.imshow(f'Character Debug', self._numberstatus_cache[str(i) + area.name] )
             # cv2.waitKey(0)
         print(f"total size for ammo image cache = {round(self.get_image_cache_size_mb(self._numberstatus_cache))} Mb")
