@@ -335,8 +335,11 @@ class FakeWebSocketServer:
     
     def _generate_game_update(self) -> events.GameUpdate:
         """Generate a GameUpdate with 5 random PlayerStatus objects"""
-        players = [self._generate_random_player_status(i) for i in range(1, 6)]
-        return events.GameUpdate(players=players)
+        players_dict = {}
+        for i in range(1, 6):
+            player = self._generate_random_player_status(i)
+            players_dict[player.tag_id] = player
+        return events.GameUpdate(players=players_dict)
     
     async def _broadcast_game_update(self):
         """Broadcast GameUpdate to bidirectional clients only (not image-only clients)"""

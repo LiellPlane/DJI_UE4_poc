@@ -12,7 +12,6 @@ import requests
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
-from lumotag_events import UploadRequest
 from utils import time_it
 import lumotag_events
 import inspect
@@ -294,7 +293,7 @@ class HTTPComms(AbstractHTTPComms):
                         raise RuntimeError(f"JPEG encode failed for {image_id} - corrupt image data")
 
                     # Create upload request
-                    upload_request = UploadRequest(image_id=image_id)
+                    upload_request = lumotag_events.UploadRequest(image_id=image_id)
                     
                     # Prepare HTTP POST data
                     post_data = {
@@ -450,23 +449,18 @@ class HTTPComms(AbstractHTTPComms):
             while True:
                 try:
                     # Fast HTTP GET with minimal timeout for LAN
-                    with time_it("get gamestate", debug=True):
-                        response = session.get(
-                            self.gamestate_url,
-                            timeout=0.1  # 100ms timeout for LAN - fail fast
-                        )
+                    response = session.get(
+                        self.gamestate_url,
+                        timeout=0.1  # 100ms timeout for LAN - fail fast
+                    )
                     
                     # Check response - only accept 200 OK
                     if response.status_code == 200:
                         # Parse and validate response as GameUpdate (Pydantic validation kept for strict data integrity)
                         try:
-                            from lumotag_events import GameUpdate
-                            
-                            with time_it("json parse", debug=True):
-                                gamestate_data = response.json()
-                            
-                            with time_it("pydantic validation", debug=True):
-                                game_update = GameUpdate(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
+                            gamestate_data = response.json()
+                        
+                            game_update = lumotag_events.GameUpdate(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
                             
                             # Store validated game state
                             with self._gamestate_lock:

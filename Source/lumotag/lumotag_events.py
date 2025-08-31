@@ -18,7 +18,7 @@ class PlayerStatus(BaseModel):
 
 
 class GameUpdate(BaseModel):
-    players: list[PlayerStatus]
+    players: dict[str, PlayerStatus]  # Key is player's tag_id
     event_type: str = Field(default_factory=lambda: "GameUpdate", description="Event type identifier")
 
 

@@ -1327,14 +1327,14 @@ def test_event_comms():
                     display_name=f"Player{random.randint(1, 10)}"
                 ),
                 lambda: GameUpdate(
-                    players=[
-                        PlayerStatus(
+                    players={
+                        f"p{i}": PlayerStatus(
                             health=random.randint(50, 100),
                             ammo=random.randint(10, 30),
                             tag_id=f"p{i}",
                             display_name=f"Player{i}"
                         ) for i in range(random.randint(1, 4))
-                    ]
+                    }
                 ),
                 lambda: PlayerTagged(
                     tag_id=f"target_{random.randint(1, 5)}",
@@ -1483,10 +1483,10 @@ def test_event_comms():
         # Send some test events from client to server
         test_events = [
             PlayerStatus(health=75, ammo=15, tag_id="test_player1", display_name="Test Player 1"),
-            GameUpdate(players=[
-                PlayerStatus(health=100, ammo=30, tag_id="test_player2", display_name="Test Player 2"),
-                PlayerStatus(health=50, ammo=10, tag_id="test_player3", display_name="Test Player 3")
-            ]),
+            GameUpdate(players={
+                "test_player2": PlayerStatus(health=100, ammo=30, tag_id="test_player2", display_name="Test Player 2"),
+                "test_player3": PlayerStatus(health=50, ammo=10, tag_id="test_player3", display_name="Test Player 3")
+            }),
             PlayerTagged(tag_id="test_target", image_ids=["test_img_001", "test_img_002"])
         ]
         
