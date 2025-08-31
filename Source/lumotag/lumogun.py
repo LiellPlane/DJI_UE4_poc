@@ -254,7 +254,7 @@ def main():
             avatar_canvas= HeightWidth(60,60), # get this from the status bar class
             info_box = HeightWidth(60,60)
         ),
-        "me":
+        "testself":
         factory.LocalPlayerCard(
             playername="self"
         ),
@@ -358,7 +358,7 @@ def main():
                 # here we check the torch debouncer and the input trigger
                 # if we see that we have no energy we disable torch
                 # update torch with latest energy
-                players["me"].torch_energy_update(is_torch_reqd) # this isnt quite right as needs to ask debouncer if can use torch
+                players["testself"].torch_energy_update(is_torch_reqd) # this isnt quite right as needs to ask debouncer if can use torch
                 #if players["me"].get_torch_energy() < 5:
                 #    is_torch_reqd = False
 
@@ -378,7 +378,7 @@ def main():
                 # any other behaviour during refractory period is ignored
                 is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                 if is_trigger_pressed is True:
-                    players["me"].update_ammo(-1)
+                    players["testself"].update_ammo(-1)
                     #file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     #file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     #voice.speak("wut")
@@ -513,9 +513,9 @@ def main():
                     status_bar.load_player_image(players["demoplayer"].col_image, fade_norm)
                     status_bar.draw_status_bar(
                         output_image,
-                        players["me"].ammo,
-                        players["me"].get_normalised_torchenergy(),
-                        players["me"].get_healthpoints()
+                        players["testself"].ammo,
+                        players["testself"].get_normalised_torchenergy(),
+                        players["testself"].get_healthpoints()
                         )
                     # status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
                     # original display output before new UI stuff (doom bar, graphic meters)

@@ -15,6 +15,7 @@ import base64
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
+from lumotag_events import GameUpdate, PlayerStatus
 import sys
 
 
@@ -22,26 +23,26 @@ class GameTestServer(BaseHTTPRequestHandler):
     # Class variables to track server state
     images_received = []
     events_received = []
-    players_data = [
-        {
-            "health": 100,
-            "ammo": 30,
-            "tag_id": "player_001",
-            "display_name": "Alpha Warrior"
-        },
-        {
-            "health": 85,
-            "ammo": 22,
-            "tag_id": "player_002", 
-            "display_name": "Beta Sniper"
-        },
-        {
-            "health": 95,
-            "ammo": 18,
-            "tag_id": "player_003",
-            "display_name": "Gamma Scout"
-        }
-    ]
+    players_data = {
+        "player_001": PlayerStatus(
+            health=100,
+            ammo=30,
+            tag_id="player_001",
+            display_name="Alpha Warrior"
+        ),
+        "player_002": PlayerStatus(
+            health=85,
+            ammo=22,
+            tag_id="player_002", 
+            display_name="Beta Sniper"
+        ),
+        "player_003": PlayerStatus(
+            health=95,
+            ammo=18,
+            tag_id="player_003",
+            display_name="Gamma Scout"
+        )
+    }
     
     def log_message(self, format, *args):
         """Custom logging with timestamps"""
@@ -116,23 +117,28 @@ class GameTestServer(BaseHTTPRequestHandler):
         
         # Simulate some dynamic game state changes
         current_time = time.time()
-        for player in self.players_data:
+        for tag_id, player in self.players_data.items():
             # Simulate health/ammo changes over time
-            base_health = 100 if player["tag_id"] == "player_001" else (85 if player["tag_id"] == "player_002" else 95)
+            base_health = 100 if tag_id == "player_001" else (85 if tag_id == "player_002" else 95)
             health_variation = int(10 * (0.5 - (current_time % 10) / 20))  # +/- 5 health variation
-            player["health"] = max(10, min(100, base_health + health_variation))
+            new_health = max(10, min(100, base_health + health_variation))
             
             # Simulate ammo consumption
             ammo_consumed = int(current_time / 5) % 5  # Consume ammo over time
-            base_ammo = 30 if player["tag_id"] == "player_001" else (22 if player["tag_id"] == "player_002" else 18)
-            player["ammo"] = max(0, base_ammo - ammo_consumed)
+            base_ammo = 30 if tag_id == "player_001" else (22 if tag_id == "player_002" else 18)
+            new_ammo = max(0, base_ammo - ammo_consumed)
+            
+            # Update player status (create new PlayerStatus since Pydantic models are immutable)
+            self.players_data[tag_id] = PlayerStatus(
+                health=new_health,
+                ammo=new_ammo,
+                tag_id=player.tag_id,
+                display_name=player.display_name
+            )
         
-        gamestate_response = {
-            "players": self.players_data.copy(),
-            "server_time": current_time,
-            "game_mode": "team_deathmatch",
-            "map": "urban_warfare"
-        }
+        # Create proper GameUpdate response using Pydantic model
+        game_update = GameUpdate(players=self.players_data.copy())
+        gamestate_response = game_update.model_dump()
         
         # Minimal logging for performance - only log occasionally
         if hasattr(self, '_gamestate_counter'):
@@ -318,7 +324,7 @@ class GameTestServer(BaseHTTPRequestHandler):
             },
             "game_state": {
                 "active_players": len(GameTestServer.players_data),
-                "players": GameTestServer.players_data.copy()
+                "players": {tag_id: player.model_dump() for tag_id, player in GameTestServer.players_data.items()}
             }
         }
         

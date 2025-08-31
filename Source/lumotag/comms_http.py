@@ -181,7 +181,7 @@ class HTTPComms(AbstractHTTPComms):
         with self._connection_lock:
             return self._is_connected
     
-    def get_latest_gamestate(self):
+    def get_latest_gamestate(self) -> lumotag_events.GameUpdate:
         """Get most recent game state (non-blocking, thread-safe)
         Returns validated GameUpdate Pydantic object"""
         with self._gamestate_lock:
