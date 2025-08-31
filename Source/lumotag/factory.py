@@ -440,6 +440,9 @@ class PlayerInfoBoxv2:
     def update_healthpoints(self, diff: int):
         self.healthpoints = self.healthpoints + diff
 
+    def set_healthpoints(self, new_hps: int):
+        self.healthpoints = new_hps
+
     def get_max_min_healthpoints(self)->tuple[int, int]:
         return self.max_healthpoints, self.min_healthpoints
 

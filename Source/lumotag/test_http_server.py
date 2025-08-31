@@ -24,23 +24,23 @@ class GameTestServer(BaseHTTPRequestHandler):
     images_received = []
     events_received = []
     players_data = {
-        "player_001": PlayerStatus(
+        "testself": PlayerStatus(
             health=100,
             ammo=30,
-            tag_id="player_001",
-            display_name="Alpha Warrior"
+            tag_id="testself",
+            display_name="tinytim"
         ),
         "player_002": PlayerStatus(
             health=85,
             ammo=22,
             tag_id="player_002", 
-            display_name="Beta Sniper"
+            display_name="mongo"
         ),
         "player_003": PlayerStatus(
             health=95,
             ammo=18,
             tag_id="player_003",
-            display_name="Gamma Scout"
+            display_name="dildort"
         )
     }
     
@@ -119,13 +119,22 @@ class GameTestServer(BaseHTTPRequestHandler):
         current_time = time.time()
         for tag_id, player in self.players_data.items():
             # Simulate health/ammo changes over time
-            base_health = 100 if tag_id == "player_001" else (85 if tag_id == "player_002" else 95)
-            health_variation = int(10 * (0.5 - (current_time % 10) / 20))  # +/- 5 health variation
-            new_health = max(10, min(100, base_health + health_variation))
+            if tag_id == "testself":
+                # Make testself health jiggle more noticeably for smoke testing
+                import math
+                base_health = 75
+                # Use sine wave for smooth jiggling + some randomness
+                sine_variation = int(20 * math.sin(current_time * 2))  # +/- 20 health variation
+                random_jitter = int(5 * math.sin(current_time * 7))   # Additional jitter
+                new_health = max(20, min(100, base_health + sine_variation + random_jitter))
+            else:
+                base_health = 85 if tag_id == "player_002" else 95
+                health_variation = int(10 * (0.5 - (current_time % 10) / 20))  # +/- 5 health variation
+                new_health = max(10, min(100, base_health + health_variation))
             
             # Simulate ammo consumption
             ammo_consumed = int(current_time / 5) % 5  # Consume ammo over time
-            base_ammo = 30 if tag_id == "player_001" else (22 if tag_id == "player_002" else 18)
+            base_ammo = 30 if tag_id == "testself" else (22 if tag_id == "player_002" else 18)
             new_ammo = max(0, base_ammo - ammo_consumed)
             
             # Update player status (create new PlayerStatus since Pydantic models are immutable)

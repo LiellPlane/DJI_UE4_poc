@@ -508,6 +508,8 @@ def main():
                 fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
 
 
+
+
                 
                 with time_it("display image", debug=PRINT_DEBUG),  perfmonitor.measure("display"):
                     status_bar.load_player_image(players["demoplayer"].col_image, fade_norm)
@@ -517,6 +519,7 @@ def main():
                         players["testself"].get_normalised_torchenergy(),
                         players["testself"].get_healthpoints()
                         )
+                    
                     # status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
                     # original display output before new UI stuff (doom bar, graphic meters)
                     
@@ -532,6 +535,11 @@ def main():
                     if "comms" in locals():
                         if not comms[0].is_connected():
                             img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
+                        else:
+                        # probably shoudl get the player card here
+                            if (my_stats := comms[0].get_latest_gamestate().players.get("testself")) is not None:
+                                players["testself"].set_healthpoints(my_stats.health)
+
 
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
