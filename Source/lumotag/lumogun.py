@@ -172,19 +172,19 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
 
 
-    game_client =(HTTPComms(
-        sharedmem_buffs_closerange=image_capture_shortrange.get_mem_buffers(),
-        safe_mem_details_func_closerange=image_capture_shortrange.get_safe_mem_details,
-        sharedmem_buffs_longrange=image_capture_longrange.get_mem_buffers(),
-        safe_mem_details_func_longrange=image_capture_longrange.get_safe_mem_details,
-        images_url="http://LIELLOMEN:8080/api/v1/images/upload",
-        events_url="http://LIELLOMEN:8080/api/v1/events",
-        gamestate_url="http://LIELLOMEN:8080/api/v1/gamestate",
-        OS_friendly_name="shortrange_img_uploader",
-        user_id="player_1",
-        upload_timeout=1.0,
-        poll_interval_seconds=0.3
-    ))
+    # game_client =(HTTPComms(
+    #     sharedmem_buffs_closerange=image_capture_shortrange.get_mem_buffers(),
+    #     safe_mem_details_func_closerange=image_capture_shortrange.get_safe_mem_details,
+    #     sharedmem_buffs_longrange=image_capture_longrange.get_mem_buffers(),
+    #     safe_mem_details_func_longrange=image_capture_longrange.get_safe_mem_details,
+    #     images_url="http://LIELLOMEN:8080/api/v1/images/upload",
+    #     events_url="http://LIELLOMEN:8080/api/v1/events",
+    #     gamestate_url="http://LIELLOMEN:8080/api/v1/gamestate",
+    #     OS_friendly_name="shortrange_img_uploader",
+    #     user_id="player_1",
+    #     upload_timeout=1.0,
+    #     poll_interval_seconds=0.3
+    # ))
 
     for image_analyser in image_analysis:
         print("placeholder for analysis time graphs otherwise they get spread out heuristically - put somewhere nicer")
