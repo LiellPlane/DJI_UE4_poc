@@ -21,13 +21,30 @@ from abc import ABC, abstractmethod
 
 class AbstractHTTPComms(ABC):
     @abstractmethod
-    def __init__(self, sharedmem_buffs: dict, safe_mem_details_func: Callable, base_url: str, OS_friendly_name: str):
+    def __init__(
+        self,
+        sharedmem_buffs_closerange: dict,
+        safe_mem_details_func_closerange: Callable[[], SharedMem_ImgTicket],
+        sharedmem_buffs_longrange: dict,
+        safe_mem_details_func_longrange: Callable[[], SharedMem_ImgTicket],
+        images_url: str,
+        events_url: str,
+        gamestate_url: str,
+        OS_friendly_name: str,
+        user_id: str = None,
+        upload_timeout: float = 0.5,
+        poll_interval_seconds: float = 0.3,
+    ) -> None:
         pass
     
     @abstractmethod
     def trigger_capture_close_range(self) -> None:
         pass
-    
+
+    @abstractmethod
+    def trigger_capture_long_range(self) -> None:
+        pass
+
     @abstractmethod
     def get_upload_queue_size(self) -> int:
         pass
@@ -67,8 +84,10 @@ class HTTPComms(AbstractHTTPComms):
 
     def __init__(
         self,
-        sharedmem_buffs: dict,
-        safe_mem_details_func: Callable[[], SharedMem_ImgTicket],
+        sharedmem_buffs_closerange: dict,
+        safe_mem_details_func_closerange: Callable[[], SharedMem_ImgTicket],
+        sharedmem_buffs_longrange: dict,
+        safe_mem_details_func_longrange: Callable[[], SharedMem_ImgTicket],
         images_url: str,
         events_url: str,
         gamestate_url: str,
@@ -77,13 +96,15 @@ class HTTPComms(AbstractHTTPComms):
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.3,
     ) -> None:
-        self.sharedmem_bufs = sharedmem_buffs
-        self.safe_mem_details_func = safe_mem_details_func
+        self.sharedmem_buffs_closerange = sharedmem_buffs_closerange
+        self.safe_mem_details_func_closerange = safe_mem_details_func_closerange
+        self.sharedmem_buffs_longrange = sharedmem_buffs_longrange
+        self.safe_mem_details_func_longrange = safe_mem_details_func_longrange
         self.images_url = images_url.rstrip('/')  # Remove trailing slash
         self.events_url = events_url.rstrip('/')  # Remove trailing slash
         self.gamestate_url = gamestate_url.rstrip('/')  # Remove trailing slash
         self.OS_friendly_name = OS_friendly_name
-        self.user_id = user_id or OS_friendly_name  # Default to OS_friendly_name if no user_id
+        self.user_id = user_id
         self.upload_timeout = upload_timeout
         self.max_cached_images = 100  # Maximum number of images to keep in memory before dropping oldest
         self.poll_interval_seconds = poll_interval_seconds
@@ -139,8 +160,13 @@ class HTTPComms(AbstractHTTPComms):
 
     def trigger_capture_close_range(self) -> None:
         """Trigger capture - will crash if queue is full (performance issue)"""
-        ticket = self.safe_mem_details_func()
+        ticket = self.safe_mem_details_func_closerange()
         self._capture_q_close_range.put_nowait(ticket)  # Will raise queue.Full if queue is full
+
+    def trigger_capture_long_range(self) -> None:
+        """Trigger capture - will crash if queue is full (performance issue)"""
+        ticket = self.safe_mem_details_func_longrange()
+        self._capture_q_long_range.put_nowait(ticket)  # Will raise queue.Full if queue is full
 
     def upload_image_by_id(self, image_id: str) -> None:
         """Queue a specific image ID for upload"""
@@ -229,7 +255,11 @@ class HTTPComms(AbstractHTTPComms):
         """Check if event is an instance of one of the expected event types"""
         return any(isinstance(event, event_type) for event_type in self._cached_event_types)
 
-    def _capture_loop(self, capture_q: threading_queue.Queue) -> None:
+    def _capture_loop(
+            self,
+            capture_q: threading_queue.Queue,
+            sharedmem_bufs: dict,
+            ) -> None:
         """Capture thread - handles image debuffering and copying"""
         try:
             while True:

@@ -295,8 +295,10 @@ try:
     
     # This will connect to our REAL HTTP server
     http_comms = HTTPComms(
-        sharedmem_buffs=sharedmem_buffs,
-        safe_mem_details_func=safe_mem_details_func,
+        sharedmem_buffs_closerange=sharedmem_buffs,
+        safe_mem_details_func_closerange=safe_mem_details_func,
+        sharedmem_buffs_longrange=sharedmem_buffs,
+        safe_mem_details_func_longrange=safe_mem_details_func,
         images_url=f"http://127.0.0.1:{server_port}/api/v1/images/upload",
         events_url=f"http://127.0.0.1:{server_port}/api/v1/events",
         gamestate_url=f"http://127.0.0.1:{server_port}/api/v1/gamestate",
@@ -430,8 +432,10 @@ try:
     try:
         # Create HTTPImageComms pointing to error server
         error_comms = HTTPComms(
-            sharedmem_buffs=sharedmem_buffs,
-            safe_mem_details_func=safe_mem_details_func,
+            sharedmem_buffs_closerange=sharedmem_buffs,
+            safe_mem_details_func_closerange=safe_mem_details_func,
+            sharedmem_buffs_longrange=sharedmem_buffs,
+            safe_mem_details_func_longrange=safe_mem_details_func,
             images_url=f"http://127.0.0.1:{error_port}/api/v1/images/upload",
             events_url=f"http://127.0.0.1:{error_port}/api/v1/events",
             gamestate_url=f"http://127.0.0.1:{error_port}/api/v1/gamestate",
@@ -497,8 +501,10 @@ try:
     try:
         # Create HTTPImageComms pointing to non-existent server
         broken_comms = HTTPComms(
-            sharedmem_buffs=sharedmem_buffs,
-            safe_mem_details_func=safe_mem_details_func,
+            sharedmem_buffs_closerange=sharedmem_buffs,
+            safe_mem_details_func_closerange=safe_mem_details_func,
+            sharedmem_buffs_longrange=sharedmem_buffs,
+            safe_mem_details_func_longrange=safe_mem_details_func,
             images_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/images/upload",
             events_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/events",
             gamestate_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/gamestate",
