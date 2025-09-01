@@ -315,7 +315,7 @@ try:
     
     # Trigger capture and upload to REAL server
     try:
-        http_comms.trigger_capture()
+        http_comms.trigger_capture_close_range()
         time.sleep(0.1)  # Let capture process
         
         # Get captured image IDs and upload one (images are now stored as JPEG bytes)
@@ -443,7 +443,7 @@ try:
         time.sleep(0.1)
         
         # Test image upload to failing server - should not crash
-        error_comms.trigger_capture()
+        error_comms.trigger_capture_close_range()
         time.sleep(0.1)
         
         captured_images = list(error_comms.ImageMem.keys())
@@ -516,7 +516,7 @@ try:
         # print("✅ HTTPComms starts optimistically connected")
         
         # Test image upload to non-existent server
-        broken_comms.trigger_capture()
+        broken_comms.trigger_capture_close_range()
         time.sleep(0.1)
         
         captured_images = list(broken_comms.ImageMem.keys())

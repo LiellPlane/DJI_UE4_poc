@@ -25,7 +25,7 @@ class AbstractHTTPComms(ABC):
         pass
     
     @abstractmethod
-    def trigger_capture(self) -> None:
+    def trigger_capture_close_range(self) -> None:
         pass
     
     @abstractmethod
@@ -58,7 +58,7 @@ class HTTPComms(AbstractHTTPComms):
     - Validate events using lumotag_events types
 
     Public API:
-      - trigger_capture()
+      - trigger_capture_close_range()
       - upload_image_by_id(image_id)
       - delete_image_by_id(image_id) 
       - send_event(event)
@@ -110,6 +110,7 @@ class HTTPComms(AbstractHTTPComms):
         
         # Separate queues for different concerns
         self._capture_q_close_range: threading_queue.Queue = threading_queue.Queue(maxsize=1)
+        self._capture_q_long_range: threading_queue.Queue = threading_queue.Queue(maxsize=1)
         self._upload_q: threading_queue.Queue = threading_queue.Queue(maxsize=15)
         self._events_q: threading_queue.Queue = threading_queue.Queue(maxsize=50)
         self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
@@ -121,12 +122,13 @@ class HTTPComms(AbstractHTTPComms):
         
         # Worker threads
         self._capture_thread_closerange = threading.Thread(target=self._capture_loop, args=(self._capture_q_close_range,), name="http-capture-close-range", daemon=True)
-        # self._capture_thread_longrange = threading.Thread(target=self._capture_loop, args=(self._capture_q_close_range,), name="http-capture-close-range", daemon=True)
+        self._capture_thread_longrange = threading.Thread(target=self._capture_loop, args=(self._capture_q_long_range,), name="http-capture-long-range", daemon=True)
         self._upload_thread = threading.Thread(target=self._upload_worker, name="http-upload", daemon=True)
         self._events_thread = threading.Thread(target=self._events_worker, name="http-events", daemon=True)
         self._gamestate_thread = threading.Thread(target=self._gamestate_worker, name="http-gamestate", daemon=True)
         
         # Start all threads
+        self._capture_thread_longrange.start()
         self._capture_thread_closerange.start()
         self._upload_thread.start()
         self._events_thread.start()
@@ -135,7 +137,7 @@ class HTTPComms(AbstractHTTPComms):
         # Give threads time to start up before constructor returns
         time.sleep(0.1)
 
-    def trigger_capture(self) -> None:
+    def trigger_capture_close_range(self) -> None:
         """Trigger capture - will crash if queue is full (performance issue)"""
         ticket = self.safe_mem_details_func()
         self._capture_q_close_range.put_nowait(ticket)  # Will raise queue.Full if queue is full

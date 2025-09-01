@@ -172,9 +172,7 @@ def main():
         config=configs.get_lumofind_config(PLATFORM)))
 
 
-
-    comms = []
-    comms.append(HTTPComms(
+    game_client =(HTTPComms(
         sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
         images_url="http://LIELLOMEN:8080/api/v1/images/upload",
@@ -316,7 +314,7 @@ def main():
             with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure("get next image"):
                 cap_img = next(image_capture_longrange)
                 cap_img_closerange = next(image_capture_shortrange)
-                if len(comms) > 0:
+                if "game_client" in locals():
                     # use these for uploading images of interest to the server
                     # IDs that don't match will be ignored, so just grab all valid ones for now
                     imageIDs.append(factory.decode_image_id(cap_img))
@@ -326,8 +324,7 @@ def main():
             with time_it("start analysis", debug=PRINT_DEBUG):
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis()
-                for img_uploader in comms:
-                    img_uploader.trigger_capture()
+                game_client.trigger_capture_close_range()
 
             GUN_CONFIGURATION.loop_wait()
             
@@ -532,15 +529,15 @@ def main():
 
 
                     # check if local variables have been defined
-                    if "comms" in locals():
-                        if not comms[0].is_connected():
+                    if "game_client" in locals():
+                        if not game_client.is_connected():
                             img_processing.draw_border_rectangle(output_image, thickness=10, color=(0, 0, 255))
                             players["testself"].set_healthpoints(None)
                         else:
                         # probably shoudl get the player card here
-                            if comms[0].get_latest_gamestate() is not None:
+                            if game_client.get_latest_gamestate() is not None:
                                 players["testself"].set_healthpoints(
-                                    comms[0].get_latest_gamestate().players.get("testself").health
+                                    game_client.get_latest_gamestate().players.get("testself").health
                                     )
 
 
@@ -559,16 +556,11 @@ def main():
 
                 if is_trigger_pressed is True:
                     # upload all images during trigger event
-                    # 
-                    for img_uploader in comms:
-                        for img_id in imageIDs:
-                            img_uploader.upload_image_by_id(img_id)
+                    for img_id in imageIDs:
+                        game_client.upload_image_by_id(img_id)
                 else:
-                    for img_uploader in comms:
-                        # get rid of uninteresting images
-                        # might not exist at this point though!!
-                        for img_id in imageIDs:
-                            img_uploader.delete_image_by_id(img_id)
+                    for img_id in imageIDs:
+                        game_client.delete_image_by_id(img_id)
 
 
                 # if is_trigger_pressed is True:
