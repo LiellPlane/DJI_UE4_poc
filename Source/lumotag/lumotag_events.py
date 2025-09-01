@@ -5,7 +5,6 @@ import time
 class UploadRequest(BaseModel):
     """Pydantic model for validating upload request data"""
     image_id: str = Field(..., description="Unique identifier for the image")
-    timestamp: float = Field(default_factory=time.time, description="Unix timestamp when upload was initiated")
     image_data: str = Field(..., description="Base64 encoded JPEG image data for HTTP transmission")
     event_type: str = Field(default_factory=lambda: "UploadRequest", description="Event type identifier")
 

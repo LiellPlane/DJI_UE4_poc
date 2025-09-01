@@ -109,7 +109,7 @@ class HTTPComms(AbstractHTTPComms):
         self._event_type_map = {cls.__name__: cls for cls in self._cached_event_types}
         
         # Separate queues for different concerns
-        self._capture_q: threading_queue.Queue = threading_queue.Queue(maxsize=1)
+        self._capture_q_close_range: threading_queue.Queue = threading_queue.Queue(maxsize=1)
         self._upload_q: threading_queue.Queue = threading_queue.Queue(maxsize=15)
         self._events_q: threading_queue.Queue = threading_queue.Queue(maxsize=50)
         self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
@@ -120,13 +120,14 @@ class HTTPComms(AbstractHTTPComms):
         self._error_check_counter = 0
         
         # Worker threads
-        self._capture_thread = threading.Thread(target=self._capture_loop, name="http-capture", daemon=True)
+        self._capture_thread_closerange = threading.Thread(target=self._capture_loop, args=(self._capture_q_close_range,), name="http-capture-close-range", daemon=True)
+        # self._capture_thread_longrange = threading.Thread(target=self._capture_loop, args=(self._capture_q_close_range,), name="http-capture-close-range", daemon=True)
         self._upload_thread = threading.Thread(target=self._upload_worker, name="http-upload", daemon=True)
         self._events_thread = threading.Thread(target=self._events_worker, name="http-events", daemon=True)
         self._gamestate_thread = threading.Thread(target=self._gamestate_worker, name="http-gamestate", daemon=True)
         
         # Start all threads
-        self._capture_thread.start()
+        self._capture_thread_closerange.start()
         self._upload_thread.start()
         self._events_thread.start()
         self._gamestate_thread.start()
@@ -137,7 +138,7 @@ class HTTPComms(AbstractHTTPComms):
     def trigger_capture(self) -> None:
         """Trigger capture - will crash if queue is full (performance issue)"""
         ticket = self.safe_mem_details_func()
-        self._capture_q.put_nowait(ticket)  # Will raise queue.Full if queue is full
+        self._capture_q_close_range.put_nowait(ticket)  # Will raise queue.Full if queue is full
 
     def upload_image_by_id(self, image_id: str) -> None:
         """Queue a specific image ID for upload"""
@@ -203,7 +204,7 @@ class HTTPComms(AbstractHTTPComms):
             raise RuntimeError(f"{thread_name} failed: {exc}\n{tb_str}") from exc
         
         # Check for silent thread death
-        if not self._capture_thread.is_alive():
+        if not self._capture_thread_closerange.is_alive():
             raise RuntimeError("Capture thread died silently (no exception caught)")
         if not self._upload_thread.is_alive():
             raise RuntimeError("Upload worker thread died silently (no exception caught)")
@@ -226,18 +227,19 @@ class HTTPComms(AbstractHTTPComms):
         """Check if event is an instance of one of the expected event types"""
         return any(isinstance(event, event_type) for event_type in self._cached_event_types)
 
-    def _capture_loop(self) -> None:
+    def _capture_loop(self, capture_q: threading_queue.Queue) -> None:
         """Capture thread - handles image debuffering and copying"""
         try:
             while True:
-                ticket: SharedMem_ImgTicket = self._capture_q.get()  # Blocks until work available
+                ticket: SharedMem_ImgTicket = capture_q.get()  # Blocks until work available
                 img_view = debuffer_image(self.sharedmem_bufs[ticket.index].buf, ticket.res)
                 embedded_id = decode_image_id(img_view)
-                img_copy = img_view.copy()  # Always make a copy to avoid shared memory issues
+                # might get away without copying - see how it performs
+                # img_copy = img_view.copy()
                 
                 with self._mem_lock:
                     # Encode image as JPEG for storage efficiency
-                    ok, jpeg_buffer = cv2.imencode(".jpg", img_copy)
+                    ok, jpeg_buffer = cv2.imencode(".jpg", img_view)
                     if not ok:
                         raise RuntimeError(f"JPEG encode failed for {embedded_id} - corrupt image data")
                     self.ImageMem[embedded_id] = jpeg_buffer.tobytes()
