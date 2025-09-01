@@ -173,8 +173,10 @@ def main():
 
 
     game_client =(HTTPComms(
-        sharedmem_buffs=image_capture_shortrange.get_mem_buffers(),
-        safe_mem_details_func=image_capture_shortrange.get_safe_mem_details,
+        sharedmem_buffs_closerange=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func_closerange=image_capture_shortrange.get_safe_mem_details,
+        sharedmem_buffs_longrange=image_capture_longrange.get_mem_buffers(),
+        safe_mem_details_func_longrange=image_capture_longrange.get_safe_mem_details,
         images_url="http://LIELLOMEN:8080/api/v1/images/upload",
         events_url="http://LIELLOMEN:8080/api/v1/events",
         gamestate_url="http://LIELLOMEN:8080/api/v1/gamestate",
@@ -325,6 +327,7 @@ def main():
                 for img_analyser in image_analysis:
                     img_analyser.trigger_analysis()
                 game_client.trigger_capture_close_range()
+                game_client.trigger_capture_long_range()
 
             GUN_CONFIGURATION.loop_wait()
             

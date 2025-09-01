@@ -142,8 +142,8 @@ class HTTPComms(AbstractHTTPComms):
         self._error_check_counter = 0
         
         # Worker threads
-        self._capture_thread_closerange = threading.Thread(target=self._capture_loop, args=(self._capture_q_close_range,), name="http-capture-close-range", daemon=True)
-        self._capture_thread_longrange = threading.Thread(target=self._capture_loop, args=(self._capture_q_long_range,), name="http-capture-long-range", daemon=True)
+        self._capture_thread_closerange = threading.Thread(target=self._capture_loop, args=(self._capture_q_close_range,self.sharedmem_buffs_closerange,), name="http-capture-close-range", daemon=True)
+        self._capture_thread_longrange = threading.Thread(target=self._capture_loop, args=(self._capture_q_long_range,self.sharedmem_buffs_longrange,), name="http-capture-long-range", daemon=True)
         self._upload_thread = threading.Thread(target=self._upload_worker, name="http-upload", daemon=True)
         self._events_thread = threading.Thread(target=self._events_worker, name="http-events", daemon=True)
         self._gamestate_thread = threading.Thread(target=self._gamestate_worker, name="http-gamestate", daemon=True)
@@ -264,7 +264,7 @@ class HTTPComms(AbstractHTTPComms):
         try:
             while True:
                 ticket: SharedMem_ImgTicket = capture_q.get()  # Blocks until work available
-                img_view = debuffer_image(self.sharedmem_bufs[ticket.index].buf, ticket.res)
+                img_view = debuffer_image(sharedmem_bufs[ticket.index].buf, ticket.res)
                 embedded_id = decode_image_id(img_view)
                 # might get away without copying - see how it performs
                 # img_copy = img_view.copy()

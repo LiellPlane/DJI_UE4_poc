@@ -344,8 +344,17 @@ try:
                 http_comms.upload_image_by_id(newest_image)
                 time.sleep(0.5)  # Let upload process
             
-            if len(RealGameHTTPServer.images_received) <= initial_images:
-                raise AssertionError("Image upload failed - REAL server received no images")
+            # We should have received at least 2 images (close-range + long-range)
+            expected_min_images = initial_images + 2
+            if len(captured_images_longrange) > len(captured_images):
+                # Both close-range and long-range images were captured and uploaded
+                if len(RealGameHTTPServer.images_received) < expected_min_images:
+                    raise AssertionError(f"Expected at least {expected_min_images} images (close-range + long-range), but server received only {len(RealGameHTTPServer.images_received)}")
+            else:
+                # Only close-range image was captured and uploaded
+                expected_min_images = initial_images + 1
+                if len(RealGameHTTPServer.images_received) < expected_min_images:
+                    raise AssertionError(f"Expected at least {expected_min_images} images (close-range only), but server received only {len(RealGameHTTPServer.images_received)}")
             
             latest_upload = RealGameHTTPServer.images_received[-1]
             if latest_upload['user_id'] != 'real_test_player':
@@ -363,6 +372,13 @@ try:
             print(f"✅ REAL server processed JPEG image: {latest_upload['image_id']} ({latest_upload['size']} bytes)")
             print(f"   📸 REAL JPEG image data stored: {len(latest_upload['actual_image_bytes'])} bytes")
             print(f"   🔍 JPEG format validated (magic bytes: {actual_bytes[:3].hex()})")
+            
+            # Report total images uploaded
+            total_uploaded = len(RealGameHTTPServer.images_received) - initial_images
+            if total_uploaded >= 2:
+                print(f"✅ Successfully uploaded {total_uploaded} images (close-range + long-range)")
+            else:
+                print(f"✅ Successfully uploaded {total_uploaded} image (close-range only)")
     except Exception as e:
         print(f"⚠️ Image capture failed (expected due to missing dependencies): {e}")
         print("✅ Continuing with event and GameUpdate tests...")
