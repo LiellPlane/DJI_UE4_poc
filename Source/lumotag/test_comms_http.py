@@ -330,6 +330,20 @@ try:
             http_comms.upload_image_by_id(captured_images[0])
             time.sleep(0.5)  # Let upload process
             
+            # Test long-range capture as well
+            print("📸 Testing long-range capture...")
+            http_comms.trigger_capture_long_range()
+            time.sleep(0.1)  # Let capture process
+            
+            # Get new captured image IDs and upload one
+            captured_images_longrange = list(http_comms.ImageMem.keys())
+            if len(captured_images_longrange) > len(captured_images):
+                # Upload the newest image (last in the list)
+                newest_image = captured_images_longrange[-1]
+                print(f"📤 Uploading long-range JPEG-encoded image {newest_image} to REAL server...")
+                http_comms.upload_image_by_id(newest_image)
+                time.sleep(0.5)  # Let upload process
+            
             if len(RealGameHTTPServer.images_received) <= initial_images:
                 raise AssertionError("Image upload failed - REAL server received no images")
             
@@ -456,12 +470,23 @@ try:
             error_comms.upload_image_by_id(captured_images[0])
             time.sleep(0.5)  # Let it try and fail
             
-            # Image should still be in memory (not removed due to failure)
+            # Test long-range capture with error server as well
+            error_comms.trigger_capture_long_range()
+            time.sleep(0.1)
+            
+            captured_images_longrange = list(error_comms.ImageMem.keys())
+            if len(captured_images_longrange) > len(captured_images):
+                # Try to upload long-range image - should also fail gracefully
+                newest_image = captured_images_longrange[-1]
+                error_comms.upload_image_by_id(newest_image)
+                time.sleep(0.5)  # Let it try and fail
+            
+            # Images should still be in memory (not removed due to failure)
             remaining_images = list(error_comms.ImageMem.keys())
             if not remaining_images:
-                raise AssertionError("Image was removed despite upload failure")
+                raise AssertionError("Images were removed despite upload failure")
             
-            print("✅ HTTPImageComms handles server errors gracefully (image retained)")
+            print("✅ HTTPImageComms handles server errors gracefully (images retained)")
         
         # Test event sending to failing server - should not crash
         test_event = PlayerStatus(
@@ -533,6 +558,17 @@ try:
             broken_comms.upload_image_by_id(captured_images[0])
             time.sleep(1.0)  # Give it time to fail and apply delay
             
+            # Test long-range capture with non-existent server as well
+            broken_comms.trigger_capture_long_range()
+            time.sleep(0.1)
+            
+            captured_images_longrange = list(broken_comms.ImageMem.keys())
+            if len(captured_images_longrange) > len(captured_images):
+                # Try to upload long-range image - should also fail with connection refused
+                newest_image = captured_images_longrange[-1]
+                broken_comms.upload_image_by_id(newest_image)
+                time.sleep(1.0)  # Give it time to fail and apply delay
+            
             # Connection state should now be disconnected
             if broken_comms.is_connected():
                 raise AssertionError("HTTPComms should be disconnected after connection failure")
@@ -541,12 +577,12 @@ try:
             
             print("✅ Connection state correctly tracked")
             
-            # Image should still be in memory (not removed due to failure)
+            # Images should still be in memory (not removed due to failure)
             remaining_images = list(broken_comms.ImageMem.keys())
             if not remaining_images:
-                raise AssertionError("Image was removed despite connection failure")
+                raise AssertionError("Images were removed despite connection failure")
             
-            print("✅ Image retained in memory after connection failure")
+            print("✅ Images retained in memory after connection failure")
         
         # Test event sending to non-existent server
         test_event = PlayerStatus(
