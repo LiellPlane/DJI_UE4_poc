@@ -8,7 +8,7 @@ providing realistic responses for testing HTTPComms functionality.
 Run with: python test_http_server.py
 Then point your HTTPComms to: http://localhost:8080/api/v1/
 """
-
+import math
 import json
 import time
 import base64
@@ -83,8 +83,7 @@ class GameTestServer(BaseHTTPRequestHandler):
             
             # Log request details
             user_id = self.headers.get('X-User-ID', 'unknown')
-            device_name = self.headers.get('X-Device-Name', 'unknown')
-            print(f"[{timestamp}] 📨 POST {self.path} from {user_id}@{device_name}")
+            print(f"[{timestamp}] 📨 POST {self.path} from {user_id}")
             
             if self.path == '/api/v1/images/upload':
                 self._handle_image_upload(data)
@@ -121,7 +120,7 @@ class GameTestServer(BaseHTTPRequestHandler):
             # Simulate health/ammo changes over time
             if tag_id == "testself":
                 # Make testself health jiggle more noticeably for smoke testing
-                import math
+                
                 base_health = 75
                 # Use sine wave for smooth jiggling + some randomness
                 sine_variation = int(20 * math.sin(current_time * 2))  # +/- 20 health variation
@@ -150,10 +149,9 @@ class GameTestServer(BaseHTTPRequestHandler):
         gamestate_response = game_update.model_dump()
         
         # Minimal logging for performance - only log occasionally
-        if hasattr(self, '_gamestate_counter'):
-            self._gamestate_counter += 1
-        else:
-            self._gamestate_counter = 1
+        if not hasattr(self, '_gamestate_counter'):
+            self._gamestate_counter = 0
+        self._gamestate_counter += 1
             
         # Only log every 10th request to reduce console spam
         if self._gamestate_counter % 10 == 0:
@@ -169,8 +167,11 @@ class GameTestServer(BaseHTTPRequestHandler):
         """Handle image upload requests"""
         timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
         
-        # Validate required fields
-        required_fields = ['user_id', 'device_name', 'image_id', 'timestamp', 'image_data']
+        # Get user info from headers
+        user_id = self.headers.get('X-User-ID', 'unknown')
+        
+        # Validate required fields (now based on UploadRequest Pydantic model)
+        required_fields = ['image_id', 'image_data']
         missing_fields = [field for field in required_fields if field not in data]
         
         if missing_fields:
@@ -209,20 +210,45 @@ class GameTestServer(BaseHTTPRequestHandler):
         # Store image info
         image_info = {
             'image_id': image_id,
-            'user_id': data['user_id'],
-            'device_name': data['device_name'],
-            'timestamp': data['timestamp'],
+            'user_id': user_id,  # From headers
+            'timestamp': data.get('timestamp', time.time()),  # Use current time if not provided
             'size_bytes': image_size,
             'received_at': time.time()
         }
+        
+        # Display image using OpenCV for real-time monitoring
+        try:
+            import cv2
+            import numpy as np
+            
+            # Most efficient: decode JPEG directly from bytes buffer
+            img = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
+            
+            if img is not None:
+                # Resize image to height 800px while maintaining aspect ratio
+                height, width = img.shape[:2]
+                if height != 800:
+                    aspect_ratio = width / height
+                    new_width = int(800 * aspect_ratio)
+                    img = cv2.resize(img, (new_width, 800), interpolation=cv2.INTER_LINEAR)
+                
+                # Display image without any blocking - cv2.waitKey(1) is non-blocking
+                cv2.imshow(f'Received Images - {user_id}', img)
+                cv2.waitKey(1)  # Non-blocking, just processes window events
+        except ImportError:
+            # OpenCV not available, skip display
+            pass
+        except Exception as e:
+            # Don't let display errors crash the server
+            print(f"[{timestamp}] ⚠️  Image display error: {e}")
         
         GameTestServer.images_received.append(image_info)
         
         print(f"[{timestamp}] 📸 Image uploaded successfully:")
         print(f"    🔍 ID: {image_id}")
-        print(f"    👤 User: {data['user_id']} @ {data['device_name']}")
+        print(f"    👤 User: {user_id}")
         print(f"    📏 Size: {image_size:,} bytes")
-        print(f"    🕐 Client timestamp: {datetime.fromtimestamp(data['timestamp']).strftime('%H:%M:%S')}")
+        print(f"    🕐 Client timestamp: {datetime.fromtimestamp(data.get('timestamp', time.time())).strftime('%H:%M:%S')}")
         
         # Simulate some processing time
         time.sleep(0.01)  # 10ms processing delay
@@ -243,20 +269,11 @@ class GameTestServer(BaseHTTPRequestHandler):
         """Handle event submission requests"""
         timestamp = datetime.now().strftime("%H:%M:%S.%f")[:-3]
         
-        # Validate required fields
-        required_fields = ['user_id', 'device_name', 'type', 'data', 'timestamp']
-        missing_fields = [field for field in required_fields if field not in data]
-        
-        if missing_fields:
-            print(f"[{timestamp}] ❌ Event missing fields: {missing_fields}")
-            self.send_response(400)
-            self.send_header('Content-Type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": f"Missing fields: {missing_fields}"}).encode())
-            return
+        # Get user info from headers
+        user_id = self.headers.get('X-User-ID', 'unknown')
         
         # Validate event data structure
-        if not isinstance(data['data'], dict):
+        if not isinstance(data, dict):
             print(f"[{timestamp}] ❌ Event data must be a dictionary")
             self.send_response(400)
             self.send_header('Content-Type', 'application/json')
@@ -265,15 +282,13 @@ class GameTestServer(BaseHTTPRequestHandler):
             return
         
         # Extract event type
-        event_type = data['data'].get('event_type', 'unknown')
+        event_type = data.get('event_type', 'unknown')
         
         # Store event info
         event_info = {
             'event_type': event_type,
-            'user_id': data['user_id'],
-            'device_name': data['device_name'],
-            'timestamp': data['timestamp'],
-            'data': data['data'].copy(),
+            'user_id': user_id,
+            'data': data.copy(),
             'received_at': time.time()
         }
         
@@ -281,9 +296,8 @@ class GameTestServer(BaseHTTPRequestHandler):
         
         print(f"[{timestamp}] 📨 Event received successfully:")
         print(f"    🏷️  Type: {event_type}")
-        print(f"    👤 User: {data['user_id']} @ {data['device_name']}")
-        print(f"    📦 Data: {data['data']}")
-        print(f"    🕐 Client timestamp: {datetime.fromtimestamp(data['timestamp']).strftime('%H:%M:%S')}")
+        print(f"    👤 User: {user_id}")
+        print(f"    📦 Data: {data}")
         
         response = {
             "status": "success",

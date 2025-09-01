@@ -97,8 +97,11 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
     
     def _handle_real_image_upload(self, data):
         """REAL image upload handler - processes actual image data"""
-        # Validate required fields for images
-        required_fields = ['user_id', 'device_name', 'image_id', 'timestamp', 'image_data']
+        # Get user info from headers
+        user_id = self.headers.get('X-User-ID', 'unknown')
+        
+        # Validate required fields for images (now based on UploadRequest Pydantic model)
+        required_fields = ['image_id', 'image_data']
         
         for field in required_fields:
             if field not in data:
@@ -115,6 +118,14 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
                 self.send_response(400)
                 self.end_headers()
                 return
+            
+            # Basic JPEG validation (check for JPEG magic bytes)
+            if not image_bytes.startswith(b'\xff\xd8\xff'):
+                print(f"❌ REAL SERVER: Invalid JPEG format for image {data['image_id']}")
+                self.send_response(400)
+                self.end_headers()
+                return
+                
         except Exception:
             print("❌ REAL SERVER: Invalid base64 image data")
             self.send_response(400)
@@ -123,46 +134,43 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
         
         # REAL storage - store actual image data
         RealGameHTTPServer.images_received.append({
-            'user_id': data['user_id'],
-            'device_name': data['device_name'], 
+            'user_id': user_id,  # From headers
             'image_id': data['image_id'],
             'size': len(image_bytes),
-            'timestamp': data['timestamp'],
+            'timestamp': data.get('timestamp', time.time()),  # Use current time if not provided
             'actual_image_bytes': image_bytes  # Store the actual image data
         })
         
-        print(f"✅ REAL SERVER: Image stored: {data['image_id']} ({len(image_bytes)} bytes) from {data['user_id']}")
+        print(f"✅ REAL SERVER: Image stored: {data['image_id']} ({len(image_bytes)} bytes) from {user_id}")
         self.send_response(200)
         self.end_headers()
     
     def _handle_real_events(self, data):
         """REAL event handler - deserializes and validates actual Pydantic events"""
-        # Validate required fields for events
-        required_fields = ['user_id', 'device_name', 'type', 'data', 'timestamp']
+        # Get user info from headers
+        user_id = self.headers.get('X-User-ID', 'unknown')
         
-        for field in required_fields:
-            if field not in data:
-                print(f"❌ REAL SERVER: Event missing field: {field}")
-                self.send_response(400)
-                self.end_headers()
-                return
+        # Validate event data structure (now it's the direct Pydantic model dump)
+        if not isinstance(data, dict):
+            print(f"❌ REAL SERVER: Event data must be a dictionary")
+            self.send_response(400)
+            self.end_headers()
+            return
+        
+        # Extract event type
+        event_type = data.get('event_type', 'unknown')
         
         # REAL validation - try to deserialize as Pydantic model
         try:
-            event_data = data['data']
-            event_type = event_data.get('event_type', 'unknown')
-            
             # REAL deserialization - recreate the actual Pydantic object
             if event_type == 'PlayerStatus':
                 # Deserialize back to PlayerStatus Pydantic object
-                player_status = PlayerStatus(**event_data)
+                player_status = PlayerStatus(**data)
                 print(f"✅ REAL SERVER: Deserialized PlayerStatus - {player_status.display_name} (HP: {player_status.health})")
                 
                 # Store the REAL Pydantic object
                 RealGameHTTPServer.events_received.append({
-                    'user_id': data['user_id'],
-                    'device_name': data['device_name'],
-                    'type': data['type'],
+                    'user_id': user_id,  # From headers
                     'event_type': event_type,
                     'pydantic_object': player_status  # Store actual Pydantic object
                 })
@@ -178,7 +186,7 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
             self.end_headers()
             return
         
-        print(f"✅ REAL SERVER: Event processed and stored as Pydantic object: {event_type} from {data['user_id']}")
+        print(f"✅ REAL SERVER: Event processed and stored as Pydantic object: {event_type} from {user_id}")
         self.send_response(200)
         self.end_headers()
     
@@ -310,13 +318,13 @@ try:
         http_comms.trigger_capture()
         time.sleep(0.1)  # Let capture process
         
-        # Get captured image IDs and upload one
+        # Get captured image IDs and upload one (images are now stored as JPEG bytes)
         captured_images = list(http_comms.ImageMem.keys())
         if not captured_images:
             print("⚠️ No images captured (likely missing dependencies) - skipping image test")
             print("✅ REAL server is working, skipping to event tests...")
         else:
-            print(f"📤 Uploading image {captured_images[0]} to REAL server...")
+            print(f"📤 Uploading JPEG-encoded image {captured_images[0]} to REAL server...")
             http_comms.upload_image_by_id(captured_images[0])
             time.sleep(0.5)  # Let upload process
             
@@ -327,15 +335,18 @@ try:
             if latest_upload['user_id'] != 'real_test_player':
                 raise AssertionError(f"Wrong user_id: expected 'real_test_player', got '{latest_upload['user_id']}'")
             
-            if latest_upload['device_name'] != 'real_test_gun':
-                raise AssertionError(f"Wrong device_name: expected 'real_test_gun', got '{latest_upload['device_name']}'")
-            
             # Validate REAL server stored actual image bytes
             if 'actual_image_bytes' not in latest_upload:
                 raise AssertionError("REAL server should store actual image bytes")
             
-            print(f"✅ REAL server processed image: {latest_upload['image_id']} ({latest_upload['size']} bytes)")
-            print(f"   📸 REAL image data stored: {len(latest_upload['actual_image_bytes'])} bytes")
+            # Validate that the stored image data is JPEG format
+            actual_bytes = latest_upload['actual_image_bytes']
+            if not actual_bytes.startswith(b'\xff\xd8\xff'):
+                raise AssertionError("Stored image should be JPEG format (magic bytes missing)")
+            
+            print(f"✅ REAL server processed JPEG image: {latest_upload['image_id']} ({latest_upload['size']} bytes)")
+            print(f"   📸 REAL JPEG image data stored: {len(latest_upload['actual_image_bytes'])} bytes")
+            print(f"   🔍 JPEG format validated (magic bytes: {actual_bytes[:3].hex()})")
     except Exception as e:
         print(f"⚠️ Image capture failed (expected due to missing dependencies): {e}")
         print("✅ Continuing with event and GameUpdate tests...")

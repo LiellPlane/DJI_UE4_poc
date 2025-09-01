@@ -236,7 +236,11 @@ class HTTPComms(AbstractHTTPComms):
                 img_copy = img_view.copy()  # Always make a copy to avoid shared memory issues
                 
                 with self._mem_lock:
-                    self.ImageMem[embedded_id] = img_copy
+                    # Encode image as JPEG for storage efficiency
+                    ok, jpeg_buffer = cv2.imencode(".jpg", img_copy)
+                    if not ok:
+                        raise RuntimeError(f"JPEG encode failed for {embedded_id} - corrupt image data")
+                    self.ImageMem[embedded_id] = jpeg_buffer.tobytes()
                     # Remove oldest images if cache is full (FIFO eviction)
                     while len(self.ImageMem) > self.max_cached_images:
                         _ , _ = self.ImageMem.popitem(last=False)
@@ -255,7 +259,6 @@ class HTTPComms(AbstractHTTPComms):
         session = requests.Session()
         session.headers.update({
             "X-User-ID": self.user_id,
-            "X-Device-Name": self.OS_friendly_name,
             "Content-Type": "application/json",
             "Connection": "keep-alive"  # Keep connections open
         })
@@ -275,34 +278,24 @@ class HTTPComms(AbstractHTTPComms):
                 
                 # Get image data WITHOUT removing it (keep for retry if needed)
                 with self._mem_lock:
-                    img_array = self.ImageMem.get(image_id, None)
+                    img_data = self.ImageMem.get(image_id, None)
                 
-                if img_array is None:
+                if img_data is None:
                     continue  # Image not found - skip silently
                 
                 try:
-                    # Convert to grayscale if needed
-                    if img_array.ndim == 3:
-                        img_gray = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)  # type: ignore
-                    else:
-                        img_gray = img_array
+                    # Image data is always JPEG-encoded bytes
+                    buffer = np.frombuffer(img_data, dtype=np.uint8)
 
-                    # Encode as JPEG
-                    ok, buffer = cv2.imencode(".jpg", img_gray)  # type: ignore
-                    if not ok:
-                        raise RuntimeError(f"JPEG encode failed for {image_id} - corrupt image data")
-
-                    # Create upload request
-                    upload_request = lumotag_events.UploadRequest(image_id=image_id)
+                    # Create complete upload request with image data
+                    upload_request = lumotag_events.UploadRequest(
+                        image_id=image_id,
+                        image_data=base64.b64encode(buffer.tobytes()).decode()
+                    )
                     
-                    # Prepare HTTP POST data
-                    post_data = {
-                        "user_id": self.user_id,
-                        "device_name": self.OS_friendly_name,
-                        "image_id": image_id,
-                        "timestamp": upload_request.timestamp,
-                        "image_data": base64.b64encode(buffer.tobytes()).decode()
-                    }
+                    # Clean POST payload - pure Pydantic model serialization
+                    # All transport metadata is in headers
+                    post_data = upload_request.model_dump()
                     
 
                     # Fast HTTP POST - headers already set in session
@@ -325,20 +318,11 @@ class HTTPComms(AbstractHTTPComms):
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Image upload failed: HTTP {response.status_code}")
                         
-                except requests.exceptions.Timeout:
-                    # Timeout - keep image for retry, mark disconnected, no log spam
+                except (requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
+                    # Network error or timeout - keep image for retry and mark as disconnected
                     self._set_connected(False)
-                    time.sleep(0.1)  # Shorter delay for faster recovery
-                    
-                except requests.exceptions.RequestException as e:
-                    # Network error - keep image for retry and mark as disconnected
-                    self._set_connected(False)
-                    time.sleep(0.1)  # Shorter delay for faster recovery
-                    print(f"⚠️ Image upload network error: {e}")
-                    
-                except Exception as e:
-                    # Other errors (encoding, etc.) - log and continue
-                    print(f"⚠️ Image upload error: {e}")
+                    time.sleep(0.5)  # Shorter delay for faster recovery
+  
                     
         except Exception as e:
             tb_str = traceback.format_exc()
@@ -354,7 +338,6 @@ class HTTPComms(AbstractHTTPComms):
         session = requests.Session()
         session.headers.update({
             "X-User-ID": self.user_id,
-            "X-Device-Name": self.OS_friendly_name,
             "Content-Type": "application/json",
             "Connection": "keep-alive"  # Keep connections open
         })
@@ -373,14 +356,9 @@ class HTTPComms(AbstractHTTPComms):
                 event = self._events_q.get()  # Blocks until work available
                 
                 try:
-                    # Prepare HTTP POST data with user context
-                    post_data = {
-                        "user_id": self.user_id,
-                        "device_name": self.OS_friendly_name,
-                        "type": "event",
-                        "data": event.model_dump(),
-                        "timestamp": time.time()
-                    }
+                    # Clean POST payload - only Pydantic model data
+                    # All transport metadata is in headers
+                    post_data = event.model_dump()
                     
                     # Fast HTTP POST - headers already set in session
                     response = session.post(
@@ -431,7 +409,6 @@ class HTTPComms(AbstractHTTPComms):
         session = requests.Session()
         session.headers.update({
             "X-User-ID": self.user_id,
-            "X-Device-Name": self.OS_friendly_name,
             "Connection": "keep-alive",  # Keep connections open
             "Cache-Control": "no-cache"   # Don't cache responses
         })
