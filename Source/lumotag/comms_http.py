@@ -266,15 +266,13 @@ class HTTPComms(AbstractHTTPComms):
                 ticket: SharedMem_ImgTicket = capture_q.get()  # Blocks until work available
                 img_view = debuffer_image(sharedmem_bufs[ticket.index].buf, ticket.res)
                 embedded_id = decode_image_id(img_view)
-                # might get away without copying - see how it performs
-                # img_copy = img_view.copy()
+                
+                # Do expensive copy outside the lock to minimize lock contention
+                img_copy = img_view.copy()
                 
                 with self._mem_lock:
-                    # Encode image as JPEG for storage efficiency
-                    ok, jpeg_buffer = cv2.imencode(".jpg", img_view)
-                    if not ok:
-                        raise RuntimeError(f"JPEG encode failed for {embedded_id} - corrupt image data")
-                    self.ImageMem[embedded_id] = jpeg_buffer.tobytes()
+                    # Store raw image data - encode to JPEG only when uploading (lazy encoding)
+                    self.ImageMem[embedded_id] = img_copy
                     # Remove oldest images if cache is full (FIFO eviction)
                     while len(self.ImageMem) > self.max_cached_images:
                         _ , _ = self.ImageMem.popitem(last=False)
@@ -318,13 +316,19 @@ class HTTPComms(AbstractHTTPComms):
                     continue  # Image not found - skip silently
                 
                 try:
-                    # Image data is always JPEG-encoded bytes
-                    buffer = np.frombuffer(img_data, dtype=np.uint8)
-
+                    # Image data must be raw numpy array - encode to JPEG for upload
+                    if not isinstance(img_data, np.ndarray):
+                        raise RuntimeError(f"Expected numpy array for image {image_id}, got {type(img_data)}")
+                    
+                    # Encode raw image to JPEG
+                    ok, jpeg_buffer = cv2.imencode(".jpg", img_data)
+                    if not ok:
+                        raise RuntimeError(f"JPEG encode failed for {image_id} - corrupt image data")
+                    
                     # Create complete upload request with image data
                     upload_request = lumotag_events.UploadRequest(
                         image_id=image_id,
-                        image_data=base64.b64encode(buffer.tobytes()).decode()
+                        image_data=base64.b64encode(jpeg_buffer.tobytes()).decode()
                     )
                     
                     # Clean POST payload - pure Pydantic model serialization
