@@ -1535,13 +1535,10 @@ def quantize_box(box, precision=5):
     return tuple((box / precision).round().astype(int))
 
 
+
+
 def find_lumotag_mser(inputimg, dataobject : WorkingData):
     """analyse input image for specific lumotag pattern"""
-    #~2ms
-
-    # import pickle
-    # with open('contours.pickle', 'rb') as handle:
-    #     contours_from_non_mser = pickle.load(handle)
     with time_it("pre-processing msers: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
@@ -1549,15 +1546,10 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
             else:
                 img_grayscale = inputimg # get the image source changing here sometimes
         dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
-    # with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
-    #     #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-    #     org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
-    #     dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
-       #print("equalisation")
         with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
-            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            img_op = cv2.medianBlur(img_grayscale, 5)
+            img_op = cv2.blur(img_grayscale,(5,5)) # fastest filter
+            # img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
         with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
             # bounding box in form: x, y, w, h = box
@@ -1578,26 +1570,13 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
                 if key not in unique_boxes:
                     unique_boxes[key] = idx
                     filtered_msers.append(mser)
-            if len(msers) > 0:
-                plop=1
 
-            # dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
-            # Using reshape
-            # msers = tuple(contour.reshape(-1, 1, 2) for contour in msers)
+
             filtered_msers = [cv2.convexHull(mser.reshape(-1, 1, 2)) for mser in filtered_msers]
-            # # Using np.newaxis
-            # msers_converted = tuple(contour[:, np.newaxis, :] for contour in msers)
-            # dataobject.img_view_or_save_if_debug(img_grayscale, Debug_Images.original_input.value, resize=False)
-        # if dataobject.debug_details.SAVE_IMAGES_DEBUG:
-        #     mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
-        #     dataobject.img_view_or_save_if_debug(mser_img, f"mser_img{len(msers)}")
+
 
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
         contours, hierarchy=get_possible_candidates(img_op,filtered_msers, [[None for _ in filtered_msers]], dataobject)
-
-    # if len(contours) == 0:
-    #     print("no results found for image")
-    #     return []
 
 
     with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
@@ -1614,7 +1593,6 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
 def find_lumotag(inputimg, dataobject : WorkingData):
 
     """analyse input image for specific lumotag pattern"""
-    #~2ms
     with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
@@ -1622,123 +1600,35 @@ def find_lumotag(inputimg, dataobject : WorkingData):
             else:
                 img_grayscale = inputimg
         dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
-        #copy original image into folder
-        #orig_img = img.copy()
-        
-        #~3ms for grayscale
-    
-        #print("equalisation")
+
         with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
-            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            img_op = cv2.medianBlur(img_grayscale, 5)
-            dataobject.img_view_or_save_if_debug(img_op, "blur_7_7", resize=False)
+            img_op = cv2.blur(img_grayscale,(5,5)) # fastest filter
+            # img_op = cv2.medianBlur(img_grayscale, 5)
+            dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
 
-        # with time_it("pre-processing/filtering: clahe_equalisation"):
-        #     img_op=img_pro.clahe_equalisation(img_op, dataobject.claheprocessor)
-        #     dataobject.img_view_or_save_if_debug(img_op, Debug_Images.clahe_equalisation.value, resize=False)
-        #     ''''test area'''
-   
-   #this section about 25ms
-    #with time_it():
-        
-        #gray_orig = img_pro.mono_img(orig_img)
-    #with time_it():
-        #print("median_blur")
-        ##blurred = median_blur(gray_orig,7)
 
-        #dataobject.img_view_or_save_if_debug(squr_img, "median_blur", resize=False)
-        #edge_im = edge_img(blurred)edge_img
-    #with time_it():
-        #print("canny_filter")
-        #blurred = median_blur(gray_orig,7)
-        #plop = edge_img(squr_img)
-        #dataobject.img_view_or_save_if_debug(plop, "canny_filter")
-        #edge_im = edge_img(blurred)edge_img
-    #with time_it():
-        #print("threshold_img")
-
-        #print("threshold_img")
-        if dataobject.debug_details.SAVE_IMAGES_DEBUG:
-            # Compute min and max
-            min_val = np.percentile(img_op, 1)  # Using 1st percentile instead of min to avoid outliers
-            max_val = np.percentile(img_op, 99) # Using 99th percentile instead of max to avoid outliers
-            
-            # Fast linear scaling using numpy operations
-            # test_eq = np.clip((img_op - min_val) * (255.0 / (max_val - min_val)), 0, 255).astype(np.uint8)
-            
-            # dataobject.img_view_or_save_if_debug(test_eq, "test contrast-stretch equalized", resize=False)
-        # True histogram equalization
-            # hist_eq = cv2.equalizeHist(img_op)
-
-            # dataobject.img_view_or_save_if_debug(hist_eq, "test histogram_equalized", resize=False)
-        if dataobject.debug_details.SAVE_IMAGES_DEBUG:
-            # squr_img=img_pro.simple_canny(
-            #     blurred_img=img_op.copy(),
-            #     lower=0,
-            # upper=255)
-            # dataobject.img_view_or_save_if_debug(squr_img, "testing_simple_canny")
-            # squr_img=img_pro.threshold_img(squr_img,high=125)
-            # squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
-            # dataobject.img_view_or_save_if_debug(squr_img, "test_static_params125high")
-            # squr_img = np.clip(img_op, 0, 125)
-            # dataobject.img_view_or_save_if_debug(squr_img, "test-clip125")
-            # squr_img = ((squr_img - 0) * (255.0 / 125.0)).astype(np.uint8)
-            # dataobject.img_view_or_save_if_debug(squr_img, "normalise_from_125", resize=False)
-            # squr_img=img_pro.threshold_img_static(squr_img,low=0,high=255)
-            # dataobject.img_view_or_save_if_debug(squr_img, "test_static_threshold_img_high125")
-
-            # for i in range(40, 80, 10):
-            #     _, binary = cv2.threshold(img_op, i, 255, cv2.THRESH_BINARY)
-            #     dataobject.img_view_or_save_if_debug(binary, f"testbin-threshold-{i}")
-            # for i in range(30, 140, 10):
-            #     binary = cv2.adaptiveThreshold(img_op,i,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,7,1)
-            #     dataobject.img_view_or_save_if_debug(binary, f"adaptive-testbin-threshold-{i}")
-            msers, bboxes = img_pro.get_mser_regions(img_op)
-
-            mser_img = img_pro.visualize_mser_regions1(img_op.shape, msers)
-            dataobject.img_view_or_save_if_debug(mser_img, "mser_img")
-
-            with time_it("pre-processing: get mser regions",dataobject.debug_details.PRINT_DEBUG):
-                msers, bboxes = img_pro.get_mser_regions(img_op)
-        #squr_img=edge_img(gray_orig)
         with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
             #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
             img_op=img_pro.threshold_img(img_op,high=255)
-            # squr_img=img_pro.simple_canny(
-            #     blurred_img=squr_img,
-            #     lower=0,
-        #     upper=255)
-        
+
             dataobject.img_view_or_save_if_debug(img_op, "thresholdimg")
 
 
-    #with time_it():
-        #print("invert_img")
-        #squr_img=invert_img(squr_img)
-        #dataobject.img_view_or_save_if_debug(squr_img, "invert_img")
         with time_it("pre-processing: blur again",dataobject.debug_details.PRINT_DEBUG):
-            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            img_op = cv2.medianBlur(img_op, 3)
+            img_op = cv2.blur(img_op,(3,3)) # fastest filter
+            # img_op = cv2.medianBlur(img_op, 3)
             dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
 
         with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
-            #img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
-            org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
+            org_img_grayscale_blur = cv2.blur(img_grayscale,(5,5)) # fastest filter
+            # org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
 
     with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
         with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
             contours, hierarchy = cv2.findContours(img_op, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-            # if len(contours) >0:
-            #     import pickle
-            #     # Store data (serialize)
-            #     with open('contours.pickle', 'wb') as handle:
-            #         pickle.dump(contours, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        contours, hierarchy = get_possible_candidates(img_op,contours, hierarchy, dataobject)
 
-    # if len(contours) == 0:
-    #     print("no results found for image")
-    #     return []
+        contours, hierarchy = get_possible_candidates(img_op,contours, hierarchy, dataobject)
 
     with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
         output_contour_data = analyse_candidates_shapematch(
@@ -1747,11 +1637,6 @@ def find_lumotag(inputimg, dataobject : WorkingData):
                                                 contours = contours,
                                                 contour_hierarchy = hierarchy,
                                                 dataobject = dataobject)
-    # if analyse_IDs is not None:
-    #     dataobject.img_view_or_save_if_debug(analyse_IDs, Debug_Images.ID_BADGE.value)
-    #     return analyse_IDs, playerfound
-    if len(output_contour_data)>0:
-        plop=1
 
     return output_contour_data
 
