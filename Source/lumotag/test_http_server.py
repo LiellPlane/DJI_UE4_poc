@@ -13,6 +13,8 @@ import json
 import time
 import base64
 import threading
+import test_http_save_testimages
+import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
 from lumotag_events import GameUpdate, PlayerStatus
@@ -223,8 +225,10 @@ class GameTestServer(BaseHTTPRequestHandler):
             
             # Most efficient: decode JPEG directly from bytes buffer
             img = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
-            
+            test_http_save_testimages.test_saver.save_image_pair(img, image_id)
             if img is not None:
+
+
                 # Resize image to height 800px while maintaining aspect ratio
                 height, width = img.shape[:2]
                 if height != 800:
