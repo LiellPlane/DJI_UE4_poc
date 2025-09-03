@@ -478,6 +478,48 @@ try:
     print(f"   📷 Image IDs: {server_tagged_object.image_ids}")
     print("   🎯 PLAYERTAGGED PYDANTIC MODEL SERIALIZATION/DESERIALIZATION WORKS!")
     
+    # Test 3C: REAL send_tagging_event Function Test - Convenience Method
+    print("\n📝 Test 3C: REAL send_tagging_event Function Test - Convenience Method...")
+    
+    initial_events_tagging = len(RealGameHTTPServer.events_received)
+    
+    # Use the convenience function send_tagging_event
+    test_tag_id = "convenience_player_456"
+    test_image_ids = ["conv_img_001", "conv_img_002", "conv_img_003", "conv_img_004"]
+    
+    print(f"📨 Sending tagging event via send_tagging_event(): {test_tag_id} with {len(test_image_ids)} images")
+    http_comms.send_tagging_event(test_tag_id, test_image_ids)
+    time.sleep(0.3)  # Let event process
+    
+    if len(RealGameHTTPServer.events_received) <= initial_events_tagging:
+        raise AssertionError("send_tagging_event failed - REAL server received no new events")
+    
+    latest_tagging_event = RealGameHTTPServer.events_received[-1]
+    if latest_tagging_event['user_id'] != 'real_test_player':
+        raise AssertionError(f"Wrong user_id in tagging event: expected 'real_test_player', got '{latest_tagging_event['user_id']}'")
+    
+    if latest_tagging_event['event_type'] != 'PlayerTagged':
+        raise AssertionError(f"Wrong event_type: expected 'PlayerTagged', got '{latest_tagging_event['event_type']}'")
+    
+    # CRITICAL TEST: Validate the server deserialized back to a REAL PlayerTagged Pydantic object
+    server_tagging_object = latest_tagging_event['pydantic_object']
+    if not isinstance(server_tagging_object, PlayerTagged):
+        raise AssertionError(f"Server should store actual PlayerTagged object, got {type(server_tagging_object)}")
+    
+    if server_tagging_object.tag_id != test_tag_id:
+        raise AssertionError(f"send_tagging_event deserialization failed: expected tag_id='{test_tag_id}', got {server_tagging_object.tag_id}")
+    
+    if len(server_tagging_object.image_ids) != 4:
+        raise AssertionError(f"send_tagging_event deserialization failed: expected 4 image_ids, got {len(server_tagging_object.image_ids)}")
+    
+    if server_tagging_object.image_ids != test_image_ids:
+        raise AssertionError(f"send_tagging_event deserialization failed: expected {test_image_ids}, got {server_tagging_object.image_ids}")
+    
+    print(f"✅ REAL server processed send_tagging_event: {latest_tagging_event['event_type']} from {latest_tagging_event['user_id']}")
+    print(f"   🔄 Server deserialized to REAL PlayerTagged: {server_tagging_object.tag_id} with {len(server_tagging_object.image_ids)} images")
+    print(f"   📷 Image IDs: {server_tagging_object.image_ids}")
+    print("   🎯 SEND_TAGGING_EVENT CONVENIENCE FUNCTION WORKS PERFECTLY!")
+    
     # Test 4: Malformed Event (should raise ValueError)
     print("\n📝 Test 4: Invalid Event Type (should fail validation)...")
     
@@ -760,6 +802,7 @@ try:
     print(f"   ✅ GameUpdate Pydantic model works over HTTP")
     print(f"   ✅ PlayerStatus Pydantic model works over HTTP")
     print(f"   ✅ PlayerTagged Pydantic model works over HTTP")
+    print(f"   ✅ send_tagging_event convenience function works over HTTP")
     print(f"   ✅ Dictionary structure dict[str, PlayerStatus] works")
     print(f"   ✅ Connection state tracking working")
     print(f"   ✅ Error handling working") 

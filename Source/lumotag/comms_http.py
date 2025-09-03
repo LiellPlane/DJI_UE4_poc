@@ -61,6 +61,10 @@ class AbstractHTTPComms(ABC):
     def is_connected(self) -> bool:
         pass
 
+    @abstractmethod
+    def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
+        pass
+
 
 class HTTPComms(AbstractHTTPComms):
     """Ultra-lightweight, threaded HTTP uploader for grayscale frames from shared memory.
@@ -174,6 +178,12 @@ class HTTPComms(AbstractHTTPComms):
             self._upload_q.put_nowait(image_id)
         except threading_queue.Full:
             pass  # Silently drop if queue full
+
+    def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
+        """Send a tagging event via HTTP - validates event type first"""
+        event = lumotag_events.PlayerTagged(tag_id=tag_id, image_ids=image_ids)
+
+        self._events_q.put_nowait(event)
 
     def send_event(self, event) -> None:
         """Send an event via HTTP - validates event type first"""
