@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Real HTTP server tests for HTTPComms - NO MOCKING!
+Real HTTP server tests for HTTPComms
 Tests actual Pydantic model serialization/deserialization over genuine HTTP.
 
 Run with: python test_comms_http.py
