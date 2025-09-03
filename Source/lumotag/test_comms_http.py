@@ -12,7 +12,7 @@ import json
 import base64
 import requests
 import numpy as np
-from lumotag_events import PlayerStatus, GameUpdate
+from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
 from comms_http import HTTPComms
 from my_collections import SharedMem_ImgTicket
 import sys
@@ -173,6 +173,17 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
                     'user_id': user_id,  # From headers
                     'event_type': event_type,
                     'pydantic_object': player_status  # Store actual Pydantic object
+                })
+            elif event_type == 'PlayerTagged':
+                # Deserialize back to PlayerTagged Pydantic object
+                player_tagged = PlayerTagged(**data)
+                print(f"✅ REAL SERVER: Deserialized PlayerTagged - {player_tagged.tag_id} with {len(player_tagged.image_ids)} images")
+                
+                # Store the REAL Pydantic object
+                RealGameHTTPServer.events_received.append({
+                    'user_id': user_id,  # From headers
+                    'event_type': event_type,
+                    'pydantic_object': player_tagged  # Store actual Pydantic object
                 })
             else:
                 print(f"⚠️ REAL SERVER: Unknown event type: {event_type}")
@@ -421,6 +432,51 @@ try:
     print(f"✅ REAL server processed Pydantic event: {latest_event['event_type']} from {latest_event['user_id']}")
     print(f"   🔄 Server deserialized to REAL PlayerStatus: {server_pydantic_object.display_name} (HP: {server_pydantic_object.health})")
     print("   🎯 PYDANTIC MODEL SERIALIZATION/DESERIALIZATION OVER HTTP WORKS!")
+    
+    # Test 3B: REAL PlayerTagged Event Test - Additional Pydantic Model
+    print("\n📝 Test 3B: REAL PlayerTagged Event Test - Additional Pydantic Model...")
+    
+    initial_events_tagged = len(RealGameHTTPServer.events_received)
+    
+    # Send a REAL PlayerTagged event
+    tagged_event = PlayerTagged(
+        tag_id="tagged_player_123",
+        image_ids=["img_001", "img_002", "img_003"]
+    )
+    
+    print(f"📨 Sending REAL PlayerTagged event: {tagged_event.tag_id} with {len(tagged_event.image_ids)} images")
+    http_comms.send_event(tagged_event)
+    time.sleep(0.3)  # Let event process
+    
+    if len(RealGameHTTPServer.events_received) <= initial_events_tagged:
+        raise AssertionError("PlayerTagged event sending failed - REAL server received no new events")
+    
+    latest_tagged_event = RealGameHTTPServer.events_received[-1]
+    if latest_tagged_event['user_id'] != 'real_test_player':
+        raise AssertionError(f"Wrong user_id in PlayerTagged event: expected 'real_test_player', got '{latest_tagged_event['user_id']}'")
+    
+    if latest_tagged_event['event_type'] != 'PlayerTagged':
+        raise AssertionError(f"Wrong event_type: expected 'PlayerTagged', got '{latest_tagged_event['event_type']}'")
+    
+    # CRITICAL TEST: Validate the server deserialized back to a REAL PlayerTagged Pydantic object
+    server_tagged_object = latest_tagged_event['pydantic_object']
+    if not isinstance(server_tagged_object, PlayerTagged):
+        raise AssertionError(f"Server should store actual PlayerTagged object, got {type(server_tagged_object)}")
+    
+    if server_tagged_object.tag_id != "tagged_player_123":
+        raise AssertionError(f"PlayerTagged deserialization failed: expected tag_id='tagged_player_123', got {server_tagged_object.tag_id}")
+    
+    if len(server_tagged_object.image_ids) != 3:
+        raise AssertionError(f"PlayerTagged deserialization failed: expected 3 image_ids, got {len(server_tagged_object.image_ids)}")
+    
+    expected_image_ids = ["img_001", "img_002", "img_003"]
+    if server_tagged_object.image_ids != expected_image_ids:
+        raise AssertionError(f"PlayerTagged deserialization failed: expected {expected_image_ids}, got {server_tagged_object.image_ids}")
+    
+    print(f"✅ REAL server processed PlayerTagged event: {latest_tagged_event['event_type']} from {latest_tagged_event['user_id']}")
+    print(f"   🔄 Server deserialized to REAL PlayerTagged: {server_tagged_object.tag_id} with {len(server_tagged_object.image_ids)} images")
+    print(f"   📷 Image IDs: {server_tagged_object.image_ids}")
+    print("   🎯 PLAYERTAGGED PYDANTIC MODEL SERIALIZATION/DESERIALIZATION WORKS!")
     
     # Test 4: Malformed Event (should raise ValueError)
     print("\n📝 Test 4: Invalid Event Type (should fail validation)...")
@@ -703,6 +759,7 @@ try:
     print(f"   ✅ REAL HTTP communication validated")
     print(f"   ✅ GameUpdate Pydantic model works over HTTP")
     print(f"   ✅ PlayerStatus Pydantic model works over HTTP")
+    print(f"   ✅ PlayerTagged Pydantic model works over HTTP")
     print(f"   ✅ Dictionary structure dict[str, PlayerStatus] works")
     print(f"   ✅ Connection state tracking working")
     print(f"   ✅ Error handling working") 
