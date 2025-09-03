@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 import time
 
 
@@ -26,3 +26,8 @@ class PlayerTagged(BaseModel):
     tag_id: str
     image_ids: list[str] = Field(..., description="Unique identifier for the image(s) captured during tag")
     event_type: str = Field(default_factory=lambda: "PlayerTagged", description="Event type identifier")
+    
+    @field_validator('tag_id', mode='before')
+    @classmethod
+    def convert_tag_id_to_str(cls, v):
+        return str(v)

@@ -13,7 +13,7 @@ import analyse_lumotag
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser
 from utils import time_it, get_platform
-from my_collections import _OS, HeightWidth
+from my_collections import _OS, HeightWidth, ShapeItem
 
 # need this import to detect lumogun types (subclasses)
 import configs
@@ -71,6 +71,23 @@ def save_images_if_barcode(analysis, file_system, cap_img, cap_img_closerange):
         file_system.save_image(
             cap_img_closerange, message=f"_closerange_cnt{timestamp}cnt"
         )
+
+
+def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | None]]) -> set[str]:
+    """Extract unique discovered tag IDs from analysis results.
+    
+    Args:
+        analysis: Dictionary mapping camera resolutions to lists of analysis results
+        
+    Returns:
+        set: Set of unique decoded tag IDs found in the analysis
+    """
+    discovered_tags = set()
+    for cam_res_results in analysis.values():
+        for result in cam_res_results:
+            if result is not None:
+                discovered_tags.add(result.decoded_id)
+    return discovered_tags
 
 
 def main():
@@ -181,19 +198,19 @@ def main():
         )
     )
 
-    # game_client =(HTTPComms(
-    #     sharedmem_buffs_closerange=image_capture_shortrange.get_mem_buffers(),
-    #     safe_mem_details_func_closerange=image_capture_shortrange.get_safe_mem_details,
-    #     sharedmem_buffs_longrange=image_capture_longrange.get_mem_buffers(),
-    #     safe_mem_details_func_longrange=image_capture_longrange.get_safe_mem_details,
-    #     images_url="http://LIELLOMEN:8080/api/v1/images/upload",
-    #     events_url="http://LIELLOMEN:8080/api/v1/events",
-    #     gamestate_url="http://LIELLOMEN:8080/api/v1/gamestate",
-    #     OS_friendly_name="shortrange_img_uploader",
-    #     user_id="player_1",
-    #     upload_timeout=1.0,
-    #     poll_interval_seconds=0.3
-    # ))
+    game_client =(HTTPComms(
+        sharedmem_buffs_closerange=image_capture_shortrange.get_mem_buffers(),
+        safe_mem_details_func_closerange=image_capture_shortrange.get_safe_mem_details,
+        sharedmem_buffs_longrange=image_capture_longrange.get_mem_buffers(),
+        safe_mem_details_func_longrange=image_capture_longrange.get_safe_mem_details,
+        images_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/images/upload",
+        events_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/events",
+        gamestate_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/gamestate",
+        OS_friendly_name="shortrange_img_uploader",
+        user_id="player_1",
+        upload_timeout=1.0,
+        poll_interval_seconds=0.3
+    ))
 
     for image_analyser in image_analysis:
         print(
@@ -602,8 +619,10 @@ def main():
                 perfmonitor.manual_measure("check_scale2", 25)
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:
-                        if "demoplayer" in players:
-                            players["demoplayer"].update_healthpoints(diff=-10)
+                        discovered_tags = extract_discovered_tags(analysis)
+                        for tag_id in discovered_tags:
+                            if "game_client" in locals():
+                                game_client.send_tagging_event(tag_id, imageIDs)
 
                 if "game_client" in locals():
                     if is_trigger_pressed is True:

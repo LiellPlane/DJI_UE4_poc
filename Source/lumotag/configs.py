@@ -12,13 +12,23 @@ from dataclasses import dataclass
 import time
 
 
-
 @dataclass
 class base_find_lumotag_config():
     SAVE_IMAGES_DEBUG: bool
     SAVE_IMAGES_PATH: str
     PRINT_DEBUG: bool
     SAVE_STREAM: bool
+
+
+def get_http_comms_baseurl(platform):
+    if platform == _OS.RASPBERRY:
+        return "http://LIELLOMEN:8080"
+    elif platform == _OS.WINDOWS:
+        return "http://LIELLOMEN:8080"
+    elif platform == _OS.MAC_OS:
+        return "http://localhost:8080"
+    else:
+        raise Exception(f"Platform {platform} not supported")
 
 
 def get_lumofind_config(platform):
