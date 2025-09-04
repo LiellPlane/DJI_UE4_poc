@@ -106,7 +106,7 @@ def check_pattern_valid(filtered_bars: Union[list[FilteredWhiteBars], BadRead], 
     return True
 
 
-def decode_white_bars(data) -> tuple[WhiteBars, any]:
+def decode_white_bars(data) -> tuple[WhiteBars, np.ndarray]:
     """
     Detects white bars in a barcode by identifying transitions from black to white to black.
     Uses statistical methods to handle hotspots and improve normalization.
@@ -164,6 +164,112 @@ def decode_white_bars(data) -> tuple[WhiteBars, any]:
     white_bar_widths = white_ends - white_starts
 
     return (WhiteBars(white_bar_positions, white_bar_widths)), binary_data
+
+
+def decode_white_bars_robust(data) -> tuple[WhiteBars, any]:
+    """
+    Robust barcode white bar detection optimized for small arrays (~40 elements).
+    Uses Otsu's automatic thresholding with statistical fallback.
+    
+    Parameters:
+    - data: np.ndarray, 1D array of uint8 values representing the scanned barcode.
+        NOT NORMALIZED!!!
+    
+    Returns:
+    - white_bar_positions: List of (start_index, end_index) tuples for each white bar.
+    - white_bar_widths: List of widths of the white bars.
+    - binary_data: Binarized version of the input data.
+    """
+    MIN_VARIANCE = 15
+    
+    # Quick variance check - if too low, return empty result
+    if np.std(data) < MIN_VARIANCE:
+        binary_data = np.zeros_like(data, dtype=np.int8)
+        return WhiteBars([], []), binary_data
+    
+    # Method 1: Otsu's automatic threshold (optimal for bimodal distributions)
+    # Very fast for small arrays like 40 elements
+    try:
+        # Otsu works on uint8 data directly
+        data_uint8 = data.astype(np.uint8)
+        otsu_threshold, _ = cv2.threshold(data_uint8, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        
+        # Apply the threshold to get binary data
+        binary_data = (data > otsu_threshold).astype(np.int8)
+        
+        # Quick validation: check if we have reasonable transitions
+        transitions = np.sum(np.abs(np.diff(binary_data)))
+        if transitions >= 2:  # At least one complete bar (2 transitions)
+            return _extract_white_bars_fast(binary_data)
+    
+    except (cv2.error, ValueError):
+        pass  # Fall through to backup method
+    
+    # Method 2: Fast robust statistical approach (fallback)
+    # Use inter-quartile range for robust thresholding
+    q1, q3 = np.percentile(data, [25, 75])
+    iqr = q3 - q1
+    
+    if iqr < MIN_VARIANCE:
+        binary_data = np.zeros_like(data, dtype=np.int8)
+        return WhiteBars([], []), binary_data
+    
+    # Robust outlier bounds using IQR
+    outlier_factor = 1.5
+    data_min = max(data.min(), q1 - outlier_factor * iqr)
+    data_max = min(data.max(), q3 + outlier_factor * iqr)
+    
+    # Clip and normalize
+    data_clipped = np.clip(data, data_min, data_max)
+    
+    if data_max - data_min < MIN_VARIANCE:
+        binary_data = np.zeros_like(data, dtype=np.int8)
+        return WhiteBars([], []), binary_data
+    
+    normalized_data = (data_clipped - data_min) / (data_max - data_min)
+    
+    # Use median as threshold (more robust than mean for bimodal data)
+    threshold = np.median(normalized_data)
+    binary_data = (normalized_data > threshold).astype(np.int8)
+    
+    return _extract_white_bars_fast(binary_data)
+
+
+def _extract_white_bars_fast(binary_data) -> tuple[WhiteBars, any]:
+    """
+    Fast extraction of white bar positions from binary data.
+    Optimized for small arrays.
+    """
+    # Find transitions using diff
+    diff_data = np.diff(binary_data)
+    white_starts = np.where(diff_data == 1)[0] + 1
+    white_ends = np.where(diff_data == -1)[0] + 1
+    
+    # Handle edge cases efficiently
+    if len(white_starts) == 0 and len(white_ends) == 0:
+        # Check if entire array is white
+        if binary_data[0] == 1:
+            white_bar_positions = [(0, len(binary_data))]
+            white_bar_widths = np.array([len(binary_data)])
+        else:
+            white_bar_positions = []
+            white_bar_widths = np.array([])
+    else:
+        # Standard case with transitions
+        if binary_data[0] == 1:
+            white_starts = np.insert(white_starts, 0, 0)
+        if binary_data[-1] == 1:
+            white_ends = np.append(white_ends, len(binary_data))
+        
+        # Ensure we have matching start/end pairs
+        min_len = min(len(white_starts), len(white_ends))
+        white_starts = white_starts[:min_len]
+        white_ends = white_ends[:min_len]
+        
+        white_bar_positions = list(zip(white_starts, white_ends))
+        white_bar_widths = white_ends - white_starts
+    
+    return WhiteBars(white_bar_positions, white_bar_widths), binary_data
 
 
 def decode_barcode_bw_transitions(data):
@@ -264,7 +370,7 @@ def analyse_and_get_image(test_member):
     height = 500
     scale = height/len(test_member)
     whitebars, _ = filter_white_bars(
-        decode_white_bars(np.array(test_member)),
+        decode_white_bars_robust(np.array(test_member)),
         length_array=len(test_member)
         )
     out_img1 = cv2.resize(np.asarray(test_member), (200, height), interpolation=cv2.INTER_NEAREST)
@@ -430,7 +536,7 @@ def decode_id(
 
     # get all white bars - with no filtering for bars touching edges
     # this will normalise the data!
-    white_bars, binary_bars = decode_white_bars(spoke_samples_middle_edges)
+    white_bars, binary_bars = decode_white_bars_robust(spoke_samples_middle_edges)
 
     # now test that the start of each edge bar is white (corresponding to centre dot)
     segment_high_start_mask = get_10000_mask(len(spoke_samples_middle_edges))
@@ -580,7 +686,7 @@ def is_valid_quadro_id(spoke_samples_corners: list[int]) -> VerifyBarcodeResult:
     """
     # get all white bars - with no filtering for bars touching edges
     # this will normalise the data!
-    white_bars, binary_bars = decode_white_bars(spoke_samples_corners)
+    white_bars, binary_bars = decode_white_bars_robust(spoke_samples_corners)
     # 7 and 8 here depends on if sample overlaps/touches boundary or not
     # see ascii art - we check all diagonal in a clockwise sequence, starting
     # each time from the centre. When these segments are connected together the
