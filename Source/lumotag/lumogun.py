@@ -11,7 +11,7 @@ from comms_http import HTTPComms
 # import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
 import img_processing
-from decode_clothID_v2 import find_lumotag, find_lumotag_mser
+from decode_clothID_v2 import find_lumotag, find_lumotag_mser, find_lumotag_special_case
 from utils import time_it, get_platform
 from my_collections import _OS, HeightWidth, ShapeItem
 
@@ -193,7 +193,7 @@ def main():
             OS_friendly_name="closerange_inner",
             img_shrink_factor=None,
             camera_source_class_ref=image_capture_shortrange,
-            lumotag_func=find_lumotag,
+            lumotag_func=find_lumotag_special_case,
             config=configs.get_lumofind_config(PLATFORM),
         )
     )

@@ -1590,9 +1590,17 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
     return output_contour_data
 
 
-def find_lumotag(inputimg, dataobject : WorkingData):
+def find_lumotag_special_case(inputimg, dataobject : WorkingData):
+    return find_lumotag(inputimg, dataobject, specialcaseNoBlurs= True)
 
-    """analyse input image for specific lumotag pattern"""
+
+def find_lumotag(inputimg, dataobject : WorkingData, specialcaseNoBlurs: Optional[bool] = True):
+
+    """analyse input image for specific lumotag pattern
+    
+    specialcaseNoBlurs is for the close-range camera, which at the time of writing
+    had a small hotspot and the rest of the image black due to the distribution of the IR torch
+    here we can experiment with turning off the blurs as we will have less candidates to work from"""
     with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
         with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
             if len(inputimg.shape)>2:
@@ -1602,7 +1610,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
         dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
 
         with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
-            img_op = cv2.blur(img_grayscale,(5,5)) # fastest filter
+            if not specialcaseNoBlurs: img_op = cv2.blur(img_grayscale,(5,5)) # fastest filter
             # img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
 
@@ -1615,7 +1623,7 @@ def find_lumotag(inputimg, dataobject : WorkingData):
 
 
         with time_it("pre-processing: blur again",dataobject.debug_details.PRINT_DEBUG):
-            img_op = cv2.blur(img_op,(3,3)) # fastest filter
+            if not specialcaseNoBlurs: img_op = cv2.blur(img_op,(3,3)) # fastest filter
             # img_op = cv2.medianBlur(img_op, 3)
             dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
 
