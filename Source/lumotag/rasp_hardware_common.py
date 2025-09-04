@@ -373,9 +373,12 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
             "AwbEnable": 0, 
             "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
             "AeExposureMode": controls.AeExposureModeEnum.Short,
-            "ExposureValue": -2
+            "ExposureValue": -2.5,      # Stronger underexposure bias for flashlight
+            "AnalogueGain": 1.2,        # Lower gain to reduce sensitivity
+            "AeConstraintMode": controls.AeConstraintModeEnum.Highlight,  # Prioritise highlights
+            "Contrast": 1.4,            # Boost contrast for better bright/dark balance
+            "FrameDurationLimits": (100, 15000)  # Min 0.1ms, Max 15ms exposure
             })
-        #self.picam2.set_controls({"AnalogueGain": 5.0})
         self.picam2.start()
         time.sleep(0.2)
 
