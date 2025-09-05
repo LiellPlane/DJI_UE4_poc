@@ -1591,10 +1591,6 @@ def find_lumotag_mser(inputimg, dataobject : WorkingData):
 
 
 def find_lumotag_special_case(inputimg, dataobject : WorkingData):
-    return find_lumotag(inputimg, dataobject, specialcaseNoBlurs= True)
-
-
-def find_lumotag(inputimg, dataobject : WorkingData, specialcaseNoBlurs: Optional[bool] = True):
 
     """analyse input image for specific lumotag pattern
     
@@ -1609,8 +1605,59 @@ def find_lumotag(inputimg, dataobject : WorkingData, specialcaseNoBlurs: Optiona
                 img_grayscale = inputimg
         dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
 
+        # careful here - can have loads of candidates if not using any blur
+        # but the image we get at thise range is usually blown out by the IR torch
         with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
-            if not specialcaseNoBlurs: img_op = cv2.blur(img_grayscale,(5,5)) # fastest filter
+            img_op = cv2.blur(img_grayscale,(3,3)) # fastest filter
+            # img_op = cv2.medianBlur(img_grayscale, 5)
+            dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
+
+        with time_it("pre-processing: threshold_img",dataobject.debug_details.PRINT_DEBUG):
+            #img_op=img_pro.threshold_img_static(img_op,low=40,high=255)
+            img_op=img_pro.threshold_img(img_op,high=255)
+
+            dataobject.img_view_or_save_if_debug(img_op, "thresholdimg")
+
+
+        # with time_it("pre-processing: blur again",dataobject.debug_details.PRINT_DEBUG):
+        #     img_op = cv2.blur(img_op,(3,3)) # fastest filter
+        #     # img_op = cv2.medianBlur(img_op, 3)
+        #     dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
+
+        # org_img_grayscale_blur = img_grayscale
+        # with time_it("pre-processing: blur orig for sampler",dataobject.debug_details.PRINT_DEBUG):
+        #     org_img_grayscale_blur = cv2.blur(img_grayscale,(5,5)) # fastest filter
+        #     # org_img_grayscale_blur = cv2.medianBlur(img_grayscale, 5)
+        #     dataobject.img_view_or_save_if_debug(org_img_grayscale_blur, "blur_for_sampling", resize=False)
+
+    with time_it("get_possible_candidates total",dataobject.debug_details.PRINT_DEBUG):
+        with time_it("get possible candidates: find contours", dataobject.debug_details.PRINT_DEBUG):
+            contours, hierarchy = cv2.findContours(img_op, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        contours, hierarchy = get_possible_candidates(img_op,contours, hierarchy, dataobject)
+
+    with time_it("analyse_candidates TOTAL",dataobject.debug_details.PRINT_DEBUG):
+        output_contour_data = analyse_candidates_shapematch(
+                                                original_img=inputimg,
+                                                original_blurred_image=img_grayscale,
+                                                contours = contours,
+                                                contour_hierarchy = hierarchy,
+                                                dataobject = dataobject)
+
+    return output_contour_data
+
+
+def find_lumotag(inputimg, dataobject : WorkingData):
+    with time_it("pre-processing: total", dataobject.debug_details.PRINT_DEBUG):
+        with time_it("grayscale",dataobject.debug_details.PRINT_DEBUG):
+            if len(inputimg.shape)>2:
+                img_grayscale = cv2.cvtColor(inputimg,cv2.COLOR_BGR2GRAY)
+            else:
+                img_grayscale = inputimg
+        dataobject.img_view_or_save_if_debug(inputimg, Debug_Images.original_input.value, resize=False)
+
+        with time_it("pre-processing: blur" ,dataobject.debug_details.PRINT_DEBUG):
+            img_op = cv2.blur(img_grayscale,(5,5)) # fastest filter
             # img_op = cv2.medianBlur(img_grayscale, 5)
             dataobject.img_view_or_save_if_debug(img_op, "blur_5_5", resize=False)
 
@@ -1623,7 +1670,7 @@ def find_lumotag(inputimg, dataobject : WorkingData, specialcaseNoBlurs: Optiona
 
 
         with time_it("pre-processing: blur again",dataobject.debug_details.PRINT_DEBUG):
-            if not specialcaseNoBlurs: img_op = cv2.blur(img_op,(3,3)) # fastest filter
+            img_op = cv2.blur(img_op,(3,3)) # fastest filter
             # img_op = cv2.medianBlur(img_op, 3)
             dataobject.img_view_or_save_if_debug(img_op,"blur_3_3_again", resize=False)
 
