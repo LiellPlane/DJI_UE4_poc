@@ -13,8 +13,9 @@ import time
 
 TESTDATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "testdata", "deadspot")
 
-CLOSE_RANGE_DIMS = (1456, 1088)
-LONG_RANGE_DIMS = (1920, 1080)
+LONG_RANGE_DIMS = (1456, 1088)
+CLOSE_RANGE_DIMS = (1920, 1080) 
+
 
 class TestImageSaver:
     def __init__(self):
