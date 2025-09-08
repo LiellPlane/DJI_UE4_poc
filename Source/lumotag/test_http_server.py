@@ -18,6 +18,7 @@ import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
 from lumotag_events import GameUpdate, PlayerStatus
+from typing import Dict
 import sys
 
 
@@ -25,6 +26,7 @@ class GameTestServer(BaseHTTPRequestHandler):
     # Class variables to track server state
     images_received = []
     events_received = []
+    stored_images: Dict[str, bytes] = {}  # Dictionary to store JPG images by image_id
     players_data = {
         "testself": PlayerStatus(
             health=100,
@@ -209,6 +211,9 @@ class GameTestServer(BaseHTTPRequestHandler):
         # Extract image ID from the data (like HTTPComms does)
         image_id = data['image_id']
         
+        # Store the JPG encoded image data in class dictionary
+        GameTestServer.stored_images[image_id] = image_data
+        
         # Store image info
         image_info = {
             'image_id': image_id,
@@ -237,7 +242,7 @@ class GameTestServer(BaseHTTPRequestHandler):
                     img = cv2.resize(img, (new_width, 800), interpolation=cv2.INTER_LINEAR)
                 
                 # Display image without any blocking - cv2.waitKey(1) is non-blocking
-                cv2.imshow(f'Received Images - {user_id}', img)
+                # cv2.imshow(f'Received Images - {user_id}', img)
                 cv2.waitKey(1)  # Non-blocking, just processes window events
         except ImportError:
             # OpenCV not available, skip display

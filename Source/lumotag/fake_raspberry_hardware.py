@@ -9,6 +9,8 @@ import math
 import json
 import img_processing
 import os
+import tempfile
+import pickle
 from configs import Fake_Cam_vidmodes_longrangeFILES, Fake_Cam_vidmodes_closerangeFILES
 import video_recorder
 
@@ -37,6 +39,12 @@ def lumo_viewer(
 
 
 class filesystem(factory.FileSystemABC):
+    
+    def __init__(self) -> None:
+        # Use system temp directory - works on Windows, Mac, Linux
+        self.temp_folder = tempfile.gettempdir()
+        print(f"Fake hardware filesystem using temp folder: {self.temp_folder}")
+    
     def save_image(self,img,message=None):
         if img is None:
             raise Exception("save debug; img is None")
@@ -48,24 +56,52 @@ class filesystem(factory.FileSystemABC):
         pass
 
     def save_numberstatus_cache(self, cache_data: dict[str, np.ndarray]) -> bool:
-        """Stub implementation for fake hardware. Always returns True."""
-        print("Fake hardware: save_numberstatus_cache called")
-        return True
+        """Save the numberstatus cache to temporary storage cross-platform."""
+        try:
+            cache_path = os.path.join(self.temp_folder, "fake_numberstatus_cache.pkl")
+            with open(cache_path, 'wb') as f:
+                pickle.dump(cache_data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            print(f"Fake hardware: saved numberstatus cache to {cache_path}")
+            return True
+        except Exception as e:
+            print(f"Fake hardware: error saving numberstatus cache: {e}")
+            return False
 
     def load_numberstatus_cache(self) -> dict[str, np.ndarray] | None:
-        """Stub implementation for fake hardware. Always returns None."""
-        print("Fake hardware: load_numberstatus_cache called")
-        return None
+        """Load the numberstatus cache from temporary storage cross-platform."""
+        try:
+            cache_path = os.path.join(self.temp_folder, "fake_numberstatus_cache.pkl")
+            with open(cache_path, 'rb') as f:
+                cache_data = pickle.load(f)
+            print(f"Fake hardware: loaded numberstatus cache from {cache_path}")
+            return cache_data
+        except Exception as e:
+            print(f"Fake hardware: error loading numberstatus cache: {e}")
+            return None
 
     def save_shieldstatus_cache(self, cache_data: list[np.ndarray]) -> bool:
-        """Stub implementation for fake hardware. Always returns True."""
-        print("Fake hardware: save_shieldstatus_cache called")
-        return True
+        """Save the shieldstatus cache to temporary storage cross-platform."""
+        try:
+            cache_path = os.path.join(self.temp_folder, "fake_shieldstatus_cache.pkl")
+            with open(cache_path, 'wb') as f:
+                pickle.dump(cache_data, f, protocol=pickle.HIGHEST_PROTOCOL)
+            print(f"Fake hardware: saved shieldstatus cache to {cache_path}")
+            return True
+        except Exception as e:
+            print(f"Fake hardware: error saving shieldstatus cache: {e}")
+            return False
 
     def load_shieldstatus_cache(self) -> list[np.ndarray] | None:
-        """Stub implementation for fake hardware. Always returns None."""
-        print("Fake hardware: load_shieldstatus_cache called")
-        return None
+        """Load the shieldstatus cache from temporary storage cross-platform."""
+        try:
+            cache_path = os.path.join(self.temp_folder, "fake_shieldstatus_cache.pkl")
+            with open(cache_path, 'rb') as f:
+                cache_data = pickle.load(f)
+            print(f"Fake hardware: loaded shieldstatus cache from {cache_path}")
+            return cache_data
+        except Exception as e:
+            print(f"Fake hardware: error loading shieldstatus cache: {e}")
+            return None
 
 class Triggers(factory.Triggers):
     def __init__(self, _gun_config) -> None:
