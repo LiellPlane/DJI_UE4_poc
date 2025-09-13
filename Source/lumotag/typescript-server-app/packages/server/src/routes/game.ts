@@ -15,67 +15,57 @@ import {
 
 const router: Router = express.Router();
 
-// High-performance in-memory storage
-class GameServerState {
-  private static instance: GameServerState;
-  private startTime: number = Date.now();
+// Pure data structure (no methods)
+interface GameState {
+  playersData: Record<string, PlayerStatus>;
+  imagesReceived: ImageInfo[];
+  gamestateCounter: number;
+  startTime: number;
+}
 
-  // Simplified - no image storage, just metadata tracking
-
-  // Recent activity tracking
-  public imagesReceived: ImageInfo[] = [];
-
-  // Dynamic player data (simulating your Python server's behavior)
-  public playersData: Record<string, PlayerStatus> = {
+// Initial state
+const createInitialGameState = (): GameState => ({
+  playersData: {
     testself: {
       health: 100,
       ammo: 30,
       tag_id: "testself",
       display_name: "tinytim",
-      event_type: "PlayerStatus", // REQUIRED field
+      event_type: "PlayerStatus",
     },
     player_002: {
       health: 85,
       ammo: 22,
       tag_id: "player_002",
       display_name: "mongo",
-      event_type: "PlayerStatus", // REQUIRED field
+      event_type: "PlayerStatus",
     },
     player_003: {
       health: 95,
       ammo: 18,
       tag_id: "player_003",
       display_name: "dildort",
-      event_type: "PlayerStatus", // REQUIRED field
+      event_type: "PlayerStatus",
     },
-  };
+  },
+  imagesReceived: [],
+  gamestateCounter: 0,
+  startTime: Date.now(),
+});
 
-  private gamestateCounter = 0;
+// Pure functions for game logic
+const gameLogic = {
+  addImageInfo: (state: GameState, info: ImageInfo): GameState => ({
+    ...state,
+    imagesReceived: [...state.imagesReceived, info].slice(-100), // Keep only last 100
+  }),
 
-  static getInstance(): GameServerState {
-    if (!GameServerState.instance) {
-      GameServerState.instance = new GameServerState();
-    }
-    return GameServerState.instance;
-  }
-
-  // Image storage methods removed for simplicity
-
-  addImageInfo(info: ImageInfo): void {
-    this.imagesReceived.push(info);
-    // Keep only last 100 entries for memory efficiency
-    if (this.imagesReceived.length > 100) {
-      this.imagesReceived = this.imagesReceived.slice(-100);
-    }
-  }
-
-
-  // Simulate dynamic gamestate like your Python server
-  updateGameState(): GameUpdate {
+  updateGameState: (state: GameState): { newState: GameState; gameUpdate: GameUpdate } => {
     const currentTime = Date.now() / 1000;
+    const updatedPlayers: Record<string, PlayerStatus> = {};
 
     // Update player stats dynamically (matching your Python logic)
-    Object.entries(this.playersData).forEach(([tagId, player]) => {
+    Object.entries(state.playersData).forEach(([tagId, player]) => {
       if (tagId === "testself") {
         // Make testself health jiggle for testing
         const baseHealth = 75;
@@ -86,10 +76,10 @@ class GameServerState {
           Math.min(100, baseHealth + sineVariation + randomJitter),
         );
 
-        this.playersData[tagId] = {
+        updatedPlayers[tagId] = {
           ...player,
           health: newHealth,
-          event_type: "PlayerStatus", // Ensure event_type is always present
+          event_type: "PlayerStatus",
         };
       } else {
         const baseHealth = tagId === "player_002" ? 85 : 95;
@@ -101,10 +91,10 @@ class GameServerState {
           Math.min(100, baseHealth + healthVariation),
         );
 
-        this.playersData[tagId] = {
+        updatedPlayers[tagId] = {
           ...player,
           health: newHealth,
-          event_type: "PlayerStatus", // Ensure event_type is always present
+          event_type: "PlayerStatus",
         };
       }
 
@@ -114,50 +104,84 @@ class GameServerState {
         tagId === "testself" ? 30 : tagId === "player_002" ? 22 : 18;
       const newAmmo = Math.max(0, baseAmmo - ammoConsumed);
 
-      this.playersData[tagId] = {
-        ...this.playersData[tagId],
+      updatedPlayers[tagId] = {
+        ...updatedPlayers[tagId],
         ammo: newAmmo,
-        event_type: "PlayerStatus", // Ensure event_type is always present
+        event_type: "PlayerStatus",
       };
     });
 
-    this.gamestateCounter++;
+    const newCounter = state.gamestateCounter + 1;
 
     // Log occasionally to reduce spam (every 10th request)
-    if (this.gamestateCounter % 10 === 0) {
+    if (newCounter % 10 === 0) {
       logger.info(
-        `🎮 Gamestate request #${this.gamestateCounter} - returning ${Object.keys(this.playersData).length} players`,
+        `🎮 Gamestate request #${newCounter} - returning ${Object.keys(updatedPlayers).length} players`,
       );
     }
 
-    return {
-      players: { ...this.playersData },
-      event_type: "GameUpdate", // REQUIRED field
+    const newState: GameState = {
+      ...state,
+      playersData: updatedPlayers,
+      gamestateCounter: newCounter,
     };
+
+    const gameUpdate: GameUpdate = {
+      players: { ...updatedPlayers },
+      event_type: "GameUpdate",
+    };
+
+    return { newState, gameUpdate };
+  },
+
+  getStats: (state: GameState): GameServerStats => ({
+    server_info: {
+      uptime_seconds: (Date.now() - state.startTime) / 1000,
+      start_time: new Date(state.startTime).toISOString(),
+    },
+    activity: {
+      total_images: state.imagesReceived.length,
+      recent_images: state.imagesReceived.slice(-5),
+    },
+    game_state: {
+      active_players: Object.keys(state.playersData).length,
+      players: { ...state.playersData },
+    },
+  }),
+};
+
+// Thin wrapper for persistence (replaces singleton class)
+class GameStateManager {
+  private state: GameState;
+
+  constructor() {
+    this.state = createInitialGameState();
+  }
+
+  addImageInfo(info: ImageInfo): void {
+    this.state = gameLogic.addImageInfo(this.state, info);
+  }
+
+  updateGameState(): GameUpdate {
+    const { newState, gameUpdate } = gameLogic.updateGameState(this.state);
+    this.state = newState;
+    return gameUpdate;
   }
 
   getStats(): GameServerStats {
-    return {
-      server_info: {
-        uptime_seconds: (Date.now() - this.startTime) / 1000,
-        start_time: new Date(this.startTime).toISOString(),
-      },
-      activity: {
-        total_images: this.imagesReceived.length,
-        recent_images: this.imagesReceived.slice(-5),
-      },
-      game_state: {
-        active_players: Object.keys(this.playersData).length,
-        players: { ...this.playersData },
-      },
-    };
+    return gameLogic.getStats(this.state);
+  }
+
+  // For debugging/testing
+  getState(): GameState {
+    return { ...this.state }; // Return copy to prevent external mutation
   }
 }
 
 // Simple validation like Python server - no complex schemas
 
-// Get singleton instance
-const gameState = GameServerState.getInstance();
+// Create single instance (replaces singleton pattern)
+const gameState = new GameStateManager();
 
 // Performance middleware - add request timing
 router.use((req, res, next) => {
@@ -222,8 +246,6 @@ router.post("/images/upload", async (req: GameRequest, res: Response) => {
       image_id: uploadRequest.image_id,
       user_id: userId,
       timestamp: Date.now(),
-      size_bytes: savedImage.size,
-      received_at: Date.now(),
       file_location: savedImage.filename,
     };
 
@@ -243,7 +265,6 @@ router.post("/images/upload", async (req: GameRequest, res: Response) => {
       image_id: uploadRequest.image_id,
       event_type: uploadRequest.event_type,
       filename: savedImage.filename,
-      size_bytes: savedImage.size,
       processed_at: Date.now(),
       message: "Image saved successfully",
     });
@@ -262,20 +283,9 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
     const eventType = req.body.event_type;
 
-    let parsedEvent: any = null;
+    let parsedEvent: PlayerTagged;
 
     switch (eventType) {
-      case 'UploadRequest':
-        parsedEvent = {
-          ...req.body
-        } as UploadRequest;
-        break;
-
-      case 'PlayerStatus':
-        parsedEvent = {
-          ...req.body
-        } as PlayerStatus;
-        break;
 
       case 'PlayerTagged':
         parsedEvent = {
@@ -283,14 +293,8 @@ router.post("/events", (req: GameRequest, res: Response) => {
         } as PlayerTagged;
         break;
 
-      case 'GameUpdate':
-        parsedEvent = {
-          ...req.body
-        } as GameUpdate;
-        break;
-
       default:
-        throw new Error(`Unknown event type: ${eventType}. Supported types: UploadRequest, PlayerStatus, PlayerTagged, GameUpdate`);
+        throw new Error(`Unknown event type: ${eventType}. Supported types: PlayerTagged`);
     }
 
     // Event processed successfully - no storage needed

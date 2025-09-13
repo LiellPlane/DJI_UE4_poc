@@ -1,6 +1,5 @@
 import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
-import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
 import dotenv from "dotenv";
@@ -17,27 +16,10 @@ dotenv.config();
 const app: Application = express();
 const PORT = parseInt(process.env.PORT || '8080', 10);
 
-// Security middleware
-app.use(
-  helmet({
-    crossOriginEmbedderPolicy: false,
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
-      },
-    },
-  }),
-);
 
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3001",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-User-ID"],
   }),
 );
 
