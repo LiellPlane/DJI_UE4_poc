@@ -6,6 +6,7 @@ from functools import partial
 import queue
 import datetime
 import time
+import git_info
 from comms_http import HTTPComms
 
 # import decode_clothID_v2 as decode_clothID
@@ -21,6 +22,7 @@ import configs
 
 #  detect what OS we are on - test environment (Windows) or production (pi hardware)
 PLATFORM = get_platform()
+GIT_REPO_INFO = git_info.get_version_string()
 PRINT_DEBUG = configs.get_lumofind_config(PLATFORM).PRINT_DEBUG
 
 if PLATFORM == _OS.WINDOWS:
@@ -110,7 +112,7 @@ def main():
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
 
-    voice.speak(f"{GUN_CONFIGURATION.model}, V zero five.")
+    voice.speak(GIT_REPO_INFO)
     relay = lumogun.Relay(GUN_CONFIGURATION)
 
     # accelerometer = lumogun.Accelerometer()
