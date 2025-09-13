@@ -1,13 +1,13 @@
 // Types for the game server
 import { Request } from "express";
 
-// Game-specific types matching your Python Pydantic models
-// event_type is REQUIRED in all these interfaces (matches Python default_factory)
+// Game-specific types matching your Python Pydantic models exactly
+// These match the structures in lumotag_events.py
+// All fields are REQUIRED - no defaults, crash if missing
 export interface UploadRequest {
   image_id: string;
   image_data: string; // base64 encoded JPEG
-  event_type: string; // REQUIRED - matches Python default_factory
-  timestamp?: number;
+  event_type: string; // REQUIRED - no default
 }
 
 export interface PlayerStatus {
@@ -15,18 +15,18 @@ export interface PlayerStatus {
   ammo: number;
   tag_id: string;
   display_name: string;
-  event_type: string; // REQUIRED - matches Python default_factory
+  event_type: string; // REQUIRED - no default
 }
 
 export interface GameUpdate {
   players: Record<string, PlayerStatus>;
-  event_type: string; // REQUIRED - matches Python default_factory
+  event_type: string; // REQUIRED - no default
 }
 
 export interface PlayerTagged {
   tag_id: string;
   image_ids: string[];
-  event_type: string; // REQUIRED - matches Python default_factory
+  event_type: string; // REQUIRED - no default
 }
 
 export interface ImageInfo {
@@ -35,14 +35,9 @@ export interface ImageInfo {
   timestamp: number;
   size_bytes: number;
   received_at: number;
+  file_location: string;
 }
 
-export interface EventInfo {
-  event_type: string;
-  user_id: string;
-  data: any;
-  received_at: number;
-}
 
 export interface GameServerStats {
   server_info: {
@@ -51,9 +46,7 @@ export interface GameServerStats {
   };
   activity: {
     total_images: number;
-    total_events: number;
     recent_images: ImageInfo[];
-    recent_events: EventInfo[];
   };
   game_state: {
     active_players: number;

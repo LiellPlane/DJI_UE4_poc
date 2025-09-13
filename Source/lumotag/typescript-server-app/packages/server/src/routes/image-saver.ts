@@ -29,8 +29,8 @@ class ImageSaver {
     const imageBuffer = Buffer.from(base64Data, 'base64');
     
     // Generate unique filename
-    const timestamp = Date.now();
-    const filename = `${imageId}_${timestamp}.jpg`;
+    // const timestamp = Date.now();
+    const filename = `${imageId}.jpg`;
     const filepath = path.join(this.uploadsDir, filename);
     
     // Save asynchronously (non-blocking)

@@ -1,5 +1,4 @@
 import express, { Response, Router } from "express";
-import { z } from "zod";
 // import sharp from 'sharp'; // Removed for simplicity
 // import { LRUCache } from 'lru-cache'; // Removed for simplicity
 import { logger } from "../utils/logger";
@@ -8,9 +7,10 @@ import {
   GameRequest,
   PlayerStatus,
   GameUpdate,
+  PlayerTagged,
   ImageInfo,
-  EventInfo,
   GameServerStats,
+  UploadRequest,
 } from "../types";
 
 const router: Router = express.Router();
@@ -24,7 +24,6 @@ class GameServerState {
 
   // Recent activity tracking
   public imagesReceived: ImageInfo[] = [];
-  public eventsReceived: EventInfo[] = [];
 
   // Dynamic player data (simulating your Python server's behavior)
   public playersData: Record<string, PlayerStatus> = {
@@ -70,13 +69,6 @@ class GameServerState {
     }
   }
 
-  addEventInfo(info: EventInfo): void {
-    this.eventsReceived.push(info);
-    // Keep only last 100 entries for memory efficiency
-    if (this.eventsReceived.length > 100) {
-      this.eventsReceived = this.eventsReceived.slice(-100);
-    }
-  }
 
   // Simulate dynamic gamestate like your Python server
   updateGameState(): GameUpdate {
@@ -152,9 +144,7 @@ class GameServerState {
       },
       activity: {
         total_images: this.imagesReceived.length,
-        total_events: this.eventsReceived.length,
         recent_images: this.imagesReceived.slice(-5),
-        recent_events: this.eventsReceived.slice(-5),
       },
       game_state: {
         active_players: Object.keys(this.playersData).length,
@@ -164,19 +154,7 @@ class GameServerState {
   }
 }
 
-// Validation schemas using Zod - event_type is REQUIRED
-const uploadRequestSchema = z.object({
-  image_id: z.string().min(1),
-  image_data: z.string().min(1), // base64 string
-  event_type: z.string().default("UploadRequest"), // REQUIRED with default
-  timestamp: z.number().optional(),
-});
-
-const eventSchema = z
-  .object({
-    event_type: z.string().min(1), // REQUIRED - must be provided
-  })
-  .passthrough(); // Allow additional fields
+// Simple validation like Python server - no complex schemas
 
 // Get singleton instance
 const gameState = GameServerState.getInstance();
@@ -227,61 +205,50 @@ router.post("/images/upload", async (req: GameRequest, res: Response) => {
   const userId = req.headers["x-user-id"] || "unknown";
 
   try {
-    // Fast validation using Zod - will add default event_type if missing
-    const validatedData = uploadRequestSchema.parse(req.body);
-
-    // Simple validation - just check if we have image data
-    if (!validatedData.image_data || validatedData.image_data.length === 0) {
-      logger.warn(
-        `[${timestamp}] ❌ No image data for image ${validatedData.image_id}`,
-      );
-      return res.status(400).json({ error: "No image data provided" });
-    }
+    // Try to parse body as UploadRequest - crash if it doesn't work
+    // Use spread operator (like Python **) to unpack all fields
+    const uploadRequest: UploadRequest = {
+      ...req.body
+    };
 
     // Save image to disk (async, non-blocking)
     const savedImage = await imageSaver.saveImage(
-      validatedData.image_id,
-      validatedData.image_data
+      uploadRequest.image_id,
+      uploadRequest.image_data
     );
 
     // Store image metadata with actual file info
     const imageInfo: ImageInfo = {
-      image_id: validatedData.image_id,
+      image_id: uploadRequest.image_id,
       user_id: userId,
-      timestamp: validatedData.timestamp || Date.now(),
+      timestamp: Date.now(),
       size_bytes: savedImage.size,
       received_at: Date.now(),
+      file_location: savedImage.filename,
     };
 
     gameState.addImageInfo(imageInfo);
 
-    logger.info(`[${timestamp}] 📸 Image saved successfully:
-    🔍 ID: ${validatedData.image_id}
-    👤 User: ${userId}
-    📏 Size: ${savedImage.size.toLocaleString()} bytes
-    💾 File: ${savedImage.filename}`);
+    logger.info(`[${timestamp}] Image saved successfully:
+    ID: ${uploadRequest.image_id}
+    User: ${userId}
+    Size: ${savedImage.size.toLocaleString()} bytes
+    File: ${savedImage.filename}`);
 
     // Simulate small processing delay (like your Python server)
     await new Promise((resolve) => setTimeout(resolve, 10));
 
     return res.json({
       status: "success",
-      image_id: validatedData.image_id,
+      image_id: uploadRequest.image_id,
+      event_type: uploadRequest.event_type,
       filename: savedImage.filename,
       size_bytes: savedImage.size,
       processed_at: Date.now(),
       message: "Image saved successfully",
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      logger.warn(`[${timestamp}] ❌ Validation error:`, error.errors);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: error.errors,
-      });
-    }
-
-    logger.error(`[${timestamp}] ❌ Image upload error:`, error);
+    logger.error(`[${timestamp}] Image upload error:`, error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -292,40 +259,55 @@ router.post("/events", (req: GameRequest, res: Response) => {
   const userId = req.headers["x-user-id"] || "unknown";
 
   try {
-    // Fast validation - event_type is REQUIRED
-    const validatedData = eventSchema.parse(req.body);
 
-    // Store event info
-    const eventInfo: EventInfo = {
-      event_type: validatedData.event_type,
-      user_id: userId,
-      data: { ...validatedData },
-      received_at: Date.now(),
-    };
+    const eventType = req.body.event_type;
 
-    gameState.addEventInfo(eventInfo);
+    let parsedEvent: any = null;
 
-    logger.info(`[${timestamp}] 📨 Event received successfully:
-    🏷️  Type: ${validatedData.event_type}
-    👤 User: ${userId}
-    📦 Data: ${JSON.stringify(validatedData)}`);
+    switch (eventType) {
+      case 'UploadRequest':
+        parsedEvent = {
+          ...req.body
+        } as UploadRequest;
+        break;
+
+      case 'PlayerStatus':
+        parsedEvent = {
+          ...req.body
+        } as PlayerStatus;
+        break;
+
+      case 'PlayerTagged':
+        parsedEvent = {
+          ...req.body
+        } as PlayerTagged;
+        break;
+
+      case 'GameUpdate':
+        parsedEvent = {
+          ...req.body
+        } as GameUpdate;
+        break;
+
+      default:
+        throw new Error(`Unknown event type: ${eventType}. Supported types: UploadRequest, PlayerStatus, PlayerTagged, GameUpdate`);
+    }
+
+    // Event processed successfully - no storage needed
+
+    logger.info(`[${timestamp}] Event received successfully:
+    Type: ${eventType}
+    User: ${userId}
+    Parsed Data: ${JSON.stringify(parsedEvent)}`);
 
     return res.json({
       status: "success",
-      event_type: validatedData.event_type,
+      event_type: eventType,
       processed_at: Date.now(),
       message: "Event processed successfully",
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      logger.warn(`[${timestamp}] ❌ Event validation error:`, error.errors);
-      return res.status(400).json({
-        error: "Validation failed",
-        details: error.errors,
-      });
-    }
-
-    logger.error(`[${timestamp}] ❌ Event processing error:`, error);
+    logger.error(`[${timestamp}] Event processing error:`, error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

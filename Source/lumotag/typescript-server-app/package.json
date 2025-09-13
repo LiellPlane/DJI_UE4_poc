@@ -8,6 +8,7 @@
     "build": "pnpm --recursive run build",
     "build:prod": "NODE_ENV=production pnpm --recursive run build",
     "start": "pnpm --filter server start",
+    "build:start": "pnpm build && pnpm start",
     "start:prod": "NODE_ENV=production pnpm --filter server start",
     "test": "pnpm --recursive run test",
     "lint": "pnpm --recursive run lint",
