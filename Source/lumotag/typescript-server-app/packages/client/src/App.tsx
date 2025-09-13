@@ -1,8 +1,8 @@
 // React import not needed with JSX Transform
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ServerStatus } from '@/components/ServerStatus';
-import { SystemMetrics } from '@/components/SystemMetrics';
-import './App.css';
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ServerStatus } from "@/components/ServerStatus";
+import { SystemMetrics } from "@/components/SystemMetrics";
+import "./App.css";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -21,14 +21,14 @@ function App() {
           <h1>Server Status Dashboard</h1>
           <p>Real-time monitoring of your TypeScript server</p>
         </header>
-        
+
         <main className="App-main">
           <div className="dashboard-grid">
             <ServerStatus />
             <SystemMetrics />
           </div>
         </main>
-        
+
         <footer className="App-footer">
           <p>TypeScript Server Dashboard v1.0.0</p>
         </footer>

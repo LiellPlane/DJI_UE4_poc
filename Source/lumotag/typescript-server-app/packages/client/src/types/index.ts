@@ -12,7 +12,7 @@ interface CpuUsage {
 }
 
 export interface HealthStatus {
-  status: 'UP' | 'DOWN';
+  status: "UP" | "DOWN";
   timestamp: string;
   uptime: number;
   memory: MemoryUsage;
@@ -22,7 +22,7 @@ export interface HealthStatus {
 
 export interface SystemStatus {
   server: {
-    status: 'RUNNING' | 'STARTING' | 'STOPPING';
+    status: "RUNNING" | "STARTING" | "STOPPING";
     uptime: string;
     startTime: string;
     environment: string;

@@ -88,3 +88,6 @@ dist
 # Temporary folders
 tmp/
 temp/
+
+# Image uploads (server runtime files)
+packages/server/uploads/

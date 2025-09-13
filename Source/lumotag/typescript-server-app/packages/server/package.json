@@ -21,7 +21,8 @@
     "zod": "^3.22.4",
     "winston": "^3.11.0",
     "compression": "^1.7.4",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "lru-cache": "^10.1.0"
   },
   "devDependencies": {
     "typescript": "^5.2.2",

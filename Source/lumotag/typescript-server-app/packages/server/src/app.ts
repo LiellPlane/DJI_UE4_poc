@@ -1,78 +1,91 @@
-import express, { Application, Request, Response, NextFunction } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import compression from 'compression';
-import morgan from 'morgan';
-import dotenv from 'dotenv';
-import { logger } from './utils/logger';
-import { errorHandler } from './middlewares/errorHandler';
-import { healthRouter } from './routes/health';
-import { statusRouter } from './routes/status';
+import express, { Application, Request, Response, NextFunction } from "express";
+import cors from "cors";
+import helmet from "helmet";
+import compression from "compression";
+import morgan from "morgan";
+import dotenv from "dotenv";
+import { logger } from "./utils/logger";
+import { errorHandler } from "./middlewares/errorHandler";
+import { healthRouter } from "./routes/health";
+import { statusRouter } from "./routes/status";
+import { gameRouter } from "./routes/game";
+import { imageSaver } from "./routes/image-saver";
 
 // Load environment variables
 dotenv.config();
 
 const app: Application = express();
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT || '8080', 10);
 
 // Security middleware
-app.use(helmet({
-  crossOriginEmbedderPolicy: false,
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-      scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+app.use(
+  helmet({
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
     },
-  },
-}));
+  }),
+);
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3001',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-User-ID"],
+  }),
+);
 
 // Performance middleware
 app.use(compression());
 
 // Logging middleware
-app.use(morgan('combined', { stream: { write: (msg) => logger.info(msg.trim()) } }));
+app.use(
+  morgan("combined", { stream: { write: (msg) => logger.info(msg.trim()) } }),
+);
 
 // Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Request logging
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
-  res.on('finish', () => {
+  res.on("finish", () => {
     const duration = Date.now() - start;
     logger.info(`${req.method} ${req.originalUrl}`, {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
       ip: req.ip,
-      userAgent: req.get('User-Agent'),
+      userAgent: req.get("User-Agent"),
     });
   });
   next();
 });
 
 // API Routes
-app.use('/api/health', healthRouter);
-app.use('/api/status', statusRouter);
+app.use("/api/health", healthRouter);
+app.use("/api/status", statusRouter);
+app.use("/api/v1", gameRouter);
 
 // Root endpoint
-app.get('/', (_req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.json({
-    message: 'TypeScript Server API',
-    version: '1.0.0',
+    message: "TypeScript Game Server API",
+    version: "1.0.0",
     timestamp: new Date().toISOString(),
     endpoints: {
-      health: '/api/health',
-      status: '/api/status',
+      health: "/api/health",
+      status: "/api/status",
+      gamestate: "/api/v1/gamestate",
+      images_upload: "/api/v1/images/upload",
+      events: "/api/v1/events",
+      stats: "/api/v1/stats",
     },
   });
 });
@@ -81,43 +94,67 @@ app.get('/', (_req: Request, res: Response) => {
 app.use(errorHandler);
 
 // 404 handler
-app.use('*', (req: Request, res: Response) => {
-  logger.warn(`Route not found: ${req.method} ${req.originalUrl}`, { ip: req.ip });
-  res.status(404).json({ 
-    error: 'Route not found',
+app.use("*", (req: Request, res: Response) => {
+  logger.warn(`Route not found: ${req.method} ${req.originalUrl}`, {
+    ip: req.ip,
+  });
+  res.status(404).json({
+    error: "Route not found",
     message: `Cannot ${req.method} ${req.originalUrl}`,
     timestamp: new Date().toISOString(),
   });
 });
 
+// Cleanup images on server start
+const cleanupImages = async () => {
+  try {
+    const result = await imageSaver.cleanupAllImages();
+    if (result.deletedCount > 0) {
+      logger.info(`🧹 Startup cleanup: Removed ${result.deletedCount} old image files`);
+    }
+    if (result.errors.length > 0) {
+      logger.warn(`⚠️ Cleanup had ${result.errors.length} errors`);
+    }
+  } catch (error) {
+    logger.error('Failed to cleanup images on startup:', error);
+  }
+};
+
 // Start server
-const server = app.listen(PORT, () => {
-  logger.info(`Server running on port ${PORT}`, {
-    environment: process.env.NODE_ENV || 'development',
+const HOST = process.env.HOST || '0.0.0.0';
+const server = app.listen(PORT, HOST, () => {
+  logger.info(`Server running on ${HOST}:${PORT}`, {
+    environment: process.env.NODE_ENV || "development",
+    host: HOST,
     port: PORT,
   });
+});
+
+// Run cleanup after server is ready
+server.on('listening', async () => {
+  await cleanupImages();
 });
 
 // Graceful shutdown
 const gracefulShutdown = (signal: string) => {
   logger.info(`${signal} received, shutting down gracefully`);
   server.close(() => {
-    logger.info('Server closed');
+    logger.info("Server closed");
     process.exit(0);
   });
 };
 
-process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
-process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+process.on("SIGTERM", () => gracefulShutdown("SIGTERM"));
+process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (reason, promise) => {
-  logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+process.on("unhandledRejection", (reason, promise) => {
+  logger.error("Unhandled Rejection at:", promise, "reason:", reason);
 });
 
 // Handle uncaught exceptions
-process.on('uncaughtException', (error) => {
-  logger.error('Uncaught Exception:', error);
+process.on("uncaughtException", (error) => {
+  logger.error("Uncaught Exception:", error);
   process.exit(1);
 });
 

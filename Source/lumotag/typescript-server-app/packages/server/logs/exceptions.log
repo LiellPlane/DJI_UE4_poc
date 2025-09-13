@@ -1,0 +1,199 @@
+{
+  error: Error: 
+  Something went wrong installing the "sharp" module
+  
+  Cannot find module '../build/Release/sharp-win32-x64.node'
+  Require stack:
+  - C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\sharp@0.32.6\node_modules\sharp\lib\sharp.js
+  - C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\sharp@0.32.6\node_modules\sharp\lib\constructor.js
+  - C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\sharp@0.32.6\node_modules\sharp\lib\index.js
+  - C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\game.js
+  - C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\app.js
+  
+  Possible solutions:
+  - Install with verbose logging and look for errors: "npm install --ignore-scripts=false --foreground-scripts --verbose sharp"
+  - Install for the current win32-x64 runtime: "npm install --platform=win32 --arch=x64 sharp"
+  - Consult the installation documentation: https://sharp.pixelplumbing.com/install
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\sharp@0.32.6\node_modules\sharp\lib\sharp.js:37:9)
+      at Module._compile (node:internal/modules/cjs/loader:1256:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)
+      at Module.load (node:internal/modules/cjs/loader:1119:32)
+      at Module._load (node:internal/modules/cjs/loader:960:12)
+      at Module.require (node:internal/modules/cjs/loader:1143:19)
+      at require (node:internal/modules/cjs/helpers:121:18)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\sharp@0.32.6\node_modules\sharp\lib\constructor.js:11:1)
+      at Module._compile (node:internal/modules/cjs/loader:1256:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1310:10),
+  level: 'error',
+  message: 'uncaughtException: \n' +
+    'Something went wrong installing the "sharp" module\n' +
+    '\n' +
+    "Cannot find module '../build/Release/sharp-win32-x64.node'\n" +
+    'Require stack:\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\sharp.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\constructor.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\index.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js\n' +
+    '\n' +
+    'Possible solutions:\n' +
+    '- Install with verbose logging and look for errors: "npm install --ignore-scripts=false --foreground-scripts --verbose sharp"\n' +
+    '- Install for the current win32-x64 runtime: "npm install --platform=win32 --arch=x64 sharp"\n' +
+    '- Consult the installation documentation: https://sharp.pixelplumbing.com/install\n' +
+    'Error: \n' +
+    'Something went wrong installing the "sharp" module\n' +
+    '\n' +
+    "Cannot find module '../build/Release/sharp-win32-x64.node'\n" +
+    'Require stack:\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\sharp.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\constructor.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\index.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js\n' +
+    '\n' +
+    'Possible solutions:\n' +
+    '- Install with verbose logging and look for errors: "npm install --ignore-scripts=false --foreground-scripts --verbose sharp"\n' +
+    '- Install for the current win32-x64 runtime: "npm install --platform=win32 --arch=x64 sharp"\n' +
+    '- Consult the installation documentation: https://sharp.pixelplumbing.com/install\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\sharp.js:37:9)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\constructor.js:11:1)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)',
+  stack: 'Error: \n' +
+    'Something went wrong installing the "sharp" module\n' +
+    '\n' +
+    "Cannot find module '../build/Release/sharp-win32-x64.node'\n" +
+    'Require stack:\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\sharp.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\constructor.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\index.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js\n' +
+    '- C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js\n' +
+    '\n' +
+    'Possible solutions:\n' +
+    '- Install with verbose logging and look for errors: "npm install --ignore-scripts=false --foreground-scripts --verbose sharp"\n' +
+    '- Install for the current win32-x64 runtime: "npm install --platform=win32 --arch=x64 sharp"\n' +
+    '- Consult the installation documentation: https://sharp.pixelplumbing.com/install\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\sharp.js:37:9)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\constructor.js:11:1)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)',
+  exception: true,
+  date: 'Sat Sep 13 2025 15:17:20 GMT+0100 (British Summer Time)',
+  process: {
+    pid: 10512,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v18.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js'
+    ],
+    memoryUsage: {
+      rss: 58073088,
+      heapTotal: 31674368,
+      heapUsed: 14914728,
+      external: 822016,
+      arrayBuffers: 64498
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 183059.531 },
+  trace: [
+    {
+      column: 9,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\sharp.js',
+      function: null,
+      line: 37,
+      method: null,
+      native: false
+    },
+    {
+      column: 14,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._compile',
+      line: 1256,
+      method: '_compile',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._extensions..js',
+      line: 1310,
+      method: '.js',
+      native: false
+    },
+    {
+      column: 32,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.load',
+      line: 1119,
+      method: 'load',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._load',
+      line: 960,
+      method: '_load',
+      native: false
+    },
+    {
+      column: 19,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.require',
+      line: 1143,
+      method: 'require',
+      native: false
+    },
+    {
+      column: 18,
+      file: 'node:internal/modules/cjs/helpers',
+      function: 'require',
+      line: 121,
+      method: null,
+      native: false
+    },
+    {
+      column: 1,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\sharp@0.32.6\\node_modules\\sharp\\lib\\constructor.js',
+      function: null,
+      line: 11,
+      method: null,
+      native: false
+    },
+    {
+      column: 14,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._compile',
+      line: 1256,
+      method: '_compile',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._extensions..js',
+      line: 1310,
+      method: '.js',
+      native: false
+    }
+  ],
+  service: 'typescript-server',
+  timestamp: '2025-09-13 15:17:20'
+}

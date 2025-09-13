@@ -1,11 +1,11 @@
-import { Router, Request, Response } from 'express';
-import { logger } from '../utils/logger';
+import { Router, Request, Response } from "express";
+import { logger } from "../utils/logger";
 
 const router: Router = Router();
 
 interface SystemStatus {
   server: {
-    status: 'RUNNING' | 'STARTING' | 'STOPPING';
+    status: "RUNNING" | "STARTING" | "STOPPING";
     uptime: string;
     startTime: string;
     environment: string;
@@ -37,27 +37,31 @@ let totalResponseTime = 0;
 const startTime = new Date();
 
 // Middleware to track metrics
-export const metricsMiddleware = (_req: Request, res: Response, next: Function) => {
+export const metricsMiddleware = (
+  _req: Request,
+  res: Response,
+  next: Function,
+) => {
   const start = Date.now();
   requestCount++;
-  
-  res.on('finish', () => {
+
+  res.on("finish", () => {
     const duration = Date.now() - start;
     totalResponseTime += duration;
-    
+
     if (res.statusCode >= 400) {
       errorCount++;
     }
   });
-  
+
   next();
 };
 
 const formatBytes = (bytes: number): string => {
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  if (bytes === 0) return '0 Bytes';
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  if (bytes === 0) return "0 Bytes";
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
+  return Math.round((bytes / Math.pow(1024, i)) * 100) / 100 + " " + sizes[i];
 };
 
 const formatUptime = (seconds: number): string => {
@@ -65,11 +69,11 @@ const formatUptime = (seconds: number): string => {
   const hours = Math.floor((seconds % 86400) / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
-  
+
   return `${days}d ${hours}h ${minutes}m ${secs}s`;
 };
 
-router.get('/', (req: Request, res: Response) => {
+router.get("/", (req: Request, res: Response) => {
   try {
     const memoryUsage = process.memoryUsage();
     const totalMemory = memoryUsage.heapTotal + memoryUsage.external;
@@ -78,11 +82,11 @@ router.get('/', (req: Request, res: Response) => {
 
     const status: SystemStatus = {
       server: {
-        status: 'RUNNING',
+        status: "RUNNING",
         uptime: formatUptime(process.uptime()),
         startTime: startTime.toISOString(),
-        environment: process.env.NODE_ENV || 'development',
-        version: '1.0.0',
+        environment: process.env.NODE_ENV || "development",
+        version: "1.0.0",
         port: process.env.PORT || 3000,
       },
       system: {
@@ -99,18 +103,19 @@ router.get('/', (req: Request, res: Response) => {
       metrics: {
         requestCount,
         errorCount,
-        averageResponseTime: requestCount > 0 
-          ? `${(totalResponseTime / requestCount).toFixed(2)}ms` 
-          : '0ms',
+        averageResponseTime:
+          requestCount > 0
+            ? `${(totalResponseTime / requestCount).toFixed(2)}ms`
+            : "0ms",
       },
     };
 
-    logger.info('System status requested', { ip: req.ip });
+    logger.info("System status requested", { ip: req.ip });
     res.status(200).json(status);
   } catch (error) {
-    logger.error('Status check failed', { error, ip: req.ip });
+    logger.error("Status check failed", { error, ip: req.ip });
     res.status(500).json({
-      error: 'Failed to get system status',
+      error: "Failed to get system status",
       timestamp: new Date().toISOString(),
     });
   }
