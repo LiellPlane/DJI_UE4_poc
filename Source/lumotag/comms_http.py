@@ -134,8 +134,8 @@ class HTTPComms(AbstractHTTPComms):
         self._event_type_map = {cls.__name__: cls for cls in self._cached_event_types}
         
         # Separate queues for different concerns
-        self._capture_q_close_range: threading_queue.Queue = threading_queue.Queue(maxsize=1)
-        self._capture_q_long_range: threading_queue.Queue = threading_queue.Queue(maxsize=1)
+        self._capture_q_close_range: threading_queue.Queue = threading_queue.Queue(maxsize=2)
+        self._capture_q_long_range: threading_queue.Queue = threading_queue.Queue(maxsize=2)
         self._upload_q: threading_queue.Queue = threading_queue.Queue(maxsize=15)
         self._events_q: threading_queue.Queue = threading_queue.Queue(maxsize=50)
         self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
