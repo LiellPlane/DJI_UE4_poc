@@ -11,9 +11,55 @@ import {
   ImageInfo,
   GameServerStats,
   UploadRequest,
+  ServerMetrics,
 } from "../types";
 
 const router: Router = express.Router();
+
+// Simple background image processing queue
+interface QueuedImage {
+  imageId: string;
+  imageBuffer: Buffer; // Store processed buffer instead of base64 string
+  userId: string;
+  timestamp: number;
+}
+
+const imageQueue: QueuedImage[] = [];
+let isProcessing = false;
+
+// Background processor - processes one image at a time
+async function processImageQueue() {
+  if (isProcessing || imageQueue.length === 0) return;
+  
+  isProcessing = true;
+  
+  while (imageQueue.length > 0) {
+    const queuedImage = imageQueue.shift()!;
+    
+    try {
+      const savedImage = await imageSaver.saveImageBuffer(
+        queuedImage.imageId,
+        queuedImage.imageBuffer
+      );
+      
+      // Store image metadata after successful save
+      const imageInfo: ImageInfo = {
+        image_id: queuedImage.imageId,
+        user_id: queuedImage.userId,
+        timestamp: queuedImage.timestamp,
+        file_location: savedImage.filename,
+      };
+      
+      gameState.addImageInfo(imageInfo);
+      
+      logger.info(`Background: Image ${queuedImage.imageId} saved successfully (${savedImage.size.toLocaleString()} bytes)`);
+    } catch (error) {
+      logger.error(`Background: Failed to save image ${queuedImage.imageId}:`, error);
+    }
+  }
+  
+  isProcessing = false;
+}
 
 // Pure data structure (no methods)
 interface GameState {
@@ -56,8 +102,10 @@ const createInitialGameState = (): GameState => ({
 // Pure functions for game logic
 const gameLogic = {
   addImageInfo: (state: GameState, info: ImageInfo): GameState => ({
-    ...state,
+    ...state, // this spaffs all the members(?) into this scope of {}. Then we can ovveride the members just by using their 
+    // names. Yes its very weird and disgusting, and potentially retarded
     imagesReceived: [...state.imagesReceived, info].slice(-100), // Keep only last 100
+    //implicitly return the whole thing in {} which will repackage it as an object
   }),
 
   updateGameState: (state: GameState): { newState: GameState; gameUpdate: GameUpdate } => {
@@ -224,49 +272,44 @@ router.get("/gamestate", (_req: GameRequest, res: Response) => {
 });
 
 // IMAGE UPLOAD endpoint - POST /api/v1/images/upload
-router.post("/images/upload", async (req: GameRequest, res: Response) => {
+router.post("/images/upload", (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
   const userId = req.headers["x-user-id"] || "unknown";
 
   try {
     // Try to parse body as UploadRequest - crash if it doesn't work
-    // Use spread operator (like Python **) to unpack all fields
     const uploadRequest: UploadRequest = {
       ...req.body
     };
 
-    // Save image to disk (async, non-blocking)
-    const savedImage = await imageSaver.saveImage(
-      uploadRequest.image_id,
-      uploadRequest.image_data
-    );
-
-    // Store image metadata with actual file info
-    const imageInfo: ImageInfo = {
-      image_id: uploadRequest.image_id,
-      user_id: userId,
+    // Convert base64 to buffer immediately to save memory
+    const imageBuffer = Buffer.from(uploadRequest.image_data, 'base64');
+    
+    // Add image to background processing queue (no more base64 string!)
+    imageQueue.push({
+      imageId: uploadRequest.image_id,
+      imageBuffer: imageBuffer,
+      userId: userId,
       timestamp: Date.now(),
-      file_location: savedImage.filename,
-    };
+    });
 
-    gameState.addImageInfo(imageInfo);
+    // Start processing queue in background (non-blocking)
+    processImageQueue().catch(error => {
+      logger.error("Queue processing error:", error);
+    });
 
-    logger.info(`[${timestamp}] Image saved successfully:
+    logger.info(`[${timestamp}] Image queued for processing:
     ID: ${uploadRequest.image_id}
     User: ${userId}
-    Size: ${savedImage.size.toLocaleString()} bytes
-    File: ${savedImage.filename}`);
+    Queue length: ${imageQueue.length}`);
 
-    // Simulate small processing delay (like your Python server)
-    await new Promise((resolve) => setTimeout(resolve, 10));
-
+    // Return immediately - don't wait for image to save
     return res.json({
       status: "success",
       image_id: uploadRequest.image_id,
       event_type: uploadRequest.event_type,
-      filename: savedImage.filename,
       processed_at: Date.now(),
-      message: "Image saved successfully",
+      message: "Image queued for processing",
     });
   } catch (error) {
     logger.error(`[${timestamp}] Image upload error:`, error);
@@ -337,6 +380,24 @@ router.get("/stats", async (_req: GameRequest, res: Response) => {
     return res.json(stats);
   } catch (error) {
     logger.error("Stats error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// METRICS endpoint - GET /metrics (simple queue monitoring)
+router.get("/metrics", (_req: GameRequest, res: Response) => {
+  try {
+    const metrics: ServerMetrics = {
+      queue: {
+        size: imageQueue.length,
+        processing: isProcessing,
+      },
+      timestamp: Date.now(),
+    };
+    
+    return res.json(metrics);
+  } catch (error) {
+    logger.error("Metrics error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

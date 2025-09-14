@@ -27,9 +27,15 @@ class ImageSaver {
   }> {
     // Decode base64 to buffer
     const imageBuffer = Buffer.from(base64Data, 'base64');
-    
+    return this.saveImageBuffer(imageId, imageBuffer);
+  }
+
+  async saveImageBuffer(imageId: string, imageBuffer: Buffer): Promise<{
+    filename: string;
+    filepath: string;
+    size: number;
+  }> {
     // Generate unique filename
-    // const timestamp = Date.now();
     const filename = `${imageId}.jpg`;
     const filepath = path.join(this.uploadsDir, filename);
     

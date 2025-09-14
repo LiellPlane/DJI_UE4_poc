@@ -21733,3 +21733,2554 @@
   service: 'typescript-server',
   timestamp: '2025-09-13 23:56:13'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-14 14:29:42'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:42'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:42'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:56 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '14ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:56 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:56 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:56 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:56'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:57 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:57'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:57 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:57'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:57 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:57'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:58 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:58 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  message: '🎮 Gamestate request #10 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:58 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:58'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:59 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:59 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:59 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:29:59 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:29:59'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:00 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:00'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:00 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:00'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:00 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:00'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:01 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:01 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  message: '🎮 Gamestate request #20 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:01 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:01'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:02 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:02'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:02 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:02'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:02 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:02'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:03 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:03 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:03 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:03 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:03'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '[13:30:04.728] Image queued for processing:\n' +
+    '    ID: LIDi4wbzeWcM5LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: 'Background: Image LIDi4wbzeWcM5LID saved successfully (24,694 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '[13:30:04.760] Image queued for processing:\n' +
+    '    ID: LIDjIv0iflWywLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: 'Background: Image LIDjIv0iflWywLID saved successfully (262,164 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '[13:30:04.775] Image queued for processing:\n' +
+    '    ID: LIDtaxg9ct8BCLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: 'Background: Image LIDtaxg9ct8BCLID saved successfully (262,173 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '[13:30:04.788] Image queued for processing:\n' +
+    '    ID: LIDdEP4itSJ2qLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: 'Background: Image LIDdEP4itSJ2qLID saved successfully (262,152 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '[13:30:04.805] Image queued for processing:\n' +
+    '    ID: LIDzMZW7U3moTLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: 'Background: Image LIDzMZW7U3moTLID saved successfully (262,113 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '[13:30:04.818] Image queued for processing:\n' +
+    '    ID: LIDvh82fdJdobLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: 'Background: Image LIDvh82fdJdobLID saved successfully (262,158 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '🎮 Gamestate request #30 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:04 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:04'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:05 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '[13:30:05.196] Image queued for processing:\n' +
+    '    ID: LID8UWVCUGHKYLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:05 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: 'Background: Image LID8UWVCUGHKYLID saved successfully (262,170 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:05 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '[13:30:05.615] Image queued for processing:\n' +
+    '    ID: LIDp2hZA7oObLLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:05 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: 'Background: Image LIDp2hZA7oObLLID saved successfully (262,114 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:05 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:05'
+}
+{
+  message: '[13:30:06.037] Image queued for processing:\n' +
+    '    ID: LIDvAvZXajYzXLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:06 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: 'Background: Image LIDvAvZXajYzXLID saved successfully (262,168 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:06 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:06 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '[13:30:06.505] Image queued for processing:\n' +
+    '    ID: LIDJh7UK3AcaPLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:06 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: 'Background: Image LIDJh7UK3AcaPLID saved successfully (262,105 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:06 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '[13:30:06.942] Image queued for processing:\n' +
+    '    ID: LIDqVeTN9oxl2LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:06 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: 'Background: Image LIDqVeTN9oxl2LID saved successfully (262,156 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:06'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:07 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:07 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '[13:30:07.363] Image queued for processing:\n' +
+    '    ID: LIDdvj4mjYg35LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:07 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: 'Background: Image LIDdvj4mjYg35LID saved successfully (262,187 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:07 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '[13:30:07.787] Image queued for processing:\n' +
+    '    ID: LIDd1kt1JdkFTLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:07 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: 'Background: Image LIDd1kt1JdkFTLID saved successfully (262,184 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '🎮 Gamestate request #40 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:07 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:07'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:08 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '[13:30:08.253] Image queued for processing:\n' +
+    '    ID: LIDwVQ75dFDClLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:08 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: 'Background: Image LIDwVQ75dFDClLID saved successfully (262,175 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:08 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '[13:30:08.675] Image queued for processing:\n' +
+    '    ID: LIDCFXhtCzn5zLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:08 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: 'Background: Image LIDCFXhtCzn5zLID saved successfully (262,112 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:08 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:08'
+}
+{
+  message: '[13:30:09.115] Image queued for processing:\n' +
+    '    ID: LIDjqKhxTuc3RLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:09 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: 'Background: Image LIDjqKhxTuc3RLID saved successfully (262,184 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:09 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:09 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '[13:30:09.534] Image queued for processing:\n' +
+    '    ID: LIDSGobzzMgSJLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:09 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: 'Background: Image LIDSGobzzMgSJLID saved successfully (262,149 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:09 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '[13:30:09.971] Image queued for processing:\n' +
+    '    ID: LIDoaHWOvoMGaLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:09 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: 'Background: Image LIDoaHWOvoMGaLID saved successfully (262,011 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:09'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:10 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:10 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '[13:30:10.426] Image queued for processing:\n' +
+    '    ID: LIDTTH5PCZs33LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:10 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '5ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: 'Background: Image LIDTTH5PCZs33LID saved successfully (262,017 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:10 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '[13:30:10.826] Image queued for processing:\n' +
+    '    ID: LIDlueCqIK554LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:10 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: 'Background: Image LIDlueCqIK554LID saved successfully (262,003 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '🎮 Gamestate request #50 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:10 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:10'
+}
+{
+  message: '[13:30:11.245] Image queued for processing:\n' +
+    '    ID: LIDxddDHR2nj2LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:11 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: 'Background: Image LIDxddDHR2nj2LID saved successfully (262,008 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:11 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:11 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '[13:30:11.672] Image queued for processing:\n' +
+    '    ID: LIDHfyF0ot3bqLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:11 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: 'Background: Image LIDHfyF0ot3bqLID saved successfully (262,022 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:11 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:11'
+}
+{
+  message: '[13:30:12.096] Image queued for processing:\n' +
+    '    ID: LIDg16ZnyQYQgLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:12 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: 'Background: Image LIDg16ZnyQYQgLID saved successfully (262,014 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:12 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '[13:30:12.519] Image queued for processing:\n' +
+    '    ID: LIDT2lITpHHp8LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:12 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:12 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: 'Background: Image LIDT2lITpHHp8LID saved successfully (262,017 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:12 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '[13:30:12.952] Image queued for processing:\n' +
+    '    ID: LIDbQ5YyNG9ZOLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:12 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: 'Background: Image LIDbQ5YyNG9ZOLID saved successfully (262,021 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:12'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:13 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '[13:30:13.387] Image queued for processing:\n' +
+    '    ID: LIDmv9w7JxXabLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:13 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: 'Background: Image LIDmv9w7JxXabLID saved successfully (262,047 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:13 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:13 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '[13:30:13.825] Image queued for processing:\n' +
+    '    ID: LIDNXJvBJcbTQLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:13 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: 'Background: Image LIDNXJvBJcbTQLID saved successfully (262,039 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:13'
+}
+{
+  message: '🎮 Gamestate request #60 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:14 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '[13:30:14.260] Image queued for processing:\n' +
+    '    ID: LIDYMDeKySZC8LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:14 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: 'Background: Image LIDYMDeKySZC8LID saved successfully (262,003 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:14 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:14 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '[13:30:14.699] Image queued for processing:\n' +
+    '    ID: LIDmzsxl4jZQrLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:14 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: 'Background: Image LIDmzsxl4jZQrLID saved successfully (262,011 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:14 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:14'
+}
+{
+  message: '[13:30:15.134] Image queued for processing:\n' +
+    '    ID: LIDKPXBvS6n0OLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:15 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: 'Background: Image LIDKPXBvS6n0OLID saved successfully (262,040 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:15 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '[13:30:15.552] Image queued for processing:\n' +
+    '    ID: LIDcJJzvfOR9pLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:15 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: 'Background: Image LIDcJJzvfOR9pLID saved successfully (262,022 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:15 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:15 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:15'
+}
+{
+  message: '[13:30:16.024] Image queued for processing:\n' +
+    '    ID: LIDJlALb2kk9aLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:16 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: 'Background: Image LIDJlALb2kk9aLID saved successfully (262,045 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:16 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '[13:30:16.448] Image queued for processing:\n' +
+    '    ID: LIDGEqn3KUlLXLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:16 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: 'Background: Image LIDGEqn3KUlLXLID saved successfully (262,010 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:16 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:16 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '[13:30:16.884] Image queued for processing:\n' +
+    '    ID: LIDWucy8PzIQDLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:16 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: 'Background: Image LIDWucy8PzIQDLID saved successfully (262,034 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:16'
+}
+{
+  message: '🎮 Gamestate request #70 - returning 3 players',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:17 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '[13:30:17.356] Image queued for processing:\n' +
+    '    ID: LIDAFxcq2az2LLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:17 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: 'Background: Image LIDAFxcq2az2LLID saved successfully (263,404 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:17 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:17 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '[13:30:17.787] Image queued for processing:\n' +
+    '    ID: LIDRmvrAAtnswLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:17 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: 'Background: Image LIDRmvrAAtnswLID saved successfully (263,416 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:17'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:18 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '[13:30:18.214] Image queued for processing:\n' +
+    '    ID: LIDgvUj6grmWPLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:18 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: 'Background: Image LIDgvUj6grmWPLID saved successfully (263,408 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:18 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '[13:30:18.644] Image queued for processing:\n' +
+    '    ID: LIDU5Y5UJEPQKLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:18 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: 'Background: Image LIDU5Y5UJEPQKLID saved successfully (263,354 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:18 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:18 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:18'
+}
+{
+  message: '[13:30:19.083] Image queued for processing:\n' +
+    '    ID: LID9FmWPigDCqLID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:19 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: 'Background: Image LID9FmWPigDCqLID saved successfully (263,420 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:19 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: '[13:30:19.535] Image queued for processing:\n' +
+    '    ID: LIDtqGvMOUHx3LID\n' +
+    '    User: player_1\n' +
+    '    Queue length: 0',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:19 +0000] "POST /api/v1/images/upload HTTP/1.1" 200 148 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/images/upload',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: 'Background: Image LIDtqGvMOUHx3LID saved successfully (263,376 bytes)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  message: '192.168.56.1 - - [14/Sep/2025:13:30:19 +0000] "GET /api/v1/gamestate HTTP/1.1" 200 369 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-14 14:30:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'GET /api/v1/gamestate',
+  timestamp: '2025-09-14 14:30:19'
+}

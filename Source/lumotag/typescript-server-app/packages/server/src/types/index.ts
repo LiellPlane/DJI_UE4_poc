@@ -52,6 +52,14 @@ export interface GameServerStats {
   };
 }
 
+export interface ServerMetrics {
+  queue: {
+    size: number;
+    processing: boolean;
+  };
+  timestamp: number;
+}
+
 // Custom request interface with user ID header
 export interface GameRequest extends Request {
   headers: Request["headers"] & {
