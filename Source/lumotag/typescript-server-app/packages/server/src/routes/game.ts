@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import express, { Response, Router } from "express";
 // import sharp from 'sharp'; // Removed for simplicity
 // import { LRUCache } from 'lru-cache'; // Removed for simplicity
 import { logger } from "../utils/logger";
 import { imageSaver } from "./image-saver";
+import { extractUserId } from "../utils/request-helpers";
 import {
   GameRequest,
   PlayerStatus,
@@ -50,7 +52,7 @@ async function processImageQueue() {
         file_location: savedImage.filename,
       };
       
-      gameState.addImageInfo(imageInfo);
+      addImageInfo(imageInfo);
       
       logger.info(`Background: Image ${queuedImage.imageId} saved successfully (${savedImage.size.toLocaleString()} bytes)`);
     } catch (error) {
@@ -67,13 +69,14 @@ interface GameState {
   imagesReceived: ImageInfo[];
   gamestateCounter: number;
   startTime: number;
+  lastHealTime: number; // Track when all players were last healed
 }
 
 // Initial state
 const createInitialGameState = (): GameState => ({
   playersData: {
     testself: {
-      health: 100,
+      health: 75,
       ammo: 30,
       tag_id: "testself",
       display_name: "tinytim",
@@ -97,6 +100,7 @@ const createInitialGameState = (): GameState => ({
   imagesReceived: [],
   gamestateCounter: 0,
   startTime: Date.now(),
+  lastHealTime: Date.now(),
 });
 
 // Pure functions for game logic
@@ -109,70 +113,45 @@ const gameLogic = {
   }),
 
   updateGameState: (state: GameState): { newState: GameState; gameUpdate: GameUpdate } => {
-    const currentTime = Date.now() / 1000;
+    const currentTime = Date.now();
     const updatedPlayers: Record<string, PlayerStatus> = {};
 
-    // Update player stats dynamically (matching your Python logic)
+    // Check if it's time to heal all players (every 5 seconds)
+    const timeSinceLastHeal = currentTime - state.lastHealTime;
+    const shouldHeal = timeSinceLastHeal >= 5000; // 5000ms = 5 seconds
+
+    // Update player stats
     Object.entries(state.playersData).forEach(([tagId, player]) => {
-      if (tagId === "testself") {
-        // Make testself health jiggle for testing
-        const baseHealth = 75;
-        const sineVariation = Math.floor(20 * Math.sin(currentTime * 2));
-        const randomJitter = Math.floor(5 * Math.sin(currentTime * 7));
-        const newHealth = Math.max(
-          20,
-          Math.min(100, baseHealth + sineVariation + randomJitter),
-        );
+      let newHealth = player.health;
 
-        updatedPlayers[tagId] = {
-          ...player,
-          health: newHealth,
-          event_type: "PlayerStatus",
-        };
-      } else {
-        const baseHealth = tagId === "player_002" ? 85 : 95;
-        const healthVariation = Math.floor(
-          10 * (0.5 - (currentTime % 10) / 20),
-        );
-        const newHealth = Math.max(
-          10,
-          Math.min(100, baseHealth + healthVariation),
-        );
-
-        updatedPlayers[tagId] = {
-          ...player,
-          health: newHealth,
-          event_type: "PlayerStatus",
-        };
+      // Apply healing if it's time
+      if (shouldHeal && newHealth < 100) {
+        const oldHealth = newHealth;
+        newHealth = Math.min(100, newHealth + 1);
+        logger.info(`HEALING: ${tagId} (${player.display_name}) ${oldHealth} -> ${newHealth}`);
       }
 
-      // Simulate ammo consumption
-      const ammoConsumed = Math.floor(currentTime / 5) % 5;
-      const baseAmmo =
-        tagId === "testself" ? 30 : tagId === "player_002" ? 22 : 18;
-      const newAmmo = Math.max(0, baseAmmo - ammoConsumed);
-
       updatedPlayers[tagId] = {
-        ...updatedPlayers[tagId],
-        ammo: newAmmo,
-        event_type: "PlayerStatus",
+        ...player,
+        health: newHealth,
       };
     });
 
     const newCounter = state.gamestateCounter + 1;
 
-    // Log occasionally to reduce spam (every 10th request)
-    if (newCounter % 10 === 0) {
-      logger.info(
-        `🎮 Gamestate request #${newCounter} - returning ${Object.keys(updatedPlayers).length} players`,
-      );
-    }
-
     const newState: GameState = {
       ...state,
       playersData: updatedPlayers,
       gamestateCounter: newCounter,
+      lastHealTime: shouldHeal ? currentTime : state.lastHealTime,
     };
+
+    // Log occasionally to reduce spam (every 20th request)
+    if (newCounter % 20 === 0) {
+      logger.info(
+        `Gamestate request #${newCounter} - returning ${Object.keys(updatedPlayers).length} players`,
+      );
+    }
 
     const gameUpdate: GameUpdate = {
       players: { ...updatedPlayers },
@@ -198,38 +177,28 @@ const gameLogic = {
   }),
 };
 
-// Thin wrapper for persistence (replaces singleton class)
-class GameStateManager {
-  private state: GameState;
+// Direct state management - no thin wrapper class needed
+let gameState = createInitialGameState();
 
-  constructor() {
-    this.state = createInitialGameState();
-  }
+// Direct functions for state management
+const addImageInfo = (info: ImageInfo): void => {
+  gameState = gameLogic.addImageInfo(gameState, info);
+};
 
-  addImageInfo(info: ImageInfo): void {
-    this.state = gameLogic.addImageInfo(this.state, info);
-  }
+const updateGameState = (): GameUpdate => {
+  const { newState, gameUpdate } = gameLogic.updateGameState(gameState);
+  gameState = newState;
+  return gameUpdate;
+};
 
-  updateGameState(): GameUpdate {
-    const { newState, gameUpdate } = gameLogic.updateGameState(this.state);
-    this.state = newState;
-    return gameUpdate;
-  }
+const getStats = (): GameServerStats => {
+  return gameLogic.getStats(gameState);
+};
 
-  getStats(): GameServerStats {
-    return gameLogic.getStats(this.state);
-  }
-
-  // For debugging/testing
-  getState(): GameState {
-    return { ...this.state }; // Return copy to prevent external mutation
-  }
-}
-
-// Simple validation like Python server - no complex schemas
-
-// Create single instance (replaces singleton pattern)
-const gameState = new GameStateManager();
+// For debugging/testing
+const getState = (): GameState => {
+  return { ...gameState }; // Return copy to prevent external mutation
+};
 
 // Performance middleware - add request timing
 router.use((req, res, next) => {
@@ -255,9 +224,11 @@ router.use((req, res, next) => {
 });
 
 // GAMESTATE endpoint - GET /api/v1/gamestate
-router.get("/gamestate", (_req: GameRequest, res: Response) => {
+router.get("/gamestate", (req: GameRequest, res: Response) => {
   try {
-    const gameUpdate = gameState.updateGameState();
+    const userId = extractUserId(req);
+    logger.info(`User ID: ${userId}`);
+    const gameUpdate = updateGameState();
 
     res.set({
       "Content-Type": "application/json",
@@ -274,7 +245,7 @@ router.get("/gamestate", (_req: GameRequest, res: Response) => {
 // IMAGE UPLOAD endpoint - POST /api/v1/images/upload
 router.post("/images/upload", (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
-  const userId = req.headers["x-user-id"] || "unknown";
+  const userId = extractUserId(req);
 
   try {
     // Try to parse body as UploadRequest - crash if it doesn't work
@@ -320,7 +291,7 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
 // EVENTS endpoint - POST /api/v1/events
 router.post("/events", (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
-  const userId = req.headers["x-user-id"] || "unknown";
+  const userId = extractUserId(req);
 
   try {
 
@@ -365,7 +336,7 @@ router.get("/stats", async (_req: GameRequest, res: Response) => {
   logger.info(`[${timestamp}] 📊 Stats request`);
 
   try {
-    const gameStats = gameState.getStats();
+    const gameStats = getStats();
     const imageStats = await imageSaver.getImageStats();
     
     const stats = {

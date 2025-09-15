@@ -7,7 +7,7 @@ import { Request } from "express";
 export interface UploadRequest {
   image_id: string;
   image_data: string; // base64 encoded JPEG
-  event_type: string; // REQUIRED - no default
+  event_type: string;
 }
 
 export interface PlayerStatus {
@@ -15,18 +15,18 @@ export interface PlayerStatus {
   ammo: number;
   tag_id: string;
   display_name: string;
-  event_type: string; // REQUIRED - no default
+  event_type: string;
 }
 
 export interface GameUpdate {
   players: Record<string, PlayerStatus>;
-  event_type: string; // REQUIRED - no default
+  event_type: string;
 }
 
 export interface PlayerTagged {
   tag_id: string;
   image_ids: string[];
-  event_type: string; // REQUIRED - no default
+  event_type: string;
 }
 
 export interface ImageInfo {
