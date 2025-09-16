@@ -605,7 +605,7 @@ def main():
                             players["testself"].set_healthpoints(None)
                         else:
                             # probably shoudl get the player card here
-                            if game_client.get_latest_gamestate() is not None:
+                            if len(game_client.get_latest_gamestate().players) > 0:
                                 players["testself"].set_healthpoints(
                                     game_client.get_latest_gamestate()
                                     .players.get("testself")

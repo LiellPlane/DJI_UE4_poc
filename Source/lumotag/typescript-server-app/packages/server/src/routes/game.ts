@@ -54,7 +54,7 @@ async function processImageQueue() {
       
       addImageInfo(imageInfo);
       
-      logger.info(`Background: Image ${queuedImage.imageId} saved successfully (${savedImage.size.toLocaleString()} bytes)`);
+      logger.debug(`Background: Image ${queuedImage.imageId} saved successfully (${savedImage.size.toLocaleString()} bytes)`);
     } catch (error) {
       logger.error(`Background: Failed to save image ${queuedImage.imageId}:`, error);
     }
@@ -75,27 +75,27 @@ interface GameState {
 // Initial state
 const createInitialGameState = (): GameState => ({
   playersData: {
-    testself: {
-      health: 75,
-      ammo: 30,
-      tag_id: "testself",
-      display_name: "tinytim",
-      event_type: "PlayerStatus",
-    },
-    player_002: {
-      health: 85,
-      ammo: 22,
-      tag_id: "player_002",
-      display_name: "mongo",
-      event_type: "PlayerStatus",
-    },
-    player_003: {
-      health: 95,
-      ammo: 18,
-      tag_id: "player_003",
-      display_name: "dildort",
-      event_type: "PlayerStatus",
-    },
+    // testself: {
+    //   health: 75,
+    //   ammo: 30,
+    //   tag_id: "testself",
+    //   display_name: "tinytim",
+    //   event_type: "PlayerStatus",
+    // },
+    // player_002: {
+    //   health: 85,
+    //   ammo: 22,
+    //   tag_id: "player_002",
+    //   display_name: "mongo",
+    //   event_type: "PlayerStatus",
+    // },
+    // player_003: {
+    //   health: 95,
+    //   ammo: 18,
+    //   tag_id: "player_003",
+    //   display_name: "dildort",
+    //   event_type: "PlayerStatus",
+    // },
   },
   imagesReceived: [],
   gamestateCounter: 0,
@@ -112,54 +112,6 @@ const gameLogic = {
     //implicitly return the whole thing in {} which will repackage it as an object
   }),
 
-  updateGameState: (state: GameState): { newState: GameState; gameUpdate: GameUpdate } => {
-    const currentTime = Date.now();
-    const updatedPlayers: Record<string, PlayerStatus> = {};
-
-    // Check if it's time to heal all players (every 5 seconds)
-    const timeSinceLastHeal = currentTime - state.lastHealTime;
-    const shouldHeal = timeSinceLastHeal >= 5000; // 5000ms = 5 seconds
-
-    // Update player stats
-    Object.entries(state.playersData).forEach(([tagId, player]) => {
-      let newHealth = player.health;
-
-      // Apply healing if it's time
-      if (shouldHeal && newHealth < 100) {
-        const oldHealth = newHealth;
-        newHealth = Math.min(100, newHealth + 1);
-        logger.info(`HEALING: ${tagId} (${player.display_name}) ${oldHealth} -> ${newHealth}`);
-      }
-
-      updatedPlayers[tagId] = {
-        ...player,
-        health: newHealth,
-      };
-    });
-
-    const newCounter = state.gamestateCounter + 1;
-
-    const newState: GameState = {
-      ...state,
-      playersData: updatedPlayers,
-      gamestateCounter: newCounter,
-      lastHealTime: shouldHeal ? currentTime : state.lastHealTime,
-    };
-
-    // Log occasionally to reduce spam (every 20th request)
-    if (newCounter % 20 === 0) {
-      logger.info(
-        `Gamestate request #${newCounter} - returning ${Object.keys(updatedPlayers).length} players`,
-      );
-    }
-
-    const gameUpdate: GameUpdate = {
-      players: { ...updatedPlayers },
-      event_type: "GameUpdate",
-    };
-
-    return { newState, gameUpdate };
-  },
 
   getStats: (state: GameState): GameServerStats => ({
     server_info: {
@@ -185,11 +137,7 @@ const addImageInfo = (info: ImageInfo): void => {
   gameState = gameLogic.addImageInfo(gameState, info);
 };
 
-const updateGameState = (): GameUpdate => {
-  const { newState, gameUpdate } = gameLogic.updateGameState(gameState);
-  gameState = newState;
-  return gameUpdate;
-};
+
 
 const getStats = (): GameServerStats => {
   return gameLogic.getStats(gameState);
@@ -197,22 +145,22 @@ const getStats = (): GameServerStats => {
 
 // For debugging/testing
 const getState = (): GameState => {
-  return { ...gameState }; // Return copy to prevent external mutation
+  return gameState; // Return immutable reference
 };
 
 // Performance middleware - add request timing
 router.use((req, res, next) => {
   const start = process.hrtime.bigint();
   res.on("finish", () => {
+    // Skip performance logging for upload and gamestate endpoints
+    if (req.path.includes('/images/upload') || req.path.includes('/gamestate')) {
+      return;
+    }
+    
     const duration = Number(process.hrtime.bigint() - start) / 1e6; // Convert to milliseconds
     
     // Different thresholds for different endpoints
     let threshold = 50; // Default: 50ms for most requests
-    if (req.path.includes('/images/upload')) {
-      threshold = 100; // 100ms for image uploads (includes disk I/O)
-    } else if (req.path.includes('/gamestate')) {
-      threshold = 25; // 25ms for gamestate (should be fast)
-    }
     
     if (duration > threshold) {
       logger.warn(
@@ -223,12 +171,52 @@ router.use((req, res, next) => {
   next();
 });
 
+// Dedicated healing function
+const healPlayers = (): void => {
+  const currentTime = Date.now();
+  const timeSinceLastHeal = currentTime - gameState.lastHealTime;
+  const shouldHeal = timeSinceLastHeal >= 5000; // 5000ms = 5 seconds
+  
+  if (!shouldHeal) return;
+  
+  const updatedPlayers: Record<string, PlayerStatus> = {};
+  
+  // Apply healing to all players
+  Object.entries(gameState.playersData).forEach(([tagId, player]) => {
+    if (player.health < 100) {
+      const oldHealth = player.health;
+      const newHealth = Math.min(100, player.health + 1);
+      logger.info(`HEALING: ${tagId} (${player.display_name}) ${oldHealth} -> ${newHealth}`);
+      
+      updatedPlayers[tagId] = {
+        ...player,
+        health: newHealth,
+      };
+    } else {
+      updatedPlayers[tagId] = { ...player };
+    }
+  });
+  
+  // Update the game state with healed players
+  gameState = {
+    ...gameState,
+    playersData: updatedPlayers,
+    lastHealTime: currentTime,
+  };
+};
+
 // GAMESTATE endpoint - GET /api/v1/gamestate
 router.get("/gamestate", (req: GameRequest, res: Response) => {
   try {
     const userId = extractUserId(req);
-    logger.info(`User ID: ${userId}`);
-    const gameUpdate = updateGameState();
+    logger.debug(`User ID: ${userId}`);
+    // Call dedicated healing function
+    healPlayers();
+    // Return current game state directly
+    const gameUpdate: GameUpdate = {
+      players: gameState.playersData,
+      event_type: "GameUpdate",
+    };
 
     res.set({
       "Content-Type": "application/json",
@@ -269,7 +257,7 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
       logger.error("Queue processing error:", error);
     });
 
-    logger.info(`[${timestamp}] Image queued for processing:
+    logger.debug(`[${timestamp}] Image queued for processing:
     ID: ${uploadRequest.image_id}
     User: ${userId}
     Queue length: ${imageQueue.length}`);

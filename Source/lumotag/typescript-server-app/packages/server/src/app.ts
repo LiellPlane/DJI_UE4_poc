@@ -28,7 +28,13 @@ app.use(compression());
 
 // Logging middleware
 app.use(
-  morgan("combined", { stream: { write: (msg) => logger.info(msg.trim()) } }),
+  morgan("combined", { 
+    stream: { write: (msg) => logger.info(msg.trim()) },
+    skip: (req) => {
+      // Skip logging for upload and gamestate endpoints
+      return req.originalUrl.includes('/images/upload') || req.originalUrl.includes('/gamestate');
+    }
+  }),
 );
 
 // Body parsing middleware
@@ -39,6 +45,11 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   res.on("finish", () => {
+    // Skip logging for upload and gamestate endpoints
+    if (req.originalUrl.includes('/images/upload') || req.originalUrl.includes('/gamestate')) {
+      return;
+    }
+    
     const duration = Date.now() - start;
     logger.info(`${req.method} ${req.originalUrl}`, {
       statusCode: res.statusCode,
