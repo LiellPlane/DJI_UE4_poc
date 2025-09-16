@@ -17,9 +17,9 @@ class PlayerStatus(BaseModel):
     event_type: str = Field(default_factory=lambda: "PlayerStatus", description="Event type identifier")
 
 
-class GameUpdate(BaseModel):
+class GameStatus(BaseModel):
     players: dict[str, PlayerStatus]  # Key is player's tag_id
-    event_type: str = Field(default_factory=lambda: "GameUpdate", description="Event type identifier")
+    event_type: str = Field(default_factory=lambda: "GameStatus", description="Event type identifier")
 
 
 class PlayerTagged(BaseModel):

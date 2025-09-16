@@ -17,7 +17,7 @@ import test_http_save_testimages
 import os
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
-from lumotag_events import GameUpdate, PlayerStatus
+from lumotag_events import GameStatus, PlayerStatus
 from typing import Dict
 import sys
 
@@ -148,8 +148,8 @@ class GameTestServer(BaseHTTPRequestHandler):
                 display_name=player.display_name
             )
         
-        # Create proper GameUpdate response using Pydantic model
-        game_update = GameUpdate(players=self.players_data.copy())
+        # Create proper GameStatus response using Pydantic model
+        game_update = GameStatus(players=self.players_data.copy())
         gamestate_response = game_update.model_dump()
         
         # Minimal logging for performance - only log occasionally

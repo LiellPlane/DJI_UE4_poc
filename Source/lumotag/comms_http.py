@@ -220,9 +220,9 @@ class HTTPComms(AbstractHTTPComms):
         with self._connection_lock:
             return self._is_connected
     
-    def get_latest_gamestate(self) -> lumotag_events.GameUpdate:
+    def get_latest_gamestate(self) -> lumotag_events.GameStatus:
         """Get most recent game state (non-blocking, thread-safe)
-        Returns validated GameUpdate Pydantic object"""
+        Returns validated GameStatus Pydantic object"""
         with self._gamestate_lock:
             return self._latest_gamestate
 
@@ -481,11 +481,11 @@ class HTTPComms(AbstractHTTPComms):
                     
                     # Check response - only accept 200 OK
                     if response.status_code == 200:
-                        # Parse and validate response as GameUpdate (Pydantic validation kept for strict data integrity)
+                        # Parse and validate response as GameStatus (Pydantic validation kept for strict data integrity)
                         try:
                             gamestate_data = response.json()
                         
-                            game_update = lumotag_events.GameUpdate(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
+                            game_update = lumotag_events.GameStatus(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
                             
                             # Store validated game state
                             with self._gamestate_lock:

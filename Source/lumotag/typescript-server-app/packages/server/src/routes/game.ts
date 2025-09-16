@@ -8,7 +8,7 @@ import { extractUserId } from "../utils/request-helpers";
 import {
   GameRequest,
   PlayerStatus,
-  GameUpdate,
+  GameStatus,
   PlayerTagged,
   ImageInfo,
   GameServerStats,
@@ -213,9 +213,9 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
     // Call dedicated healing function
     healPlayers();
     // Return current game state directly
-    const gameUpdate: GameUpdate = {
+    const gameUpdate: GameStatus = {
       players: gameState.playersData,
-      event_type: "GameUpdate",
+      event_type: "GameStatus",
     };
 
     res.set({

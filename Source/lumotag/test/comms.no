@@ -328,7 +328,7 @@ class WebSocketImageComms(AbstractImageComms):
     async def _consume_incoming_messages(self, websocket) -> None:
         """
         Consume incoming messages to prevent receive buffer overflow.
-        The server broadcasts GameUpdate messages every 100ms that we need to drain
+        The server broadcasts GameStatus messages every 100ms that we need to drain
         to prevent the WebSocket receive buffer from filling up and causing stutters.
         """
         try:
@@ -368,7 +368,7 @@ class WebSocketEventsComms(AbstractEventsComms):
     """Ultra-lightweight, threaded sender and receiver for small events.
 
     Design goals:
-    - Send small event objects (PlayerStatus, GameUpdate, PlayerTagged)
+    - Send small event objects (PlayerStatus, GameStatus, PlayerTagged)
     - Receive and queue incoming events mapped to lumotag_events types
     - Avoid extra processes; use a single background thread
     - No busy waiting; block on a single control queue
@@ -1291,7 +1291,7 @@ def test_event_comms():
     Raises exceptions on test failures."""
     import random
     import socket
-    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
+    from lumotag_events import PlayerStatus, GameStatus, PlayerTagged
     
     print("🧪 Testing WebSocketEventsComms with bidirectional events...")
     
@@ -1326,7 +1326,7 @@ def test_event_comms():
                     tag_id=f"player_{random.randint(1, 10)}",
                     display_name=f"Player{random.randint(1, 10)}"
                 ),
-                lambda: GameUpdate(
+                lambda: GameStatus(
                     players={
                         f"p{i}": PlayerStatus(
                             health=random.randint(50, 100),
@@ -1483,7 +1483,7 @@ def test_event_comms():
         # Send some test events from client to server
         test_events = [
             PlayerStatus(health=75, ammo=15, tag_id="test_player1", display_name="Test Player 1"),
-            GameUpdate(players={
+            GameStatus(players={
                 "test_player2": PlayerStatus(health=100, ammo=30, tag_id="test_player2", display_name="Test Player 2"),
                 "test_player3": PlayerStatus(health=50, ammo=10, tag_id="test_player3", display_name="Test Player 3")
             }),
@@ -1622,7 +1622,7 @@ def test_reconnection_resilience():
     Raises exceptions on test failures."""
     import random
     import socket
-    from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
+    from lumotag_events import PlayerStatus, GameStatus, PlayerTagged
     
     print("🧪 Testing WebSocketEventsComms reconnection resilience...")
     

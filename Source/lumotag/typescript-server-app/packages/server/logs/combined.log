@@ -74310,3 +74310,36 @@
   service: 'typescript-server',
   timestamp: '2025-09-16 20:42:16'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-16 20:47:43'
+}
+{
+  message: '🧹 Cleaning up 38 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-16 20:47:43'
+}
+{
+  message: '✅ Cleanup complete: 38 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-16 20:47:43'
+}
+{
+  message: '🧹 Startup cleanup: Removed 38 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-16 20:47:43'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-16 20:48:58'
+}

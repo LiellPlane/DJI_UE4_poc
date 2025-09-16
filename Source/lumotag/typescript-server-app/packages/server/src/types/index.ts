@@ -18,7 +18,7 @@ export interface PlayerStatus {
   event_type: string;
 }
 
-export interface GameUpdate {
+export interface GameStatus {
   players: Record<string, PlayerStatus>;
   event_type: string;
 }

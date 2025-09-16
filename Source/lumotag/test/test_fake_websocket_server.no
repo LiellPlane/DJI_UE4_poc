@@ -143,7 +143,7 @@ class FakeWebSocketServer:
             # Try to parse as event types from lumotag_events
             if event_type:
                 # Check if it matches any of our event types
-                if event_type in ['PlayerStatus', 'GameUpdate', 'PlayerTagged', 'UploadRequest']:
+                if event_type in ['PlayerStatus', 'GameStatus', 'PlayerTagged', 'UploadRequest']:
                     if event_type == 'UploadRequest':
                         # UploadRequest is for images, but it's bidirectional capable
                         self.bidirectional_clients.add(websocket)
@@ -333,16 +333,16 @@ class FakeWebSocketServer:
             display_name=random.choice(names) + f"_{player_id}"
         )
     
-    def _generate_game_update(self) -> events.GameUpdate:
-        """Generate a GameUpdate with 5 random PlayerStatus objects"""
+    def _generate_game_update(self) -> events.GameStatus:
+        """Generate a GameStatus with 5 random PlayerStatus objects"""
         players_dict = {}
         for i in range(1, 6):
             player = self._generate_random_player_status(i)
             players_dict[player.tag_id] = player
-        return events.GameUpdate(players=players_dict)
+        return events.GameStatus(players=players_dict)
     
     async def _broadcast_game_update(self):
-        """Broadcast GameUpdate to bidirectional clients only (not image-only clients)"""
+        """Broadcast GameStatus to bidirectional clients only (not image-only clients)"""
         if not self.bidirectional_clients:
             return
             
@@ -407,7 +407,7 @@ class FakeWebSocketServer:
             print(status_msg)
     
     async def _broadcast_loop(self):
-        """Periodic broadcast loop - sends GameUpdate every 100ms"""
+        """Periodic broadcast loop - sends GameStatus every 100ms"""
         while self.is_running:
             try:
                 await self._broadcast_game_update()
@@ -500,7 +500,7 @@ class FakeWebSocketServer:
                         
                         # Start the broadcast loop
                         self.broadcast_task = asyncio.create_task(self._broadcast_loop())
-                        print(f"📡 FakeWS: Broadcast loop started (GameUpdate every 100ms)")
+                        print(f"📡 FakeWS: Broadcast loop started (GameStatus every 100ms)")
                         
                         # Start the status loop
                         self.status_task = asyncio.create_task(self._status_loop())

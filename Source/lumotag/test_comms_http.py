@@ -12,7 +12,7 @@ import json
 import base64
 import requests
 import numpy as np
-from lumotag_events import PlayerStatus, GameUpdate, PlayerTagged
+from lumotag_events import PlayerStatus, GameStatus, PlayerTagged
 from comms_http import HTTPComms
 from my_collections import SharedMem_ImgTicket
 import sys
@@ -34,11 +34,11 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
     # Real server state - stores actual Pydantic objects
     images_received = []
     events_received = []
-    current_gamestate = None  # Will store a real GameUpdate object
+    current_gamestate = None  # Will store a real GameStatus object
     
     @classmethod
     def initialize_gamestate(cls):
-        """Initialize with real GameUpdate Pydantic object"""
+        """Initialize with real GameStatus Pydantic object"""
         players = {
             "player1": PlayerStatus(
                 health=100,
@@ -53,8 +53,8 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
                 display_name="Real Player 2"
             )
         }
-        cls.current_gamestate = GameUpdate(players=players)
-        print(f"🎮 Real server initialized with GameUpdate containing {len(players)} players")
+        cls.current_gamestate = GameStatus(players=players)
+        print(f"🎮 Real server initialized with GameStatus containing {len(players)} players")
     
     def log_message(self, format, *args):
         # Show real server logs
@@ -202,7 +202,7 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
         self.end_headers()
     
     def _handle_real_gamestate_get(self):
-        """REAL gamestate handler - returns actual GameUpdate Pydantic object serialized over HTTP"""
+        """REAL gamestate handler - returns actual GameStatus Pydantic object serialized over HTTP"""
         
         if RealGameHTTPServer.current_gamestate is None:
             print("❌ REAL SERVER: No gamestate initialized!")
@@ -210,7 +210,7 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
             self.end_headers()
             return
         
-        # Get the REAL GameUpdate object from server state
+        # Get the REAL GameStatus object from server state
         real_gamestate = RealGameHTTPServer.current_gamestate
         
         # Simulate some dynamic changes to prove it's real
@@ -233,17 +233,17 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
                 display_name=player.display_name
             )
         
-        # Create NEW GameUpdate with updated players
-        updated_gamestate = GameUpdate(players=updated_players)
+        # Create NEW GameStatus with updated players
+        updated_gamestate = GameStatus(players=updated_players)
         
-        # Update server state with new GameUpdate object
+        # Update server state with new GameStatus object
         RealGameHTTPServer.current_gamestate = updated_gamestate
         
         # REAL serialization of REAL Pydantic object
         gamestate_response = updated_gamestate.model_dump()
         
-        print(f"✅ REAL SERVER: Returning REAL GameUpdate with {len(updated_players)} players")
-        print(f"   📦 REAL GameUpdate serialized: event_type={gamestate_response.get('event_type')}")
+        print(f"✅ REAL SERVER: Returning REAL GameStatus with {len(updated_players)} players")
+        print(f"   📦 REAL GameStatus serialized: event_type={gamestate_response.get('event_type')}")
         for tag_id, player in updated_players.items():
             print(f"   - {tag_id}: {player.display_name} (HP: {player.health}, Ammo: {player.ammo})")
         
@@ -392,7 +392,7 @@ try:
                 print(f"✅ Successfully uploaded {total_uploaded} image (close-range only)")
     except Exception as e:
         print(f"⚠️ Image capture failed (expected due to missing dependencies): {e}")
-        print("✅ Continuing with event and GameUpdate tests...")
+        print("✅ Continuing with event and GameStatus tests...")
     
     # Test 3: REAL Event Sending Test - Pydantic Model Serialization/Deserialization
     print("\n📝 Test 3: REAL Event Sending Test - Pydantic Model over HTTP...")
@@ -740,9 +740,9 @@ try:
     
     print("✅ Non-existent server handling test completed")
     
-    # Test 7: CRITICAL TEST - REAL GameUpdate Serialization/Deserialization over HTTP
-    print("\n📝 Test 7: CRITICAL - REAL GameUpdate Pydantic Model over HTTP...")
-    print("   🎯 This is the KEY TEST - GameUpdate serialization/deserialization!")
+    # Test 7: CRITICAL TEST - REAL GameStatus Serialization/Deserialization over HTTP
+    print("\n📝 Test 7: CRITICAL - REAL GameStatus Pydantic Model over HTTP...")
+    print("   🎯 This is the KEY TEST - GameStatus serialization/deserialization!")
     
     # Give the gamestate thread time to poll REAL server
     time.sleep(1.0)  # Wait for at least one gamestate poll cycle
@@ -753,9 +753,9 @@ try:
     if latest_gamestate is None:
         raise AssertionError("No gamestate retrieved from REAL server")
     
-    # CRITICAL VALIDATION: Verify it's a REAL GameUpdate Pydantic object
-    if not isinstance(latest_gamestate, GameUpdate):
-        raise AssertionError(f"Expected REAL GameUpdate object, got {type(latest_gamestate)}")
+    # CRITICAL VALIDATION: Verify it's a REAL GameStatus Pydantic object
+    if not isinstance(latest_gamestate, GameStatus):
+        raise AssertionError(f"Expected REAL GameStatus object, got {type(latest_gamestate)}")
     
     # Verify REAL server data structure
     expected_players = 2
@@ -783,14 +783,14 @@ try:
     if player2.tag_id != "player2":
         raise AssertionError(f"Player2 tag_id wrong: expected 'player2', got '{player2.tag_id}'")
     
-    print(f"✅ REAL GameUpdate retrieved successfully: {len(latest_gamestate.players)} players")
-    print(f"   🔄 Client deserialized REAL GameUpdate from HTTP JSON")
+    print(f"✅ REAL GameStatus retrieved successfully: {len(latest_gamestate.players)} players")
+    print(f"   🔄 Client deserialized REAL GameStatus from HTTP JSON")
     print(f"   📊 Player 1: {player1.display_name} (HP: {player1.health}, Ammo: {player1.ammo}) - {type(player1).__name__}")
     print(f"   📊 Player 2: {player2.display_name} (HP: {player2.health}, Ammo: {player2.ammo}) - {type(player2).__name__}")
     print("   🎯 GAMEUPDATE PYDANTIC MODEL WORKS PERFECTLY OVER HTTP!")
-    print("   ✅ Server serialized GameUpdate → HTTP JSON → Client deserialized GameUpdate")
+    print("   ✅ Server serialized GameStatus → HTTP JSON → Client deserialized GameStatus")
     
-    print("✅ REAL GameUpdate HTTP test completed - NO MOCKING!")
+    print("✅ REAL GameStatus HTTP test completed - NO MOCKING!")
     
     # Test Summary - REAL SERVER RESULTS
     print("\n🎉 ALL REAL SERVER TESTS PASSED - NO MOCKING!")
@@ -799,7 +799,7 @@ try:
     print(f"   📨 Events processed by REAL server: {len(RealGameHTTPServer.events_received)}")
     print(f"   🔄 Pydantic models serialized/deserialized over HTTP")
     print(f"   ✅ REAL HTTP communication validated")
-    print(f"   ✅ GameUpdate Pydantic model works over HTTP")
+    print(f"   ✅ GameStatus Pydantic model works over HTTP")
     print(f"   ✅ PlayerStatus Pydantic model works over HTTP")
     print(f"   ✅ PlayerTagged Pydantic model works over HTTP")
     print(f"   ✅ send_tagging_event convenience function works over HTTP")
