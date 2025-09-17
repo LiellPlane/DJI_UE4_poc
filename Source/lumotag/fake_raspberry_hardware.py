@@ -355,6 +355,12 @@ class Accelerometer(factory.Accelerometer):
 #                 hb,
 #                 block=True)
 
+class GetID(factory.GetID):
+    def get_persistant_player_id(self):
+        """Get unique and persistant player id - create if does not exist"""
+        return "abc12345"
+
+
 def get_my_info(file):
     id_text_file = '{"MY_ID" : "SIMITZAR", "HQ" : "http://liell-VirtualBox.local/lumoscript.py"}'
     data =  json.loads(id_text_file)

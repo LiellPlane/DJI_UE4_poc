@@ -97,7 +97,7 @@ class gun_config(ABC):
             'virtual_host' : '/'
         }
 
-        self.my_id = create_id()
+        # self.my_id = create_id()
 
         self.trigger_debounce = Debounce(
             debounce_sec=0.1)
@@ -189,6 +189,11 @@ class gun_config(ABC):
         return self.screen_size
     
 
+class GetID(ABC):
+    @abstractmethod
+    def get_persistant_player_id(self):
+        """Get unique and persistant player id - create if does not exist"""
+        ...
 
 class FileSystemABC(ABC):
     @abstractmethod

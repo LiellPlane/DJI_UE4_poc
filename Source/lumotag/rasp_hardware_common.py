@@ -11,6 +11,7 @@ import functools
 import pickle
 import time
 import factory
+import uuid
 # import rabbit_mq
 from picamera2 import Picamera2
 from libcamera import controls
@@ -510,6 +511,30 @@ class KillProcess(factory.KillProcess):
 
 
 # Messenger = rabbit_mq.Messenger
+
+
+class GetID(factory.GetID):
+    def __init__(self):
+        self.id_file = "/home/lumotag/player_id.txt"
+    
+    def get_persistant_player_id(self):
+        """Get unique and persistant player id - create if does not exist"""
+        if os.path.exists(self.id_file):
+            with open(self.id_file, 'r') as f:
+                stored_id = f.read().strip()
+                # Validate the stored ID
+                if stored_id and len(stored_id) == 10 and stored_id.isalnum():
+                    return stored_id
+                else:
+                    raise(f"Invalid stored ID format: {stored_id}")
+        else:
+            pass
+        
+        # Create a short UUID (10 characters)
+        short_id = str(uuid.uuid4()).replace('-', '')[:10]
+        with open(self.id_file, 'w') as f:
+            f.write(short_id)
+        return short_id
 
 
 def get_my_info(file):
