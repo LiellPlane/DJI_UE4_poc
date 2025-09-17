@@ -288,7 +288,7 @@ def main():
             avatar_canvas=HeightWidth(60, 60),  # get this from the status bar class
             info_box=HeightWidth(60, 60),
         ),
-        "testself": factory.LocalPlayerCard(playername="self"),
+        "player_1": factory.LocalPlayerCard(playername="self"),
     }
 
     # set partial functions
@@ -385,7 +385,7 @@ def main():
                 # here we check the torch debouncer and the input trigger
                 # if we see that we have no energy we disable torch
                 # update torch with latest energy
-                players["testself"].torch_energy_update(
+                players["player_1"].torch_energy_update(
                     is_torch_reqd
                 )  # this isnt quite right as needs to ask debouncer if can use torch
                 # if players["me"].get_torch_energy() < 5:
@@ -408,7 +408,7 @@ def main():
                     is_trigger_reqd
                 )
                 if is_trigger_pressed is True:
-                    players["testself"].update_ammo(-1)
+                    players["player_1"].update_ammo(-1)
                     # file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     # file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     # voice.speak("wut")
@@ -575,9 +575,9 @@ def main():
                     )
                     status_bar.draw_status_bar(
                         output_image,
-                        players["testself"].ammo,
-                        players["testself"].get_normalised_torchenergy(),
-                        players["testself"].get_healthpoints(),
+                        players["player_1"].ammo,
+                        players["player_1"].get_normalised_torchenergy(),
+                        players["player_1"].get_healthpoints(),
                     )
 
                     # status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
@@ -602,14 +602,14 @@ def main():
                             img_processing.draw_border_rectangle(
                                 output_image, thickness=10, color=(0, 0, 255)
                             )
-                            players["testself"].set_healthpoints(None)
+                            players["player_1"].set_healthpoints(None)
                         else:
                             # probably shoudl get the player card here
                             if len(game_client.get_latest_gamestate().players) > 0:
-                                if game_client.get_latest_gamestate().players["testself"]:
-                                    players["testself"].set_healthpoints(
+                                if game_client.get_latest_gamestate().players["player_1"]:
+                                    players["player_1"].set_healthpoints(
                                         game_client.get_latest_gamestate()
-                                        .players.get("testself")
+                                        .players.get("player_1")
                                         .health
                                 )
 
