@@ -31,7 +31,7 @@ class AbstractHTTPComms(ABC):
         events_url: str,
         gamestate_url: str,
         OS_friendly_name: str,
-        user_id: str = None,
+        device_id: str = None,
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.3,
     ) -> None:
@@ -96,7 +96,7 @@ class HTTPComms(AbstractHTTPComms):
         events_url: str,
         gamestate_url: str,
         OS_friendly_name: str,
-        user_id: str = None,
+        device_id: str = None,
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.3,
     ) -> None:
@@ -108,7 +108,7 @@ class HTTPComms(AbstractHTTPComms):
         self.events_url = events_url.rstrip('/')  # Remove trailing slash
         self.gamestate_url = gamestate_url.rstrip('/')  # Remove trailing slash
         self.OS_friendly_name = OS_friendly_name
-        self.user_id = user_id
+        self.device_id = device_id
         self.upload_timeout = upload_timeout
         self.max_cached_images = 100  # Maximum number of images to keep in memory before dropping oldest
         self.poll_interval_seconds = poll_interval_seconds
@@ -300,7 +300,7 @@ class HTTPComms(AbstractHTTPComms):
         # Optimized session for fast image uploads
         session = requests.Session()
         session.headers.update({
-            "X-User-ID": self.user_id,
+            "X-User-ID": self.device_id,
             "Content-Type": "application/json",
             "Connection": "keep-alive"  # Keep connections open
         })
@@ -385,7 +385,7 @@ class HTTPComms(AbstractHTTPComms):
         # Optimized session for fast event sending
         session = requests.Session()
         session.headers.update({
-            "X-User-ID": self.user_id,
+            "X-User-ID": self.device_id,
             "Content-Type": "application/json",
             "Connection": "keep-alive"  # Keep connections open
         })
@@ -456,7 +456,7 @@ class HTTPComms(AbstractHTTPComms):
         # Optimized session for fast polling
         session = requests.Session()
         session.headers.update({
-            "X-User-ID": self.user_id,
+            "X-User-ID": self.device_id,
             "Connection": "keep-alive",  # Keep connections open
             "Cache-Control": "no-cache"   # Don't cache responses
         })

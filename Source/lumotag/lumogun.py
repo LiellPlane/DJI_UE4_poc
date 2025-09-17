@@ -93,6 +93,7 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 
 
 def main():
+    MY_ID = lumogun.GetID().get_persistant_player_id()
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
@@ -209,7 +210,7 @@ def main():
         events_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/events",
         gamestate_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/gamestate",
         OS_friendly_name="shortrange_img_uploader",
-        user_id="player_1",
+        device_id=MY_ID,
         upload_timeout=1.0,
         poll_interval_seconds=0.3
     ))
@@ -288,7 +289,7 @@ def main():
             avatar_canvas=HeightWidth(60, 60),  # get this from the status bar class
             info_box=HeightWidth(60, 60),
         ),
-        "player_1": factory.LocalPlayerCard(playername="self"),
+        MY_ID: factory.LocalPlayerCard(playername="displayname"),
     }
 
     # set partial functions
@@ -385,7 +386,7 @@ def main():
                 # here we check the torch debouncer and the input trigger
                 # if we see that we have no energy we disable torch
                 # update torch with latest energy
-                players["player_1"].torch_energy_update(
+                players[MY_ID].torch_energy_update(
                     is_torch_reqd
                 )  # this isnt quite right as needs to ask debouncer if can use torch
                 # if players["me"].get_torch_energy() < 5:
@@ -408,7 +409,7 @@ def main():
                     is_trigger_reqd
                 )
                 if is_trigger_pressed is True:
-                    players["player_1"].update_ammo(-1)
+                    players[MY_ID].update_ammo(-1)
                     # file_system.save_image(cap_img,message=f"quadro_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     # file_system.save_image(cap_img_closerange,message=f"quadro_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     # voice.speak("wut")
@@ -575,9 +576,9 @@ def main():
                     )
                     status_bar.draw_status_bar(
                         output_image,
-                        players["player_1"].ammo,
-                        players["player_1"].get_normalised_torchenergy(),
-                        players["player_1"].get_healthpoints(),
+                        players[MY_ID].ammo,
+                        players[MY_ID].get_normalised_torchenergy(),
+                        players[MY_ID].get_healthpoints(),
                     )
 
                     # status_bar.draw_shieldtorch_bar(output_image, players["me"].get_normalised_torchenergy())
@@ -602,15 +603,13 @@ def main():
                             img_processing.draw_border_rectangle(
                                 output_image, thickness=10, color=(0, 0, 255)
                             )
-                            players["player_1"].set_healthpoints(None)
+                            players[MY_ID].set_healthpoints(None)
                         else:
-                            # probably shoudl get the player card here
-                            if len(game_client.get_latest_gamestate().players) > 0:
-                                if game_client.get_latest_gamestate().players["player_1"]:
-                                    players["player_1"].set_healthpoints(
-                                        game_client.get_latest_gamestate()
-                                        .players.get("player_1")
-                                        .health
+                            # probably should get the player card here
+                            gamestate = game_client.get_latest_gamestate()
+                            if gamestate and gamestate.players and MY_ID in gamestate.players:
+                                players[MY_ID].set_healthpoints(
+                                    gamestate.players[MY_ID].health
                                 )
 
                     if is_trigger_pressed:
