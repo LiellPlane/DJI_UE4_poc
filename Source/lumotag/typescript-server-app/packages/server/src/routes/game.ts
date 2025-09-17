@@ -75,27 +75,28 @@ interface GameState {
 // Initial state
 const createInitialGameState = (): GameState => ({
   playersData: {
-    testself: {
-      health: 75,
-      ammo: 30,
-      tag_id: "testself",
-      display_name: "tinytim",
-      event_type: "PlayerStatus",
-    },
-    player_002: {
-      health: 85,
-      ammo: 22,
-      tag_id: "player_002",
-      display_name: "mongo",
-      event_type: "PlayerStatus",
-    },
-    player_003: {
-      health: 95,
-      ammo: 18,
-      tag_id: "player_003",
-      display_name: "dildort",
-      event_type: "PlayerStatus",
-    },
+    // dummy data for sanity check
+    // testself: {
+    //   health: 75,
+    //   ammo: 30,
+    //   tag_id: "testself",
+    //   display_name: "tinytim",
+    //   event_type: "PlayerStatus",
+    // },
+    // player_002: {
+    //   health: 85,
+    //   ammo: 22,
+    //   tag_id: "player_002",
+    //   display_name: "mongo",
+    //   event_type: "PlayerStatus",
+    // },
+    // player_003: {
+    //   health: 95,
+    //   ammo: 18,
+    //   tag_id: "player_003",
+    //   display_name: "dildort",
+    //   event_type: "PlayerStatus",
+    // },
   },
   imagesReceived: [],
   gamestateCounter: 0,
@@ -210,6 +211,20 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
   try {
     const userId = extractUserId(req);
     logger.debug(`User ID: ${userId}`);
+    
+    // Fast O(1) lookup - if user doesn't exist, create new PlayerStatus
+    if (!gameState.playersData[userId]) {
+      const newPlayer: PlayerStatus = {
+        health: 50,
+        ammo: 0,
+        tag_id: Math.random().toString(36).substr(2, 9), // Random 9-character string
+        display_name: userId,
+        event_type: "PlayerStatus",
+      };
+      gameState.playersData[userId] = newPlayer;
+      logger.info(`Created new player: ${userId}`);
+    }
+    
     // Call dedicated healing function
     healPlayers();
     // Return current game state directly

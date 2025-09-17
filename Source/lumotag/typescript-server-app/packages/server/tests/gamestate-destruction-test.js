@@ -9,24 +9,23 @@ const responseTime = new Trend('response_time');
 export let options = {
   stages: [
     // Warm up
-    { duration: '5s', target: 5 },
+    { duration: '30s', target: 100 },
     
     // Gradual ramp up to find breaking point
-    { duration: '5s', target: 25 },
-    { duration: '5s', target: 50 },
-    { duration: '5s', target: 100 },
-    { duration: '5s', target: 200 },
-    { duration: '5s', target: 300 },
-    { duration: '5s', target: 500 },
-    { duration: '1m', target: 500 },   // Hold at 500 users to see if it stabilizes
+    // { duration: '5s', target: 25 },
+    // { duration: '5s', target: 100 },
+    // { duration: '5s', target: 200 },
+    // { duration: '5s', target: 300 },
+    // { duration: '5s', target: 500 },
+    // { duration: '1m', target: 500 },   // Hold at 500 users to see if it stabilizes
     
-    // Push it to the limit
-    { duration: '30s', target: 750 },
-    { duration: '30s', target: 1000 },
-    { duration: '1m', target: 1000 },  // Hold at 1000 users - this will likely break it
+    // // Push it to the limit
+    // { duration: '30s', target: 750 },
+    // { duration: '30s', target: 1000 },
+    // { duration: '1m', target: 1000 },  // Hold at 1000 users - this will likely break it
     
-    // Ramp down
-    { duration: '30s', target: 0 },
+    // // Ramp down
+    // { duration: '30s', target: 0 },
   ],
   
   thresholds: {

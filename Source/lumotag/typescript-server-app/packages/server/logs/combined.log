@@ -74640,3 +74640,264 @@
   service: 'typescript-server',
   timestamp: '2025-09-16 22:58:28'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-17 12:24:57'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:24:57'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:24:57'
+}
+{
+  message: 'HEALING: testself (tinytim) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:37'
+}
+{
+  message: 'HEALING: player_002 (mongo) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:37'
+}
+{
+  message: 'HEALING: player_003 (dildort) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:37'
+}
+{
+  message: 'HEALING: testself (tinytim) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:42'
+}
+{
+  message: 'HEALING: player_002 (mongo) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:42'
+}
+{
+  message: 'HEALING: player_003 (dildort) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:42'
+}
+{
+  message: 'HEALING: testself (tinytim) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:47'
+}
+{
+  message: 'HEALING: player_002 (mongo) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:47'
+}
+{
+  message: 'HEALING: player_003 (dildort) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:47'
+}
+{
+  message: 'HEALING: testself (tinytim) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:52'
+}
+{
+  message: 'HEALING: player_002 (mongo) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:52'
+}
+{
+  message: 'HEALING: player_003 (dildort) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:52'
+}
+{
+  message: 'HEALING: testself (tinytim) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:57'
+}
+{
+  message: 'HEALING: player_002 (mongo) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:57'
+}
+{
+  message: 'HEALING: player_003 (dildort) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:25:57'
+}
+{
+  message: 'HEALING: testself (tinytim) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:26:02'
+}
+{
+  message: 'HEALING: player_002 (mongo) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:26:02'
+}
+{
+  message: 'HEALING: testself (tinytim) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:06'
+}
+{
+  message: 'HEALING: player_002 (mongo) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:06'
+}
+{
+  message: 'HEALING: testself (tinytim) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:11'
+}
+{
+  message: 'HEALING: player_002 (mongo) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:11'
+}
+{
+  message: 'HEALING: testself (tinytim) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:16'
+}
+{
+  message: 'HEALING: player_002 (mongo) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:16'
+}
+{
+  message: 'HEALING: testself (tinytim) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:21'
+}
+{
+  message: 'HEALING: player_002 (mongo) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:21'
+}
+{
+  message: 'HEALING: testself (tinytim) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:26'
+}
+{
+  message: 'HEALING: player_002 (mongo) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:26'
+}
+{
+  message: 'HEALING: testself (tinytim) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:31'
+}
+{
+  message: 'HEALING: player_002 (mongo) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:31'
+}
+{
+  message: 'HEALING: testself (tinytim) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:48'
+}
+{
+  message: 'HEALING: player_002 (mongo) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:48'
+}
+{
+  message: 'HEALING: testself (tinytim) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:53'
+}
+{
+  message: 'HEALING: player_002 (mongo) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:53'
+}
+{
+  message: 'HEALING: testself (tinytim) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:58'
+}
+{
+  message: 'HEALING: player_002 (mongo) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:29:58'
+}
+{
+  message: 'HEALING: testself (tinytim) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:30:03'
+}
+{
+  message: 'HEALING: testself (tinytim) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:30:08'
+}
+{
+  message: 'HEALING: testself (tinytim) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:30:13'
+}
+{
+  message: 'HEALING: testself (tinytim) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:30:18'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-17 12:40:56'
+}

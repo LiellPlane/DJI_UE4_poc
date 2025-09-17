@@ -606,10 +606,11 @@ def main():
                         else:
                             # probably shoudl get the player card here
                             if len(game_client.get_latest_gamestate().players) > 0:
-                                players["testself"].set_healthpoints(
-                                    game_client.get_latest_gamestate()
-                                    .players.get("testself")
-                                    .health
+                                if game_client.get_latest_gamestate().players["testself"]:
+                                    players["testself"].set_healthpoints(
+                                        game_client.get_latest_gamestate()
+                                        .players.get("testself")
+                                        .health
                                 )
 
                     if is_trigger_pressed:
