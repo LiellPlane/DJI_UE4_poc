@@ -9,6 +9,8 @@ from collections import OrderedDict
 import numpy as np
 import traceback
 import requests
+from functools import lru_cache, wraps
+from cachetools import TTLCache, cached
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
@@ -17,6 +19,10 @@ import lumotag_events
 import inspect
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
+
+
+
+
 
 
 class AbstractHTTPComms(ABC):
@@ -124,8 +130,11 @@ class HTTPComms(AbstractHTTPComms):
         self._last_events_error_time = None  # Initialize to avoid linter error
         
         # Game state tracking (thread-safe)
-        self._latest_gamestate = None
+        self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
+        
+        # TTL cache for gamestate (200ms cache)
+        self._gamestate_cache = TTLCache(maxsize=1, ttl=0.2)
         
 
         
@@ -222,9 +231,17 @@ class HTTPComms(AbstractHTTPComms):
     
     def get_latest_gamestate(self) -> lumotag_events.GameStatus:
         """Get most recent game state (non-blocking, thread-safe)
-        Returns validated GameStatus Pydantic object"""
+        Returns validated GameStatus Pydantic object with 200ms caching"""
+        # Check cache first
+        if 'gamestate' in self._gamestate_cache:
+            return self._gamestate_cache['gamestate']
+        
+        # Cache miss - get fresh data and cache it
         with self._gamestate_lock:
-            return self._latest_gamestate
+            fresh_gamestate = self._latest_gamestate
+        
+        self._gamestate_cache['gamestate'] = fresh_gamestate
+        return fresh_gamestate
 
     def _set_connected(self, connected: bool) -> None:
         """Internal method to update connection state - thread-safe"""

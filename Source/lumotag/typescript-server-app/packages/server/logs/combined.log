@@ -75099,3 +75099,318 @@
   service: 'typescript-server',
   timestamp: '2025-09-17 19:20:48'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-18 19:43:56'
+}
+{
+  message: '🧹 Cleaning up 118 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:43:56'
+}
+{
+  message: '✅ Cleanup complete: 118 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:43:56'
+}
+{
+  message: '🧹 Startup cleanup: Removed 118 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:43:56'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:46:53'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-18 19:48:22'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:22'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:22'
+}
+{
+  message: 'Created new player: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:30'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:30'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:36'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:41'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:46'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:51'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:48:56'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:02'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:07'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:12'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-18 19:49:31'
+}
+{
+  message: '🧹 Cleaning up 89 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:31'
+}
+{
+  message: '✅ Cleanup complete: 89 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:31'
+}
+{
+  message: '🧹 Startup cleanup: Removed 89 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:31'
+}
+{
+  message: 'Created new player: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:31'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:36'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:41'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:48'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:53'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 19:49:59'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:07'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:12'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:17'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:22'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:27'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:33'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:38'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:43'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:48'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:53'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:58:59'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:04'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:09'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:14'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:19'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:25'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:30'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:35'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 20:59:40'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 21:03:13'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 21:03:18'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 21:03:23'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-18 21:03:28'
+}

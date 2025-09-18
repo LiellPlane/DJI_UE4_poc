@@ -200,7 +200,7 @@ def main():
             config=configs.get_lumofind_config(PLATFORM),
         )
     )
-
+ 
     game_client =(HTTPComms(
         sharedmem_buffs_closerange=image_capture_shortrange.get_mem_buffers(),
         safe_mem_details_func_closerange=image_capture_shortrange.get_safe_mem_details,
@@ -607,7 +607,7 @@ def main():
                         else:
                             # probably should get the player card here
                             gamestate = game_client.get_latest_gamestate()
-                            if gamestate and gamestate.players and MY_ID in gamestate.players:
+                            if MY_ID in gamestate.players:
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health
                                 )
