@@ -32,7 +32,6 @@ class AbstractHTTPComms(ABC):
         gamestate_url: str,
         OS_friendly_name: str,
         device_id: str,
-        display_id: str,
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.3,
     ) -> None:
@@ -97,8 +96,7 @@ class HTTPComms(AbstractHTTPComms):
         events_url: str,
         gamestate_url: str,
         OS_friendly_name: str,
-        device_id: str = None,
-        display_id: str,
+        device_id: str,
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.3,
     ) -> None:
@@ -111,7 +109,6 @@ class HTTPComms(AbstractHTTPComms):
         self.gamestate_url = gamestate_url.rstrip('/')  # Remove trailing slash
         self.OS_friendly_name = OS_friendly_name
         self.device_id = device_id
-        self.display_id = display_id
         self.upload_timeout = upload_timeout
         self.max_cached_images = 100  # Maximum number of images to keep in memory before dropping oldest
         self.poll_interval_seconds = poll_interval_seconds
