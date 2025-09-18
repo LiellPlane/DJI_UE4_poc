@@ -22,7 +22,7 @@ class base_find_lumotag_config():
 
 def get_http_comms_baseurl(platform):
     if platform == _OS.RASPBERRY:
-        return "http://LIELLOMEN:8080"
+        return "http://LIELLOMEN.broadband:8080"
     elif platform == _OS.WINDOWS:
         return "http://LIELLOMEN:8080"
     elif platform == _OS.MAC_OS:
