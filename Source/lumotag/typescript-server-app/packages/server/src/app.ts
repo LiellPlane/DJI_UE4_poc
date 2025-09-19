@@ -19,7 +19,7 @@ const PORT = parseInt(process.env.PORT || '8080', 10);
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3001",
+    origin: "*", // Allow all origins for LAN operation
   }),
 );
 
