@@ -603,14 +603,13 @@ def main():
                             img_processing.draw_border_rectangle(
                                 output_image, thickness=10, color=(0, 0, 255)
                             )
-                            players[MY_ID].set_healthpoints(1)
+                            players[MY_ID].set_healthpoints(None)
                         else:
                             # probably should get the player card here
                             gamestate = game_client.get_latest_gamestate()
                             if MY_ID in gamestate.players:
                                 players[MY_ID].set_healthpoints(
-                                    1
-                                    # gamestate.players[MY_ID].health
+                                    gamestate.players[MY_ID].health
                                 )
 
                     if is_trigger_pressed:
