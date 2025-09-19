@@ -75528,3 +75528,90 @@
   service: 'typescript-server',
   timestamp: '2025-09-18 21:07:54'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-19 21:40:54'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:40:54'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:40:54'
+}
+{
+  message: 'Created new player: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:00'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:00'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:05'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:10'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:15'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:21'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:26'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:41:58'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:42:03'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:42:08'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-19 21:43:39'
+}
