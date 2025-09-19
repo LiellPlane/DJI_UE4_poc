@@ -420,7 +420,7 @@ class PlayerInfoBoxv2:
         self.fade_ms = 250
         self.current_fade_ms = 0
         #self.fade_direction = 1
-        self.healthpoints = 100
+        self.healthpoints = 1
 
         if avatar_canvas is not None:
             # for local player we are not doing anything yet
