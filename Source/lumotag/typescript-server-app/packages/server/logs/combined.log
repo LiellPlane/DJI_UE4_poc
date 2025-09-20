@@ -85824,3 +85824,1014 @@
   service: 'typescript-server',
   timestamp: '2025-09-20 13:56:47'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 16:37:46'
+}
+{
+  message: '🧹 Cleaning up 119 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 16:37:46'
+}
+{
+  message: '✅ Cleanup complete: 119 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 16:37:46'
+}
+{
+  message: '🧹 Startup cleanup: Removed 119 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 16:37:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:05:56'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 20:29:45'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:29:45'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:29:45'
+}
+{
+  service: 'typescript-server',
+  error: "Unexpected token ' in JSON at position 0",
+  stack: "SyntaxError: Unexpected token ' in JSON at position 0\n" +
+    '    at JSON.parse (<anonymous>)\n' +
+    '    at createStrictSyntaxError (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\types\\json.js:169:10)\n' +
+    '    at parse (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\types\\json.js:86:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\read.js:128:18\n' +
+    '    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n' +
+    '    at invokeCallback (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:238:16)\n' +
+    '    at done (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:227:7)\n' +
+    '    at IncomingMessage.onEnd (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:287:7)\n' +
+    '    at IncomingMessage.emit (node:events:514:28)\n' +
+    '    at endReadableNT (node:internal/streams/readable:1359:12)',
+  statusCode: 400,
+  method: 'POST',
+  url: '/api/v1/events',
+  ip: '127.0.0.1',
+  userAgent: 'curl/8.14.1',
+  level: 'error',
+  message: 'Request error',
+  timestamp: '2025-09-20 20:30:46'
+}
+{
+  message: '127.0.0.1 - - [20/Sep/2025:19:30:46 +0000] "POST /api/v1/events HTTP/1.1" 400 131 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:30:46'
+}
+{
+  service: 'typescript-server',
+  error: "Unexpected token ' in JSON at position 0",
+  stack: "SyntaxError: Unexpected token ' in JSON at position 0\n" +
+    '    at JSON.parse (<anonymous>)\n' +
+    '    at createStrictSyntaxError (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\types\\json.js:169:10)\n' +
+    '    at parse (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\types\\json.js:86:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\read.js:128:18\n' +
+    '    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n' +
+    '    at invokeCallback (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:238:16)\n' +
+    '    at done (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:227:7)\n' +
+    '    at IncomingMessage.onEnd (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:287:7)\n' +
+    '    at IncomingMessage.emit (node:events:514:28)\n' +
+    '    at endReadableNT (node:internal/streams/readable:1359:12)',
+  statusCode: 400,
+  method: 'POST',
+  url: '/api/v1/events',
+  ip: '192.168.1.104',
+  userAgent: 'curl/8.14.1',
+  level: 'error',
+  message: 'Request error',
+  timestamp: '2025-09-20 20:31:13'
+}
+{
+  message: '192.168.1.104 - - [20/Sep/2025:19:31:13 +0000] "POST /api/v1/events HTTP/1.1" 400 131 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:31:13'
+}
+{
+  message: '[19:32:11.455] PLAYER TAGGED - User: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"],"healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:11'
+}
+{
+  message: '[19:32:11.455] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:11'
+}
+{
+  message: '192.168.1.104 - - [20/Sep/2025:19:32:11 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.1.104',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:32:11'
+}
+{
+  message: '[19:32:13.397] PLAYER TAGGED - User: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"],"healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:13'
+}
+{
+  message: '[19:32:13.397] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:13'
+}
+{
+  message: '192.168.1.104 - - [20/Sep/2025:19:32:13 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.1.104',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:32:13'
+}
+{
+  message: '[19:32:14.238] PLAYER TAGGED - User: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"],"healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:14'
+}
+{
+  message: '[19:32:14.238] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:14'
+}
+{
+  message: '192.168.1.104 - - [20/Sep/2025:19:32:14 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:32:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.1.104',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:32:14'
+}
+{
+  message: 'Created new player: my_username with display_name: my_username',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:36:28'
+}
+{
+  message: 'HEALING: my_username (my_username) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:36:28'
+}
+{
+  message: 'Created new player: bc1ad358bb with display_name: bc1ad358bb',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:42:55'
+}
+{
+  message: 'HEALING: my_username (my_username) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:42:55'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:42:55'
+}
+{
+  message: 'HEALING: my_username (my_username) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:00'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:00'
+}
+{
+  message: 'HEALING: my_username (my_username) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:05'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:05'
+}
+{
+  message: 'HEALING: my_username (my_username) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:11'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:11'
+}
+{
+  message: 'HEALING: my_username (my_username) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:16'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:16'
+}
+{
+  message: 'HEALING: my_username (my_username) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:21'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:21'
+}
+{
+  message: 'HEALING: my_username (my_username) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:26'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:26'
+}
+{
+  message: 'HEALING: my_username (my_username) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:32'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:32'
+}
+{
+  message: 'HEALING: my_username (my_username) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:37'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:37'
+}
+{
+  message: 'HEALING: my_username (my_username) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:42'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:42'
+}
+{
+  message: 'HEALING: my_username (my_username) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:47'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:47'
+}
+{
+  message: 'HEALING: my_username (my_username) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:53'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:53'
+}
+{
+  message: 'HEALING: my_username (my_username) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:58'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:43:58'
+}
+{
+  message: 'HEALING: my_username (my_username) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:03'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:03'
+}
+{
+  message: 'HEALING: my_username (my_username) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:08'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:08'
+}
+{
+  message: 'HEALING: my_username (my_username) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:14'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:14'
+}
+{
+  message: 'HEALING: my_username (my_username) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:19'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:19'
+}
+{
+  message: 'HEALING: my_username (my_username) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:24'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:24'
+}
+{
+  message: 'HEALING: my_username (my_username) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:29'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:29'
+}
+{
+  message: 'HEALING: my_username (my_username) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:35'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:35'
+}
+{
+  message: 'HEALING: my_username (my_username) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:40'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:40'
+}
+{
+  message: 'HEALING: my_username (my_username) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:45'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:45'
+}
+{
+  message: 'HEALING: my_username (my_username) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:50'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:50'
+}
+{
+  message: 'HEALING: my_username (my_username) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:56'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:44:56'
+}
+{
+  message: 'HEALING: my_username (my_username) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:01'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:01'
+}
+{
+  message: 'HEALING: my_username (my_username) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:06'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:06'
+}
+{
+  message: 'HEALING: my_username (my_username) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:11'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:11'
+}
+{
+  message: 'HEALING: my_username (my_username) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:17'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:17'
+}
+{
+  message: 'HEALING: my_username (my_username) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:22'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:22'
+}
+{
+  message: 'HEALING: my_username (my_username) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:27'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:27'
+}
+{
+  message: 'HEALING: my_username (my_username) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:32'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:32'
+}
+{
+  message: 'HEALING: my_username (my_username) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:37'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:37'
+}
+{
+  message: 'HEALING: my_username (my_username) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:42'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:42'
+}
+{
+  message: 'HEALING: my_username (my_username) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:48'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:48'
+}
+{
+  message: 'HEALING: my_username (my_username) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:53'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:53'
+}
+{
+  message: 'HEALING: my_username (my_username) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:58'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:45:58'
+}
+{
+  message: 'HEALING: my_username (my_username) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:03'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:03'
+}
+{
+  message: 'HEALING: my_username (my_username) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:09'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:09'
+}
+{
+  message: 'HEALING: my_username (my_username) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:14'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:14'
+}
+{
+  message: 'HEALING: my_username (my_username) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:19'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:19'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:23'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:23'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:23'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:24'
+}
+{
+  message: 'HEALING: my_username (my_username) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:24'
+}
+{
+  message: 'HEALING: bc1ad358bb (bc1ad358bb) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:24'
+}
+{
+  message: 'Server closed',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:46:25'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 20:49:52'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:52'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:52'
+}
+{
+  message: 'Created new player: 54e5b53659 with display_name: 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:52'
+}
+{
+  message: '[19:49:55.417] PLAYER TAGGED - User: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDW6Y8dLvXiqLID"],"event_type":"PlayerTagged","healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:55'
+}
+{
+  message: '[19:49:55.417] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDW6Y8dLvXiqLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:55'
+}
+{
+  message: '192.168.1.185 - - [20/Sep/2025:19:49:55 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:55'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:49:55'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:49:57'
+}
+{
+  message: '[19:50:01.978] PLAYER TAGGED - User: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID20ite83JWnLID"],"event_type":"PlayerTagged","healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:01'
+}
+{
+  message: '[19:50:01.978] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID20ite83JWnLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:01'
+}
+{
+  message: '192.168.1.185 - - [20/Sep/2025:19:50:01 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:50:01'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:02'
+}
+{
+  message: '[19:50:04.974] PLAYER TAGGED - User: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDhpAeh18KrFLID"],"event_type":"PlayerTagged","healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:04'
+}
+{
+  message: '[19:50:04.974] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDhpAeh18KrFLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:04'
+}
+{
+  message: '192.168.1.185 - - [20/Sep/2025:19:50:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:50:04'
+}
+{
+  message: '[19:50:06.596] PLAYER TAGGED - User: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDljfN39biXYLID"],"event_type":"PlayerTagged","healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  message: '[19:50:06.596] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDljfN39biXYLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  message: '192.168.1.185 - - [20/Sep/2025:19:50:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  message: '[19:50:06.833] PLAYER TAGGED - User: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDtzyG78MghFLID"],"event_type":"PlayerTagged","healthpoints":10,"server_info":"plop"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  message: '[19:50:06.833] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDtzyG78MghFLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  message: '192.168.1.185 - - [20/Sep/2025:19:50:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 20:50:06'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:07'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:12'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:17'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:22'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:28'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:33'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:38'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:43'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:49'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:54'
+}
+{
+  message: 'HEALING: 54e5b53659 (54e5b53659) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 20:50:59'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 21:10:14'
+}

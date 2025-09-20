@@ -232,16 +232,16 @@ class HTTPComms(AbstractHTTPComms):
     def get_latest_gamestate(self) -> lumotag_events.GameStatus:
         """Get most recent game state (non-blocking, thread-safe)
         Returns validated GameStatus Pydantic object with 200ms caching"""
-        # Check cache first
-        if 'gamestate' in self._gamestate_cache:
+        # Try to get from cache first
+        try:
             return self._gamestate_cache['gamestate']
-        
-        # Cache miss - get fresh data and cache it
-        with self._gamestate_lock:
-            fresh_gamestate = self._latest_gamestate
-        
-        self._gamestate_cache['gamestate'] = fresh_gamestate
-        return fresh_gamestate
+        except KeyError:
+            # Cache miss - get fresh data and cache it
+            with self._gamestate_lock:
+                fresh_gamestate = self._latest_gamestate
+            
+            self._gamestate_cache['gamestate'] = fresh_gamestate
+            return fresh_gamestate
 
     def _set_connected(self, connected: bool) -> None:
         """Internal method to update connection state - thread-safe"""

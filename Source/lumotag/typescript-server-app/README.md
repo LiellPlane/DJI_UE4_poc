@@ -389,3 +389,6 @@ or
 
 
 while true; do echo "$(date): Testing server..."; if curl -X GET http://LIELLOMEN.broadband:8080/api/v1/gamestate -H "X-User-ID: my_username" --connect-timeout 5 --max-time 10 -s; then echo " ✅ Success"; else echo " ❌ Failed"; fi; echo "---"; sleep 2; done
+
+WINDOWS user tagged curl:
+curl -X POST http://LIELLOMEN.broadband:8080/api/v1/events -H "Content-Type: application/json" -H "x-device-id: player123" -d "{\"event_type\": \"PlayerTagged\", \"tag_id\": \"SPOKIES349119\", \"image_ids\": [\"img_001_1727033058\", \"img_002_1727033059\"]}"

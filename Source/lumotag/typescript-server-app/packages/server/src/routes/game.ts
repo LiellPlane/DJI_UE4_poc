@@ -10,6 +10,7 @@ import {
   PlayerStatus,
   GameStatus,
   PlayerTagged,
+  PlayerTaggedEnriched,
   ImageInfo,
   GameServerStats,
   UploadRequest,
@@ -309,6 +310,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
     const eventType = req.body.event_type;
 
     let parsedEvent: PlayerTagged;
+    let enrichedEvent: PlayerTaggedEnriched;
 
     switch (eventType) {
 
@@ -316,9 +318,17 @@ router.post("/events", (req: GameRequest, res: Response) => {
         parsedEvent = {
           ...req.body
         } as PlayerTagged;
-        logger.info(`[${timestamp}] PLAYER TAGGED - User: ${userId}, Event: ${JSON.stringify(parsedEvent)}`);
+        
+
+        enrichedEvent = {
+          ...parsedEvent,
+          healthpoints: 10,
+          server_info: "plop",          
+        } as PlayerTaggedEnriched
+        logger.info(`[${timestamp}] PLAYER TAGGED - User: ${userId}, Event: ${JSON.stringify(enrichedEvent)}`);
         break;
 
+        
       default:
         throw new Error(`Unknown event type: ${eventType}. Supported types: PlayerTagged`);
     }

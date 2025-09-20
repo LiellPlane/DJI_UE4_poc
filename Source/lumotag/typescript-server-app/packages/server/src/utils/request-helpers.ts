@@ -6,7 +6,7 @@ import { Request, Response } from "express";
  * @returns The user ID from the header
  */
 export function extractUserId(req: Request): string {
-  return req.headers["x-user-id"] as string;
+  return req.headers["x-device-id"] as string;
 }
 
 /**

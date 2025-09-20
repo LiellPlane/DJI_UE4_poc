@@ -10,6 +10,17 @@ export interface UploadRequest {
   event_type: string;
 }
 
+export interface StaticPlayerDetails{
+  tag_id: string;
+  display_name: string;
+  avatar_file_path: string;
+}
+
+export interface StaticPlayerDetails {
+  //probably temporary details to store static details like for unique devices, what are the associated tag ids, display names etc
+  device_id: Record<string, StaticPlayerDetails>;
+}
+
 export interface PlayerStatus {
   health: number;
   ammo: number;
@@ -23,15 +34,22 @@ export interface GameStatus {
   event_type: string;
 }
 
+// incoming event from a player
 export interface PlayerTagged {
   tag_id: string;
   image_ids: string[];
   event_type: string;
 }
 
+// Server-enriched version with additional details
+export interface PlayerTaggedEnriched extends PlayerTagged {
+  healthpoints: number;
+  server_info?: string; //notes for humans to debug
+}
+
 export interface ImageInfo {
   image_id: string;
-  user_id: string;
+  device_id: string;
   timestamp: number;
   file_location: string;
 }
@@ -63,6 +81,6 @@ export interface ServerMetrics {
 // Custom request interface with user ID header
 export interface GameRequest extends Request {
   headers: Request["headers"] & {
-    "x-user-id"?: string;
+    "x-device-id"?: string;
   };
 }
