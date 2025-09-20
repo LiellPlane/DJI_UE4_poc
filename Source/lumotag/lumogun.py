@@ -624,6 +624,7 @@ def main():
                         discovered_tags = extract_discovered_tags(analysis)
                         for tag_id in discovered_tags:
                             if "game_client" in locals():
+                                # in theory if you see more than one ID you will take off more health - do we want this functionality?
                                 game_client.send_tagging_event(tag_id, imageIDs)
 
                 if "game_client" in locals():

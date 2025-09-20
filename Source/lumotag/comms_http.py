@@ -116,7 +116,7 @@ class HTTPComms(AbstractHTTPComms):
         self.OS_friendly_name = OS_friendly_name
         self.device_id = device_id
         self.upload_timeout = upload_timeout
-        self.max_cached_images = 100  # Maximum number of images to keep in memory before dropping oldest
+        self.max_cached_images = 20  # Maximum number of images to keep in memory before dropping oldest - in theory should just need last 2 frames
         self.poll_interval_seconds = poll_interval_seconds
 
         # Keep raw grayscale frames by embedded image id
