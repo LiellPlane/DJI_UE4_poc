@@ -4,7 +4,7 @@ import express, { Response, Router } from "express";
 // import { LRUCache } from 'lru-cache'; // Removed for simplicity
 import { logger } from "../utils/logger";
 import { imageSaver } from "./image-saver";
-import { extractUserId } from "../utils/request-helpers";
+import { extractUserId, validateAndExtractUserId } from "../utils/request-helpers";
 import {
   GameRequest,
   PlayerStatus,
@@ -209,7 +209,10 @@ const healPlayers = (): void => {
 // GAMESTATE endpoint - GET /api/v1/gamestate
 router.get("/gamestate", (req: GameRequest, res: Response) => {
   try {
-    const userId = extractUserId(req);
+    // Validate required header
+    const userId = validateAndExtractUserId(req, res);
+    if (!userId) return; // Response already sent by validation function
+    
     logger.debug(`User ID: ${userId}`);
     
     // Fast O(1) lookup - if user doesn't exist, create new PlayerStatus
@@ -222,7 +225,7 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
         event_type: "PlayerStatus",
       };
       gameState.playersData[userId] = newPlayer;
-      logger.info(`Created new player: ${userId}`);
+      logger.info(`Created new player: ${userId} with display_name: ${userId}`);
     }
     
     // Call dedicated healing function
@@ -248,9 +251,12 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
 // IMAGE UPLOAD endpoint - POST /api/v1/images/upload
 router.post("/images/upload", (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
-  const userId = extractUserId(req);
-
+  
   try {
+    // Validate required header
+    const userId = validateAndExtractUserId(req, res);
+    if (!userId) return; // Response already sent by validation function
+    
     // Try to parse body as UploadRequest - crash if it doesn't work
     const uploadRequest: UploadRequest = {
       ...req.body
@@ -294,9 +300,11 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
 // EVENTS endpoint - POST /api/v1/events
 router.post("/events", (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
-  const userId = extractUserId(req);
-
+  
   try {
+    // Validate required header
+    const userId = validateAndExtractUserId(req, res);
+    if (!userId) return; // Response already sent by validation function
 
     const eventType = req.body.event_type;
 
@@ -308,6 +316,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
         parsedEvent = {
           ...req.body
         } as PlayerTagged;
+        logger.info(`[${timestamp}] PLAYER TAGGED - User: ${userId}, Event: ${JSON.stringify(parsedEvent)}`);
         break;
 
       default:

@@ -76152,3 +76152,2849 @@
   service: 'typescript-server',
   timestamp: '2025-09-19 22:32:02'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 11:18:51'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:18:51'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:18:51'
+}
+{
+  message: 'Created new player: undefined',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:19:11'
+}
+{
+  message: 'HEALING: undefined (undefined) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:19:11'
+}
+{
+  message: 'HEALING: undefined (undefined) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:19:25'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:09'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 11:24:24'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:24'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:24'
+}
+{
+  message: 'Created new player: abc12345 with display_name: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:38'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:38'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:43'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:24:49'
+}
+{
+  message: 'Created new player: my_username with display_name: my_username',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:26:39'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:26:39'
+}
+{
+  message: 'HEALING: my_username (my_username) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:26:39'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 11:32:42'
+}
+{
+  message: '🧹 Cleaning up 15 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:32:42'
+}
+{
+  message: '✅ Cleanup complete: 15 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:32:42'
+}
+{
+  message: '🧹 Startup cleanup: Removed 15 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:32:42'
+}
+{
+  message: 'Created new player: my_username with display_name: my_username',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:37:17'
+}
+{
+  message: 'HEALING: my_username (my_username) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:37:17'
+}
+{
+  message: 'HEALING: my_username (my_username) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:37:24'
+}
+{
+  message: 'HEALING: my_username (my_username) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:37:30'
+}
+{
+  message: 'HEALING: my_username (my_username) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:37:36'
+}
+{
+  message: 'HEALING: my_username (my_username) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:37:42'
+}
+{
+  message: 'HEALING: my_username (my_username) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:38:46'
+}
+{
+  message: 'HEALING: my_username (my_username) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:38:52'
+}
+{
+  message: 'HEALING: my_username (my_username) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:38:59'
+}
+{
+  message: 'HEALING: my_username (my_username) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:05'
+}
+{
+  message: 'HEALING: my_username (my_username) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:11'
+}
+{
+  message: 'HEALING: my_username (my_username) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:17'
+}
+{
+  message: 'HEALING: my_username (my_username) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:24'
+}
+{
+  message: 'HEALING: my_username (my_username) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:30'
+}
+{
+  message: 'HEALING: my_username (my_username) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:36'
+}
+{
+  message: 'HEALING: my_username (my_username) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:42'
+}
+{
+  message: 'HEALING: my_username (my_username) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:49'
+}
+{
+  message: 'HEALING: my_username (my_username) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:39:55'
+}
+{
+  message: 'HEALING: my_username (my_username) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:01'
+}
+{
+  message: 'HEALING: my_username (my_username) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:07'
+}
+{
+  message: 'HEALING: my_username (my_username) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:14'
+}
+{
+  message: 'HEALING: my_username (my_username) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:20'
+}
+{
+  message: 'HEALING: my_username (my_username) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:26'
+}
+{
+  message: 'HEALING: my_username (my_username) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:32'
+}
+{
+  message: 'HEALING: my_username (my_username) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:39'
+}
+{
+  message: 'HEALING: my_username (my_username) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:45'
+}
+{
+  message: 'HEALING: my_username (my_username) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:51'
+}
+{
+  message: 'HEALING: my_username (my_username) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:40:57'
+}
+{
+  message: 'HEALING: my_username (my_username) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:04'
+}
+{
+  message: 'HEALING: my_username (my_username) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:10'
+}
+{
+  message: 'HEALING: my_username (my_username) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:16'
+}
+{
+  message: 'HEALING: my_username (my_username) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:22'
+}
+{
+  message: 'HEALING: my_username (my_username) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:29'
+}
+{
+  message: 'HEALING: my_username (my_username) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:35'
+}
+{
+  message: 'HEALING: my_username (my_username) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:41'
+}
+{
+  message: 'HEALING: my_username (my_username) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:47'
+}
+{
+  message: 'HEALING: my_username (my_username) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:41:54'
+}
+{
+  message: 'HEALING: my_username (my_username) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:00'
+}
+{
+  message: 'HEALING: my_username (my_username) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:06'
+}
+{
+  message: 'HEALING: my_username (my_username) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:12'
+}
+{
+  message: 'HEALING: my_username (my_username) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:19'
+}
+{
+  message: 'HEALING: my_username (my_username) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:25'
+}
+{
+  message: 'HEALING: my_username (my_username) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:31'
+}
+{
+  message: 'HEALING: my_username (my_username) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:37'
+}
+{
+  message: 'HEALING: my_username (my_username) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:44'
+}
+{
+  message: 'HEALING: my_username (my_username) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:50'
+}
+{
+  message: 'HEALING: my_username (my_username) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:42:56'
+}
+{
+  message: 'HEALING: my_username (my_username) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:43:02'
+}
+{
+  message: 'HEALING: my_username (my_username) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:43:09'
+}
+{
+  message: 'HEALING: my_username (my_username) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:43:15'
+}
+{
+  message: 'HEALING: my_username (my_username) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:43:21'
+}
+{
+  message: 'Created new player: abc12345 with display_name: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:46:53'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:46:53'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:46:58'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:03'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:09'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:14'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:19'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:24'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:29'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:35'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:40'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:45'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:50'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:47:55'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:01'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:06'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:11'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:16'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:21'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:27'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:32'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:37'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:42'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:47'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:53'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:48:58'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 11:49:03'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:11:49'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-20 12:12:04'
+}
+{
+  message: '🧹 Cleaning up 191 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:04'
+}
+{
+  message: '✅ Cleanup complete: 191 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:04'
+}
+{
+  message: '🧹 Startup cleanup: Removed 191 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:04'
+}
+{
+  message: 'Created new player: abc12345 with display_name: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:15'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:15'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:20'
+}
+{
+  message: '[11:12:22.377] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDVcJsy02WIALID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.377] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDVcJsy02WIALID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:22 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '25ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.405] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDrv67O83YM7LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.405] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDrv67O83YM7LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:22 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '15ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.447] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDj5rGuhIxjVLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.447] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDj5rGuhIxjVLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:22 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '10ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.882] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDY10AMftJlkLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:22.882] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDY10AMftJlkLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:22 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:22'
+}
+{
+  message: '[11:12:23.302] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDGsPYqPgQDfLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  message: '[11:12:23.302] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDGsPYqPgQDfLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:23 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  message: '[11:12:23.742] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDXQzMy2w6MSLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  message: '[11:12:23.742] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDXQzMy2w6MSLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:23 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '5ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:23'
+}
+{
+  message: '[11:12:24.161] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDtbVCQSIH7LLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  message: '[11:12:24.161] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDtbVCQSIH7LLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:24 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  message: '[11:12:24.599] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDIBxUMZMdm0LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  message: '[11:12:24.599] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDIBxUMZMdm0LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:24 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:24'
+}
+{
+  message: '[11:12:25.025] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDrcTHSL6HidLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '[11:12:25.025] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDrcTHSL6HidLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:25 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '[11:12:25.451] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDd5dn8E5oHWLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '[11:12:25.451] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDd5dn8E5oHWLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:25 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '10ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '[11:12:25.890] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID0ptBIJSSYbLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '[11:12:25.890] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID0ptBIJSSYbLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:25 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:25'
+}
+{
+  message: '[11:12:26.323] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID0zgYaIYlgfLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  message: '[11:12:26.323] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID0zgYaIYlgfLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:26 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  message: '[11:12:26.762] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDY0WeOoPW4ZLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  message: '[11:12:26.762] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDY0WeOoPW4ZLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:26 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:26'
+}
+{
+  message: '[11:12:27.205] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDLrGzjBFeNgLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  message: '[11:12:27.205] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDLrGzjBFeNgLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:27 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  message: '[11:12:27.636] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDF8WGN1tm9BLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  message: '[11:12:27.636] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDF8WGN1tm9BLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:27 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:27'
+}
+{
+  message: '[11:12:28.076] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDHbLG1fiVt5LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '[11:12:28.076] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDHbLG1fiVt5LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:28 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '[11:12:28.511] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDU5nKyOe4KBLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '[11:12:28.511] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDU5nKyOe4KBLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:28 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '[11:12:28.957] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDCWGHDOvkroLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '[11:12:28.957] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDCWGHDOvkroLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:28 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:28'
+}
+{
+  message: '[11:12:29.417] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDQG4KPHhCShLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  message: '[11:12:29.417] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDQG4KPHhCShLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:29 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  message: '[11:12:29.839] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDHNe13BUfZqLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  message: '[11:12:29.839] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDHNe13BUfZqLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:29 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:29'
+}
+{
+  message: '[11:12:30.297] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDD4vrrX5WGqLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: '[11:12:30.297] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDD4vrrX5WGqLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:30 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: '[11:12:30.714] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDP0pAd9L0ppLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: '[11:12:30.714] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDP0pAd9L0ppLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:30 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:30'
+}
+{
+  message: '[11:12:31.142] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDMRpQIDnx2xLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '[11:12:31.142] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDMRpQIDnx2xLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:31 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '[11:12:31.577] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDAolT5tsHSgLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '[11:12:31.577] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDAolT5tsHSgLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:31 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '[11:12:31.999] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDpBswiBz4fwLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:31'
+}
+{
+  message: '[11:12:31.999] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDpBswiBz4fwLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:32 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '[11:12:32.439] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDu6yXuYmmUVLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '[11:12:32.439] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDu6yXuYmmUVLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:32 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '[11:12:32.861] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID9VbzlRCI4mLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '[11:12:32.861] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9VbzlRCI4mLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:32 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:32'
+}
+{
+  message: '[11:12:33.298] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDSpwrKNoGX8LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  message: '[11:12:33.298] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDSpwrKNoGX8LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:33 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  message: '[11:12:33.734] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDlgdWP9u8pGLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  message: '[11:12:33.734] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDlgdWP9u8pGLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:33 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:33'
+}
+{
+  message: '[11:12:34.161] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDgGQ8sG1DlPLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  message: '[11:12:34.161] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDgGQ8sG1DlPLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:34 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  message: '[11:12:34.609] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDjrsCAdVWCxLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  message: '[11:12:34.609] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDjrsCAdVWCxLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:34 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '11ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:34'
+}
+{
+  message: '[11:12:35.051] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDMKqdITntqXLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '[11:12:35.051] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDMKqdITntqXLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:35 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '[11:12:35.506] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDaUgHP4e1VpLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '[11:12:35.506] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDaUgHP4e1VpLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:35 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '[11:12:35.937] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDLINPD3KntuLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '[11:12:35.937] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDLINPD3KntuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:35 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:35'
+}
+{
+  message: '[11:12:36.357] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID9LjBiANmiVLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  message: '[11:12:36.357] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9LjBiANmiVLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:36 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  message: '[11:12:36.794] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDZx8UMPz0XELID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  message: '[11:12:36.794] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDZx8UMPz0XELID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:36 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:36'
+}
+{
+  message: '[11:12:37.250] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDmkoVdbkMakLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  message: '[11:12:37.250] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDmkoVdbkMakLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:37 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  message: '[11:12:37.677] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID2jr6HCzD4DLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  message: '[11:12:37.677] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID2jr6HCzD4DLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:37 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:37'
+}
+{
+  message: '[11:12:38.111] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDSs735ArvDtLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '[11:12:38.111] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDSs735ArvDtLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '[11:12:38.547] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDlDUDCtFFymLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '[11:12:38.547] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDlDUDCtFFymLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '[11:12:38.972] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDiyooYTSSH6LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '[11:12:38.972] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDiyooYTSSH6LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:38'
+}
+{
+  message: '[11:12:39.435] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID9yuA4GeCjKLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  message: '[11:12:39.435] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9yuA4GeCjKLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  message: '[11:12:39.855] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDwNnLjrxRwDLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  message: '[11:12:39.855] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDwNnLjrxRwDLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:39'
+}
+{
+  message: '[11:12:40.291] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDCqzrv3qFczLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  message: '[11:12:40.291] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDCqzrv3qFczLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:40 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  message: '[11:12:40.700] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDtCiGgyfb2KLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  message: '[11:12:40.700] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDtCiGgyfb2KLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:40 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:40'
+}
+{
+  message: '[11:12:41.142] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDxih4Nymsy0LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: '[11:12:41.142] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDxih4Nymsy0LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:41 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: '[11:12:41.559] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID97ob198zHxLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: '[11:12:41.559] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID97ob198zHxLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:41 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '9ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:41'
+}
+{
+  message: '[11:12:42.010] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID9EBNZWyOmRLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '[11:12:42.010] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9EBNZWyOmRLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '[11:12:42.441] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDWaL857hgmALID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '[11:12:42.441] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDWaL857hgmALID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '[11:12:42.846] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDewbVZneOXnLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '[11:12:42.846] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDewbVZneOXnLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:42'
+}
+{
+  message: '[11:12:43.270] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDZ2U0kQMTX9LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: '[11:12:43.270] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDZ2U0kQMTX9LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:43 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: '[11:12:43.712] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDs0qPA5YojMLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: '[11:12:43.712] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDs0qPA5YojMLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:43 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:43'
+}
+{
+  message: '[11:12:44.116] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDNiPJcDEjogLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: '[11:12:44.116] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDNiPJcDEjogLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:44 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: '[11:12:44.549] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDSYK2GlelLGLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: '[11:12:44.549] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDSYK2GlelLGLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:44 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:44'
+}
+{
+  message: '[11:12:45.017] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LID6k7n3EfKroLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '[11:12:45.017] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID6k7n3EfKroLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:45 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '[11:12:45.465] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDhf5OFegtWeLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '[11:12:45.465] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDhf5OFegtWeLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:45 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '[11:12:45.903] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDkJOtmG0F5iLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '[11:12:45.903] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDkJOtmG0F5iLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:45 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:45'
+}
+{
+  message: '[11:12:46.326] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDHwVBerOiz9LID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: '[11:12:46.326] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDHwVBerOiz9LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:46 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '6ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: 'HEALING: abc12345 (abc12345) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: '[11:12:46.746] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDAUiMDwkWdYLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: '[11:12:46.746] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDAUiMDwkWdYLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:46 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '[11:12:47.219] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDKzdfFG83zpLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '[11:12:47.219] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDKzdfFG83zpLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:47 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '[11:12:47.635] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDkfphXzotFULID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '[11:12:47.635] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDkfphXzotFULID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:47 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:47'
+}
+{
+  message: '[11:12:48.073] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDctTOtwmoXNLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '[11:12:48.073] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDctTOtwmoXNLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:48 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '[11:12:48.495] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDdCdgh4zDePLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '[11:12:48.495] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDdCdgh4zDePLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:48 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '[11:12:48.930] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDbZ6cZvQLsvLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '[11:12:48.930] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDbZ6cZvQLsvLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:48 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:48'
+}
+{
+  message: '[11:12:49.344] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDiGOy1a1qLuLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  message: '[11:12:49.344] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDiGOy1a1qLuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:49 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  message: '[11:12:49.784] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDg2l1AWinuSLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  message: '[11:12:49.784] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDg2l1AWinuSLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:49 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:49'
+}
+{
+  message: '[11:12:50.220] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDeRavwJwVmqLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  message: '[11:12:50.220] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDeRavwJwVmqLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:50 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  message: '[11:12:50.665] PLAYER TAGGED - User: abc12345, Tag ID: 12345, Images: LIDKSpVreAvjiLID',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  message: '[11:12:50.665] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    User: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDKSpVreAvjiLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  message: '192.168.56.1 - - [20/Sep/2025:11:12:50 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-20 12:12:50'
+}
+{
+  message: 'Server closed',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-20 12:12:51'
+}

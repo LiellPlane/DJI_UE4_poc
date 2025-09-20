@@ -360,3 +360,32 @@ For questions or issues:
 ---
 
 **Happy coding!**
+
+
+test server with
+
+curl -X GET http://LIELLOMEN.broadband:8080/api/v1/gamestate -H "X-User-ID: my_username"
+
+
+
+test looping script:
+
+
+
+#!/bin/bash
+while true; do
+  echo "$(date): Testing server..."
+  if curl -X GET http://LIELLOMEN.broadband:8080/api/v1/gamestate -H "X-User-ID: my_username" --connect-timeout 5 --max-time 10 -s; then
+    echo " ✅ Success"
+  else
+    echo " ❌ Failed (exit code: $?)"
+  fi
+  echo "---"
+  sleep 2
+done
+
+
+or
+
+
+while true; do echo "$(date): Testing server..."; if curl -X GET http://LIELLOMEN.broadband:8080/api/v1/gamestate -H "X-User-ID: my_username" --connect-timeout 5 --max-time 10 -s; then echo " ✅ Success"; else echo " ❌ Failed"; fi; echo "---"; sleep 2; done
