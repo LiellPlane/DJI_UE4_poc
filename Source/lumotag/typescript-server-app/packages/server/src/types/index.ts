@@ -26,6 +26,7 @@ export interface PlayerStatus {
   ammo: number;
   tag_id: string;
   display_name: string;
+  is_connected: boolean;
   event_type: string;
 }
 

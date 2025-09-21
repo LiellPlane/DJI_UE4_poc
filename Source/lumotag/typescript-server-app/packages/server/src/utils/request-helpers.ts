@@ -1,31 +1,20 @@
 import { Request, Response } from "express";
 
-/**
- * Extracts the user ID from the X-User-ID header
- * @param req Express request object
- * @returns The user ID from the header
- */
-export function extractUserId(req: Request): string {
-  return req.headers["x-device-id"] as string;
+export function extractDeviceId(req: Request): string {
+  return req.headers["X-device-ID"] as string;
 }
 
-/**
- * Validates that the X-User-ID header is present and valid
- * @param req Express request object
- * @param res Express response object
- * @returns The user ID if valid, or sends 400 error and returns null
- */
-export function validateAndExtractUserId(req: Request, res: Response): string | null {
-  const userId = extractUserId(req);
+export function validateAndExtractDeviceId(req: Request, res: Response): string | null {
+  const deviceID = extractDeviceId(req);
   
-  if (!userId || userId === 'undefined') {
+  if (!deviceID || deviceID === 'undefined') {
     res.status(400).json({ 
       error: "Bad Request", 
-      message: "Missing required header: X-User-ID",
-      required_headers: ["X-User-ID"]
+      message: "Missing required header: X-device-ID",
+      required_headers: ["X-device-ID"]
     });
     return null;
   }
   
-  return userId;
+  return deviceID;
 }

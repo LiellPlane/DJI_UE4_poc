@@ -14,6 +14,7 @@ class PlayerStatus(BaseModel):
     ammo: int
     tag_id: str
     display_name: str
+    is_connected: bool
     event_type: str = Field(default_factory=lambda: "PlayerStatus", description="Event type identifier")
 
 

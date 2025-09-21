@@ -4,7 +4,7 @@ import express, { Response, Router } from "express";
 // import { LRUCache } from 'lru-cache'; // Removed for simplicity
 import { logger } from "../utils/logger";
 import { imageSaver } from "./image-saver";
-import { extractUserId, validateAndExtractUserId } from "../utils/request-helpers";
+import { validateAndExtractDeviceId } from "../utils/request-helpers";
 import {
   GameRequest,
   PlayerStatus,
@@ -16,6 +16,7 @@ import {
   UploadRequest,
   ServerMetrics,
 } from "../types";
+import { getDeviceInfo, DeviceInfo } from "./configs"
 
 const router: Router = express.Router();
 
@@ -23,7 +24,7 @@ const router: Router = express.Router();
 interface QueuedImage {
   imageId: string;
   imageBuffer: Buffer; // Store processed buffer instead of base64 string
-  userId: string;
+  device_id: string;
   timestamp: number;
 }
 
@@ -48,7 +49,7 @@ async function processImageQueue() {
       // Store image metadata after successful save
       const imageInfo: ImageInfo = {
         image_id: queuedImage.imageId,
-        user_id: queuedImage.userId,
+        device_id: queuedImage.device_id,
         timestamp: queuedImage.timestamp,
         file_location: savedImage.filename,
       };
@@ -211,22 +212,24 @@ const healPlayers = (): void => {
 router.get("/gamestate", (req: GameRequest, res: Response) => {
   try {
     // Validate required header
-    const userId = validateAndExtractUserId(req, res);
-    if (!userId) return; // Response already sent by validation function
+    const deviceId = validateAndExtractDeviceId(req, res);
+    if (!deviceId) return; // Response already sent by validation function
     
-    logger.debug(`User ID: ${userId}`);
+    // logger.debug(`deviceId: ${deviceId}`);
     
     // Fast O(1) lookup - if user doesn't exist, create new PlayerStatus
-    if (!gameState.playersData[userId]) {
+    if (!gameState.playersData[deviceId]) {
+      const deviceMapping: DeviceInfo = getDeviceInfo(deviceId)
       const newPlayer: PlayerStatus = {
         health: 50,
         ammo: 0,
-        tag_id: Math.random().toString(36).substr(2, 9), // Random 9-character string
-        display_name: userId,
+        tag_id: deviceMapping.tag_id,
+        display_name: deviceMapping.display_name,
+        is_connected: true,
         event_type: "PlayerStatus",
       };
-      gameState.playersData[userId] = newPlayer;
-      logger.info(`Created new player: ${userId} with display_name: ${userId}`);
+      gameState.playersData[deviceId] = newPlayer;
+      logger.info(`Created new player: ${deviceId} with display_name: ${deviceId}`);
     }
     
     // Call dedicated healing function
@@ -255,8 +258,8 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
   
   try {
     // Validate required header
-    const userId = validateAndExtractUserId(req, res);
-    if (!userId) return; // Response already sent by validation function
+    const deviceId = validateAndExtractDeviceId(req, res);
+    if (!deviceId) return; // Response already sent by validation function
     
     // Try to parse body as UploadRequest - crash if it doesn't work
     const uploadRequest: UploadRequest = {
@@ -270,7 +273,7 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
     imageQueue.push({
       imageId: uploadRequest.image_id,
       imageBuffer: imageBuffer,
-      userId: userId,
+      device_id: deviceId,
       timestamp: Date.now(),
     });
 
@@ -281,7 +284,7 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
 
     logger.debug(`[${timestamp}] Image queued for processing:
     ID: ${uploadRequest.image_id}
-    User: ${userId}
+    deviceId: ${deviceId}
     Queue length: ${imageQueue.length}`);
 
     // Return immediately - don't wait for image to save
@@ -304,8 +307,8 @@ router.post("/events", (req: GameRequest, res: Response) => {
   
   try {
     // Validate required header
-    const userId = validateAndExtractUserId(req, res);
-    if (!userId) return; // Response already sent by validation function
+    const deviceId = validateAndExtractDeviceId(req, res);
+    if (!deviceId) return; // Response already sent by validation function
 
     const eventType = req.body.event_type;
 
@@ -325,7 +328,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
           healthpoints: 10,
           server_info: "plop",          
         } as PlayerTaggedEnriched
-        logger.info(`[${timestamp}] PLAYER TAGGED - User: ${userId}, Event: ${JSON.stringify(enrichedEvent)}`);
+        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(enrichedEvent)}`);
         break;
 
         
@@ -337,7 +340,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
     logger.info(`[${timestamp}] Event received successfully:
     Type: ${eventType}
-    User: ${userId}
+    deviceId: ${deviceId}
     Parsed Data: ${JSON.stringify(parsedEvent)}`);
 
     return res.json({
