@@ -219,7 +219,19 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
     
     // Fast O(1) lookup - if user doesn't exist, create new PlayerStatus
     if (!gameState.playersData[deviceId]) {
-      const deviceMapping: DeviceInfo = getDeviceInfo(deviceId)
+      const deviceMapping = getDeviceInfo(deviceId);
+      
+      if (!deviceMapping) {
+        // Device not in config - reject request
+        logger.error(`Unauthorized device_id: ${deviceId}`);
+        return res.status(400).json({ 
+          error: "Unknown device_id", 
+          device_id: deviceId,
+          message: "Device not found in configuration" 
+        });
+      }
+      
+      // Device found in config - create new player with mapped values
       const newPlayer: PlayerStatus = {
         health: 50,
         ammo: 0,
@@ -229,7 +241,7 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
         event_type: "PlayerStatus",
       };
       gameState.playersData[deviceId] = newPlayer;
-      logger.info(`Created new player: ${deviceId} with display_name: ${deviceId}`);
+      logger.info(`Created new player: ${deviceId} with display_name: ${deviceMapping.display_name}`);
     }
     
     // Call dedicated healing function

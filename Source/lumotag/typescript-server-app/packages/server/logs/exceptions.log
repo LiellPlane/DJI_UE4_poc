@@ -197,3 +197,595 @@
   service: 'typescript-server',
   timestamp: '2025-09-13 15:17:20'
 }
+{
+  error: Error: ENOENT: no such file or directory, open 'C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\config\device-tag-mapping.json'
+      at Object.openSync (node:fs:603:3)
+      at Object.readFileSync (node:fs:471:35)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\configs.js:40:30)
+      at Module._compile (node:internal/modules/cjs/loader:1256:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)
+      at Module.load (node:internal/modules/cjs/loader:1119:32)
+      at Module._load (node:internal/modules/cjs/loader:960:12)
+      at Module.require (node:internal/modules/cjs/loader:1143:19)
+      at require (node:internal/modules/cjs/helpers:121:18)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\game.js:11:19) {
+    errno: -4058,
+    syscall: 'open',
+    code: 'ENOENT',
+    path: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'
+  },
+  level: 'error',
+  message: "uncaughtException: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'\n" +
+    "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  stack: "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  exception: true,
+  date: 'Sun Sep 21 2025 21:38:53 GMT+0100 (British Summer Time)',
+  process: {
+    pid: 29252,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v18.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js'
+    ],
+    memoryUsage: {
+      rss: 56848384,
+      heapTotal: 22237184,
+      heapUsed: 16016824,
+      external: 961199,
+      arrayBuffers: 298188
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 125672.062 },
+  trace: [
+    {
+      column: 3,
+      file: 'node:fs',
+      function: 'Object.openSync',
+      line: 603,
+      method: 'openSync',
+      native: false
+    },
+    {
+      column: 35,
+      file: 'node:fs',
+      function: 'Object.readFileSync',
+      line: 471,
+      method: 'readFileSync',
+      native: false
+    },
+    {
+      column: 30,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js',
+      function: null,
+      line: 40,
+      method: null,
+      native: false
+    },
+    {
+      column: 14,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._compile',
+      line: 1256,
+      method: '_compile',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._extensions..js',
+      line: 1310,
+      method: '.js',
+      native: false
+    },
+    {
+      column: 32,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.load',
+      line: 1119,
+      method: 'load',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._load',
+      line: 960,
+      method: '_load',
+      native: false
+    },
+    {
+      column: 19,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.require',
+      line: 1143,
+      method: 'require',
+      native: false
+    },
+    {
+      column: 18,
+      file: 'node:internal/modules/cjs/helpers',
+      function: 'require',
+      line: 121,
+      method: null,
+      native: false
+    },
+    {
+      column: 19,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js',
+      function: null,
+      line: 11,
+      method: null,
+      native: false
+    }
+  ],
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:38:53'
+}
+{
+  error: Error: ENOENT: no such file or directory, open 'C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\config\device-tag-mapping.json'
+      at Object.openSync (node:fs:603:3)
+      at Object.readFileSync (node:fs:471:35)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\configs.js:40:30)
+      at Module._compile (node:internal/modules/cjs/loader:1256:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)
+      at Module.load (node:internal/modules/cjs/loader:1119:32)
+      at Module._load (node:internal/modules/cjs/loader:960:12)
+      at Module.require (node:internal/modules/cjs/loader:1143:19)
+      at require (node:internal/modules/cjs/helpers:121:18)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\game.js:11:19) {
+    errno: -4058,
+    syscall: 'open',
+    code: 'ENOENT',
+    path: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'
+  },
+  level: 'error',
+  message: "uncaughtException: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'\n" +
+    "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  stack: "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\config\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  exception: true,
+  date: 'Sun Sep 21 2025 21:39:16 GMT+0100 (British Summer Time)',
+  process: {
+    pid: 11508,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v18.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js'
+    ],
+    memoryUsage: {
+      rss: 57098240,
+      heapTotal: 21975040,
+      heapUsed: 15753312,
+      external: 941270,
+      arrayBuffers: 278259
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 125695.375 },
+  trace: [
+    {
+      column: 3,
+      file: 'node:fs',
+      function: 'Object.openSync',
+      line: 603,
+      method: 'openSync',
+      native: false
+    },
+    {
+      column: 35,
+      file: 'node:fs',
+      function: 'Object.readFileSync',
+      line: 471,
+      method: 'readFileSync',
+      native: false
+    },
+    {
+      column: 30,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js',
+      function: null,
+      line: 40,
+      method: null,
+      native: false
+    },
+    {
+      column: 14,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._compile',
+      line: 1256,
+      method: '_compile',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._extensions..js',
+      line: 1310,
+      method: '.js',
+      native: false
+    },
+    {
+      column: 32,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.load',
+      line: 1119,
+      method: 'load',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._load',
+      line: 960,
+      method: '_load',
+      native: false
+    },
+    {
+      column: 19,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.require',
+      line: 1143,
+      method: 'require',
+      native: false
+    },
+    {
+      column: 18,
+      file: 'node:internal/modules/cjs/helpers',
+      function: 'require',
+      line: 121,
+      method: null,
+      native: false
+    },
+    {
+      column: 19,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js',
+      function: null,
+      line: 11,
+      method: null,
+      native: false
+    }
+  ],
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:39:16'
+}
+{
+  error: Error: ENOENT: no such file or directory, open 'C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\device-tag-mapping.json'
+      at Object.openSync (node:fs:603:3)
+      at Object.readFileSync (node:fs:471:35)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\configs.js:40:30)
+      at Module._compile (node:internal/modules/cjs/loader:1256:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)
+      at Module.load (node:internal/modules/cjs/loader:1119:32)
+      at Module._load (node:internal/modules/cjs/loader:960:12)
+      at Module.require (node:internal/modules/cjs/loader:1143:19)
+      at require (node:internal/modules/cjs/helpers:121:18)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\game.js:11:19) {
+    errno: -4058,
+    syscall: 'open',
+    code: 'ENOENT',
+    path: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'
+  },
+  level: 'error',
+  message: "uncaughtException: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'\n" +
+    "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  stack: "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  exception: true,
+  date: 'Sun Sep 21 2025 21:42:41 GMT+0100 (British Summer Time)',
+  process: {
+    pid: 29604,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v18.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js'
+    ],
+    memoryUsage: {
+      rss: 57380864,
+      heapTotal: 21712896,
+      heapUsed: 16152736,
+      external: 969335,
+      arrayBuffers: 306324
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 125899.796 },
+  trace: [
+    {
+      column: 3,
+      file: 'node:fs',
+      function: 'Object.openSync',
+      line: 603,
+      method: 'openSync',
+      native: false
+    },
+    {
+      column: 35,
+      file: 'node:fs',
+      function: 'Object.readFileSync',
+      line: 471,
+      method: 'readFileSync',
+      native: false
+    },
+    {
+      column: 30,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js',
+      function: null,
+      line: 40,
+      method: null,
+      native: false
+    },
+    {
+      column: 14,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._compile',
+      line: 1256,
+      method: '_compile',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._extensions..js',
+      line: 1310,
+      method: '.js',
+      native: false
+    },
+    {
+      column: 32,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.load',
+      line: 1119,
+      method: 'load',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._load',
+      line: 960,
+      method: '_load',
+      native: false
+    },
+    {
+      column: 19,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.require',
+      line: 1143,
+      method: 'require',
+      native: false
+    },
+    {
+      column: 18,
+      file: 'node:internal/modules/cjs/helpers',
+      function: 'require',
+      line: 121,
+      method: null,
+      native: false
+    },
+    {
+      column: 19,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js',
+      function: null,
+      line: 11,
+      method: null,
+      native: false
+    }
+  ],
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:42:41'
+}
+{
+  error: Error: ENOENT: no such file or directory, open 'C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\device-tag-mapping.json'
+      at Object.openSync (node:fs:603:3)
+      at Object.readFileSync (node:fs:471:35)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\configs.js:40:30)
+      at Module._compile (node:internal/modules/cjs/loader:1256:14)
+      at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)
+      at Module.load (node:internal/modules/cjs/loader:1119:32)
+      at Module._load (node:internal/modules/cjs/loader:960:12)
+      at Module.require (node:internal/modules/cjs/loader:1143:19)
+      at require (node:internal/modules/cjs/helpers:121:18)
+      at Object.<anonymous> (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\dist\routes\game.js:11:19) {
+    errno: -4058,
+    syscall: 'open',
+    code: 'ENOENT',
+    path: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'
+  },
+  level: 'error',
+  message: "uncaughtException: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'\n" +
+    "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  stack: "Error: ENOENT: no such file or directory, open 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\device-tag-mapping.json'\n" +
+    '    at Object.openSync (node:fs:603:3)\n' +
+    '    at Object.readFileSync (node:fs:471:35)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js:40:30)\n' +
+    '    at Module._compile (node:internal/modules/cjs/loader:1256:14)\n' +
+    '    at Module._extensions..js (node:internal/modules/cjs/loader:1310:10)\n' +
+    '    at Module.load (node:internal/modules/cjs/loader:1119:32)\n' +
+    '    at Module._load (node:internal/modules/cjs/loader:960:12)\n' +
+    '    at Module.require (node:internal/modules/cjs/loader:1143:19)\n' +
+    '    at require (node:internal/modules/cjs/helpers:121:18)\n' +
+    '    at Object.<anonymous> (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:11:19)',
+  exception: true,
+  date: 'Sun Sep 21 2025 21:43:16 GMT+0100 (British Summer Time)',
+  process: {
+    pid: 26044,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v18.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js'
+    ],
+    memoryUsage: {
+      rss: 57311232,
+      heapTotal: 22237184,
+      heapUsed: 15868320,
+      external: 941270,
+      arrayBuffers: 278259
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 125935.187 },
+  trace: [
+    {
+      column: 3,
+      file: 'node:fs',
+      function: 'Object.openSync',
+      line: 603,
+      method: 'openSync',
+      native: false
+    },
+    {
+      column: 35,
+      file: 'node:fs',
+      function: 'Object.readFileSync',
+      line: 471,
+      method: 'readFileSync',
+      native: false
+    },
+    {
+      column: 30,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\configs.js',
+      function: null,
+      line: 40,
+      method: null,
+      native: false
+    },
+    {
+      column: 14,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._compile',
+      line: 1256,
+      method: '_compile',
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._extensions..js',
+      line: 1310,
+      method: '.js',
+      native: false
+    },
+    {
+      column: 32,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.load',
+      line: 1119,
+      method: 'load',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module._load',
+      line: 960,
+      method: '_load',
+      native: false
+    },
+    {
+      column: 19,
+      file: 'node:internal/modules/cjs/loader',
+      function: 'Module.require',
+      line: 1143,
+      method: 'require',
+      native: false
+    },
+    {
+      column: 18,
+      file: 'node:internal/modules/cjs/helpers',
+      function: 'require',
+      line: 121,
+      method: null,
+      native: false
+    },
+    {
+      column: 19,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js',
+      function: null,
+      line: 11,
+      method: null,
+      native: false
+    }
+  ],
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:43:16'
+}

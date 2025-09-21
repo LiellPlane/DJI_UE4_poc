@@ -44,3 +44,15 @@
   message: 'Request error',
   timestamp: '2025-09-20 20:31:13'
 }
+{
+  message: 'Unauthorized device_id: player123',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:48'
+}
+{
+  message: 'Unauthorized device_id: player123',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:54'
+}

@@ -86835,3 +86835,148 @@
   service: 'typescript-server',
   timestamp: '2025-09-20 21:10:14'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-21 21:44:24'
+}
+{
+  message: '🧹 Cleaning up 5 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:44:24'
+}
+{
+  message: '✅ Cleanup complete: 5 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:44:24'
+}
+{
+  message: '🧹 Startup cleanup: Removed 5 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:44:24'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:47:17'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-21 21:48:09'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:48:09'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:48:09'
+}
+{
+  message: '192.168.5.105 - - [21/Sep/2025:20:49:18 +0000] "POST /api/v1/events HTTP/1.1" 400 107 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:49:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 400,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-21 21:49:18'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:34'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-21 21:52:47'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:47'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:47'
+}
+{
+  message: 'Unauthorized device_id: player123',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:48'
+}
+{
+  message: 'Unauthorized device_id: player123',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:52:54'
+}
+{
+  message: 'Created new player: bc1ad358bb with display_name: Leelio',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:53:13'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:53:13'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:53:48'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:53:56'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:54:01'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 21:54:05'
+}
