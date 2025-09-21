@@ -15,6 +15,7 @@ class PlayerStatus(BaseModel):
     tag_id: str
     display_name: str
     is_connected: bool
+    last_active: int
     event_type: str = Field(default_factory=lambda: "PlayerStatus", description="Event type identifier")
 
 

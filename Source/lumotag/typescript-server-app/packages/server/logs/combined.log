@@ -86980,3 +86980,93 @@
   service: 'typescript-server',
   timestamp: '2025-09-21 21:54:05'
 }
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-21 22:12:50'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:12:50'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:12:50'
+}
+{
+  message: 'Created new player: bc1ad358bb with display_name: Leelio',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:13:06'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:13:06'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:13:12'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:13:17'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:13:23'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:13:28'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:17:19'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-21 22:17:32'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:17:32'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:17:32'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-21 22:17:33'
+}

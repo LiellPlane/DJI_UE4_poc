@@ -317,7 +317,7 @@ class HTTPComms(AbstractHTTPComms):
         # Optimized session for fast image uploads
         session = requests.Session()
         session.headers.update({
-            "X-device-ID": self.device_id,
+            "x-device-id": self.device_id,
             "Content-Type": "application/json",
             "Connection": "keep-alive"  # Keep connections open
         })
@@ -402,7 +402,7 @@ class HTTPComms(AbstractHTTPComms):
         # Optimized session for fast event sending
         session = requests.Session()
         session.headers.update({
-            "X-device-ID": self.device_id,
+            "x-device-id": self.device_id,
             "Content-Type": "application/json",
             "Connection": "keep-alive"  # Keep connections open
         })
@@ -473,7 +473,7 @@ class HTTPComms(AbstractHTTPComms):
         # Optimized session for fast polling
         session = requests.Session()
         session.headers.update({
-            "X-device-ID": self.device_id,
+            "x-device-id": self.device_id,
             "Connection": "keep-alive",  # Keep connections open
             "Cache-Control": "no-cache"   # Don't cache responses
         })

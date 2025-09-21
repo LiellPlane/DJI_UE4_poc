@@ -140,7 +140,30 @@ const addImageInfo = (info: ImageInfo): void => {
   gameState = gameLogic.addImageInfo(gameState, info);
 };
 
+const updateLastSeen = (deviceid: string): void => {
+  const player = gameState.playersData[deviceid];
+  if (player) {
+    gameState.playersData[deviceid] = {
+      ...player,
+      last_active: Date.now()
+    };
+  }
+}
 
+const updateConnectionStatus_all_players = (): void => {
+  const now = Date.now();
+  const connectionTimeoutMs = 2000; // 2 seconds
+  
+  Object.keys(gameState.playersData).forEach(deviceId => {
+    const player = gameState.playersData[deviceId];
+    const isConnected = (now - player.last_active) <= connectionTimeoutMs;
+    
+    gameState.playersData[deviceId] = {
+      ...player,
+      is_connected: isConnected
+    };
+  });
+}
 
 const getStats = (): GameServerStats => {
   return gameLogic.getStats(gameState);
@@ -223,7 +246,7 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
       
       if (!deviceMapping) {
         // Device not in config - reject request
-        logger.error(`Unauthorized device_id: ${deviceId}`);
+        logger.error(`Unknown device_id: ${deviceId}`);
         return res.status(400).json({ 
           error: "Unknown device_id", 
           device_id: deviceId,
@@ -239,6 +262,7 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
         display_name: deviceMapping.display_name,
         is_connected: true,
         event_type: "PlayerStatus",
+        last_active: Date.now()
       };
       gameState.playersData[deviceId] = newPlayer;
       logger.info(`Created new player: ${deviceId} with display_name: ${deviceMapping.display_name}`);
@@ -246,6 +270,8 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
     
     // Call dedicated healing function
     healPlayers();
+    updateConnectionStatus_all_players();
+    updateLastSeen(deviceId);
     // Return current game state directly
     const gameUpdate: GameStatus = {
       players: gameState.playersData,

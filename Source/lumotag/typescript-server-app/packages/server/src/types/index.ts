@@ -28,6 +28,7 @@ export interface PlayerStatus {
   display_name: string;
   is_connected: boolean;
   event_type: string;
+  last_active: number; // Date.now() timestamp in milliseconds
 }
 
 export interface GameStatus {
