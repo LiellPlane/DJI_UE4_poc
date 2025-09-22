@@ -168,14 +168,23 @@ const updateLastSeen = (deviceid: string): void => {
   }
 }
 
-const tagPlayer = (deviceid: string): void => {
-  const player: PlayerStatus = gameState.playersData[deviceid];
-  if (player) {
-    gameState.playersData[deviceid] = {
+const getDeviceIdByTagId = (tag_id: string): string | undefined => {
+  return Object.keys(gameState.playersData).find(
+    deviceId => gameState.playersData[deviceId].tag_id === tag_id
+  );
+};
+
+const tagPlayer = (tag_id: string): void => {
+  const deviceId = getDeviceIdByTagId(tag_id);
+  if (deviceId) {
+    const player = gameState.playersData[deviceId];
+    gameState.playersData[deviceId] = {
       ...player,
-      health: player.health - 10,
+      health: player.health - 15,
       last_active: Date.now()
     };
+  } else {
+    logger.warn(`Tag ID not found: ${tag_id}`);
   }
 }
 
@@ -390,7 +399,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
         logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(parsedEvent)}`);
 
-
+        tagPlayer(parsedEvent.tag_id)
         break;
 
         

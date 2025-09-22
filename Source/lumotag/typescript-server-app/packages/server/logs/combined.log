@@ -88252,3 +88252,1612 @@
   service: 'typescript-server',
   timestamp: '2025-09-22 19:18:31'
 }
+{
+  message: 'Background thread stopped',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:01'
+}
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:04'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-22 21:36:04'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:04'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:04'
+}
+{
+  message: '[20:36:40.300] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:40'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:40'
+}
+{
+  message: '[20:36:40.300] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:40'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:36:40 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:40'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '8ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:36:40'
+}
+{
+  message: '[20:36:51.747] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:51'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:51'
+}
+{
+  message: '[20:36:51.747] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:51'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:36:51 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:51'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:36:51'
+}
+{
+  message: '[20:36:54.070] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:54'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:54'
+}
+{
+  message: '[20:36:54.070] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:54'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:36:54 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:54'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:36:54'
+}
+{
+  message: '[20:36:56.384] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:56'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:56'
+}
+{
+  message: '[20:36:56.384] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:56'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:36:56 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:36:56'
+}
+{
+  message: '[20:36:58.029] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:58'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:58'
+}
+{
+  message: '[20:36:58.029] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:58'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:36:58 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:36:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:36:58'
+}
+{
+  message: 'Created new player: bc1ad358bb with display_name: Leelio',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:37:47'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:37:51'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:37:56'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:01'
+}
+{
+  message: '[20:38:05.904] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:05'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:05'
+}
+{
+  message: '[20:38:05.904] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:05'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:38:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:38:05'
+}
+{
+  message: '[20:38:06.037] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.037] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:38:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.187] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.187] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:38:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.321] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.321] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:38:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.471] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '[20:38:06.471] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:38:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:06'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:12'
+}
+{
+  message: '[20:38:15.277] PLAYER TAGGED - deviceId: player123, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:15'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:15'
+}
+{
+  message: '[20:38:15.277] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: player123\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:15'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:38:15 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:15'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:38:15'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:17'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:22'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:27'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:32'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:37'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:42'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:47'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:52'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:38:57'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:02'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:07'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:13'
+}
+{
+  service: 'typescript-server',
+  error: 'Unexpected end of JSON input',
+  stack: 'SyntaxError: Unexpected end of JSON input\n' +
+    '    at JSON.parse (<anonymous>)\n' +
+    '    at parse (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\types\\json.js:92:19)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\read.js:128:18\n' +
+    '    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n' +
+    '    at invokeCallback (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:238:16)\n' +
+    '    at done (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:227:7)\n' +
+    '    at IncomingMessage.onEnd (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:287:7)\n' +
+    '    at IncomingMessage.emit (node:events:514:28)\n' +
+    '    at endReadableNT (node:internal/streams/readable:1359:12)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)',
+  statusCode: 400,
+  method: 'POST',
+  url: '/api/v1/events',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'error',
+  message: 'Request error',
+  timestamp: '2025-09-22 21:39:14'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:14 +0000] "POST /api/v1/events HTTP/1.1" 400 119 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:14'
+}
+{
+  service: 'typescript-server',
+  error: 'Unexpected end of JSON input',
+  stack: 'SyntaxError: Unexpected end of JSON input\n' +
+    '    at JSON.parse (<anonymous>)\n' +
+    '    at parse (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\types\\json.js:92:19)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\body-parser@1.20.3\\node_modules\\body-parser\\lib\\read.js:128:18\n' +
+    '    at AsyncResource.runInAsyncScope (node:async_hooks:203:9)\n' +
+    '    at invokeCallback (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:238:16)\n' +
+    '    at done (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:227:7)\n' +
+    '    at IncomingMessage.onEnd (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:287:7)\n' +
+    '    at IncomingMessage.emit (node:events:514:28)\n' +
+    '    at endReadableNT (node:internal/streams/readable:1359:12)\n' +
+    '    at process.processTicksAndRejections (node:internal/process/task_queues:82:21)',
+  statusCode: 400,
+  method: 'POST',
+  url: '/api/v1/events',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'error',
+  message: 'Request error',
+  timestamp: '2025-09-22 21:39:17'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:17 +0000] "POST /api/v1/events HTTP/1.1" 400 119 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:17'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:18'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:23'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:28'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:33'
+}
+{
+  message: '[20:39:34.970] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:34'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:34'
+}
+{
+  message: '[20:39:34.970] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:34'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:34 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:34'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:34'
+}
+{
+  message: '[20:39:38.456] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:38'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:38'
+}
+{
+  message: '[20:39:38.456] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:38'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:38'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:38'
+}
+{
+  message: '[20:39:39.146] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: '[20:39:39.146] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: '[20:39:39.717] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: '[20:39:39.717] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:39'
+}
+{
+  message: '[20:39:40.286] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:40'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:40'
+}
+{
+  message: '[20:39:40.286] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:40'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:40 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:40'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:40'
+}
+{
+  message: '[20:39:41.260] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:41'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:41'
+}
+{
+  message: '[20:39:41.260] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:41'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:41 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:41'
+}
+{
+  message: '[20:39:42.279] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:42'
+}
+{
+  message: 'Tag ID not found: SPOKIES349119',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:42'
+}
+{
+  message: '[20:39:42.279] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"SPOKIES349119","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:42'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:39:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:39:42'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:43'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:48'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:53'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:39:58'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:03'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:09'
+}
+{
+  message: '[20:40:11.839] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:11'
+}
+{
+  message: '[20:40:11.839] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:11'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:11 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:11'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:14'
+}
+{
+  message: '[20:40:18.494] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  message: '[20:40:18.494] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:18 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  message: '[20:40:18.808] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  message: '[20:40:18.808] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:18 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:18'
+}
+{
+  message: '[20:40:19.049] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.049] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:19 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.274] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.274] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:19 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 4 -> 5',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.466] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.466] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:19 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.692] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.692] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:19 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.891] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:19.891] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:19 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:19'
+}
+{
+  message: '[20:40:20.112] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.112] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.337] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.337] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.549] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.549] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.760] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.760] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.985] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:20.985] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:20'
+}
+{
+  message: '[20:40:21.208] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.208] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:21 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.418] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.418] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:21 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.628] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.628] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:21 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.837] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:21.837] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:21 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:21'
+}
+{
+  message: '[20:40:22.424] PLAYER TAGGED - deviceId: bc1ad358bb, Event: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:22'
+}
+{
+  message: '[20:40:22.424] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: bc1ad358bb\n' +
+    '    Parsed Data: {"event_type":"PlayerTagged","tag_id":"1","image_ids":["img_001_1727033058","img_002_1727033059"]}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:22'
+}
+{
+  message: '192.168.5.105 - - [22/Sep/2025:20:40:22 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "curl/8.14.1"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.5.105',
+  userAgent: 'curl/8.14.1',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-22 21:40:22'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -190 -> -189',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:24'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -189 -> -188',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:29'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -188 -> -187',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:34'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -187 -> -186',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:39'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -186 -> -185',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:44'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -185 -> -184',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:49'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -184 -> -183',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:40:54'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -183 -> -182',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:00'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -182 -> -181',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:05'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -181 -> -180',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:10'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -180 -> -179',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:15'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -179 -> -178',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:20'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -178 -> -177',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:25'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -177 -> -176',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:30'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -176 -> -175',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:35'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -175 -> -174',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:40'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) -174 -> -173',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:45'
+}
+{
+  message: 'Background thread stopped',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 21:41:47'
+}
