@@ -32,11 +32,14 @@ export interface PlayerTagged {
   event_type: string;
 }
 
-// // Server-enriched version with additional details
-// export interface PlayerTaggedEnriched extends PlayerTagged {
-//   healthpoints: number;
-//   server_info?: string; //notes for humans to debug
-// }
+
+export interface KillShot{
+  // when a device sees that it has zero health - request the kill images from the server
+  image_data: string; // base64 encoded JPEG
+  device_id: string;
+  display_name:string;
+  event_type: string;
+}
 
 export interface ImageInfo {
   image_id: string;
