@@ -10,7 +10,6 @@ import {
   PlayerStatus,
   GameStatus,
   PlayerTagged,
-  PlayerTaggedEnriched,
   ImageInfo,
   GameServerStats,
   UploadRequest,
@@ -30,6 +29,9 @@ interface QueuedImage {
 
 const imageQueue: QueuedImage[] = [];
 let isProcessing = false;
+
+// Background thread for cyclic operations
+let backgroundThread: NodeJS.Timeout | null = null;
 
 // Background processor - processes one image at a time
 async function processImageQueue() {
@@ -67,41 +69,18 @@ async function processImageQueue() {
 
 // Pure data structure (no methods)
 interface GameState {
-  playersData: Record<string, PlayerStatus>;
-  imagesReceived: ImageInfo[];
-  gamestateCounter: number;
+  playersData: Record<string, PlayerStatus>; //mapping device id to display id and tag id 
+  imagesReceived: ImageInfo[]; //when a device uploads an image, during trigger event or tag event
+  playersEliminated: Record<string, PlayerTagged>; //when a players health reaches zero - put the details here so we can find the corresponding killshot
   startTime: number;
   lastHealTime: number; // Track when all players were last healed
 }
 
 // Initial state
 const createInitialGameState = (): GameState => ({
-  playersData: {
-    // dummy data for sanity check
-    // testself: {
-    //   health: 75,
-    //   ammo: 30,
-    //   tag_id: "testself",
-    //   display_name: "tinytim",
-    //   event_type: "PlayerStatus",
-    // },
-    // player_002: {
-    //   health: 85,
-    //   ammo: 22,
-    //   tag_id: "player_002",
-    //   display_name: "mongo",
-    //   event_type: "PlayerStatus",
-    // },
-    // player_003: {
-    //   health: 95,
-    //   ammo: 18,
-    //   tag_id: "player_003",
-    //   display_name: "dildort",
-    //   event_type: "PlayerStatus",
-    // },
-  },
+  playersData: {},
   imagesReceived: [],
-  gamestateCounter: 0,
+  playersEliminated: {},
   startTime: Date.now(),
   lastHealTime: Date.now(),
 });
@@ -132,6 +111,45 @@ const gameLogic = {
   }),
 };
 
+// Background thread operations
+const runBackgroundOperations = (): void => {
+  try {
+    // Run healing
+    healPlayers();
+    
+    // Update connection status for all players
+    updateConnectionStatus_all_players();
+    
+    logger.debug('Background operations completed');
+  } catch (error) {
+    logger.error('CRITICAL: Background thread error - crashing server:', error);
+    process.exit(1); // Crash the entire server
+  }
+};
+
+// Start background thread
+const startBackgroundThread = (): void => {
+  if (backgroundThread) {
+    logger.warn('Background thread already running');
+    return;
+  }
+  
+  backgroundThread = setInterval(runBackgroundOperations, 500); // Run every 500ms
+  logger.info('Background thread started (500ms interval)');
+};
+
+// Stop background thread
+const stopBackgroundThread = (): void => {
+  if (backgroundThread) {
+    clearInterval(backgroundThread);
+    backgroundThread = null;
+    logger.info('Background thread stopped');
+  }
+};
+
+// Start thread immediately when module loads
+startBackgroundThread();
+
 // Direct state management - no thin wrapper class needed
 let gameState = createInitialGameState();
 
@@ -150,9 +168,20 @@ const updateLastSeen = (deviceid: string): void => {
   }
 }
 
+const tagPlayer = (deviceid: string): void => {
+  const player: PlayerStatus = gameState.playersData[deviceid];
+  if (player) {
+    gameState.playersData[deviceid] = {
+      ...player,
+      health: player.health - 10,
+      last_active: Date.now()
+    };
+  }
+}
+
 const updateConnectionStatus_all_players = (): void => {
   const now = Date.now();
-  const connectionTimeoutMs = 2000; // 2 seconds
+  const connectionTimeoutMs = 1000; // 2 seconds
   
   Object.keys(gameState.playersData).forEach(deviceId => {
     const player = gameState.playersData[deviceId];
@@ -268,10 +297,9 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
       logger.info(`Created new player: ${deviceId} with display_name: ${deviceMapping.display_name}`);
     }
     
-    // Call dedicated healing function
-    healPlayers();
-    updateConnectionStatus_all_players();
+    // Update last seen for this specific device
     updateLastSeen(deviceId);
+    
     // Return current game state directly
     const gameUpdate: GameStatus = {
       players: gameState.playersData,
@@ -351,7 +379,6 @@ router.post("/events", (req: GameRequest, res: Response) => {
     const eventType = req.body.event_type;
 
     let parsedEvent: PlayerTagged;
-    let enrichedEvent: PlayerTaggedEnriched;
 
     switch (eventType) {
 
@@ -361,12 +388,9 @@ router.post("/events", (req: GameRequest, res: Response) => {
         } as PlayerTagged;
         
 
-        enrichedEvent = {
-          ...parsedEvent,
-          healthpoints: 10,
-          server_info: "plop",          
-        } as PlayerTaggedEnriched
-        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(enrichedEvent)}`);
+        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(parsedEvent)}`);
+
+
         break;
 
         
@@ -436,4 +460,13 @@ router.get("/metrics", (_req: GameRequest, res: Response) => {
   }
 });
 
-export { router as gameRouter };
+// Cleanup function for graceful shutdown
+const cleanup = (): void => {
+  stopBackgroundThread();
+};
+
+// Handle process termination
+process.on('SIGTERM', cleanup);
+process.on('SIGINT', cleanup);
+
+export { router as gameRouter, stopBackgroundThread };

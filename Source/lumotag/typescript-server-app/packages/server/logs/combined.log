@@ -87070,3 +87070,1185 @@
   service: 'typescript-server',
   timestamp: '2025-09-21 22:17:33'
 }
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:06:53'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-22 19:06:53'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:06:53'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:06:53'
+}
+{
+  message: 'Created new player: bc1ad358bb with display_name: Leelio',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:18'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:18'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:23'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:28'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:33'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:38'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:44'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:49'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:54'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:07:59'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:04'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:09'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:14'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:19'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:24'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:29'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:34'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:39'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:45'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:50'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:08:55'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:00'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:05'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:10'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:15'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:20'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:25'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:30'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:35'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:40'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:46'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:51'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:09:56'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:01'
+}
+{
+  message: 'Background thread stopped',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:05'
+}
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:42'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-22 19:10:42'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:42'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:42'
+}
+{
+  message: 'Created new player: bc1ad358bb with display_name: Leelio',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:57'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:10:57'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:03'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:08'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:13'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:18'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:23'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:28'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:33'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:38'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:43'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:48'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:53'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:11:59'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:04'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:09'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:14'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:19'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:24'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:29'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:34'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:39'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:44'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:49'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:12:55'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:00'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:05'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:10'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:15'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:20'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:25'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:30'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:35'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:40'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:46'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:51'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:13:56'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:01'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:06'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:11'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:16'
+}
+{
+  message: 'Created new player: abc12345 with display_name: synthotag',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:18'
+}
+{
+  message: 'Created new player: 54e5b53659 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:18'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:21'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:21'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:21'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:26'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:26'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:26'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:31'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:31'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:31'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:36'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:36'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:36'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:41'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:41'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:41'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:46'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:46'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:46'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:52'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:52'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:52'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:57'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:57'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:14:57'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:02'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:02'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:02'
+}
+{
+  message: 'HEALING: bc1ad358bb (Leelio) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:07'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:07'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:07'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:12'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:12'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:17'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:17'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:22'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:22'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:27'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:27'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:32'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:32'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:37'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:37'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:42'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:42'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:48'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:48'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:53'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:53'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:58'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:15:58'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:03'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:03'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:08'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:08'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:13'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:13'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:18'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:18'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:23'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:23'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:28'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:28'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:33'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:33'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:39'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:39'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:44'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:44'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:49'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:49'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:54'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:54'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:59'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:16:59'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:04'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:04'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:09'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:09'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:14'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:14'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:19'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:19'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:24'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:24'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:30'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:30'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:35'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:35'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:40'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:40'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:45'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:45'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:50'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:50'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:55'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:17:55'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:00'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:00'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:05'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:05'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:10'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:10'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:15'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:15'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:20'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:20'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:26'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:26'
+}
+{
+  message: 'HEALING: abc12345 (synthotag) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:31'
+}
+{
+  message: 'HEALING: 54e5b53659 (PretendFriend) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-22 19:18:31'
+}

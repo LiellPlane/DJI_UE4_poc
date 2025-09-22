@@ -2,6 +2,9 @@ import http from 'k6/http';
 import { check, sleep } from 'k6';
 import { Rate, Trend } from 'k6/metrics';
 
+// Hardcoded device IDs from device-tag-mapping.json
+const deviceIds = ['abc12345', 'bc1ad358bb', '54e5b53659'];
+
 // Custom metrics
 const errorRate = new Rate('errors');
 const responseTime = new Trend('response_time');
@@ -58,7 +61,7 @@ export default function() {
     headers: {
       'Accept': 'application/json',
       'User-Agent': 'k6-destruction-test',
-      'X-User-ID': `test_user_${Math.floor(Math.random() * 1000)}`, // Required header
+      'x-device-ID': deviceIds[Math.floor(Math.random() * deviceIds.length)], // Random device from mapping
     },
     timeout: '10s', // 10 second timeout
   });
@@ -111,7 +114,7 @@ export function setup() {
   // Test if server is running
   const testResponse = http.get(GAMESTATE_ENDPOINT, {
     headers: {
-      'X-User-ID': 'test_setup_user'
+      'x-device-ID': deviceIds[0] // Use first device for setup test
     }
   });
   if (testResponse.status !== 200) {
