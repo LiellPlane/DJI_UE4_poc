@@ -1,8 +1,8 @@
 import axios from "axios";
-import type { HealthStatus, SystemStatus } from "@/types";
+import type { GameStatus, GameServerStats, ServerMetrics } from "@/types";
 
 const API_BASE_URL =
-  (import.meta.env.VITE_API_URL as string) || "http://localhost:3000/api";
+  (import.meta.env.VITE_API_URL as string) || "http://localhost:8080/api/v1";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -15,9 +15,12 @@ const apiClient = axios.create({
 // Request interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    console.log(
-      `Making ${config.method?.toUpperCase()} request to ${config.url}`,
-    );
+    // Only log non-gamestate requests to reduce noise
+    if (!config.url?.includes('/gamestate')) {
+      console.log(
+        `Making ${config.method?.toUpperCase()} request to ${config.url}`,
+      );
+    }
     return config;
   },
   (error) => {
@@ -38,33 +41,21 @@ apiClient.interceptors.response.use(
 );
 
 export const apiService = {
-  // Health check
-  getHealth: async (): Promise<HealthStatus> => {
-    const response = await apiClient.get<HealthStatus>("/health");
+  // Get current game state with all players (dashboard endpoint - no auth required)
+  getGameState: async (): Promise<GameStatus> => {
+    const response = await apiClient.get<GameStatus>("/dashboard/gamestate");
     return response.data;
   },
 
-  // Detailed health check
-  getDetailedHealth: async (): Promise<HealthStatus> => {
-    const response = await apiClient.get<HealthStatus>("/health?detailed=true");
+  // Get detailed server stats including images and performance
+  getStats: async (): Promise<GameServerStats> => {
+    const response = await apiClient.get<GameServerStats>("/stats");
     return response.data;
   },
 
-  // System status
-  getStatus: async (): Promise<SystemStatus> => {
-    const response = await apiClient.get<SystemStatus>("/status");
-    return response.data;
-  },
-
-  // Readiness probe
-  getReadiness: async (): Promise<{ status: string; timestamp: string }> => {
-    const response = await apiClient.get("/health/ready");
-    return response.data;
-  },
-
-  // Liveness probe
-  getLiveness: async (): Promise<{ status: string; timestamp: string }> => {
-    const response = await apiClient.get("/health/live");
+  // Get server metrics (queue status, processing info)
+  getMetrics: async (): Promise<ServerMetrics> => {
+    const response = await apiClient.get<ServerMetrics>("/metrics");
     return response.data;
   },
 };

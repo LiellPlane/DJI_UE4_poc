@@ -1,48 +1,50 @@
-interface MemoryUsage {
-  rss: number;
-  heapTotal: number;
-  heapUsed: number;
-  external: number;
-  arrayBuffers: number;
+// Game server types - matching the server types exactly
+export interface PlayerStatus {
+  health: number;
+  ammo: number;
+  tag_id: string;
+  display_name: string;
+  is_connected: boolean;
+  event_type: string;
+  last_active: number; // Date.now() timestamp in milliseconds
 }
 
-interface CpuUsage {
-  user: number;
-  system: number;
+export interface GameStatus {
+  players: Record<string, PlayerStatus>;
+  event_type: string;
 }
 
-export interface HealthStatus {
-  status: "UP" | "DOWN";
-  timestamp: string;
-  uptime: number;
-  memory: MemoryUsage;
-  environment: string;
-  version: string;
+export interface ImageInfo {
+  image_id: string;
+  device_id: string;
+  timestamp: number;
+  file_location: string;
 }
 
-export interface SystemStatus {
-  server: {
-    status: "RUNNING" | "STARTING" | "STOPPING";
-    uptime: string;
-    startTime: string;
-    environment: string;
-    version: string;
-    port: string | number;
+export interface GameServerStats {
+  server_info: {
+    uptime_seconds: number;
+    start_time: string;
   };
-  system: {
-    platform: string;
-    nodeVersion: string;
-    pid: number;
-    memory: {
-      used: string;
-      total: string;
-      percentage: string;
-    };
-    cpu: CpuUsage;
+  activity: {
+    total_images: number;
+    recent_images: ImageInfo[];
   };
-  metrics: {
-    requestCount: number;
-    errorCount: number;
-    averageResponseTime: string;
+  game_state: {
+    active_players: number;
+    players: Record<string, PlayerStatus>;
   };
+  image_storage?: {
+    total_files: number;
+    total_size_bytes: number;
+    total_size_mb: number;
+  };
+}
+
+export interface ServerMetrics {
+  queue: {
+    size: number;
+    processing: boolean;
+  };
+  timestamp: number;
 }

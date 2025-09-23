@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "start": "vite preview --port 3001 --host",
+    "start:dev": "vite --port 3001 --host",
     "preview": "vite preview",
     "test": "vitest",
     "test:ui": "vitest --ui",

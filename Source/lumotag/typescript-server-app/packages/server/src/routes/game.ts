@@ -269,7 +269,7 @@ const healPlayers = (): void => {
   };
 };
 
-// GAMESTATE endpoint - GET /api/v1/gamestate
+// GAMESTATE endpoint - GET /api/v1/gamestate (for devices)
 router.get("/gamestate", (req: GameRequest, res: Response) => {
   try {
     // Validate required header
@@ -323,6 +323,27 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
     return res.json(gameUpdate);
   } catch (error) {
     logger.error("Gamestate error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// DASHBOARD GAMESTATE endpoint - GET /api/v1/dashboard/gamestate (no auth required)
+router.get("/dashboard/gamestate", (_req: GameRequest, res: Response) => {
+  try {
+    // Return current game state directly - no device validation needed
+    const gameUpdate: GameStatus = {
+      players: gameState.playersData,
+      event_type: "GameStatus",
+    };
+
+    res.set({
+      "Content-Type": "application/json",
+      "Cache-Control": "no-cache",
+    });
+
+    return res.json(gameUpdate);
+  } catch (error) {
+    logger.error("Dashboard gamestate error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

@@ -102,3 +102,899 @@
   message: 'Request error',
   timestamp: '2025-09-22 21:39:17'
 }
+{
+  message: 'Unknown device_id: bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:25'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:25'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbvcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:37'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbvcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:37'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbvcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:37'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbvcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:37'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbvcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:37'
+}
+{
+  message: 'Unknown device_id: bc1ad358bbvcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bbcurl, bc1ad358bb',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:24:37'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:23'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:24'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:26'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:28'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:29'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:31'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:33'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:34'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:36'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:38'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:40'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:42'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:44'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:45'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:47'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:49'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:50'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:52'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:54'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:55'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:57'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:27:59'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:00'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:02'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:04'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:05'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:07'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:10'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:11'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:13'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:15'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:16'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:18'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:20'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:21'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:23'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:25'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:26'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:28'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:30'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:32'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:34'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:36'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:37'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:39'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:41'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:42'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:44'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:46'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:47'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:49'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:51'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:52'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:54'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:56'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:57'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:28:59'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:01'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:02'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:04'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:06'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:07'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:09'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:11'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:12'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:14'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:16'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:17'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:19'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:21'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:22'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:24'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:26'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:27'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:30'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:32'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:33'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:35'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:37'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:38'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:40'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:42'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:43'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:45'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:47'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:48'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:50'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:52'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:29:53'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:14'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:16'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:18'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:19'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:21'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:23'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:24'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:26'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:28'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:29'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:31'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:33'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:34'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:36'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:39'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:40'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:42'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:44'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:45'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:47'
+}
+{
+  service: 'typescript-server',
+  errno: -4047,
+  syscall: 'write',
+  code: 'EPIPE',
+  level: 'error',
+  message: 'Uncaught Exception: EPIPE: broken pipe, write',
+  stack: 'Error: EPIPE: broken pipe, write\n' +
+    '    at Socket._write (node:internal/net:61:25)\n' +
+    '    at writeOrBuffer (node:internal/streams/writable:392:12)\n' +
+    '    at _write (node:internal/streams/writable:333:10)\n' +
+    '    at Writable.write (node:internal/streams/writable:337:10)\n' +
+    '    at Console.log (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js:87:23)\n' +
+    '    at Console._write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js:103:17)\n' +
+    '    at doWrite (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:390:139)\n' +
+    '    at writeOrBuffer (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:381:5)\n' +
+    '    at Writable.write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:302:11)\n' +
+    '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
+  timestamp: '2025-09-23 13:30:48'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:30:59'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:00'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:02'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:04'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:05'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:07'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:09'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:10'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:31:12'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:00'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:02'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:04'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:05'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:07'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:09'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:10'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:12'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:14'
+}
+{
+  message: 'Unknown device_id: dashboard-client',
+  level: 'error',
+  service: 'typescript-server',
+  timestamp: '2025-09-23 13:33:15'
+}
+{
+  service: 'typescript-server',
+  errno: -4047,
+  syscall: 'write',
+  code: 'EPIPE',
+  level: 'error',
+  message: 'Uncaught Exception: EPIPE: broken pipe, write',
+  stack: 'Error: EPIPE: broken pipe, write\n' +
+    '    at Socket._write (node:internal/net:61:25)\n' +
+    '    at writeOrBuffer (node:internal/streams/writable:392:12)\n' +
+    '    at _write (node:internal/streams/writable:333:10)\n' +
+    '    at Writable.write (node:internal/streams/writable:337:10)\n' +
+    '    at Console.log (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js:87:23)\n' +
+    '    at Console._write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js:103:17)\n' +
+    '    at doWrite (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:390:139)\n' +
+    '    at writeOrBuffer (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:381:5)\n' +
+    '    at Writable.write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:302:11)\n' +
+    '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
+  timestamp: '2025-09-23 13:38:36'
+}
+{
+  service: 'typescript-server',
+  errno: -4047,
+  syscall: 'write',
+  code: 'EPIPE',
+  level: 'error',
+  message: 'Uncaught Exception: EPIPE: broken pipe, write',
+  stack: 'Error: EPIPE: broken pipe, write\n' +
+    '    at Socket._write (node:internal/net:61:25)\n' +
+    '    at writeOrBuffer (node:internal/streams/writable:392:12)\n' +
+    '    at _write (node:internal/streams/writable:333:10)\n' +
+    '    at Writable.write (node:internal/streams/writable:337:10)\n' +
+    '    at Console.log (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js:87:23)\n' +
+    '    at Console._write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js:103:17)\n' +
+    '    at doWrite (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:390:139)\n' +
+    '    at writeOrBuffer (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:381:5)\n' +
+    '    at Writable.write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:302:11)\n' +
+    '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
+  timestamp: '2025-09-23 13:40:13'
+}
+{
+  service: 'typescript-server',
+  errno: -4047,
+  syscall: 'write',
+  code: 'EPIPE',
+  level: 'error',
+  message: 'Uncaught Exception: EPIPE: broken pipe, write',
+  stack: 'Error: EPIPE: broken pipe, write\n' +
+    '    at Socket._write (node:internal/net:61:25)\n' +
+    '    at writeOrBuffer (node:internal/streams/writable:392:12)\n' +
+    '    at _write (node:internal/streams/writable:333:10)\n' +
+    '    at Writable.write (node:internal/streams/writable:337:10)\n' +
+    '    at Console.log (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js:87:23)\n' +
+    '    at Console._write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js:103:17)\n' +
+    '    at doWrite (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:390:139)\n' +
+    '    at writeOrBuffer (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:381:5)\n' +
+    '    at Writable.write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:302:11)\n' +
+    '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
+  timestamp: '2025-09-23 13:46:21'
+}
