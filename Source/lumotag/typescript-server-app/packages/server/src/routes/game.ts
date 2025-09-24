@@ -174,17 +174,20 @@ const getDeviceIdByTagId = (tag_id: string): string | undefined => {
   );
 };
 
-const tagPlayer = (tag_id: string): void => {
+const tagPlayer = (tag_id: string): PlayerStatus | null => {
   const deviceId = getDeviceIdByTagId(tag_id);
   if (deviceId) {
     const player = gameState.playersData[deviceId];
-    gameState.playersData[deviceId] = {
+    const updatedPlayer = {
       ...player,
       health: player.health - 15,
       last_active: Date.now()
     };
+    gameState.playersData[deviceId] = updatedPlayer;
+    return updatedPlayer;
   } else {
     logger.warn(`Tag ID not found: ${tag_id}`);
+    return null;
   }
 }
 
@@ -207,10 +210,6 @@ const getStats = (): GameServerStats => {
   return gameLogic.getStats(gameState);
 };
 
-// For debugging/testing
-const getState = (): GameState => {
-  return gameState; // Return immutable reference
-};
 
 // Performance middleware - add request timing
 router.use((req, res, next) => {
@@ -420,7 +419,17 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
         logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(parsedEvent)}`);
 
-        tagPlayer(parsedEvent.tag_id)
+        const taggedPlayer: PlayerStatus | null = tagPlayer(parsedEvent.tag_id);
+
+        if (taggedPlayer && taggedPlayer.health <= 0) {
+          const eliminatedDeviceId = getDeviceIdByTagId(parsedEvent.tag_id);
+          if (eliminatedDeviceId) {
+            gameState.playersEliminated[eliminatedDeviceId] = parsedEvent;
+            logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
+          }
+        }
+    
+
         break;
 
         
