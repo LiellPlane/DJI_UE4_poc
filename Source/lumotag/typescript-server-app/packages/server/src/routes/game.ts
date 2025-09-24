@@ -442,7 +442,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
     logger.info(`[${timestamp}] Event received successfully:
     Type: ${eventType}
     deviceId: ${deviceId}
-    Parsed Data: ${JSON.stringify(parsedEvent)}`);
+    Parsed Data: ${JSON.stringify(taggedEvent)}`);
 
     return res.json({
       status: "success",

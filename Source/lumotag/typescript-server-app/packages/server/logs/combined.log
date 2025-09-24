@@ -107836,3 +107836,2122 @@
   service: 'typescript-server',
   timestamp: '2025-09-23 13:46:21'
 }
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:29'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-24 21:59:29'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:29'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:29'
+}
+{
+  message: '[20:59:49.855] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:49'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:49 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:49'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 21:59:49'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:49 +0000] "GET /api/v1/stats HTTP/1.1" 200 250 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:49'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '6ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 21:59:49'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:52 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:52'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 21:59:52'
+}
+{
+  message: '[20:59:52.870] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:52'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:52 +0000] "GET /api/v1/stats HTTP/1.1" 200 250 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:52'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 21:59:52'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:55 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:55'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 21:59:55'
+}
+{
+  message: '[20:59:55.876] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:55'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:55 +0000] "GET /api/v1/stats HTTP/1.1" 200 249 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:55'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 21:59:55'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:58 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 21:59:58'
+}
+{
+  message: '[20:59:58.881] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:58'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:20:59:58 +0000] "GET /api/v1/stats HTTP/1.1" 200 250 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 21:59:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 21:59:58'
+}
+{
+  message: 'Created new player: abc12345 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:01'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:01 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:01'
+}
+{
+  message: '[21:00:01.894] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:01'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:01 +0000] "GET /api/v1/stats HTTP/1.1" 200 403 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:01'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:04 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:04'
+}
+{
+  message: '[21:00:04.911] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:04'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:04 +0000] "GET /api/v1/stats HTTP/1.1" 200 404 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:04'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:05'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:07 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:07'
+}
+{
+  message: '[21:00:07.918] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:07'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:07 +0000] "GET /api/v1/stats HTTP/1.1" 200 403 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:07'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:10'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:10 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:10'
+}
+{
+  message: '[21:00:10.926] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:10'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:10 +0000] "GET /api/v1/stats HTTP/1.1" 200 404 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:10'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:10'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:13 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:13'
+}
+{
+  message: '[21:00:13.933] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:13'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:13 +0000] "GET /api/v1/stats HTTP/1.1" 200 404 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:13'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:15'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:16 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:16'
+}
+{
+  message: '[21:00:16.942] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:16'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:16 +0000] "GET /api/v1/stats HTTP/1.1" 200 404 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:16'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:16'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:19 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:19'
+}
+{
+  message: '[21:00:19.948] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:19'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:19 +0000] "GET /api/v1/stats HTTP/1.1" 200 404 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:19'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:19'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:20'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:22 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:22'
+}
+{
+  message: '[21:00:22.967] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:22'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:22 +0000] "GET /api/v1/stats HTTP/1.1" 200 403 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:22'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:25 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  message: '[21:00:25.981] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:25 +0000] "GET /api/v1/stats HTTP/1.1" 200 404 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  message: 'Created new player: 54e5b53659 with display_name: PlayerOne',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:25'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:28 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:28'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:28'
+}
+{
+  message: '[21:00:29.000] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:29'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:29 +0000] "GET /api/v1/stats HTTP/1.1" 200 557 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:29'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:29'
+}
+{
+  message: '[21:00:30.259] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747630208_gk03gh3la"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:30'
+}
+{
+  message: '[21:00:30.259] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747630208_gk03gh3la"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:30'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:30 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:30'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:00:30'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:30'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 35 -> 36',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:30'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:32 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:32'
+}
+{
+  message: '[21:00:32.019] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:32'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:32 +0000] "GET /api/v1/stats HTTP/1.1" 200 704 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:32'
+}
+{
+  message: '[21:00:33.504] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747633486_xgnfn3d2z"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:33'
+}
+{
+  message: '[21:00:33.504] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747633486_xgnfn3d2z"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:33'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:33 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:00:33'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:35 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  message: '[21:00:35.030] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:35 +0000] "GET /api/v1/stats HTTP/1.1" 200 850 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 21 -> 22',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:35'
+}
+{
+  message: '[21:00:36.554] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747636535_9vgpysd6z"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:36'
+}
+{
+  message: '[21:00:36.554] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747636535_9vgpysd6z"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:36'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:36 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:36'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:00:36'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:38 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:38'
+}
+{
+  message: '[21:00:38.042] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:38'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:38 +0000] "GET /api/v1/stats HTTP/1.1" 200 996 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:38'
+}
+{
+  message: '[21:00:39.418] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747639397_d5nojurvq"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:39'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:39'
+}
+{
+  message: '[21:00:39.418] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747639397_d5nojurvq"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:39'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:00:39'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -8 -> -7',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:41 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  message: '[21:00:41.048] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:41 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '11ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:41'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:44 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:44'
+}
+{
+  message: '[21:00:44.062] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:44'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:44 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:44'
+}
+{
+  message: '[21:00:45.853] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747645831_ysj1n4eer"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:45'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:45'
+}
+{
+  message: '[21:00:45.853] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747645831_ysj1n4eer"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:45'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:45 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:45'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:00:45'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:46'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -22 -> -21',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:46'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:47 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:47'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:47'
+}
+{
+  message: '[21:00:47.077] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:47'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:47 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:47'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:47'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:50 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:50'
+}
+{
+  message: '[21:00:50.083] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:50'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:50 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:50'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:51'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -21 -> -20',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:51'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:53 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:53'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:53'
+}
+{
+  message: '[21:00:53.094] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:53'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:53 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:53'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:53'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:56 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  message: '[21:00:56.104] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:56 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -20 -> -19',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:56'
+}
+{
+  message: '[21:00:58.572] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747658557_gzkxbvjp8"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:58'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:58'
+}
+{
+  message: '[21:00:58.572] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747658557_gzkxbvjp8"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:58'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:58 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:00:58'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:59 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:00:59'
+}
+{
+  message: '[21:00:59.116] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:59'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:00:59 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:00:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:00:59'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:01'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -34 -> -33',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:01'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:02 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:02'
+}
+{
+  message: '[21:01:02.123] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:02'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:02 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:02'
+}
+{
+  message: '[21:01:03.976] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747663961_0qdzoiy1x"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:03'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:03'
+}
+{
+  message: '[21:01:03.976] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747663961_0qdzoiy1x"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:03'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:01:03'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:05 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:05'
+}
+{
+  message: '[21:01:05.141] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:05'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:05 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:05'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:06'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -48 -> -47',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:06'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:08 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:08'
+}
+{
+  message: '[21:01:08.155] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:08'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:08 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:08'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:11 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  message: '[21:01:11.177] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:11 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -47 -> -46',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:11'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:14 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:14'
+}
+{
+  message: '[21:01:14.194] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:14'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:14 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '5ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:14'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:16'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -46 -> -45',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:16'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:17 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:17'
+}
+{
+  message: '[21:01:17.202] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:17'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:17 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:17'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:17'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:20 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:20'
+}
+{
+  message: '[21:01:20.216] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:20'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:20 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '4ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:20'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:21'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -45 -> -44',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:21'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:23 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:23'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:23'
+}
+{
+  message: '[21:01:23.230] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:23'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:23 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:23'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:23'
+}
+{
+  message: '[21:01:25.840] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747685814_bq62xkt8p"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:25'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:25'
+}
+{
+  message: '[21:01:25.840] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747685814_bq62xkt8p"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:25'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:25 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:25'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:01:25'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:26 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  message: '[21:01:26.250] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:26 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '9ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -59 -> -58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:26'
+}
+{
+  message: '[21:01:28.920] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747688908_o7czhkro8"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:28'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:28'
+}
+{
+  message: '[21:01:28.920] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747688908_o7czhkro8"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:28'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:28 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:28'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:01:28'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:29 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:29'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:29'
+}
+{
+  message: '[21:01:29.270] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:29'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:29 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:29'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:29'
+}
+{
+  message: '[21:01:31.462] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"1","image_ids":["test_1758747691445_se3r2xk10"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:31'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:31'
+}
+{
+  message: '[21:01:31.462] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1758747691445_se3r2xk10"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:31'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:31 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:31'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-24 22:01:31'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -88 -> -87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:32 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  message: '[21:01:32.276] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:32 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:32'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:35 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:35'
+}
+{
+  message: '[21:01:35.292] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:35'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:35 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:35'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:37'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -87 -> -86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:37'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:38 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:38'
+}
+{
+  message: '[21:01:38.315] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:38'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:38 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:38'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:41 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:41'
+}
+{
+  message: '[21:01:41.326] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:41'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:41 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:41'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:42'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) -86 -> -85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:42'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:44 +0000] "GET /api/v1/metrics HTTP/1.1" 200 65 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/metrics',
+  timestamp: '2025-09-24 22:01:44'
+}
+{
+  message: '[21:01:44.343] 📊 Stats request',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:44'
+}
+{
+  message: '127.0.0.1 - - [24/Sep/2025:21:01:44 +0000] "GET /api/v1/stats HTTP/1.1" 200 - "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '5ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'GET /api/v1/stats',
+  timestamp: '2025-09-24 22:01:44'
+}
+{
+  message: 'Background thread stopped',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:46'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:47'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:47'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:47'
+}
+{
+  message: 'Server closed',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-24 22:01:49'
+}

@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { PlayerDashboard } from "@/components/PlayerDashboard";
 import { ServerMetricsComponent } from "@/components/ServerMetrics";
 import { ImageActivity } from "@/components/ImageActivity";
+import { TestPanel } from "@/components/TestPanel";
 import "./App.css";
 
 const queryClient = new QueryClient({
@@ -30,6 +31,7 @@ function App() {
             <ServerMetricsComponent />
             <ImageActivity />
           </div>
+          <TestPanel />
         </main>
 
         <footer className="App-footer">

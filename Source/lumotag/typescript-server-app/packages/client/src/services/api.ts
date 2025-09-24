@@ -58,4 +58,34 @@ export const apiService = {
     const response = await apiClient.get<ServerMetrics>("/metrics");
     return response.data;
   },
+
+  // Test functions for development
+  testGameState: async (deviceId: string): Promise<GameStatus> => {
+    const response = await apiClient.get<GameStatus>("/gamestate", {
+      headers: { "x-device-id": deviceId }
+    });
+    return response.data;
+  },
+
+  testUploadImage: async (deviceId: string, imageId: string, imageBase64: string): Promise<any> => {
+    const response = await apiClient.post("/images/upload", {
+      image_id: imageId,
+      image_data: imageBase64,
+      event_type: "ImageUpload"
+    }, {
+      headers: { "x-device-id": deviceId }
+    });
+    return response.data;
+  },
+
+  testTagPlayer: async (deviceId: string, tagId: string, imageIds: string[]): Promise<any> => {
+    const response = await apiClient.post("/events", {
+      tag_id: tagId,
+      image_ids: imageIds,
+      event_type: "PlayerTagged"
+    }, {
+      headers: { "x-device-id": deviceId }
+    });
+    return response.data;
+  },
 };
