@@ -407,24 +407,24 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
     const eventType = req.body.event_type;
 
-    let parsedEvent: PlayerTagged;
+    let taggedEvent: PlayerTagged;
 
     switch (eventType) {
 
       case 'PlayerTagged':
-        parsedEvent = {
+        taggedEvent = {
           ...req.body
         } as PlayerTagged;
         
 
-        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(parsedEvent)}`);
+        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(taggedEvent)}`);
 
-        const taggedPlayer: PlayerStatus | null = tagPlayer(parsedEvent.tag_id);
+        const taggedPlayer: PlayerStatus | null = tagPlayer(taggedEvent.tag_id);
 
         if (taggedPlayer && taggedPlayer.health <= 0) {
-          const eliminatedDeviceId = getDeviceIdByTagId(parsedEvent.tag_id);
+          const eliminatedDeviceId = getDeviceIdByTagId(taggedEvent.tag_id);
           if (eliminatedDeviceId) {
-            gameState.playersEliminated[eliminatedDeviceId] = parsedEvent;
+            gameState.playersEliminated[eliminatedDeviceId] = taggedEvent;
             logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
           }
         }
