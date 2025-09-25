@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { GameStatus, GameServerStats, ServerMetrics } from "@/types";
+import type { GameStatus, GameServerStats, ServerMetrics, ReqKillScreenResponse } from "@/types";
 
 const API_BASE_URL =
   (import.meta.env.VITE_API_URL as string) || "http://localhost:8080/api/v1";
@@ -84,6 +84,13 @@ export const apiService = {
       image_ids: imageIds,
       event_type: "PlayerTagged"
     }, {
+      headers: { "x-device-id": deviceId }
+    });
+    return response.data;
+  },
+
+  testKillScreen: async (deviceId: string): Promise<ReqKillScreenResponse> => {
+    const response = await apiClient.get<ReqKillScreenResponse>("/killscreen", {
       headers: { "x-device-id": deviceId }
     });
     return response.data;

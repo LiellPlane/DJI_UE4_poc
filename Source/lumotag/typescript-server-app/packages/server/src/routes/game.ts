@@ -14,6 +14,7 @@ import {
   GameServerStats,
   UploadRequest,
   ServerMetrics,
+  ReqKillScreenResponse,
 } from "../types";
 import { getDeviceInfo, DeviceInfo } from "./configs"
 
@@ -215,8 +216,11 @@ const getStats = (): GameServerStats => {
 router.use((req, res, next) => {
   const start = process.hrtime.bigint();
   res.on("finish", () => {
-    // Skip performance logging for upload and gamestate endpoints
-    if (req.path.includes('/images/upload') || req.path.includes('/gamestate')) {
+    // Skip performance logging for noisy endpoints
+    if (req.path.includes('/images/upload') || 
+        req.path.includes('/gamestate') ||
+        req.path.includes('/stats') ||
+        req.path.includes('/metrics')) {
       return;
     }
     
@@ -459,7 +463,7 @@ router.post("/events", (req: GameRequest, res: Response) => {
 // STATS endpoint - GET /stats
 router.get("/stats", async (_req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
-  logger.info(`[${timestamp}] 📊 Stats request`);
+  // logger.info(`[${timestamp}] 📊 Stats request`);
 
   try {
     const gameStats = getStats();
@@ -495,6 +499,76 @@ router.get("/metrics", (_req: GameRequest, res: Response) => {
     return res.json(metrics);
   } catch (error) {
     logger.error("Metrics error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// KILLSCREEN endpoint - GET /api/v1/killscreen
+router.get("/killscreen", async (req: GameRequest, res: Response) => {
+  const timestamp = new Date().toISOString().slice(11, 23);
+  
+  try {
+    // Validate required header
+    const deviceId = validateAndExtractDeviceId(req, res);
+    if (!deviceId) return; // Response already sent by validation function
+
+    logger.info(`[${timestamp}] KILLSCREEN REQUEST - deviceId: ${deviceId}`);
+
+    // Look up eliminated player by device ID
+    const eliminatedPlayer = gameState.playersEliminated[deviceId];
+    if (!eliminatedPlayer) {
+      logger.warn(`[${timestamp}] Eliminated player not found for device: ${deviceId}`);
+      return res.status(404).json({ 
+        error: "Not found", 
+        details: "Could not find eliminated player",
+        device_id: deviceId 
+      });
+    }
+
+    // Get the tagger's display name (who eliminated this player)
+    const playerData = gameState.playersData[deviceId];
+    const displayNameTagger = playerData.display_name;
+
+    // 3-second retry loop to get image files
+    const maxRetries = 30; // 30 * 100ms = 3 seconds
+    const retryDelayMs = 100;
+    const imageIds = eliminatedPlayer.image_ids;
+    const imageDatas: string[] = [];
+
+    logger.info(`[${timestamp}] Attempting to retrieve ${imageIds.length} images: ${imageIds.join(', ')}`);
+
+    for (const imageId of imageIds) {
+      let imageData: string | null = null;
+      
+      // Retry loop for this specific image
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        imageData = await imageSaver.getImageAsBase64(imageId);
+        if (imageData) {
+          logger.debug(`[${timestamp}] Image ${imageId} found on attempt ${attempt + 1}`);
+          break;
+        }
+        
+        if (attempt < maxRetries - 1) {
+          await new Promise(resolve => setTimeout(resolve, retryDelayMs));
+        }
+      }
+
+      imageDatas.push(imageData!);
+    }
+
+    // Create response
+    const killScreenResponse: ReqKillScreenResponse = {
+      display_name_tagger: displayNameTagger,
+      image_datas: imageDatas,
+      event_type: "ReqKillScreenResponse"
+    };
+
+    logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length} images for device: ${deviceId}`);
+    return res.json(killScreenResponse);
+
+  } catch (error) {
+    logger.error(`[${timestamp}] Killscreen error:`, error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

@@ -72,6 +72,23 @@ class ImageSaver {
     }
   }
 
+  async getImageAsBase64(imageId: string): Promise<string | null> {
+    const filename = `${imageId}.jpg`;
+    const filepath = path.join(this.uploadsDir, filename);
+    
+    try {
+      // Check if file exists - will throw if not
+      await fs.access(filepath);
+      
+      // Read file and convert to base64 - will throw if fails
+      const imageBuffer = await fs.readFile(filepath);
+      return imageBuffer.toString('base64');
+    } catch (error) {
+      // Return null for retry logic - the caller will decide to crash after timeout
+      return null;
+    }
+  }
+
   async cleanupAllImages(): Promise<{
     deletedCount: number;
     errors: string[];

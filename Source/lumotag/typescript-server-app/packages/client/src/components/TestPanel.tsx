@@ -89,6 +89,25 @@ export function TestPanel() {
     }
   };
 
+  const handleTestKillScreen = async () => {
+    const key = "killscreen";
+    setLoading({ ...loading, [key]: true });
+    
+    try {
+      const result = await apiService.testKillScreen(selectedDevice);
+      setResults({ ...results, [key]: result });
+      console.log("KillScreen Result:", result);
+      
+      // Log image count for debugging
+      console.log(`Received ${result.image_datas?.length || 0} images from ${result.display_name_tagger}`);
+    } catch (error) {
+      console.error("KillScreen Error:", error);
+      setResults({ ...results, [key]: { error: (error as Error).message } });
+    } finally {
+      setLoading({ ...loading, [key]: false });
+    }
+  };
+
   const deviceInfo = DEVICE_MAPPING[selectedDevice as keyof typeof DEVICE_MAPPING];
 
   return (
@@ -144,6 +163,14 @@ export function TestPanel() {
           className="test-btn secondary"
         >
           {loading.tagandupload ? "Processing..." : "📸 Tag Player + Upload Image"}
+        </button>
+
+        <button 
+          onClick={handleTestKillScreen}
+          disabled={loading.killscreen}
+          className="test-btn danger"
+        >
+          {loading.killscreen ? "Loading..." : "💀 Test KillScreen"}
         </button>
       </div>
 
@@ -230,6 +257,15 @@ export function TestPanel() {
 
         .test-btn.secondary:hover:not(:disabled) {
           background: #1e7e34;
+        }
+
+        .test-btn.danger {
+          background: #dc3545;
+          color: white;
+        }
+
+        .test-btn.danger:hover:not(:disabled) {
+          background: #c82333;
         }
 
         .test-results {

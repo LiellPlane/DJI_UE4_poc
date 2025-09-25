@@ -41,6 +41,12 @@ export interface KillShot{
   event_type: string;
 }
 
+export interface ReqKillScreenResponse {
+  display_name_tagger: string;
+  image_datas: string[]; // Array of base64 encoded JPEG image data for HTTP transmission
+  event_type: string;
+}
+
 export interface ImageInfo {
   image_id: string;
   device_id: string;

@@ -48,3 +48,9 @@ export interface ServerMetrics {
   };
   timestamp: number;
 }
+
+export interface ReqKillScreenResponse {
+  display_name_tagger: string;
+  image_datas: string[]; // Array of base64 encoded JPEG image data for HTTP transmission
+  event_type: string;
+}

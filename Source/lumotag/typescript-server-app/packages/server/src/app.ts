@@ -31,8 +31,11 @@ app.use(
   morgan("combined", { 
     stream: { write: (msg) => logger.info(msg.trim()) },
     skip: (req) => {
-      // Skip logging for upload and gamestate endpoints
-      return req.originalUrl.includes('/images/upload') || req.originalUrl.includes('/gamestate');
+      // Skip logging for noisy endpoints
+      return req.originalUrl.includes('/images/upload') || 
+             req.originalUrl.includes('/gamestate') ||
+             req.originalUrl.includes('/stats') ||
+             req.originalUrl.includes('/metrics');
     }
   }),
 );
@@ -45,8 +48,11 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
   res.on("finish", () => {
-    // Skip logging for upload and gamestate endpoints
-    if (req.originalUrl.includes('/images/upload') || req.originalUrl.includes('/gamestate')) {
+    // Skip logging for noisy endpoints
+    if (req.originalUrl.includes('/images/upload') || 
+        req.originalUrl.includes('/gamestate') ||
+        req.originalUrl.includes('/stats') ||
+        req.originalUrl.includes('/metrics')) {
       return;
     }
     
