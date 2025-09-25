@@ -440,7 +440,7 @@ class PlayerInfoBoxv2:
         if self.healthpoints is None:
             return None
         if self.healthpoints < 1:
-            self.healthpoints = self.max_healthpoints
+            self.healthpoints = self.min_healthpoints
         return self.healthpoints
 
     def update_healthpoints(self, diff: int):

@@ -611,6 +611,10 @@ def main():
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health
                                 )
+                                # todo, bug here!!
+                                if gamestate.players[MY_ID].health <= 0:
+                                    import os
+                                    os._exit(1)
 
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?

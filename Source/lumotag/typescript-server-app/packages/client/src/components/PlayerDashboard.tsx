@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "react-query";
-import { Users, Heart, Zap, Wifi, WifiOff, Clock } from "lucide-react";
+import { Users, Heart, Zap, Wifi, WifiOff, Clock, Skull } from "lucide-react";
 import { apiService } from "@/services/api";
 import type { GameStatus, PlayerStatus } from "@/types";
 
@@ -31,6 +31,7 @@ export const PlayerDashboard: React.FC = () => {
   };
 
   const getConnectionStatus = (player: PlayerStatus): string => {
+    if (player.isEliminated) return "eliminated";
     return player.is_connected ? "connected" : "disconnected";
   };
 
@@ -84,7 +85,9 @@ export const PlayerDashboard: React.FC = () => {
                     <span className="tag-id">#{player.tag_id}</span>
                   </div>
                   <div className="connection-status">
-                    {player.is_connected ? (
+                    {player.isEliminated ? (
+                      <Skull className="icon eliminated" />
+                    ) : player.is_connected ? (
                       <Wifi className="icon connected" />
                     ) : (
                       <WifiOff className="icon disconnected" />
@@ -108,6 +111,16 @@ export const PlayerDashboard: React.FC = () => {
                     <div className="stat-info">
                       <span className="stat-label">Ammo</span>
                       <span className="stat-value">{player.ammo}</span>
+                    </div>
+                  </div>
+
+                  <div className="stat">
+                    <Skull className={`stat-icon ${player.isEliminated ? 'eliminated' : 'alive'}`} />
+                    <div className="stat-info">
+                      <span className="stat-label">Status</span>
+                      <span className={`stat-value ${player.isEliminated ? 'eliminated' : 'alive'}`}>
+                        {player.isEliminated ? 'ELIMINATED' : 'ALIVE'}
+                      </span>
                     </div>
                   </div>
                 </div>

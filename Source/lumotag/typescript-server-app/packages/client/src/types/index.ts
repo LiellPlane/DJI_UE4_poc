@@ -7,6 +7,7 @@ export interface PlayerStatus {
   is_connected: boolean;
   event_type: string;
   last_active: number; // Date.now() timestamp in milliseconds
+  isEliminated: boolean;
 }
 
 export interface GameStatus {

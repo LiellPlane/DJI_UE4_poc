@@ -172,6 +172,12 @@ body {
   opacity: 0.7;
 }
 
+.player-card.eliminated {
+  border-left: 3px solid #9c27b0;
+  background: rgba(156, 39, 176, 0.1);
+  opacity: 0.8;
+}
+
 .player-header {
   display: flex;
   justify-content: space-between;
@@ -208,6 +214,10 @@ body {
 
 .connection-status .icon.disconnected {
   color: #f44336;
+}
+
+.connection-status .icon.eliminated {
+  color: #9c27b0;
 }
 
 .player-stats {
@@ -260,6 +270,15 @@ body {
 
 .health-critical, .health-critical .stat-icon {
   color: #f44336;
+}
+
+.eliminated, .eliminated .stat-icon {
+  color: #9c27b0;
+  font-weight: 600;
+}
+
+.alive, .alive .stat-icon {
+  color: #4caf50;
 }
 
 .player-footer {

@@ -70,18 +70,18 @@ async function processImageQueue() {
 
 // Pure data structure (no methods)
 interface GameState {
-  playersData: Record<string, PlayerStatus>; //mapping device id to display id and tag id 
+  InGamePlayers: Record<string, PlayerStatus>; //mapping device id to display id and tag id 
   imagesReceived: ImageInfo[]; //when a device uploads an image, during trigger event or tag event
-  playersEliminated: Record<string, PlayerTagged>; //when a players health reaches zero - put the details here so we can find the corresponding killshot
+  killShots: Record<string, PlayerTagged>; //when a players health reaches zero - put the details here so we can find the corresponding killshot
   startTime: number;
   lastHealTime: number; // Track when all players were last healed
 }
 
 // Initial state
 const createInitialGameState = (): GameState => ({
-  playersData: {},
+  InGamePlayers: {},
   imagesReceived: [],
-  playersEliminated: {},
+  killShots: {},
   startTime: Date.now(),
   lastHealTime: Date.now(),
 });
@@ -106,8 +106,8 @@ const gameLogic = {
       recent_images: state.imagesReceived.slice(-5),
     },
     game_state: {
-      active_players: Object.keys(state.playersData).length,
-      players: { ...state.playersData },
+      active_players: Object.keys(state.InGamePlayers).length,
+      players: { ...state.InGamePlayers },
     },
   }),
 };
@@ -160,9 +160,9 @@ const addImageInfo = (info: ImageInfo): void => {
 };
 
 const updateLastSeen = (deviceid: string): void => {
-  const player = gameState.playersData[deviceid];
+  const player = gameState.InGamePlayers[deviceid];
   if (player) {
-    gameState.playersData[deviceid] = {
+    gameState.InGamePlayers[deviceid] = {
       ...player,
       last_active: Date.now()
     };
@@ -170,21 +170,38 @@ const updateLastSeen = (deviceid: string): void => {
 }
 
 const getDeviceIdByTagId = (tag_id: string): string | undefined => {
-  return Object.keys(gameState.playersData).find(
-    deviceId => gameState.playersData[deviceId].tag_id === tag_id
+  return Object.keys(gameState.InGamePlayers).find(
+    deviceId => gameState.InGamePlayers[deviceId].tag_id === tag_id
   );
 };
 
 const tagPlayer = (tag_id: string): PlayerStatus | null => {
   const deviceId = getDeviceIdByTagId(tag_id);
   if (deviceId) {
-    const player = gameState.playersData[deviceId];
+    const player = gameState.InGamePlayers[deviceId];
     const updatedPlayer = {
       ...player,
       health: player.health - 15,
       last_active: Date.now()
     };
-    gameState.playersData[deviceId] = updatedPlayer;
+    gameState.InGamePlayers[deviceId] = updatedPlayer;
+    return updatedPlayer;
+  } else {
+    logger.warn(`Tag ID not found: ${tag_id}`);
+    return null;
+  }
+}
+
+const eliminatePlayer = (tag_id: string): PlayerStatus | null => {
+  const deviceId = getDeviceIdByTagId(tag_id);
+  if (deviceId) {
+    const player = gameState.InGamePlayers[deviceId];
+    const updatedPlayer = {
+      ...player,
+      isEliminated: true,
+      last_active: Date.now()
+    };
+    gameState.InGamePlayers[deviceId] = updatedPlayer;
     return updatedPlayer;
   } else {
     logger.warn(`Tag ID not found: ${tag_id}`);
@@ -196,11 +213,11 @@ const updateConnectionStatus_all_players = (): void => {
   const now = Date.now();
   const connectionTimeoutMs = 1000; // 2 seconds
   
-  Object.keys(gameState.playersData).forEach(deviceId => {
-    const player = gameState.playersData[deviceId];
+  Object.keys(gameState.InGamePlayers).forEach(deviceId => {
+    const player = gameState.InGamePlayers[deviceId];
     const isConnected = (now - player.last_active) <= connectionTimeoutMs;
     
-    gameState.playersData[deviceId] = {
+    gameState.InGamePlayers[deviceId] = {
       ...player,
       is_connected: isConnected
     };
@@ -249,8 +266,8 @@ const healPlayers = (): void => {
   const updatedPlayers: Record<string, PlayerStatus> = {};
   
   // Apply healing to all players
-  Object.entries(gameState.playersData).forEach(([tagId, player]) => {
-    if (player.health < 100) {
+  Object.entries(gameState.InGamePlayers).forEach(([tagId, player]) => {
+    if (player.health < 100 && !player.isEliminated) {
       const oldHealth = player.health;
       const newHealth = Math.min(100, player.health + 1);
       logger.info(`HEALING: ${tagId} (${player.display_name}) ${oldHealth} -> ${newHealth}`);
@@ -267,7 +284,7 @@ const healPlayers = (): void => {
   // Update the game state with healed players
   gameState = {
     ...gameState,
-    playersData: updatedPlayers,
+    InGamePlayers: updatedPlayers,
     lastHealTime: currentTime,
   };
 };
@@ -282,7 +299,7 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
     // logger.debug(`deviceId: ${deviceId}`);
     
     // Fast O(1) lookup - if user doesn't exist, create new PlayerStatus
-    if (!gameState.playersData[deviceId]) {
+    if (!gameState.InGamePlayers[deviceId]) {
       const deviceMapping = getDeviceInfo(deviceId);
       
       if (!deviceMapping) {
@@ -303,9 +320,10 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
         display_name: deviceMapping.display_name,
         is_connected: true,
         event_type: "PlayerStatus",
-        last_active: Date.now()
+        last_active: Date.now(),
+        isEliminated: false,
       };
-      gameState.playersData[deviceId] = newPlayer;
+      gameState.InGamePlayers[deviceId] = newPlayer;
       logger.info(`Created new player: ${deviceId} with display_name: ${deviceMapping.display_name}`);
     }
     
@@ -314,7 +332,7 @@ router.get("/gamestate", (req: GameRequest, res: Response) => {
     
     // Return current game state directly
     const gameUpdate: GameStatus = {
-      players: gameState.playersData,
+      players: gameState.InGamePlayers,
       event_type: "GameStatus",
     };
 
@@ -335,7 +353,7 @@ router.get("/dashboard/gamestate", (_req: GameRequest, res: Response) => {
   try {
     // Return current game state directly - no device validation needed
     const gameUpdate: GameStatus = {
-      players: gameState.playersData,
+      players: gameState.InGamePlayers,
       event_type: "GameStatus",
     };
 
@@ -425,10 +443,11 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
         const taggedPlayer: PlayerStatus | null = tagPlayer(taggedEvent.tag_id);
 
-        if (taggedPlayer && taggedPlayer.health <= 0) {
+        if (taggedPlayer && taggedPlayer.health <= 0 && !taggedPlayer.isEliminated) {
           const eliminatedDeviceId = getDeviceIdByTagId(taggedEvent.tag_id);
           if (eliminatedDeviceId) {
-            gameState.playersEliminated[eliminatedDeviceId] = taggedEvent;
+            eliminatePlayer(taggedEvent.tag_id);
+            gameState.killShots[eliminatedDeviceId] = taggedEvent;
             logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
           }
         }
@@ -516,7 +535,7 @@ router.get("/killscreen", async (req: GameRequest, res: Response) => {
     logger.info(`[${timestamp}] KILLSCREEN REQUEST - deviceId: ${deviceId}`);
 
     // Look up eliminated player by device ID
-    const eliminatedPlayer = gameState.playersEliminated[deviceId];
+    const eliminatedPlayer = gameState.killShots[deviceId];
     if (!eliminatedPlayer) {
       logger.warn(`[${timestamp}] Eliminated player not found for device: ${deviceId}`);
       return res.status(404).json({ 
@@ -527,7 +546,7 @@ router.get("/killscreen", async (req: GameRequest, res: Response) => {
     }
 
     // Get the tagger's display name (who eliminated this player)
-    const playerData = gameState.playersData[deviceId];
+    const playerData = gameState.InGamePlayers[deviceId];
     const displayNameTagger = playerData.display_name;
 
     // 3-second retry loop to get image files
