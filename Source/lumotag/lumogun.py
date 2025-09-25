@@ -612,9 +612,11 @@ def main():
                                     gamestate.players[MY_ID].health
                                 )
                                 # todo, bug here!!
-                                if gamestate.players[MY_ID].health <= 0:
-                                    import os
-                                    os._exit(1)
+                                while gamestate.players[MY_ID].health <= 0:
+                                    output_image[0] = 0
+                                    output_image[1] = 0
+                                    output_image[2] = 255
+                                    display.display(output_image)
 
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
