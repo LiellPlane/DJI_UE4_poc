@@ -622,6 +622,8 @@ def main():
                                 # now if we have been eliminated - wait in a cycle. Flash up red and wait for kill shot image
                                 # only break loop once player is no longer eliminated (set by server)
                                 if gamestate.players[MY_ID].isEliminated:
+                                    # async call out for kill screen - poll client to see if it arrives
+                                    game_client.request_kill_screen()
                                     while True:
                                         output_image[:] = (0,0,random.randint(240,255))
                                         display.display(output_image)

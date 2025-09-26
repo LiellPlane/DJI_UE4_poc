@@ -19,10 +19,14 @@ import lumotag_events
 import inspect
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 
-
-
+@dataclass
+class EventWithCallback:
+    """Wrapper for events that need a callback function executed after successful transmission"""
+    event: BaseModel
+    callback: Callable[[dict], None] | None
 
 
 class AbstractHTTPComms(ABC):
@@ -188,28 +192,36 @@ class HTTPComms(AbstractHTTPComms):
         except threading_queue.Full:
             pass  # Silently drop if queue full
 
+    def set_killshot(response: dict):
+        plop=1
+        pass
+
+    def request_kill_screen(self):
+        event = lumotag_events.ReqKillScreen()
+        self._events_q.put_nowait(EventWithCallback(event, self.set_killshot))
+
     def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
         """Send a tagging event via HTTP - validates event type first"""
         event = lumotag_events.PlayerTagged(tag_id=tag_id, image_ids=image_ids)
 
-        self._events_q.put_nowait(event)
+        self._events_q.put_nowait(EventWithCallback(event, None))
 
-    def send_event(self, event) -> None:
-        """Send an event via HTTP - validates event type first"""
-        # Validate event is one of the expected Pydantic models from lumotag_events
-        if not self._is_valid_event_type(event):
-            valid_types = [cls.__name__ for cls in self._cached_event_types]
-            raise ValueError(f"Event must be one of {valid_types}, got {type(event).__name__}")
+    # def send_event(self, event) -> None:
+    #     """Send an event via HTTP - validates event type first"""
+    #     # Validate event is one of the expected Pydantic models from lumotag_events
+    #     if not self._is_valid_event_type(event):
+    #         valid_types = [cls.__name__ for cls in self._cached_event_types]
+    #         raise ValueError(f"Event must be one of {valid_types}, got {type(event).__name__}")
         
-        try:
-            self._events_q.put_nowait(event)
-        except threading_queue.Full:
-            pass  # Silently drop events if queue full (events are less critical than images)
+    #     try:
+    #         self._events_q.put_nowait(event)
+    #     except threading_queue.Full:
+    #         pass  # Silently drop events if queue full (events are less critical than images)
         
-        # Check for thread errors periodically to reduce overhead at high frequencies
-        self._error_check_counter += 1
-        if self._error_check_counter % 20 == 0:  # Check every 20th call
-            self.raise_thread_error_if_any()
+    #     # Check for thread errors periodically to reduce overhead at high frequencies
+    #     self._error_check_counter += 1
+    #     if self._error_check_counter % 20 == 0:  # Check every 20th call
+    #         self.raise_thread_error_if_any()
 
     def delete_image_by_id(self, image_id: str) -> bool:
         """Delete a specific image ID from storage - returns True if deleted, False if not found"""
@@ -418,12 +430,12 @@ class HTTPComms(AbstractHTTPComms):
         
         try:
             while True:
-                event = self._events_q.get()  # Blocks until work available
+                event: EventWithCallback = self._events_q.get()  # Blocks until work available
                 
                 try:
                     # Clean POST payload - only Pydantic model data
                     # All transport metadata is in headers
-                    post_data = event.model_dump()
+                    post_data = event.event.model_dump()
                     
                     # Fast HTTP POST - headers already set in session
                     response = session.post(
@@ -435,10 +447,12 @@ class HTTPComms(AbstractHTTPComms):
                     # Check response
                     if response.status_code == 200:
                         self._set_connected(True)  # Success - mark as connected
+                        if event.callback is not None:
+                            event.callback(response.json())
                     else:
                         # Server error - mark as disconnected for 4xx/5xx errors
                         if response.status_code >= 400:
-                            self._set_connected(False)
+                            # self._set_connected(False)
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Event send failed: HTTP {response.status_code}")
                         
@@ -536,7 +550,10 @@ class HTTPComms(AbstractHTTPComms):
                 
                 # Wait for next poll cycle
                 time.sleep(self.poll_interval_seconds)
-                    
+
+                # not the best place for this 
+                self.raise_thread_error_if_any()
+
         except Exception as e:
             tb_str = traceback.format_exc()
             try:

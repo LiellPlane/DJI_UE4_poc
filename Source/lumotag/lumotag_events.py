@@ -6,6 +6,9 @@ class ReqKillScreenResponse(BaseModel):
     image_datas: list[str] = Field(..., description="Base64 encoded JPEG image data for HTTP transmission")
     event_type: str = Field(default_factory=lambda: "ReqKillScreenResponse", description="Event type identifier")
 
+class ReqKillScreen(BaseModel):
+    event_type: str = Field(default_factory=lambda: "ReqKillScreen", description="Event type identifier")
+
 class UploadRequest(BaseModel):
     """Pydantic model for validating upload request data"""
     image_id: str = Field(..., description="Unique identifier for the image")
