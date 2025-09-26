@@ -108,6 +108,27 @@ export function TestPanel() {
     }
   };
 
+  const handleReset = async () => {
+    const key = "reset";
+    setLoading({ ...loading, [key]: true });
+    
+    try {
+      const result = await apiService.resetGame();
+      setResults({ ...results, [key]: result });
+      console.log("Reset Result:", result);
+      
+      // Clear existing results after successful reset
+      setTimeout(() => {
+        setResults({});
+      }, 3000); // Clear results after 3 seconds to show reset worked
+    } catch (error) {
+      console.error("Reset Error:", error);
+      setResults({ ...results, [key]: { error: (error as Error).message } });
+    } finally {
+      setLoading({ ...loading, [key]: false });
+    }
+  };
+
   const deviceInfo = DEVICE_MAPPING[selectedDevice as keyof typeof DEVICE_MAPPING];
 
   return (
@@ -171,6 +192,14 @@ export function TestPanel() {
           className="test-btn danger"
         >
           {loading.killscreen ? "Loading..." : "💀 Test KillScreen"}
+        </button>
+
+        <button 
+          onClick={handleReset}
+          disabled={loading.reset}
+          className="test-btn warning"
+        >
+          {loading.reset ? "Resetting..." : "🔄 Reset Game"}
         </button>
       </div>
 
@@ -266,6 +295,15 @@ export function TestPanel() {
 
         .test-btn.danger:hover:not(:disabled) {
           background: #c82333;
+        }
+
+        .test-btn.warning {
+          background: #fd7e14;
+          color: white;
+        }
+
+        .test-btn.warning:hover:not(:disabled) {
+          background: #e8590c;
         }
 
         .test-results {

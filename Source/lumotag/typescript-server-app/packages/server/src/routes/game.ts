@@ -592,6 +592,42 @@ router.get("/killscreen", async (req: GameRequest, res: Response) => {
   }
 });
 
+// RESET endpoint - POST /api/v1/reset (simple endpoint to reset all game state and images)
+router.post("/reset", async (_req: GameRequest, res: Response) => {
+  const timestamp = new Date().toISOString().slice(11, 23);
+  
+  try {
+    logger.info(`[${timestamp}] 🔄 RESET REQUEST - Clearing all game state and images`);
+
+    // Clear all game state
+    gameState = createInitialGameState();
+    
+    // Clear image queue
+    imageQueue.length = 0;
+    
+    // Clear all images from disk
+    const cleanupResult = await imageSaver.cleanupAllImages();
+    
+    logger.info(`[${timestamp}] ✅ RESET COMPLETE - Cleared ${Object.keys(gameState.InGamePlayers).length} players, ${cleanupResult.deletedCount} images`);
+    
+    return res.json({
+      status: "success",
+      message: "Game state and images reset successfully",
+      cleared: {
+        players: 0, // Will always be 0 after reset
+        images: cleanupResult.deletedCount,
+        queue_size: 0
+      },
+      errors: cleanupResult.errors,
+      timestamp: Date.now()
+    });
+    
+  } catch (error) {
+    logger.error(`[${timestamp}] Reset error:`, error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Cleanup function for graceful shutdown
 const cleanup = (): void => {
   stopBackgroundThread();

@@ -95,4 +95,10 @@ export const apiService = {
     });
     return response.data;
   },
+
+  // Reset all game state and images
+  resetGame: async (): Promise<any> => {
+    const response = await apiClient.post("/reset");
+    return response.data;
+  },
 };

@@ -6,6 +6,7 @@ from functools import partial
 import queue
 import datetime
 import time
+import random
 import git_info
 from comms_http import HTTPComms
 
@@ -608,15 +609,29 @@ def main():
                             # probably should get the player card here
                             gamestate = game_client.get_latest_gamestate()
                             if MY_ID in gamestate.players:
+                                new_hp = gamestate.players[MY_ID].health
+                                # incoming health lower - youve been hurt
+                                if players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp:
+                                    # flash red
+                                    output_image[:] = (0,0,255)
+                                    voice.speak("eek")
+                                # set player card health (not sure about this yet)
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health
                                 )
-                                # todo, bug here!!
-                                while gamestate.players[MY_ID].health <= 0:
-                                    output_image[0] = 0
-                                    output_image[1] = 0
-                                    output_image[2] = 255
-                                    display.display(output_image)
+                                # now if we have been eliminated - wait in a cycle. Flash up red and wait for kill shot image
+                                # only break loop once player is no longer eliminated (set by server)
+                                if gamestate.players[MY_ID].isEliminated:
+                                    while True:
+                                        output_image[:] = (0,0,random.randint(240,255))
+                                        display.display(output_image)
+                                        time.sleep(0.1)
+                                        # keep getting latest gamestate so we can break out of killscreen
+                                        gamestate = game_client.get_latest_gamestate()
+                                        if MY_ID in gamestate.players:
+                                            if gamestate.players[MY_ID].isEliminated is False:
+                                                break
+
 
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
