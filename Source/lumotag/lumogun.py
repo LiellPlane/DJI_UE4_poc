@@ -625,15 +625,22 @@ def main():
                                     # async call out for kill screen - poll client to see if it arrives
                                     game_client.request_kill_screen()
                                     while True:
-                                        output_image[:] = (0,0,random.randint(240,255))
-                                        display.display(output_image)
-                                        time.sleep(0.1)
+                                    
                                         # keep getting latest gamestate so we can break out of killscreen
                                         gamestate = game_client.get_latest_gamestate()
                                         if MY_ID in gamestate.players:
                                             if gamestate.players[MY_ID].isEliminated is False:
                                                 break
-
+                                        if len(game_client.killshots_of_me) > 0:
+                                            # Get first killshot image and resize it to fit output_image
+                                            killshot_img = game_client.killshots_of_me[0]
+                                            import cv2
+                                            resized_killshot = cv2.resize(killshot_img, (output_image.shape[1], output_image.shape[0]), interpolation=cv2.INTER_AREA)
+                                            output_image[:] = resized_killshot
+                                        else:
+                                            output_image[:] = (0,0,random.randint(240,255))
+                                        display.display(output_image)
+                                        time.sleep(0.1)
 
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?

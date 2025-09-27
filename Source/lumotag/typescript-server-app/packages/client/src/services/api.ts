@@ -90,12 +90,10 @@ export const apiService = {
   },
 
 
-  testKillShotEvent: async (deviceId: string, displayName: string, imageBase64: string): Promise<ReqKillScreenResponse> => {
+  testKillShotEvent: async (deviceId: string, _displayName: string, _imageBase64: string): Promise<ReqKillScreenResponse> => {
+    // displayName and imageBase64 are not used - server retrieves stored images from previous tagging events
     const response = await apiClient.post<ReqKillScreenResponse>("/events", {
-      image_data: imageBase64,
-      device_id: deviceId,
-      display_name: displayName,
-      event_type: "KillShot"
+      event_type: "ReqKillScreen"
     }, {
       headers: { "x-device-id": deviceId }
     });

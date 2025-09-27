@@ -107,6 +107,7 @@ class HTTPComms(AbstractHTTPComms):
         gamestate_url: str,
         OS_friendly_name: str,
         device_id: str,
+        killshots_of_me:list[np.ndarray] = [],
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.3,
     ) -> None:
@@ -192,11 +193,31 @@ class HTTPComms(AbstractHTTPComms):
         except threading_queue.Full:
             pass  # Silently drop if queue full
 
-    def set_killshot(response: dict):
-        plop=1
-        pass
+    def set_killshot(self, response: dict):
+        incoming_killshot = lumotag_events.ReqKillScreenResponse(**response)
+        
+        # Decode each base64 image
+        for i, image_data in enumerate(incoming_killshot.image_datas):
+            # Decode base64 to bytes
+            image_bytes = base64.b64decode(image_data)
+            
+            # Convert bytes to numpy array
+            nparr = np.frombuffer(image_bytes, np.uint8)
+            
+            # Decode JPEG to OpenCV image
+            image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            
+            self.killshots_of_me.append(image)
+
+        # # Debug: Show images
+        # for i, image in enumerate(decoded_images):
+        #     cv2.imshow(f"Killshot {i+1} from {incoming_killshot.display_name_tagger}", image)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
+        
 
     def request_kill_screen(self):
+        self.killshots_of_me = []
         event = lumotag_events.ReqKillScreen()
         self._events_q.put_nowait(EventWithCallback(event, self.set_killshot))
 
@@ -469,9 +490,9 @@ class HTTPComms(AbstractHTTPComms):
                         print(f"⚠️ Events network error: {e}")
                         self._last_events_error_time = time.time()
                     
-                except Exception as e:
-                    # Other errors - log and continue
-                    print(f"⚠️ Event send error: {e}")
+                # except Exception as e:
+                #     # Other errors - log and continue
+                #     print(f"⚠️ Event send error: {e}")
                     
         except Exception as e:
             tb_str = traceback.format_exc()

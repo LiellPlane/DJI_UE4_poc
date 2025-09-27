@@ -461,7 +461,7 @@ router.post("/events", async (req: GameRequest, res: Response) => {
 
         break;
 
-      case 'KillShot':
+      case 'ReqKillScreen':
         const killShotEvent = {
           ...req.body
         } as KillShot;

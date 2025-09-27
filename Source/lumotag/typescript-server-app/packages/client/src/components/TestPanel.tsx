@@ -18,14 +18,14 @@ export function TestPanel() {
 
   const convertImageToBase64 = async (): Promise<string> => {
     try {
-      const response = await fetch("/placeholder.jpg");
+      const response = await fetch("/chick.png");
       const blob = await response.blob();
       
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
           const base64 = reader.result as string;
-          // Remove the "data:image/jpeg;base64," prefix
+          // Remove the "data:image/png;base64," prefix
           const base64Data = base64.split(',')[1];
           resolve(base64Data);
         };
@@ -33,7 +33,7 @@ export function TestPanel() {
         reader.readAsDataURL(blob);
       });
     } catch (error) {
-      console.error("Failed to load placeholder image:", error);
+      console.error("Failed to load chick image:", error);
       throw error;
     }
   };
