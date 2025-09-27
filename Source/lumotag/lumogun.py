@@ -633,7 +633,7 @@ def main():
                                                 break
                                         if len(game_client.killshots_of_me) > 0:
                                             # Get first killshot image and resize it to fit output_image
-                                            killshot_img = game_client.killshots_of_me[0]
+                                            killshot_img = game_client.killshots_of_me[-1]
                                             import cv2
                                             resized_killshot = cv2.resize(killshot_img, (output_image.shape[1], output_image.shape[0]), interpolation=cv2.INTER_AREA)
                                             output_image[:] = resized_killshot
