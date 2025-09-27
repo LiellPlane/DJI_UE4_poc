@@ -15,6 +15,7 @@ import {
   UploadRequest,
   ServerMetrics,
   ReqKillScreenResponse,
+  KillShot,
 } from "../types";
 import { getDeviceInfo, DeviceInfo } from "./configs"
 
@@ -30,6 +31,7 @@ interface QueuedImage {
 
 const imageQueue: QueuedImage[] = [];
 let isProcessing = false;
+
 
 // Background thread for cyclic operations
 let backgroundThread: NodeJS.Timeout | null = null;
@@ -67,6 +69,7 @@ async function processImageQueue() {
   
   isProcessing = false;
 }
+
 
 // Pure data structure (no methods)
 interface GameState {
@@ -120,6 +123,9 @@ const runBackgroundOperations = (): void => {
     
     // Update connection status for all players
     updateConnectionStatus_all_players();
+    
+    // Process image queue
+    processImageQueue();
     
     logger.debug('Background operations completed');
   } catch (error) {
@@ -419,7 +425,7 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
 });
 
 // EVENTS endpoint - POST /api/v1/events
-router.post("/events", (req: GameRequest, res: Response) => {
+router.post("/events", async (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
   
   try {
@@ -455,9 +461,31 @@ router.post("/events", (req: GameRequest, res: Response) => {
 
         break;
 
+      case 'KillShot':
+        const killShotEvent = {
+          ...req.body
+        } as KillShot;
+
+        logger.info(`[${timestamp}] KILLSHOT REQUEST - deviceId: ${deviceId}, Event: ${JSON.stringify(killShotEvent)}`);
+
+        try {
+          const killScreenResponse = await processKillScreenRequest(deviceId, timestamp);
+          return res.json(killScreenResponse);
+        } catch (error) {
+          logger.error(`[${timestamp}] KillShot processing error:`, error);
+          if (error instanceof Error && error.message.includes('not found')) {
+            return res.status(404).json({ 
+              error: "Not found", 
+              details: error.message,
+              device_id: deviceId 
+            });
+          }
+          return res.status(500).json({ error: "Internal server error" });
+        }
+
         
       default:
-        throw new Error(`Unknown event type: ${eventType}. Supported types: PlayerTagged`);
+        throw new Error(`Unknown event type: ${eventType}. Supported types: PlayerTagged, KillShot`);
     }
 
     // Event processed successfully - no storage needed
@@ -523,74 +551,59 @@ router.get("/metrics", (_req: GameRequest, res: Response) => {
 });
 
 
-// KILLSCREEN endpoint - GET /api/v1/killscreen
-router.get("/killscreen", async (req: GameRequest, res: Response) => {
-  const timestamp = new Date().toISOString().slice(11, 23);
-  
-  try {
-    // Validate required header
-    const deviceId = validateAndExtractDeviceId(req, res);
-    if (!deviceId) return; // Response already sent by validation function
+// Helper function to process killscreen requests
+async function processKillScreenRequest(deviceId: string, timestamp: string): Promise<ReqKillScreenResponse> {
+  logger.info(`[${timestamp}] KILLSCREEN REQUEST - deviceId: ${deviceId}`);
 
-    logger.info(`[${timestamp}] KILLSCREEN REQUEST - deviceId: ${deviceId}`);
-
-    // Look up eliminated player by device ID
-    const eliminatedPlayer = gameState.killShots[deviceId];
-    if (!eliminatedPlayer) {
-      logger.warn(`[${timestamp}] Eliminated player not found for device: ${deviceId}`);
-      return res.status(404).json({ 
-        error: "Not found", 
-        details: "Could not find eliminated player",
-        device_id: deviceId 
-      });
-    }
-
-    // Get the tagger's display name (who eliminated this player)
-    const playerData = gameState.InGamePlayers[deviceId];
-    const displayNameTagger = playerData.display_name;
-
-    // 3-second retry loop to get image files
-    const maxRetries = 30; // 30 * 100ms = 3 seconds
-    const retryDelayMs = 100;
-    const imageIds = eliminatedPlayer.image_ids;
-    const imageDatas: string[] = [];
-
-    logger.info(`[${timestamp}] Attempting to retrieve ${imageIds.length} images: ${imageIds.join(', ')}`);
-
-    for (const imageId of imageIds) {
-      let imageData: string | null = null;
-      
-      // Retry loop for this specific image
-      for (let attempt = 0; attempt < maxRetries; attempt++) {
-        imageData = await imageSaver.getImageAsBase64(imageId);
-        if (imageData) {
-          logger.debug(`[${timestamp}] Image ${imageId} found on attempt ${attempt + 1}`);
-          break;
-        }
-        
-        if (attempt < maxRetries - 1) {
-          await new Promise(resolve => setTimeout(resolve, retryDelayMs));
-        }
-      }
-
-      imageDatas.push(imageData!);
-    }
-
-    // Create response
-    const killScreenResponse: ReqKillScreenResponse = {
-      display_name_tagger: displayNameTagger,
-      image_datas: imageDatas,
-      event_type: "ReqKillScreenResponse"
-    };
-
-    logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length} images for device: ${deviceId}`);
-    return res.json(killScreenResponse);
-
-  } catch (error) {
-    logger.error(`[${timestamp}] Killscreen error:`, error);
-    return res.status(500).json({ error: "Internal server error" });
+  // Look up eliminated player by device ID
+  const eliminatedPlayer = gameState.killShots[deviceId];
+  if (!eliminatedPlayer) {
+    logger.warn(`[${timestamp}] Eliminated player not found for device: ${deviceId}`);
+    throw new Error(`Eliminated player not found for device: ${deviceId}`);
   }
-});
+
+  // Get the tagger's display name (who eliminated this player)
+  const playerData = gameState.InGamePlayers[deviceId];
+  const displayNameTagger = playerData.display_name;
+
+  // 3-second retry loop to get image files
+  const maxRetries = 30; // 30 * 100ms = 3 seconds
+  const retryDelayMs = 100;
+  const imageIds = eliminatedPlayer.image_ids;
+  const imageDatas: string[] = [];
+
+  logger.info(`[${timestamp}] Attempting to retrieve ${imageIds.length} images: ${imageIds.join(', ')}`);
+
+  for (const imageId of imageIds) {
+    let imageData: string | null = null;
+    
+    // Retry loop for this specific image
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      imageData = await imageSaver.getImageAsBase64(imageId);
+      if (imageData) {
+        logger.debug(`[${timestamp}] Image ${imageId} found on attempt ${attempt + 1}`);
+        break;
+      }
+      
+      if (attempt < maxRetries - 1) {
+        await new Promise(resolve => setTimeout(resolve, retryDelayMs));
+      }
+    }
+
+    imageDatas.push(imageData!);
+  }
+
+  // Create response
+  const killScreenResponse: ReqKillScreenResponse = {
+    display_name_tagger: displayNameTagger,
+    image_datas: imageDatas,
+    event_type: "ReqKillScreenResponse"
+  };
+
+  logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length} images for device: ${deviceId}`);
+  return killScreenResponse;
+}
+
 
 // RESET endpoint - POST /api/v1/reset (simple endpoint to reset all game state and images)
 router.post("/reset", async (_req: GameRequest, res: Response) => {

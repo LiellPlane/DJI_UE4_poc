@@ -40,15 +40,16 @@ export function TestPanel() {
 
   const handleTestGameState = async () => {
     const key = "gamestate";
+    setResults({}); // Clear results
     setLoading({ ...loading, [key]: true });
     
     try {
       const result = await apiService.testGameState(selectedDevice);
-      setResults({ ...results, [key]: result });
+      setResults({ [key]: result });
       console.log("GameState Result:", result);
     } catch (error) {
       console.error("GameState Error:", error);
-      setResults({ ...results, [key]: { error: (error as Error).message } });
+      setResults({ [key]: { error: (error as Error).message } });
     } finally {
       setLoading({ ...loading, [key]: false });
     }
@@ -56,6 +57,7 @@ export function TestPanel() {
 
   const handleTestTagAndUpload = async () => {
     const key = "tagandupload";
+    setResults({}); // Clear results
     setLoading({ ...loading, [key]: true });
     
     try {
@@ -74,7 +76,6 @@ export function TestPanel() {
       console.log("Tag Result:", tagResult);
       
       setResults({ 
-        ...results, 
         [key]: { 
           imageId,
           upload: uploadResult, 
@@ -83,26 +84,35 @@ export function TestPanel() {
       });
     } catch (error) {
       console.error("Tag and Upload Error:", error);
-      setResults({ ...results, [key]: { error: (error as Error).message } });
+      setResults({ [key]: { error: (error as Error).message } });
     } finally {
       setLoading({ ...loading, [key]: false });
     }
   };
 
-  const handleTestKillScreen = async () => {
-    const key = "killscreen";
+
+  const handleTestKillShotEvent = async () => {
+    const key = "killshotevent";
+    setResults({}); // Clear results
     setLoading({ ...loading, [key]: true });
     
     try {
-      const result = await apiService.testKillScreen(selectedDevice);
-      setResults({ ...results, [key]: result });
-      console.log("KillScreen Result:", result);
+      // Convert placeholder image to base64
+      const imageBase64 = await convertImageToBase64();
+      
+      const result = await apiService.testKillShotEvent(
+        selectedDevice, 
+        deviceInfo.display_name, 
+        imageBase64
+      );
+      setResults({ [key]: result });
+      console.log("KillShot Event Result:", result);
       
       // Log image count for debugging
       console.log(`Received ${result.image_datas?.length || 0} images from ${result.display_name_tagger}`);
     } catch (error) {
-      console.error("KillScreen Error:", error);
-      setResults({ ...results, [key]: { error: (error as Error).message } });
+      console.error("KillShot Event Error:", error);
+      setResults({ [key]: { error: (error as Error).message } });
     } finally {
       setLoading({ ...loading, [key]: false });
     }
@@ -110,11 +120,12 @@ export function TestPanel() {
 
   const handleReset = async () => {
     const key = "reset";
+    setResults({}); // Clear results
     setLoading({ ...loading, [key]: true });
     
     try {
       const result = await apiService.resetGame();
-      setResults({ ...results, [key]: result });
+      setResults({ [key]: result });
       console.log("Reset Result:", result);
       
       // Clear existing results after successful reset
@@ -123,7 +134,7 @@ export function TestPanel() {
       }, 3000); // Clear results after 3 seconds to show reset worked
     } catch (error) {
       console.error("Reset Error:", error);
-      setResults({ ...results, [key]: { error: (error as Error).message } });
+      setResults({ [key]: { error: (error as Error).message } });
     } finally {
       setLoading({ ...loading, [key]: false });
     }
@@ -187,11 +198,11 @@ export function TestPanel() {
         </button>
 
         <button 
-          onClick={handleTestKillScreen}
-          disabled={loading.killscreen}
+          onClick={handleTestKillShotEvent}
+          disabled={loading.killshotevent}
           className="test-btn danger"
         >
-          {loading.killscreen ? "Loading..." : "💀 Test KillScreen"}
+          {loading.killshotevent ? "Processing..." : "💀 Get My KillShot Event"}
         </button>
 
         <button 
@@ -325,6 +336,7 @@ export function TestPanel() {
           white-space: pre-wrap;
           word-break: break-word;
           margin: 0;
+          color: #007bff;
         }
       `}</style>
     </div>

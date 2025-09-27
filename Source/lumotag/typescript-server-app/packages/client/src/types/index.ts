@@ -55,3 +55,11 @@ export interface ReqKillScreenResponse {
   image_datas: string[]; // Array of base64 encoded JPEG image data for HTTP transmission
   event_type: string;
 }
+
+export interface KillShot {
+  // when a device sees that it has zero health - request the kill images from the server
+  image_data: string; // base64 encoded JPEG
+  device_id: string;
+  display_name: string;
+  event_type: string;
+}

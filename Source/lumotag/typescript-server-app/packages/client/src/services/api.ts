@@ -89,8 +89,14 @@ export const apiService = {
     return response.data;
   },
 
-  testKillScreen: async (deviceId: string): Promise<ReqKillScreenResponse> => {
-    const response = await apiClient.get<ReqKillScreenResponse>("/killscreen", {
+
+  testKillShotEvent: async (deviceId: string, displayName: string, imageBase64: string): Promise<ReqKillScreenResponse> => {
+    const response = await apiClient.post<ReqKillScreenResponse>("/events", {
+      image_data: imageBase64,
+      device_id: deviceId,
+      display_name: displayName,
+      event_type: "KillShot"
+    }, {
       headers: { "x-device-id": deviceId }
     });
     return response.data;
