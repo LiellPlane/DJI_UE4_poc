@@ -3092,3 +3092,471 @@
   service: 'typescript-server',
   timestamp: '2025-09-27 19:57:40'
 }
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:32'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-27 19:59:32'
+}
+{
+  message: '🧹 Cleaning up 27 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:32'
+}
+{
+  message: '✅ Cleanup complete: 27 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:32'
+}
+{
+  message: '🧹 Startup cleanup: Removed 27 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:32'
+}
+{
+  message: 'Created new player: abc12345 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:42'
+}
+{
+  message: '[18:59:44.994] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"3","image_ids":["test_1758999584940_lry69mhmx"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:44'
+}
+{
+  message: '[18:59:44.994] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1758999584940_lry69mhmx"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:44'
+}
+{
+  message: '127.0.0.1 - - [27/Sep/2025:18:59:44 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:44'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 19:59:44'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 35 -> 36',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:47'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 36 -> 37',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:52'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 37 -> 38',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 19:59:57'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 38 -> 39',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:02'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 39 -> 40',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:07'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 40 -> 41',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:12'
+}
+{
+  message: '[19:00:14.901] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"3","image_ids":["test_1758999614869_iy333sckw"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:14'
+}
+{
+  message: '[19:00:14.901] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1758999614869_iy333sckw"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:14'
+}
+{
+  message: '127.0.0.1 - - [27/Sep/2025:19:00:14 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:14'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:00:14'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 26 -> 27',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:18'
+}
+{
+  message: '[19:00:20.196] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"3","image_ids":["test_1758999620155_brxzcpvdn"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: '[19:00:20.196] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1758999620155_brxzcpvdn"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: '127.0.0.1 - - [27/Sep/2025:19:00:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: '[19:00:20.564] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"3","image_ids":["test_1758999620537_rbefa6m8l"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: 'Player eliminated: PretendFriend (abc12345) by device abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: '[19:00:20.564] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1758999620537_rbefa6m8l"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: '127.0.0.1 - - [27/Sep/2025:19:00:20 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:00:20'
+}
+{
+  message: '[19:00:50.178] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:50'
+}
+{
+  message: '[19:00:50.178] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:50'
+}
+{
+  message: '[19:00:50.178] Attempting to retrieve 1 images: test_1758999620537_rbefa6m8l',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:50'
+}
+{
+  message: '[19:00:50.178] Killscreen response sent - 1 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:50'
+}
+{
+  message: '192.168.56.1 - - [27/Sep/2025:19:00:50 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:00:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '23ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:00:50'
+}
+{
+  message: '[19:07:22.037] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:22'
+}
+{
+  message: '[19:07:22.037] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:22'
+}
+{
+  message: '[19:07:22.037] Attempting to retrieve 1 images: test_1758999620537_rbefa6m8l',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:22'
+}
+{
+  message: '[19:07:22.037] Killscreen response sent - 1 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:22'
+}
+{
+  message: '192.168.56.1 - - [27/Sep/2025:19:07:22 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:22'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '23ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:07:22'
+}
+{
+  message: '[19:07:43.008] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:43'
+}
+{
+  message: '[19:07:43.008] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:43'
+}
+{
+  message: '[19:07:43.008] Attempting to retrieve 1 images: test_1758999620537_rbefa6m8l',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:43'
+}
+{
+  message: '[19:07:43.008] Killscreen response sent - 1 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:43'
+}
+{
+  message: '192.168.56.1 - - [27/Sep/2025:19:07:43 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:07:43'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '18ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:07:43'
+}
+{
+  message: '[19:08:03.776] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:03'
+}
+{
+  message: '[19:08:03.776] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:03'
+}
+{
+  message: '[19:08:03.776] Attempting to retrieve 1 images: test_1758999620537_rbefa6m8l',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:03'
+}
+{
+  message: '[19:08:03.776] Killscreen response sent - 1 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:03'
+}
+{
+  message: '192.168.56.1 - - [27/Sep/2025:19:08:03 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '20ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-27 20:08:03'
+}
+{
+  message: '[19:08:09.618] 🔄 RESET REQUEST - Clearing all game state and images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:09'
+}
+{
+  message: '🧹 Cleaning up 4 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:09'
+}
+{
+  message: '✅ Cleanup complete: 4 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:09'
+}
+{
+  message: '[19:08:09.618] ✅ RESET COMPLETE - Cleared 0 players, 4 images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:09'
+}
+{
+  message: '127.0.0.1 - - [27/Sep/2025:19:08:09 +0000] "POST /api/v1/reset HTTP/1.1" 200 161 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '8ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/reset',
+  timestamp: '2025-09-27 20:08:09'
+}
+{
+  message: 'Background thread stopped',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:34'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:34'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:34'
+}
+{
+  message: 'SIGINT received, shutting down gracefully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:34'
+}
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:47'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-09-27 20:08:47'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:47'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:08:47'
+}
+{
+  message: 'Server closed',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-27 20:09:03'
+}

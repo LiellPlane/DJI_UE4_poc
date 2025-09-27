@@ -614,7 +614,7 @@ def main():
                                 if players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp:
                                     # flash red
                                     output_image[:] = (0,0,255)
-                                    voice.speak("eek")
+                                    voice.speak("ooop")
                                 # set player card health (not sure about this yet)
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health
@@ -655,7 +655,7 @@ def main():
                         for tag_id in discovered_tags:
                             if "game_client" in locals():
                                 # in theory if you see more than one ID you will take off more health - do we want this functionality?
-                                game_client.send_tagging_event(tag_id, imageIDs)
+                                game_client.send_tagging_event(1, imageIDs)
 
                 if "game_client" in locals():
                     if is_trigger_pressed is True:
