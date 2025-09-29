@@ -594,10 +594,19 @@ def decode_id(
 
     # this sucks I am sorry
     barcode_id_int = 0
-    for index, bar_pos in enumerate([1,3]):
+    # these should always be on for now 
+    for index, bar_pos in enumerate([1,2,3,4]):
         if non_edge_bars_per_quad.get(bar_pos) is None:
+            if bar_pos in [1,3]:
+                raise Exception("During ID debugging - positions 1 and 3 are always ON!!!")
             continue
         barcode_id_int += 2**index
+
+
+    # for index, bar_pos in enumerate([1,3]):
+    #     if non_edge_bars_per_quad.get(bar_pos) is None:
+    #         continue
+    #     barcode_id_int += 2**index
 
 
     return VerifyBarcodeResult(

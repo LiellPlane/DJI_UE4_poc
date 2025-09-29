@@ -1430,10 +1430,10 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["70mm"]#quadrocode_corners
+                filters=["paintbrush"]#quadrocode_corners
             )
  
-            repeats = 100
+            repeats = 20
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
