@@ -1488,7 +1488,7 @@ def generate_red_tv_static(image_shape, block_size=5):
     blocks_w = width // block_size
     
     # Create small random array for blocks
-    static_blocks = np.random.choice([0, 1], size=(blocks_h, blocks_w), p=[0.3, 0.7])
+    static_blocks = np.random.choice([0, 1], size=(blocks_h, blocks_w), p=[0.1, 0.9])
     
     # Create output image
     static_image = np.zeros((height, width, 3), dtype=np.uint8)
