@@ -636,7 +636,6 @@ def main():
                                         # states can be stuck in this loop - probably should be handled with threads
                                         
                                         while time.time() < starttime + 3:
-                                            set_trigger(state=True, strobe_cnt=0)
                                             output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                             display.display(output_image)
                                             time.sleep(0.05)
