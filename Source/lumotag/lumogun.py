@@ -657,6 +657,7 @@ def main():
                                         compelled_speech = ["I ", "am ", "ru ", "tar ", "ded "] * 10
                                         index = 0
                                         while True:
+                                            results_trig_positions = triggers.test_states()
                                             time.sleep(0.01)
                                             is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
                                             if not is_trigger_reqd:
