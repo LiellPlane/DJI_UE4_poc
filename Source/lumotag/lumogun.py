@@ -634,7 +634,6 @@ def main():
                                     starttime = time.time()
                                     while True:
                                         # states can be stuck in this loop - probably should be handled with threads
-                                        
                                         while time.time() < starttime + 3:
                                             output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                             display.display(output_image)
@@ -654,7 +653,7 @@ def main():
                                         time.sleep(0.1)
 
                                         # bad logic
-                                        compelled_speech = ["I ", "am ", "ru ", "tar ", "ded "] * 10
+                                        compelled_speech = ["I.", "am.", "ru.", "tar.", "ded."] * 10
                                         index = 0
                                         while True:
                                             results_trig_positions = triggers.test_states()
@@ -665,7 +664,7 @@ def main():
                                             is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                                             if not is_trigger_pressed:
                                                 continue
-                                            voice.speak(compelled_speech[0])
+                                            voice.speak(compelled_speech[index])
                                             voice.wait_for_speak()
                                             time.sleep(0.2)
                                             index += 1

@@ -11,15 +11,15 @@ class Voice(factory.VoiceBase):
     # Class-level profiles of eSpeak voice settings
     # Each profile is a flat list of CLI args (excluding the message)
     VOICE_PROFILES = [
-        # male voices
-        ['-v', 'en+m1', '-s', '200', '-a', '190', '-p', '40'],
-        ['-v', 'en+m7', '-s', '200', '-a', '200', '-p', '20'],  # low male
-        # female voices
-        ['-v', 'en+f2', '-s', '200', '-a', '200', '-p', '60'],
-        ['-v', 'en+f3', '-s', '200', '-a', '200', '-p', '65'],
-        # novelty voices (commonly available variants)
-        ['-v', 'en+croak', '-s', '200', '-a', '180', '-p', '50'],
-        ['-v', 'en+whisper', '-s', '200', '-a', '170', '-p', '50'],
+        # male voices - slower speed for better short word articulation
+        ['-v', 'en+m1', '-s', '120', '-a', '180', '-p', '45'],
+        ['-v', 'en+m7', '-s', '130', '-a', '190', '-p', '35'],  # low male
+        # female voices - slower speed for better short word articulation
+        ['-v', 'en+f2', '-s', '125', '-a', '185', '-p', '55'],
+        ['-v', 'en+f3', '-s', '135', '-a', '180', '-p', '60'],
+        # novelty voices - slower speed for better short word articulation
+        ['-v', 'en+croak', '-s', '110', '-a', '170', '-p', '45'],
+        ['-v', 'en+whisper', '-s', '100', '-a', '160', '-p', '50'],
     ]
 
     def __init__(self) -> None:
