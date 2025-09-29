@@ -615,6 +615,10 @@ def main():
                                     # flash red
                                     output_image[:] = (0,0,255)
                                     voice.speak("ooop")
+                                    # next loop the buzzer will make a noise
+                                    trigger_debounce.trigger_1shot_simple_High(True)
+                                    # hope this works - overrides all debounces but could be in undefined state
+                                    set_trigger(state=True, strobe_cnt=0)
                                 # set player card health (not sure about this yet)
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health
@@ -624,18 +628,24 @@ def main():
                                 if gamestate.players[MY_ID].isEliminated:
                                     # async call out for kill screen - poll client to see if it arrives
                                     game_client.request_kill_screen()
+                                    set_torch(state=False, strobe_cnt=0)
+                                    set_laser(state=False, strobe_cnt=0)
+                                    starttime = time.time()
                                     while True:
-                                    
+                                        # states can be stuck in this loop - probably should be handled with threads
+                                        set_trigger(state=True, strobe_cnt=0)
+                                        while time.time() < starttime + 3:
+                                            output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
+                                            display.display(output_image)
+                                            time.sleep(0.05)
+                                        set_trigger(state=False, strobe_cnt=0)
                                         # keep getting latest gamestate so we can break out of killscreen
                                         gamestate = game_client.get_latest_gamestate()
                                         if MY_ID in gamestate.players:
                                             if gamestate.players[MY_ID].isEliminated is False:
                                                 break
                                         if len(game_client.killshots_of_me) > 0:
-                                            # Get first killshot image and resize it to fit output_image
-                                            killshot_img = game_client.killshots_of_me[-1]
-                                            import cv2
-                                            resized_killshot = cv2.resize(killshot_img, (output_image.shape[1], output_image.shape[0]), interpolation=cv2.INTER_AREA)
+                                            resized_killshot = img_processing.display_split_rotated_images(output_image.shape, game_client.killshots_of_me)
                                             output_image[:] = resized_killshot
                                         else:
                                             output_image[:] = (0,0,random.randint(240,255))

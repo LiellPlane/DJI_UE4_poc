@@ -1477,3 +1477,86 @@ def create_health_bar(health_value, width=400, height=600, num_segments=10, use_
         canvas = apply_bloom_effect(canvas, threshold=100, blur_size=15, intensity=1.8)
     
     return canvas
+
+
+def generate_red_tv_static(image_shape, block_size=5):
+    """Generate vibrant red TV-style static with large pixel blocks"""
+    height, width = image_shape[:2]
+    
+    # Calculate how many blocks we can fit
+    blocks_h = height // block_size
+    blocks_w = width // block_size
+    
+    # Create small random array for blocks
+    static_blocks = np.random.choice([0, 1], size=(blocks_h, blocks_w), p=[0.3, 0.7])
+    
+    # Create output image
+    static_image = np.zeros((height, width, 3), dtype=np.uint8)
+    
+    for i in range(blocks_h):
+        for j in range(blocks_w):
+            y_start = i * block_size
+            y_end = min((i + 1) * block_size, height)
+            x_start = j * block_size
+            x_end = min((j + 1) * block_size, width)
+            
+            if static_blocks[i, j]:
+                # Vibrant red with some white mixed in
+                intensity = np.random.randint(180, 256)
+                if np.random.random() < 0.2:  # 20% chance of white
+                    static_image[y_start:y_end, x_start:x_end] = [intensity, intensity, intensity]
+                else:  # 80% chance of red
+                    static_image[y_start:y_end, x_start:x_end] = [0, 0, intensity]
+            else:
+                # Dark/black pixels
+                static_image[y_start:y_end, x_start:x_end] = [np.random.randint(0, 30), 0, 0]
+    
+    return static_image
+
+
+def display_split_rotated_images(image_shape, image_list):
+    """Display up to 2 images rotated 90 degrees clockwise, split top/bottom
+    
+    Args:
+        image_shape: Target output shape (height, width, channels)
+        image_list: List of images (0, 1, or 2 images)
+    
+    Returns:
+        Combined image with rotated images in top/bottom halves
+    """
+    height, width = image_shape[:2]
+    output_image = np.zeros((height, width, 3), dtype=np.uint8)
+    
+    if not image_list:
+        return output_image  # Return black screen if no images
+    
+    # Calculate half height for splitting
+    half_height = height // 2
+    
+    # Process first image (top half)
+    if len(image_list) >= 1:
+        img1 = image_list[0]
+        # Rotate 90 degrees clockwise
+        rotated_img1 = cv2.rotate(img1, cv2.ROTATE_90_CLOCKWISE)
+        # Resize maintaining aspect ratio to fit top half
+        resized_img1 = get_resized_equalaspect(rotated_img1, (half_height, width))
+        # Center the image in the top half
+        y_offset = (half_height - resized_img1.shape[0]) // 2
+        x_offset = (width - resized_img1.shape[1]) // 2
+        output_image[y_offset:y_offset+resized_img1.shape[0], 
+                    x_offset:x_offset+resized_img1.shape[1]] = resized_img1
+    
+    # Process second image (bottom half) if available
+    if len(image_list) >= 2:
+        img2 = image_list[1]
+        # Rotate 90 degrees clockwise
+        rotated_img2 = cv2.rotate(img2, cv2.ROTATE_90_CLOCKWISE)
+        # Resize maintaining aspect ratio to fit bottom half
+        resized_img2 = get_resized_equalaspect(rotated_img2, (half_height, width))
+        # Center the image in the bottom half
+        y_offset = half_height + (half_height - resized_img2.shape[0]) // 2
+        x_offset = (width - resized_img2.shape[1]) // 2
+        output_image[y_offset:y_offset+resized_img2.shape[0], 
+                    x_offset:x_offset+resized_img2.shape[1]] = resized_img2
+    
+    return output_image

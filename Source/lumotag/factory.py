@@ -1433,7 +1433,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
                 filters=["paintbrush"]#quadrocode_corners
             )
  
-            repeats = 20
+            repeats = 1000
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
