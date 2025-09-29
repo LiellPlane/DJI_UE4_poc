@@ -653,6 +653,24 @@ def main():
                                         display.display(output_image)
                                         time.sleep(0.1)
 
+                                        # bad logic
+                                        compelled_speech = ["I ", "am ", "ru ", "tar ", "ded "] * 10
+                                        index = 0
+                                        while True:
+                                            time.sleep(0.01)
+                                            is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
+                                            if not is_trigger_reqd:
+                                                continue
+                                            is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+                                            if not is_trigger_pressed:
+                                                continue
+                                            voice.speak(compelled_speech[0])
+                                            voice.wait_for_speak()
+                                            index += 1
+                                            
+
+                                        
+
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
                         output_image[:] = 255
