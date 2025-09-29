@@ -1102,7 +1102,9 @@ class Relay(ABC):
     @abstractmethod
     def set_relay(self):
         pass
-
+    @abstractmethod
+    def force_set_relay(self):
+        pass
 
 class KillProcess(ABC):
     @abstractmethod

@@ -1501,12 +1501,12 @@ def generate_red_tv_static(image_shape, block_size=5):
             x_end = min((j + 1) * block_size, width)
             
             if static_blocks[i, j]:
-                # Vibrant red with some white mixed in
-                intensity = np.random.randint(180, 256)
+                # Much brighter red with some white mixed in
+                intensity = np.random.randint(240, 256)  # Much brighter range
                 if np.random.random() < 0.2:  # 20% chance of white
-                    static_image[y_start:y_end, x_start:x_end] = [intensity, intensity, intensity]
+                    static_image[y_start:y_end, x_start:x_end] = [255, 255, 255]  # Pure white
                 else:  # 80% chance of red
-                    static_image[y_start:y_end, x_start:x_end] = [0, 0, intensity]
+                    static_image[y_start:y_end, x_start:x_end] = [0, 0, 255]  # Pure bright red
             else:
                 # Dark/black pixels
                 static_image[y_start:y_end, x_start:x_end] = [np.random.randint(0, 30), 0, 0]

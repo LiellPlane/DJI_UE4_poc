@@ -45,6 +45,17 @@ class Relay(factory.Relay):
             self.debouncers_1shot[relay] = factory.Debounce()
             print(f"GPIO {gpio} set for relay {relay}")
 
+    def force_set_relay(
+        self,
+        relaypos: int,
+        state: bool
+    ):
+    if state is True:
+        debouncer.trigger,self.relays[relaypos].on
+    else:
+        debouncer.trigger,self.relays[relaypos].off
+    return  None
+
     def set_relay(
             self,
             relaypos: int,

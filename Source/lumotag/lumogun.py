@@ -628,17 +628,19 @@ def main():
                                 if gamestate.players[MY_ID].isEliminated:
                                     # async call out for kill screen - poll client to see if it arrives
                                     game_client.request_kill_screen()
-                                    set_torch(state=False, strobe_cnt=0)
-                                    set_laser(state=False, strobe_cnt=0)
+                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["torch"], False)
+                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["laser"], False)
+                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], True)
                                     starttime = time.time()
                                     while True:
                                         # states can be stuck in this loop - probably should be handled with threads
-                                        set_trigger(state=True, strobe_cnt=0)
+                                        
                                         while time.time() < starttime + 3:
+                                            set_trigger(state=True, strobe_cnt=0)
                                             output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                             display.display(output_image)
                                             time.sleep(0.05)
-                                        set_trigger(state=False, strobe_cnt=0)
+                                        relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
                                         # keep getting latest gamestate so we can break out of killscreen
                                         gamestate = game_client.get_latest_gamestate()
                                         if MY_ID in gamestate.players:
