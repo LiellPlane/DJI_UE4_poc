@@ -50,11 +50,11 @@ class Relay(factory.Relay):
         relaypos: int,
         state: bool
     ):
-    if state is True:
-        debouncer.trigger,self.relays[relaypos].on
-    else:
-        debouncer.trigger,self.relays[relaypos].off
-    return  None
+        if state is True:
+            debouncer.trigger,self.relays[relaypos].on
+        else:
+            debouncer.trigger,self.relays[relaypos].off
+        return  None
 
     def set_relay(
             self,
