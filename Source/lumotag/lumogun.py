@@ -667,6 +667,7 @@ def main():
                                                 continue
                                             voice.speak(compelled_speech[0])
                                             voice.wait_for_speak()
+                                            time.sleep(0.2)
                                             index += 1
                                             
 
