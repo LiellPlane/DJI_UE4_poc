@@ -53,9 +53,9 @@ class Relay(factory.Relay):
         debouncer = self.debouncers[relaypos]
 
         if state is True:
-            debouncer.trigger,self.relays[relaypos].on
+            debouncer.trigger(self.relays[relaypos].on)
         else:
-            debouncer.trigger,self.relays[relaypos].off
+            debouncer.trigger(self.relays[relaypos].off)
         return  None
 
     def set_relay(
