@@ -122,10 +122,10 @@ class Triggers(factory.Triggers):
 class FakeRelay():
     def __init__(self):
         self.state: bool = False
-    @property
+    
     def on(self):
         self.state = True
-    @property
+    
     def off(self):
         self.state = False
 

@@ -1114,9 +1114,10 @@ class Relay(ABC):
         debouncer = self.debouncers[relaypos]
 
         if state:
-            return debouncer.trigger(lambda: self.relays[relaypos].on)
+            # function is called by the debouncer class if it thinks its ok to go
+            return debouncer.trigger(lambda: self.relays[relaypos].on()) 
         else:
-            return debouncer.trigger(lambda: self.relays[relaypos].off)
+            return debouncer.trigger(lambda: self.relays[relaypos].off())
 
     def force_set_relay(
         self,
