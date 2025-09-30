@@ -105,8 +105,7 @@ def main():
     status_bar = factory.LumoUI(filesystem_=file_system)
     if get_platform() == _OS.RASPBERRY:
         for _ in range(0, 2):
-            voice.speak("cancel")
-            voice.wait_for_speak()
+            voice.speak_blocking("cancel")
             results_trig_positions = triggers.test_states()
             if any([True for i in results_trig_positions.values() if i is True]):
                 voice.speak("bye")
@@ -225,19 +224,16 @@ def main():
         "spacemaker", 0
     )  # for visual break between analyusis and system metrics
     # time.sleep(100000)
-    voice.speak("test cam 1")
-    voice.wait_for_speak()
+    voice.speak_blocking("test cam 1")
     img = next(image_capture_longrange)
     if img is None:
         raise Exception("broken long-range image source")
-    voice.speak("test cam 2")
-    voice.wait_for_speak()
+    voice.speak_blocking("test cam 2")
     img2 = next(image_capture_shortrange)
     if img2 is None:
         raise Exception("broken close-range image source")
 
-    voice.speak("cams OK")
-    voice.wait_for_speak()
+    voice.speak_blocking("cams OK")
     # img = next(image_capture_longrange)
 
     # if img is None:
@@ -251,8 +247,7 @@ def main():
     # so best to do it before any other processes come back with data
     display.generate_output_affine(next(image_capture_longrange))
     display.generate_output_affine(next(image_capture_shortrange))
-    voice.speak("ok display")
-    voice.wait_for_speak()
+    voice.speak_blocking("ok display")
 
     # messenger = lumogun.Messenger(GUN_CONFIGURATION)
     # workingdata = decode_clothID.WorkingData()
@@ -307,7 +302,7 @@ def main():
     test_dict["torch"] = [partial(set_torch, (i % 2 == 0), 0) for i in range(1, 8)]
     test_dict["laser"] = [partial(set_laser, (i % 2 == 0), 0) for i in range(1, 8)]
     test_dict["trigger"] = [partial(set_trigger, (i % 2 == 0), 0) for i in range(1, 8)]
-    voice.speak(f"testing {len(test_dict)} relays")
+    voice.speak_blocking(f"testing {len(test_dict)} relays")
     for devicename, _function_list in test_dict.items():
         # voice.speak(devicename)
         # voice.speak("relay")
@@ -319,8 +314,7 @@ def main():
             if PLATFORM == _OS.RASPBERRY:
                 time.sleep(0.1)
 
-    voice.speak("all devices healthy")
-    voice.wait_for_speak()
+    voice.speak_blocking("all devices healthy")
 
     trigger_debounce = GUN_CONFIGURATION.trigger_debounce
     zoom_debounce = GUN_CONFIGURATION.zoom_debounce
