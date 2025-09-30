@@ -652,7 +652,7 @@ def main():
                                         time.sleep(0.1)
 
                                         # bad logic
-                                        compelled_speech = ["I.", "am.", "ree.", "tar.", "ded."] * 10
+                                        compelled_speech = ["eye", "am.", "ree", "tar", "ded"] * 10
                                         index = 0
                                         while True:
                                             # why do I need this ? need to check the logic 
@@ -662,8 +662,7 @@ def main():
                                             is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
                                             if not is_trigger_pressed:
                                                 continue
-                                            voice.speak(compelled_speech[index])
-                                            voice.wait_for_speak()
+                                            voice.speak_blocking(compelled_speech[index])
                                             time.sleep(0.1)
                                             index += 1
                                             

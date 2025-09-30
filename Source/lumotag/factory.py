@@ -1565,8 +1565,7 @@ class VoiceBase(ABC):
     def wait_for_speak(self):
         while not self.in_box.empty():
             time.sleep(0.1)
-        # must be a better way to do this
-
+        # must be a bett
     def speak(
             self,
             message: str):
@@ -1593,6 +1592,10 @@ class VoiceBase(ABC):
             print(f"speak: something nasty happening {e}")
 
     def speaker(self, in_box):
+        pass
+
+    @abstractmethod 
+    def speak_blocking(self, message):
         pass
 
 from collections import deque

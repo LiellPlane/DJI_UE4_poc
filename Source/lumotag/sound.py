@@ -42,6 +42,9 @@ class Voice(factory.VoiceBase):
         
         while True:
             message = in_box.get(block=True)
+            self.speak_blocking(message)
+
+    def speak_blocking(self, message):
             try:
                 subprocess.run(self._build_cmd(message), check=True)
             except Exception as e:
