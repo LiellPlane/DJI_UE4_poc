@@ -33,8 +33,7 @@ class Triggers(factory.Triggers):
 
 class Relay(factory.Relay):
 
-    @staticmethod
-    def getOutputDevice(gpio):
+    def getOutputDevice(self, gpio):
         return gpiozero.OutputDevice(
                 f"BCM{gpio}",
                 active_high=True,

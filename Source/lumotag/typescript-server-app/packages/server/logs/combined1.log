@@ -22175,3 +22175,2347 @@
   service: 'typescript-server',
   timestamp: '2025-09-30 16:44:28'
 }
+{
+  message: '[16:28:00.793] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDRpPfhIgYRnLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '[16:28:00.793] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDRpPfhIgYRnLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:00 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '[16:28:00.798] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LID8kH3pg5F9iLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '[16:28:00.798] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID8kH3pg5F9iLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:00 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '[16:28:00.803] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LID8kH3pg5F9iLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '[16:28:00.803] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID8kH3pg5F9iLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:00 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:00'
+}
+{
+  message: '[16:28:01.188] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDHvywmu7cPGLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.188] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDHvywmu7cPGLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:01 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.194] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDHvywmu7cPGLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.194] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDHvywmu7cPGLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:01 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.626] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDTfPY1w0e1mLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.626] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDTfPY1w0e1mLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:01 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.632] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDTfPY1w0e1mLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:01.632] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDTfPY1w0e1mLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:01 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:01'
+}
+{
+  message: '[16:28:02.063] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDtgMJbBRIJELID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.063] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDtgMJbBRIJELID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:02 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.072] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDtgMJbBRIJELID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.072] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDtgMJbBRIJELID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:02 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.513] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDLB3ZL0dE7qLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.513] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDLB3ZL0dE7qLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:02 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.527] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDLB3ZL0dE7qLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.527] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDLB3ZL0dE7qLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:02 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.963] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDo8aWJBQF5CLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.963] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDo8aWJBQF5CLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:02 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.970] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDo8aWJBQF5CLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:02.970] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDo8aWJBQF5CLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:02 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:02'
+}
+{
+  message: '[16:28:03.372] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDN0FVestCiuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.372] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDN0FVestCiuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.384] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDN0FVestCiuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.384] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDN0FVestCiuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.812] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDOrFM1LLWuhLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.812] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDOrFM1LLWuhLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.820] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDOrFM1LLWuhLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:03.820] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDOrFM1LLWuhLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:03'
+}
+{
+  message: '[16:28:04.247] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDuxcVG9sT3gLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.247] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDuxcVG9sT3gLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.260] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDuxcVG9sT3gLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.260] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDuxcVG9sT3gLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.682] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDtOZu5fK49FLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.682] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDtOZu5fK49FLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.690] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDtOZu5fK49FLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:04.690] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDtOZu5fK49FLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:04'
+}
+{
+  message: '[16:28:05.104] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"13","image_ids":["LIDTcdb6pGV9pLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: '[16:28:05.104] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LIDTcdb6pGV9pLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: '[16:28:05.115] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"12345","image_ids":["LIDTcdb6pGV9pLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: '[16:28:05.115] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDTcdb6pGV9pLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:16:28:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:28:05'
+}
+{
+  message: '[16:28:50.730] 🔄 RESET REQUEST - Clearing all game state and images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:50'
+}
+{
+  message: '🧹 Cleaning up 33 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:50'
+}
+{
+  message: '✅ Cleanup complete: 33 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:50'
+}
+{
+  message: '[16:28:50.730] ✅ RESET COMPLETE - Cleared 0 players, 33 images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:50'
+}
+{
+  message: '127.0.0.1 - - [30/Sep/2025:16:28:50 +0000] "POST /api/v1/reset HTTP/1.1" 200 162 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:28:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '13ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/reset',
+  timestamp: '2025-09-30 17:28:50'
+}
+{
+  message: 'Created new player: 54e5b53659 with display_name: PlayerOne',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:32:47'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:32:50'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:32:55'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:00'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:05'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:10'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:15'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:20'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:25'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:30'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:35'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:41'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:46'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:51'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:33:56'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:01'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:06'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:11'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:16'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:21'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:26'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '[16:34:32.225] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDb6pbK9Lk7PLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '[16:34:32.225] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDb6pbK9Lk7PLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:32 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '[16:34:32.671] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDC2QonjYJGlLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '[16:34:32.671] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDC2QonjYJGlLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:32 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:32'
+}
+{
+  message: '[16:34:33.125] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDiaJQ70Ea6fLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '[16:34:33.125] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDiaJQ70Ea6fLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:33 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '[16:34:33.391] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDtMJgzw2GFFLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '[16:34:33.391] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDtMJgzw2GFFLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:33 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '[16:34:33.595] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDx960vbkWuuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '[16:34:33.595] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDx960vbkWuuLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:33 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:33'
+}
+{
+  message: '[16:34:34.920] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID9NnbMeSywxLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:34'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:34'
+}
+{
+  message: '[16:34:34.920] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9NnbMeSywxLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:34'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:34 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:34'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:34'
+}
+{
+  message: '[16:34:35.220] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDMJceXjW05MLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '[16:34:35.220] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDMJceXjW05MLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:35 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '[16:34:35.516] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDDwNjtZxWUgLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '[16:34:35.516] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDDwNjtZxWUgLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:35 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '[16:34:35.721] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDzC4T9h3UaxLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '[16:34:35.721] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDzC4T9h3UaxLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:35 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:35'
+}
+{
+  message: '[16:34:36.121] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDEKJOGDbQnSLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '[16:34:36.121] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDEKJOGDbQnSLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:36 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '[16:34:36.471] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDYuslJwhlYULID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '[16:34:36.471] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDYuslJwhlYULID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:36 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '[16:34:36.745] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID9iZMzRpN85LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '[16:34:36.745] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9iZMzRpN85LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:36 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:36'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:37'
+}
+{
+  message: '[16:34:37.743] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID7U0ViZ0U5ALID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:37'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:37'
+}
+{
+  message: '[16:34:37.743] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID7U0ViZ0U5ALID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:37'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:37 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:37'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:37'
+}
+{
+  message: '[16:34:38.075] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDfHfy1kyL6cLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '[16:34:38.075] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDfHfy1kyL6cLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '[16:34:38.447] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDnD6RlkSmdZLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '[16:34:38.447] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDnD6RlkSmdZLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '[16:34:38.924] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDWj9Y841iryLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '[16:34:38.924] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDWj9Y841iryLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:38 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:38'
+}
+{
+  message: '[16:34:39.372] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID93hu1xZYbdLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: '[16:34:39.372] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID93hu1xZYbdLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: '[16:34:39.622] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDE13FzIFKNlLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: '[16:34:39.622] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDE13FzIFKNlLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:39 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:39'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '[16:34:42.186] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID9TbIZzYUpfLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '[16:34:42.186] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID9TbIZzYUpfLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '[16:34:42.541] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDLpFd83DGAQLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '[16:34:42.541] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDLpFd83DGAQLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '[16:34:42.844] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID3fRhaSwN9SLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '[16:34:42.844] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID3fRhaSwN9SLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:42 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:42'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:47'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:52'
+}
+{
+  message: '[16:34:56.551] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDIv3gWDTXbzLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: '[16:34:56.551] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDIv3gWDTXbzLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:56 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: '[16:34:56.837] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LID6FGC5K1fjjLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: '[16:34:56.837] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LID6FGC5K1fjjLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:56 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:56'
+}
+{
+  message: '[16:34:57.100] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDqnJwb3KkmVLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.100] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDqnJwb3KkmVLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:57 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.323] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDgJMw5wt5tQLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.323] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDgJMw5wt5tQLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:57 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.527] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDCnI1yQIC3OLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.527] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDCnI1yQIC3OLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:57 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.718] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDR6e52W6Tf3LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.718] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDR6e52W6Tf3LID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:57 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.901] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDWawvu1suIjLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:57.901] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDWawvu1suIjLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:57 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:57'
+}
+{
+  message: '[16:34:58.220] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDRfuYNCULVeLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '[16:34:58.220] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDRfuYNCULVeLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:58 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '[16:34:58.535] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDwj3Msc09aOLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '[16:34:58.535] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDwj3Msc09aOLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:58 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '[16:34:58.824] PLAYER TAGGED - deviceId: 54e5b53659, Event: {"tag_id":"12345","image_ids":["LIDzQCxxhvwUwLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: 'Tag ID not found: 12345',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '[16:34:58.824] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: 54e5b53659\n' +
+    '    Parsed Data: {"tag_id":"12345","image_ids":["LIDzQCxxhvwUwLID"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:16:34:58 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 17:34:58'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:02'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:07'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:12'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:17'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:23'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:28'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:33'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:38'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:43'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:48'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:53'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:35:58'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:03'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:09'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:14'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:19'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:24'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:29'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:34'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:39'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:44'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:49'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:54'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 17:36:59'
+}
