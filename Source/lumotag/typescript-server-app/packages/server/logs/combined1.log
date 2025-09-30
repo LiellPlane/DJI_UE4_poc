@@ -19951,3 +19951,49 @@
   service: 'typescript-server',
   timestamp: '2025-09-30 13:09:07'
 }
+{
+  message: '[12:11:00.804] KILLSHOT REQUEST - deviceId: 54e5b53659, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:11:00'
+}
+{
+  message: '[12:11:00.804] KILLSCREEN REQUEST - deviceId: 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:11:00'
+}
+{
+  message: '[12:11:00.804] Attempting to retrieve 1 images: test_1759234010971_qnpwzlcdc',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:11:00'
+}
+{
+  message: '[12:11:00.804] Killscreen response sent - 1 images for device: 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:11:00'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:12:11:00 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:11:00'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '153ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:11:00'
+}
+{
+  message: 'Slow request: POST /events took 153.59ms (threshold: 50ms)',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:11:00'
+}

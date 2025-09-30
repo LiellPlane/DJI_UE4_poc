@@ -655,7 +655,8 @@ def main():
                                         compelled_speech = ["I.", "am.", "ree.", "tar.", "ded."] * 10
                                         index = 0
                                         while True:
-                                            
+                                            # why do I need this ? need to check the logic 
+                                            relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
                                             results_trig_positions = triggers.test_states()
                                             is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
                                             is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
