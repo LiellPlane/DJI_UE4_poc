@@ -119,54 +119,26 @@ class Triggers(factory.Triggers):
             outputs[pos] = self.flipflop
         return outputs
 
+class FakeRelay():
+    def __init__(self):
+        self.state: bool = False
+    @property
+    def on(self):
+        self.state = True
+    @property
+    def off(self):
+        self.state = False
 
 class Relay(factory.Relay):
-    
     def __init__(self, _gun_config) -> None:
+        self.fakerelays = {}
         super().__init__(_gun_config)
-        self.relay_mem = {}
-        for relay, gpio in self.gun_config.RELAY_IO.items():
-
-            self.debouncers[
-                self.gun_config.RELAY_IO[relay]] = factory.Debounce()
-            self.debouncers_1shot[
-                self.gun_config.RELAY_IO[relay]] = factory.Debounce()
-    
-            self.relay_mem[self.gun_config.RELAY_IO[relay]] = False
-
-            print(f"GPIO {gpio} set for relay {relay}")
-    def force_set_relay(self, relaypos:int, state:bool):
-        return None
-    def set_relay(self, relaypos:int, state:bool, strobe_cnt: int):
-        debouncer = self.debouncers[self.gun_config.RELAY_IO[relaypos]]
         
-        if (strobe_cnt == 0) or (state is False):
-            return debouncer.trigger(
-                self._set_fake_relay,
-                self.gun_config.RELAY_IO[relaypos],
-                state)
 
-        if strobe_cnt == 0 or state is False:
-            raise Exception("Bad input to relay strobe")
-
-        # different logic for strobing, use the memory of the debounce class
-        strobe_state = True
-
-        for _ in range ((strobe_cnt * 2) - 1):
-            while not debouncer.can_trigger():
-                time.sleep(0.005)
-            debouncer.trigger(
-                self._set_fake_relay,
-                self.gun_config.RELAY_IO[relaypos],
-                strobe_state)
-            strobe_state = not strobe_state
-            
-        return True
-
-    def _set_fake_relay(self, relay, state):
-        if relay not in self.relay_mem:
-            raise Exception("relay position does not exist!", relay)
-        self.relay_mem[relay] = state
+    def getOutputDevice(self, gpio):
+        fake_relay = FakeRelay()
+        self.fakerelays[gpio] = fake_relay
+        return fake_relay
 
 
 # class CSI_Camera(factory.Camera):

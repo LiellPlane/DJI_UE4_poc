@@ -299,9 +299,9 @@ def main():
     set_trigger = partial(relay.set_relay, GUN_CONFIGURATION.relay_map["clicker"])
 
     test_dict = {}
-    test_dict["torch"] = [partial(set_torch, (i % 2 == 0), 0) for i in range(1, 8)]
-    test_dict["laser"] = [partial(set_laser, (i % 2 == 0), 0) for i in range(1, 8)]
-    test_dict["trigger"] = [partial(set_trigger, (i % 2 == 0), 0) for i in range(1, 8)]
+    test_dict["torch"] = [partial(set_torch, (i % 2 == 0)) for i in range(1, 8)]
+    test_dict["laser"] = [partial(set_laser, (i % 2 == 0)) for i in range(1, 8)]
+    test_dict["trigger"] = [partial(set_trigger, (i % 2 == 0)) for i in range(1, 8)]
     voice.speak_blocking(f"testing {len(test_dict)} relays")
     for devicename, _function_list in test_dict.items():
         # voice.speak(devicename)
@@ -387,9 +387,9 @@ def main():
                 # if players["me"].get_torch_energy() < 5:
                 #    is_torch_reqd = False
 
-                set_torch(state=is_torch_reqd, strobe_cnt=0)
+                set_torch(state=is_torch_reqd)
 
-                set_laser(state=is_torch_reqd, strobe_cnt=0)
+                set_laser(state=is_torch_reqd)
 
                 result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)
 
@@ -418,8 +418,7 @@ def main():
                     # file_system.save_image(cap_img,message=f"_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                     # file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
-                    state=trigger_debounce.get_heldstate(), strobe_cnt=0
-                )  # click noise from relay only
+                    state=trigger_debounce.get_heldstate())  # click noise from relay only
 
             with time_it("gun image stuff", debug=PRINT_DEBUG), perfmonitor.measure(
                 "gun_image"
@@ -612,7 +611,7 @@ def main():
                                     # next loop the buzzer will make a noise
                                     trigger_debounce.trigger_1shot_simple_High(True)
                                     # hope this works - overrides all debounces but could be in undefined state
-                                    set_trigger(state=True, strobe_cnt=0)
+                                    set_trigger(state=True)
                                 # set player card health (not sure about this yet)
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health

@@ -1099,11 +1099,38 @@ class Relay(ABC):
         self.debouncers = {}
         self.debouncers_1shot = {}
         self.gun_config = _gun_config
+        self.relays = {}
+        for relay, gpio in self.gun_config.RELAY_IO.items():
+            self.relays[relay] = self.getOutputDevice(gpio)
+            self.debouncers[relay] = Debounce()
+            self.debouncers_1shot[relay] = Debounce()
+            print(f"GPIO {gpio} set for relay {relay}")
+
+    def set_relay(
+            self,
+            relaypos: int,
+            state: bool):
+
+        debouncer = self.debouncers[relaypos]
+
+        if state:
+            return debouncer.trigger(lambda: self.relays[relaypos].on)
+        else:
+            return debouncer.trigger(lambda: self.relays[relaypos].off)
+
+    def force_set_relay(
+        self,
+        relaypos: int,
+        state: bool
+    ):
+        if state is True:
+            self.relays[relaypos].on
+        else:
+            self.relays[relaypos].off
+        return  None
+
     @abstractmethod
-    def set_relay(self):
-        pass
-    @abstractmethod
-    def force_set_relay(self):
+    def getOutputDevice():
         pass
 
 class KillProcess(ABC):
