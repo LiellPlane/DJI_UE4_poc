@@ -50,8 +50,6 @@ class Relay(factory.Relay):
         relaypos: int,
         state: bool
     ):
-        debouncer = self.debouncers[relaypos]
-
         if state is True:
             self.relays[relaypos].on
         else:

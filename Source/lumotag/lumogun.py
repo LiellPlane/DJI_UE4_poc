@@ -113,7 +113,7 @@ def main():
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
 
-    voice.speak(GIT_REPO_INFO)
+    voice.speak_blocking(GIT_REPO_INFO)
     relay = lumogun.Relay(GUN_CONFIGURATION)
 
     # accelerometer = lumogun.Accelerometer()
@@ -608,7 +608,7 @@ def main():
                                 if players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp:
                                     # flash red
                                     output_image[:] = (0,0,255)
-                                    voice.speak("ooop")
+                                    voice.speak("BLARG")
                                     # next loop the buzzer will make a noise
                                     trigger_debounce.trigger_1shot_simple_High(True)
                                     # hope this works - overrides all debounces but could be in undefined state
