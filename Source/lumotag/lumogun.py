@@ -623,7 +623,7 @@ def main():
                                     game_client.request_kill_screen()
                                     relay.force_set_relay(GUN_CONFIGURATION.relay_map["torch"], False)
                                     relay.force_set_relay(GUN_CONFIGURATION.relay_map["laser"], False)
-                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
+                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], True)
                                     starttime = time.time()
                                     while True:
                                         # states can be stuck in this loop - probably should be handled with threads
@@ -631,6 +631,7 @@ def main():
                                             output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                             display.display(output_image)
                                             time.sleep(0.05)
+                                        relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
                                         # keep getting latest gamestate so we can break out of killscreen
                                         gamestate = game_client.get_latest_gamestate()
                                         if MY_ID in gamestate.players:
@@ -649,7 +650,7 @@ def main():
                                         index = 0
                                         while True:
                                             # why do I need this ? need to check the logic 
-                                            relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
+                                            
                                             results_trig_positions = triggers.test_states()
                                             is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
                                             is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)

@@ -1125,9 +1125,9 @@ class Relay(ABC):
         state: bool
     ):
         if state is True:
-            self.relays[relaypos].on
+            self.relays[relaypos].on()
         else:
-            self.relays[relaypos].off
+            self.relays[relaypos].off()
         return  None
 
     @abstractmethod
