@@ -19601,3 +19601,307 @@
   message: 'POST /api/v1/events',
   timestamp: '2025-09-30 12:49:49'
 }
+{
+  message: '[11:56:55.670] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 12:56:55'
+}
+{
+  message: '[11:56:55.670] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 12:56:55'
+}
+{
+  message: '[11:56:55.670] Attempting to retrieve 1 images: test_1759232989385_v7twxouww',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 12:56:55'
+}
+{
+  message: '[11:56:55.670] Killscreen response sent - 1 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 12:56:55'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:11:56:55 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 12:56:55'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '18ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 12:56:55'
+}
+{
+  message: '[12:03:51.453] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:03:51'
+}
+{
+  message: '[12:03:51.453] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:03:51'
+}
+{
+  message: '[12:03:51.453] Attempting to retrieve 1 images: test_1759232989385_v7twxouww',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:03:51'
+}
+{
+  message: '[12:03:51.453] Killscreen response sent - 1 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:03:51'
+}
+{
+  message: '192.168.56.1 - - [30/Sep/2025:12:03:51 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:03:51'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '17ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:03:51'
+}
+{
+  message: 'Created new player: 54e5b53659 with display_name: PlayerOne',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:17'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:17'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:22'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:27'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:32'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:37'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:42'
+}
+{
+  message: '[12:06:47.423] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"1","image_ids":["test_1759234007408_jprxmnize"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:47'
+}
+{
+  message: '[12:06:47.423] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1759234007408_jprxmnize"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:47'
+}
+{
+  message: '127.0.0.1 - - [30/Sep/2025:12:06:47 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:47'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:06:47'
+}
+{
+  message: 'HEALING: 54e5b53659 (PlayerOne) 41 -> 42',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:47'
+}
+{
+  message: '[12:06:48.387] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"1","image_ids":["test_1759234008372_shxrkaz98"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:48'
+}
+{
+  message: '[12:06:48.387] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1759234008372_shxrkaz98"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:48'
+}
+{
+  message: '127.0.0.1 - - [30/Sep/2025:12:06:48 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:48'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:06:48'
+}
+{
+  message: '[12:06:49.272] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"1","image_ids":["test_1759234009260_rx41p93ff"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:49'
+}
+{
+  message: '[12:06:49.272] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1759234009260_rx41p93ff"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:49'
+}
+{
+  message: '127.0.0.1 - - [30/Sep/2025:12:06:49 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:49'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:06:49'
+}
+{
+  message: '[12:06:50.989] PLAYER TAGGED - deviceId: abc12345, Event: {"tag_id":"1","image_ids":["test_1759234010971_qnpwzlcdc"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:50'
+}
+{
+  message: 'Player eliminated: PlayerOne (54e5b53659) by device abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:50'
+}
+{
+  message: '[12:06:50.989] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1759234010971_qnpwzlcdc"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:50'
+}
+{
+  message: '127.0.0.1 - - [30/Sep/2025:12:06:50 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:06:50'
+}
+{
+  message: '[12:06:51.343] KILLSHOT REQUEST - deviceId: 54e5b53659, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:51'
+}
+{
+  message: '[12:06:51.343] KILLSCREEN REQUEST - deviceId: 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:51'
+}
+{
+  message: '[12:06:51.343] Attempting to retrieve 1 images: test_1759234010971_qnpwzlcdc',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:51'
+}
+{
+  message: '[12:06:51.343] Killscreen response sent - 1 images for device: 54e5b53659',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:51'
+}
+{
+  message: '192.168.1.185 - - [30/Sep/2025:12:06:51 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.5"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:51'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '102ms',
+  ip: '192.168.1.185',
+  userAgent: 'python-requests/2.32.5',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-09-30 13:06:51'
+}
+{
+  message: 'Slow request: POST /events took 101.89ms (threshold: 50ms)',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-09-30 13:06:51'
+}

@@ -653,7 +653,7 @@ def main():
                                         time.sleep(0.1)
 
                                         # bad logic
-                                        compelled_speech = ["I.", "am.", "ru.", "tar.", "ded."] * 10
+                                        compelled_speech = ["I.", "am.", "ree.", "tar.", "ded."] * 10
                                         index = 0
                                         while True:
                                             results_trig_positions = triggers.test_states()
@@ -663,7 +663,7 @@ def main():
                                                 continue
                                             voice.speak(compelled_speech[index])
                                             voice.wait_for_speak()
-                                            time.sleep(0.2)
+                                            time.sleep(0.1)
                                             index += 1
                                             
 
