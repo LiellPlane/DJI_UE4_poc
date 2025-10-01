@@ -638,6 +638,7 @@ def main():
                                             continue
                                         if MY_ID in gamestate.players:
                                             if gamestate.players[MY_ID].isEliminated is False:
+                                                game_client.killshots_of_me = []  # Clear stale killshots on respawn
                                                 break
                                         if len(game_client.killshots_of_me) > 0:
                                             resized_killshot = img_processing.display_split_rotated_images(output_image.shape, game_client.killshots_of_me)
