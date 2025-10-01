@@ -627,13 +627,15 @@ def main():
                                     starttime = time.time()
                                     while True:
                                         # states can be stuck in this loop - probably should be handled with threads
-                                        while time.time() < starttime + 3:
+                                        while time.time() < starttime + 2:
                                             output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                             display.display(output_image)
                                             time.sleep(0.05)
                                         relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
                                         # keep getting latest gamestate so we can break out of killscreen
                                         gamestate = game_client.get_latest_gamestate()
+                                        if gamestate is None:
+                                            continue
                                         if MY_ID in gamestate.players:
                                             if gamestate.players[MY_ID].isEliminated is False:
                                                 break
@@ -646,19 +648,19 @@ def main():
                                         time.sleep(0.1)
 
                                         # bad logic
-                                        compelled_speech = ["eye", "am.", "ree", "tar", "ded"] * 10
-                                        index = 0
-                                        while True:
-                                            # why do I need this ? need to check the logic 
+                                        # compelled_speech = ["eye", "am.", "ree", "tar", "ded"] * 10
+                                        # index = 0
+                                        # while True:
+                                        #     # why do I need this ? need to check the logic 
                                             
-                                            results_trig_positions = triggers.test_states()
-                                            is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
-                                            is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
-                                            if not is_trigger_pressed:
-                                                continue
-                                            voice.speak_blocking(compelled_speech[index])
-                                            time.sleep(0.1)
-                                            index += 1
+                                        #     results_trig_positions = triggers.test_states()
+                                        #     is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
+                                        #     is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+                                        #     if not is_trigger_pressed:
+                                        #         continue
+                                        #     voice.speak_blocking(compelled_speech[index])
+                                        #     time.sleep(0.1)
+                                        #     index += 1
                                             
 
                                         
