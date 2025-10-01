@@ -57,10 +57,22 @@ def create_image_id(alphanumeric_chars=(
     list(range(97, 123))     # a-z
 )):
     """Create strictly alphanumeric ID with LID markers"""
-    # Randomly select 10 alphanumeric characters
-    random_id = np.array(np.random.choice(alphanumeric_chars, 10), dtype=np.uint8)
+    # Cache process ID to avoid repeated system calls
+    if not hasattr(create_image_id, '_cached_pid'):
+        create_image_id._cached_pid = os.getpid() % 10000
+    
+    # Convert PID to string and pad to 4 digits
+    pid_str = f"{create_image_id._cached_pid:04d}"
+    pid_chars = np.array([ord(c) for c in pid_str], dtype=np.uint8)
+    
+    # Randomly select 6 more alphanumeric characters
+    random_chars = np.array(np.random.choice(alphanumeric_chars, 6), dtype=np.uint8)
+    
+    # Combine: 4 PID digits + 6 random chars = 10 total
+    combined_id = np.concatenate([pid_chars, random_chars])
+    
     lid_array = np.array([76, 73, 68], dtype=np.uint8) # LID in ascii!
-    stacked_id = np.concatenate([lid_array, random_id, lid_array])
+    stacked_id = np.concatenate([lid_array, combined_id, lid_array])
     return stacked_id
 
 def decode_image_id(image: np.ndarray) -> str:
