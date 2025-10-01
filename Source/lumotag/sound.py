@@ -11,15 +11,9 @@ class Voice(factory.VoiceBase):
     # Class-level profiles of eSpeak voice settings
     # Each profile is a flat list of CLI args (excluding the message)
     VOICE_PROFILES = [
-        # male voices - faster speed
-        ['-v', 'en+m1', '-s', '200', '-a', '180', '-p', '45'],
-        ['-v', 'en+m7', '-s', '210', '-a', '190', '-p', '35'],  # low male
         # female voices - faster speed
         ['-v', 'en+f2', '-s', '205', '-a', '185', '-p', '55'],
         ['-v', 'en+f3', '-s', '215', '-a', '180', '-p', '60'],
-        # novelty voices - faster speed
-        ['-v', 'en+croak', '-s', '190', '-a', '170', '-p', '45'],
-        ['-v', 'en+whisper', '-s', '180', '-a', '160', '-p', '50'],
     ]
 
     def __init__(self) -> None:
