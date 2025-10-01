@@ -339,7 +339,7 @@ def main():
                     # use these for uploading images of interest to the server
                     # IDs that don't match will be ignored, so just grab all valid ones for now
                     imageIDs.append(factory.decode_image_id(cap_img))
-                    # imageIDs.append(factory.decode_image_id(cap_img_closerange))
+                    imageIDs.append(factory.decode_image_id(cap_img_closerange))
                 # this is bad code - should come as package with the image -
                 # but in easy of modularity have to do it like this for now
             with time_it("start analysis", debug=PRINT_DEBUG):
