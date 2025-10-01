@@ -38,6 +38,29 @@ export function TestPanel() {
     }
   };
 
+
+  const convert2ndImageToBase64 = async (): Promise<string> => {
+    try {
+      const response = await fetch("/chick2.png");
+      const blob = await response.blob();
+      
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const base64 = reader.result as string;
+          // Remove the "data:image/png;base64," prefix
+          const base64Data = base64.split(',')[1];
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    } catch (error) {
+      console.error("Failed to load chick image:", error);
+      throw error;
+    }
+  };
+
   const handleTestGameState = async () => {
     const key = "gamestate";
     setResults({}); // Clear results
@@ -61,23 +84,30 @@ export function TestPanel() {
     setLoading({ ...loading, [key]: true });
     
     try {
-      // Generate unique image ID
+      // Generate unique image IDs
+      // simulate long range and close range cameras of device
       const imageId = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const imageId2 = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       
       // Convert placeholder image to base64
       const imageBase64 = await convertImageToBase64();
-      
-      // Upload image first
+      const image2Base64 = await convert2ndImageToBase64();
+
+      // Tag player
+      const tagResult = await apiService.testTagPlayer(selectedDevice, targetTagId, [imageId, imageId2]);
+      console.log("Tag Result:", tagResult);
+
+      // Upload images
       const uploadResult = await apiService.testUploadImage(selectedDevice, imageId, imageBase64);
       console.log("Upload Result:", uploadResult);
+      const uploadResult2 = await apiService.testUploadImage(selectedDevice, imageId2, image2Base64);
+      console.log("Upload Result:", uploadResult2);
       
-      // Then tag player with same image ID
-      const tagResult = await apiService.testTagPlayer(selectedDevice, targetTagId, [imageId]);
-      console.log("Tag Result:", tagResult);
+ 
       
       setResults({ 
         [key]: { 
-          imageId,
+          imageId, imageId2,
           upload: uploadResult, 
           tag: tagResult 
         } 
