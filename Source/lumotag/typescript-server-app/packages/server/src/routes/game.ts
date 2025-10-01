@@ -454,6 +454,7 @@ router.post("/events", async (req: GameRequest, res: Response) => {
           if (eliminatedDeviceId) {
             eliminatePlayer(taggedEvent.tag_id);
             gameState.killShots[eliminatedDeviceId] = taggedEvent;
+            logger.info(`[${timestamp}] 🔍 DEBUG: Storing killshot for ${eliminatedDeviceId} with ${taggedEvent.image_ids.length} images: ${JSON.stringify(taggedEvent.image_ids)}`);
             logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
           }
         }
@@ -572,6 +573,7 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
   const imageIds = eliminatedPlayer.image_ids;
   const imageDatas: string[] = [];
 
+  logger.info(`[${timestamp}] 🔍 DEBUG: Killshot stored image_ids array: ${JSON.stringify(imageIds)}`);
   logger.info(`[${timestamp}] Attempting to retrieve ${imageIds.length} images: ${imageIds.join(', ')}`);
 
   for (const imageId of imageIds) {
@@ -590,6 +592,7 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
       }
     }
 
+    logger.info(`[${timestamp}] 🔍 DEBUG: Adding image ${imageId} to response, data length: ${imageData?.length || 0}`);
     imageDatas.push(imageData!);
   }
 
@@ -600,6 +603,8 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
     event_type: "ReqKillScreenResponse"
   };
 
+  logger.info(`[${timestamp}] 🔍 DEBUG: Killscreen response - sending ${imageDatas.length} images`);
+  logger.info(`[${timestamp}] 🔍 DEBUG: Response image data lengths: ${imageDatas.map(d => d?.length || 0).join(', ')}`);
   logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length} images for device: ${deviceId}`);
   return killScreenResponse;
 }
