@@ -109,7 +109,7 @@ class HTTPComms(AbstractHTTPComms):
         device_id: str,
         killshots_of_me:list[np.ndarray] = [],
         upload_timeout: float = 0.5,
-        poll_interval_seconds: float = 0.3,
+        poll_interval_seconds: float = 0.05,
     ) -> None:
         self.sharedmem_buffs_closerange = sharedmem_buffs_closerange
         self.safe_mem_details_func_closerange = safe_mem_details_func_closerange
@@ -139,7 +139,7 @@ class HTTPComms(AbstractHTTPComms):
         self._gamestate_lock = threading.Lock()
         
         # TTL cache for gamestate (200ms cache)
-        self._gamestate_cache = TTLCache(maxsize=1, ttl=0.2)
+        self._gamestate_cache = TTLCache(maxsize=1, ttl=0.05)
         
 
         
