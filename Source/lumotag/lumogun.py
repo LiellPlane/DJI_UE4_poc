@@ -645,8 +645,9 @@ def main():
                                             output_image[:] = resized_killshot
                                         else:
                                             output_image[:] = (0,0,random.randint(240,255))
+                                            game_client.request_kill_screen()
                                         display.display(output_image)
-                                        time.sleep(0.1)
+                                        time.sleep(0.2)
 
                                         # bad logic
                                         # compelled_speech = ["eye", "am.", "ree", "tar", "ded"] * 10
