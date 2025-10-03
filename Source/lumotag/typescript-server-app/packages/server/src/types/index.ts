@@ -30,6 +30,7 @@ export interface GameStatus {
 export interface PlayerTagged {
   tag_id: string;
   image_ids: string[];
+  tag_uuid: string; // Unique identifier for this tag event (32 char hex, no hyphens)
   event_type: string;
 }
 

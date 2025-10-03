@@ -445,7 +445,7 @@ router.post("/events", async (req: GameRequest, res: Response) => {
         } as PlayerTagged;
         
 
-        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, Event: ${JSON.stringify(taggedEvent)}`);
+        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, tag_uuid: ${taggedEvent.tag_uuid}, Event: ${JSON.stringify(taggedEvent)}`);
 
         const taggedPlayer: PlayerStatus | null = tagPlayer(taggedEvent.tag_id);
 

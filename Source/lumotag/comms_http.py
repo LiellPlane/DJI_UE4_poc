@@ -223,6 +223,7 @@ class HTTPComms(AbstractHTTPComms):
 
     def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
         """Send a tagging event via HTTP - validates event type first"""
+        
         event = lumotag_events.PlayerTagged(tag_id=tag_id, image_ids=image_ids)
 
         self._events_q.put_nowait(EventWithCallback(event, None))
