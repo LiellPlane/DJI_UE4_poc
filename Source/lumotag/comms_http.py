@@ -20,6 +20,8 @@ import inspect
 from pydantic import BaseModel
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+import socket
+import ipaddress
 
 
 @dataclass
@@ -27,6 +29,22 @@ class EventWithCallback:
     """Wrapper for events that need a callback function executed after successful transmission"""
     event: BaseModel
     callback: Callable[[dict], None] | None
+
+
+def _get_broadcast_address() -> str:
+    """Calculate broadcast address from local IP (assumes /24 subnet)"""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Doesn't actually send data
+        local_ip = s.getsockname()[0]
+        s.close()
+        
+        # Assume /24 subnet (most common)
+        network = ipaddress.IPv4Network(f"{local_ip}/24", strict=False)
+        return str(network.broadcast_address)
+    except Exception:
+        # Fallback to limited broadcast
+        return "255.255.255.255"
 
 
 class AbstractHTTPComms(ABC):
@@ -124,6 +142,19 @@ class HTTPComms(AbstractHTTPComms):
         self.max_cached_images = 20  # Maximum number of images to keep in memory before dropping oldest - in theory should just need last 2 frames
         self.poll_interval_seconds = poll_interval_seconds
 
+        # UDP broadcast setup (fire-and-forget, ~0.1ms overhead)
+        self._udp_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._udp_sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        self._udp_sock.setblocking(False)  # Guarantee sendto() never blocks
+        self._udp_broadcast_addr = _get_broadcast_address()
+        self._udp_port = 5000
+        print(f"UDP broadcast configured: {self._udp_broadcast_addr}:{self._udp_port}")
+        
+        # UDP listener socket (separate socket for receiving)
+        self._udp_listener_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self._udp_listener_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self._udp_listener_sock.bind(('', self._udp_port))  # Listen on all interfaces
+
         # Keep raw grayscale frames by embedded image id
         self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
         self._mem_lock = threading.Lock()
@@ -133,6 +164,10 @@ class HTTPComms(AbstractHTTPComms):
         self._connection_lock = threading.Lock()
         self._last_success_time = time.time()
         self._last_events_error_time = None  # Initialize to avoid linter error
+        
+        # UDP tag notification (thread-safe sticky flag)
+        self._udp_tagged = False
+        self._udp_tagged_lock = threading.Lock()
         
         # Game state tracking (thread-safe)
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
@@ -165,6 +200,7 @@ class HTTPComms(AbstractHTTPComms):
         self._upload_thread = threading.Thread(target=self._upload_worker, name="http-upload", daemon=True)
         self._events_thread = threading.Thread(target=self._events_worker, name="http-events", daemon=True)
         self._gamestate_thread = threading.Thread(target=self._gamestate_worker, name="http-gamestate", daemon=True)
+        self._udp_listener_thread = threading.Thread(target=self._udp_listener_worker, name="udp-listener", daemon=True)
         
         # Start all threads
         self._capture_thread_longrange.start()
@@ -172,6 +208,7 @@ class HTTPComms(AbstractHTTPComms):
         self._upload_thread.start()
         self._events_thread.start()
         self._gamestate_thread.start()
+        self._udp_listener_thread.start()
         
         # Give threads time to start up before constructor returns
         time.sleep(0.1)
@@ -216,16 +253,35 @@ class HTTPComms(AbstractHTTPComms):
         # cv2.destroyAllWindows()
         
 
+    def _broadcast_udp(self, event: BaseModel) -> None:
+        """Fire-and-forget UDP broadcast (~0.1ms, never blocks or crashes on network errors)
+        
+        Safe even with no network connectivity - kernel drops packet if no interface.
+        Raises on serialization errors (programming bugs).
+        """
+        # Let serialization errors crash (programming bugs)
+        udp_payload = event.model_dump_json().encode('utf-8')
+        
+        try:
+            # Only catch network-related errors
+            self._udp_sock.sendto(udp_payload, (self._udp_broadcast_addr, self._udp_port))
+        except OSError:
+            pass  # Network error (no interface, buffer full, etc) - silently ignore
+
     def request_kill_screen(self):
         self.killshots_of_me = []
         event = lumotag_events.ReqKillScreen()
         self._events_q.put_nowait(EventWithCallback(event, self.set_killshot))
 
     def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
-        """Send a tagging event via HTTP - validates event type first"""
+        """Send a tagging event via HTTP and UDP broadcast - validates event type first"""
         
         event = lumotag_events.PlayerTagged(tag_id=tag_id, image_ids=image_ids)
 
+        # UDP broadcast first for fastest peer notification (~0.1ms)
+        self._broadcast_udp(event)
+
+        # HTTP event queued for reliable delivery
         self._events_q.put_nowait(EventWithCallback(event, None))
 
     # def send_event(self, event) -> None:
@@ -262,6 +318,17 @@ class HTTPComms(AbstractHTTPComms):
         """Check if currently connected - thread-safe"""
         with self._connection_lock:
             return self._is_connected
+    
+    def ack_UDP_tagEvent(self) -> bool:
+        """Check if we've been tagged via UDP broadcast, and clear the flag (acknowledge)
+        
+        Returns:
+            True if we were tagged since last check, False otherwise
+        """
+        with self._udp_tagged_lock:
+            was_tagged = self._udp_tagged
+            self._udp_tagged = False
+            return was_tagged
     
     def get_latest_gamestate(self) -> lumotag_events.GameStatus:
         """Get most recent game state (non-blocking, thread-safe)
@@ -301,6 +368,8 @@ class HTTPComms(AbstractHTTPComms):
             raise RuntimeError("Events worker thread died silently (no exception caught)")
         if not self._gamestate_thread.is_alive():
             raise RuntimeError("Gamestate worker thread died silently (no exception caught)")
+        if not self._udp_listener_thread.is_alive():
+            raise RuntimeError("UDP listener thread died silently (no exception caught)")
 
     def _get_event_types(self):
         """Dynamically get all Pydantic model classes from lumotag_events module (called once at startup)"""
@@ -576,6 +645,48 @@ class HTTPComms(AbstractHTTPComms):
                 # not the best place for this 
                 self.raise_thread_error_if_any()
 
+        except Exception as e:
+            tb_str = traceback.format_exc()
+            try:
+                self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
+            except Exception:
+                pass
+            return
+
+    def _udp_listener_worker(self) -> None:
+        """UDP listener thread - blocks on recvfrom() (0% CPU when idle, ~0.2ms per packet)"""
+        try:
+            while True:
+                # Blocks here until packet arrives (thread sleeps, 0% CPU)
+                data, addr = self._udp_listener_sock.recvfrom(1024)
+                
+                try:
+                    # Parse JSON payload
+                    message = json.loads(data.decode('utf-8'))
+                    
+                    event_type = message.get('event_type')
+                    
+                    if event_type == 'PlayerTagged':
+                        # Deserialize into Pydantic model for validation
+                        event = lumotag_events.PlayerTagged(**message)
+                        
+                        # Check if it's us getting tagged - grab gamestate reference quickly
+                        with self._gamestate_lock:
+                            gamestate = self._latest_gamestate
+                        
+                        # Work with local reference outside lock (safe - Pydantic immutable)
+                        if gamestate and gamestate.players:
+                            my_player = gamestate.players.get(self.device_id)
+                            if my_player and my_player.tag_id == event.tag_id:
+                                # Set sticky flag - main thread will check and clear it
+                                with self._udp_tagged_lock:
+                                    self._udp_tagged = True
+
+
+                except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as e:
+                    # Malformed packet - log and continue
+                    print(f"UDP: Invalid packet from {addr}: {e}")
+                    
         except Exception as e:
             tb_str = traceback.format_exc()
             try:

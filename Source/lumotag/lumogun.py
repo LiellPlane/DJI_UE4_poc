@@ -604,9 +604,13 @@ def main():
                             if MY_ID in gamestate.players:
                                 new_hp = gamestate.players[MY_ID].health
                                 # incoming health lower - youve been hurt
-                                if players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp:
+                                udp_tag = game_client.ack_UDP_tagEvent()
+                                if (players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp) or udp_tag:
                                     # flash red
-                                    output_image[:] = (0,0,255)
+                                    if udp_tag is True:
+                                        output_image[:] = (255,0,0)
+                                    else:
+                                        output_image[:] = (0,0,255)
                                     voice.speak("BLARG")
                                     # next loop the buzzer will make a noise
                                     trigger_debounce.trigger_1shot_simple_High(True)
