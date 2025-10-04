@@ -678,7 +678,7 @@ class HTTPComms(AbstractHTTPComms):
                                 # Set sticky flag - main thread will check and clear it
                                 with self._tagged_lock:
                                     self._udp_tagged = True
-                                # self.reduce_players_health(self.device_id, 25) 
+                                self.reduce_players_health(self.device_id, 25) 
 
 
                 except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as e:
@@ -693,13 +693,14 @@ class HTTPComms(AbstractHTTPComms):
                 pass
             return
     
-    def reduce_players_health(self, device_id: int, damage: int):
+    def reduce_players_health(self, device_id: str, damage: int):
         """Reduce player health locally (note: gamestate polling will overwrite this)"""
         try:
             if device_id in self._latest_gamestate.players:
                 with self._gamestate_lock:
-                    self._latest_gamestate.players[device_id].health += -damage
+                    self._latest_gamestate.players[device_id].health -= damage
         except Exception as e:
+            # If this fails, crash the whole process - something is seriously wrong
             tb_str = traceback.format_exc()
             self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
 
