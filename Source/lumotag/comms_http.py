@@ -10,7 +10,6 @@ import numpy as np
 import traceback
 import requests
 from functools import lru_cache, wraps
-from cachetools import TTLCache, cached
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
 from my_collections import SharedMem_ImgTicket
@@ -165,18 +164,15 @@ class HTTPComms(AbstractHTTPComms):
         self._last_success_time = time.time()
         self._last_events_error_time = None  # Initialize to avoid linter error
         
-        # UDP tag notification (thread-safe sticky flag)
+        # UDP / HTTP tag notification (thread-safe sticky flag)
         self._udp_tagged = False
-        self._udp_tagged_lock = threading.Lock()
+        self._GameUpdate_tagged = False
+        self._tagged_lock = threading.Lock()
         
+
         # Game state tracking (thread-safe)
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
-        
-        # TTL cache for gamestate (200ms cache)
-        self._gamestate_cache = TTLCache(maxsize=1, ttl=0.05)
-        
-
         
         # Cache event types once at startup for performance (from WebSocketEventsComms)
         self._cached_event_types = self._get_event_types()
@@ -319,30 +315,23 @@ class HTTPComms(AbstractHTTPComms):
         with self._connection_lock:
             return self._is_connected
     
-    def ack_UDP_tagEvent(self) -> bool:
-        """Check if we've been tagged via UDP broadcast, and clear the flag (acknowledge)
+    def acknowledge_tagEvent(self) -> bool:
+        """Check if we've been tagged via UDP broadcast or HTTP update request, and clear the flag (acknowledge)
         
         Returns:
             True if we were tagged since last check, False otherwise
         """
-        with self._udp_tagged_lock:
-            was_tagged = self._udp_tagged
+        with self._tagged_lock:
+            was_tagged = self._udp_tagged or self._GameUpdate_tagged
             self._udp_tagged = False
+            self._GameUpdate_tagged = False
             return was_tagged
     
     def get_latest_gamestate(self) -> lumotag_events.GameStatus:
         """Get most recent game state (non-blocking, thread-safe)
-        Returns validated GameStatus Pydantic object with 200ms caching"""
-        # Try to get from cache first
-        try:
-            return self._gamestate_cache['gamestate']
-        except KeyError:
-            # Cache miss - get fresh data and cache it
-            with self._gamestate_lock:
-                fresh_gamestate = self._latest_gamestate
-            
-            self._gamestate_cache['gamestate'] = fresh_gamestate
-            return fresh_gamestate
+        Returns validated GameStatus Pydantic object"""
+        with self._gamestate_lock:
+            return self._latest_gamestate
 
     def _set_connected(self, connected: bool) -> None:
         """Internal method to update connection state - thread-safe"""
@@ -609,6 +598,14 @@ class HTTPComms(AbstractHTTPComms):
                         
                             game_update = lumotag_events.GameStatus(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
                             
+                            # if local health is bigger than incoming health - we've been tagged 
+                            if (self._latest_gamestate.players 
+                                and self.device_id in game_update.players 
+                                and self.device_id in self._latest_gamestate.players 
+                                and game_update.players[self.device_id].health < self._latest_gamestate.players[self.device_id].health):
+                                with self._tagged_lock:
+                                    self._GameUpdate_tagged = True
+
                             # Store validated game state
                             with self._gamestate_lock:
                                 self._latest_gamestate = game_update
@@ -679,7 +676,7 @@ class HTTPComms(AbstractHTTPComms):
                             my_player = gamestate.players.get(self.device_id)
                             if my_player and my_player.tag_id == event.tag_id:
                                 # Set sticky flag - main thread will check and clear it
-                                with self._udp_tagged_lock:
+                                with self._tagged_lock:
                                     self._udp_tagged = True
 
 

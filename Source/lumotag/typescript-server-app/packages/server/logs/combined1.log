@@ -124120,3 +124120,342 @@
   service: 'typescript-server',
   timestamp: '2025-10-03 21:53:38'
 }
+{
+  message: 'Background thread started (500ms interval)',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:32'
+}
+{
+  service: 'typescript-server',
+  environment: 'development',
+  host: '0.0.0.0',
+  port: 8080,
+  level: 'info',
+  message: 'Server running on 0.0.0.0:8080',
+  timestamp: '2025-10-04 16:20:32'
+}
+{
+  message: '🧹 Cleaning up 934 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:32'
+}
+{
+  message: '✅ Cleanup complete: 934 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:33'
+}
+{
+  message: '🧹 Startup cleanup: Removed 934 old image files',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:33'
+}
+{
+  message: 'Created new player: abc12345 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:33'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:37'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:43'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:48'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:53'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:20:58'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:03'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:08'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:13'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:18'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:23'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:28'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:33'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:38'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:43'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:49'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:54'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:21:59'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:04'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:09'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:14'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:19'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:24'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:29'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:34'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:39'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:45'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:50'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:22:55'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:00'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:05'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:10'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:15'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:20'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:25'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:31'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:36'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:41'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:46'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:51'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:23:56'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:01'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:06'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:11'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:16'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:22'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:27'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:32'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:37'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:42'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:24:47'
+}

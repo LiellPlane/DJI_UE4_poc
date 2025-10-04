@@ -604,10 +604,10 @@ def main():
                             if MY_ID in gamestate.players:
                                 new_hp = gamestate.players[MY_ID].health
                                 # incoming health lower - youve been hurt
-                                udp_tag = game_client.ack_UDP_tagEvent()
-                                if (players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp) or udp_tag:
+                                im_tagged = game_client.acknowledge_tagEvent()
+                                if (players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp) or im_tagged:
                                     # flash red
-                                    if udp_tag is True:
+                                    if im_tagged is True:
                                         output_image[:] = (255,0,0)
                                     else:
                                         output_image[:] = (0,0,255)
