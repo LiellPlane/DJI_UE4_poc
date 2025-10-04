@@ -93,6 +93,20 @@ class RelayFunction(Enum):
 def create_id():
     return str(uuid.uuid4())
 
+class TimeDiffObject:
+    """stopwatch function"""
+
+    def __init__(self) -> None:
+        self._start_time = time.perf_counter()
+
+    def get_dt(self) -> float:
+        """gets time in seconds since last reset/init"""
+        self._stop_time = time.perf_counter()
+        difference_secs = self._stop_time-self._start_time
+        return difference_secs
+
+    def reset(self):
+        self._start_time = time.perf_counter()
 
 class gun_config(ABC):
     model = "NOT OVERRIDDEN!"
@@ -410,6 +424,11 @@ class display(ABC):
 
 
 class PlayerInfoBoxv2:
+    # Shared fade state across all instances
+    _shared_timer = TimeDiffObject()
+    _shared_fade_ms = 250
+    _shared_current_fade_ms = 0
+    
     def __init__(
             self,
             playername,
@@ -423,16 +442,12 @@ class PlayerInfoBoxv2:
         cam_img_res: resolution of the image capture device, to calculate affine transforms
         """
 
-        self.timer = TimeDiffObject()
         self.playername = playername
 
         self.col_image, self.alphamask = self.create_player_image_and_mask()
 
         self.max_healthpoints = 100
         self.min_healthpoints = 0
-        self.fade_ms = 250
-        self.current_fade_ms = 0
-        #self.fade_direction = 1
         self.healthpoints = 1
 
         # Pain system - performant for 40fps checks
@@ -484,24 +499,24 @@ class PlayerInfoBoxv2:
         self._pain_expires_at = time.perf_counter() + self.pain_duration_seconds
 
     def elements_fadein(self):
-        return self.calculate_fade(direction=1,fade_ms= self.fade_ms)
+        return self.calculate_fade(direction=1, fade_ms=self._shared_fade_ms)
 
     def elements_fadeout(self):
-        return self.calculate_fade(direction=-1, fade_ms=self.fade_ms, multiplier=(1/50))
+        return self.calculate_fade(direction=-1, fade_ms=self._shared_fade_ms, multiplier=(1/50))
 
     def calculate_fade(self, direction: Literal[-1, 1], fade_ms, multiplier=1):
         if direction not in [-1, 1]:
             raise Exception("bad input to calculate fade", direction)
-        time_diff_ms = self.timer.get_dt() * (1000 * multiplier)
-        self.timer.reset()
-        self.current_fade_ms += (time_diff_ms * direction)
+        time_diff_ms = self._shared_timer.get_dt() * (1000 * multiplier)
+        self._shared_timer.reset()
+        self._shared_current_fade_ms += (time_diff_ms * direction)
         # limit working fade value
-        self.current_fade_ms = min(
-            max(self.current_fade_ms, 0),
+        self._shared_current_fade_ms = min(
+            max(self._shared_current_fade_ms, 0),
             fade_ms
             )
         # get normalised value
-        norm = self.current_fade_ms / fade_ms
+        norm = self._shared_current_fade_ms / fade_ms
         return self.lerp(norm)
 
     @staticmethod
@@ -1255,20 +1270,7 @@ class Debounce:
         return False
 
 
-class TimeDiffObject:
-    """stopwatch function"""
 
-    def __init__(self) -> None:
-        self._start_time = time.perf_counter()
-
-    def get_dt(self) -> float:
-        """gets time in seconds since last reset/init"""
-        self._stop_time = time.perf_counter()
-        difference_secs = self._stop_time-self._start_time
-        return difference_secs
-
-    def reset(self):
-        self._start_time = time.perf_counter()
 
 
 class Messenger(ABC):
@@ -1490,7 +1492,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["70mm"]#quadrocode_corners
+                filters=["paint"]#quadrocode_corners
             )
  
             repeats = 1000

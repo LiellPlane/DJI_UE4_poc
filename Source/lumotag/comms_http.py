@@ -181,9 +181,9 @@ class HTTPComms(AbstractHTTPComms):
         # Separate queues for different concerns
         self._capture_q_close_range: threading_queue.Queue = threading_queue.Queue(maxsize=2)
         self._capture_q_long_range: threading_queue.Queue = threading_queue.Queue(maxsize=2)
-        self._upload_q: threading_queue.Queue = threading_queue.Queue(maxsize=15)
-        self._events_q: threading_queue.Queue = threading_queue.Queue(maxsize=50)
-        self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=10)
+        self._upload_q: threading_queue.Queue = threading_queue.Queue(maxsize=3)
+        self._events_q: threading_queue.Queue = threading_queue.Queue(maxsize=5)
+        self._error_q: threading_queue.Queue = threading_queue.Queue(maxsize=5)
 
 
         
