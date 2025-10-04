@@ -18,6 +18,8 @@ import {
   KillShot,
 } from "../types";
 import { getDeviceInfo, DeviceInfo } from "./configs"
+import * as dgram from "dgram";
+import * as crypto from "crypto";
 
 const router: Router = express.Router();
 
@@ -642,6 +644,59 @@ router.post("/reset", async (_req: GameRequest, res: Response) => {
     
   } catch (error) {
     logger.error(`[${timestamp}] Reset error:`, error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// TEST UDP BROADCAST endpoint - POST /api/v1/test/udp-broadcast
+router.post("/test/udp-broadcast", (req: GameRequest, res: Response) => {
+  const timestamp = new Date().toISOString().slice(11, 23);
+  
+  try {
+    const { tag_id, image_ids } = req.body;
+    
+    if (!tag_id) {
+      return res.status(400).json({ error: "tag_id is required" });
+    }
+    
+    // Create PlayerTagged event (matches Python Pydantic model)
+    const event: PlayerTagged = {
+      tag_id,
+      image_ids: image_ids || [],
+      tag_uuid: crypto.randomBytes(16).toString('hex'), // 32 char hex, no hyphens (more compatible)
+      event_type: "PlayerTagged"
+    };
+    
+    logger.info(`[${timestamp}] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: ${tag_id}, uuid: ${event.tag_uuid.substring(0, 8)}...`);
+    
+    // Broadcast UDP
+    const sock = dgram.createSocket('udp4');
+    const message = Buffer.from(JSON.stringify(event));
+    
+    // Must bind before setting broadcast option
+    sock.bind(() => {
+      sock.setBroadcast(true);
+      
+      // Broadcast to 255.255.255.255 (limited broadcast)
+      sock.send(message, 5000, '255.255.255.255', (err) => {
+        if (err) {
+          logger.error(`[${timestamp}] UDP broadcast error:`, err);
+        } else {
+          logger.info(`[${timestamp}] ✅ UDP broadcast sent successfully`);
+        }
+        sock.close();
+      });
+    });
+    
+    return res.json({
+      status: "success",
+      message: "UDP broadcast sent",
+      event,
+      timestamp: Date.now()
+    });
+    
+  } catch (error) {
+    logger.error(`[${timestamp}] UDP broadcast test error:`, error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

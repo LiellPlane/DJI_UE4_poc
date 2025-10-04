@@ -105,4 +105,36 @@ export const apiService = {
     const response = await apiClient.post("/reset");
     return response.data;
   },
+
+  // Test UDP broadcast (simulates device tagging via UDP)
+  testUDPBroadcast: async (tagId: string, imageIds: string[]): Promise<any> => {
+    const response = await apiClient.post("/test/udp-broadcast", {
+      tag_id: tagId,
+      image_ids: imageIds
+    });
+    return response.data;
+  },
+
+  // Test tag player with BOTH HTTP and UDP (simulates real Python behavior)
+  testTagPlayerWithUDP: async (deviceId: string, tagId: string, imageIds: string[]): Promise<any> => {
+    // Send both HTTP event AND UDP broadcast (same as comms_http.py send_tagging_event)
+    const [httpResult, udpResult] = await Promise.all([
+      apiClient.post("/events", {
+        tag_id: tagId,
+        image_ids: imageIds,
+        event_type: "PlayerTagged"
+      }, {
+        headers: { "x-device-id": deviceId }
+      }),
+      apiClient.post("/test/udp-broadcast", {
+        tag_id: tagId,
+        image_ids: imageIds
+      })
+    ]);
+    
+    return {
+      http: httpResult.data,
+      udp: udpResult.data
+    };
+  },
 };

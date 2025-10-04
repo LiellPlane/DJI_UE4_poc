@@ -170,6 +170,41 @@ export function TestPanel() {
     }
   };
 
+  const handleTestUDPBroadcast = async () => {
+    const key = "udpbroadcast";
+    setResults({}); // Clear results
+    setLoading({ ...loading, [key]: true });
+    
+    try {
+      const result = await apiService.testUDPBroadcast(targetTagId, []);
+      setResults({ [key]: result });
+      console.log("UDP Broadcast Result:", result);
+    } catch (error) {
+      console.error("UDP Broadcast Error:", error);
+      setResults({ [key]: { error: (error as Error).message } });
+    } finally {
+      setLoading({ ...loading, [key]: false });
+    }
+  };
+
+  const handleTestTagWithUDP = async () => {
+    const key = "tagwithudp";
+    setResults({}); // Clear results
+    setLoading({ ...loading, [key]: true });
+    
+    try {
+      // Simulates real Python behavior - sends both HTTP and UDP with same tag_id
+      const result = await apiService.testTagPlayerWithUDP(selectedDevice, targetTagId, []);
+      setResults({ [key]: result });
+      console.log("Tag with UDP Result (HTTP + UDP):", result);
+    } catch (error) {
+      console.error("Tag with UDP Error:", error);
+      setResults({ [key]: { error: (error as Error).message } });
+    } finally {
+      setLoading({ ...loading, [key]: false });
+    }
+  };
+
   const deviceInfo = DEVICE_MAPPING[selectedDevice as keyof typeof DEVICE_MAPPING];
 
   return (
@@ -233,6 +268,22 @@ export function TestPanel() {
           className="test-btn danger"
         >
           {loading.killshotevent ? "Processing..." : "💀 Get My KillShot Event"}
+        </button>
+
+        <button 
+          onClick={handleTestUDPBroadcast}
+          disabled={loading.udpbroadcast}
+          className="test-btn udp"
+        >
+          {loading.udpbroadcast ? "Broadcasting..." : "📡 Test UDP Broadcast Only"}
+        </button>
+
+        <button 
+          onClick={handleTestTagWithUDP}
+          disabled={loading.tagwithudp}
+          className="test-btn combo"
+        >
+          {loading.tagwithudp ? "Processing..." : "⚡ Tag Player (HTTP + UDP)"}
         </button>
 
         <button 
@@ -345,6 +396,24 @@ export function TestPanel() {
 
         .test-btn.warning:hover:not(:disabled) {
           background: #e8590c;
+        }
+
+        .test-btn.udp {
+          background: #6f42c1;
+          color: white;
+        }
+
+        .test-btn.udp:hover:not(:disabled) {
+          background: #5a32a3;
+        }
+
+        .test-btn.combo {
+          background: #20c997;
+          color: white;
+        }
+
+        .test-btn.combo:hover:not(:disabled) {
+          background: #17a67e;
         }
 
         .test-results {
