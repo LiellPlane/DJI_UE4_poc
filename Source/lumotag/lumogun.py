@@ -602,7 +602,6 @@ def main():
                             # probably should get the player card here
                             gamestate = game_client.get_latest_gamestate()
                             if MY_ID in gamestate.players:
-                                new_hp = gamestate.players[MY_ID].health
                                 if game_client.acknowledge_tagEvent():
                                     players[MY_ID].set_pain()
                                     output_image[:] = (0,0,255)
