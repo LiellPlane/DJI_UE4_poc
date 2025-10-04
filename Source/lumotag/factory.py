@@ -436,7 +436,7 @@ class PlayerInfoBoxv2:
         self.healthpoints = 1
 
         # Pain system - performant for 40fps checks
-        self.pain_duration_seconds = 1.0
+        self.pain_duration_seconds = 0.3
         self._pain_expires_at = None  # None = not in pain
 
         if avatar_canvas is not None:
