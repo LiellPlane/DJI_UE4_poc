@@ -124459,3 +124459,1956 @@
   service: 'typescript-server',
   timestamp: '2025-10-04 16:24:47'
 }
+{
+  message: '[15:26:06.863] 🔄 RESET REQUEST - Clearing all game state and images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:06'
+}
+{
+  message: '🧹 Cleaning up 348 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:06'
+}
+{
+  message: '✅ Cleanup complete: 348 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:07'
+}
+{
+  message: '[15:26:06.863] ✅ RESET COMPLETE - Cleared 0 players, 348 images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:07'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:26:07 +0000] "POST /api/v1/reset HTTP/1.1" 200 163 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '211ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/reset',
+  timestamp: '2025-10-04 16:26:07'
+}
+{
+  message: 'Slow request: POST /reset took 211.19ms (threshold: 50ms)',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:07'
+}
+{
+  message: 'Created new player: abc12345 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:09'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:11'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:17'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:22'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:27'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:32'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:37'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:42'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:47'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:52'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:26:57'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:02'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:08'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:13'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:18'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:23'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:28'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:33'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:38'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:43'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:48'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:53'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:27:59'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:04'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:09'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:14'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:19'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:24'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:29'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:34'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:39'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:45'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:50'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:28:55'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:00'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:05'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:10'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:15'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:20'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:25'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:31'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:36'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:41'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:46'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:51'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:29:56'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:30:01'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:30:06'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:30:11'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:30:16'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:30:21'
+}
+{
+  message: '[15:31:13.240] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"1","image_ids":["test_1759591873221_50pkztkb1","test_1759591873221_u817shtoh"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:13'
+}
+{
+  message: 'Tag ID not found: 1',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:13'
+}
+{
+  message: '[15:31:13.240] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"1","image_ids":["test_1759591873221_50pkztkb1","test_1759591873221_u817shtoh"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:13'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:13 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:13'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:31:13'
+}
+{
+  message: '[15:31:18.771] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591878755_ppeexq5se","test_1759591878755_vs99w8n4h"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:18'
+}
+{
+  message: '[15:31:18.771] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591878755_ppeexq5se","test_1759591878755_vs99w8n4h"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:18'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:18 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:18'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:31:18'
+}
+{
+  message: '[15:31:21.515] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591881495_opg84qvf7","test_1759591881495_adrn5f30j"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:21'
+}
+{
+  message: '[15:31:21.515] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591881495_opg84qvf7","test_1759591881495_adrn5f30j"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:21'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:21 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:21'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:31:21'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:22'
+}
+{
+  message: '[15:31:23.800] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591883776_s4hytp3tg","test_1759591883776_rvgf1bcom"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:23'
+}
+{
+  message: '[15:31:23.800] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591883776_s4hytp3tg","test_1759591883776_rvgf1bcom"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:23'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:23 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:23'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '0ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:31:23'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:28'
+}
+{
+  message: '[15:31:30.740] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 2d4f5d18...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:30'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:30 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:30'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '7ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:30'
+}
+{
+  message: '[15:31:30.740] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:30'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:33'
+}
+{
+  message: '[15:31:33.597] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 5b8455fd...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:33'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:33 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:33'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:33'
+}
+{
+  message: '[15:31:33.597] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:33'
+}
+{
+  message: '[15:31:35.985] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: ea5da4b0...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:35'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:35 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:35'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:35'
+}
+{
+  message: '[15:31:35.985] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:35'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:38'
+}
+{
+  message: '[15:31:38.919] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 73685bf8...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:38'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:38 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:38'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:38'
+}
+{
+  message: '[15:31:38.919] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:38'
+}
+{
+  message: '[15:31:41.447] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 59c80c1a...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:41'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:41 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:41'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:41'
+}
+{
+  message: '[15:31:41.447] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:41'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:43'
+}
+{
+  message: '[15:31:43.901] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: c7e550ad...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:43'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:43 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:43'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:43'
+}
+{
+  message: '[15:31:43.901] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:43'
+}
+{
+  message: '[15:31:46.097] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: cf243be1...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:46'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:46 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:46'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:46'
+}
+{
+  message: '[15:31:46.097] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:46'
+}
+{
+  message: '[15:31:48.209] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 3b656bb3...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:48'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:48 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:48'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:48'
+}
+{
+  message: '[15:31:48.209] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:48'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:48'
+}
+{
+  message: '[15:31:50.050] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 75aba77e...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:50'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:50 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:50'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:50'
+}
+{
+  message: '[15:31:50.050] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:50'
+}
+{
+  message: '[15:31:52.090] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 3f927a7f...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:52'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:52 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:52'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:52'
+}
+{
+  message: '[15:31:52.090] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:52'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:53'
+}
+{
+  message: '[15:31:53.857] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 3e840edf...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:53'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:53 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:53'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:53'
+}
+{
+  message: '[15:31:53.857] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:53'
+}
+{
+  message: '[15:31:56.024] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 6dda5615...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:56'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:56 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:56'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:56'
+}
+{
+  message: '[15:31:56.024] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:56'
+}
+{
+  message: '[15:31:58.030] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 2c0f0179...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:58'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:58 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:58'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:58'
+}
+{
+  message: '[15:31:58.030] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:58'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:58'
+}
+{
+  message: '[15:31:59.984] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 1ab14c5f...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:59'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:31:59 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:59'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:31:59'
+}
+{
+  message: '[15:31:59.984] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:31:59'
+}
+{
+  message: '[15:32:01.588] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591921566_vfcxbag1q","test_1759591921566_9iux8k5aq"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:01'
+}
+{
+  message: '[15:32:01.588] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591921566_vfcxbag1q","test_1759591921566_9iux8k5aq"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:01'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:32:01 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:32:01'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 48 -> 49',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:03'
+}
+{
+  message: '[15:32:03.884] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591923866_s1ejcg5w2","test_1759591923866_w9rv2oamh"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:03'
+}
+{
+  message: '[15:32:03.884] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591923866_s1ejcg5w2","test_1759591923866_w9rv2oamh"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:03'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:32:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:32:03'
+}
+{
+  message: '[15:32:05.850] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591925825_ziwgkwmot","test_1759591925825_2y1hew3vd"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:05'
+}
+{
+  message: '[15:32:05.850] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591925825_ziwgkwmot","test_1759591925825_2y1hew3vd"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:05'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:32:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:32:05'
+}
+{
+  message: '[15:32:06.769] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591926744_m2qddgz0s","test_1759591926744_v2ro02p7w"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:06'
+}
+{
+  message: '[15:32:06.769] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591926744_m2qddgz0s","test_1759591926744_v2ro02p7w"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:06'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:32:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:32:06'
+}
+{
+  message: '[15:32:07.918] PLAYER TAGGED - deviceId: abc12345, tag_uuid: undefined, Event: {"tag_id":"3","image_ids":["test_1759591927899_1sw8bhvh1","test_1759591927899_sqlwc6qix"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:07'
+}
+{
+  message: '[15:32:07.918] 🔍 DEBUG: Storing killshot for abc12345 with 2 images: ["test_1759591927899_1sw8bhvh1","test_1759591927899_sqlwc6qix"]',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:07'
+}
+{
+  message: 'Player eliminated: PretendFriend (abc12345) by device abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:07'
+}
+{
+  message: '[15:32:07.918] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"3","image_ids":["test_1759591927899_1sw8bhvh1","test_1759591927899_sqlwc6qix"],"event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:07'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:32:07 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:32:07'
+}
+{
+  message: '[15:32:08.667] KILLSHOT REQUEST - deviceId: abc12345, Event: {"event_type":"ReqKillScreen"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] KILLSCREEN REQUEST - deviceId: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] 🔍 DEBUG: Killshot stored image_ids array: ["test_1759591927899_1sw8bhvh1","test_1759591927899_sqlwc6qix"]',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] Attempting to retrieve 2 images: test_1759591927899_1sw8bhvh1, test_1759591927899_sqlwc6qix',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] 🔍 DEBUG: Adding image test_1759591927899_1sw8bhvh1 to response, data length: 439812',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] 🔍 DEBUG: Adding image test_1759591927899_sqlwc6qix to response, data length: 404172',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] 🔍 DEBUG: Killscreen response - sending 2 images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] 🔍 DEBUG: Response image data lengths: 439812, 404172',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:08.667] Killscreen response sent - 2 images for device: abc12345',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '192.168.56.1 - - [04/Oct/2025:15:32:08 +0000] "POST /api/v1/events HTTP/1.1" 200 - "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '35ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-04 16:32:08'
+}
+{
+  message: '[15:32:12.354] 🔄 RESET REQUEST - Clearing all game state and images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: '🧹 Cleaning up 563 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: 'Created new player: abc12345 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: '✅ Cleanup complete: 563 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: '[15:32:12.354] ✅ RESET COMPLETE - Cleared 1 players, 563 images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:32:12 +0000] "POST /api/v1/reset HTTP/1.1" 200 163 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '164ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/reset',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: 'Slow request: POST /reset took 164.07ms (threshold: 50ms)',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:12'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:17'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:22'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:27'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:32'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:37'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:42'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:48'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:53'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:32:58'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:03'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:08'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:13'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:18'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:23'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:28'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:33'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:39'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:44'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:49'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:54'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:33:59'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:04'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:09'
+}
+{
+  message: '[15:34:11.543] 🔄 RESET REQUEST - Clearing all game state and images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  message: '🧹 Cleaning up 0 image files from uploads directory',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  message: '✅ Cleanup complete: 0 files deleted, 0 errors',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  message: '[15:34:11.543] ✅ RESET COMPLETE - Cleared 0 players, 0 images',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:11 +0000] "POST /api/v1/reset HTTP/1.1" 200 161 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/reset',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  message: 'Created new player: abc12345 with display_name: PretendFriend',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:11'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 50 -> 51',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:16'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 51 -> 52',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:21'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 52 -> 53',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:27'
+}
+{
+  message: '[15:34:27.580] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 69fe8c2e...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:27'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:27 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:27'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '3ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:27'
+}
+{
+  message: '[15:34:27.580] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:27'
+}
+{
+  message: '[15:34:30.354] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 3987c96d...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:30'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:30 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:30'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:30'
+}
+{
+  message: '[15:34:30.354] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:30'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 53 -> 54',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:32'
+}
+{
+  message: '[15:34:34.842] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 510f1065...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:34'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:34 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:34'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:34'
+}
+{
+  message: '[15:34:34.842] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:34'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 54 -> 55',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:37'
+}
+{
+  message: '[15:34:37.989] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 14f80eaf...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:37'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:37 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:37'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:37'
+}
+{
+  message: '[15:34:37.989] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:37'
+}
+{
+  message: '[15:34:42.020] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: b6fdacf2...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:42'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:42 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:42'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:42'
+}
+{
+  message: '[15:34:42.020] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:42'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 55 -> 56',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:42'
+}
+{
+  message: '[15:34:45.937] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: e2cdba0f...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:45'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:45 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:45'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:45'
+}
+{
+  message: '[15:34:45.937] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:45'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 56 -> 57',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:47'
+}
+{
+  message: '[15:34:49.011] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: bb1366a7...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:49'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:49 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:49'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:49'
+}
+{
+  message: '[15:34:49.011] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:49'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 57 -> 58',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:52'
+}
+{
+  message: '[15:34:53.999] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 307a3c48...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:53'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:34:54 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:54'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:34:54'
+}
+{
+  message: '[15:34:53.999] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:54'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 58 -> 59',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:34:57'
+}
+{
+  message: '[15:35:01.092] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: 3, uuid: 84f4c5a5...',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:01'
+}
+{
+  message: '127.0.0.1 - - [04/Oct/2025:15:35:01 +0000] "POST /api/v1/test/udp-broadcast HTTP/1.1" 200 189 "http://localhost:3001/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:01'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '127.0.0.1',
+  userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36 Edg/140.0.0.0',
+  level: 'info',
+  message: 'POST /api/v1/test/udp-broadcast',
+  timestamp: '2025-10-04 16:35:01'
+}
+{
+  message: '[15:35:01.092] ✅ UDP broadcast sent successfully',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:01'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 59 -> 60',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:02'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 60 -> 61',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:07'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 61 -> 62',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:12'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 62 -> 63',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:17'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 63 -> 64',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:22'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 64 -> 65',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:27'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 65 -> 66',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:33'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 66 -> 67',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:38'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 67 -> 68',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:43'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 68 -> 69',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:48'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 69 -> 70',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:53'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 70 -> 71',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:35:58'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 71 -> 72',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:03'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 72 -> 73',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:08'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 73 -> 74',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:13'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 74 -> 75',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:18'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 75 -> 76',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:23'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 76 -> 77',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:28'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 77 -> 78',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:34'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 78 -> 79',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:39'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 79 -> 80',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:44'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 80 -> 81',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:49'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 81 -> 82',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:54'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 82 -> 83',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:36:59'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 83 -> 84',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:04'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 84 -> 85',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:09'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 85 -> 86',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:14'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 86 -> 87',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:20'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 87 -> 88',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:25'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 88 -> 89',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:30'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 89 -> 90',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:35'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 90 -> 91',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:40'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 91 -> 92',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:45'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 92 -> 93',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:50'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 93 -> 94',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:37:55'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 94 -> 95',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:38:00'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 95 -> 96',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:38:05'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 96 -> 97',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:38:11'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 97 -> 98',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:38:16'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 98 -> 99',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:38:21'
+}
+{
+  message: 'HEALING: abc12345 (PretendFriend) 99 -> 100',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-04 16:38:26'
+}

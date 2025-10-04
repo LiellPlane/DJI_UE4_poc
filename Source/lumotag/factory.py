@@ -435,6 +435,10 @@ class PlayerInfoBoxv2:
         #self.fade_direction = 1
         self.healthpoints = 1
 
+        # Pain system - performant for 40fps checks
+        self.pain_duration_seconds = 1.0
+        self._pain_expires_at = None  # None = not in pain
+
         if avatar_canvas is not None:
             # for local player we are not doing anything yet
             self.col_image = img_processing.get_resized_equalaspect(
@@ -464,6 +468,20 @@ class PlayerInfoBoxv2:
 
     def get_max_min_healthpoints(self)->tuple[int, int]:
         return self.max_healthpoints, self.min_healthpoints
+
+    def is_in_pain(self) -> bool:
+        """Check if player is currently in pain. Performant for 40fps checks."""
+        if self._pain_expires_at is None:
+            return False
+        current_time = time.perf_counter()
+        if current_time >= self._pain_expires_at:
+            self._pain_expires_at = None  # Auto-expire
+            return False
+        return True
+
+    def set_pain(self):
+        """Trigger pain state for configured duration."""
+        self._pain_expires_at = time.perf_counter() + self.pain_duration_seconds
 
     def elements_fadein(self):
         return self.calculate_fade(direction=1,fade_ms= self.fade_ms)

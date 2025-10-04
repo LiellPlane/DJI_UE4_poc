@@ -678,6 +678,7 @@ class HTTPComms(AbstractHTTPComms):
                                 # Set sticky flag - main thread will check and clear it
                                 with self._tagged_lock:
                                     self._udp_tagged = True
+                                self.reduce_players_health(self.device_id, 25)
 
 
                 except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as e:
@@ -691,3 +692,10 @@ class HTTPComms(AbstractHTTPComms):
             except Exception:
                 pass
             return
+
+    def reduce_players_health(self, device_id: int, damage: int):
+        if device_id in self._latest_gamestate.players:
+            with self._gamestate_lock:
+                print("b4", self._latest_gamestate.players[device_id].health)
+                self._latest_gamestate.players[device_id].health += -damage
+                print(self._latest_gamestate.players[device_id].health)

@@ -603,19 +603,20 @@ def main():
                             gamestate = game_client.get_latest_gamestate()
                             if MY_ID in gamestate.players:
                                 new_hp = gamestate.players[MY_ID].health
-                                # incoming health lower - youve been hurt
-                                im_tagged = game_client.acknowledge_tagEvent()
-                                if (players[MY_ID].get_healthpoints() and players[MY_ID].get_healthpoints() > new_hp) or im_tagged:
-                                    # flash red
-                                    if im_tagged is True:
-                                        output_image[:] = (255,0,0)
-                                    else:
-                                        output_image[:] = (0,0,255)
+                                if game_client.acknowledge_tagEvent():
+                                    players[MY_ID].set_pain()
+                                    output_image[:] = (0,0,255)
                                     voice.speak("BLARG")
                                     # next loop the buzzer will make a noise
                                     trigger_debounce.trigger_1shot_simple_High(True)
                                     # hope this works - overrides all debounces but could be in undefined state
                                     set_trigger(state=True)
+                                elif players[MY_ID].is_in_pain():
+                                    output_image[:,:,0] = 0
+                                    output_image[:,:,1] = 0
+                                    if random.randint(0,4) < 1:
+                                        output_image[:] = (0,0,255)
+
                                 # set player card health (not sure about this yet)
                                 players[MY_ID].set_healthpoints(
                                     gamestate.players[MY_ID].health
