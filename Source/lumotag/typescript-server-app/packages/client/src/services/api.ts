@@ -41,6 +41,12 @@ apiClient.interceptors.response.use(
 );
 
 export const apiService = {
+  // Get device mapping config
+  getDeviceMapping: async (): Promise<any> => {
+    const response = await apiClient.get("/device-mapping");
+    return response.data;
+  },
+
   // Get current game state with all players (dashboard endpoint - no auth required)
   getGameState: async (): Promise<GameStatus> => {
     const response = await apiClient.get<GameStatus>("/dashboard/gamestate");

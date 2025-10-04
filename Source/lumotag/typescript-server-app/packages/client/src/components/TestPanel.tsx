@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { apiService } from "@/services/api";
 
-// Device mapping from device-tag-mapping.json
-const DEVICE_MAPPING = {
-  "abc12345": { tag_id: "3", display_name: "PretendFriend" },
-  "bc1ad358bb": { tag_id: "2", display_name: "PlayerDeux" },
-  "54e5b53659": { tag_id: "1", display_name: "PlayerOne" },
-};
-
-const DEVICE_IDS = Object.keys(DEVICE_MAPPING);
-
 export function TestPanel() {
-  const [selectedDevice, setSelectedDevice] = useState<string>(DEVICE_IDS[0]);
-  const [targetTagId, setTargetTagId] = useState<string>("1");
+  const [deviceMapping, setDeviceMapping] = useState<any>(null);
+  const [selectedDevice, setSelectedDevice] = useState<string>("");
+  const [targetTagId, setTargetTagId] = useState<string>("");
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const [results, setResults] = useState<{ [key: string]: any }>({});
+
+  useEffect(() => {
+    apiService.getDeviceMapping().then(data => {
+      setDeviceMapping(data.device_ids);
+      const firstDevice = Object.keys(data.device_ids)[0];
+      setSelectedDevice(firstDevice);
+      setTargetTagId(data.device_ids[firstDevice].tag_id);
+    });
+  }, []);
 
   const convertImageToBase64 = async (): Promise<string> => {
     try {
@@ -205,7 +206,11 @@ export function TestPanel() {
     }
   };
 
-  const deviceInfo = DEVICE_MAPPING[selectedDevice as keyof typeof DEVICE_MAPPING];
+  if (!deviceMapping) {
+    return <div className="test-panel">Loading device mapping...</div>;
+  }
+
+  const deviceInfo = deviceMapping[selectedDevice];
 
   return (
     <div className="test-panel">
@@ -218,8 +223,8 @@ export function TestPanel() {
             value={selectedDevice} 
             onChange={(e) => setSelectedDevice(e.target.value)}
           >
-            {DEVICE_IDS.map(deviceId => {
-              const info = DEVICE_MAPPING[deviceId as keyof typeof DEVICE_MAPPING];
+            {Object.keys(deviceMapping).map(deviceId => {
+              const info = deviceMapping[deviceId];
               return (
                 <option key={deviceId} value={deviceId}>
                   {info.display_name} ({deviceId})
@@ -236,7 +241,7 @@ export function TestPanel() {
             value={targetTagId} 
             onChange={(e) => setTargetTagId(e.target.value)}
           >
-            {Object.values(DEVICE_MAPPING).map(info => (
+            {Object.values(deviceMapping).map((info: any) => (
               <option key={info.tag_id} value={info.tag_id}>
                 {info.display_name} (Tag {info.tag_id})
               </option>

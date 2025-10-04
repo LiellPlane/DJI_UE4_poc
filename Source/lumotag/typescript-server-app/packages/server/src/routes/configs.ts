@@ -1,5 +1,5 @@
 
-
+import { Router, Response } from "express";
 
 import * as fs from 'fs';
 import * as path from 'path';
@@ -51,3 +51,11 @@ export function getDeviceInfo(deviceId: string): DeviceInfo | null {
     display_name: config.device_ids[deviceId].display_name
   };
 }
+
+const router: Router = Router();
+
+router.get("/device-mapping", (_req, res: Response) => {
+  res.json(config);
+});
+
+export { router as configRouter };

@@ -9,6 +9,7 @@ import { healthRouter } from "./routes/health";
 import { statusRouter } from "./routes/status";
 import { gameRouter } from "./routes/game";
 import { imageSaver } from "./routes/image-saver";
+import { configRouter } from "./routes/configs";
 
 // Load environment variables
 dotenv.config();
@@ -71,6 +72,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use("/api/health", healthRouter);
 app.use("/api/status", statusRouter);
 app.use("/api/v1", gameRouter);
+app.use("/api/v1", configRouter);
 
 // Root endpoint
 app.get("/", (_req: Request, res: Response) => {

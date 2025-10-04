@@ -692,10 +692,18 @@ class HTTPComms(AbstractHTTPComms):
             except Exception:
                 pass
             return
-
+    
     def reduce_players_health(self, device_id: int, damage: int):
-        if device_id in self._latest_gamestate.players:
-            with self._gamestate_lock:
-                print("b4", self._latest_gamestate.players[device_id].health)
-                self._latest_gamestate.players[device_id].health += -damage
-                print(self._latest_gamestate.players[device_id].health)
+        """Reduce player health locally (note: gamestate polling will overwrite this)"""
+        try:
+            if device_id in self._latest_gamestate.players:
+                with self._gamestate_lock:
+                    print(f"🩺 b4: {self._latest_gamestate.players[device_id].health}")
+                    self._latest_gamestate.players[device_id].health += -damage
+                    print(f"🩺 after: {self._latest_gamestate.players[device_id].health}")
+        except Exception as e:
+            # Catch Pydantic validation errors or other issues
+            print(f"🩺 ERROR reducing health: {e}")
+            tb_str = traceback.format_exc()
+            self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
+
