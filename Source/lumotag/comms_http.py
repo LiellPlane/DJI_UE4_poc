@@ -23,6 +23,11 @@ import socket
 import ipaddress
 
 
+class DeviceID(str):
+    """Type-safe device identifier"""
+    pass
+
+
 @dataclass
 class EventWithCallback:
     """Wrapper for events that need a callback function executed after successful transmission"""
@@ -180,7 +185,7 @@ class HTTPComms(AbstractHTTPComms):
         # Game state tracking (thread-safe)
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
-        self._player_avatars: dict[str, np.ndarray]
+        self._player_avatars: dict[DeviceID, np.ndarray] = {}
         
         # Cache event types once at startup for performance (from WebSocketEventsComms)
         self._cached_event_types = self._get_event_types()
@@ -256,21 +261,9 @@ class HTTPComms(AbstractHTTPComms):
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         
-    def download_avatar(self, relative_path: str, timeout: float = 1.0) -> np.ndarray:
-        """Download an avatar image file from the server and return as numpy array
-        
-        Args:
-            relative_path: Path relative to avatar files root (e.g. "PlayerOne.png")
-            timeout: Request timeout in seconds
-            
-        Returns:
-            OpenCV image as numpy array
-            
-        Raises:
-            requests.RequestException: On network errors
-            RuntimeError: If image decode fails or status code != 200
-        """
-        url = f"{self.avatar_files_url}/{relative_path}"
+    def download_avatar(self, tagid: str, timeout: float = 1.0) -> np.ndarray:
+
+        url = f"{self.avatar_files_url}/{tagid}.jpg"
         response = requests.get(url, timeout=timeout)
         
         if response.status_code != 200:
@@ -650,10 +643,10 @@ class HTTPComms(AbstractHTTPComms):
                             
 
                             # check here if we have everyones avatars
-
-                            for tagid in self._latest_gamestate.players:
-                                if tagid not in self._player_avatars:
-                                    pass
+                            for deviceid, playerstatus in self._latest_gamestate.players.items():
+                                if deviceid not in self._player_avatars:
+                                    self._player_avatars[DeviceID(deviceid)] = self.download_avatar(playerstatus.display_name)
+                                    break
 
                             self._set_connected(True)  # Success - mark as connected
                             
