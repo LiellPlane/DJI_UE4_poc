@@ -27,6 +27,9 @@ class DeviceID(str):
     """Type-safe device identifier"""
     pass
 
+class TagID(str):
+    """Type-safe device identifier"""
+    pass
 
 @dataclass
 class EventWithCallback:
@@ -186,7 +189,8 @@ class HTTPComms(AbstractHTTPComms):
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
         self._player_avatars: dict[DeviceID, np.ndarray] = {}
-        
+        self._tagid_vs_deviceid: dict[TagID, DeviceID] = {}
+
         # Cache event types once at startup for performance (from WebSocketEventsComms)
         self._cached_event_types = self._get_event_types()
         self._event_type_map = {cls.__name__: cls for cls in self._cached_event_types}
@@ -646,6 +650,7 @@ class HTTPComms(AbstractHTTPComms):
                             for deviceid, playerstatus in self._latest_gamestate.players.items():
                                 if deviceid not in self._player_avatars:
                                     self._player_avatars[DeviceID(deviceid)] = self.download_avatar(playerstatus.display_name)
+                                    self._tagid_vs_deviceid[TagID(playerstatus.tag_id)] = DeviceID(deviceid)
                                     break
 
                             self._set_connected(True)  # Success - mark as connected

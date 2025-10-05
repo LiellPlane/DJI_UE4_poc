@@ -28,7 +28,7 @@ class PlayerStatus(BaseModel):
 
 
 class GameStatus(BaseModel):
-    players: dict[str, PlayerStatus]  # Key is player's tag_id
+    players: dict[str, PlayerStatus]  # Key is player's device_id
     event_type: str = Field(default_factory=lambda: "GameStatus", description="Event type identifier")
 
 
