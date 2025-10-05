@@ -3,9 +3,9 @@ import cors from "cors";
 import compression from "compression";
 import morgan from "morgan";
 import dotenv from "dotenv";
+import path from "path";
 import { logger } from "./utils/logger";
 import { errorHandler } from "./middlewares/errorHandler";
-import { healthRouter } from "./routes/health";
 import { statusRouter } from "./routes/status";
 import { gameRouter } from "./routes/game";
 import { imageSaver } from "./routes/image-saver";
@@ -45,6 +45,9 @@ app.use(
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
+// Avatar files
+app.use('/avatars', express.static(path.join(__dirname, '..', 'public', 'avatars')));
+
 // Request logging
 app.use((req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
@@ -69,7 +72,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // API Routes
-app.use("/api/health", healthRouter);
 app.use("/api/status", statusRouter);
 app.use("/api/v1", gameRouter);
 app.use("/api/v1", configRouter);
@@ -81,7 +83,6 @@ app.get("/", (_req: Request, res: Response) => {
     version: "1.0.0",
     timestamp: new Date().toISOString(),
     endpoints: {
-      health: "/api/health",
       status: "/api/status",
       gamestate: "/api/v1/gamestate",
       images_upload: "/api/v1/images/upload",

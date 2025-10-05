@@ -57,6 +57,7 @@ class AbstractHTTPComms(ABC):
         images_url: str,
         events_url: str,
         gamestate_url: str,
+        avatar_files_url: str,
         OS_friendly_name: str,
         device_id: str,
         upload_timeout: float = 0.5,
@@ -92,6 +93,10 @@ class AbstractHTTPComms(ABC):
     def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
         pass
 
+    @abstractmethod
+    def get_player_avatar(self, tag_id: str) -> np.ndarray:
+        pass
+
 
 class HTTPComms(AbstractHTTPComms):
     """Ultra-lightweight, threaded HTTP uploader for grayscale frames from shared memory.
@@ -122,9 +127,10 @@ class HTTPComms(AbstractHTTPComms):
         images_url: str,
         events_url: str,
         gamestate_url: str,
+        avatar_files_url: str,
         OS_friendly_name: str,
         device_id: str,
-        killshots_of_me:list[np.ndarray] = [],
+        killshots_of_me: list[np.ndarray] = [],
         upload_timeout: float = 0.5,
         poll_interval_seconds: float = 0.05,
     ) -> None:
@@ -135,6 +141,7 @@ class HTTPComms(AbstractHTTPComms):
         self.images_url = images_url.rstrip('/')  # Remove trailing slash
         self.events_url = events_url.rstrip('/')  # Remove trailing slash
         self.gamestate_url = gamestate_url.rstrip('/')  # Remove trailing slash
+        self.avatar_files_url = avatar_files_url.rstrip('/')  # Remove trailing slash
         self.OS_friendly_name = OS_friendly_name
         self.device_id = device_id
         self.upload_timeout = upload_timeout
@@ -173,6 +180,7 @@ class HTTPComms(AbstractHTTPComms):
         # Game state tracking (thread-safe)
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
+        self._player_avatars: dict[str, np.ndarray]
         
         # Cache event types once at startup for performance (from WebSocketEventsComms)
         self._cached_event_types = self._get_event_types()
@@ -248,6 +256,36 @@ class HTTPComms(AbstractHTTPComms):
         # cv2.waitKey(0)
         # cv2.destroyAllWindows()
         
+    def download_avatar(self, relative_path: str, timeout: float = 1.0) -> np.ndarray:
+        """Download an avatar image file from the server and return as numpy array
+        
+        Args:
+            relative_path: Path relative to avatar files root (e.g. "PlayerOne.png")
+            timeout: Request timeout in seconds
+            
+        Returns:
+            OpenCV image as numpy array
+            
+        Raises:
+            requests.RequestException: On network errors
+            RuntimeError: If image decode fails or status code != 200
+        """
+        url = f"{self.avatar_files_url}/{relative_path}"
+        response = requests.get(url, timeout=timeout)
+        
+        if response.status_code != 200:
+            raise RuntimeError(f"Failed to download {url}: HTTP {response.status_code}")
+        
+        # Convert bytes to numpy array
+        nparr = np.frombuffer(response.content, np.uint8)
+        
+        # Decode image to OpenCV format
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        if image is None:
+            raise RuntimeError(f"Failed to decode image from {url}")
+        
+        return image
 
     def _broadcast_udp(self, event: BaseModel) -> None:
         """Fire-and-forget UDP broadcast (~0.1ms, never blocks or crashes on network errors)
@@ -610,6 +648,13 @@ class HTTPComms(AbstractHTTPComms):
                             with self._gamestate_lock:
                                 self._latest_gamestate = game_update
                             
+
+                            # check here if we have everyones avatars
+
+                            for tagid in self._latest_gamestate.players:
+                                if tagid not in self._player_avatars:
+                                    pass
+
                             self._set_connected(True)  # Success - mark as connected
                             
                         except Exception as e:
@@ -704,3 +749,5 @@ class HTTPComms(AbstractHTTPComms):
             tb_str = traceback.format_exc()
             self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
 
+    def get_player_avatar(self, tag_id: str | int):
+        pass

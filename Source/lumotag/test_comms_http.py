@@ -97,8 +97,8 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
     
     def _handle_real_image_upload(self, data):
         """REAL image upload handler - processes actual image data"""
-        # Get user info from headers
-        user_id = self.headers.get('X-User-ID', 'unknown')
+        # Get device info from headers
+        device_id = self.headers.get('x-device-id', 'unknown')
         
         # Validate required fields for images (now based on UploadRequest Pydantic model)
         required_fields = ['image_id', 'image_data']
@@ -147,8 +147,8 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
     
     def _handle_real_events(self, data):
         """REAL event handler - deserializes and validates actual Pydantic events"""
-        # Get user info from headers
-        user_id = self.headers.get('X-User-ID', 'unknown')
+        # Get device info from headers
+        device_id = self.headers.get('x-device-id', 'unknown')
         
         # Validate event data structure (now it's the direct Pydantic model dump)
         if not isinstance(data, dict):
@@ -170,7 +170,7 @@ class RealGameHTTPServer(BaseHTTPRequestHandler):
                 
                 # Store the REAL Pydantic object
                 RealGameHTTPServer.events_received.append({
-                    'user_id': user_id,  # From headers
+                    'device_id': device_id,  # From headers
                     'event_type': event_type,
                     'pydantic_object': player_status  # Store actual Pydantic object
                 })
@@ -313,8 +313,9 @@ try:
         images_url=f"http://127.0.0.1:{server_port}/api/v1/images/upload",
         events_url=f"http://127.0.0.1:{server_port}/api/v1/events",
         gamestate_url=f"http://127.0.0.1:{server_port}/api/v1/gamestate",
+        avatar_files_url=f"http://127.0.0.1:{server_port}/avatar",
         OS_friendly_name="real_test_gun",
-        user_id="real_test_player",
+        device_id="real_test_player",
         upload_timeout=1.0
     )
     
@@ -567,8 +568,9 @@ try:
             images_url=f"http://127.0.0.1:{error_port}/api/v1/images/upload",
             events_url=f"http://127.0.0.1:{error_port}/api/v1/events",
             gamestate_url=f"http://127.0.0.1:{error_port}/api/v1/gamestate",
+            avatar_files_url=f"http://127.0.0.1:{error_port}/avatar",
             OS_friendly_name="error_test_gun",
-            user_id="error_test_player",
+            device_id="error_test_player",
             upload_timeout=0.2  # Short timeout for faster test
         )
         
@@ -647,8 +649,9 @@ try:
             images_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/images/upload",
             events_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/events",
             gamestate_url=f"http://127.0.0.1:{nonexistent_port}/api/v1/gamestate",
+            avatar_files_url=f"http://127.0.0.1:{nonexistent_port}/avatar",
             OS_friendly_name="broken_test_gun",
-            user_id="broken_test_player",
+            device_id="broken_test_player",
             upload_timeout=0.2  # Short timeout for faster test
         )
         

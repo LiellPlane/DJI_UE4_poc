@@ -209,6 +209,7 @@ def main():
         images_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/images/upload",
         events_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/events",
         gamestate_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/api/v1/gamestate",
+        avatar_files_url=f"{configs.get_http_comms_baseurl(PLATFORM)}/avatars",
         OS_friendly_name="shortrange_img_uploader",
         device_id=MY_ID,
         upload_timeout=1.0,

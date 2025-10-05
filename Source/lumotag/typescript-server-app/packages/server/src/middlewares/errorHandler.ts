@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { ZodError } from "zod";
 import { logger } from "../utils/logger";
 
 interface AppError extends Error {
@@ -8,7 +7,7 @@ interface AppError extends Error {
 }
 
 export const errorHandler = (
-  err: AppError | ZodError,
+  err: AppError,
   req: Request,
   res: Response,
   _next: NextFunction,
@@ -18,30 +17,10 @@ export const errorHandler = (
   let message = "Internal Server Error";
   let details: any = undefined;
 
-  // Handle Zod validation errors
-  if (err instanceof ZodError) {
-    statusCode = 400;
-    message = "Validation Error";
-    details = err.errors.map((error) => ({
-      field: error.path.join("."),
-      message: error.message,
-    }));
-  }
   // Handle custom app errors
-  else if (err.statusCode) {
+  if (err.statusCode) {
     statusCode = err.statusCode;
     message = err.message;
-  }
-  // Handle known error types
-  else if (err.name === "CastError") {
-    statusCode = 400;
-    message = "Invalid ID format";
-  } else if (err.name === "ValidationError") {
-    statusCode = 400;
-    message = "Validation Error";
-  } else if (err.name === "MongoError" && (err as any).code === 11000) {
-    statusCode = 409;
-    message = "Duplicate field value";
   }
 
   // Log error
