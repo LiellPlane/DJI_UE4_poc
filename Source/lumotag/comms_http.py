@@ -677,7 +677,7 @@ class HTTPComms(AbstractHTTPComms):
                                 and self.device_id in self._latest_gamestate.players 
                                 and game_update.players[self.device_id].health < self._latest_gamestate.players[self.device_id].health):
                                 damage = self._latest_gamestate.players[self.device_id].health - game_update.players[self.device_id].health
-                                self.add_event_to_log(f"You were tagged! (-{damage} HP)")
+                                self.add_event_to_log(f"boom sucka ! (-{damage} HP)")
                                 with self._tagged_lock:
                                     self._GameUpdate_tagged = True
                             
@@ -769,7 +769,7 @@ class HTTPComms(AbstractHTTPComms):
                                 # Set sticky flag - main thread will check and clear it
                                 with self._tagged_lock:
                                     self._udp_tagged = True
-                                self.reduce_players_health(self.device_id, TAGDAM) 
+                            self.reduce_players_health(self.device_id, TAGDAM) 
 
 
                 except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as e:
@@ -790,6 +790,9 @@ class HTTPComms(AbstractHTTPComms):
             if device_id in self._latest_gamestate.players:
                 with self._gamestate_lock:
                     self._latest_gamestate.players[device_id].health -= damage
+                player_name = self._latest_gamestate.players[device_id].display_name
+                self.add_event_to_log(f"{player_name} UDP tagged")
+                
         except Exception as e:
             # If this fails, crash the whole process - something is seriously wrong
             tb_str = traceback.format_exc()
