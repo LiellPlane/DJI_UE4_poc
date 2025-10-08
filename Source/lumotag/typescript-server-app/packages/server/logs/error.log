@@ -2209,3 +2209,25 @@
     '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
   timestamp: '2025-10-08 22:14:38'
 }
+{
+  service: 'typescript-server',
+  error: 'request aborted',
+  stack: 'BadRequestError: request aborted\n' +
+    '    at IncomingMessage.onAborted (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\raw-body@2.5.2\\node_modules\\raw-body\\index.js:245:10)\n' +
+    '    at IncomingMessage.emit (node:events:514:28)\n' +
+    '    at IncomingMessage._destroy (node:_http_incoming:224:10)\n' +
+    '    at _destroy (node:internal/streams/destroy:109:10)\n' +
+    '    at IncomingMessage.destroy (node:internal/streams/destroy:71:5)\n' +
+    '    at abortIncoming (node:_http_server:766:9)\n' +
+    '    at socketOnClose (node:_http_server:760:3)\n' +
+    '    at Socket.emit (node:events:526:35)\n' +
+    '    at TCP.<anonymous> (node:net:323:12)',
+  statusCode: 400,
+  method: 'POST',
+  url: '/api/v1/images/upload',
+  ip: '192.168.1.124',
+  userAgent: 'python-requests/2.32.5',
+  level: 'error',
+  message: 'Request error',
+  timestamp: '2025-10-09 00:09:32'
+}

@@ -1492,7 +1492,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["paint"]#quadrocode_corners
+                filters=["deadspot"]#quadrocode_corners
             )
  
             repeats = 1000

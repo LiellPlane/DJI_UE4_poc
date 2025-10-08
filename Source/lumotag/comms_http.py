@@ -688,15 +688,16 @@ class HTTPComms(AbstractHTTPComms):
                                 and self.device_id in self._latest_gamestate.players 
                                 and game_update.players[self.device_id].health < self._latest_gamestate.players[self.device_id].health):
                                 damage = self._latest_gamestate.players[self.device_id].health - game_update.players[self.device_id].health
-                                self.add_event_to_log(f"boom sucka ! (-{damage} HP)")
                                 with self._tagged_lock:
                                     self._GameUpdate_tagged = True
                             
-                            # Check for player eliminations
+                            # Check for player eliminations and taggings
                             for player_id, player in game_update.players.items():
                                 old_player = self._latest_gamestate.players.get(player_id)
                                 if old_player and not old_player.isEliminated and player.isEliminated:
                                     self.add_event_to_log(f"{player.display_name} eliminated!")
+                                if old_player and player.health < old_player.health:
+                                    self.tagged_player_info_event(player.display_name, player.health)
 
                             # Store validated game state
                             with self._gamestate_lock:
@@ -792,16 +793,22 @@ class HTTPComms(AbstractHTTPComms):
                 pass
             return
     
+    def tagged_player_info_event(self, player_name, player_heath):
+        if player_heath < - 30:
+            message = random.choice(lumotag_events.bullied_chat).substitute(player_name=player_name, health=player_heath)
+        else:
+            message = random.choice(lumotag_events.tagged_chat).substitute(player_name=player_name)
+
+        self.add_event_to_log(message)
+
+
     def reduce_players_health(self, device_id: str, damage: int):
         """Reduce player health locally (note: gamestate polling will overwrite this)"""
         try:
             if device_id in self._latest_gamestate.players:
                 with self._gamestate_lock:
                     self._latest_gamestate.players[device_id].health -= damage
-                player_name = self._latest_gamestate.players[device_id].display_name
-                message = random.choice(lumotag_events.tagged_chat).substitute(player_name=player_name)
-                self.add_event_to_log(message)
-                
+
         except Exception as e:
             # If this fails, crash the whole process - something is seriously wrong
             tb_str = traceback.format_exc()

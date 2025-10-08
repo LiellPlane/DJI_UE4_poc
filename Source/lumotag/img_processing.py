@@ -44,12 +44,12 @@ class EventLogOverlay:
     def __init__(
         self,
         position: tuple[int, int] | None = None,  # None = auto top-right
-        box_size: tuple[int, int] = (300, 150),  # Before rotation (width, height)
+        box_size: tuple[int, int] = (600, 150),  # Before rotation (width, height)
         rotation: Literal[0, 90, -90, 180, 270] = 90,
         max_events: int = 5,
         font_scale: float = 0.5,
         font_thickness: int = 1,
-        text_color: tuple[int, int, int] = (0, 180, 0),  # Slightly dark green (BGR)
+        text_color: tuple[int, int, int] = (20, 190, 10),  # Slightly dark green (BGR)
         bg_color: tuple[int, int, int] = (0, 0, 0),
         bg_alpha: float = 0.75,
         line_spacing: int = 5,
