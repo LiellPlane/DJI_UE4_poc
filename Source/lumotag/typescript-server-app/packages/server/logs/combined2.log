@@ -68772,3 +68772,576 @@
   service: 'typescript-server',
   timestamp: '2025-10-08 23:02:40'
 }
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:07:59 +0000] "GET /avatars/PlayerDeux.jpg HTTP/1.1" 200 47367 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:07:59'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:02 +0000] "GET /avatars/PlayerOne.jpg HTTP/1.1" 200 75752 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:02'
+}
+{
+  message: '[22:08:03.749] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 9f224adec1ac498598e26d6373992c9a, Event: {"tag_id":"13","image_ids":["LID3040isuwl5LID","LID2468cKTelPLID"],"tag_uuid":"9f224adec1ac498598e26d6373992c9a","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: '[22:08:03.749] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040isuwl5LID","LID2468cKTelPLID"],"tag_uuid":"9f224adec1ac498598e26d6373992c9a","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: '[22:08:03.770] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 8e1e52209aeb49a5bbcceeef11848a9c, Event: {"tag_id":"13","image_ids":["LID3040bUKsKNLID","LID2468b8hKC2LID"],"tag_uuid":"8e1e52209aeb49a5bbcceeef11848a9c","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: '[22:08:03.770] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040bUKsKNLID","LID2468b8hKC2LID"],"tag_uuid":"8e1e52209aeb49a5bbcceeef11848a9c","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:03 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:03'
+}
+{
+  message: '[22:08:04.220] PLAYER TAGGED - deviceId: abc12345, tag_uuid: e856c7cf351e4320870aa4ceed6dcaf9, Event: {"tag_id":"13","image_ids":["LID3040jwyCu3LID","LID2468tzqUxfLID"],"tag_uuid":"e856c7cf351e4320870aa4ceed6dcaf9","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '[22:08:04.220] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040jwyCu3LID","LID2468tzqUxfLID"],"tag_uuid":"e856c7cf351e4320870aa4ceed6dcaf9","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:04 +0000] "GET /avatars/PretendFriend.jpg HTTP/1.1" 200 60877 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '[22:08:04.657] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 1457610910d543fd9ebc4c9606170d34, Event: {"tag_id":"13","image_ids":["LID30409QiCpSLID","LID2468CEl4cvLID"],"tag_uuid":"1457610910d543fd9ebc4c9606170d34","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '[22:08:04.657] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID30409QiCpSLID","LID2468CEl4cvLID"],"tag_uuid":"1457610910d543fd9ebc4c9606170d34","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:04 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:04'
+}
+{
+  message: '[22:08:05.094] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 2607f79e41e14025a1667e3f7bf919d5, Event: {"tag_id":"13","image_ids":["LID3040Q6d2BaLID","LID2468fUR2XBLID"],"tag_uuid":"2607f79e41e14025a1667e3f7bf919d5","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '[22:08:05.094] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040Q6d2BaLID","LID2468fUR2XBLID"],"tag_uuid":"2607f79e41e14025a1667e3f7bf919d5","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '[22:08:05.532] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 29d77e76566b43ba88e2749cc12f4f88, Event: {"tag_id":"13","image_ids":["LID3040P1xQKiLID","LID2468wrVsw8LID"],"tag_uuid":"29d77e76566b43ba88e2749cc12f4f88","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '[22:08:05.532] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040P1xQKiLID","LID2468wrVsw8LID"],"tag_uuid":"29d77e76566b43ba88e2749cc12f4f88","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '[22:08:05.979] PLAYER TAGGED - deviceId: abc12345, tag_uuid: a5f81e544a4f4307beda330f19710e47, Event: {"tag_id":"13","image_ids":["LID304041HWGfLID","LID2468mE3q3KLID"],"tag_uuid":"a5f81e544a4f4307beda330f19710e47","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '[22:08:05.979] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID304041HWGfLID","LID2468mE3q3KLID"],"tag_uuid":"a5f81e544a4f4307beda330f19710e47","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:05 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:05'
+}
+{
+  message: '[22:08:06.419] PLAYER TAGGED - deviceId: abc12345, tag_uuid: dc3562228ecb456cadadf240dedad484, Event: {"tag_id":"13","image_ids":["LID3040iWF32HLID","LID2468ylDsKrLID"],"tag_uuid":"dc3562228ecb456cadadf240dedad484","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: '[22:08:06.419] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040iWF32HLID","LID2468ylDsKrLID"],"tag_uuid":"dc3562228ecb456cadadf240dedad484","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: '[22:08:06.852] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 62e3d5c3c2a94bd9bd66662c554fbdcb, Event: {"tag_id":"13","image_ids":["LID3040mrSrN8LID","LID2468KHzCl1LID"],"tag_uuid":"62e3d5c3c2a94bd9bd66662c554fbdcb","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: '[22:08:06.852] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040mrSrN8LID","LID2468KHzCl1LID"],"tag_uuid":"62e3d5c3c2a94bd9bd66662c554fbdcb","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:06 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:06'
+}
+{
+  message: '[22:08:07.294] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 81ab46e85eca4d7ab1c3df2fce49b96f, Event: {"tag_id":"13","image_ids":["LID3040CU9cmKLID","LID2468nIXgFWLID"],"tag_uuid":"81ab46e85eca4d7ab1c3df2fce49b96f","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: '[22:08:07.294] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040CU9cmKLID","LID2468nIXgFWLID"],"tag_uuid":"81ab46e85eca4d7ab1c3df2fce49b96f","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:07 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: '[22:08:07.729] PLAYER TAGGED - deviceId: abc12345, tag_uuid: b7af2a4d767940d8b9e6117e1782de10, Event: {"tag_id":"13","image_ids":["LID3040f528wxLID","LID2468umZOFELID"],"tag_uuid":"b7af2a4d767940d8b9e6117e1782de10","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: '[22:08:07.729] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040f528wxLID","LID2468umZOFELID"],"tag_uuid":"b7af2a4d767940d8b9e6117e1782de10","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:07 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '1ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:07'
+}
+{
+  message: '[22:08:08.161] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 68fe105f56164b9bad8f21d146305ea2, Event: {"tag_id":"13","image_ids":["LID3040iwMWNCLID","LID2468B2g4AqLID"],"tag_uuid":"68fe105f56164b9bad8f21d146305ea2","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: '[22:08:08.161] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040iwMWNCLID","LID2468B2g4AqLID"],"tag_uuid":"68fe105f56164b9bad8f21d146305ea2","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:08 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: '[22:08:08.607] PLAYER TAGGED - deviceId: abc12345, tag_uuid: ff92e0c1fdbd41bc9d31dc9e7172fa70, Event: {"tag_id":"13","image_ids":["LID30403vjk0ZLID","LID2468OLWgEHLID"],"tag_uuid":"ff92e0c1fdbd41bc9d31dc9e7172fa70","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: '[22:08:08.607] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID30403vjk0ZLID","LID2468OLWgEHLID"],"tag_uuid":"ff92e0c1fdbd41bc9d31dc9e7172fa70","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:08 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:08'
+}
+{
+  message: '[22:08:09.040] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 6d604dd9b5774256a784b5169243f1fa, Event: {"tag_id":"13","image_ids":["LID3040pM2NYhLID","LID246889zeWQLID"],"tag_uuid":"6d604dd9b5774256a784b5169243f1fa","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: '[22:08:09.040] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040pM2NYhLID","LID246889zeWQLID"],"tag_uuid":"6d604dd9b5774256a784b5169243f1fa","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:09 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: '[22:08:09.490] PLAYER TAGGED - deviceId: abc12345, tag_uuid: 2a13c0edc556432fa4b9b25167b58fb6, Event: {"tag_id":"13","image_ids":["LID3040zf7CQfLID","LID24687Wx6DELID"],"tag_uuid":"2a13c0edc556432fa4b9b25167b58fb6","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: 'Tag ID not found: 13',
+  level: 'warn',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: '[22:08:09.490] Event received successfully:\n' +
+    '    Type: PlayerTagged\n' +
+    '    deviceId: abc12345\n' +
+    '    Parsed Data: {"tag_id":"13","image_ids":["LID3040zf7CQfLID","LID24687Wx6DELID"],"tag_uuid":"2a13c0edc556432fa4b9b25167b58fb6","event_type":"PlayerTagged"}',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  message: '192.168.56.1 - - [08/Oct/2025:22:08:09 +0000] "POST /api/v1/events HTTP/1.1" 200 118 "-" "python-requests/2.32.4"',
+  level: 'info',
+  service: 'typescript-server',
+  timestamp: '2025-10-08 23:08:09'
+}
+{
+  service: 'typescript-server',
+  statusCode: 200,
+  duration: '2ms',
+  ip: '192.168.56.1',
+  userAgent: 'python-requests/2.32.4',
+  level: 'info',
+  message: 'POST /api/v1/events',
+  timestamp: '2025-10-08 23:08:09'
+}
