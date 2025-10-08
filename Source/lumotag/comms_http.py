@@ -22,6 +22,13 @@ from dataclasses import dataclass
 import socket
 import ipaddress
 
+TAGDAM = 25 # damage when any player gets tagged
+
+
+class ImageDecodeError(Exception):
+    """Raised when image decoding fails"""
+    pass
+
 
 class DeviceID(str):
     """Type-safe device identifier"""
@@ -189,7 +196,6 @@ class HTTPComms(AbstractHTTPComms):
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
         self._player_avatars: dict[DeviceID, np.ndarray] = {}
-        self._tagid_vs_deviceid: dict[TagID, DeviceID] = {}
 
         # Cache event types once at startup for performance (from WebSocketEventsComms)
         self._cached_event_types = self._get_event_types()
@@ -271,7 +277,7 @@ class HTTPComms(AbstractHTTPComms):
         response = requests.get(url, timeout=timeout)
         
         if response.status_code != 200:
-            raise RuntimeError(f"Failed to download {url}: HTTP {response.status_code}")
+            raise ImageDecodeError(f"Failed to download {url}: HTTP {response.status_code}")
         
         # Convert bytes to numpy array
         nparr = np.frombuffer(response.content, np.uint8)
@@ -280,7 +286,7 @@ class HTTPComms(AbstractHTTPComms):
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         
         if image is None:
-            raise RuntimeError(f"Failed to decode image from {url}")
+            raise ImageDecodeError(f"Failed to decode image from {url}")
         
         return image
 
@@ -650,7 +656,6 @@ class HTTPComms(AbstractHTTPComms):
                             for deviceid, playerstatus in self._latest_gamestate.players.items():
                                 if deviceid not in self._player_avatars:
                                     self._player_avatars[DeviceID(deviceid)] = self.download_avatar(playerstatus.display_name)
-                                    self._tagid_vs_deviceid[TagID(playerstatus.tag_id)] = DeviceID(deviceid)
                                     break
 
                             self._set_connected(True)  # Success - mark as connected
@@ -721,7 +726,7 @@ class HTTPComms(AbstractHTTPComms):
                                 # Set sticky flag - main thread will check and clear it
                                 with self._tagged_lock:
                                     self._udp_tagged = True
-                                self.reduce_players_health(self.device_id, 25) 
+                                self.reduce_players_health(self.device_id, TAGDAM) 
 
 
                 except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as e:

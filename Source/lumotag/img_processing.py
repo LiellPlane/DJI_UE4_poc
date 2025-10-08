@@ -23,6 +23,184 @@ RED = (0, 0, 255)
 BLUE = (255, 0, 0)
 
 
+class EventLogOverlay:
+    """Event log overlay for game events (optimized for Raspberry Pi)
+    
+    Shows recent events in a semi-transparent box with cached rendering.
+    Only regenerates when events change. Supports rotation for LCD orientation.
+    
+    Usage:
+        log = EventLogOverlay(rotation=90)
+        log.add_event("Player joined")
+        log.apply_to_image(frame)  # Fast in-place overlay
+    """
+    
+    def __init__(
+        self,
+        position: tuple[int, int] | None = None,  # None = auto top-right
+        box_size: tuple[int, int] = (300, 150),  # Before rotation (width, height)
+        rotation: Literal[0, 90, -90, 180, 270] = 90,
+        max_events: int = 5,
+        font_scale: float = 0.5,
+        font_thickness: int = 1,
+        text_color: tuple[int, int, int] = (255, 255, 255),
+        bg_color: tuple[int, int, int] = (0, 0, 0),
+        bg_alpha: float = 0.75,
+        line_spacing: int = 5,
+    ):
+        self._initial_position = position  # None means calculate from image size
+        self.box_size = box_size
+        self.rotation = rotation
+        self.max_events = max_events
+        self.font_scale = font_scale
+        self.font_thickness = font_thickness
+        self.text_color = text_color
+        self.bg_color = bg_color
+        self.bg_alpha = bg_alpha
+        self.line_spacing = line_spacing
+        self.font = cv2.FONT_HERSHEY_SIMPLEX
+        
+        self.events = deque(maxlen=max_events)
+        self._cached_overlay = None
+        self._cached_mask = None  # Cache the alpha mask too
+        self._cache_dirty = True
+        
+        # Pre-calculate line height
+        (_, h), baseline = cv2.getTextSize(
+            "Ay", self.font, self.font_scale, self.font_thickness
+        )
+        self.line_height = h + baseline + self.line_spacing
+        
+        # Pre-calculate rotated dimensions (constant)
+        if self.rotation in [90, -90, 270]:
+            # After 90° rotation: width becomes height, height becomes width
+            self._rotated_width = self.box_size[1]   # height (150) becomes width
+            self._rotated_height = self.box_size[0]  # width (300) becomes height
+        else:
+            self._rotated_width = self.box_size[0]
+            self._rotated_height = self.box_size[1]
+        
+        # Cache position after first calculation
+        self._cached_position = None
+        
+        # Pre-calculate max text width for truncation
+        self._max_text_width = self.box_size[0] - 10
+    
+    def add_event(self, event_text: str) -> None:
+        """Add new event (pushes old events up/out)"""
+        self.events.append(event_text)
+        self._cache_dirty = True
+    
+    def clear_events(self) -> None:
+        """Clear all events"""
+        self.events.clear()
+        self._cache_dirty = True
+    
+    def _render_overlay(self) -> np.ndarray:
+        """Render event box WITH rotation baked in (only called when cache dirty)"""
+        width, height = self.box_size
+        overlay = np.zeros((height, width, 3), dtype=np.uint8)
+        overlay[:, :] = self.bg_color
+        
+        # Draw events bottom-to-top (newest at bottom)
+        y_pos = height - self.line_spacing - 5
+        
+        for event_text in reversed(self.events):
+            if y_pos < self.line_height:
+                break
+            
+            # Truncate if too wide (using pre-calculated max width)
+            (text_w, _), _ = cv2.getTextSize(
+                event_text, self.font, self.font_scale, self.font_thickness
+            )
+            if text_w > self._max_text_width:
+                while text_w > self._max_text_width - 15 and len(event_text) > 3:
+                    event_text = event_text[:-1]
+                    (text_w, _), _ = cv2.getTextSize(
+                        event_text + "...", self.font, self.font_scale, self.font_thickness
+                    )
+                event_text += "..."
+            
+            cv2.putText(
+                overlay, event_text, (5, y_pos),
+                self.font, self.font_scale, self.text_color,
+                self.font_thickness, cv2.LINE_AA
+            )
+            y_pos -= self.line_height
+        
+        # Rotate once here (only happens when regenerating cache)
+        if self.rotation == 90:
+            overlay = cv2.rotate(overlay, cv2.ROTATE_90_CLOCKWISE)
+        elif self.rotation in [-90, 270]:
+            overlay = cv2.rotate(overlay, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        elif self.rotation == 180:
+            overlay = cv2.rotate(overlay, cv2.ROTATE_180)
+        
+        return overlay
+    
+    def _get_position(self, image_shape: tuple[int, int]) -> tuple[int, int]:
+        """Calculate top-right position once and cache it"""
+        if self._cached_position is not None:
+            return self._cached_position
+        
+        if self._initial_position is not None:
+            self._cached_position = self._initial_position
+            return self._cached_position
+        
+        # Calculate top-right position using pre-calculated rotated dimensions
+        img_height, img_width = image_shape[:2]
+        x = img_width - self._rotated_width - 10
+        y = 10
+        
+        self._cached_position = (x, y)
+        return self._cached_position
+    
+    def apply_to_image(self, image: np.ndarray) -> None:
+        """Apply pre-rotated overlay to image (in-place modification)
+        
+        Args:
+            image: BGR image to overlay events on (modified in-place)
+        """
+        if not self.events:
+            return
+        
+        if self._cache_dirty:
+            self._cached_overlay = self._render_overlay()  # Rotation happens here
+            
+            # Pre-compute mask once (only text pixels are blended, black bg is transparent)
+            gray_overlay = cv2.cvtColor(self._cached_overlay, cv2.COLOR_BGR2GRAY)
+            _, mask = cv2.threshold(gray_overlay, 1, 255, cv2.THRESH_BINARY)
+            mask_normalized = mask.astype(float) / 255.0
+            mask_alpha = mask_normalized * self.bg_alpha
+            self._cached_mask = mask_alpha  # Cache it!
+            
+            self._cache_dirty = False
+        
+        x, y = self._get_position(image.shape)  # Cached after first call
+        
+        # Use pre-calculated rotated dimensions (no per-frame calculation)
+        width = self._rotated_width
+        height = self._rotated_height
+        
+        # Clip to image bounds
+        y_end = min(y + height, image.shape[0])
+        x_end = min(x + width, image.shape[1])
+        h = y_end - y
+        w = x_end - x
+        
+        if h > 0 and w > 0:
+            roi = image[y:y_end, x:x_end]
+            overlay_region = self._cached_overlay[:h, :w]
+            mask_alpha = self._cached_mask[:h, :w]
+            
+            # Invert mask for background weight
+            inv_mask = 1.0 - mask_alpha
+            
+            # Fast blend: text pixels get blended, black background stays transparent
+            roi[:] = (overlay_region * mask_alpha[:, :, np.newaxis] + 
+                     roi * inv_mask[:, :, np.newaxis]).astype(np.uint8)
+
+
 def interpolate_points(start, end, steps):
     return np.linspace(start, end, steps)
 

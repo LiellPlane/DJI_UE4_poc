@@ -94,6 +94,7 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 
 
 def main():
+    log_overlay = img_processing.EventLogOverlay()
     MY_ID = lumogun.GetID().get_persistant_player_id()
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
@@ -670,8 +671,8 @@ def main():
                                         #     index += 1
                                             
 
-                                        
-
+                    log_overlay.add_event(str(random.randint(11111111,99999999)))
+                    log_overlay.apply_to_image(output_image)
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?
                         output_image[:] = 255
