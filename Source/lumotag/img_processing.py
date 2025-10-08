@@ -27,7 +27,12 @@ class EventLogOverlay:
     """Event log overlay for game events (optimized for Raspberry Pi)
     
     Shows recent events in a semi-transparent box with cached rendering.
-    Only regenerates when events change. Supports rotation for LCD orientation.
+    Events automatically fade and expire:
+    - < 5 seconds: bright green
+    - 5-10 seconds: fades to dark green
+    - > 10 seconds: dark green
+    - > 20 seconds: removed
+    Cache refreshes every 1 second to update colors and remove old events.
     
     Usage:
         log = EventLogOverlay(rotation=90)
@@ -62,10 +67,12 @@ class EventLogOverlay:
         self.font = cv2.FONT_HERSHEY_SIMPLEX
         
         self.events = deque(maxlen=max_events)
+        self.event_timestamps = deque(maxlen=max_events)  # Track when each event was added
         self._static_header = None  # Static text at top (doesn't scroll)
         self._cached_overlay = None
         self._cached_mask = None  # Cache the alpha mask too
         self._cache_dirty = True
+        self._last_refresh_time = time.time()  # For 1-second refresh cycle
         
         # Pre-calculate line height
         (_, h), baseline = cv2.getTextSize(
@@ -96,11 +103,13 @@ class EventLogOverlay:
     def add_event(self, event_text: str) -> None:
         """Add new event (pushes old events up/out)"""
         self.events.append(event_text)
+        self.event_timestamps.append(time.time())
         self._cache_dirty = True
     
     def clear_events(self) -> None:
         """Clear all events"""
         self.events.clear()
+        self.event_timestamps.clear()
         self._cache_dirty = True
     
     def _render_overlay(self) -> np.ndarray:
@@ -139,9 +148,28 @@ class EventLogOverlay:
         else:
             y_pos = self.line_height + 5
         
-        for event_text in self.events:  # Oldest first (left side after rotation)
+        current_time = time.time()
+        
+        for event_text, timestamp in zip(self.events, self.event_timestamps):
             if y_pos > height - self.line_spacing:
                 break
+            
+            # Calculate age and color fade
+            age_seconds = current_time - timestamp
+            if age_seconds < 5:
+                # Bright green for < 5 seconds
+                event_color = self.text_color
+            elif age_seconds < 10:
+                # Fade from bright to dark green between 5-10 seconds
+                fade_progress = (age_seconds - 5) / 5  # 0.0 to 1.0
+                dark_green = (0, 60, 0)  # Dark green (BGR)
+                event_color = tuple(
+                    int(self.text_color[i] * (1 - fade_progress) + dark_green[i] * fade_progress)
+                    for i in range(3)
+                )
+            else:
+                # Dark green for >= 10 seconds (until removed at 20)
+                event_color = (0, 60, 0)
             
             # Truncate if too wide (using pre-calculated max width)
             (text_w, _), _ = cv2.getTextSize(
@@ -157,7 +185,7 @@ class EventLogOverlay:
             
             cv2.putText(
                 overlay, event_text, (5, y_pos),
-                self.font, self.font_scale, self.text_color,
+                self.font, self.font_scale, event_color,
                 self.font_thickness, cv2.LINE_AA
             )
             y_pos += self.line_height  # Move DOWN (becomes right after rotation)
@@ -195,6 +223,18 @@ class EventLogOverlay:
         Args:
             image: BGR image to overlay events on (modified in-place)
         """
+        # Check if 1 second has passed - time to refresh and cleanup
+        current_time = time.time()
+        if current_time - self._last_refresh_time >= 1.0:
+            # Remove events older than 20 seconds
+            while self.events and (current_time - self.event_timestamps[0]) > 20.0:
+                self.events.popleft()
+                self.event_timestamps.popleft()
+            
+            # Trigger cache refresh to update colors
+            self._cache_dirty = True
+            self._last_refresh_time = current_time
+        
         if not self.events and self._static_header is None:
             return  # Nothing to render
         

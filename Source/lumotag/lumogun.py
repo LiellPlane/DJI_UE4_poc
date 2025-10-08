@@ -699,8 +699,9 @@ def main():
                         # game_client.send_tagging_event("12345", imageIDs)
                         # upload all images during trigger event
                         # we can change this to only upload tagged images - but for now upload all trigger events so we can see some traffic
-                        for img_id in imageIDs:
-                            game_client.upload_image_by_id(img_id)
+                        if len(analysis) > 0:
+                            for img_id in imageIDs:
+                                    game_client.upload_image_by_id(img_id)
                     else:
                         for img_id in imageIDs:
                             game_client.delete_image_by_id(img_id)
