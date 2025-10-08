@@ -31,6 +31,7 @@ class EventLogOverlay:
     
     Usage:
         log = EventLogOverlay(rotation=90)
+        log.set_header("GAME LOG")  # Static header at top
         log.add_event("Player joined")
         log.apply_to_image(frame)  # Fast in-place overlay
     """
@@ -43,7 +44,7 @@ class EventLogOverlay:
         max_events: int = 5,
         font_scale: float = 0.5,
         font_thickness: int = 1,
-        text_color: tuple[int, int, int] = (255, 255, 255),
+        text_color: tuple[int, int, int] = (0, 180, 0),  # Slightly dark green (BGR)
         bg_color: tuple[int, int, int] = (0, 0, 0),
         bg_alpha: float = 0.75,
         line_spacing: int = 5,
@@ -61,6 +62,7 @@ class EventLogOverlay:
         self.font = cv2.FONT_HERSHEY_SIMPLEX
         
         self.events = deque(maxlen=max_events)
+        self._static_header = None  # Static text at top (doesn't scroll)
         self._cached_overlay = None
         self._cached_mask = None  # Cache the alpha mask too
         self._cache_dirty = True
@@ -86,6 +88,11 @@ class EventLogOverlay:
         # Pre-calculate max text width for truncation
         self._max_text_width = self.box_size[0] - 10
     
+    def set_header(self, header_text: str | None) -> None:
+        """Set static header text at top (doesn't scroll with events)"""
+        self._static_header = header_text
+        self._cache_dirty = True
+    
     def add_event(self, event_text: str) -> None:
         """Add new event (pushes old events up/out)"""
         self.events.append(event_text)
@@ -102,7 +109,30 @@ class EventLogOverlay:
         overlay = np.zeros((height, width, 3), dtype=np.uint8)
         overlay[:, :] = self.bg_color
         
-        # Draw events bottom-to-top (newest at bottom)
+        # Draw static header at top if set
+        if self._static_header is not None:
+            header_y_pos = self.line_height + 5  # Position from top
+            header_text = self._static_header
+            
+            # Truncate header if too wide
+            (text_w, _), _ = cv2.getTextSize(
+                header_text, self.font, self.font_scale, self.font_thickness
+            )
+            if text_w > self._max_text_width:
+                while text_w > self._max_text_width - 15 and len(header_text) > 3:
+                    header_text = header_text[:-1]
+                    (text_w, _), _ = cv2.getTextSize(
+                        header_text + "...", self.font, self.font_scale, self.font_thickness
+                    )
+                header_text += "..."
+            
+            cv2.putText(
+                overlay, header_text, (5, header_y_pos),
+                self.font, self.font_scale, self.text_color,
+                self.font_thickness, cv2.LINE_AA
+            )
+        
+        # Draw scrolling events bottom-to-top (newest at bottom)
         y_pos = height - self.line_spacing - 5
         
         for event_text in reversed(self.events):
@@ -161,8 +191,8 @@ class EventLogOverlay:
         Args:
             image: BGR image to overlay events on (modified in-place)
         """
-        if not self.events:
-            return
+        if not self.events and self._static_header is None:
+            return  # Nothing to render
         
         if self._cache_dirty:
             self._cached_overlay = self._render_overlay()  # Rotation happens here

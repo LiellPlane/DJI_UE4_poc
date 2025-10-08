@@ -96,6 +96,7 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 def main():
     log_overlay = img_processing.EventLogOverlay()
     MY_ID = lumogun.GetID().get_persistant_player_id()
+    log_overlay.set_header(f"DeviceID: {MY_ID}")
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
@@ -679,6 +680,7 @@ def main():
 
                     display.display(output_image)
                 perfmonitor.get_time("complete_cycle", reset=True)
+                perfmonitor.get_time("complete_cycle2", reset=True)
                 perfmonitor.manual_measure("check_scale2", 25)
                 if len(analysis) > 0:
                     if is_trigger_pressed is True:
