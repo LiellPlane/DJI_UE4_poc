@@ -21,6 +21,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import socket
 import ipaddress
+import random
 
 TAGDAM = 25 # damage when any player gets tagged
 
@@ -186,6 +187,7 @@ class HTTPComms(AbstractHTTPComms):
         self._last_success_time = time.time()
         self._last_events_error_time = None  # Initialize to avoid linter error
         self._last_disconnect_log_time = 0.0  # Rate limit disconnect messages
+        self._last_error_check_time = 0.0  # Rate limit error checking (once per second)
         
         # UDP / HTTP tag notification (thread-safe sticky flag)
         self._udp_tagged = False
@@ -363,7 +365,9 @@ class HTTPComms(AbstractHTTPComms):
         return self._events_q.qsize()
 
     def is_connected(self) -> bool:
-        """Check if currently connected - thread-safe"""
+        """Check if currently connected - thread-safe
+        Also checks for thread errors (rate-limited internally to once per second)"""
+        self.raise_thread_error_if_any()
         with self._connection_lock:
             return self._is_connected
     
@@ -415,7 +419,14 @@ class HTTPComms(AbstractHTTPComms):
             self._is_connected = connected
 
     def raise_thread_error_if_any(self) -> None:
-        """Lightweight check for thread errors"""
+        """Lightweight check for thread errors (rate-limited to once per second)"""
+        # Rate limit full checks to once per second
+        current_time = time.time()
+        if current_time - self._last_error_check_time < 1.0:
+            return  # Skip check, too soon
+        
+        self._last_error_check_time = current_time
+        
         # Check for caught exceptions first (non-blocking)
         if not self._error_q.empty():
             thread_name, exc, tb_str = self._error_q.get_nowait()
@@ -730,9 +741,6 @@ class HTTPComms(AbstractHTTPComms):
                 # Wait for next poll cycle
                 time.sleep(self.poll_interval_seconds)
 
-                # not the best place for this 
-                self.raise_thread_error_if_any()
-
         except Exception as e:
             tb_str = traceback.format_exc()
             try:
@@ -791,7 +799,8 @@ class HTTPComms(AbstractHTTPComms):
                 with self._gamestate_lock:
                     self._latest_gamestate.players[device_id].health -= damage
                 player_name = self._latest_gamestate.players[device_id].display_name
-                self.add_event_to_log(f"{player_name} UDP tagged")
+                message = random.choice(lumotag_events.tagged_chat).substitute(player_name=player_name)
+                self.add_event_to_log(message)
                 
         except Exception as e:
             # If this fails, crash the whole process - something is seriously wrong
