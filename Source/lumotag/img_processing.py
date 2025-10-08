@@ -132,11 +132,15 @@ class EventLogOverlay:
                 self.font_thickness, cv2.LINE_AA
             )
         
-        # Draw scrolling events bottom-to-top (newest at bottom)
-        y_pos = height - self.line_spacing - 5
+        # Draw scrolling events top-to-bottom (becomes left-to-right after 90° rotation)
+        # Start after header (or at top if no header)
+        if self._static_header is not None:
+            y_pos = self.line_height + 10 + self.line_height  # After header + spacing
+        else:
+            y_pos = self.line_height + 5
         
-        for event_text in reversed(self.events):
-            if y_pos < self.line_height:
+        for event_text in self.events:  # Oldest first (left side after rotation)
+            if y_pos > height - self.line_spacing:
                 break
             
             # Truncate if too wide (using pre-calculated max width)
@@ -156,7 +160,7 @@ class EventLogOverlay:
                 self.font, self.font_scale, self.text_color,
                 self.font_thickness, cv2.LINE_AA
             )
-            y_pos -= self.line_height
+            y_pos += self.line_height  # Move DOWN (becomes right after rotation)
         
         # Rotate once here (only happens when regenerating cache)
         if self.rotation == 90:

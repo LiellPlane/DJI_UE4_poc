@@ -517,8 +517,8 @@ class GetID(factory.GetID):
     def __init__(self):
         self.id_file = "/home/lumotag/player_id.txt"
     
-    def get_persistant_player_id(self):
-        """Get unique and persistant player id - create if does not exist"""
+    def get_persistant_device_id(self):
+        """Get unique and persistant device id - create if does not exist"""
         if os.path.exists(self.id_file):
             with open(self.id_file, 'r') as f:
                 stored_id = f.read().strip()

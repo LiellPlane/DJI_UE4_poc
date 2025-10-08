@@ -5,7 +5,7 @@ import json
 import threading
 import queue as threading_queue
 from typing import Callable
-from collections import OrderedDict
+from collections import OrderedDict, deque
 import numpy as np
 import traceback
 import requests
@@ -185,6 +185,7 @@ class HTTPComms(AbstractHTTPComms):
         self._connection_lock = threading.Lock()
         self._last_success_time = time.time()
         self._last_events_error_time = None  # Initialize to avoid linter error
+        self._last_disconnect_log_time = 0.0  # Rate limit disconnect messages
         
         # UDP / HTTP tag notification (thread-safe sticky flag)
         self._udp_tagged = False
@@ -196,6 +197,10 @@ class HTTPComms(AbstractHTTPComms):
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
         self._player_avatars: dict[DeviceID, np.ndarray] = {}
+        
+        # Event log queue (FIFO with max 50 items, lock-free thread-safe)
+        # deque append() and popleft() are atomic from opposite ends
+        self.events_queue = deque(maxlen=50)  # Automatically drops oldest when full
 
         # Cache event types once at startup for performance (from WebSocketEventsComms)
         self._cached_event_types = self._get_event_types()
@@ -247,7 +252,7 @@ class HTTPComms(AbstractHTTPComms):
         try:
             self._upload_q.put_nowait(image_id)
         except threading_queue.Full:
-            pass  # Silently drop if queue full
+            self.add_event_to_log("Upload queue full!")
 
     def set_killshot(self, response: dict):
         incoming_killshot = lumotag_events.ReqKillScreenResponse(**response)
@@ -308,7 +313,10 @@ class HTTPComms(AbstractHTTPComms):
     def request_kill_screen(self):
         self.killshots_of_me = []
         event = lumotag_events.ReqKillScreen()
-        self._events_q.put_nowait(EventWithCallback(event, self.set_killshot))
+        try:
+            self._events_q.put_nowait(EventWithCallback(event, self.set_killshot))
+        except threading_queue.Full:
+            self.add_event_to_log("Events queue full!")
 
     def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
         """Send a tagging event via HTTP and UDP broadcast - validates event type first"""
@@ -319,7 +327,10 @@ class HTTPComms(AbstractHTTPComms):
         self._broadcast_udp(event)
 
         # HTTP event queued for reliable delivery
-        self._events_q.put_nowait(EventWithCallback(event, None))
+        try:
+            self._events_q.put_nowait(EventWithCallback(event, None))
+        except threading_queue.Full:
+            self.add_event_to_log("Events queue full!")
 
     # def send_event(self, event) -> None:
     #     """Send an event via HTTP - validates event type first"""
@@ -373,9 +384,30 @@ class HTTPComms(AbstractHTTPComms):
         Returns validated GameStatus Pydantic object"""
         with self._gamestate_lock:
             return self._latest_gamestate
+    
+    def add_event_to_log(self, event_text: str) -> None:
+        """Add an event to the event log queue (lock-free thread-safe, FIFO with auto-eviction)"""
+        self.events_queue.append(event_text)  # Atomic operation
+    
+    def pop_oldest_event(self) -> str | None:
+        """Get and remove the oldest event from the queue (lock-free thread-safe)
+        
+        Returns:
+            The oldest event string, or None if queue is empty
+        """
+        try:
+            return self.events_queue.popleft()  # Atomic operation
+        except IndexError:
+            return None  # Queue was empty
 
     def _set_connected(self, connected: bool) -> None:
         """Internal method to update connection state - thread-safe"""
+        if connected is False:
+            # Rate limit disconnect messages to once every 2 seconds
+            current_time = time.time()
+            if current_time - self._last_disconnect_log_time >= 2.0:
+                self.add_event_to_log(f"DISCONNECTED::{self.gamestate_url}")
+                self._last_disconnect_log_time = current_time
         with self._connection_lock:
             if connected and not self._is_connected:
                 # Reconnected - update success time
@@ -639,13 +671,21 @@ class HTTPComms(AbstractHTTPComms):
                         
                             game_update = lumotag_events.GameStatus(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
                             
-                            # if local health is bigger than incoming health - we've been tagged 
+                            # Check if we got tagged (health decreased)
                             if (self._latest_gamestate.players 
                                 and self.device_id in game_update.players 
                                 and self.device_id in self._latest_gamestate.players 
                                 and game_update.players[self.device_id].health < self._latest_gamestate.players[self.device_id].health):
+                                damage = self._latest_gamestate.players[self.device_id].health - game_update.players[self.device_id].health
+                                self.add_event_to_log(f"You were tagged! (-{damage} HP)")
                                 with self._tagged_lock:
                                     self._GameUpdate_tagged = True
+                            
+                            # Check for player eliminations
+                            for player_id, player in game_update.players.items():
+                                old_player = self._latest_gamestate.players.get(player_id)
+                                if old_player and not old_player.isEliminated and player.isEliminated:
+                                    self.add_event_to_log(f"{player.display_name} eliminated!")
 
                             # Store validated game state
                             with self._gamestate_lock:
@@ -656,6 +696,9 @@ class HTTPComms(AbstractHTTPComms):
                             for deviceid, playerstatus in self._latest_gamestate.players.items():
                                 if deviceid not in self._player_avatars:
                                     self._player_avatars[DeviceID(deviceid)] = self.download_avatar(playerstatus.display_name)
+                                    # Player joined - log it (unless it's us)
+                                    if deviceid != self.device_id:
+                                        self.add_event_to_log(f"{playerstatus.display_name} [{playerstatus.tag_id}] joined")
                                     break
 
                             self._set_connected(True)  # Success - mark as connected

@@ -218,8 +218,8 @@ class gun_config(ABC):
 
 class GetID(ABC):
     @abstractmethod
-    def get_persistant_player_id(self):
-        """Get unique and persistant player id - create if does not exist"""
+    def get_persistant_device_id(self):
+        """Get unique and persistant device id - create if does not exist"""
         ...
 
 class FileSystemABC(ABC):
