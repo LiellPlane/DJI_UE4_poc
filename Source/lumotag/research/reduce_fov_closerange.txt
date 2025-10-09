@@ -1,0 +1,26 @@
+make galilean lens assembly:
+
+(we want 1.5 mag/zoom I think)
+
+in an ideal world use prismatic optics (like binoculars)
+
+1.5x Magnification
+Objective:
+Plano-convex singlet, +75mm focal length, 40mm diameter
+Edmund Optics: #47-293 (40mm, +75mm, BK7)
+Eyepiece:
+Bi-concave singlet, -50mm focal length, 25-30mm diameter
+Edmund Optics: #48-667 (25mm, -50mm, BK7)
+Tube spacing: ~25mm
+2x Magnification
+Objective:
+Plano-convex singlet, +100mm focal length, 40mm diameter
+Edmund Optics: #47-294 (40mm, +100mm, BK7)
+Eyepiece:
+Bi-concave singlet, -50mm focal length, 25-30mm diameter
+Edmund Optics: #48-667 (25mm, -50mm, BK7)
+Tube spacing: ~50mm
+
+
+also - look at m12 adapter for the noir camera - but make sure m12 lenses do not have IR cut filters on them!
+

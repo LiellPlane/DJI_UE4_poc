@@ -16,7 +16,7 @@ import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser, find_lumotag_special_case
 from utils import time_it, get_platform
 from my_collections import _OS, HeightWidth, ShapeItem
-
+from lumo_utils import get_targeted_player_details
 # need this import to detect lumogun types (subclasses)
 import configs
 # Import fake websocket server for testing
@@ -562,8 +562,13 @@ def main():
 
                 perfmonitor.manual_measure("check_scale", 25)
 
-                # calculate the fade for test player - needs to be called to determine what direction of fade
+                # if we see any targets - create lerp for an avatar
                 fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
+                # we need to find out what player id we are targetting, so pass in what ids we have found, and pass in what we currently know about players from the server
+                gamestate = game_client.get_latest_gamestate()
+                if focused_tag := get_targeted_player_details(analysis, gamestate):
+                    plop=1
+
 
                 with time_it("display image", debug=PRINT_DEBUG), perfmonitor.measure(
                     "display"
@@ -603,7 +608,6 @@ def main():
                             players[MY_ID].set_healthpoints(None)
                         else:
                             # probably should get the player card here
-                            gamestate = game_client.get_latest_gamestate()
                             if MY_ID in gamestate.players:
                                 if game_client.acknowledge_tagEvent():
                                     players[MY_ID].set_pain()

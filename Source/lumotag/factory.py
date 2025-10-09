@@ -443,27 +443,38 @@ class PlayerInfoBoxv2:
         """
 
         self.playername = playername
-
-        self.col_image, self.alphamask = self.create_player_image_and_mask()
+        self.avatar_canvas = avatar_canvas
+        self.col_image = None
+        self.alphamask = None
+        
 
         self.max_healthpoints = 100
         self.min_healthpoints = 0
         self.healthpoints = 1
-
+        self.avatars_by_id: dict[str, np.ndarray] = {}
         # Pain system - performant for 40fps checks
         self.pain_duration_seconds = 0.3
         self._pain_expires_at = None  # None = not in pain
 
-        if avatar_canvas is not None:
+        self.add_player_avatar(display_name="plop", img=img_processing.load_img_set_transparency())
+
+    def add_player_avatar(self, display_name: str, img: np.ndarray):
+        self.col_image, self.alphamask = self.create_player_image_and_mask()
+        if self.avatar_canvas is not None:
             # for local player we are not doing anything yet
             self.col_image = img_processing.get_resized_equalaspect(
                 self.col_image,
-                (avatar_canvas.height, avatar_canvas.width)
+                (self.avatar_canvas.height, self.avatar_canvas.width)
                 )
             self.alphamask = img_processing.get_resized_equalaspect(
                 self.alphamask,
-                (avatar_canvas.height, avatar_canvas.width)
-                )  
+                (self.avatar_canvas.height, self.avatar_canvas.width)
+                )
+            self.avatars_by_id[display_name] = self.col_image
+
+
+    def get_player_avatar(self, displayname:str):
+        return self.avatars_by_id[display_name]
 
 
     def get_healthpoints(self):
@@ -1492,10 +1503,10 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image = np.zeros(tuple(reversed(res)), np.uint8)
             sorted_files = get_images_for_cam_pair(
                 cam_name=self.cam_name,
-                filters=["deadspot"]#quadrocode_corners
+                filters=["paint"]#quadrocode_corners
             )
  
-            repeats = 1000
+            repeats = 30
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
