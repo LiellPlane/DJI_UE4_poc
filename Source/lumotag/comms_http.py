@@ -404,13 +404,13 @@ class HTTPComms(AbstractHTTPComms):
         except IndexError:
             return None  # Queue was empty
 
-    def _set_connected(self, connected: bool) -> None:
+    def _set_connected(self, connected: bool, usermsg: str = None) -> None:
         """Internal method to update connection state - thread-safe"""
         if connected is False:
             # Rate limit disconnect messages to once every 2 seconds
             current_time = time.time()
             if current_time - self._last_disconnect_log_time >= 2.0:
-                self.add_event_to_log(f"DISCONNECTED::{self.gamestate_url}")
+                self.add_event_to_log(f"OFFLINE::{usermsg}")
                 self._last_disconnect_log_time = current_time
         with self._connection_lock:
             if connected and not self._is_connected:
@@ -551,17 +551,18 @@ class HTTPComms(AbstractHTTPComms):
                         # Upload successful - remove from memory and mark as connected
                         with self._mem_lock:
                             self.ImageMem.pop(image_id, None)
-                        self._set_connected(True)
+                        self._set_connected(True, "imgupload ok")
                     else:
                         # Server error - keep image for retry and mark as disconnected for 4xx/5xx errors
                         if response.status_code >= 400:
-                            self._set_connected(False)
+                            self._set_connected(False, f"imgupload {response.status_code}")
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Image upload failed: HTTP {response.status_code}")
                         
                 except (requests.exceptions.Timeout, requests.exceptions.RequestException) as e:
                     # Network error or timeout - keep image for retry and mark as disconnected
-                    self._set_connected(False)
+                    err_msg = str(e)[:100] + "..." if len(str(e)) > 100 else str(e)
+                    self._set_connected(False, f"imgupload {err_msg}")
                     time.sleep(0.5)  # Shorter delay for faster recovery
   
                     
@@ -610,23 +611,24 @@ class HTTPComms(AbstractHTTPComms):
                     
                     # Check response
                     if response.status_code == 200:
-                        self._set_connected(True)  # Success - mark as connected
+                        self._set_connected(True, "event ok")  # Success - mark as connected
                         if event.callback is not None:
                             event.callback(response.json())
                     else:
                         # Server error - mark as disconnected for 4xx/5xx errors
                         if response.status_code >= 400:
-                            # self._set_connected(False)
+                            # self._set_connected(False, f"event {response.status_code}")
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Event send failed: HTTP {response.status_code}")
                         
                 except requests.exceptions.Timeout:
                     # Timeout - mark disconnected, no log spam for frequent events
-                    self._set_connected(False)
+                    self._set_connected(False, "event timeout")
                     
                 except requests.exceptions.RequestException as e:
                     # Network error - mark as disconnected
-                    self._set_connected(False)
+                    err_msg = str(e)[:100] + "..." if len(str(e)) > 100 else str(e)
+                    self._set_connected(False, f"event {err_msg}")
                     time.sleep(0.1)  # Shorter delay for faster recovery
                     # Don't print every network error to avoid spam
                     if self._last_events_error_time is None or time.time() - self._last_events_error_time > 10.0:
@@ -717,26 +719,28 @@ class HTTPComms(AbstractHTTPComms):
                                         self.add_event_to_log(f"{playerstatus.display_name} [{playerstatus.tag_id}] joined")
                                     break
 
-                            self._set_connected(True)  # Success - mark as connected
+                            self._set_connected(True, "gamestate ok")  # Success - mark as connected
                             
                         except Exception as e:
                             # JSON parsing or validation error - this is a serious issue
                             print(f"⚠️ Invalid gamestate response format: {e}")
-                            self._set_connected(False)
+                            err_msg = str(e)[:100] + "..." if len(str(e)) > 100 else str(e)
+                            self._set_connected(False, f"gamestate {err_msg}")
                             
                     else:
                         # Any non-200 response is an error - mark as disconnected
-                        self._set_connected(False)
+                        self._set_connected(False, f"gamestate {response.status_code}")
                         print(f"⚠️ Gamestate fetch failed: HTTP {response.status_code}")
                         # Don't call raise_for_status() - it's slow and unnecessary
                         
                 except requests.exceptions.Timeout:
                     # Timeout - mark as disconnected but don't spam logs
-                    self._set_connected(False)
+                    self._set_connected(False, "gamestate timeout")
                     
                 except requests.exceptions.RequestException as e:
                     # Network error - mark as disconnected
-                    self._set_connected(False)
+                    err_msg = str(e)[:100] + "..." if len(str(e)) > 100 else str(e)
+                    self._set_connected(False, f"gamestate {err_msg}")
                     print(f"⚠️ Gamestate network error: {e}")
                     
                 except Exception as e:

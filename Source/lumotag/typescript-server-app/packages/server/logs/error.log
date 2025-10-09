@@ -2328,3 +2328,20 @@
     '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
   timestamp: '2025-10-09 12:37:39'
 }
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[11:40:55.627] KillShot processing error: Eliminated player not found for device: bc1ad358bb',
+  stack: 'Error: Eliminated player not found for device: bc1ad358bb\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-09 12:40:55'
+}
