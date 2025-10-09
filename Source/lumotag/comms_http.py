@@ -682,6 +682,15 @@ class HTTPComms(AbstractHTTPComms):
                         
                             game_update = lumotag_events.GameStatus(**gamestate_data)  # Keep Pydantic validation - it's fast and necessary
                             
+
+                            # Check for player eliminations and taggings
+                            for player_id, player in game_update.players.items():
+                                old_player = self._latest_gamestate.players.get(player_id)
+                                if old_player and not old_player.isEliminated and player.isEliminated:
+                                    self.add_event_to_log(f"{player.display_name} eliminated!")
+                                if old_player and player.health < old_player.health:
+                                    self.tagged_player_info_event(player.display_name, player.health)
+                                    
                             # Check if we got tagged (health decreased)
                             if (self._latest_gamestate.players 
                                 and self.device_id in game_update.players 
@@ -691,13 +700,7 @@ class HTTPComms(AbstractHTTPComms):
                                 with self._tagged_lock:
                                     self._GameUpdate_tagged = True
                             
-                            # Check for player eliminations and taggings
-                            for player_id, player in game_update.players.items():
-                                old_player = self._latest_gamestate.players.get(player_id)
-                                if old_player and not old_player.isEliminated and player.isEliminated:
-                                    self.add_event_to_log(f"{player.display_name} eliminated!")
-                                if old_player and player.health < old_player.health:
-                                    self.tagged_player_info_event(player.display_name, player.health)
+
 
                             # Store validated game state
                             with self._gamestate_lock:
