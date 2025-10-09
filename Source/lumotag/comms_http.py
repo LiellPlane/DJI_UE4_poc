@@ -687,9 +687,10 @@ class HTTPComms(AbstractHTTPComms):
                             for player_id, player in game_update.players.items():
                                 old_player = self._latest_gamestate.players.get(player_id)
                                 if old_player and not old_player.isEliminated and player.isEliminated:
-                                    self.add_event_to_log(f"{player.display_name} eliminated!")
-                                if old_player and player.health < old_player.health:
-                                    self.tagged_player_info_event(player.display_name, player.health)
+                                    # self.add_event_to_log(f"{player.display_name} eliminated!")
+                                    self.add_event_to_log(random.choice(lumotag_events.eliminated_chat).substitute(player_name=player.display_name))
+                                elif old_player and player.health < old_player.health:
+                                    self.add_player_tagged_to_log(player.display_name, player.health)
 
                             # Check if we got tagged (health decreased)
                             if (self._latest_gamestate.players 
@@ -781,7 +782,7 @@ class HTTPComms(AbstractHTTPComms):
                                 # Set sticky flag - main thread will check and clear it
                                 with self._tagged_lock:
                                     self._udp_tagged = True
-                            self.reduce_players_health(self.device_id, TAGDAM) 
+                                self.reduce_players_health(self.device_id, TAGDAM) 
 
 
                 except (json.JSONDecodeError, UnicodeDecodeError, KeyError, TypeError) as e:
@@ -796,8 +797,8 @@ class HTTPComms(AbstractHTTPComms):
                 pass
             return
     
-    def tagged_player_info_event(self, player_name, player_heath):
-        if player_heath < - 30:
+    def add_player_tagged_to_log(self, player_name, player_heath):
+        if player_heath < 0:
             message = random.choice(lumotag_events.bullied_chat).substitute(player_name=player_name, health=player_heath)
         else:
             message = random.choice(lumotag_events.tagged_chat).substitute(player_name=player_name)
@@ -811,7 +812,7 @@ class HTTPComms(AbstractHTTPComms):
             if device_id in self._latest_gamestate.players:
                 with self._gamestate_lock:
                     self._latest_gamestate.players[device_id].health -= damage
-                    self.tagged_player_info_event(
+                    self.add_player_tagged_to_log(
                         self._latest_gamestate.players[device_id].display_name,
                         self._latest_gamestate.players[device_id].health
                         )
