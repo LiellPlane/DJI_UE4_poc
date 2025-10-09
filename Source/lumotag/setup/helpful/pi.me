@@ -26,3 +26,8 @@ rsync --stats lumotag@lumotag.local:/home/lumotag/debugimages/*.jpg ./
 OR BETTER:
 
 rsync -avz --delete --timeout=300 --ignore-errors lumotag@lumotag.local:/home/lumotag/debugimages/*.jpg ./
+
+
+get CPU average last 5 seconds:
+
+grep 'cpu[0-9]' /proc/stat > /tmp/c1 && sleep 5 && grep 'cpu[0-9]' /proc/stat | paste /tmp/c1 - | awk '{u=$6-$2; s=$7-$3; i=$8-$4; print $1" "u*100/(u+s+i)"%"}'
