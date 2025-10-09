@@ -690,7 +690,7 @@ class HTTPComms(AbstractHTTPComms):
                                     self.add_event_to_log(f"{player.display_name} eliminated!")
                                 if old_player and player.health < old_player.health:
                                     self.tagged_player_info_event(player.display_name, player.health)
-                                    
+
                             # Check if we got tagged (health decreased)
                             if (self._latest_gamestate.players 
                                 and self.device_id in game_update.players 
@@ -811,6 +811,10 @@ class HTTPComms(AbstractHTTPComms):
             if device_id in self._latest_gamestate.players:
                 with self._gamestate_lock:
                     self._latest_gamestate.players[device_id].health -= damage
+                    self.tagged_player_info_event(
+                        self._latest_gamestate.players[device_id].display_name,
+                        self._latest_gamestate.players[device_id].health
+                        )
 
         except Exception as e:
             # If this fails, crash the whole process - something is seriously wrong
