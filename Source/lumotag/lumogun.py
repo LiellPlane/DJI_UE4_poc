@@ -567,16 +567,30 @@ def main():
                 
                 gamestate = game_client.get_latest_gamestate()
                 # we need to find out what player id we are targetting, so pass in what tags we have found, and pass in what we currently know about players from the server
-                if focused_tag := get_targeted_player_details(analysis, gamestate):
-                    plop=1
+
 
 
                 with time_it("display image", debug=PRINT_DEBUG), perfmonitor.measure(
                     "display"
                 ):
-                    status_bar.load_player_image(
-                        players["demoplayer"].col_image, fade_norm
-                    )
+                    # if we have a tag - we want to try and get the avatar associated with the tag and display it in the UI 
+                    # it has to go through a process - so can't use it raw from the http class 
+                    if focused_tag := get_targeted_player_details(analysis, gamestate):
+                        # does the player card thing already have this avatar processed and ready?
+                        id_ = str(focused_tag.tag_id)
+                        if players["demoplayer"].get_player_avatar(id_) is None:
+                            # ok we don't have it - lets get it from the comms class 
+                            if (img := game_client.get_player_avatar(tag_id=id_)) is not None:
+                                # load the avatar into the player info card thing 
+                                players["demoplayer"].add_player_avatar(tag_id=id_, img=img)
+                                players["demoplayer"].set_targetted_avatar(id_)
+                        # we have a tag - now see if we the image record already in the display class - if not - try and get it from the comms module 
+
+                    if (img:= players["demoplayer"].dynamic_display_img) is not None:
+                        status_bar.display_player_image(
+                            img, fade_norm
+                        )
+
                     status_bar.draw_status_bar(
                         output_image,
                         players[MY_ID].ammo,
@@ -601,81 +615,80 @@ def main():
                     # both should have the same connection status, but we can check both for sanity
 
                     # check if local variables have been defined
-                    if "game_client" in locals():
-                        if not game_client.is_connected():
-                            img_processing.draw_border_rectangle(
-                                output_image, thickness=10, color=(0, 0, 255)
-                            )
-                            players[MY_ID].set_healthpoints(None)
-                        else:
-                            # probably should get the player card here
-                            if MY_ID in gamestate.players:
-                                if game_client.acknowledge_tagEvent():
-                                    players[MY_ID].set_pain()
+
+                    if not game_client.is_connected():
+                        img_processing.draw_border_rectangle(
+                            output_image, thickness=10, color=(0, 0, 255)
+                        )
+                        players[MY_ID].set_healthpoints(None)
+                    else:
+                        # probably should get the player card here
+                        if MY_ID in gamestate.players:
+                            if game_client.acknowledge_tagEvent():
+                                players[MY_ID].set_pain()
+                                output_image[:] = (0,0,255)
+                                voice.speak("BLARG")
+                                # next loop the buzzer will make a noise
+                                trigger_debounce.trigger_1shot_simple_High(True)
+                                # hope this works - overrides all debounces but could be in undefined state
+                                set_trigger(state=True)
+                            elif players[MY_ID].is_in_pain():
+                                img_processing.combine_channels_to_red(output_image)
+                                if random.randint(0,4) < 1:
                                     output_image[:] = (0,0,255)
-                                    voice.speak("BLARG")
-                                    # next loop the buzzer will make a noise
-                                    trigger_debounce.trigger_1shot_simple_High(True)
-                                    # hope this works - overrides all debounces but could be in undefined state
-                                    set_trigger(state=True)
-                                elif players[MY_ID].is_in_pain():
-                                    output_image[:,:,0] = 0
-                                    output_image[:,:,1] = 0
-                                    if random.randint(0,4) < 1:
-                                        output_image[:] = (0,0,255)
 
-                                # set player card health (not sure about this yet)
-                                players[MY_ID].set_healthpoints(
-                                    gamestate.players[MY_ID].health
-                                )
-                                # now if we have been eliminated - wait in a cycle. Flash up red and wait for kill shot image
-                                # only break loop once player is no longer eliminated (set by server)
-                                if gamestate.players[MY_ID].isEliminated:
-                                    # async call out for kill screen - poll client to see if it arrives
-                                    game_client.request_kill_screen()
-                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["torch"], False)
-                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["laser"], False)
-                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], True)
-                                    starttime = time.time()
-                                    while True:
-                                        # states can be stuck in this loop - probably should be handled with threads
-                                        while time.time() < starttime + 2:
-                                            output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
-                                            display.display(output_image)
-                                            time.sleep(0.05)
-                                        relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
-                                        # keep getting latest gamestate so we can break out of killscreen
-                                        gamestate = game_client.get_latest_gamestate()
-                                        if gamestate is None:
-                                            continue
-                                        if MY_ID in gamestate.players:
-                                            if gamestate.players[MY_ID].isEliminated is False:
-                                                game_client.killshots_of_me = []  # Clear stale killshots on respawn
-                                                break
-                                        if len(game_client.killshots_of_me) > 0:
-                                            resized_killshot = img_processing.display_split_rotated_images(output_image.shape, game_client.killshots_of_me)
-                                            output_image[:] = resized_killshot
-                                        else:
-                                            output_image[:] = (0,0,random.randint(240,255))
-                                            game_client.request_kill_screen()
+                            # set player card health (not sure about this yet)
+                            players[MY_ID].set_healthpoints(
+                                gamestate.players[MY_ID].health
+                            )
+                            # now if we have been eliminated - wait in a cycle. Flash up red and wait for kill shot image
+                            # only break loop once player is no longer eliminated (set by server)
+                            if gamestate.players[MY_ID].isEliminated:
+                                # async call out for kill screen - poll client to see if it arrives
+                                game_client.request_kill_screen()
+                                relay.force_set_relay(GUN_CONFIGURATION.relay_map["torch"], False)
+                                relay.force_set_relay(GUN_CONFIGURATION.relay_map["laser"], False)
+                                relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], True)
+                                starttime = time.time()
+                                while True:
+                                    # states can be stuck in this loop - probably should be handled with threads
+                                    while time.time() < starttime + 2:
+                                        output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                         display.display(output_image)
-                                        time.sleep(0.2)
+                                        time.sleep(0.05)
+                                    relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
+                                    # keep getting latest gamestate so we can break out of killscreen
+                                    gamestate = game_client.get_latest_gamestate()
+                                    if gamestate is None:
+                                        continue
+                                    if MY_ID in gamestate.players:
+                                        if gamestate.players[MY_ID].isEliminated is False:
+                                            game_client.killshots_of_me = []  # Clear stale killshots on respawn
+                                            break
+                                    if len(game_client.killshots_of_me) > 0:
+                                        resized_killshot = img_processing.display_split_rotated_images(output_image.shape, game_client.killshots_of_me)
+                                        output_image[:] = resized_killshot
+                                    else:
+                                        output_image[:] = (0,0,random.randint(240,255))
+                                        game_client.request_kill_screen()
+                                    display.display(output_image)
+                                    time.sleep(0.2)
 
-                                        # bad logic
-                                        # compelled_speech = ["eye", "am.", "ree", "tar", "ded"] * 10
-                                        # index = 0
-                                        # while True:
-                                        #     # why do I need this ? need to check the logic 
-                                            
-                                        #     results_trig_positions = triggers.test_states()
-                                        #     is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
-                                        #     is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
-                                        #     if not is_trigger_pressed:
-                                        #         continue
-                                        #     voice.speak_blocking(compelled_speech[index])
-                                        #     time.sleep(0.1)
-                                        #     index += 1
-                                            
+                                    # bad logic
+                                    # compelled_speech = ["eye", "am.", "ree", "tar", "ded"] * 10
+                                    # index = 0
+                                    # while True:
+                                    #     # why do I need this ? need to check the logic 
+                                        
+                                    #     results_trig_positions = triggers.test_states()
+                                    #     is_trigger_reqd = results_trig_positions[GUN_CONFIGURATION.button_trigger]
+                                    #     is_trigger_pressed = trigger_debounce.trigger_1shot_simple_High(is_trigger_reqd)
+                                    #     if not is_trigger_pressed:
+                                    #         continue
+                                    #     voice.speak_blocking(compelled_speech[index])
+                                    #     time.sleep(0.1)
+                                    #     index += 1
+                                        
 
                     if event:= game_client.pop_oldest_event():
                         log_overlay.add_event(event)
@@ -696,15 +709,9 @@ def main():
 
                 if "game_client" in locals():
                     if is_trigger_pressed is True:
-
-
-                        # fake event for testing
-                        # game_client.send_tagging_event("12345", imageIDs)
-                        # upload all images during trigger event
-                        # we can change this to only upload tagged images - but for now upload all trigger events so we can see some traffic
                         if len(analysis) > 0:
                             for img_id in imageIDs:
-                                    game_client.upload_image_by_id(img_id)
+                                game_client.upload_image_by_id(img_id)
                     else:
                         for img_id in imageIDs:
                             game_client.delete_image_by_id(img_id)

@@ -695,8 +695,8 @@ class HTTPComms(AbstractHTTPComms):
 
                             # check here if we have everyones avatars
                             for deviceid, playerstatus in self._latest_gamestate.players.items():
-                                if deviceid not in self._player_avatars:
-                                    self._player_avatars[DeviceID(deviceid)] = self.download_avatar(playerstatus.display_name)
+                                if str(playerstatus.tag_id) not in self._player_avatars:
+                                    self._player_avatars[TagID(str(playerstatus.tag_id))] = self.download_avatar(playerstatus.display_name)
                                     # Player joined - log it (unless it's us)
                                     if deviceid != self.device_id:
                                         self.add_event_to_log(f"{playerstatus.display_name} [{playerstatus.tag_id}] joined")
@@ -809,5 +809,6 @@ class HTTPComms(AbstractHTTPComms):
             tb_str = traceback.format_exc()
             self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
 
-    def get_player_avatar(self, tag_id: str | int):
-        pass
+    def get_player_avatar(self, tag_id: TagID):
+        # avatars are downloaded asynchronously when players join the server - so try again 
+        return self._player_avatars.get(tag_id, None)

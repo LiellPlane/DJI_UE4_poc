@@ -1765,6 +1765,17 @@ def generate_red_tv_static(image_shape, block_size=5):
     return static_image
 
 
+def combine_channels_to_red(image):
+    """Combine all BGR channels into red channel only (in-place)
+    
+    Args:
+        image: BGR image to modify (modified in-place)
+    """
+    image[:,:,2] = np.minimum(image[:,:,0] + image[:,:,1] + image[:,:,2], 255)
+    image[:,:,0] = 0
+    image[:,:,1] = 0
+
+
 def display_split_rotated_images(image_shape, image_list):
     """Display up to 2 images rotated 90 degrees clockwise, split top/bottom
     

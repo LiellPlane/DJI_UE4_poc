@@ -444,8 +444,7 @@ class PlayerInfoBoxv2:
 
         self.playername = playername
         self.avatar_canvas = avatar_canvas
-        self.col_image = None
-        self.alphamask = None
+        self.dynamic_display_img = None
         
 
         self.max_healthpoints = 100
@@ -456,26 +455,30 @@ class PlayerInfoBoxv2:
         self.pain_duration_seconds = 0.3
         self._pain_expires_at = None  # None = not in pain
 
-        self.add_player_avatar(display_name="plop", img=img_processing.load_img_set_transparency())
+        # Create 500x500 black/white static image
+        static = np.random.randint(0, 256, (500, 500), dtype=np.uint8)
+        static_rgb = cv2.cvtColor(static, cv2.COLOR_GRAY2BGR)
 
-    def add_player_avatar(self, display_name: str, img: np.ndarray):
-        self.col_image, self.alphamask = self.create_player_image_and_mask()
+    def add_player_avatar(self, tag_id: str, img: np.ndarray):
+        # col_image, alphamask = self.create_player_image_and_mask()
         if self.avatar_canvas is not None:
             # for local player we are not doing anything yet
-            self.col_image = img_processing.get_resized_equalaspect(
-                self.col_image,
+            col_image = img_processing.get_resized_equalaspect(
+                img,
                 (self.avatar_canvas.height, self.avatar_canvas.width)
                 )
-            self.alphamask = img_processing.get_resized_equalaspect(
-                self.alphamask,
-                (self.avatar_canvas.height, self.avatar_canvas.width)
-                )
-            self.avatars_by_id[display_name] = self.col_image
+            # alphamask = img_processing.get_resized_equalaspect(
+            #     alphamask,
+            #     (self.avatar_canvas.height, self.avatar_canvas.width)
+            #     )
+            self.avatars_by_id[tag_id] = col_image
 
 
-    def get_player_avatar(self, displayname:str):
-        return self.avatars_by_id[display_name]
+    def get_player_avatar(self, tag_id:str):
+        return self.avatars_by_id.get(tag_id, None)
 
+    def set_targetted_avatar(self, tag_id:str):
+        self.dynamic_display_img = self.avatars_by_id[tag_id]
 
     def get_healthpoints(self):
         
@@ -1506,7 +1509,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
                 filters=["paint"]#quadrocode_corners
             )
  
-            repeats = 1000
+            repeats = 20
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
@@ -2102,7 +2105,7 @@ class LumoUI:
         
         return self.get_shield_status_img(normalised_health)
 
-    def load_player_image(self, playerimage: np.ndarray, normalised_fade: float):
+    def display_player_image(self, playerimage: np.ndarray, normalised_fade: float):
 
         player_h, player_w = playerimage.shape[:2]
  
