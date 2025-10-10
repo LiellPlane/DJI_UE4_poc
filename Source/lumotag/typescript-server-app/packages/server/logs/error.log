@@ -2385,3 +2385,105 @@
     '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
   timestamp: '2025-10-09 13:28:32'
 }
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[15:49:30.316] KillShot processing error: Eliminated player not found for device: abc12345',
+  stack: 'Error: Eliminated player not found for device: abc12345\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-10 16:49:30'
+}
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[15:49:30.831] KillShot processing error: Eliminated player not found for device: abc12345',
+  stack: 'Error: Eliminated player not found for device: abc12345\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-10 16:49:30'
+}
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[15:49:31.338] KillShot processing error: Eliminated player not found for device: abc12345',
+  stack: 'Error: Eliminated player not found for device: abc12345\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-10 16:49:31'
+}
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[15:49:31.844] KillShot processing error: Eliminated player not found for device: abc12345',
+  stack: 'Error: Eliminated player not found for device: abc12345\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-10 16:49:31'
+}
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[15:49:32.352] KillShot processing error: Eliminated player not found for device: abc12345',
+  stack: 'Error: Eliminated player not found for device: abc12345\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-10 16:49:32'
+}
+{
+  service: 'typescript-server',
+  level: 'error',
+  message: '[15:49:32.863] KillShot processing error: Eliminated player not found for device: abc12345',
+  stack: 'Error: Eliminated player not found for device: abc12345\n' +
+    '    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:442:15)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:368:54\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:149:13)\n' +
+    '    at Route.dispatch (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\route.js:119:3)\n' +
+    '    at Layer.handle [as handle_request] (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\layer.js:95:5)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:284:15\n' +
+    '    at Function.process_params (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:346:12)\n' +
+    '    at next (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\express@4.21.2\\node_modules\\express\\lib\\router\\index.js:280:10)\n' +
+    '    at C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:211:5',
+  timestamp: '2025-10-10 16:49:32'
+}

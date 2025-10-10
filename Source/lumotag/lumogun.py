@@ -562,10 +562,11 @@ def main():
 
                 perfmonitor.manual_measure("check_scale", 25)
 
-                # if we see any targets - create lerp for an avatar
+                # create lerp for an avatar - this is a common figure for any image. Will reverse to 0 if no tags
                 fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
-                # we need to find out what player id we are targetting, so pass in what ids we have found, and pass in what we currently know about players from the server
+                
                 gamestate = game_client.get_latest_gamestate()
+                # we need to find out what player id we are targetting, so pass in what tags we have found, and pass in what we currently know about players from the server
                 if focused_tag := get_targeted_player_details(analysis, gamestate):
                     plop=1
 

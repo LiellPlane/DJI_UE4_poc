@@ -4,6 +4,10 @@ import numpy as np
 import math
 
 def get_targeted_player_details(analysis: dict[tuple, ShapeItem], gamestatus: GameStatus ) -> PlayerStatus | None:
+    """
+    Find which player is being targeted from detected tags and current gamestate.
+    get the closest tag to the centre of the camera
+    """
     if analysis and len(analysis) < 1:
         return None
     if gamestatus and len(gamestatus.players) < 1:
