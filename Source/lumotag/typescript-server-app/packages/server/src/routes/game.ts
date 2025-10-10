@@ -19,7 +19,6 @@ import {
 } from "../types";
 import { getDeviceInfo, DeviceInfo } from "./configs"
 import * as dgram from "dgram";
-import * as crypto from "crypto";
 
 const router: Router = express.Router();
 
@@ -447,17 +446,20 @@ router.post("/events", async (req: GameRequest, res: Response) => {
         } as PlayerTagged;
         
 
-        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, tag_uuid: ${taggedEvent.tag_uuid}, Event: ${JSON.stringify(taggedEvent)}`);
+        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, tag_ids: ${taggedEvent.tag_ids.join(',')}, Event: ${JSON.stringify(taggedEvent)}`);
 
-        const taggedPlayer: PlayerStatus | null = tagPlayer(taggedEvent.tag_id);
+        // Process each tagged player
+        for (const tag_id of taggedEvent.tag_ids) {
+          const taggedPlayer: PlayerStatus | null = tagPlayer(tag_id);
 
-        if (taggedPlayer && taggedPlayer.health <= 0 && !taggedPlayer.isEliminated) {
-          const eliminatedDeviceId = getDeviceIdByTagId(taggedEvent.tag_id);
-          if (eliminatedDeviceId) {
-            eliminatePlayer(taggedEvent.tag_id);
-            gameState.killShots[eliminatedDeviceId] = taggedEvent;
-            logger.info(`[${timestamp}] 🔍 DEBUG: Storing killshot for ${eliminatedDeviceId} with ${taggedEvent.image_ids.length} images: ${JSON.stringify(taggedEvent.image_ids)}`);
-            logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
+          if (taggedPlayer && taggedPlayer.health <= 0 && !taggedPlayer.isEliminated) {
+            const eliminatedDeviceId = getDeviceIdByTagId(tag_id);
+            if (eliminatedDeviceId) {
+              eliminatePlayer(tag_id);
+              gameState.killShots[eliminatedDeviceId] = taggedEvent;
+              logger.info(`[${timestamp}] 🔍 DEBUG: Storing killshot for ${eliminatedDeviceId} with ${taggedEvent.image_ids.length} images: ${JSON.stringify(taggedEvent.image_ids)}`);
+              logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
+            }
           }
         }
     
@@ -653,21 +655,20 @@ router.post("/test/udp-broadcast", (req: GameRequest, res: Response) => {
   const timestamp = new Date().toISOString().slice(11, 23);
   
   try {
-    const { tag_id, image_ids } = req.body;
+    const { tag_ids, image_ids } = req.body;
     
-    if (!tag_id) {
-      return res.status(400).json({ error: "tag_id is required" });
+    if (!tag_ids || !Array.isArray(tag_ids) || tag_ids.length === 0) {
+      return res.status(400).json({ error: "tag_ids array is required" });
     }
     
     // Create PlayerTagged event (matches Python Pydantic model)
     const event: PlayerTagged = {
-      tag_id,
+      tag_ids,
       image_ids: image_ids || [],
-      tag_uuid: crypto.randomBytes(16).toString('hex'), // 32 char hex, no hyphens (more compatible)
       event_type: "PlayerTagged"
     };
     
-    logger.info(`[${timestamp}] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_id: ${tag_id}, uuid: ${event.tag_uuid.substring(0, 8)}...`);
+    logger.info(`[${timestamp}] 📡 UDP BROADCAST TEST - Broadcasting tag event for tag_ids: ${tag_ids.join(',')}`);
     
     // Broadcast UDP
     const sock = dgram.createSocket('udp4');

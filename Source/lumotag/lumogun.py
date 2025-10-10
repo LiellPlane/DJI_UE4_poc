@@ -688,13 +688,11 @@ def main():
                 perfmonitor.get_time("complete_cycle", reset=True)
                 perfmonitor.get_time("complete_cycle2", reset=True)
                 perfmonitor.manual_measure("check_scale2", 25)
-                if len(analysis) > 0:
-                    if is_trigger_pressed is True:
-                        discovered_tags = extract_discovered_tags(analysis)
-                        for tag_id in discovered_tags:
-                            if "game_client" in locals():
-                                # in theory if you see more than one ID you will take off more health - do we want this functionality?
-                                game_client.send_tagging_event(tag_id, imageIDs)
+
+                if is_trigger_pressed is True and len(analysis) > 0:
+                    discovered_tags = extract_discovered_tags(analysis)
+                    # in theory if you see more than one ID you will take off more health - do we want this functionality?
+                    game_client.send_tagging_event([tag_id for tag_id in discovered_tags], imageIDs)
 
                 if "game_client" in locals():
                     if is_trigger_pressed is True:

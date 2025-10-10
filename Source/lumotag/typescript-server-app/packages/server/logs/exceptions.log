@@ -4611,3 +4611,150 @@
   service: 'typescript-server',
   timestamp: '2025-10-09 13:28:32'
 }
+{
+  error: Error: EPIPE: broken pipe, write
+      at Socket._write (node:internal/net:61:25)
+      at writeOrBuffer (node:internal/streams/writable:392:12)
+      at _write (node:internal/streams/writable:333:10)
+      at Writable.write (node:internal/streams/writable:337:10)
+      at Console.log (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\winston@3.17.0\node_modules\winston\lib\winston\transports\console.js:87:23)
+      at Console._write (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\winston-transport@4.9.0\node_modules\winston-transport\modern.js:103:17)
+      at doWrite (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\readable-stream@3.6.2\node_modules\readable-stream\lib\_stream_writable.js:390:139)
+      at writeOrBuffer (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\readable-stream@3.6.2\node_modules\readable-stream\lib\_stream_writable.js:381:5)
+      at Writable.write (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\readable-stream@3.6.2\node_modules\readable-stream\lib\_stream_writable.js:302:11)
+      at DerivedLogger.ondata (C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\node_modules\.pnpm\readable-stream@3.6.2\node_modules\readable-stream\lib\_stream_readable.js:629:20) {
+    errno: -4047,
+    syscall: 'write',
+    code: 'EPIPE'
+  },
+  level: 'error',
+  message: 'uncaughtException: EPIPE: broken pipe, write\n' +
+    'Error: EPIPE: broken pipe, write\n' +
+    '    at Socket._write (node:internal/net:61:25)\n' +
+    '    at writeOrBuffer (node:internal/streams/writable:392:12)\n' +
+    '    at _write (node:internal/streams/writable:333:10)\n' +
+    '    at Writable.write (node:internal/streams/writable:337:10)\n' +
+    '    at Console.log (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js:87:23)\n' +
+    '    at Console._write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js:103:17)\n' +
+    '    at doWrite (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:390:139)\n' +
+    '    at writeOrBuffer (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:381:5)\n' +
+    '    at Writable.write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:302:11)\n' +
+    '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
+  stack: 'Error: EPIPE: broken pipe, write\n' +
+    '    at Socket._write (node:internal/net:61:25)\n' +
+    '    at writeOrBuffer (node:internal/streams/writable:392:12)\n' +
+    '    at _write (node:internal/streams/writable:333:10)\n' +
+    '    at Writable.write (node:internal/streams/writable:337:10)\n' +
+    '    at Console.log (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js:87:23)\n' +
+    '    at Console._write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js:103:17)\n' +
+    '    at doWrite (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:390:139)\n' +
+    '    at writeOrBuffer (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:381:5)\n' +
+    '    at Writable.write (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js:302:11)\n' +
+    '    at DerivedLogger.ondata (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js:629:20)',
+  exception: true,
+  date: 'Fri Oct 10 2025 18:06:40 GMT+0100 (British Summer Time)',
+  process: {
+    pid: 22960,
+    uid: null,
+    gid: null,
+    cwd: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server',
+    execPath: 'C:\\Program Files\\nodejs\\node.exe',
+    version: 'v18.17.1',
+    argv: [
+      'C:\\Program Files\\nodejs\\node.exe',
+      'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\app.js'
+    ],
+    memoryUsage: {
+      rss: 63143936,
+      heapTotal: 22999040,
+      heapUsed: 17491080,
+      external: 829023,
+      arrayBuffers: 41774
+    }
+  },
+  os: { loadavg: [ 0, 0, 0 ], uptime: 164518.437 },
+  trace: [
+    {
+      column: 25,
+      file: 'node:internal/net',
+      function: 'Socket._write',
+      line: 61,
+      method: '_write',
+      native: false
+    },
+    {
+      column: 12,
+      file: 'node:internal/streams/writable',
+      function: 'writeOrBuffer',
+      line: 392,
+      method: null,
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/streams/writable',
+      function: '_write',
+      line: 333,
+      method: null,
+      native: false
+    },
+    {
+      column: 10,
+      file: 'node:internal/streams/writable',
+      function: 'Writable.write',
+      line: 337,
+      method: 'write',
+      native: false
+    },
+    {
+      column: 23,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston@3.17.0\\node_modules\\winston\\lib\\winston\\transports\\console.js',
+      function: 'Console.log',
+      line: 87,
+      method: 'log',
+      native: false
+    },
+    {
+      column: 17,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\winston-transport@4.9.0\\node_modules\\winston-transport\\modern.js',
+      function: 'Console._write',
+      line: 103,
+      method: '_write',
+      native: false
+    },
+    {
+      column: 139,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js',
+      function: 'doWrite',
+      line: 390,
+      method: null,
+      native: false
+    },
+    {
+      column: 5,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js',
+      function: 'writeOrBuffer',
+      line: 381,
+      method: null,
+      native: false
+    },
+    {
+      column: 11,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_writable.js',
+      function: 'Writable.write',
+      line: 302,
+      method: 'write',
+      native: false
+    },
+    {
+      column: 20,
+      file: 'C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\node_modules\\.pnpm\\readable-stream@3.6.2\\node_modules\\readable-stream\\lib\\_stream_readable.js',
+      function: 'DerivedLogger.ondata',
+      line: 629,
+      method: 'ondata',
+      native: false
+    }
+  ],
+  service: 'typescript-server',
+  timestamp: '2025-10-10 18:06:40'
+}

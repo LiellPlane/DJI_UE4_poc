@@ -5,6 +5,7 @@ export function TestPanel() {
   const [deviceMapping, setDeviceMapping] = useState<any>(null);
   const [selectedDevice, setSelectedDevice] = useState<string>("");
   const [targetTagId, setTargetTagId] = useState<string>("");
+  const [tagMultiplier, setTagMultiplier] = useState<number>(1);
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const [results, setResults] = useState<{ [key: string]: any }>({});
 
@@ -94,8 +95,8 @@ export function TestPanel() {
       const imageBase64 = await convertImageToBase64();
       const image2Base64 = await convert2ndImageToBase64();
 
-      // Tag player
-      const tagResult = await apiService.testTagPlayer(selectedDevice, targetTagId, [imageId, imageId2]);
+      // Tag player (uses multiplier of 1 by default, not affected by dropdown)
+      const tagResult = await apiService.testTagPlayer(selectedDevice, [targetTagId], [imageId, imageId2]);
       console.log("Tag Result:", tagResult);
 
       // Upload images
@@ -177,9 +178,12 @@ export function TestPanel() {
     setLoading({ ...loading, [key]: true });
     
     try {
-      const result = await apiService.testUDPBroadcast(targetTagId, []);
-      setResults({ [key]: result });
+      // Create array with tag_id repeated based on multiplier
+      const tagIds = Array(tagMultiplier).fill(targetTagId);
+      const result = await apiService.testUDPBroadcast(tagIds, []);
+      setResults({ [key]: { ...result, tag_ids_sent: tagIds } });
       console.log("UDP Broadcast Result:", result);
+      console.log("Tag IDs sent:", tagIds);
     } catch (error) {
       console.error("UDP Broadcast Error:", error);
       setResults({ [key]: { error: (error as Error).message } });
@@ -194,10 +198,13 @@ export function TestPanel() {
     setLoading({ ...loading, [key]: true });
     
     try {
-      // Simulates real Python behavior - sends both HTTP and UDP with same tag_id
-      const result = await apiService.testTagPlayerWithUDP(selectedDevice, targetTagId, []);
-      setResults({ [key]: result });
+      // Create array with tag_id repeated based on multiplier
+      const tagIds = Array(tagMultiplier).fill(targetTagId);
+      // Simulates real Python behavior - sends both HTTP and UDP with same tag_ids
+      const result = await apiService.testTagPlayerWithUDP(selectedDevice, tagIds, []);
+      setResults({ [key]: { ...result, tag_ids_sent: tagIds } });
       console.log("Tag with UDP Result (HTTP + UDP):", result);
+      console.log("Tag IDs sent:", tagIds);
     } catch (error) {
       console.error("Tag with UDP Error:", error);
       setResults({ [key]: { error: (error as Error).message } });
@@ -247,6 +254,21 @@ export function TestPanel() {
               </option>
             ))}
           </select>
+        </div>
+
+        <div className="control-group">
+          <label>Tag ID Multiplier:</label>
+          <select 
+            value={tagMultiplier} 
+            onChange={(e) => setTagMultiplier(Number(e.target.value))}
+          >
+            <option value={1}>x1 (single)</option>
+            <option value={2}>x2</option>
+            <option value={3}>x3</option>
+            <option value={5}>x5</option>
+            <option value={10}>x10</option>
+          </select>
+          <small>Sends tag_id repeated {tagMultiplier} time(s): [{Array(tagMultiplier).fill(targetTagId).join(', ')}]</small>
         </div>
       </div>
 

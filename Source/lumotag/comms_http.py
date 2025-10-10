@@ -297,7 +297,7 @@ class HTTPComms(AbstractHTTPComms):
         
         return image
 
-    def _broadcast_udp(self, event: BaseModel) -> None:
+    def _broadcast_udp(self, event: lumotag_events.PlayerTagged) -> None:
         """Fire-and-forget UDP broadcast (~0.1ms, never blocks or crashes on network errors)
         
         Safe even with no network connectivity - kernel drops packet if no interface.
@@ -320,12 +320,12 @@ class HTTPComms(AbstractHTTPComms):
         except threading_queue.Full:
             self.add_event_to_log("Events queue full!")
 
-    def send_tagging_event(self, tag_id: str, image_ids: list[str]) -> None:
+    def send_tagging_event(self, tag_ids: list[str], image_ids: list[str]) -> None:
         """Send a tagging event via HTTP and UDP broadcast - validates event type first"""
         
-        event = lumotag_events.PlayerTagged(tag_id=tag_id, image_ids=image_ids)
+        event = lumotag_events.PlayerTagged(tag_ids=tag_ids, image_ids=image_ids)
 
-        # UDP broadcast first for fastest peer notification (~0.1ms)
+        # UDP broadcast first for fastest peer notification
         self._broadcast_udp(event)
 
         # HTTP event queued for reliable delivery
@@ -333,23 +333,6 @@ class HTTPComms(AbstractHTTPComms):
             self._events_q.put_nowait(EventWithCallback(event, None))
         except threading_queue.Full:
             self.add_event_to_log("Events queue full!")
-
-    # def send_event(self, event) -> None:
-    #     """Send an event via HTTP - validates event type first"""
-    #     # Validate event is one of the expected Pydantic models from lumotag_events
-    #     if not self._is_valid_event_type(event):
-    #         valid_types = [cls.__name__ for cls in self._cached_event_types]
-    #         raise ValueError(f"Event must be one of {valid_types}, got {type(event).__name__}")
-        
-    #     try:
-    #         self._events_q.put_nowait(event)
-    #     except threading_queue.Full:
-    #         pass  # Silently drop events if queue full (events are less critical than images)
-        
-    #     # Check for thread errors periodically to reduce overhead at high frequencies
-    #     self._error_check_counter += 1
-    #     if self._error_check_counter % 20 == 0:  # Check every 20th call
-    #         self.raise_thread_error_if_any()
 
     def delete_image_by_id(self, image_id: str) -> bool:
         """Delete a specific image ID from storage - returns True if deleted, False if not found"""
@@ -782,7 +765,7 @@ class HTTPComms(AbstractHTTPComms):
                         # Work with local reference outside lock (safe - Pydantic immutable)
                         if gamestate and gamestate.players:
                             my_player = gamestate.players.get(self.device_id)
-                            if my_player and my_player.tag_id == event.tag_id:
+                            if my_player and my_player.tag_id in event.tag_ids:
                                 # Set sticky flag - main thread will check and clear it
                                 with self._tagged_lock:
                                     self._udp_tagged = True
