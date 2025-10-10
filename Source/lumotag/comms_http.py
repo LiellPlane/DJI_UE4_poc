@@ -711,25 +711,25 @@ class HTTPComms(AbstractHTTPComms):
                             
                         except Exception as e:
                             # JSON parsing or validation error - this is a serious issue
-                            print(f"⚠️ Invalid gamestate response format: {e}")
+                            print(f"Invalid gamestate response format: {e}")
                             err_msg = str(e)[:100] + "..." if len(str(e)) > 100 else str(e)
                             self._set_connected(False, f"gamestate {err_msg}")
                             
                     else:
                         # Any non-200 response is an error - mark as disconnected
                         self._set_connected(False, f"gamestate {response.status_code}")
-                        print(f"⚠️ Gamestate fetch failed: HTTP {response.status_code}")
+                        print(f"Gamestate fetch failed: HTTP {response.status_code}")
                         # Don't call raise_for_status() - it's slow and unnecessary
                         
                 except requests.exceptions.Timeout:
                     # Timeout - mark as disconnected but don't spam logs
-                    self._set_connected(False, "gamestate timeout")
+                    self._set_connected(False, "gamestate req timeout")
                     
                 except requests.exceptions.RequestException as e:
                     # Network error - mark as disconnected
                     err_msg = str(e)[:100] + "..." if len(str(e)) > 100 else str(e)
                     self._set_connected(False, f"gamestate {err_msg}")
-                    print(f"⚠️ Gamestate network error: {e}")
+                    print(f"Gamestate network error: {e}")
                     
                 except Exception as e:
                     # Unexpected error - reraise to be caught by outer handler
