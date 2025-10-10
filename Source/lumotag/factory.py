@@ -444,7 +444,7 @@ class PlayerInfoBoxv2:
 
         self.playername = playername
         self.avatar_canvas = avatar_canvas
-        self.dynamic_display_img = None
+        self.display_targetted_avatar = None
         
 
         self.max_healthpoints = 100
@@ -459,7 +459,7 @@ class PlayerInfoBoxv2:
         static = np.random.randint(0, 256, (500, 500), dtype=np.uint8)
         static_rgb = cv2.cvtColor(static, cv2.COLOR_GRAY2BGR)
 
-    def add_player_avatar(self, tag_id: str, img: np.ndarray):
+    def add_player_avatar(self, display_name: str, img: np.ndarray):
         # col_image, alphamask = self.create_player_image_and_mask()
         if self.avatar_canvas is not None:
             # for local player we are not doing anything yet
@@ -471,14 +471,14 @@ class PlayerInfoBoxv2:
             #     alphamask,
             #     (self.avatar_canvas.height, self.avatar_canvas.width)
             #     )
-            self.avatars_by_id[tag_id] = col_image
+            self.avatars_by_id[display_name] = col_image
 
 
-    def get_player_avatar(self, tag_id:str):
-        return self.avatars_by_id.get(tag_id, None)
+    def get_player_avatar(self, display_name:str):
+        return self.avatars_by_id.get(display_name, None)
 
-    def set_targetted_avatar(self, tag_id:str):
-        self.dynamic_display_img = self.avatars_by_id[tag_id]
+    def set_targetted_avatar(self, display_name:str):
+        self.display_targetted_avatar = self.avatars_by_id.get(display_name, None)
 
     def get_healthpoints(self):
         
@@ -1509,7 +1509,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
                 filters=["paint"]#quadrocode_corners
             )
  
-            repeats = 20
+            repeats = 1000
             if self.image_id_to_use is not None:
                 if len(self.image_id_to_use)>0:
                     sorted_files = [i for i in sorted_files if self.image_id_to_use in i]
@@ -1517,6 +1517,7 @@ class ImageLibraryMeta(type(ImageGenerator)):
                     if len(sorted_files) == 0 :
                         raise Exception(f"could not find image id {self.image_id_to_use}")
             sorted_files = reduce(lambda acc, s: acc + [s] * repeats, sorted_files, [])
+            random.shuffle(sorted_files)
             self.cycled_files_generator = itertools.chain(
                 itertools.repeat(None, 5),
                 iter(sorted_files)

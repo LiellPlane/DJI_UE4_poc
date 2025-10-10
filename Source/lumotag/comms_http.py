@@ -30,6 +30,9 @@ class ImageDecodeError(Exception):
     """Raised when image decoding fails"""
     pass
 
+class DisplayName(str):
+    """Type-safe device identifier"""
+    pass
 
 class DeviceID(str):
     """Type-safe device identifier"""
@@ -199,6 +202,7 @@ class HTTPComms(AbstractHTTPComms):
         self._latest_gamestate =  lumotag_events.GameStatus(players={})
         self._gamestate_lock = threading.Lock()
         self._player_avatars: dict[DeviceID, np.ndarray] = {}
+        self._tag_id_to_display_name: dict[TagID, str] = {}
         
         # Event log queue (FIFO with max 50 items, lock-free thread-safe)
         # deque append() and popleft() are atomic from opposite ends
@@ -695,8 +699,9 @@ class HTTPComms(AbstractHTTPComms):
 
                             # check here if we have everyones avatars
                             for deviceid, playerstatus in self._latest_gamestate.players.items():
-                                if str(playerstatus.tag_id) not in self._player_avatars:
-                                    self._player_avatars[TagID(str(playerstatus.tag_id))] = self.download_avatar(playerstatus.display_name)
+                                if playerstatus.display_name not in self._player_avatars:
+                                    self._player_avatars[DisplayName(playerstatus.display_name)] = self.download_avatar(playerstatus.display_name)
+                                    self._tag_id_to_display_name[TagID(str(playerstatus.tag_id))] = playerstatus.display_name
                                     # Player joined - log it (unless it's us)
                                     if deviceid != self.device_id:
                                         self.add_event_to_log(f"{playerstatus.display_name} [{playerstatus.tag_id}] joined")
@@ -809,6 +814,10 @@ class HTTPComms(AbstractHTTPComms):
             tb_str = traceback.format_exc()
             self._error_q.put_nowait((threading.current_thread().name, e, tb_str))
 
-    def get_player_avatar(self, tag_id: TagID):
+    def get_player_avatar(self, display_name: DisplayName):
         # avatars are downloaded asynchronously when players join the server - so try again 
-        return self._player_avatars.get(tag_id, None)
+        return self._player_avatars.get(display_name, None)
+    
+    def get_display_name(self, tag_id: TagID) -> str | None:
+        """Get display name for a tag_id, returns None if not found"""
+        return self._tag_id_to_display_name.get(tag_id, None)

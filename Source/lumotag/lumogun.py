@@ -575,18 +575,22 @@ def main():
                 ):
                     # if we have a tag - we want to try and get the avatar associated with the tag and display it in the UI 
                     # it has to go through a process - so can't use it raw from the http class 
-                    if focused_tag := get_targeted_player_details(analysis, gamestate):
-                        # does the player card thing already have this avatar processed and ready?
-                        id_ = str(focused_tag.tag_id)
-                        if players["demoplayer"].get_player_avatar(id_) is None:
-                            # ok we don't have it - lets get it from the comms class 
-                            if (img := game_client.get_player_avatar(tag_id=id_)) is not None:
-                                # load the avatar into the player info card thing 
-                                players["demoplayer"].add_player_avatar(tag_id=id_, img=img)
-                                players["demoplayer"].set_targetted_avatar(id_)
-                        # we have a tag - now see if we the image record already in the display class - if not - try and get it from the comms module 
 
-                    if (img:= players["demoplayer"].dynamic_display_img) is not None:
+                    if len(analysis) > 0:
+                        # have we detected a tag? if so - get the centre one 
+                        if focused_tag := get_targeted_player_details(analysis, gamestate):
+                            # does the player card thing already have this avatar processed and ready?
+                            id_ = focused_tag.display_name
+                            if players["demoplayer"].get_player_avatar(id_) is None:
+                                # ok we don't have it - lets get it from the comms class 
+                                if (img := game_client.get_player_avatar(display_name=id_)) is not None:
+                                    # load the avatar into the player info card thing 
+                                    players["demoplayer"].add_player_avatar(display_name=id_, img=img)
+                            # set the avatar - this could still be empty 
+                            players["demoplayer"].set_targetted_avatar(id_)
+                            # we have a tag - now see if we the image record already in the display class - if not - try and get it from the comms module 
+
+                    if (img:= players["demoplayer"].display_targetted_avatar) is not None:
                         status_bar.display_player_image(
                             img, fade_norm
                         )
