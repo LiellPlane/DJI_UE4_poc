@@ -420,7 +420,19 @@ class display(ABC):
         else:
             return player.elements_fadeout()
 
-
+@dataclass
+class EnemyInfo:
+    health: str
+    displayname: str
+    
+    def __post_init__(self):
+        self.health = f"H: {self.health}"
+        self.displayname = f"N: {self.displayname}"
+    
+    @property
+    def turn_red(self) -> bool:
+        health_num = int(self.health.split(": ")[1])
+        return health_num <= 0
 
 
 class PlayerInfoBoxv2:
@@ -444,8 +456,9 @@ class PlayerInfoBoxv2:
 
         self.playername = playername
         self.avatar_canvas = avatar_canvas
+        self.info_box = info_box
         self.display_targetted_avatar = None
-        
+        self.enemyinfo = EnemyInfo(health="UNKNOWN", displayname="UNKNOWN")
 
         self.max_healthpoints = 100
         self.min_healthpoints = 0
@@ -473,6 +486,8 @@ class PlayerInfoBoxv2:
             #     )
             self.avatars_by_id[display_name] = col_image
 
+    def set_player_info(self, info: EnemyInfo):
+        self.enemyinfo = info
 
     def get_player_avatar(self, display_name:str):
         return self.avatars_by_id.get(display_name, None)
@@ -2107,11 +2122,89 @@ class LumoUI:
         
         return self.get_shield_status_img(normalised_health)
 
-    def display_player_image(self, playerimage: np.ndarray, normalised_fade: float):
+    def display_player_info(self, dims: HeightWidth, info: EnemyInfo, fade_norm: float = 1.0):
+        """Generate and display player info text
+        
+        Draws text directly in display orientation. Green channel (or red if hurt/eliminated) for performance.
+        Text layout: displayname on top, healthpoints below (vertically stacked)
+        
+        Args:
+            dims: Display dimensions (height, width)
+            fade_norm: Normalized fade value 0.0-1.0 (0=invisible, 1=full brightness)
+            turn_red: If True, draw in red channel instead of green (for hurt/eliminated state)
+        """
+        # Skip drawing if essentially invisible
+        if fade_norm < 0.01:
+            return
+        
+        # Create black canvas directly at display dimensions
+        canvas = np.zeros((dims.height, dims.width, 3), dtype=np.uint8)
+        
+        # Calculate font size based on canvas height
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        font_scale = dims.height / 120.0  # Larger font for better visibility
+        font_thickness = 2  # Thicker for better visibility
+        
+        # Convert healthpoints to string
+        hp_text = str(info.health)
+        
+        # Calculate text sizes for vertical positioning
+        (name_w, name_h), _ = cv2.getTextSize(info.displayname, font, font_scale, font_thickness)
+        (hp_w, hp_h), _ = cv2.getTextSize(hp_text, font, font_scale, font_thickness)
+        
+        # Position texts vertically (stacked: displayname on top, healthpoints below)
+        # Left-justified with small padding from left edge
+        left_padding = 5
+        
+        # Top text (displayname) - left-justified, positioned in upper third
+        name_x = left_padding
+        name_y = dims.height // 3 + name_h // 2
+        
+        # Bottom text (healthpoints) - left-justified, positioned in lower third  
+        hp_x = left_padding
+        hp_y = 2 * dims.height // 3 + hp_h // 2
+        
+        # Choose color based on state (green=normal, red=hurt/eliminated)
+        text_color = (0, 0, 255) if info.turn_red else (0, 255, 0)  # BGR format
+        cv2.putText(canvas, info.displayname, (name_x, name_y), 
+                   font, font_scale, text_color, font_thickness, cv2.LINE_AA)
+        cv2.putText(canvas, hp_text, (hp_x, hp_y), 
+                   font, font_scale, text_color, font_thickness, cv2.LINE_AA)
+        
+        # Apply fade effect (same as display_player_image)
+        faded_canvas = (canvas * fade_norm).astype(np.uint8)
+        
+        player_h, player_w = faded_canvas.shape[:2]
+        
+        # Clip to available space (statusbar_img height and enemy_info_area width)
+        max_h = self.statusbar_img.shape[0] - 1  # -1 because we start at row 1
+        max_w = self.enemy_info_area.width
+        
+        if player_h > max_h or player_w > max_w:
+            raise ValueError(
+                f"Generated player info image ({player_h}x{player_w}) doesn't fit in available space "
+                f"({max_h}x{max_w}). Reduce dims (currently h={dims.height}, w={dims.width})."
+            )
+        
+        # Place in enemy_info_area (centered)
+        off = self.enemy_info_area.offset_y + int((self.enemy_info_area.width - player_w) / 2)
+        self.statusbar_img[1:player_h+1, off:off+player_w] = faded_canvas[:]
+
+    def display_player_image(self, playerimage: np.ndarray, normalised_fade: float, turn_red: bool = False):
 
         player_h, player_w = playerimage.shape[:2]
  
         faded_image = (playerimage * normalised_fade).astype(np.uint8)
+        
+        # If turn_red, combine all channels into red channel for bright red effect
+        if turn_red:
+            # Combine B+G+R channels into red channel only (very bright red)
+            faded_image[:,:,2] = np.minimum(
+                faded_image[:,:,0] + faded_image[:,:,1] + faded_image[:,:,2], 255
+            )
+            faded_image[:,:,0] = 0  # Clear blue
+            faded_image[:,:,1] = 0  # Clear green
+        
         try:
             # Place the faded image in the center of the status bar
             off = self.enemy_avatar_area.offset_y + int((self.enemy_avatar_area.width-player_w)/2)

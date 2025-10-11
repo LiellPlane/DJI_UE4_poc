@@ -285,8 +285,8 @@ def main():
     players = {
         "demoplayer": factory.PlayerInfoBoxv2(
             playername="testplayer",
-            avatar_canvas=HeightWidth(60, 60),  # get this from the status bar class
-            info_box=HeightWidth(60, 60),
+            avatar_canvas=HeightWidth(60, 60),  # get/match this from the status bar class
+            info_box=HeightWidth(60, 100), # get/match this from the status bar class
         ),
         MY_ID: factory.LocalPlayerCard(playername="displayname"),
     }
@@ -563,7 +563,7 @@ def main():
                 perfmonitor.manual_measure("check_scale", 25)
 
                 # create lerp for an avatar - this is a common figure for any player. Will reverse to non-visible if no tags found
-                fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
+                
                 
                 gamestate = game_client.get_latest_gamestate()
 
@@ -572,10 +572,13 @@ def main():
                 ):
                     # if we have a tag - we want to try and get the avatar associated with the tag and display it in the UI 
                     # it has to go through a process - so can't use it raw from the http class 
-
+                    fade_norm = 0
                     if len(analysis) > 0:
                         # have we detected a tag? if so - get the centre one 
                         if focused_tag := get_targeted_player_details(analysis, gamestate):
+                            fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
+                            # set and persist the player data (so it will slowly fade away if player not targetted) 
+                            players["demoplayer"].set_player_info(factory.EnemyInfo(displayname=f"NM: {focused_tag.display_name}", health=focused_tag.health))
                             # does the player card thing already have this avatar processed and ready?
                             id_ = focused_tag.display_name
                             if players["demoplayer"].get_player_avatar(id_) is None:
@@ -585,12 +588,16 @@ def main():
                                     players["demoplayer"].add_player_avatar(display_name=id_, img=img)
                             # set the avatar - this could still be empty 
                             players["demoplayer"].set_targetted_avatar(id_)
+                        else:
+                            fade_norm = display.get_norm_fade_val(players["demoplayer"], []) # we don't want any info to show if we have a tag but no associated player
                             # we have a tag - now see if we the image record already in the display class - if not - try and get it from the comms module 
 
                     if (img:= players["demoplayer"].display_targetted_avatar) is not None:
                         status_bar.display_player_image(
-                            img, fade_norm
+                            img, fade_norm, turn_red=players["demoplayer"].enemyinfo.turn_red
                         )
+
+                    status_bar.display_player_info(dims=players["demoplayer"].info_box,info=players["demoplayer"].enemyinfo ,fade_norm=fade_norm)
 
                     status_bar.draw_status_bar(
                         output_image,
