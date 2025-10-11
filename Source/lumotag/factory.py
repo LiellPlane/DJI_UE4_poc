@@ -2018,10 +2018,10 @@ class LumoUI:
     class pixel(int):
         pass
     @dataclass
-    class EnemyAvatarArea:
-        offset_y: int = 285
-        width: int = 70
-
+    class EnemyArea:
+        #measure manually from the non-orientated image 
+        offset_y: int
+        width: int
     @dataclass
     class StatusBarArea:
         name: str
@@ -2054,7 +2054,8 @@ class LumoUI:
             width=114,
             height=61
         )
-        self.enemy_avatar_area = self.EnemyAvatarArea()
+        self.enemy_avatar_area = self.EnemyArea(offset_y=285,width=70)
+        self.enemy_info_area = self.EnemyArea(offset_y=357,width=108)
         self.statusbar_img = self.load_media_image("doom_statusbar_blank.jpg")
         self.numerics_img = self.load_media_image("doom_numerals_font.jpg")
         self.ammo_section_template = self.load_media_image("ammo_section_template.jpg")

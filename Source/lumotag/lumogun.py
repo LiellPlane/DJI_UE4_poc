@@ -562,13 +562,10 @@ def main():
 
                 perfmonitor.manual_measure("check_scale", 25)
 
-                # create lerp for an avatar - this is a common figure for any image. Will reverse to 0 if no tags
+                # create lerp for an avatar - this is a common figure for any player. Will reverse to non-visible if no tags found
                 fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
                 
                 gamestate = game_client.get_latest_gamestate()
-                # we need to find out what player id we are targetting, so pass in what tags we have found, and pass in what we currently know about players from the server
-
-
 
                 with time_it("display image", debug=PRINT_DEBUG), perfmonitor.measure(
                     "display"

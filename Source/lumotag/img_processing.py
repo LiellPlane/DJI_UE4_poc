@@ -55,7 +55,7 @@ class EventLogOverlay:
         log_overlay.add_event("Eliminated!", logging.CRITICAL)  # Red (bold)
         
         # Or pop from HTTPComms and display
-        event: LogEvent | None = http_comms.pop_oldest_event()
+        event: Optional[LogEvent] = http_comms.pop_oldest_event()
         if event:
             log_overlay.add_event(event.text, event.level)
         
@@ -70,7 +70,7 @@ class EventLogOverlay:
     
     def __init__(
         self,
-        position: tuple[int, int] | None = None,  # None = auto top-right
+        position: Optional[tuple[int, int]] = None,  # None = auto top-right
         box_size: tuple[int, int] = (600, 150),  # Before rotation (width, height)
         rotation: Literal[0, 90, -90, 180, 270] = 90,
         max_events: int = 5,
@@ -137,7 +137,7 @@ class EventLogOverlay:
         # Pre-calculate max text width for truncation
         self._max_text_width = self.box_size[0] - 10
     
-    def set_header(self, header_text: str | None) -> None:
+    def set_header(self, header_text: Optional[str]) -> None:
         """Set static header text at top (doesn't scroll with events)"""
         self._static_header = header_text
         self._cache_dirty = True
