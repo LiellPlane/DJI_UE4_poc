@@ -65,12 +65,29 @@ rotate_log
 
 log "Starting update and setup process..."
 
-# Check internet connection with retry logic
+# Check internet connection with limited retries
+# Each check tries 5 sites with 1s timeout = max 5s per check
+# 2 retries: (5s check + 5s sleep) + (5s check) = ~15 seconds max
 log "Checking internet connection..."
-while ! check_internet; do
-    log "No internet connection. Retrying in 5 seconds..."
-    sleep 5
+MAX_RETRIES=2
+RETRY_COUNT=0
+HAS_INTERNET=false
+
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    if check_internet; then
+        HAS_INTERNET=true
+        break
+    fi
+    RETRY_COUNT=$((RETRY_COUNT + 1))
+    if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+        log "No internet connection. Retry $RETRY_COUNT/$MAX_RETRIES in 5 seconds..."
+        sleep 5
+    fi
 done
+
+if [ "$HAS_INTERNET" = false ]; then
+    log "WARNING: No internet connection after $MAX_RETRIES attempts"
+fi
 
 # Read configuration
 if ! read_config; then
@@ -78,7 +95,22 @@ if ! read_config; then
     exit 1
 fi
 
-# Handle git operations (pull or clone)
+# Check if we can proceed without internet
+APP_DIR="$CODE_PATH/Source/lumotag"
+VENV_PATH="$APP_DIR/lumotagvenv"
+
+if [ "$HAS_INTERNET" = false ]; then
+    # No internet - check if we have existing setup
+    if [ ! -d "$CODE_PATH" ] || [ ! -d "$APP_DIR" ] || [ ! -d "$VENV_PATH" ]; then
+        log "ERROR: No internet and missing required files. Cannot proceed with first-time setup."
+        exit 1
+    fi
+    log "No internet but existing installation found. Skipping all updates."
+    exit 0
+fi
+
+# Has internet - proceed with git updates
+log "Internet available. Proceeding with updates..."
 cd "$BASE_DIR" || {
     log "ERROR: Failed to change to base directory: $BASE_DIR"
     exit 1
@@ -100,7 +132,6 @@ else
     log "Repository does not exist, cloning from $REPO_URL..."
     if git clone "$REPO_URL" >> "$LOG_FILE" 2>&1; then
         log "Successfully cloned repository"
-        # Set safe directory
         git config --global --add safe.directory "$CODE_PATH" >> "$LOG_FILE" 2>&1
     else
         log "ERROR: Failed to clone repository"
@@ -108,10 +139,7 @@ else
     fi
 fi
 
-# Install dependencies (from experimental_setup.sh pattern)
-APP_DIR="$CODE_PATH/Source/lumotag"
-VENV_PATH="$APP_DIR/lumotagvenv"
-
+# Install dependencies
 if [ ! -d "$APP_DIR" ]; then
     log "ERROR: Application directory does not exist: $APP_DIR"
     exit 1
