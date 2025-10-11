@@ -556,7 +556,7 @@ router.get("/metrics", (_req: GameRequest, res: Response) => {
 });
 
 
-// Helper function to process killscreen requests
+// Helper function to process killscreen requests (fail-fast - no retries)
 async function processKillScreenRequest(deviceId: string, timestamp: string): Promise<ReqKillScreenResponse> {
   logger.info(`[${timestamp}] KILLSCREEN REQUEST - deviceId: ${deviceId}`);
 
@@ -571,32 +571,21 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
   const playerData = gameState.InGamePlayers[deviceId];
   const displayNameTagger = playerData.display_name;
 
-  // 3-second retry loop to get image files
-  const maxRetries = 30; // 30 * 100ms = 3 seconds
-  const retryDelayMs = 100;
+  // Fail-fast: Try to get images once, no retry loop
   const imageIds = eliminatedPlayer.image_ids;
   const imageDatas: string[] = [];
 
-  logger.info(`[${timestamp}] 🔍 DEBUG: Killshot stored image_ids array: ${JSON.stringify(imageIds)}`);
   logger.info(`[${timestamp}] Attempting to retrieve ${imageIds.length} images: ${imageIds.join(', ')}`);
 
   for (const imageId of imageIds) {
-    let imageData: string | null = null;
+    const imageData = await imageSaver.getImageAsBase64(imageId);
     
-    // Retry loop for this specific image
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      imageData = await imageSaver.getImageAsBase64(imageId);
-      if (imageData) {
-        logger.debug(`[${timestamp}] Image ${imageId} found on attempt ${attempt + 1}`);
-        break;
-      }
-      
-      if (attempt < maxRetries - 1) {
-        await new Promise(resolve => setTimeout(resolve, retryDelayMs));
-      }
+    if (imageData) {
+      logger.debug(`[${timestamp}] Image ${imageId} found (${imageData.length} bytes)`);
+    } else {
+      logger.warn(`[${timestamp}] Image ${imageId} not found - failing fast`);
     }
-
-    logger.info(`[${timestamp}] 🔍 DEBUG: Adding image ${imageId} to response, data length: ${imageData?.length || 0}`);
+    
     imageDatas.push(imageData!);
   }
 
@@ -607,9 +596,7 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
     event_type: "ReqKillScreenResponse"
   };
 
-  logger.info(`[${timestamp}] 🔍 DEBUG: Killscreen response - sending ${imageDatas.length} images`);
-  logger.info(`[${timestamp}] 🔍 DEBUG: Response image data lengths: ${imageDatas.map(d => d?.length || 0).join(', ')}`);
-  logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length} images for device: ${deviceId}`);
+  logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length}/${imageIds.length} images for device: ${deviceId}`);
   return killScreenResponse;
 }
 
