@@ -1,31 +1,14 @@
-need to fix the new UV managed stuff
+get COLOUR image when pulling trigger and you have a player targetted - save these images to harddrive
+its ok to lag here because we show white on the screen for the gun fire
+that means we can get a much nicer killscreen
 
-adafruit-circuitpython-lis3dh seems to be working installed in system packages
-now need to make a shell script in the wayfire autostart that does what bootstrap does, but does not start lumotag
-we can start that with the current command
-so we just need a stage before it that updates/clones the repo and creates the venv (if it doesnt exist)
-and install it (see the experiemntal setup script)
+need to add targetted user stats
 
+how do we handle AMMO - its still client side
 
+Fix current broken shell start-up script - waiting for internet
 
-
-
-
-
-SERVER:
-docker with rust
-https://hub.qovery.com/guides/tutorial/create-a-blazingly-fast-api-in-rust-part-1/
-
-
-fix issue with lerping player ID card - it appears immediately before activated then sticks
-try not to use another flag
-
-we maybe want roll in lerp instead of fade (or both)
-and also change colour if currently being targetted
-
-
-MIDIATE:
-Opencv window more efficient - its being created and destroyed constantly which isn't best practise
+make github repo private
 
 LONGERTERM:
 
@@ -34,23 +17,6 @@ mouse for touch control
 custom insults in payload
 look for IR flash instead of flashlight
 
-MODELLING:
-add battery cover for left side
 
 WIRING:
 new capacitor - doesnt seem to do much
-
-LENSES:
-60 mm seems to be OK for range, but the 6-60mm lens is pretty bad quality
-Cinema Fujinon TV Zoom Lens E6X14AM f/1.6 14/84mm Mount C migth be ok - but expensive and might not fit
-https://uk.vicedeal.com/products/6-60mm-cs-c-mount-lens-manual-iris-zoom-varifocal-f1-6-for-cctv-camera-industrial-microscope?variant=UHJvZHVjdFZhcmlhbnQ6NzczODU1Mjcy&gad_source=1&gclid=Cj0KCQjwiLLABhCEARIsAJYS6ulMn-7wTlYppc58QLrrLVZhylW_5T-sgtZVbVMCReUzM4zPOWsxORAaAjbLEALw_wcB
-6-60mm CS C Mount Lens Manual IRIS ZOOM Varifocal F1.6 for CCTV Camera Industrial Microscope
-
-Specifications:
-Brand Name: KKMOON
-Model Number: Camera Lens AN06060V
-
-
-or 75mm (probably far too long range)
-8mp Hd Lens C-Mount Hd Manual Aperture 75mm Focal Length Low Distortion High
-
