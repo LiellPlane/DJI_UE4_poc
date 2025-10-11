@@ -96,7 +96,7 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 def main():
     log_overlay = img_processing.EventLogOverlay()
     MY_ID = lumogun.GetID().get_persistant_device_id()
-    log_overlay.set_header(f"DeviceID: {MY_ID}")
+    log_overlay.set_header(f"DID:{MY_ID}:GH:{GIT_REPO_INFO}")
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
     # if user is holding down trigger on boot up, quit
