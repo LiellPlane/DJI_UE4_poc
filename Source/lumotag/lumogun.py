@@ -8,7 +8,7 @@ import datetime
 import time
 import random
 import git_info
-from comms_http import HTTPComms
+from comms_http import HTTPComms, LogEvent
 
 # import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
@@ -694,8 +694,8 @@ def main():
                                     #     index += 1
                                         
 
-                    if event:= game_client.pop_oldest_event():
-                        log_overlay.add_event(event)
+                    if event := game_client.pop_oldest_event():  # type: LogEvent | None
+                        log_overlay.add_event(event.text, event.level)
                     log_overlay.apply_to_image(output_image)
                     if is_trigger_pressed:
                         # screen flash on trigger - do we want this to hide the UI?

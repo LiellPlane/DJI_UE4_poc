@@ -7,6 +7,7 @@ import os
 import numpy as np
 import time
 import random
+import logging
 from contextlib import contextmanager
 from typing import Iterator, Literal, Annotated, Optional
 from dataclasses import dataclass
@@ -28,18 +29,44 @@ class EventLogOverlay:
     
     Shows recent events in a semi-transparent box with cached rendering.
     Events automatically fade and expire:
-    - < 5 seconds: bright green
-    - 5-10 seconds: fades to dark green
-    - > 10 seconds: dark green
+    - < 5 seconds: bright color (based on log level)
+    - 5-10 seconds: fades to dark color
+    - > 10 seconds: dark color
     - > 20 seconds: removed
+    
+    Log levels (uses standard logging library - fully compatible with comms_http.LogEvent):
+    - logging.CRITICAL (50): Bright red, bold text
+    - logging.WARNING (30): Orange/yellow
+    - logging.INFO (20): Green
+    
     Cache refreshes every 1 second to update colors and remove old events.
     
     Usage:
-        log = EventLogOverlay(rotation=90)
-        log.set_header("GAME LOG")  # Static header at top
-        log.add_event("Player joined")
-        log.apply_to_image(frame)  # Fast in-place overlay
+        import logging
+        from comms_http import HTTPComms, LogEvent
+        
+        # Create overlay
+        log_overlay = EventLogOverlay(rotation=90)
+        log_overlay.set_header("GAME LOG")
+        
+        # Add events directly
+        log_overlay.add_event("Player joined", logging.INFO)  # Green
+        log_overlay.add_event("Low ammo!", logging.WARNING)   # Orange
+        log_overlay.add_event("Eliminated!", logging.CRITICAL)  # Red (bold)
+        
+        # Or pop from HTTPComms and display
+        event: LogEvent | None = http_comms.pop_oldest_event()
+        if event:
+            log_overlay.add_event(event.text, event.level)
+        
+        # Apply to frame
+        log_overlay.apply_to_image(frame)  # Fast in-place overlay
     """
+    
+    # Class variables for log levels (standard logging library values - optional shortcuts)
+    CRITICAL = logging.CRITICAL  # 50
+    WARNING = logging.WARNING    # 30
+    INFO = logging.INFO          # 20
     
     def __init__(
         self,
@@ -49,7 +76,7 @@ class EventLogOverlay:
         max_events: int = 5,
         font_scale: float = 0.5,
         font_thickness: int = 1,
-        text_color: tuple[int, int, int] = (20, 190, 10),  # Slightly dark green (BGR)
+        text_color: tuple[int, int, int] = (20, 190, 10),  # Slightly dark green (BGR) - used for INFO
         bg_color: tuple[int, int, int] = (0, 0, 0),
         bg_alpha: float = 0.75,
         line_spacing: int = 5,
@@ -66,8 +93,23 @@ class EventLogOverlay:
         self.line_spacing = line_spacing
         self.font = cv2.FONT_HERSHEY_SIMPLEX
         
+        # Define bright colors for each log level (BGR format) - using standard logging levels
+        self._level_colors = {
+            logging.CRITICAL: (0, 0, 255),      # Pure bright red
+            logging.WARNING: (100, 220, 255),   # Light orange/yellow
+            logging.INFO: (20, 190, 10)         # Green (existing color)
+        }
+        
+        # Define dark colors for faded state (BGR format)
+        self._level_dark_colors = {
+            logging.CRITICAL: (0, 0, 80),       # Dark red
+            logging.WARNING: (0, 60, 100),      # Dark orange
+            logging.INFO: (0, 60, 0)            # Dark green
+        }
+        
         self.events = deque(maxlen=max_events)
         self.event_timestamps = deque(maxlen=max_events)  # Track when each event was added
+        self.event_levels = deque(maxlen=max_events)      # Track log level for each event
         self._static_header = None  # Static text at top (doesn't scroll)
         self._cached_overlay = None
         self._cached_mask = None  # Cache the alpha mask too
@@ -100,16 +142,25 @@ class EventLogOverlay:
         self._static_header = header_text
         self._cache_dirty = True
     
-    def add_event(self, event_text: str) -> None:
-        """Add new event (pushes old events up/out)"""
+    def add_event(self, event_text: str, level: int = None) -> None:
+        """Add new event (pushes old events up/out)
+        
+        Args:
+            event_text: Text to display
+            level: Log level (use logging.CRITICAL, logging.WARNING, logging.INFO). Defaults to random for testing.
+        """
+        if level is None:
+            level = random.choice([logging.CRITICAL, logging.WARNING, logging.INFO])
         self.events.append(event_text)
         self.event_timestamps.append(time.time())
+        self.event_levels.append(level)
         self._cache_dirty = True
     
     def clear_events(self) -> None:
         """Clear all events"""
         self.events.clear()
         self.event_timestamps.clear()
+        self.event_levels.clear()
         self._cache_dirty = True
     
     def _render_overlay(self) -> np.ndarray:
@@ -123,21 +174,20 @@ class EventLogOverlay:
             header_y_pos = self.line_height + 5  # Position from top
             header_text = self._static_header
             
-            # Truncate header if too wide
+            # Truncate header if too wide (estimate chars to remove to avoid repeated getTextSize)
             (text_w, _), _ = cv2.getTextSize(
                 header_text, self.font, self.font_scale, self.font_thickness
             )
             if text_w > self._max_text_width:
-                while text_w > self._max_text_width - 15 and len(header_text) > 3:
-                    header_text = header_text[:-1]
-                    (text_w, _), _ = cv2.getTextSize(
-                        header_text + "...", self.font, self.font_scale, self.font_thickness
-                    )
-                header_text += "..."
+                # Estimate chars per pixel and truncate in one go
+                chars_to_remove = int((text_w - self._max_text_width + 15) / (text_w / len(header_text))) + 1
+                header_text = header_text[:max(3, len(header_text) - chars_to_remove)] + "..."
             
+            # Bright blue color for header (BGR)
+            header_color = (255, 100, 0)
             cv2.putText(
                 overlay, header_text, (5, header_y_pos),
-                self.font, self.font_scale, self.text_color,
+                self.font, self.font_scale, header_color,
                 self.font_thickness, cv2.LINE_AA
             )
         
@@ -150,43 +200,46 @@ class EventLogOverlay:
         
         current_time = time.time()
         
-        for event_text, timestamp in zip(self.events, self.event_timestamps):
+        for event_text, timestamp, level in zip(self.events, self.event_timestamps, self.event_levels):
             if y_pos > height - self.line_spacing:
                 break
+            
+            # Get colors for this log level
+            bright_color = self._level_colors[level]
+            dark_color = self._level_dark_colors[level]
             
             # Calculate age and color fade
             age_seconds = current_time - timestamp
             if age_seconds < 5:
-                # Bright green for < 5 seconds
-                event_color = self.text_color
+                # Bright color for < 5 seconds
+                event_color = bright_color
             elif age_seconds < 10:
-                # Fade from bright to dark green between 5-10 seconds
+                # Fade from bright to dark between 5-10 seconds
                 fade_progress = (age_seconds - 5) / 5  # 0.0 to 1.0
-                dark_green = (0, 60, 0)  # Dark green (BGR)
                 event_color = tuple(
-                    int(self.text_color[i] * (1 - fade_progress) + dark_green[i] * fade_progress)
+                    int(bright_color[i] * (1 - fade_progress) + dark_color[i] * fade_progress)
                     for i in range(3)
                 )
             else:
-                # Dark green for >= 10 seconds (until removed at 20)
-                event_color = (0, 60, 0)
+                # Dark color for >= 10 seconds (until removed at 20)
+                event_color = dark_color
             
-            # Truncate if too wide (using pre-calculated max width)
+            # Truncate if too wide (estimate chars to remove to avoid repeated getTextSize)
             (text_w, _), _ = cv2.getTextSize(
                 event_text, self.font, self.font_scale, self.font_thickness
             )
             if text_w > self._max_text_width:
-                while text_w > self._max_text_width - 15 and len(event_text) > 3:
-                    event_text = event_text[:-1]
-                    (text_w, _), _ = cv2.getTextSize(
-                        event_text + "...", self.font, self.font_scale, self.font_thickness
-                    )
-                event_text += "..."
+                # Estimate chars per pixel and truncate in one go
+                chars_to_remove = int((text_w - self._max_text_width + 15) / (text_w / len(event_text))) + 1
+                event_text = event_text[:max(3, len(event_text) - chars_to_remove)] + "..."
+            
+            # Make CRITICAL messages bolder
+            thickness = self.font_thickness + 1 if level == logging.CRITICAL else self.font_thickness
             
             cv2.putText(
                 overlay, event_text, (5, y_pos),
                 self.font, self.font_scale, event_color,
-                self.font_thickness, cv2.LINE_AA
+                thickness, cv2.LINE_AA
             )
             y_pos += self.line_height  # Move DOWN (becomes right after rotation)
         
@@ -230,6 +283,7 @@ class EventLogOverlay:
             while self.events and (current_time - self.event_timestamps[0]) > 20.0:
                 self.events.popleft()
                 self.event_timestamps.popleft()
+                self.event_levels.popleft()
             
             # Trigger cache refresh to update colors
             self._cache_dirty = True

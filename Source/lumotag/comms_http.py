@@ -9,6 +9,7 @@ from collections import OrderedDict, deque
 import numpy as np
 import traceback
 import requests
+import logging
 from functools import lru_cache, wraps
 from analyse_lumotag import debuffer_image
 from factory import decode_image_id
@@ -47,6 +48,12 @@ class EventWithCallback:
     """Wrapper for events that need a callback function executed after successful transmission"""
     event: BaseModel
     callback: Callable[[dict], None] | None
+
+@dataclass
+class LogEvent:
+    """Event log entry with text and log level"""
+    text: str
+    level: int  # Use logging.INFO, logging.WARNING, logging.CRITICAL
 
 
 def _get_broadcast_address() -> str:
@@ -258,7 +265,7 @@ class HTTPComms(AbstractHTTPComms):
         try:
             self._upload_q.put_nowait(image_id)
         except threading_queue.Full:
-            self.add_event_to_log("Upload queue full!")
+            self.add_event_to_log("Upload queue full!", logging.WARNING)
 
     def set_killshot(self, response: dict):
         incoming_killshot = lumotag_events.ReqKillScreenResponse(**response)
@@ -322,7 +329,7 @@ class HTTPComms(AbstractHTTPComms):
         try:
             self._events_q.put_nowait(EventWithCallback(event, self.set_killshot))
         except threading_queue.Full:
-            self.add_event_to_log("Events queue full!")
+            self.add_event_to_log("KILLSCRN: Events queue full!", logging.WARNING)
 
     def send_tagging_event(self, tag_ids: list[str], image_ids: list[str]) -> None:
         """Send a tagging event via HTTP and UDP broadcast - validates event type first"""
@@ -336,7 +343,7 @@ class HTTPComms(AbstractHTTPComms):
         try:
             self._events_q.put_nowait(EventWithCallback(event, None))
         except threading_queue.Full:
-            self.add_event_to_log("Events queue full!")
+            self.add_event_to_log("TAG: Events queue full!", logging.WARNING)
 
     def delete_image_by_id(self, image_id: str) -> bool:
         """Delete a specific image ID from storage - returns True if deleted, False if not found"""
@@ -376,15 +383,20 @@ class HTTPComms(AbstractHTTPComms):
         with self._gamestate_lock:
             return self._latest_gamestate
     
-    def add_event_to_log(self, event_text: str) -> None:
-        """Add an event to the event log queue (lock-free thread-safe, FIFO with auto-eviction)"""
-        self.events_queue.append(event_text)  # Atomic operation
+    def add_event_to_log(self, event_text: str, level: int = logging.INFO) -> None:
+        """Add an event to the event log queue (lock-free thread-safe, FIFO with auto-eviction)
+        
+        Args:
+            event_text: Message to log
+            level: Log level (use logging.INFO, logging.WARNING, logging.CRITICAL)
+        """
+        self.events_queue.append(LogEvent(text=event_text, level=level))  # Atomic operation
     
-    def pop_oldest_event(self) -> str | None:
+    def pop_oldest_event(self) -> LogEvent | None:
         """Get and remove the oldest event from the queue (lock-free thread-safe)
         
         Returns:
-            The oldest event string, or None if queue is empty
+            LogEvent with text and level, or None if queue is empty
         """
         try:
             return self.events_queue.popleft()  # Atomic operation
@@ -397,7 +409,7 @@ class HTTPComms(AbstractHTTPComms):
             # Rate limit disconnect messages to once every 2 seconds
             current_time = time.time()
             if current_time - self._last_disconnect_log_time >= 2.0:
-                self.add_event_to_log(f"OFFLINE::{usermsg}")
+                self.add_event_to_log(f"OFFLINE::{usermsg}", logging.WARNING)
                 self._last_disconnect_log_time = current_time
         with self._connection_lock:
             if connected and not self._is_connected:
@@ -677,7 +689,7 @@ class HTTPComms(AbstractHTTPComms):
                                 old_player = self._latest_gamestate.players.get(player_id)
                                 if old_player and not old_player.isEliminated and player.isEliminated:
                                     # self.add_event_to_log(f"{player.display_name} eliminated!")
-                                    self.add_event_to_log(random.choice(lumotag_events.eliminated_chat).substitute(player_name=player.display_name))
+                                    self.add_event_to_log(random.choice(lumotag_events.eliminated_chat).substitute(player_name=player.display_name), logging.CRITICAL)
                                 elif old_player and player.health < old_player.health:
                                     self.add_player_tagged_to_log(player.display_name, player.health)
 
