@@ -685,13 +685,14 @@ class HTTPComms(AbstractHTTPComms):
                             
 
                             # Check for player eliminations and taggings
-                            for player_id, player in game_update.players.items():
-                                old_player = self._latest_gamestate.players.get(player_id)
+                            for device_id, player in game_update.players.items():
+                                old_player = self._latest_gamestate.players.get(device_id)
                                 if old_player and not old_player.isEliminated and player.isEliminated:
                                     # self.add_event_to_log(f"{player.display_name} eliminated!")
                                     self.add_event_to_log(random.choice(lumotag_events.eliminated_chat).substitute(player_name=player.display_name), logging.CRITICAL)
                                 elif old_player and player.health < old_player.health:
                                     self.add_player_tagged_to_log(player.display_name, player.health)
+
 
                             # Check if we got tagged (health decreased)
                             if (self._latest_gamestate.players 
@@ -716,7 +717,7 @@ class HTTPComms(AbstractHTTPComms):
                                     self._tag_id_to_display_name[TagID(str(playerstatus.tag_id))] = playerstatus.display_name
                                     # Player joined - log it (unless it's us)
                                     if deviceid != self.device_id:
-                                        self.add_event_to_log(f"{playerstatus.display_name} [{playerstatus.tag_id}] joined")
+                                        self.add_event_to_log(f"{playerstatus.display_name} [{playerstatus.tag_id}] joined",logging.WARNING)
                                     break
 
                             self._set_connected(True, "gamestate ok")  # Success - mark as connected
@@ -801,25 +802,31 @@ class HTTPComms(AbstractHTTPComms):
                 pass
             return
     
-    def add_player_tagged_to_log(self, player_name, player_heath):
+    def add_player_tagged_to_log(self, player_name, player_heath, device_id: str | None = None):
+        """provide DeviceID if you can which will check if its ourselves getting damaged"""
         if player_heath < 0:
             message = random.choice(lumotag_events.bullied_chat).substitute(player_name=player_name, health=player_heath)
         else:
             message = random.choice(lumotag_events.tagged_chat).substitute(player_name=player_name)
-
-        self.add_event_to_log(message)
+        if device_id == self.device_id:
+            loglvl = logging.CRITICAL
+        else:
+            loglvl = logging.INFO
+        self.add_event_to_log(message, loglvl)
 
 
     def reduce_players_health(self, device_id: str, damage: int):
-        """Reduce player health locally (note: gamestate polling will overwrite this)"""
+        """Reduce player health locally (note: gamestate polling will overwrite this)
+        """
         try:
             if device_id in self._latest_gamestate.players:
                 with self._gamestate_lock:
                     self._latest_gamestate.players[device_id].health -= damage
-                    self.add_player_tagged_to_log(
-                        self._latest_gamestate.players[device_id].display_name,
-                        self._latest_gamestate.players[device_id].health
-                        )
+                self.add_player_tagged_to_log(
+                    self._latest_gamestate.players[device_id].display_name,
+                    self._latest_gamestate.players[device_id].health,
+                    device_id = device_id
+                    )
 
         except Exception as e:
             # If this fails, crash the whole process - something is seriously wrong
