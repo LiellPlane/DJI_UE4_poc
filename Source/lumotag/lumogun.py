@@ -572,7 +572,7 @@ def main():
                 ):
                     # if we have a tag - we want to try and get the avatar associated with the tag and display it in the UI 
                     # it has to go through a process - so can't use it raw from the http class 
-                    fade_norm = 0
+                    
                     if len(analysis) > 0:
                         # have we detected a tag? if so - get the centre one 
                         if focused_tag := get_targeted_player_details(analysis, gamestate):
@@ -591,6 +591,8 @@ def main():
                         else:
                             fade_norm = display.get_norm_fade_val(players["demoplayer"], []) # we don't want any info to show if we have a tag but no associated player
                             # we have a tag - now see if we the image record already in the display class - if not - try and get it from the comms module 
+                    else:
+                        fade_norm = display.get_norm_fade_val(players["demoplayer"], [])
 
                     if (img:= players["demoplayer"].display_targetted_avatar) is not None:
                         status_bar.display_player_image(
@@ -720,7 +722,8 @@ def main():
                         if len(analysis) > 0:
                             for img_id in imageIDs:
                                 game_client.upload_image_by_id(img_id)
-                                # plop  =image_capture_longrange.get_raw_image_sync()
+                                log_overlay.add_event("test get colour img")
+                                plop = image_capture_longrange.get_raw_image_sync()
                                 # plop=1
                     else:
                         for img_id in imageIDs:
