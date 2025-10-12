@@ -749,9 +749,16 @@ class Triggers(ABC):
         pass
 
 class ImageGenerator(ABC):
+    # this is the class which ACQUIRES the image from hardware/images etc 
     @abstractmethod
     def _get_image(self):
         pass
+    
+    @abstractmethod
+    def get_raw_image(self):
+        """Get full uncropped raw image from source. Must be implemented by subclasses."""
+        pass
+    
     def get_image(self):
         img = self._get_image()
         img_id = create_image_id()
@@ -762,7 +769,8 @@ class ImageGenerator(ABC):
         return img
 
 class Camera(ABC):
-
+    # this is the class which negotiates with an image acquisition class, and handles 
+    # shared memory etc if we want async behaviour 
     def __init__(self, video_modes) -> None:
         self.res_select = 0
         self.last_img = None
@@ -770,6 +778,10 @@ class Camera(ABC):
         self._is_reversed = None
         self._res = None
         self._id = str(uuid.uuid4())[:8]
+
+    @abstractmethod
+    def gen_image(self):
+        pass
 
     @abstractmethod
     def gen_image(self):
@@ -796,7 +808,7 @@ class Camera(ABC):
 
 class Camera_synchronous(Camera):
     
-    def __init__(self, video_modes, imagegen_cls) -> None:
+    def __init__(self, video_modes, imagegen_cls:ImageGenerator) -> None:
         super().__init__(video_modes)
         self.imagegen_cls = imagegen_cls(self.get_res())
 
@@ -811,7 +823,7 @@ class Camera_synchronous(Camera):
 
 class Camera_synchronous_with_buffer(Camera):
     
-    def __init__(self, video_modes, imagegen_cls) -> None:
+    def __init__(self, video_modes, imagegen_cls:ImageGenerator) -> None:
         super().__init__(video_modes)
         self.imagegen_cls = imagegen_cls(self.get_res())
         self._store_res = None
@@ -857,12 +869,14 @@ class Camera_async_flipflop(Camera):
     another shared memory mechanism is used to determine which is
     the static buffer (not to be overwritten) during async capture of
     next image"""
-    def __init__(self, video_modes, imagegen_cls) -> None:
+    def __init__(self, video_modes, imagegen_cls:ImageGenerator) -> None:
         super().__init__(video_modes)
         self.res_select = 0
         self.last_img = None
         self.handshake_queue = Queue(maxsize=1)
         self.handshake_queue2 = Queue(maxsize=1)
+        self.raw_frame_request_queue = Queue(maxsize=1)  # Main → Subprocess: request signal
+        self.raw_frame_response_queue = Queue(maxsize=1)  # Subprocess → Main: raw frame data
         self.process = None
         self.shared_mem_handler = []
         self.shared_mem_index = None
@@ -889,6 +903,37 @@ class Camera_async_flipflop(Camera):
         return (
             {0: self.shared_mem_handler[0].mem_ids[self._id + "0"],
             1: self.shared_mem_handler[1].mem_ids[self._id + "1"]})
+    
+    def get_raw_image_sync(self) -> np.ndarray:
+        """Synchronously request and retrieve full uncropped raw image from subprocess.
+        
+        This sends a request token to the subprocess via queue, which triggers
+        the ImageGenerator to capture a raw frame instead of cropped.
+        May cause slight lag while waiting for subprocess response.
+        """
+        # Empty response queue first in case there's a stale frame
+        while not self.raw_frame_response_queue.empty():
+            try:
+                self.raw_frame_response_queue.get(block=False)
+            except:
+                break
+        
+        # Send request token (Main → Subprocess)
+        self.raw_frame_request_queue.put("REQUEST_RAW", block=True, timeout=1.0)
+
+        # unblock the camera queue
+        self.handshake_queue2.put("please rename this", block=True, timeout=None)
+        
+        # Consume the metadata that the subprocess will send (we don't need it for raw frames)
+        _ = self.handshake_queue.get(block=True, timeout=2.0)
+        
+        # Wait for raw frame (Subprocess → Main)
+        raw_frame = self.raw_frame_response_queue.get(block=True, timeout=2.0)
+        
+        if isinstance(raw_frame, str):
+            raise Exception(f"Expected raw frame, got: {raw_frame}")
+        
+        return raw_frame
 
     def configure_shared_memory(self):
         # we need to get shape of image first to
@@ -924,7 +969,9 @@ class Camera_async_flipflop(Camera):
             self.handshake_queue2,
             memblock_0, memblock_1, memblock_index,
             self.get_res(),
-            self.imagegen_cls)
+            self.imagegen_cls,
+            self.raw_frame_request_queue,
+            self.raw_frame_response_queue)
 
         process = Process(
             target=self.async_img_loop,
@@ -974,7 +1021,9 @@ class Camera_async_flipflop(Camera):
         memblock_1: shared_memory.SharedMemory,
         memblock_index: shared_memory.SharedMemory,
         res: tuple,
-        img_gen: ImageGenerator):
+        img_gen: ImageGenerator,
+        raw_frame_request_queue: Queue,
+        raw_frame_response_queue: Queue):
 
         _img_gen = img_gen(res)
 
@@ -1019,16 +1068,36 @@ class Camera_async_flipflop(Camera):
                 shared_curr_id_quick = [1]
             else:
                 raise Exception("Invalid buffer ID")
+            
+            # Check if raw frame is requested BEFORE handshake (non-blocking, no exception overhead)
+            if not raw_frame_request_queue.empty():
+                try:
+                    _ = raw_frame_request_queue.get(block=False)  # Consume request (any value means "capture raw")
+                    raw_img = _img_gen.get_raw_image()
+                    raw_frame_response_queue.put(raw_img.copy(), block=True, timeout=1.0)
+                except:
+                    pass  # Queue became empty between check and get (rare race condition)
+            
             #blocking put until consumer handshakes
             #print("FLIPFLOP waiting to send ASYNC outgoing:", output)
             _ = handshake_queue.get(block=True, timeout=None)
             myqueue.put(output, block=True, timeout=None)
             #print("FLIPFLOP sent!! ASYNC outgoing:", output)
+            
+            # Check if raw frame is requested AFTER handshake (non-blocking, no exception overhead)
+            if not raw_frame_request_queue.empty():
+                try:
+                    _ = raw_frame_request_queue.get(block=False)  # Consume request (any value means "capture raw")
+                    raw_img = _img_gen.get_raw_image()
+                    raw_frame_response_queue.put(raw_img.copy(), block=True, timeout=1.0)
+                except:
+                    pass  # Queue became empty between check and get (rare race condition)
+            
 
 
 class Camera_async(Camera):
     
-    def __init__(self, video_modes, imagegen_cls) -> None:
+    def __init__(self, video_modes, imagegen_cls:ImageGenerator) -> None:
         super().__init__(video_modes)
         self.res_select = 0
         self.last_img = None
@@ -1130,7 +1199,7 @@ class Camera_async(Camera):
 
 class Camera_async_buffer(Camera_async):
 
-    def __init__(self, video_modes, imagegen_cls) -> None:
+    def __init__(self, video_modes, imagegen_cls:ImageGenerator) -> None:
         super().__init__(video_modes, imagegen_cls)
 
     def get_img_buffer(self):
@@ -1551,9 +1620,27 @@ class ImageLibraryMeta(type(ImageGenerator)):
             self.blank_image[:] = img
             time.sleep(0.03)
             return self.blank_image
+        
+        def get_raw_image(self):
+            """Return color (BGR) image from library"""
+            img_to_load = next(self.cycled_files_generator)
+            if img_to_load is None:
+                # Return a color version of blank image
+                if len(self.blank_image.shape) == 2:
+                    return cv2.cvtColor(self.blank_image.copy(), cv2.COLOR_GRAY2BGR)
+                return self.blank_image.copy()
+            
+            img = cv2.imread(img_to_load)
+            # Keep as color (BGR) - don't convert to grayscale
+            if len(img.shape) == 2:
+                # If somehow grayscale, convert to BGR
+                img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+            time.sleep(0.03)
+            return img
 
         attrs['__init__'] = init
         attrs['_get_image'] = _get_image
+        attrs['get_raw_image'] = get_raw_image
         
         return super().__new__(cls, name, bases, attrs)
 
@@ -1592,6 +1679,17 @@ class ImageLibrary(ImageGenerator):
         #img = cv2.resize(img, tuple(self.res[0:2]))
         self.blank_image[:] = img
         return self.blank_image
+    
+    def get_raw_image(self):
+        """Return color (BGR) image from library"""
+        img_to_load = random.choice(self.images)
+        img = cv2.imread(img_to_load)
+        print(f"raw img {img_to_load}")
+        # Keep as color (BGR) - don't convert to grayscale
+        if len(img.shape) == 2:
+            # If somehow grayscale, convert to BGR
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        return img
 
 
 class test_ui_elements(ImageGenerator):
@@ -1628,6 +1726,19 @@ class test_ui_elements(ImageGenerator):
         if random.randint(0, 6) == 1:
             self.blank_image[:] = img
         return self.blank_image
+    
+    def get_raw_image(self):
+        """Return color (BGR) image for test UI elements"""
+        img_to_load = random.choice(self.images)
+        img = cv2.imread(img_to_load)
+        print(f"test_ui raw img {img_to_load}")
+        # Keep as color (BGR) - don't convert to grayscale
+        if len(img.shape) == 2:
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        # Apply test UI effects in color
+        if self.image_freq < 15 or random.randint(0, 20) == 1:
+            img[:] = 0
+        return img
 
 
 

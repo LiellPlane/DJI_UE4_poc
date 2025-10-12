@@ -720,6 +720,8 @@ def main():
                         if len(analysis) > 0:
                             for img_id in imageIDs:
                                 game_client.upload_image_by_id(img_id)
+                                # plop  =image_capture_longrange.get_raw_image_sync()
+                                # plop=1
                     else:
                         for img_id in imageIDs:
                             game_client.delete_image_by_id(img_id)

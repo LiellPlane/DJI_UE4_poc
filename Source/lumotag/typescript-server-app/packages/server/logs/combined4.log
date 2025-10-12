@@ -72944,3 +72944,884 @@
 {"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 11:50:45","userAgent":"python-requests/2.32.4"}
 {"level":"info","message":"Image LID5044svL9svLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 11:50:45"}
 {"level":"info","message":"Image LID98961beKMXLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 11:50:45"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:43 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:45 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:45"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:47 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:49","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:49","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 3 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"Image LID8740FSLiDqLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"Image LID9964pCGO3MLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"Image LID8740bnx0euLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"Image LID9964jRaCIPLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:50","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8740gOnKHsLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"Image LID9964qmjNhkLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:50","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8740RWt1NHLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"Image LID9964kiVWXhLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:50","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID874065nOfGLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"Image LID9964m8XLwMLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:50"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8740hkU7QlLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"info","message":"Image LID9964PfUqLxLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID87406toGPaLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"info","message":"Image LID9964sT3IThLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:51"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:12:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:12:52 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:12:52"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:12:52","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8740mxyIrGLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:52"}
+{"level":"info","message":"Image LID9964LvGVa5LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:12:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:18 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:18"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:20 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:20"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:15:21"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:21 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:21"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:15:21","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:22 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:22"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:48 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:51 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:51"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:15:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:52 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:52"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:15:52","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:15:53 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:15:53"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:16:29 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:16:29"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:16:31 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:16:31"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:16:32"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:16:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:16:32"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:16:32","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:16:34 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:16:34"}
+{"level":"info","message":"Image LID7464QMsodTLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:16:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:18:40 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:18:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:18:42 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:18:42"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:18:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:18:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:18:44"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:18:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:18:45 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:18:45"}
+{"level":"info","message":"Image LID1256Tv2X9VLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:18:46"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:22:11 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:22:11"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:22:13 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:22:13"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:22:14"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:22:14 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:22:14"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:22:14","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:22:15 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:22:15"}
+{"level":"info","message":"Image LID6724SJzxtILID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:22:16"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:43 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:45 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:45"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:47 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:47"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 3 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"Image LID7032wAa6yXLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"Image LID2916oSiDHcLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"Image LID7032V8lFh5LID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"Image LID2916WfvSjyLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID70325Pdu6QLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"Image LID29167498GiLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:48"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:49","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7032ibUISiLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"level":"info","message":"Image LID2916rRai28LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:49","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7032zrrhxYLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"level":"info","message":"Image LID2916xzGAF4LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:50","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7032DdSIvFLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"level":"info","message":"Image LID2916Hp1tL7LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:50","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7032eihfYvLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"level":"info","message":"Image LID2916nZuTYJLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:50"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID70322MAimrLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"level":"info","message":"Image LID2916FS6F09LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:27:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:27:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7032q40D6KLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"level":"info","message":"Image LID2916mRuqzCLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:27:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:28:36 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:28:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:28:38 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:28:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:28:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:28:40 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:28:40"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:28:40","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:28:41 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:28:41"}
+{"level":"info","message":"Image LID8776iBUnWdLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:28:41"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:30:42 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:30:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:30:44 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:30:44"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:30:46"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:30:46 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:30:46"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:30:46","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:30:46 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:30:46"}
+{"level":"info","message":"Image LID518808W3UnLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:30:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:36:56 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:36:56"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:36:58 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:36:58"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:37:00"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:37:00 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:37:00"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:37:00","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:37:00 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:37:00"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:37:01"}
+{"level":"info","message":"Image LID1892HOWCAILID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:37:01"}
+{"level":"info","message":"Image LID8244XphXfoLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:37:01"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:38:25 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:38:25"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:38:27 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:38:27"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:38:29"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:38:29 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:38:29"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:38:29","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:38:30 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:38:30"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:38:30"}
+{"level":"info","message":"Image LID5644z4BJF2LID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:38:30"}
+{"level":"info","message":"Image LID9144YJVKfpLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:38:30"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:39:33 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:39:33"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:39:35 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:39:35"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:39:38 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:39:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:39:56 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:39:56"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:39:58 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:39:58"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:39:59"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:39:59 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:39:59"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:39:59","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:40:01 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:40:01"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:40:01"}
+{"level":"info","message":"Image LID9020MLFbeYLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:40:01"}
+{"level":"info","message":"Image LID33482eBtTILID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:40:01"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:40:58 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:40:58"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:00 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:00"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:41:01"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:41:01"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:01 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:01"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:41:01","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:02 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:02"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:16 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:16"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:18 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:18"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13,7]","service":"typescript-server","timestamp":"2025-10-12 14:41:19"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:41:19"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:19 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:19"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:41:19","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:20 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:20"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:41:21"}
+{"level":"info","message":"Image LID52442LXeXXLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:41:21"}
+{"level":"info","message":"Image LID32164PEWy0LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:41:21"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:56 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:56"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:58 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:58"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:41:59"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:41:59"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:41:59 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:41:59"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:41:59","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:42:00 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:42:00"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:42:01"}
+{"level":"info","message":"Image LID4568bQ43b3LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:42:01"}
+{"level":"info","message":"Image LID2344AfUnwTLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:42:01"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:45:05 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:45:05"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:45:07 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:45:07"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:45:10 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:45:10"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:50:38 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:50:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:50:40 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:50:40"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:50:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:50:42 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:50:42"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:50:42","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:50:43 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:50:43"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:50:43"}
+{"level":"info","message":"Image LID6288NhCy49LID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:50:43"}
+{"level":"info","message":"Image LID6692vlPJ3NLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:50:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:51:52 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:51:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:51:55 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:51:55"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:51:57 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:51:57"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:52:48 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:52:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:52:51 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:52:51"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:52:52"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:52:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:52:52 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:52:52"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:52:52","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:52:53 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:52:53"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:52:54"}
+{"level":"info","message":"Image LID2324ax7WUJLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:52:54"}
+{"level":"info","message":"Image LID4092r0frlBLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:52:54"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:53:44 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:53:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:53:46 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:53:46"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:53:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:53:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:53:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:53:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:53:48"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:53:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:53:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:53:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:53:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:53:49 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:53:49"}
+{"level":"info","message":"Queue status: 2 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:53:49"}
+{"level":"info","message":"Image LID30845oikOcLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:53:49"}
+{"level":"info","message":"Image LID1368Do2O7wLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:53:49"}
+{"level":"info","message":"Image LID3084aqiIfQLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:53:49"}
+{"level":"info","message":"Image LID1368fhsgrpLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:53:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:54:19 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:54:19"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:54:22 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:54:22"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:54:23"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:54:23 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:54:23"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:54:23","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:54:23"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:54:23"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:54:23 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:54:23"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:54:23","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:54:24 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:54:24"}
+{"level":"info","message":"Queue status: 3 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:54:25"}
+{"level":"info","message":"Image LID6616jvbkabLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:54:25"}
+{"level":"info","message":"Image LID9656cUdzbhLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:54:25"}
+{"level":"info","message":"Image LID6616fyqsMVLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:54:25"}
+{"level":"info","message":"Image LID9656SW7nX0LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:54:25"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:55:47 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:55:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:55:49 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:55:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:55:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:55:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:55:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:55:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:55:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:55:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:55:51"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:55:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:55:52 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:55:52"}
+{"level":"info","message":"Queue status: 2 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:55:52"}
+{"level":"info","message":"Image LID97601qphOsLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:55:52"}
+{"level":"info","message":"Image LID0372Tdr3U5LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:55:52"}
+{"level":"info","message":"Image LID9760NiWsyVLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:55:52"}
+{"level":"info","message":"Image LID0372xSfNLMLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:55:53"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:57:28 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:57:28"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:57:31 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:57:31"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:57:32"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:57:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:57:32"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:57:32","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:57:32"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:57:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:57:32"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:57:32","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:57:33 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:57:33"}
+{"level":"info","message":"Queue status: 2 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:57:34"}
+{"level":"info","message":"Image LID1060aLcKvBLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:57:34"}
+{"level":"info","message":"Image LID3412Q84fL0LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:57:34"}
+{"level":"info","message":"Image LID1060ZXcKQVLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:57:34"}
+{"level":"info","message":"Image LID341283hmc4LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:57:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:13 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:13"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:15 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:15"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:17"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:17 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:17"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:17","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:17"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:17 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:17"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:17","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:17"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:17 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:17"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:17","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:18 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:18"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:18"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:18 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:18"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:18","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:58:18"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:58:18"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:18 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:18"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:18","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 3 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"Image LID9328HJBMYILID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"Image LID9740O1JUhLLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"Image LID9328peJIxcLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"Image LID9740TVidI6LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:19 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:19","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID9328R8ibKvLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"Image LID9740HpRBTgLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:19 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:19","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID9328ALYnmiLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"Image LID9740Me1tqvLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:19"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:20 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:20","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID9328ae0UJXLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"level":"info","message":"Image LID9740eZxx2TLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:20 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:20","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID9328ofNVywLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"level":"info","message":"Image LID9740xIPw9hLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:20"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:48 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:50 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:50"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:51"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:51"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:51","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:52 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:52"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:52","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:52"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:52 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:52"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:52","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:52 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:52"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:53 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:53","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 2 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"Image LID8512N7akvALID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"Image LID7880DUIGQrLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"Image LID85123SRNjsLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"Image LID7880JZnzySLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:53 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:53","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512yYzqg8LID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"Image LID7880JfQCkhLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:53"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:54 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:54","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512lQDc8vLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"Image LID7880bWECisLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:54 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:54","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512ZvywqNLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"Image LID7880AUE1lbLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:54 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:54","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID85126LwAAwLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"Image LID7880r76ZLRLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:54"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:55 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:55","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512Sm9diALID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"info","message":"Image LID7880QeOYIqLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:55 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:55","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512RBdnfzLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"info","message":"Image LID7880Opp91FLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:55"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:56 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:56","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512tMHQRVLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"info","message":"Image LID7880mWYTLWLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:56 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:56","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512NrxhJcLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"info","message":"Image LID78808Vo7L2LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:56"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:57 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:57","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512vZMJSXLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"level":"info","message":"Image LID7880W1dKARLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:57 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:57","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID85127nKTriLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"level":"info","message":"Image LID7880YvUqKOLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:57"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:58:58"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:58:58 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:58:58"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:58:58","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8512Bc5nOKLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:58"}
+{"level":"info","message":"Image LID7880i1pjyILID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:58:58"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:28 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:28"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:30 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:30"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:31"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:31 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:31"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:31","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:31"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:31"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:31 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:31"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:31","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:32"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:32"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:32"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:32","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:32"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:32"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:32","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:32 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:32"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:33 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:33","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 3 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"Image LID8848iVOXLtLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"Image LID5340RNfPHhLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"Image LID884844HBriLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"Image LID5340ned8KSLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:33 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:33","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID88484MlQ2uLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"Image LID5340vQ5NTZLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:33"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:34","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848K45PMDLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"Image LID53401ojyY3LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"duration":"2ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:34","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848LXaGmDLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"Image LID5340bm0GOmLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:34"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:34","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848T2BtkqLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"Image LID5340JQ059vLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:35","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848lQwrw9LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"Image LID5340Ln6RCULID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:35","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848sdBihHLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"Image LID5340fcW56ILID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:35"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848As5yDpLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"level":"info","message":"Image LID53407QeMeLLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848euBWPkLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"level":"info","message":"Image LID5340uLe23RLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:36"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:37","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848hMWHHKLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"level":"info","message":"Image LID5340uJ1BpoLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:37","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID88485X3fhmLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"level":"info","message":"Image LID5340ukCe5gLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:37"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848k2tT1SLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"Image LID5340Dj0LD1LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID88487jOkODLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"Image LID53409XIQ09LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:38"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848ihey5NLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"level":"info","message":"Image LID5340XCmBqDLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:39 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:39","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848YBDvE6LID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"level":"info","message":"Image LID53409bYsZ2LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:39 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:39"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:39","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"Image LID8848sR30UZLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"Image LID5340DUPdTSLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:40 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:40","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848jQRazSLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"Image LID5340AvfJuYLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:40 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:40","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848lLfNShLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"Image LID5340Cm5W5eLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:40"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:41 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:41","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848MEr1KBLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"level":"info","message":"Image LID5340z5zgGyLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:41 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:41","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848T6bPjoLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"level":"info","message":"Image LID53407T62FWLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:41"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:42 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:42","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848BTAJ0fLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"info","message":"Image LID5340eQLOuYLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:42 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:42","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848bBmEakLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"info","message":"Image LID5340J4drUNLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:42"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:43 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:43","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848jMV01aLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"level":"info","message":"Image LID5340lqKHXNLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:43 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:43","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848MvQ2y3LID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"level":"info","message":"Image LID5340AmJ4cBLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:43"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID88489FMXU2LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"Image LID5340vz6eNkLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848YgNcnVLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"Image LID5340c2MOKHLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:44"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848MA81VuLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"Image LID5340u23fNgLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:45 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:45","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"Image LID8848IuwmA4LID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"Image LID5340ML1XDBLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:45 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:45","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848PEc6cYLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:45"}
+{"level":"info","message":"Image LID5340tE2p1hLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:46 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:46","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848sKXCFPLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"level":"info","message":"Image LID5340aMWdssLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:46 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:46","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848m3WtvHLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:46"}
+{"level":"info","message":"Image LID5340jV270BLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848NDdQ4cLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"Image LID5340Iaz4uRLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848wqvzANLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"Image LID5340aSPifHLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 14:59:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:13:59:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 14:59:48"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 14:59:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID8848T8PXbtLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:48"}
+{"level":"info","message":"Image LID53402Ij1eZLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 14:59:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:00:42 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:00:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:00:44 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:00:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:00:47 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:00:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:32 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:32"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:34 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:34"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:01:35"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:35"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:35","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:36 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:36"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:37","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 3 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"Image LID7896IMF7ePLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"Image LID0032GQnH6nLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"Image LID7896iVJYP3LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"Image LID0032B8KumzLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:37","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7896T2mh4KLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:37"}
+{"level":"info","message":"Image LID0032eauSo7LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7896J0s4rrLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"Image LID0032bynoo5LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7896VweNiTLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"Image LID0032PR1irkLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:01:39"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:01:39"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:01:39 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:01:39"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:01:39","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID7896g6P9AnLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:39"}
+{"level":"info","message":"Image LID00328N04ANLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:01:39"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:30 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:30"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:32 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:32"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:34","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:34","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:34"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:34","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:35 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:35","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:35","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"Image LID2688FnL2b2LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"Image LID9612koEO36LID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"Image LID2688PtNyscLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"Image LID961245cU0rLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:35"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688gtBH8hLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"Image LID9612PdJqJ3LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688Akzxj5LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"Image LID96127D89nxLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:36"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:36","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688GHbC8yLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"Image LID9612OBKMDTLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:37","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688QPgCQhLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"Image LID9612ZtiUEALID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:37","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688tw55ajLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"Image LID9612c3nMiHLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:37"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID26881WdadgLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"info","message":"Image LID9612tGzt6qLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:38 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:38","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688nSKOhcLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"info","message":"Image LID9612ufvM2QLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:38"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:39 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:39","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688bSj3ZhLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"level":"info","message":"Image LID9612mNIJhQLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:39 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:39","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688lDQ7FsLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"level":"info","message":"Image LID9612V5MmyhLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:39"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:40 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:40","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688lnpNqvLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"Image LID9612GNNZZWLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:40 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:40","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688u4itcSLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"Image LID9612SHFi6kLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:40 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:40","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688UuPrrILID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:40"}
+{"level":"info","message":"Image LID9612duG9DHLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:41 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:41","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688GN8fcFLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"Image LID9612BCwEBZLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:41 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:41","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"Image LID26887XwGzlLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"Image LID9612K8R1kzLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:41"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:42 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:42","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688QrWKFmLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"level":"info","message":"Image LID9612FRvzAnLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:42 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:42","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688A1XvovLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"level":"info","message":"Image LID9612SRscxFLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:42"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:43 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:43","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688zOyF9iLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"level":"info","message":"Image LID9612U1RlInLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:43 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:43","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688dUWfvXLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"level":"info","message":"Image LID9612PFkvkQLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:43"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688NQdYzULID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"info","message":"Image LID9612Ny7zKaLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688np95bSLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"info","message":"Image LID96125j6ob0LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:44"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:45 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:45","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688dIAr45LID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"info","message":"Image LID9612mwksNLLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:45 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:45","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688F9E6IPLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"info","message":"Image LID9612SXD4dGLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:45"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:46 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:46","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688EktE5iLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"info","message":"Image LID9612DtoTT1LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:46 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:46","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688TkS7kmLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"info","message":"Image LID9612g6a1KILID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:46"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"Image LID2688NjFObALID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"Image LID9612hGqMXVLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:47","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688LSeWWdLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"Image LID9612kAiuiVLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:47"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688zzDSILLID saved (128KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"Image LID9612ZeWvx4LID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688CWteZaLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"Image LID9612aMXjp5LID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:48 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:48","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688NDc98sLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:48"}
+{"level":"info","message":"Image LID9612TRdpadLID saved (257KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:49","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688p9FZpkLID saved (126KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"Image LID9612v348ISLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:49","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688CNOpwwLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"Image LID96127alKsaLID saved (232KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:49"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[7]","service":"typescript-server","timestamp":"2025-10-12 15:02:50"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-10-12 15:02:50"}
+{"level":"info","message":"192.168.56.1 - - [12/Oct/2025:14:02:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-12 15:02:50"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-10-12 15:02:50","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image LID2688lTaD6DLID saved (120KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:50"}
+{"level":"info","message":"Image LID96127b8hoBLID saved (214KB)","service":"typescript-server","timestamp":"2025-10-12 15:02:50"}

@@ -198,6 +198,45 @@ class SynthImgGen(factory.ImageGenerator):
         #time.sleep(0.10 * random.random())
         return self.blank_image
     
+    def get_raw_image(self):
+        """Return a color (3-channel) synthetic image"""
+        # Create color image (height, width, 3)
+        if len(self.res) == 2:
+            # res is (height, width), make it color
+            color_res = (self.res[0], self.res[1], 3)
+        else:
+            # Already has 3 channels
+            color_res = self.res
+        
+        # Create random color image
+        color_img = np.zeros(color_res, np.uint8)
+        color_img[:,:,0] = random.randint(0, 100)  # Blue channel
+        color_img[:,:,1] = random.randint(0, 100)  # Green channel
+        color_img[:,:,2] = random.randint(0, 100)  # Red channel
+        
+        # Draw colored shapes
+        color_img = cv2.circle(
+            color_img,
+            (color_img.shape[1]//2, color_img.shape[0]//2),
+            color_img.shape[0]//10,
+            (255, 0, 0),  # Blue circle
+            -1)
+        color_img = cv2.circle(
+            color_img,
+            (color_img.shape[1]//2, color_img.shape[0]//4),
+            color_img.shape[0]//30,
+            (0, 255, 0),  # Green circle
+            -1)
+        buffer = int(color_img.shape[0]/100)
+        color_img = cv2.rectangle(
+            color_img,
+            (buffer, buffer),
+            tuple(np.asarray(list(reversed(color_img.shape[0:2]))) - np.asarray([buffer, buffer])),
+            (0, 0, 255),  # Red rectangle
+            min(int(buffer/2), 2))
+        
+        return color_img
+    
 
 class CSI_Camera_Async(factory.Camera_async):
 
