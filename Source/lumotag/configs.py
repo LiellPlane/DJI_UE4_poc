@@ -24,7 +24,7 @@ def get_http_comms_baseurl(platform):
     if platform == _OS.RASPBERRY:
         # return "http://localhost:8080"
         # return "http://LIELLOMEN.broadband:8080"
-        return "http://LIELLOMEN:8080"
+        return "http://LIELLOMEN.local:8080" # .local uses multicast on LAN to ask who has this hostname and what their ip is - then caches it
     elif platform == _OS.WINDOWS:
         return "http://LIELLOMEN:8080"
     elif platform == _OS.MAC_OS:
