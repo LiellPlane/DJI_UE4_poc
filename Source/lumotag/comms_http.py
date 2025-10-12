@@ -268,20 +268,33 @@ class HTTPComms(AbstractHTTPComms):
             self.add_event_to_log("Upload queue full!", logging.WARNING)
 
     def set_killshot(self, response: dict):
-        incoming_killshot = lumotag_events.ReqKillScreenResponse(**response)
-        
-        # Decode each base64 image
-        for i, image_data in enumerate(incoming_killshot.image_datas):
-            # Decode base64 to bytes
-            image_bytes = base64.b64decode(image_data)
+        try:
+            incoming_killshot = lumotag_events.ReqKillScreenResponse(**response)
             
-            # Convert bytes to numpy array
-            nparr = np.frombuffer(image_bytes, np.uint8)
-            
-            # Decode JPEG to OpenCV image
-            image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            
-            self.killshots_of_me.append(image)
+            # Decode each base64 image
+            for i, image_data in enumerate(incoming_killshot.image_datas):
+                # Skip any null/empty images (shouldn't happen but be defensive)
+                if not image_data:
+                    print(f"⚠️ Killshot image {i} is empty, skipping")
+                    continue
+                    
+                # Decode base64 to bytes
+                image_bytes = base64.b64decode(image_data)
+                
+                # Convert bytes to numpy array
+                nparr = np.frombuffer(image_bytes, np.uint8)
+                
+                # Decode JPEG to OpenCV image
+                image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                
+                if image is not None:
+                    self.killshots_of_me.append(image)
+                else:
+                    print(f"⚠️ Failed to decode killshot image {i}")
+        except Exception as e:
+            # Don't crash the thread if killshot processing fails
+            print(f"⚠️ Failed to process killshot response: {e}")
+            self.add_event_to_log("Killshot unavailable (may have been cleared)", logging.WARNING)
 
         # # Debug: Show images
         # for i, image in enumerate(decoded_images):
@@ -617,6 +630,11 @@ class HTTPComms(AbstractHTTPComms):
                         # Server error - mark as disconnected for 4xx/5xx errors
                         if response.status_code >= 400:
                             # self._set_connected(False, f"event {response.status_code}")
+                            
+                            # Special handling for killscreen failures (404 = images deleted/unavailable)
+                            if response.status_code == 404 and event.event.event_type == "ReqKillScreen":
+                                self.add_event_to_log("Killshot unavailable (cleared by server)", logging.WARNING)
+                            
                             time.sleep(0.5)  # Small delay to prevent tight retry loops
                         print(f"⚠️ Event send failed: HTTP {response.status_code}")
                         

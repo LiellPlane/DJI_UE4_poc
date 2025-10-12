@@ -62,7 +62,8 @@ async function processImageQueue() {
       
       addImageInfo(imageInfo);
       
-      logger.debug(`Background: Image ${queuedImage.imageId} saved successfully (${savedImage.size.toLocaleString()} bytes)`);
+      // Log successful save
+      logger.info(`Background: Image ${queuedImage.imageId} saved (${Math.round(savedImage.size / 1024)}KB)`);
     } catch (error) {
       logger.error(`Background: Failed to save image ${queuedImage.imageId}:`, error);
     }
@@ -128,7 +129,7 @@ const runBackgroundOperations = (): void => {
     // Process image queue
     processImageQueue();
     
-    logger.debug('Background operations completed');
+    // Removed verbose debug logging - background thread runs every 500ms
   } catch (error) {
     logger.error('CRITICAL: Background thread error - crashing server:', error);
     process.exit(1); // Crash the entire server
@@ -401,15 +402,15 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
       timestamp: Date.now(),
     });
 
-    // Start processing queue in background (non-blocking)
-    processImageQueue().catch(error => {
-      logger.error("Queue processing error:", error);
-    });
-
-    logger.debug(`[${timestamp}] Image queued for processing:
-    ID: ${uploadRequest.image_id}
-    deviceId: ${deviceId}
-    Queue length: ${imageQueue.length}`);
+    // Background thread will process this automatically - no need to trigger manually
+    // (Removed duplicate processImageQueue call to reduce overhead at high upload rates)
+    
+    // Log upload and warn if queue is backing up
+    if (imageQueue.length > 10) {
+      logger.warn(`[${timestamp}] Image queue backing up: ${imageQueue.length} images pending`);
+    } else {
+      logger.info(`[${timestamp}] Image uploaded: ${uploadRequest.image_id} (queue: ${imageQueue.length})`);
+    }
 
     // Return immediately - don't wait for image to save
     return res.json({
@@ -582,11 +583,12 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
     
     if (imageData) {
       logger.debug(`[${timestamp}] Image ${imageId} found (${imageData.length} bytes)`);
+      imageDatas.push(imageData);
     } else {
-      logger.warn(`[${timestamp}] Image ${imageId} not found - failing fast`);
+      // Image not found - fail the entire request (don't send null values to client)
+      logger.warn(`[${timestamp}] Image ${imageId} not found - aborting killscreen request`);
+      throw new Error(`Killshot image ${imageId} not found (may have been deleted)`);
     }
-    
-    imageDatas.push(imageData!);
   }
 
   // Create response

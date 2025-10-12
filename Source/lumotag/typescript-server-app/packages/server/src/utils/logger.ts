@@ -1,14 +1,17 @@
 import winston from "winston";
 
+// Default to 'info' for good visibility of operations (uploads, events, etc.)
+// Change to 'warn' for minimal logging, 'debug' for verbose output
+// Override with LOG_LEVEL env var if needed
 const logLevel = process.env.LOG_LEVEL || "info";
 const nodeEnv = process.env.NODE_ENV || "development";
 
-// Custom log format
+// Custom log format (simplified for better performance)
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.errors({ stack: true }),
   winston.format.json(),
-  winston.format.prettyPrint(),
+  // Removed prettyPrint() - it's expensive and not needed for file logs
 );
 
 // Console format for development
