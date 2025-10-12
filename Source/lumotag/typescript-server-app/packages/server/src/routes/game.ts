@@ -32,10 +32,13 @@ interface QueuedImage {
 
 const imageQueue: QueuedImage[] = [];
 let isProcessing = false;
+let peakQueueSize = 0; // Track max queue size since last metrics check
+let totalImagesProcessed = 0; // Track total images processed
 
 
 // Background thread for cyclic operations
 let backgroundThread: NodeJS.Timeout | null = null;
+let lastQueueLogTime = 0; // Track when we last logged queue status
 
 // Background processor - processes one image at a time
 async function processImageQueue() {
@@ -61,9 +64,10 @@ async function processImageQueue() {
       };
       
       addImageInfo(imageInfo);
+      totalImagesProcessed++;
       
-      // Log successful save
-      logger.info(`Background: Image ${queuedImage.imageId} saved (${Math.round(savedImage.size / 1024)}KB)`);
+      // Log successful save (compact format)
+      logger.info(`Image ${queuedImage.imageId} saved (${Math.round(savedImage.size / 1024)}KB)`);
     } catch (error) {
       logger.error(`Background: Failed to save image ${queuedImage.imageId}:`, error);
     }
@@ -129,7 +133,12 @@ const runBackgroundOperations = (): void => {
     // Process image queue
     processImageQueue();
     
-    // Removed verbose debug logging - background thread runs every 500ms
+    // Periodic queue monitoring (every 5 seconds)
+    const now = Date.now();
+    if (imageQueue.length > 0 && (now - lastQueueLogTime) >= 5000) {
+      logger.info(`Queue status: ${imageQueue.length} images pending, processing: ${isProcessing}`);
+      lastQueueLogTime = now;
+    }
   } catch (error) {
     logger.error('CRITICAL: Background thread error - crashing server:', error);
     process.exit(1); // Crash the entire server
@@ -143,8 +152,10 @@ const startBackgroundThread = (): void => {
     return;
   }
   
-  backgroundThread = setInterval(runBackgroundOperations, 500); // Run every 500ms
-  logger.info('Background thread started (500ms interval)');
+  // Increased frequency from 500ms to 100ms for better throughput (10 images/sec)
+  // Can handle multiple clients uploading simultaneously
+  backgroundThread = setInterval(runBackgroundOperations, 100); // Run every 100ms
+  logger.info('Background thread started (100ms interval - high throughput mode)');
 };
 
 // Stop background thread
@@ -278,7 +289,7 @@ const healPlayers = (): void => {
     if (player.health < 100 && !player.isEliminated) {
       const oldHealth = player.health;
       const newHealth = Math.min(100, player.health + 1);
-      logger.info(`HEALING: ${tagId} (${player.display_name}) ${oldHealth} -> ${newHealth}`);
+      logger.debug(`HEAL: ${player.display_name} ${oldHealth}→${newHealth}`);
       
       updatedPlayers[tagId] = {
         ...player,
@@ -405,12 +416,18 @@ router.post("/images/upload", (req: GameRequest, res: Response) => {
     // Background thread will process this automatically - no need to trigger manually
     // (Removed duplicate processImageQueue call to reduce overhead at high upload rates)
     
-    // Log upload and warn if queue is backing up
-    if (imageQueue.length > 10) {
-      logger.warn(`[${timestamp}] Image queue backing up: ${imageQueue.length} images pending`);
-    } else {
-      logger.info(`[${timestamp}] Image uploaded: ${uploadRequest.image_id} (queue: ${imageQueue.length})`);
+    // Update peak queue size
+    if (imageQueue.length > peakQueueSize) {
+      peakQueueSize = imageQueue.length;
     }
+    
+    // Log upload and warn if queue is backing up
+    if (imageQueue.length > 20) {
+      logger.warn(`QUEUE CRITICAL: ${imageQueue.length} pending`);
+    } else if (imageQueue.length > 10) {
+      logger.warn(`Queue backing up: ${imageQueue.length} pending`);
+    }
+    // Skip logging for healthy queue (< 10 images)
 
     // Return immediately - don't wait for image to save
     return res.json({
@@ -447,7 +464,7 @@ router.post("/events", async (req: GameRequest, res: Response) => {
         } as PlayerTagged;
         
 
-        logger.info(`[${timestamp}] PLAYER TAGGED - deviceId: ${deviceId}, tag_ids: ${taggedEvent.tag_ids.join(',')}, Event: ${JSON.stringify(taggedEvent)}`);
+        logger.info(`TAGGED - device:${deviceId} tags:[${taggedEvent.tag_ids.join(',')}]`);
 
         // Process each tagged player
         for (const tag_id of taggedEvent.tag_ids) {
@@ -458,8 +475,7 @@ router.post("/events", async (req: GameRequest, res: Response) => {
             if (eliminatedDeviceId) {
               eliminatePlayer(tag_id);
               gameState.killShots[eliminatedDeviceId] = taggedEvent;
-              logger.info(`[${timestamp}] 🔍 DEBUG: Storing killshot for ${eliminatedDeviceId} with ${taggedEvent.image_ids.length} images: ${JSON.stringify(taggedEvent.image_ids)}`);
-              logger.info(`Player eliminated: ${taggedPlayer.display_name} (${eliminatedDeviceId}) by device ${deviceId}`);
+              logger.info(`${taggedPlayer.display_name} eliminated by ${deviceId} (${taggedEvent.image_ids.length} images)`);
             }
           }
         }
@@ -472,7 +488,7 @@ router.post("/events", async (req: GameRequest, res: Response) => {
           ...req.body
         } as KillShot;
 
-        logger.info(`[${timestamp}] KILLSHOT REQUEST - deviceId: ${deviceId}, Event: ${JSON.stringify(killShotEvent)}`);
+        logger.info(`Killshot request from ${deviceId}`);
 
         try {
           const killScreenResponse = await processKillScreenRequest(deviceId, timestamp);
@@ -496,10 +512,8 @@ router.post("/events", async (req: GameRequest, res: Response) => {
 
     // Event processed successfully - no storage needed
 
-    logger.info(`[${timestamp}] Event received successfully:
-    Type: ${eventType}
-    deviceId: ${deviceId}
-    Parsed Data: ${JSON.stringify(taggedEvent)}`);
+    // Event processed successfully - compact log
+    logger.debug(`✓ Event ${eventType} from ${deviceId}`);
 
     return res.json({
       status: "success",
@@ -545,9 +559,14 @@ router.get("/metrics", (_req: GameRequest, res: Response) => {
       queue: {
         size: imageQueue.length,
         processing: isProcessing,
+        peak_size: peakQueueSize, // Max size since last check
+        total_processed: totalImagesProcessed, // Total images processed
       },
       timestamp: Date.now(),
     };
+    
+    // Reset peak after reporting
+    peakQueueSize = imageQueue.length;
     
     return res.json(metrics);
   } catch (error) {
@@ -559,7 +578,7 @@ router.get("/metrics", (_req: GameRequest, res: Response) => {
 
 // Helper function to process killscreen requests (fail-fast - no retries)
 async function processKillScreenRequest(deviceId: string, timestamp: string): Promise<ReqKillScreenResponse> {
-  logger.info(`[${timestamp}] KILLSCREEN REQUEST - deviceId: ${deviceId}`);
+  logger.debug(`Processing killscreen for ${deviceId}`);
 
   // Look up eliminated player by device ID
   const eliminatedPlayer = gameState.killShots[deviceId];
@@ -576,7 +595,7 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
   const imageIds = eliminatedPlayer.image_ids;
   const imageDatas: string[] = [];
 
-  logger.info(`[${timestamp}] Attempting to retrieve ${imageIds.length} images: ${imageIds.join(', ')}`);
+  logger.debug(`Retrieving ${imageIds.length} killshot images`);
 
   for (const imageId of imageIds) {
     const imageData = await imageSaver.getImageAsBase64(imageId);
@@ -598,7 +617,7 @@ async function processKillScreenRequest(deviceId: string, timestamp: string): Pr
     event_type: "ReqKillScreenResponse"
   };
 
-  logger.info(`[${timestamp}] Killscreen response sent - ${imageDatas.length}/${imageIds.length} images for device: ${deviceId}`);
+  logger.info(`Killscreen sent: ${imageDatas.length} images to ${deviceId}`);
   return killScreenResponse;
 }
 

@@ -348,6 +348,13 @@ body {
   color: #ff9800;
 }
 
+.metric-sublabel {
+  font-size: 0.75rem;
+  color: #78909c;
+  margin-top: 0.25rem;
+  display: block;
+}
+
 .server-info {
   display: flex;
   justify-content: space-between;

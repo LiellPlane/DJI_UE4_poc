@@ -14,16 +14,13 @@ const logFormat = winston.format.combine(
   // Removed prettyPrint() - it's expensive and not needed for file logs
 );
 
-// Console format for development
+// Console format for development - clean and compact
 const consoleFormat = winston.format.combine(
   winston.format.colorize(),
   winston.format.timestamp({ format: "HH:mm:ss" }),
-  winston.format.printf(({ timestamp, level, message, ...meta }) => {
-    let msg = `${timestamp} [${level}]: ${message}`;
-    if (Object.keys(meta).length > 0) {
-      msg += `\n${JSON.stringify(meta, null, 2)}`;
-    }
-    return msg;
+  winston.format.printf(({ timestamp, level, message }) => {
+    // Simple format: timestamp [level]: message (no JSON metadata spam)
+    return `${timestamp} [${level}]: ${message}`;
   }),
 );
 

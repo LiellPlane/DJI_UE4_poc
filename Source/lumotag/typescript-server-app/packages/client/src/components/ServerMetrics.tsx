@@ -101,17 +101,6 @@ export const ServerMetricsComponent: React.FC = () => {
             </div>
           </div>
 
-          {/* Total Images */}
-          <div className="metric-item">
-            <HardDrive className="metric-icon" />
-            <div className="metric-info">
-              <span className="metric-label">Total Images</span>
-              <span className="metric-value">
-                {stats?.activity.total_images || 0}
-              </span>
-            </div>
-          </div>
-
           {/* Image Storage */}
           {stats?.image_storage && (
             <div className="metric-item">
@@ -131,7 +120,10 @@ export const ServerMetricsComponent: React.FC = () => {
             <div className="metric-info">
               <span className="metric-label">Queue Status</span>
               <span className={`metric-value ${queueWarning ? 'warning' : ''}`}>
-                {metrics?.queue.size || 0} items ({processingStatus})
+                Current: {metrics?.queue.size || 0} | Peak: {metrics?.queue.peak_size || 0}
+              </span>
+              <span className="metric-sublabel">
+                {processingStatus} | Total: {metrics?.queue.total_processed || 0} processed
               </span>
             </div>
           </div>

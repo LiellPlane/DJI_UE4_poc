@@ -75,6 +75,8 @@ export interface ServerMetrics {
   queue: {
     size: number;
     processing: boolean;
+    peak_size?: number; // Max queue size since last check
+    total_processed?: number; // Total images processed
   };
   timestamp: number;
 }
