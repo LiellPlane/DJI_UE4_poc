@@ -46,6 +46,7 @@ class filesystem(factory.FileSystemABC):
             filename,
             img)
         print(f"saved image {filename}")
+        return filename
 
     def save_barcodepair(self, result:list, message = ""):
         ts = utils.get_epoch_timestamp()

@@ -261,9 +261,21 @@ class HTTPComms(AbstractHTTPComms):
         self._capture_q_long_range.put_nowait(ticket)  # Will raise queue.Full if queue is full
 
     def upload_image_by_id(self, image_id: str) -> None:
-        """Queue a specific image ID for upload"""
+        """Queue a specific image ID for upload from memory"""
+        upload_task = lumotag_events.UploadFromMemoryRequest(image_id=image_id)
         try:
-            self._upload_q.put_nowait(image_id)
+            self._upload_q.put_nowait(upload_task)
+        except threading_queue.Full:
+            self.add_event_to_log("Upload queue full!", logging.WARNING)
+    
+    def upload_image_from_disk(self, file_path: str, image_id: str) -> None:
+        """Queue a disk-based image upload"""
+        upload_task = lumotag_events.UploadFromDiskRequest(
+            image_id=image_id,
+            file_path=file_path
+        )
+        try:
+            self._upload_q.put_nowait(upload_task)
         except threading_queue.Full:
             self.add_event_to_log("Upload queue full!", logging.WARNING)
 
@@ -521,14 +533,27 @@ class HTTPComms(AbstractHTTPComms):
         
         try:
             while True:
-                image_id: str = self._upload_q.get()  # Blocks until work available
+                upload_item = self._upload_q.get()  # Blocks until work available
                 
-                # Get image data WITHOUT removing it (keep for retry if needed)
-                with self._mem_lock:
-                    img_data = self.ImageMem.get(image_id, None)
-                
-                if img_data is None:
-                    continue  # Image not found - skip silently
+                # Check if this is a memory-based upload or disk-based upload
+                if isinstance(upload_item, lumotag_events.UploadFromMemoryRequest):
+                    # Memory-based upload (common case)
+                    image_id = upload_item.image_id
+                    
+                    # Get image data WITHOUT removing it (keep for retry if needed)
+                    with self._mem_lock:
+                        img_data = self.ImageMem.get(image_id, None)
+                    
+                    if img_data is None:
+                        continue  # Image not found - skip silently
+                elif isinstance(upload_item, lumotag_events.UploadFromDiskRequest):
+                    # Disk-based upload (rare case)
+                    image_id = upload_item.image_id
+                    img_data = cv2.imread(upload_item.file_path, cv2.IMREAD_COLOR)
+                    if img_data is None:
+                        raise RuntimeError(f"Failed to load image from disk: {upload_item.file_path}")
+                else:
+                    raise RuntimeError(f"Unexpected upload item type: {type(upload_item)} - expected UploadFromMemoryRequest or UploadFromDiskRequest")
                 
                 try:
                     # Image data must be raw numpy array - encode to JPEG for upload

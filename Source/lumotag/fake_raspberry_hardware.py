@@ -13,6 +13,7 @@ import tempfile
 import pickle
 from configs import Fake_Cam_vidmodes_longrangeFILES, Fake_Cam_vidmodes_closerangeFILES
 import video_recorder
+import utils
 
 def lumo_viewer(
         inputimage,
@@ -52,6 +53,11 @@ class filesystem(factory.FileSystemABC):
             raise Exception("save debug; img is not a numpy array")
         if img.ndim not in (2, 3):
             raise Exception("save debug; img must be a 2D or 3D numpy array")
+        
+        ts = utils.get_epoch_timestamp()
+        filename = os.path.join(self.temp_folder, f"{message}{ts}.jpg")
+        cv2.imwrite(filename, img)
+        return filename
     def save_barcodepair(self, barcodepair:list, message=None):
         pass
 

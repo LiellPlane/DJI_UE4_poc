@@ -724,7 +724,8 @@ def main():
                                 game_client.upload_image_by_id(img_id)
                                 log_overlay.add_event("test get colour img")
                                 plop = image_capture_longrange.get_raw_image_sync()
-                                # plop=1
+                                file_path = file_system.save_image(plop, message="raw_color_img_")
+                                game_client.upload_image_from_disk(file_path, image_id=f"color_{img_id}")
                     else:
                         for img_id in imageIDs:
                             game_client.delete_image_by_id(img_id)

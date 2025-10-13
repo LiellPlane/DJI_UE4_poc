@@ -17,6 +17,17 @@ class UploadRequest(BaseModel):
     image_data: str = Field(..., description="Base64 encoded JPEG image data for HTTP transmission")
     event_type: str = Field(default_factory=lambda: "UploadRequest", description="Event type identifier")
 
+class UploadFromMemoryRequest(BaseModel):
+    """Pydantic model for uploading images from memory cache"""
+    image_id: str = Field(..., description="Unique identifier for the image")
+    event_type: str = Field(default_factory=lambda: "UploadFromMemoryRequest", description="Event type identifier")
+
+class UploadFromDiskRequest(BaseModel):
+    """Pydantic model for uploading images from disk"""
+    image_id: str = Field(..., description="Unique identifier for the image")
+    file_path: str = Field(..., description="Absolute path to JPEG file on disk")
+    event_type: str = Field(default_factory=lambda: "UploadFromDiskRequest", description="Event type identifier")
+
 class PlayerStatus(BaseModel):
     health: int
     ammo: int
