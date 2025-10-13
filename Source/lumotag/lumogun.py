@@ -722,9 +722,9 @@ def main():
                         if len(analysis) > 0:
                             for img_id in imageIDs:
                                 game_client.upload_image_by_id(img_id)
-                                log_overlay.add_event("test get colour img")
-                                plop = image_capture_longrange.get_raw_image_sync()
-                                file_path = file_system.save_image(plop, message="raw_color_img_")
+
+                                # lets also try capturing a colour image - experimental so careful with this 
+                                file_path = file_system.save_image(image_capture_longrange.get_raw_image_sync(), message="raw_color_img_")
                                 game_client.upload_image_from_disk(file_path, image_id=f"color_{img_id}")
                     else:
                         for img_id in imageIDs:
