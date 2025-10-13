@@ -303,7 +303,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
     def get_raw_image(self):
         """Get full uncropped frame from camera in BGR format - called by async subprocess"""
         yuv_image = self.picam2.capture_array("main")
-        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_I420)
+        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
 
 
@@ -360,7 +360,7 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
     def get_raw_image(self):
         """Get full uncropped frame from camera in BGR format - called by async subprocess"""
         yuv_image = self.picam2.capture_array("main")
-        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_I420)
+        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
     
     def get_lores_image(self):
@@ -428,7 +428,7 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
     def get_raw_image(self):
         """Get full uncropped frame from camera in BGR format - called by async subprocess"""
         yuv_image = self.picam2.capture_array("main")
-        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_I420)
+        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
 
 
@@ -473,7 +473,7 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
     def get_raw_image(self):
         """Get full uncropped frame from camera in BGR format - called by async subprocess"""
         yuv_image = self.picam2.capture_array("main")
-        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV2BGR_I420)
+        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
 
 
