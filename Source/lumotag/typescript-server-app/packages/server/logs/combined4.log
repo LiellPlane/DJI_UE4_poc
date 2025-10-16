@@ -76138,3 +76138,4 @@
 {"level":"info","message":"Background thread stopped","service":"typescript-server","timestamp":"2025-10-16 17:53:18"}
 {"level":"info","message":"SIGINT received, shutting down gracefully","service":"typescript-server","timestamp":"2025-10-16 17:53:18"}
 {"level":"info","message":"Server closed","service":"typescript-server","timestamp":"2025-10-16 17:54:06"}
+{"level":"info","message":"Server closed","service":"typescript-server","timestamp":"2025-10-16 18:01:14"}
