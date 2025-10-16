@@ -94,14 +94,15 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 
 
 def main():
-    print("TEMP TESTING")
-    from fake_raspberry_hardware import Triggers as test_triggers
+    print("TEMP TESTING - SERVER IS PRUNING IMAGES, WE HAVE A FAKE TRIGGER HERE, AND SENDING EVERY SINGLE TRIGGERED IMAGE")
+    time.sleep(1) # REMOVE
+    from fake_raspberry_hardware import Triggers as test_triggers # REMOVE
     log_overlay = img_processing.EventLogOverlay()
     MY_ID = lumogun.GetID().get_persistant_device_id()
     log_overlay.set_header(f"DID:{MY_ID}:GH:{GIT_REPO_INFO}")
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
-    triggers = test_triggers(GUN_CONFIGURATION)
+    triggers = test_triggers(GUN_CONFIGURATION) # REMOVE
     # if user is holding down trigger on boot up, quit
     # application
     # initialise components of lumogun
@@ -723,7 +724,7 @@ def main():
                 if "game_client" in locals():
                     if is_trigger_pressed is True:
                         if len(analysis) > 0:
-                            for img_id in imageIDs:
+                            for img_id in imageIDs: # PUT BACK 
                                 # game_client.upload_image_by_id(img_id)
 
                                 # lets also try capturing a colour image - experimental so careful with this 

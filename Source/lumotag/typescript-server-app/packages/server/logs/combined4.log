@@ -76124,3 +76124,17 @@
 {"level":"error","message":"[16:39:44.045] KillShot processing error: Killshot image LID2108Cphds5LID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID2108Cphds5LID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:467:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:378:48","timestamp":"2025-10-16 17:39:44"}
 {"level":"info","message":"192.168.56.1 - - [16/Oct/2025:16:39:44 +0000] \"POST /api/v1/events HTTP/1.1\" 404 122 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-10-16 17:39:44"}
 {"duration":"11ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-10-16 17:39:44","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Background thread stopped","service":"typescript-server","timestamp":"2025-10-16 17:52:58"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"typescript-server","timestamp":"2025-10-16 17:52:58"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"typescript-server","timestamp":"2025-10-16 17:52:58"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"typescript-server","timestamp":"2025-10-16 17:52:58"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-10-16 17:53:03"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-10-16 17:53:03"}
+{"level":"info","message":"🧹 Cleaning up 22 image files from uploads directory","service":"typescript-server","timestamp":"2025-10-16 17:53:03"}
+{"level":"info","message":"✅ Cleanup complete: 22 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-10-16 17:53:03"}
+{"level":"info","message":"🧹 Startup cleanup: Removed 22 old image files","service":"typescript-server","timestamp":"2025-10-16 17:53:03"}
+{"level":"info","message":"127.0.0.1 - - [16/Oct/2025:16:53:06 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 304 - \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0\"","service":"typescript-server","timestamp":"2025-10-16 17:53:06"}
+{"duration":"2ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":304,"timestamp":"2025-10-16 17:53:06","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36 Edg/141.0.0.0"}
+{"level":"info","message":"Background thread stopped","service":"typescript-server","timestamp":"2025-10-16 17:53:18"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"typescript-server","timestamp":"2025-10-16 17:53:18"}
+{"level":"info","message":"Server closed","service":"typescript-server","timestamp":"2025-10-16 17:54:06"}
