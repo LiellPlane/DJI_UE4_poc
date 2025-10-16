@@ -89,6 +89,38 @@ class ImageSaver {
     }
   }
 
+  async pruneOldImages(): Promise<void> {
+    try {
+      const files = await fs.readdir(this.uploadsDir);
+      const imageFiles = files.filter(f => f.endsWith('.jpg'));
+      
+      if (imageFiles.length <= 1000) return;
+      
+      // Get file stats with timestamps
+      const filesWithStats = await Promise.all(
+        imageFiles.map(async (file) => {
+          const filepath = path.join(this.uploadsDir, file);
+          const stats = await fs.stat(filepath);
+          return { file, mtime: stats.mtime.getTime() };
+        })
+      );
+      
+      // Sort by modification time (oldest first)
+      filesWithStats.sort((a, b) => a.mtime - b.mtime);
+      
+      // Delete oldest 10
+      const toDelete = filesWithStats.slice(0, 500);
+      
+      for (const { file } of toDelete) {
+        await fs.unlink(path.join(this.uploadsDir, file));
+      }
+      
+      logger.info(`Pruned ${toDelete.length} oldest images (total: ${imageFiles.length})`);
+    } catch (error) {
+      logger.error('Image pruning failed:', error);
+    }
+  }
+
   async cleanupAllImages(): Promise<{
     deletedCount: number;
     errors: string[];
