@@ -102,7 +102,7 @@ def main():
     log_overlay.set_header(f"DID:{MY_ID}:GH:{GIT_REPO_INFO}")
     perfmonitor = factory.Perfmonitor()
     triggers = lumogun.Triggers(GUN_CONFIGURATION)
-    triggers = test_triggers(GUN_CONFIGURATION) # REMOVE
+    
     # if user is holding down trigger on boot up, quit
     # application
     # initialise components of lumogun
@@ -118,7 +118,7 @@ def main():
                 time.sleep(3)
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
-
+    triggers = test_triggers(GUN_CONFIGURATION) # REMOVE
     voice.speak_blocking(GIT_REPO_INFO)
     relay = lumogun.Relay(GUN_CONFIGURATION)
 
