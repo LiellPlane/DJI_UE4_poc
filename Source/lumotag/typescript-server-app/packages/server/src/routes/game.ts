@@ -66,8 +66,10 @@ async function processImageQueue() {
       addImageInfo(imageInfo);
       totalImagesProcessed++;
       
-      // Prune old images if over 100
-      await imageSaver.pruneOldImages();
+      // Prune old images probabilistically (2% chance per save)
+      if (Math.random() < 0.02) {
+        await imageSaver.pruneOldImages();
+      }
       
       // Log successful save (compact format)
       logger.info(`Image ${queuedImage.imageId} saved (${Math.round(savedImage.size / 1024)}KB)`);
