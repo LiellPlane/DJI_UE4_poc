@@ -1,0 +1,320 @@
+
+<b>Instructions:</b><br><br>
+
+<i>Type password in text field</i><br>
+<i>Click corners of rectangular corrected image, ensure scroll bars haven't added offset!</i><br>
+<i>Click SUBMIT to finish calibration. Device needs to be reset after</i><br><br>
+<b>Password is transmitted in https api call </b><br>
+<i>to crash device - click in same place to create singular matrix</i><br>
+<i>then SSH and debug issue</i><br><br><br><br>
+<form action="/action_page.php"><input type="text" id="lname" name="password" placeholder="type pass here" > </form>
+<textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
+<img class="image" id="perp_image" src="perp_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="raw_image" width="1296" height="972" src="raw_image.jpg?" + new Date().getTime()><br>
+<img class="image" id="overlay_image" src="overlay_image.jpg?" + new Date().getTime()><br>
+<button style="height:30;width:300" onclick="finish();">SUBMIT CORNER CLICKS</button><br>
+<button style="height:30;width:300" onclick="reset();">RESET_DEVICE</button><br>
+<button style="height:30;width:300" onclick="req_new_image();">REQUEST_REGIONS_CHECK_IMAGE</button><br>
+<button style="height:30;width:300" onclick="req_new_image_all();">REQUEST_ALL_VISUALISATION_IMAGES</button><br>
+<button style="height:30;width:300" onclick="req_sample_config();">REQUEST_REGION_CONFIG_JSON</button><br>
+<button style="height:30;width:300" onclick="submit_sample_config();">SUBMIT_REGION_CONFIG_JSON</button><br>
+<button style="height:30;width:300" onclick="sim_regions();">SIMULATE REGIONS</button><br>
+<button style="height:100;width:300" onclick="decache_images_maybe();">DECACHE/REFRESH IMAGES</button><br>
+<button style="height:100;width:300" onclick="api_refresh_images();">TEST API IMAGE</button><br>
+<i>note: move_in_vert moves the horizontal lines vertically.. im so sorry</i><br>
+<textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
+<b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
+    <form id="form" action="/" method="POST">
+        <input id="imageId" type="hidden" name="imageId" value="{{imageID}}">
+        <input id="positionX" type="hidden" name="positionX" value="0">
+        <input id="positionY" type="hidden" name="positionY" value="0">
+    </form>
+    <script>
+        const proxyUrl  = 'https://corsproxy.io/?';
+        const targetUrl   = 'https://api.scambilight.com/hello';
+        var clicks = [];
+        var imageElement = document.getElementById('perp_image');
+        var imageIdInput = document.getElementById('imageId');
+        var positionXInput = document.getElementById('positionX');
+        var positionYInput = document.getElementById('positionY');
+        var form = document.getElementById('form');
+        imageElement.addEventListener("click", submitPosition);
+        //buttonElement.addEventListener("click", userFinished);
+        let finish = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "sendposfinish",
+		"data":clicks
+            };
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        }
+
+        let reset = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "reset",
+		"data":"empty"
+            };
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        }
+        let req_sample_config = () => {
+            document.getElementById('configbox').value = "attempt to load sample region configuration"
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "request_sample_config",
+		"data":"empty"
+            };
+
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                document.getElementById('configbox').value = json['config'];
+                });
+        }
+        let req_new_image = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "update_image",
+		"data":"empty"
+            };
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        decache_images_maybe();
+	}
+        let sim_regions = () => {
+	    document.getElementById('configbox').value = "attempting to generate sim region image - this can take up to 30 seconds, use decache button to see update. CORS can cause problems here"
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "get_region_sim",
+		"data":"empty"
+            };
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        decache_images_maybe();
+        }
+        let req_new_image_all = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "update_image_all",
+		"data":"empty"
+            };
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        decache_images_maybe();
+        }
+        
+        let decache_images_maybe = () => {
+        var refresh_image = document.getElementById("raw_image");  
+        refresh_image.src = "raw_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("overlay_image");  
+        refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("perp_image");  
+        refresh_image.src = "perp_image.jpg?" + new Date().getTime();
+        };
+
+        let submit_sample_config = () => {
+            var inputPassword = document.getElementById("lname").value;
+            let data = {
+                "authentication": inputPassword,
+                "action": "send_sample_config",
+                "data": JSON.parse(document.getElementById('configbox').value)
+                };
+                
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+            });
+        };
+
+        // let api_refresh_images = () => {
+            
+        //     test_api_image('getimage_raw', 'raw_image');
+        //     test_api_image('getimage_perpwarp', 'perp_image');
+        //     test_api_image('getimage_overlay', 'overlay_image');
+        // };
+
+        // let test_api_image = (img_action, img_id) => {
+        //     var display_area = document.getElementById(img_id);
+        //     display_area.src = "";
+        //     var inputPassword = document.getElementById("lname").value;
+        //     let data = {
+        //         "authentication": inputPassword,
+        //         "action": img_action,
+        //         "data": "empty"
+        //         }; 
+        //     fetch(targetUrl, {
+        //         method: 'POST',
+        //         headers: {
+        //         'Content-Type': 'application/json',
+        //         // Add any other headers as needed
+        //         },
+        //         body: JSON.stringify(data)
+        //     })
+        //         .then(response => {
+        //         // Check if the response is successful (status code 200-299)
+        //         if (!response.ok) {
+        //             throw new Error('Network response was not ok');
+        //         }
+        //         // Parse JSON response
+        //         return response.json();
+        //         })
+        //         .then(data => {
+        //         // Assuming the JSON has an 'encodedImage' property containing the base64-encoded image
+        //         const encodedImage = data.image;
+
+        //         // Display the image
+                
+        //         display_area.src = `data:image/png;base64,${encodedImage}`;
+        //         })
+        //         .catch(error => {
+        //         console.error('Error fetching data:', error);
+        //         });
+        // };
+
+
+        
+        let api_refresh_images = () => {
+    // Create an array of promises using the test_api_image function calls
+            let promises = [
+                test_api_image('getimage_raw', 'raw_image'),
+                test_api_image('getimage_perpwarp', 'perp_image'),
+                test_api_image('getimage_overlay', 'overlay_image')
+            ];
+
+            // Use Promise.all to execute all promises in the array
+            Promise.all(promises)
+                .then(() => {
+                    console.log('All images have been loaded successfully');
+                })
+                .catch(error => {
+                    console.error('Error loading one or more images:', error);
+                });
+        };
+
+        let test_api_image = (img_action, img_id) => {
+            return new Promise((resolve, reject) => { // Wrap the fetch call in a Promise
+                var display_area = document.getElementById(img_id);
+                display_area.src = "";
+                var inputPassword = document.getElementById("lname").value;
+                let data = {
+                    "authentication": inputPassword,
+                    "action": img_action,
+                    "data": "empty"
+                }; 
+                fetch(targetUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add any other headers as needed
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const encodedImage = data.image;
+                    display_area.src = `data:image/png;base64,${encodedImage}`;
+                    resolve(); // Resolve the promise when the image is successfully loaded
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    reject(error); // Reject the promise on error
+                });
+            });
+        };
+
+
+        function submitPosition(e) {
+	    
+            var inputPassword = document.getElementById("lname").value;
+            clickX = e.pageX - imageElement.getBoundingClientRect().left;
+            clickY = e.pageY - imageElement.getBoundingClientRect().top;
+            positionX.value = Math.floor(clickX / (imageElement.width / imageElement.naturalWidth));
+            positionY.value = Math.floor(clickY / (imageElement.height / imageElement.naturalHeight));
+	        clicks.push({"clickX": positionX.value,"clickY": positionY.value});
+            console.log(clicks);
+	        document.getElementById('infobox').value = JSON.stringify(clicks);
+            // need cors proxy for some reason
+
+            // var xhr = new XMLHttpRequest();
+            // xhr.open("POST", targetUrl, false);
+            // xhr.setRequestHeader('Content-Type', 'application/json');
+            // xhr.send(JSON.stringify({
+            //     "authentication": inputPassword,
+            //     "action": "sendpos",
+            //     "clickX": positionX.value,
+            //     "clickY": positionY.value,
+            // }));
+            // console.log("sent value maybe?");
+
+            //let data = {
+            //    "authentication": inputPassword,
+            //    "action": "sendpos",
+            //    "clickX": positionX.value,
+            //    "clickY": positionY.value,
+            //    
+            //};
+
+            //fetch(targetUrl, {
+            //method: "POST",
+            //headers: {'Content-Type': 'application/json'}, 
+            //body: JSON.stringify(data)
+            //}).then(res => {
+            //console.log("coord complete! response:", res);
+            //alert("coord complete! response:", res)
+            //});
+        }
+
+    </script>

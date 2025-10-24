@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calibration Page</title>
+    <style>
+        .button {
+            height: 30px;
+            width: 300px;
+            margin-bottom: 10px; /* Add space between buttons */
+        }
+        .big-button {
+            height: 100px;
+            width: 300px;
+            margin-bottom: 10px; /* Add space between buttons */
+        }
+        .image {
+            display: block; /* Ensure images don't have inline spacing */
+            margin-bottom: 10px; /* Add space between images and next elements */
+        }
+        #lname, #infobox, #configbox {
+            display: block; /* Better control of layout */
+            margin-bottom: 10px; /* Add space between form elements */
+            width: 300px; /* Match button width for consistency */
+        }
+        #configbox {
+            margin-top: 20px; /* Extra space before the config box for clarity */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Instructions -->
+    <div>
+        <b>Instructions:</b><br>
+        <i>Type password in text field</i><br>
+        <i>Click corners of rectangular corrected image, ensure scroll bars haven't added offset!</i><br>
+        <i>Click SUBMIT to finish calibration. Device needs to be reset after</i><br>
+        <b>Password is transmitted in https api call </b><br>
+        <i>to crash device - click in same place to create singular matrix then SSH and debug issue</i><br>
+        <i>note: move_in_vert moves the horizontal lines vertically.. im so sorry</i><br>
+    </div>
+
+    <!-- Input Fields -->
+    
+    <!-- <form id="passwordform" action="/action_page.php" style="margin-top: 20px;">
+        
+        <input type="text" id="lname2" name="email" placeholder="test email">
+        <input type="password" id="lname3" name="password" placeholder="test password">
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form> -->
+    <textarea id="infobox" name="infobox" rows="8" cols="50"></textarea>
+    
+    <!-- Images -->
+    <img class="image" id="perp_image" src="">
+    <img class="image" id="raw_image" src="">
+    <img class="image" id="overlay_image" src="">
+
+    <!-- Buttons -->
+    <button class="button" onclick="finish();">SUBMIT CORNER CLICKS</button>
+    <button class="button" onclick="reset();">RESET DEVICE</button>
+    <button class="button" onclick="req_new_image();">REQUEST REGIONS CHECK IMAGE</button>
+    <button class="button" onclick="req_new_image_all();">REQUEST ALL VISUALISATION IMAGES</button>
+    <button class="button" onclick="req_sample_config();">REQUEST REGION CONFIG JSON</button>
+    <button class="button" onclick="submit_sample_config();">SUBMIT REGION CONFIG JSON</button>
+    <button class="button" onclick="sim_regions();">SIMULATE REGIONS</button>
+    <button class="button" onclick="api_refresh_images();">TEST API IMAGE</button>
+    <button class="button" onclick="test_new_user();">TEST NEW USER</button>
+    <button class="button" onclick="test_get_config();">TEST GET INFRA2 CONFIG</button>
+
+    <!-- Configuration Box and Default Configuration -->
+    <textarea id="configbox" name="configbox" rows="8" cols="50" placeholder="make sure correct password is in field!!"></textarea>
+    <b>Default = {"no_leds_vert": "11", "no_leds_horiz": "20", "move_in_horiz": "0.1", "move_in_vert": "0.1", "sample_area_edge": "100", "subsample_cut": "15"}</b>
+
+    <form id="form" action="/" method="POST" style="display: none;">
+        <input id="imageId" type="hidden" name="imageId">
+        <input id="positionX" type="hidden" name="positionX" value="0">
+        <input id="positionY" type="hidden" name="positionY" value="0">
+    </form>
+
+    <script>
+        let intervalId;
+        const proxyUrl  = 'https://corsproxy.io/?';
+        const targetUrl   = 'https://api.scambilight.com/hello';
+        
+        var clicks = [];
+        var imageElement = document.getElementById('perp_image');
+        var imageIdInput = document.getElementById('imageId');
+        var positionXInput = document.getElementById('positionX');
+        var positionYInput = document.getElementById('positionY');
+        var form = document.getElementById('form');
+        imageElement.addEventListener("click", submitPosition);
+        //buttonElement.addEventListener("click", userFinished);
+
+        function addSessionTokenIfExists(inputDictionary) {
+            const sessionToken = sessionStorage.getItem("sessiontoken");
+
+            if (sessionToken !== null) {
+                inputDictionary["sessiontoken"] = sessionToken;
+                console.log("session token added to request body")
+            }
+            
+            return inputDictionary;
+        }
+
+
+
+
+        window.onload = () => {
+        test_logged_in();
+        };
+    
+        function test_logged_in() {
+            console.log("testing if logged in");
+            let data = {
+                "action": "check_logged_in",
+            };
+            data = addSessionTokenIfExists(data);
+        
+            fetch(targetUrl, {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    // If the status code is 200, redirect to a new page
+                    window.location.href = 'sign_in.html';
+                }
+            })
+            .then(json => {
+                // Handle the JSON response as needed
+                console.log(json);
+            })
+            .catch(error => {
+                // Handle any fetch errors
+                console.error('Fetch error:', error);
+            });
+        }
+
+
+
+        let finish = () => {
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "sendposfinish",
+		        "data":clicks
+            };
+            data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        }
+
+        let reset = () => {
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "reset",
+		"data":"empty"
+            };
+            data = addSessionTokenIfExists(data)
+
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        }
+        let req_sample_config = () => {
+            document.getElementById('configbox').value = "attempt to load sample region configuration"
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "getconfig",
+		"data":"empty"
+            };
+
+            data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                document.getElementById('configbox').value = json['regions'];
+                });
+        }
+        let req_new_image = () => {
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "update_image",
+		"data":"empty"
+            };
+            data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        decache_images_maybe();
+	}
+        let sim_regions = () => {
+	    document.getElementById('configbox').value = "attempting to generate sim region image - this can take up to 30 seconds, use decache button to see update. CORS can cause problems here"
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "get_region_sim",
+		"data":"empty"
+            };
+            data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                clearInterval(intervalId);
+                api_refresh_images();
+                document.getElementById('configbox').value = "";
+                });
+        //decache_images_maybe();
+        //start timer function that reloads image to show sim progress
+        startInterval();
+        }
+        let req_new_image_all = () => {
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "update_image_all",
+		"data":"empty"
+            };
+            data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+                });
+        decache_images_maybe();
+        }
+        
+        let decache_images_maybe = () => {
+        var refresh_image = document.getElementById("raw_image");  
+        refresh_image.src = "raw_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("overlay_image");  
+        refresh_image.src = "overlay_image.jpg?" + new Date().getTime();
+        var refresh_image = document.getElementById("perp_image");  
+        refresh_image.src = "perp_image.jpg?" + new Date().getTime();
+        };
+
+        let test_get_config = () => {
+        let data = {
+            //"authentication": inputPassword,
+            "action": "getconfig",
+            "data": "doesnt matter for now but needs config id and maybe user"
+            };   
+        
+        data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+            });
+        }
+
+        let test_new_user = () => {
+        let data = {
+            //"authentication": inputPassword,
+            "action": "newuser",
+            "data": "guest"
+            };   
+        
+        data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+            });
+        }
+
+        let submit_sample_config = () => {
+            //var inputPassword = document.getElementById("lname").value;
+            let data = {
+                //"authentication": inputPassword,
+                "action": "send_sample_config",
+                "data": JSON.parse(document.getElementById('configbox').value)
+                };
+            data = addSessionTokenIfExists(data)
+            fetch(targetUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data)
+            }).then(response => response.json())
+                .then(json => {console.log(JSON.stringify(json));
+                alert(JSON.stringify(json));
+            });
+        };
+
+        
+        let api_refresh_images = () => {
+    // Create an array of promises using the test_api_image function calls
+            let promises = [
+                test_api_image('getimage_raw', 'raw_image'),
+                test_api_image('getimage_perpwarp', 'perp_image'),
+                test_api_image('getimage_overlay', 'overlay_image')
+            ];
+
+            // Use Promise.all to execute all promises in the array
+            Promise.all(promises)
+                .then(() => {
+                    console.log('All images have been loaded successfully');
+                })
+                .catch(error => {
+                    console.error('Error loading one or more images:', error);
+                });
+        };
+
+        let test_api_image = (img_action, img_id) => {
+            return new Promise((resolve, reject) => { // Wrap the fetch call in a Promise
+                var display_area = document.getElementById(img_id);
+                //this isn't nice to have the site jump up and down when killing the image
+                //display_area.src = "";
+                //var inputPassword = document.getElementById("lname").value;
+                let data = {
+                    //"authentication": inputPassword,
+                    "action": img_action,
+                    "data": "empty"
+                }; 
+                data = addSessionTokenIfExists(data)
+                fetch(targetUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add any other headers as needed
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const encodedImage = data.image;
+                    display_area.src = `data:image/png;base64,${encodedImage}`;
+                    resolve(); // Resolve the promise when the image is successfully loaded
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    reject(error); // Reject the promise on error
+                });
+            });
+        };
+
+
+        function submitPosition(e) {
+	    
+            //var inputPassword = document.getElementById("lname").value;
+            clickX = e.pageX - imageElement.getBoundingClientRect().left;
+            clickY = e.pageY - imageElement.getBoundingClientRect().top;
+            positionX.value = Math.floor(clickX / (imageElement.width / imageElement.naturalWidth));
+            positionY.value = Math.floor(clickY / (imageElement.height / imageElement.naturalHeight));
+	        clicks.push({"clickX": parseInt(positionX.value),"clickY": parseInt(positionY.value)});
+            console.log(clicks);
+	        document.getElementById('infobox').value = JSON.stringify(clicks);
+
+        }
+
+        function startInterval() {
+            let counter = 30; // 60 seconds / 10 seconds = 6 times
+            intervalId = setInterval(() => {
+                test_api_image('getimage_overlay', 'overlay_image');
+                console.log("getting progress image");
+                counter--;
+                if (counter === 0) {
+                    clearInterval(intervalId);
+                }
+            }, 2000); // 2000 milliseconds = 2 seconds
+        }
+
+    api_refresh_images();
+    </script>
+
+</body>
+</html>

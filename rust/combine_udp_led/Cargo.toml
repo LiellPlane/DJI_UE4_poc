@@ -1,0 +1,9 @@
+[package]
+name = "combine_udp_led"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ws2818-rgb-led-spi-driver = "2.0.0"
+rand = "0.8.5"
+socket2 = "0.5.3"

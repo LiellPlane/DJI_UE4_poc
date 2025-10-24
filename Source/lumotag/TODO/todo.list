@@ -1,0 +1,22 @@
+get COLOUR image when pulling trigger and you have a player targetted - save these images to harddrive
+its ok to lag here because we show white on the screen for the gun fire
+that means we can get a much nicer killscreen
+
+need to add targetted user stats
+
+how do we handle AMMO - its still client side
+
+Fix current broken shell start-up script - waiting for internet
+
+make github repo private
+
+LONGERTERM:
+
+mouse for touch control
+
+custom insults in payload
+look for IR flash instead of flashlight
+
+
+WIRING:
+new capacitor - doesnt seem to do much

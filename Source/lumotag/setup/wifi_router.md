@@ -1,0 +1,4 @@
+ADMIN PASS lumotagIR
+SSID lumotag
+PASS 25EJRRJP56
+20mhz mode

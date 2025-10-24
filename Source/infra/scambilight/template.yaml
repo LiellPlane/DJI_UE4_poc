@@ -1,0 +1,244 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  scambilight
+
+  Sample SAM Template for scambilight
+
+Parameters:
+# use SAM DEPLOY --guided to rebuild these parameters in the config
+  FQDN:
+    Type: String
+    Description: api.scambilight.com #Fully qualified domain name, for example ip.eol.dev
+  ZoneId:
+    Type: String
+    Description: Z0447796FWX5TS64OAUF # rotue 53 zoneid
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Api:
+    TracingEnabled: true
+    Cors:
+      AllowMethods: "'GET,POST,OPTIONS'"
+      AllowHeaders: "'content-type'"
+      AllowOrigin: "'*'"
+      # AllowCredentials: true  Uncomment only if you choose a specific origin instead of the * wildcard.
+  Function:
+    Timeout: 3
+    MemorySize: 128
+    Environment:
+      Variables:
+        SCAMBIFOLDER: "scambilight"
+        SCAMBIWEB: "scambilight.com"
+        SCAMBIIMAGES: "images"
+        SCAMBICONFIG: "config"
+        OVERLAY_IMAGE: "overlay_image.jpg"
+        RAW_IMAGE: "raw_image.jpg"
+        PERPWARP_IMAGE: "perp_image.jpg"
+        CONFIG_FILE: "config.json"
+        SIM_LAMBDA: "scambilight-sim"
+        SAMPLE_CONFIG_FILE: "config_regions.json"
+        EVENT_QUEUE_URL: !Ref SqsQueueEvents # Gets SQS Queue URL
+        EVENTS_TABLE: !Ref MyEventTable3
+        USERS_TABLE: !Ref UsersTable2
+        SESSION_TABLE: !Ref SessionTable
+        CONFIG_TABLE: !Ref ConfigTable
+    Tracing: Active
+  #Api:
+  #  TracingEnabled: true
+Resources:
+  # Create our SSL certificate
+  GenerateCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties: 
+      DomainName: !Ref FQDN
+      ValidationMethod: DNS
+      DomainValidationOptions:
+      - DomainName: !Ref FQDN
+        HostedZoneId: !Ref ZoneId
+
+  # Create endpoint for our domain
+  RestApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Domain:
+        DomainName: !Ref FQDN
+        CertificateArn: !Ref GenerateCertificate
+        Route53:
+          HostedZoneId: !Ref ZoneId
+
+  UploadSomething:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: scambi/
+      Handler: upload.lambda_handler
+      Runtime: python3.9
+      # this seems long but its only to accomodate the SIM REGION action
+      Timeout: 120
+      ReservedConcurrentExecutions: 5
+      EventInvokeConfig:
+        MaximumRetryAttempts: 0
+      Architectures:
+      - x86_64
+      Events:
+        Uploader:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            RestApiId: !Ref RestApiGateway # Add the RestApiId property
+            Path: /hello
+            Method: POST
+      Policies:
+        - S3FullAccessPolicy:
+            BucketName: scambilight # bucket name without arn
+        - S3FullAccessPolicy:
+            BucketName: scambilight.com # bucket name without arn
+        - SQSPollerPolicy:
+            QueueName:
+              !GetAtt SqsQueueEvents.QueueName
+        - SQSSendMessagePolicy:
+            QueueName:
+              !GetAtt SqsQueueEvents.QueueName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref MyEventTable3
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable2
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ConfigTable
+        - LambdaInvokePolicy:
+            FunctionName:
+              scambilight-sim
+  SqsQueueEvents:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: user_events
+      MessageRetentionPeriod: 120
+      Tags:
+        - Key: Name
+          Value: user_events
+
+  ApplicationResourceGroup:
+    Type: AWS::ResourceGroups::Group
+    Properties:
+      Name:
+        Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
+      ResourceQuery:
+        Type: CLOUDFORMATION_STACK_1_0
+  ApplicationInsightsMonitoring:
+    Type: AWS::ApplicationInsights::Application
+    Properties:
+      ResourceGroupName:
+        Ref: ApplicationResourceGroup
+      AutoConfigurationEnabled: 'true'
+  
+  # MyEventTable2:
+  #   Type: 'AWS::Serverless::SimpleTable'
+  #   Properties:
+  #     TableName: eventtable2
+  #     PrimaryKey:
+  #       Name: user_email
+  #       Type: String
+  #     # TimeToLiveSpecification:
+  #     #   AttributeName: ttl
+  #     #   Enabled: 'TRUE'
+
+
+  MyEventTable3:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: eventtable
+      AttributeDefinitions:
+        - AttributeName: useremail
+          AttributeType: S
+      KeySchema:
+        - AttributeName: useremail
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: 'TRUE'
+
+# Outputs:
+#   CreateOrdersAPI:
+#     Description: "API Gatseway endpoint url for creating orders"
+#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello"
+
+  UsersTable2:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: usertable2
+      AttributeDefinitions:
+        - AttributeName: useremail
+          AttributeType: S
+      KeySchema:
+        - AttributeName: useremail
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+
+
+  ConfigTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: configtable
+      AttributeDefinitions: 
+        - AttributeName: "useremail"
+          AttributeType: "S"
+        - AttributeName: "configid"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "useremail"
+          KeyType: "HASH"
+        - AttributeName: "configid"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+# example schema
+# {
+#   "useremail": {
+#     "S": "liellplane@googlemail.com"
+#   },
+#   "password": {
+#     "S": "hashed output, can run the script which generates this manually"
+#   },
+#   "salt": {
+#     "S": "0eb8da33cb4bdb213c8bfb158ec76972"
+#   },
+#   "notes": {
+#     "S": "twat"
+#   },
+#   "api_calls": {
+#     "N": "0"
+#   }
+# }
+
+  SessionTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: sessiontable
+      AttributeDefinitions:
+        - AttributeName: sessionid
+          AttributeType: S
+      KeySchema:
+        - AttributeName: sessionid
+          KeyType: HASH
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      StreamSpecification:
+        StreamViewType: NEW_IMAGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: 'TRUE'

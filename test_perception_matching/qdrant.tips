@@ -1,0 +1,23 @@
+MAC
+
+docker pull qdrant/qdrant
+
+docker run -p 6333:6333 -p 6334:6334 \
+    -v "$(pwd)/qdrant_storage:/qdrant/storage:z" \
+    qdrant/qdrant
+
+
+WINDOWS
+
+# Pull the Qdrant image
+docker pull qdrant/qdrant
+
+might need docker desktop and WSL working if you get issues
+
+
+# Run the Qdrant container
+   docker run -p 6333:6333 -p 6334:6334 -v qdrant_volume:/qdrant/storage qdrant/qdrant
+
+UI http://localhost:6333/dashboard
+
+#/collections/test_collection

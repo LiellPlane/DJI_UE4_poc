@@ -1,0 +1,7 @@
+{
+    "python.testing.pytestArgs": [
+        "core-recommend-project"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

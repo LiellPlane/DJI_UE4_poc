@@ -1,0 +1,6 @@
+{
+    "MY_ID" : "TZAR",
+    "HQ" : "nothing",
+    "REPO" : "https://github.com/LiellPlane/DJI_UE4_poc.git",
+    "CODEPATH" : "/home/lumotag/DJI_UE4_poc"
+    }  

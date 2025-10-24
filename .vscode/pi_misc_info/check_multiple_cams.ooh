@@ -1,0 +1,7 @@
+libcamera-hello --camera 0
+
+libcamera-hello --camera 1
+
+get resolutions of cameras
+
+libcamera-vid --list-cameras

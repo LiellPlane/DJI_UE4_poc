@@ -1,0 +1,58 @@
+this creates the lambda which runs the scambilight simulation website function
+
+you have to copy the latest repo (DJI_UE4_POC) entire folder into "app" in here, or recursively clone/initilaise it
+as its a github submodule
+
+The dockerfile shows what has to be copied
+The dockerfile also shows that it needs to install requirements.txt, which would be better being the target
+inside the repo but at the moment it exists outside
+
+
+open up docker desktop
+then in directory with dockerfile - paste into command terminal (can do in one copy paste):
+
+
+-------------------
+aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 723321550265.dkr.ecr.eu-west-2.amazonaws.com
+docker build --platform linux/amd64 -t docker-image:scambi_sim .
+docker tag docker-image:scambi_sim 723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim:latest
+docker push 723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim:latest
+aws lambda delete-function --function-name scambilight-sim
+aws lambda create-function --function-name scambilight-sim --package-type Image --code ImageUri=723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim:latest --role arn:aws:iam::723321550265:role/scambilight-UploadSomethingRole-O1F1VLBH0G60 --timeout 120 --memory-size 1000
+
+----------------------------------------------
+
+
+
+beyond this is more  info if starting from scratch
+
+https://docs.aws.amazon.com/lambda/latest/dg/python-image.html#python-image-instructions
+
+
+docker build --platform linux/amd64 -t docker-image:scambi_sim .
+
+aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 723321550265.dkr.ecr.eu-west-2.amazonaws.com
+
+aws ecr create-repository --repository-name scambilight-sim --image-scanning-configuration scanOnPush=true --image-tag-mutability MUTABLE
+
+
+"723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim"
+
+aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 723321550265.dkr.ecr.eu-west-2.amazonaws.com
+docker build --platform linux/amd64 -t docker-image:scambi_sim .
+docker tag docker-image:scambi_sim 723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim:latest
+docker push 723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim:latest
+aws lambda delete-function --function-name scambilight-sim
+aws lambda create-function --function-name scambilight-sim --package-type Image --code ImageUri=723321550265.dkr.ecr.eu-west-2.amazonaws.com/scambilight-sim:latest --role arn:aws:iam::723321550265:role/scambilight-UploadSomethingRole-O1F1VLBH0G60 --timeout 120 --memory-size 1000
+
+aws lambda invoke --function-name scambilight-sim response.json
+
+test lambda
+aws lambda invoke --function-name scambilight-UploadSomething-HEl3qQMcoLIR response.json
+
+
+
+
+
+
+

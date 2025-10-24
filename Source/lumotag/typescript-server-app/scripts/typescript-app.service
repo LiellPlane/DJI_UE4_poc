@@ -1,0 +1,10 @@
+# Systemd service file (currently unused)
+# Placeholder for future systemd setup if needed
+
+# To use this later:
+# sudo cp scripts/typescript-app.service /etc/systemd/system/
+# sudo systemctl daemon-reload
+# sudo systemctl enable typescript-app
+# sudo systemctl start typescript-app
+
+# For now, running manually with: pnpm run start:prod

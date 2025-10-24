@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Click Recorder</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scrolling */
+        }
+
+        #image-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #image {
+            width: 300%;
+            height: 300%;
+            object-fit: contain;
+            touch-action: none; /* Disable browser touch gestures on the iframe */
+        }
+    </style>
+</head>
+<body>
+    <div id="image-container">
+        <iframe id="image" src="raw_image.jpg" frameborder="0"></iframe>
+    </div>
+
+    <script>
+        var isTouchDevice = 'ontouchstart' in document.documentElement;
+        var imageElement = document.getElementById('image');
+        imageElement.addEventListener("click", handleClick);
+        document.getElementById("image").addEventListener("mousedown", handleClick);
+        document.getElementById("image").addEventListener("touchstart", handleClick);
+        console.log("Hello");
+        function handleClick(event) {
+            console.log("Handling handleClick");
+            // if (isTouchDevice) {
+            //     event.preventDefault(); // Prevents the default click behavior on touch devices
+            // }
+
+            var iframe = document.getElementById("image");
+            var rect = iframe.getBoundingClientRect();
+            var scaleX = iframe.contentDocument.width / (iframe.width *3);
+            var scaleY = iframe.contentDocument.height / (iframe.height*3);
+
+            var x = (event.clientX - rect.left) * scaleX;
+            var y = (event.clientY - rect.top) * scaleY;
+
+            console.log("Clicked at:", x, y);
+            // You can send x, y coordinates to your backend or perform any other action here
+        }
+        function handleTouch(event) {
+            var iframe = document.getElementById("image");
+            var rect = iframe.getBoundingClientRect();
+            var scaleX = iframe.contentDocument.width / (iframe.width * 3);
+            var scaleY = iframe.contentDocument.height / (iframe.height * 3);
+
+            var touch = event.touches[0]; // Assuming the first touch for simplicity
+            var x = (touch.clientX - rect.left) * scaleX;
+            var y = (touch.clientY - rect.top) * scaleY;
+
+            console.log("Touched at:", x, y);
+            // You can send x, y coordinates to your backend or perform any other action here
+        }
+        
+         // Add event listeners
+        //document.getElementById("image").addEventListener("click", handleClick);
+        //document.getElementById("image").addEventListener("touchstart", handleTouch);
+
+    </script>
+</body>
+</html>

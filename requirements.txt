@@ -1,0 +1,4 @@
+adafruit-circuitpython-lis3dh
+pika
+pyttsx3
+imutils 

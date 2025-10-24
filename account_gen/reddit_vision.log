@@ -1,0 +1,62 @@
+2025-05-24 16:02:53,427 - INFO - Initializing Chrome...
+2025-05-24 16:02:55,073 - INFO - Navigating to Reddit...
+2025-05-24 16:03:00,306 - INFO - Page text normalized
+2025-05-24 16:03:02,387 - INFO - Clicked at coordinates (100, 200) using ActionChains
+2025-05-24 16:03:04,402 - INFO - Page text normalized
+2025-05-24 16:03:06,477 - INFO - Page text normalized
+2025-05-24 16:03:08,503 - INFO - Clicked at coordinates (100, 400) using ActionChains
+2025-05-24 16:03:10,517 - INFO - Page text normalized
+2025-05-24 16:03:12,532 - ERROR - An error occurred: Message: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=136.0.7103.113)
+Stacktrace:
+	GetHandleVerifier [0x00007FF7E28DCF45+75717]
+	GetHandleVerifier [0x00007FF7E28DCFA0+75808]
+	(No symbol) [0x00007FF7E26A8F9A]
+	(No symbol) [0x00007FF7E2694E35]
+	(No symbol) [0x00007FF7E26B9DB4]
+	(No symbol) [0x00007FF7E272EE75]
+	(No symbol) [0x00007FF7E274ECC2]
+	(No symbol) [0x00007FF7E2727153]
+	(No symbol) [0x00007FF7E26F0421]
+	(No symbol) [0x00007FF7E26F11B3]
+	GetHandleVerifier [0x00007FF7E2BDD71D+3223453]
+	GetHandleVerifier [0x00007FF7E2BD7CC2+3200322]
+	GetHandleVerifier [0x00007FF7E2BF5AF3+3322739]
+	GetHandleVerifier [0x00007FF7E28F6A1A+180890]
+	GetHandleVerifier [0x00007FF7E28FE11F+211359]
+	GetHandleVerifier [0x00007FF7E28E5294+109332]
+	GetHandleVerifier [0x00007FF7E28E5442+109762]
+	GetHandleVerifier [0x00007FF7E28CBA59+4825]
+	BaseThreadInitThunk [0x00007FF9186AE8D7+23]
+	RtlUserThreadStart [0x00007FF919D5C5DC+44]
+
+2025-05-24 16:04:25,087 - INFO - Initializing Chrome...
+2025-05-24 16:04:26,255 - INFO - Navigating to Reddit...
+2025-05-24 16:04:31,660 - INFO - Page text normalized
+2025-05-24 16:04:31,661 - INFO - Page loaded and normalized. Press Ctrl+C to exit...
+2025-05-24 16:05:56,080 - INFO - Exiting...
+2025-05-24 16:05:56,083 - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /session/3dba48964fc6e9fc8502e9156acdcf9d
+2025-05-25 15:18:37,678 - INFO - Initializing Chrome...
+2025-05-25 15:18:40,506 - INFO - Navigating to Reddit...
+2025-05-25 15:18:45,735 - INFO - Page text normalized
+2025-05-25 15:18:45,735 - ERROR - An error occurred: name 'os' is not defined
+2025-05-25 15:19:03,165 - INFO - Initializing Chrome...
+2025-05-25 15:19:04,308 - INFO - Navigating to Reddit...
+2025-05-25 15:19:09,352 - INFO - Page text normalized
+2025-05-25 15:19:09,353 - ERROR - An error occurred: name 'datetime' is not defined
+2025-05-25 15:19:43,678 - INFO - Initializing Chrome...
+2025-05-25 15:19:44,841 - INFO - Navigating to Reddit...
+2025-05-25 15:19:49,913 - INFO - Page text normalized
+2025-05-25 15:19:50,189 - INFO - Screenshot saved to screenshots/reddit_20250525_151949.png
+2025-05-25 15:19:50,189 - INFO - Page loaded and normalized. Press Ctrl+C to exit...
+2025-05-25 15:20:37,035 - INFO - Exiting...
+2025-05-25 15:20:37,037 - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)': /session/c34fbf76bd22840ac631179a0dcbd77a
+2025-05-25 15:33:01,242 - INFO - Initializing Chrome...
+2025-05-25 15:33:02,465 - INFO - Navigating to Reddit...
+2025-05-25 15:33:07,556 - INFO - Page text normalized
+2025-05-25 15:33:07,833 - INFO - Screenshot saved to screenshots/reddit_20250525_153307.png
+2025-05-25 15:33:07,834 - INFO - Page loaded and normalized. Press Ctrl+C to exit...
+2025-05-25 16:47:40,712 - INFO - Exiting...
+2025-05-25 16:47:44,789 - WARNING - Retrying (Retry(total=2, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001B57A6F0910>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')': /session/5cc2763c0a5d128eb4b6050ff1959d04
+2025-05-25 16:47:48,861 - WARNING - Retrying (Retry(total=1, connect=None, read=None, redirect=None, status=None)) after connection broken by 'NewConnectionError('<urllib3.connection.HTTPConnection object at 0x000001B57A6F0B50>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')': /session/5cc2763c0a5d128eb4b6050ff1959d04

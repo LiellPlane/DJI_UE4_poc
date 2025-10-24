@@ -1,0 +1,33 @@
+https://www.etechnophiles.com/rpi-zero-2w-board-layout-pinout-specs-price/
+
+so can power stuff straight from pins 
+
+nginx config for rtmp
+
+sudo nano /etc/nginx/nginx.conf
+
+stream with lower latency ffplay -fflags nobuffer rtmp://liell-VirtualBox.local/streams/cam
+
+
+srt transmit
+
+srt-live-transmit "srt://:1234?mode=listener" udp://localhost:5001
+
+libcamera-vid -t 0 --width 1980 --height 1080 --framerate 30 --codec h264 --inline -o - | ffmpeg -progress - -nostats -loglevel error -use_wallclock_as_timestamps 1 -i pipe:0 -an -c:v copy -copyts -f mpegts "srt://localhost:1234?pkt_size=1316"
+
+
+udp://lumotag.local:5001
+
+
+pull back debug images
+
+rsync --stats lumotag@lumotag.local:/home/lumotag/debugimages/*.jpg ./
+
+OR BETTER:
+
+rsync -avz --delete --timeout=300 --ignore-errors lumotag@lumotag.local:/home/lumotag/debugimages/*.jpg ./
+
+
+get CPU average last 5 seconds:
+
+grep 'cpu[0-9]' /proc/stat > /tmp/c1 && sleep 5 && grep 'cpu[0-9]' /proc/stat | paste /tmp/c1 - | awk '{u=$6-$2; s=$7-$3; i=$8-$4; print $1" "u*100/(u+s+i)"%"}'

@@ -1,0 +1,138 @@
+install raspberry pi bookworm 64 bit desktop (full thing I think)
+
+hostname : lumotag.local
+
+username: lumotag
+rest is the same
+
+SSID:  TP-LINK_509487 
+
+
+
+run NEW_UNIT_SETUP_SCRIPT
+
+
+
+
+
+
+BROKEN
+
+install OS rasbien using pi-imager
+OS = RASPBERRY PI OS (BULLSEYE)
+KNOWN TO WORK: Linux 5.15.84-v7l+ Linux-5.15.84-v7l+-armv7l-with-glibc2.31
+activate ssh
+
+make sure on same network, can use angryIP to see if lumotag device is reachable
+or just try :
+ssh lumotag@lumotag.local
+password lumotag (sudo rm ~/.ssh/known_hosts if known hosts bullshit error)
+
+
+
+use new setup script!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+install programs: 
+
+**warning still asks for YES!
+# espeak is Pi only - not windows!!
+sudo apt update
+sudo apt upgrade -y
+sudo rpi-update -y
+sudo apt-get update
+sudo apt-get install python3-numpy -y
+sudo apt-get install python3-opencv -y
+sudo apt install ffmpeg -y
+sudo apt-get install build-essential cmake pkg-config libjpeg-dev libtiff5-dev libjasper-dev libpng-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libxvidcore-dev libx264-dev libfontconfig1-dev libcairo2-dev libgdk-pixbuf2.0-dev libpango1.0-dev libgtk2.0-dev libgtk-3-dev libatlas-base-dev gfortran libhdf5-dev libhdf5-serial-dev libhdf5-103 python3-pyqt5 python3-dev -y
+sudo apt-get install python3-opencv -y
+sudo pip3 install adafruit-circuitpython-lis3dh
+sudo apt-get install git
+cd /home/lumotag/
+git clone https://github.com/LiellPlane/DJI_UE4_poc.git
+sudo apt install espeak -y
+pip install pyttsx3
+python3 -m pip install pika
+pip install imutils
+
+
+#SKIPPED
+##if desktop OS (MAYBE BUSTER ONLY - BULLSEYE MAY WORK SANS FIXES)
+##to make it compatible with HQ camera: 
+##ether turn off preview window during libcamera camera actions (-n)
+##or for permanent fix is to go into terminal "sudo raspi-config" - 
+##advanced options - enable "Glamour"
+
+
+#then 
+#sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+#copy in 
+#@lxpanel --profile LXDE-pi
+#@pcmanfm --desktop --profile LXDE-pi
+#@xscreensaver -no-splash
+#@python3 /boot/bootstrap.py
+#*note this only updates when monitor is attached!!
+
+sudo echo '@python3 /boot/bootstrap.py' >> /etc/xdg/lxsession/LXDE-pi/autostart
+
+#then force the pi to think a monitor is attached
+#might have to play with this file if screen goes blank after start up
+#sudo nano /boot/config.txt
+#uncomment
+hdmi_force_hotplug=1
+hdmi_safe=1
+NOTE - seems to come and go, I had to use this to get it to work then 
+turn it off when it corrupted? So a hysteresis
+
+
+cable orientation:
+on camera - BLACK part of ribbon is same side as circuit board
+on pi zero - BLACK part of ribbon is on side with all the gizmos, CPU etc
+tests
+
+check camera exists:
+libcamera-hello -t 0 
+errors might be due to preview window rendering so try taking image using -n for no preview
+
+OPENCV support (maybe)
+#SKIP
+##sudo raspi-config - interfaces - enable legacy support (so libcamera/opencv is legacy now? what a load of shit)
+
+camera documentation https://www.raspberrypi.com/documentation/accessories/camera.html
+
+DISABLE SCREEN SAVER
+##sudo raspi-config - find screen blanking option and turn off
+##sudo raspi-config - enable lc2 interfacing for accelerometer
+##https://www.makeuseof.com/how-to-run-a-raspberry-pi-program-script-at-startup/
+export DISPLAY=:0;xset s noblank; xset s off; xset -dpms
+
+ssh lumotag@lumotag.local
+password - lumotag
+
+now go to boot_sequence and add files needed
+
+
+
+error with autostart
+logs might help : nano /home/lumotag/.cache/lxsession/LXDE-pi/run.log
+
+will change randomly

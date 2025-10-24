@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Click on Image</title>
+</head>
+<body>
+  <img id="myImage" src="perp_image.jpg" alt="Image" width="400" height="300">
+  <p>Click coordinates: <span id="coordinates"></span></p>
+
+  <script>
+    const image = document.getElementById("myImage");
+    const coordinates = document.getElementById("coordinates");
+
+    image.addEventListener("click", (event) => {
+      const offsetX = event.offsetX;
+      const offsetY = event.offsetY;
+
+      coordinates.textContent = `X: ${offsetX}, Y: ${offsetY}`;
+    });
+  </script>
+</body>
+</html>
