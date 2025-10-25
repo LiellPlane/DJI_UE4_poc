@@ -14,4 +14,5 @@ yarn-error.log*
 dist/
 build/
 *.log
+typescript-server-app/packages/server/logs/
 
