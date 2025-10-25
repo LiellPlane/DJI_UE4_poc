@@ -9,14 +9,15 @@ import time
 import random
 import git_info
 from comms_http import HTTPComms, LogEvent
-
+from copy import deepcopy
 # import decode_clothID_v2 as decode_clothID
 import analyse_lumotag
 import img_processing
 from decode_clothID_v2 import find_lumotag, find_lumotag_mser, find_lumotag_special_case
 from utils import time_it, get_platform
 from my_collections import _OS, HeightWidth, ShapeItem
-from lumo_utils import get_targeted_player_details
+from lumo_utils import get_targeted_player_details, get_tag_health_mapping
+from lumotag_events import GameStatus
 # need this import to detect lumogun types (subclasses)
 import configs
 # Import fake websocket server for testing
@@ -287,7 +288,7 @@ def main():
 
     # create demo player
     players = {
-        "demoplayer": factory.PlayerInfoBoxv2(
+        "allplayers": factory.PlayerInfoBoxv2(
             playername="testplayer",
             avatar_canvas=HeightWidth(60, 60),  # get/match this from the status bar class
             info_box=HeightWidth(60, 100), # get/match this from the status bar class
@@ -330,7 +331,7 @@ def main():
     cnt = 0
     TEMP_DEBUG_trigger_cnt = 0
     TEMP_fake_light = False
-
+    # analysis_last_frame: dict[tuple[int, int], list[ShapeItem | None]] = {}
     while True:
         imageIDs = []
         TEMP_DEBUG_trigger_cnt += 1
@@ -472,7 +473,7 @@ def main():
             with time_it(
                 "wait for image analysis", debug=PRINT_DEBUG
             ), perfmonitor.measure("wait image_analysis"):
-                analysis = {}
+                analysis:dict[tuple[int, int], list[ShapeItem | None]] = {}
                 for img_analyser in image_analysis:
                     if img_analyser.check_if_timed_out():
                         raise Exception(
@@ -484,29 +485,45 @@ def main():
                         img_analyser.camera_source_class_ref._store_res
                     )  # BAD LIELL!!!
                     try:
-                        result: analyse_lumotag.AnalysisOutput = (
-                            img_analyser.analysis_output_q.get(block=True, timeout=0)
-                        )
-                        if isinstance(result, Exception):
-                            raise result  # this is really shit but better than nothing or dying downstream in a confusing way
-                        perfmonitor.manual_measure(
-                            f"{img_analyser.OS_friendly_name}",
-                            img_analyser.get_analysis_time_ms(),
-                        )
 
-                        if result.Results:
-                            # file_system.save_barcodepair(result, message="falsepos")
-                            # save_analysis(result)
-
-                            if res_for_affine_transform_lookup not in analysis:
-                                analysis[res_for_affine_transform_lookup] = []
-                            analysis[res_for_affine_transform_lookup].extend(
-                                result.Results
+                        while not img_analyser.analysis_output_q.empty():
+                            result: analyse_lumotag.AnalysisOutput = (
+                                img_analyser.analysis_output_q.get(block=False, timeout=0)
                             )
+                            if isinstance(result, Exception):
+                                raise result  # this is really shit but better than nothing or dying downstream in a confusing way
+                            perfmonitor.manual_measure(
+                                f"{img_analyser.OS_friendly_name}",
+                                img_analyser.get_analysis_time_ms(),
+                            )
+
+                            if result.Results:
+                                # file_system.save_barcodepair(result, message="falsepos")
+                                # save_analysis(result)
+
+                                # this looks like we are adding results according to what camera is active 
+                                if res_for_affine_transform_lookup not in analysis:
+                                    analysis[res_for_affine_transform_lookup] = []
+                                analysis[res_for_affine_transform_lookup].extend(
+                                    result.Results
+                                )
+
+                            # # EXPERIMENTAL SEEING IF WE CAN STOP FLICKERING - USE LAST FRAME RESULTS 
+                            # img_analyser.analysis_output_q.put(result, block=False, timeout=None)
                     except queue.Empty:
                         # raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
                         # print(f"waiting for analysis {img_analyser.OS_friendly_name}")
                         pass  # test asynchronous analysis
+                
+
+
+                    # # TARGET FLICKER SMOOTHING 
+                    # if len(analysis) > 0:
+                    #     # here we will try and smooth the results (targets), due to async results coming back causing flicker
+                    #     analysis_last_frame = deepcopy(analysis)
+
+
+
 
                 # save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
             with perfmonitor.measure("graphics"):
@@ -520,9 +537,18 @@ def main():
                         ),
                     )
 
+
+            gamestate: GameStatus = game_client.get_latest_gamestate()
+
+
             with time_it(
                 "add graphics: crosshair/analyics", debug=PRINT_DEBUG
             ), perfmonitor.measure("graphics"):
+
+                # get the mapping of tag_id and player health - so when we display graphics on the lumotag we can see a health indication
+                # this can probably be broken out to also include more details, anything in the player object !
+                tag_id__VS__health = get_tag_health_mapping(gamestate)
+
                 crosshair_lerper.add_cross_hair(
                     image=output_image, adapt=True, target_acquired=(len(analysis) > 0)
                 )
@@ -542,6 +568,7 @@ def main():
                         == img_processing.CameraTransitionState.CLOSERANGE
                     ):
                         # filter for close range origin analysis
+                        # add the square targets on player tags 
                         display.add_target_tags(
                             output=output_image,
                             graphics={
@@ -549,12 +576,14 @@ def main():
                                 for k, v in analysis.items()
                                 if k == image_capture_shortrange._store_res
                             },
+                            tags__Vs__healthpoints=tag_id__VS__health,
                         )
                     if (
                         transition_state
                         == img_processing.CameraTransitionState.LONGRANGE
                     ):
                         # filter for long range origin analysis
+                        # add the square targets on player tags 
                         display.add_target_tags(
                             output=output_image,
                             graphics={
@@ -562,6 +591,7 @@ def main():
                                 for k, v in analysis.items()
                                 if k == image_capture_longrange._store_res
                             },
+                            tags__Vs__healthpoints=tag_id__VS__health,
                         )
 
                 perfmonitor.manual_measure("check_scale", 25)
@@ -569,7 +599,7 @@ def main():
                 # create lerp for an avatar - this is a common figure for any player. Will reverse to non-visible if no tags found
                 
                 
-                gamestate = game_client.get_latest_gamestate()
+                
 
                 with time_it("display image", debug=PRINT_DEBUG), perfmonitor.measure(
                     "display"
@@ -580,30 +610,31 @@ def main():
                     if len(analysis) > 0:
                         # have we detected a tag? if so - get the centre one 
                         if focused_tag := get_targeted_player_details(analysis, gamestate):
-                            fade_norm = display.get_norm_fade_val(players["demoplayer"], analysis)
+                            fade_norm = display.get_norm_fade_val(players["allplayers"], analysis)
                             # set and persist the player data (so it will slowly fade away if player not targetted) 
-                            players["demoplayer"].set_player_info(factory.EnemyInfo(displayname=f"NM: {focused_tag.display_name}", health=focused_tag.health))
+                            players["allplayers"].set_player_info(factory.EnemyInfo(displayname=f"NM: {focused_tag.display_name}", health=focused_tag.health))
                             # does the player card thing already have this avatar processed and ready?
                             id_ = focused_tag.display_name
-                            if players["demoplayer"].get_player_avatar(id_) is None:
+                            if players["allplayers"].get_player_avatar(id_) is None:
                                 # ok we don't have it - lets get it from the comms class 
                                 if (img := game_client.get_player_avatar(display_name=id_)) is not None:
                                     # load the avatar into the player info card thing 
-                                    players["demoplayer"].add_player_avatar(display_name=id_, img=img)
+                                    players["allplayers"].add_player_avatar(display_name=id_, img=img)
                             # set the avatar - this could still be empty 
-                            players["demoplayer"].set_targetted_avatar(id_)
+                            players["allplayers"].set_targetted_avatar(id_)
                         else:
-                            fade_norm = display.get_norm_fade_val(players["demoplayer"], []) # we don't want any info to show if we have a tag but no associated player
+                            fade_norm = display.get_norm_fade_val(players["allplayers"], []) # we don't want any info to show if we have a tag but no associated player
                             # we have a tag - now see if we the image record already in the display class - if not - try and get it from the comms module 
                     else:
-                        fade_norm = display.get_norm_fade_val(players["demoplayer"], [])
+                        fade_norm = display.get_norm_fade_val(players["allplayers"], [])
 
-                    if (img:= players["demoplayer"].display_targetted_avatar) is not None:
+                    # here i think we are checking if the avatar has been sent from the server yet 
+                    if (img:= players["allplayers"].display_targetted_avatar) is not None:
                         status_bar.display_player_image(
-                            img, fade_norm, turn_red=players["demoplayer"].enemyinfo.turn_red
+                            img, fade_norm, turn_red=players["allplayers"].enemyinfo.turn_red
                         )
 
-                    status_bar.display_player_info(dims=players["demoplayer"].info_box,info=players["demoplayer"].enemyinfo ,fade_norm=fade_norm)
+                    status_bar.display_player_info(dims=players["allplayers"].info_box,info=players["allplayers"].enemyinfo ,fade_norm=fade_norm)
 
                     status_bar.draw_status_bar(
                         output_image,

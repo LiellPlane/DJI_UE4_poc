@@ -251,6 +251,11 @@ class FileSystemABC(ABC):
         """Load the _shieldstatus_cache from temporary storage. Returns None if file doesn't exist or on error."""
         pass
 
+    @abstractmethod
+    def _clean_images_folder(self):
+        """Clean up all image files in the images folder on startup."""
+        pass
+
     @staticmethod
     def get_closerange_to_longrange_transform():
         script_path = os.path.abspath(__file__)
@@ -403,14 +408,22 @@ class display(ABC):
         #inputimg[int(left_top[1]):int(right_low[1]), int(right_low[1])] = 100
 
 
-    def add_target_tags(self, output, graphics: dict[tuple[int,int], list[ShapeItem]]):
+    def add_target_tags(self, output, graphics: dict[tuple[int,int], list[ShapeItem]], tags__Vs__healthpoints: Optional[dict[str, int]] = None):
         """ we are using IMAGE SHAPE to find the camera source and corresponding transform"""
         for _shape, result_package in graphics.items():
             for result in result_package:
                 result.transform_points(self._affine_transform[_shape])
+
+                # get colour we want tag to show as depending on the players healthpoint (player corresponding to tag id )
+                if tags__Vs__healthpoints and (hp := tags__Vs__healthpoints.get(str(result.decoded_id))) is not None:
+                    colour = img_processing.health_to_color(hp)
+                else:
+                    colour = img_processing.GRAY  # default color
+
                 img_processing.draw_pattern_output(
                     image=output,
-                    patterndetails=result)
+                    patterndetails=result,
+                    color=colour)
 
 
     @staticmethod

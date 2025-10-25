@@ -109,6 +109,10 @@ class filesystem(factory.FileSystemABC):
             print(f"Fake hardware: error loading shieldstatus cache: {e}")
             return None
 
+    def _clean_images_folder(self):
+        """Clean up all image files in the images folder on startup - fake hardware placeholder."""
+        print("Fake hardware: _clean_images_folder called (no-op for fake hardware)")
+
 class Triggers(factory.Triggers):
     def __init__(self, _gun_config) -> None:
         super().__init__(_gun_config)

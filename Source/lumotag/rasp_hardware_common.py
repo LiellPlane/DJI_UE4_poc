@@ -38,6 +38,20 @@ class filesystem(factory.FileSystemABC):
         self.images_folder = "/home/lumotag"
         if not os.path.isdir(self.images_folder):
             os.mkdir(self.images_folder)
+        
+        # Clean up all images on startup
+        self._clean_images_folder()
+
+    def _clean_images_folder(self):
+        """Delete all image files in the images folder on startup"""
+        if os.path.exists(self.images_folder):
+            for filename in os.listdir(self.images_folder):
+                file_path = os.path.join(self.images_folder, filename)
+                if os.path.isfile(file_path):
+                    # Only delete image files (jpg, jpeg, png, etc.)
+                    if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp', '.gif')):
+                        os.remove(file_path)
+                        print(f"Deleted image: {filename}")
 
     def save_image(self, img, message=""):
         ts = utils.get_epoch_timestamp()

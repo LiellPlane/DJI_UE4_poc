@@ -1,8 +1,12 @@
 {
   "device_ids": {
     "abc12345": {
-      "tag_id": "13",
+      "tag_id": "99",
       "display_name": "PretendFriend"
+    },
+    "fakefakenobody": {
+      "tag_id": "13",
+      "display_name": "mysteryman"
     },
     "bc1ad358bb": {
       "tag_id": "5",

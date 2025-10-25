@@ -152,11 +152,19 @@ process.on("SIGINT", () => gracefulShutdown("SIGINT"));
 // Handle unhandled promise rejections
 process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled Rejection at:", promise, "reason:", reason);
+  console.error("❌ Unhandled promise rejection:", reason);
 });
 
 // Handle uncaught exceptions
 process.on("uncaughtException", (error) => {
+  // Don't crash on EPIPE errors (broken pipe) - these are common when terminal closes
+  if ((error as any).code === 'EPIPE') {
+    logger.warn("Broken pipe error (likely terminal closed):", error.message);
+    return;
+  }
+  
   logger.error("Uncaught Exception:", error);
+  console.error("❌ Server crashed due to uncaught exception:", error.message);
   process.exit(1);
 });
 

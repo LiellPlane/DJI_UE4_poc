@@ -69,3 +69,20 @@ logger.exceptions.handle(
 logger.rejections.handle(
   new winston.transports.File({ filename: "logs/rejections.log" }),
 );
+
+// Handle EPIPE errors gracefully (broken pipe when console output is closed)
+process.stdout.on('error', (error) => {
+  if (error.code === 'EPIPE') {
+    // Silently ignore EPIPE errors - they happen when terminal is closed
+    return;
+  }
+  console.error('stdout error:', error);
+});
+
+process.stderr.on('error', (error) => {
+  if (error.code === 'EPIPE') {
+    // Silently ignore EPIPE errors - they happen when terminal is closed
+    return;
+  }
+  console.error('stderr error:', error);
+});

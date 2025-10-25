@@ -36,4 +36,20 @@ def get_targeted_player_details(analysis: dict[tuple, ShapeItem], gamestatus: Ga
             
             
 
+def get_tag_health_mapping(gamestate: GameStatus) -> dict[str, int]:
+    """
+    Create a mapping of tag_id to health for quick lookups.
     
+    Args:
+        gamestate: Current game state
+    
+    Returns:
+        Dictionary mapping tag_id (str) to health (int)
+    """
+    if not gamestate or not gamestate.players:
+        return {}
+    
+    return {
+        player.tag_id: player.health 
+        for player in gamestate.players.values()
+    }

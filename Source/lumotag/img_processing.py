@@ -22,6 +22,7 @@ except:
 Array3x3 = Annotated[np.ndarray, (3, 3)]
 RED = (0, 0, 255)
 BLUE = (255, 0, 0)
+GRAY = (200,200,200)
 
 
 class EventLogOverlay:
@@ -1150,7 +1151,8 @@ def resize_image(inputimage, width, height):
     return cv2.resize(inputimage, (width, height), interpolation = cv2.INTER_NEAREST)
 
 
-def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO 
+
+def draw_pattern_output(image, patterndetails, debug=False, color=RED): # ShapeItem - TODO 
     """draw graphics for user if a pattern is found
     TODO: maybe want floating numbers etc above this which
     will eventually need a user registry"""
@@ -1158,19 +1160,19 @@ def draw_pattern_output(image, patterndetails, debug=False): # ShapeItem - TODO
     cX, cY = patterndetails.centre_x_y
     closest_corners = patterndetails.closest_corners
     # corners of square
-    cv2.circle(image, tuple(min_bbox[0]), 3, RED, 1)
-    cv2.circle(image, tuple(min_bbox[2]), 3, RED, 1)
-    cv2.circle(image, tuple(min_bbox[1]), 3, RED, 1)
-    cv2.circle(image, tuple(min_bbox[3]), 3, RED, 1)
+    cv2.circle(image, tuple(min_bbox[0]), 3, color, 1)
+    cv2.circle(image, tuple(min_bbox[2]), 3, color, 1)
+    cv2.circle(image, tuple(min_bbox[1]), 3, color, 1)
+    cv2.circle(image, tuple(min_bbox[3]), 3, color, 1)
 
 
     # centre of pattern
-    cv2.circle(image, (cX, cY), 5, RED, 1)
+    cv2.circle(image, (cX, cY), 5, color, 1)
    
     # bounding box of contour - this does not handle perspective
-    cv2.drawContours(image, [min_bbox], 0, RED)
+    cv2.drawContours(image, [min_bbox], 0, color)
 
-    cv2.fillPoly(image, [min_bbox], RED)
+    cv2.fillPoly(image, [min_bbox], color)
     #draw barcode sampling lines - for illustration only
     # may not match exactly with generated sampled lines
     if debug is False:
@@ -1876,3 +1878,69 @@ def display_split_rotated_images(image_shape, image_list):
                     x_offset:x_offset+resized_img2.shape[1]] = resized_img2
     
     return output_image
+
+
+@lru_cache(maxsize=101)
+def health_to_color(health: int) -> tuple[int, int, int]:
+    """
+    Convert health (0-100) to BGR color with smooth HSV interpolation.
+    Health=100 -> Green (120°), Health=1 -> Yellow (60°), Health<=0 -> Red (0°)
+    
+    Args:
+        health: Health value (0 or below = red, 1-100 = green to yellow gradient)
+    
+    Returns:
+        BGR color tuple (Blue, Green, Red) for OpenCV
+    """
+    # Red when health is 0 or below
+    if health <= 0:
+        return (0, 0, 255)
+    
+    # Clamp to 1-100 for the gradient
+    health = max(1, min(100, health))
+    
+    # Interpolate hue: health=100 -> green (120°), health=1 -> yellow (60°)
+    # Map 1-100 to 60-120 degrees
+    t = (health - 1) / 99.0  # 0 when health=1, 1 when health=100
+    hue = 60 + (120 - 60) * t  # health=1 -> 60°, health=100 -> 120°
+    
+    saturation = 1.0
+    value = 1.0
+    
+    # Convert HSV to RGB manually
+    h = hue / 60.0
+    i = int(h)
+    f = h - i
+    p = value * (1 - saturation)
+    q = value * (1 - saturation * f)
+    t_hsv = value * (1 - saturation * (1 - f))
+    
+    if i == 0:
+        r, g, b = value, t_hsv, p
+    elif i == 1:
+        r, g, b = q, value, p
+    elif i == 2:
+        r, g, b = p, value, t_hsv
+    else:
+        r, g, b = value, q, p
+    
+    # Return as BGR (OpenCV format)
+    return (int(b * 255), int(g * 255), int(r * 255))
+
+
+# Warmup cache on module initialization for all health values 0-100
+for h in range(-400, 100):
+    health_to_color(h)
+
+# Temporary test visualization
+if __name__ == "__main__":
+    for test_health in range(-10, 111):
+        test_img = np.zeros((500, 500, 3), dtype=np.uint8)
+        test_color = health_to_color(test_health)
+        test_img[:] = test_color
+        cv2.putText(test_img, f"Health={test_health}, BGR={test_color}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.imshow('Test Color', test_img)
+        print(f"Health: {test_health} -> BGR: {test_color}")
+        if cv2.waitKey(500) & 0xFF == ord('q'):  # Press 'q' to quit early
+            break
+    cv2.destroyAllWindows()
