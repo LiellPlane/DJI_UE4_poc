@@ -97,7 +97,7 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 def main():
     print("TEMP TESTING - SERVER IS PRUNING IMAGES, WE HAVE A FAKE TRIGGER HERE, AND SENDING EVERY SINGLE TRIGGERED IMAGE")
     time.sleep(1) # REMOVE
-    from fake_raspberry_hardware import Triggers as test_triggers # REMOVE
+    # from fake_raspberry_hardware import Triggers as test_triggers # REMOVE
     log_overlay = img_processing.EventLogOverlay()
     MY_ID = lumogun.GetID().get_persistant_device_id()
     log_overlay.set_header(f"DID:{MY_ID}:GH:{GIT_REPO_INFO}")
@@ -119,7 +119,7 @@ def main():
                 time.sleep(3)
                 raise Exception("Trigger detected on boot-up - exit app")
             time.sleep(2)
-    triggers = test_triggers(GUN_CONFIGURATION) # REMOVE
+    # triggers = test_triggers(GUN_CONFIGURATION) # REMOVE
     voice.speak_blocking(GIT_REPO_INFO)
     relay = lumogun.Relay(GUN_CONFIGURATION)
 
