@@ -758,12 +758,14 @@ def main():
                             for img_id in imageIDs: # PUT BACK 
                                 # game_client.upload_image_by_id(img_id)
 
-                                # lets also try capturing a colour image - experimental so careful with this 
-                                file_path = file_system.save_image(image_capture_longrange.get_raw_image_sync(), message="raw_color_img_")
-                                game_client.upload_image_from_disk(file_path, image_id=f"color_{img_id}")
-                        else:
-                            for img_id in imageIDs:
-                                game_client.upload_image_by_id(img_id)
+                                # lets also try capturing a colour image - experimental so careful with this
+                                if (img := image_capture_longrange.get_raw_image_sync()) is not False:
+                                    file_path = file_system.save_image(img, message="raw_color_img_")
+                                    game_client.upload_image_from_disk(file_path, image_id=f"color_{img_id}")
+                        # memed this out - not sure why I am uploading images every time I pull the trigger -maybe for load testing 
+                        # else:
+                        #     for img_id in imageIDs:
+                        #         game_client.upload_image_by_id(img_id)
                     else:
                         for img_id in imageIDs:
                             game_client.delete_image_by_id(img_id)

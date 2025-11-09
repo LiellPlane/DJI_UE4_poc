@@ -941,7 +941,11 @@ class Camera_async_flipflop(Camera):
         _ = self.handshake_queue.get(block=True, timeout=2.0)
         
         # Wait for raw frame (Subprocess → Main)
-        raw_frame = self.raw_frame_response_queue.get(block=True, timeout=2.0)
+        try:
+            raw_frame = self.raw_frame_response_queue.get(block=True, timeout=2.0)
+        except queue.Empty:
+            print("possible race hazard in  raw_frame = self.raw_frame_response_queue.get")
+            return False
         
         if isinstance(raw_frame, str):
             raise Exception(f"Expected raw frame, got: {raw_frame}")
