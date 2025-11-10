@@ -16039,3 +16039,44 @@
 {"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:07 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
 {"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 22:19:07","userAgent":"python-requests/2.32.4"}
 {"level":"info","message":"Image color_LID2332vyn0ypLID saved (134KB)","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-11-10 21:36:01"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-11-10 21:36:01"}
+{"level":"info","message":"🧹 Cleaning up 4 image files from uploads directory","service":"typescript-server","timestamp":"2025-11-10 21:36:01"}
+{"level":"info","message":"✅ Cleanup complete: 4 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-11-10 21:36:01"}
+{"level":"info","message":"🧹 Startup cleanup: Removed 4 old image files","service":"typescript-server","timestamp":"2025-11-10 21:36:01"}
+{"level":"info","message":"127.0.0.1 - - [10/Nov/2025:21:37:31 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 304 - \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0\"","service":"typescript-server","timestamp":"2025-11-10 21:37:31"}
+{"duration":"2ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":304,"timestamp":"2025-11-10 21:37:31","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"}
+{"level":"info","message":"Created new player: 54e5b53659 with display_name: Timmy","service":"typescript-server","timestamp":"2025-11-10 21:39:20"}
+{"level":"info","message":"192.168.8.239 - - [10/Nov/2025:21:39:20 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-10 21:39:20"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-10 21:39:49"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-11-10 21:39:49"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-10 21:39:49"}
+{"level":"info","message":"192.168.8.239 - - [10/Nov/2025:21:39:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-10 21:39:49"}
+{"duration":"1ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-10 21:39:49","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID19360tTxAHLID saved (186KB)","service":"typescript-server","timestamp":"2025-11-10 21:39:49"}
+{"level":"info","message":"Image color_LID19380tTxAHLID saved (174KB)","service":"typescript-server","timestamp":"2025-11-10 21:39:49"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"192.168.8.239 - - [10/Nov/2025:21:39:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-10 21:39:50","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"Image color_LID1936LQgyXJLID saved (147KB)","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"Image color_LID19384D8wGKLID saved (148KB)","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"192.168.8.239 - - [10/Nov/2025:21:39:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"duration":"1ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-10 21:39:50","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1936HsbBo5LID saved (161KB)","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"Image color_LID1938bpjB1wLID saved (169KB)","service":"typescript-server","timestamp":"2025-11-10 21:39:50"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-10 21:39:51"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-11-10 21:39:51"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-10 21:39:51"}
+{"level":"info","message":"192.168.8.239 - - [10/Nov/2025:21:39:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-10 21:39:51"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-10 21:39:51","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Created new player: abc12345 with display_name: PretendFriend","service":"typescript-server","timestamp":"2025-11-10 21:40:39"}
+{"level":"info","message":"Created new player: fakefakenobody with display_name: mysteryman","service":"typescript-server","timestamp":"2025-11-10 21:40:41"}
+{"level":"info","message":"Created new player: bc1ad358bb with display_name: Sk8rboi","service":"typescript-server","timestamp":"2025-11-10 21:40:43"}
+{"level":"info","message":"Background thread stopped","service":"typescript-server","timestamp":"2025-11-10 21:55:04"}
+{"level":"info","message":"SIGINT received, shutting down gracefully","service":"typescript-server","timestamp":"2025-11-10 21:55:04"}
+{"level":"info","message":"Server closed","service":"typescript-server","timestamp":"2025-11-10 22:08:16"}

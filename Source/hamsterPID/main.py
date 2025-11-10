@@ -26,7 +26,7 @@ class Hamster():
         self.current_speed_m = 0
         self.target_speed_m = 0
         self.last_steadystate = 0
-        self.response_sec_per_m_per_sec = 1 # it will take N seconds to reach N m/sec
+        self.response_sec_per_m_per_sec = 0.1 # it will take N seconds to reach N m/sec
         self.position_m = 0 # position along conveyor
         self.timer = TimeDiffObject()
         self.timer.reset()
@@ -44,16 +44,27 @@ class Hamster():
         if time_to_ss == 0:
             print("time to ss is zero")
             return
-        lerp_position = round((delta / time_to_ss), 3)
-        lerp_position = max(min(1, lerp_position), -1)
-        lerp_position = (lerp_position * 3) # <<<--- lerp formula here
+        lerp_position = delta / time_to_ss
+        lerp_position = min(1, lerp_position)
+        lerp_position = max(-1, lerp_position)
+        lerp_position = round(lerp_position ** 3,3) # <<<--- lerp formula here
         # map speed
-        self.current_speed_m = num_to_range(
-            num=lerp_position,
-            outMin=min(self.target_speed_m, self.last_steadystate),
-            outMax=max(self.target_speed_m, self.last_steadystate),
-            inMin=-1,
-            inMax=1)
+        if lerp_position < 0:
+            self.current_speed_m = num_to_range(
+                num=lerp_position,
+                outMin=self.last_steadystate,
+                outMax=self.target_speed_m,
+                inMin=0,
+                inMax=-1)
+
+        else:
+
+            self.current_speed_m = num_to_range(
+                num=lerp_position,
+                outMin=self.last_steadystate,
+                outMax=self.target_speed_m,
+                inMin=0,
+                inMax=1)
 
 
     
@@ -78,7 +89,10 @@ def main():
         scambi.update_state()
         print(scambi.current_speed_m)
         time.sleep(0.1)
-
+        if scambi.current_speed_m > 10:
+            scambi.start_running(-20)
+        if scambi.current_speed_m < -10:
+            scambi.start_running(0)
 
 if __name__ == "__main__":
     main()
