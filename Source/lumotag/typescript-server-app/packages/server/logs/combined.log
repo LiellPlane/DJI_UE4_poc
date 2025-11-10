@@ -15171,3 +15171,871 @@
 {"level":"info","message":"Image LID1488dUiYMRLID saved (27KB)","service":"typescript-server","timestamp":"2025-11-08 16:49:43"}
 {"level":"info","message":"Image LID1486WCZBnmLID saved (149KB)","service":"typescript-server","timestamp":"2025-11-08 16:49:43"}
 {"level":"info","message":"Image LID1488Oo4TS0LID saved (39KB)","service":"typescript-server","timestamp":"2025-11-08 16:49:43"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-11-09 21:23:14"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-11-09 21:23:14"}
+{"level":"info","message":"🧹 Cleaning up 24 image files from uploads directory","service":"typescript-server","timestamp":"2025-11-09 21:23:14"}
+{"level":"info","message":"✅ Cleanup complete: 24 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-11-09 21:23:14"}
+{"level":"info","message":"🧹 Startup cleanup: Removed 24 old image files","service":"typescript-server","timestamp":"2025-11-09 21:23:14"}
+{"level":"info","message":"127.0.0.1 - - [09/Nov/2025:21:23:18 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 304 - \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0\"","service":"typescript-server","timestamp":"2025-11-09 21:23:18"}
+{"duration":"1ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":304,"timestamp":"2025-11-09 21:23:18","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"}
+{"level":"info","message":"Created new player: abc12345 with display_name: PretendFriend","service":"typescript-server","timestamp":"2025-11-09 21:23:20"}
+{"level":"info","message":"Created new player: fakefakenobody with display_name: mysteryman","service":"typescript-server","timestamp":"2025-11-09 21:23:22"}
+{"level":"info","message":"Created new player: bc1ad358bb with display_name: Sk8rboi","service":"typescript-server","timestamp":"2025-11-09 21:23:24"}
+{"level":"info","message":"Created new player: 54e5b53659 with display_name: Timmy","service":"typescript-server","timestamp":"2025-11-09 21:23:44"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:23:44 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:23:44"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:23:45 +0000] \"GET /avatars/mysteryman.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:23:45"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:23:45 +0000] \"GET /avatars/Sk8rboi.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:23:45"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:23:46 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:23:46"}
+{"level":"info","message":"Image LID1916YXwojdLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:50"}
+{"level":"info","message":"Image LID1918YXwojdLID saved (51KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:50"}
+{"level":"info","message":"Image LID1916wslKurLID saved (92KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:50"}
+{"level":"info","message":"Image LID1918wslKurLID saved (26KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:50"}
+{"level":"info","message":"Image LID1916PGDFvuLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:50"}
+{"level":"info","message":"Image LID1918PGDFvuLID saved (25KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:51"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:24:52"}
+{"level":"info","message":"Image LID1916EUoilcLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:52"}
+{"level":"info","message":"Image LID1918EUoilcLID saved (25KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:52"}
+{"level":"info","message":"Image LID1916LnZp2pLID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:52"}
+{"level":"info","message":"Image LID1918LnZp2pLID saved (25KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:52"}
+{"level":"info","message":"Image LID1916gTKAwWLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:53"}
+{"level":"info","message":"Image LID1918gTKAwWLID saved (25KB)","service":"typescript-server","timestamp":"2025-11-09 21:24:53"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:25:32"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:25:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:25:32"}
+{"duration":"2ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:25:32","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916Y80bjmLID saved (194KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:25:33 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:25:33","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:25:33 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:25:33","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1918Y80bjmLID saved (197KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"level":"info","message":"Image color_LID19162jwqk7LID saved (207KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:33"}
+{"level":"info","message":"Image color_LID19180JA4sALID saved (200KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:34"}
+{"level":"info","message":"Image color_LID1916s1BaY3LID saved (183KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:34"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:25:42"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:25:42 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:25:42"}
+{"duration":"2ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:25:42","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916ExXrPuLID saved (206KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:42"}
+{"level":"info","message":"Image color_LID1918GaAc0cLID saved (205KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:42"}
+{"level":"info","message":"Image LID1916M6igRGLID saved (113KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:57"}
+{"level":"info","message":"Image LID1918Kzu6p7LID saved (51KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:57"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:25:59"}
+{"level":"info","message":"Image LID1916XVGXybLID saved (107KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:59"}
+{"level":"info","message":"Image LID1918kZoN1mLID saved (51KB)","service":"typescript-server","timestamp":"2025-11-09 21:25:59"}
+{"level":"info","message":"Image LID1916ZvQ2pNLID saved (161KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:01"}
+{"level":"info","message":"Image LID1918m9wUwoLID saved (55KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:01"}
+{"level":"info","message":"Image LID1916mzCPzVLID saved (161KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:10"}
+{"level":"info","message":"Image LID1918qABcyoLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:10"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:26:12"}
+{"level":"info","message":"Image LID1916Tvhyb6LID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:12"}
+{"level":"info","message":"Image LID1918nVr2b7LID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:12"}
+{"level":"info","message":"Image LID19163YzAjGLID saved (123KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:13"}
+{"level":"info","message":"Image LID1918JVuVP1LID saved (41KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:13"}
+{"level":"info","message":"Image LID1916cCfkwgLID saved (116KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:14"}
+{"level":"info","message":"Image LID19183lap5OLID saved (43KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:14"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:26:18"}
+{"level":"info","message":"Image LID1916qa56SyLID saved (117KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:18"}
+{"level":"info","message":"Image LID19182b7HttLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:18"}
+{"level":"info","message":"Image LID1916dPN4CWLID saved (109KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:24"}
+{"level":"info","message":"Image LID1918Gg0jXMLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:26:24"}
+{"level":"info","message":"Image LID1916uE5lNpLID saved (110KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:00"}
+{"level":"info","message":"Image LID1918MOEpdRLID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:00"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:27:02"}
+{"level":"info","message":"Image LID1916lN6V0HLID saved (115KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:02"}
+{"level":"info","message":"Image LID1918fbVU2JLID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:02"}
+{"level":"info","message":"Image LID1916lIldOkLID saved (112KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:03"}
+{"level":"info","message":"Image LID1918L9Ud2ELID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:03"}
+{"level":"info","message":"Image LID1916KRgdAoLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:06"}
+{"level":"info","message":"Image LID1918vnim73LID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:06"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:27:09"}
+{"level":"info","message":"Image LID1916iOIJRDLID saved (116KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:09"}
+{"level":"info","message":"Image LID1918tyD3GSLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:09"}
+{"level":"info","message":"Image LID1916rzE7puLID saved (112KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:10"}
+{"level":"info","message":"Image LID1918gohqmvLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:10"}
+{"level":"info","message":"Image LID1916HDNR5FLID saved (94KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:12"}
+{"level":"info","message":"Image LID1918HvjylKLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:12"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:27:16"}
+{"level":"info","message":"Image LID1916T12c57LID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:16"}
+{"level":"info","message":"Image LID1918Rnlyf8LID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:16"}
+{"level":"info","message":"Image LID1916iXS1cGLID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:18"}
+{"level":"info","message":"Image LID1918okJ6lfLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:18"}
+{"level":"info","message":"Image LID1916G28kfMLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:57"}
+{"level":"info","message":"Image LID1918f3KVX5LID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:27:57"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:28:10"}
+{"level":"info","message":"Image LID1916GV8lamLID saved (102KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:10"}
+{"level":"info","message":"Image LID19186HVEiWLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:10"}
+{"level":"info","message":"Image LID1916eUhJXaLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:16"}
+{"level":"info","message":"Image LID1918zrSRxRLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:16"}
+{"level":"info","message":"Image LID1916R13CbtLID saved (99KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:25"}
+{"level":"info","message":"Image LID1918Ou3dQ0LID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:26"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:28:35"}
+{"level":"info","message":"Image LID1916JTUMiLLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:35"}
+{"level":"info","message":"Image LID1918cryvxdLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:35"}
+{"level":"info","message":"Image LID1916oOJBfgLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:37"}
+{"level":"info","message":"Image LID1918R7zQfSLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:37"}
+{"level":"info","message":"Image LID1916WJkNLCLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:37"}
+{"level":"info","message":"Image LID1918lNVtYDLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:37"}
+{"level":"info","message":"Image LID1916XdVwBJLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:38"}
+{"level":"info","message":"Image LID1918ny251aLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:38"}
+{"level":"info","message":"Image LID1916lfXiEwLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:38"}
+{"level":"info","message":"Image LID1918TPWPMKLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:38"}
+{"level":"info","message":"Image LID1916yP8mOHLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:39"}
+{"level":"info","message":"Image LID1918NPSuZrLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:39"}
+{"level":"info","message":"Image LID1916mOKaCXLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:42"}
+{"level":"info","message":"Image LID1918PwY6irLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:42"}
+{"level":"info","message":"Image LID19165siv0vLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:59"}
+{"level":"info","message":"Image LID1918XX39eWLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:28:59"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:29:05"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:29:05 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:29:05"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:29:05","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916qyozytLID saved (172KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:05"}
+{"level":"info","message":"Image color_LID1918rw2FzJLID saved (167KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:05"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:29:08"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:29:08 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:29:08"}
+{"duration":"0ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:29:08","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916szOguHLID saved (172KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:08"}
+{"level":"info","message":"Image color_LID1918XFRDxxLID saved (182KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:09"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:29:10"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:29:10 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:29:10"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:29:10","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916cfFDj7LID saved (171KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:10"}
+{"level":"info","message":"Image color_LID1918qEmpN1LID saved (169KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:10"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:29:58"}
+{"level":"info","message":"Image LID1916R4mzV5LID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:58"}
+{"level":"info","message":"Image LID1918MtY49RLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:29:58"}
+{"level":"info","message":"Image LID1916OYeoYBLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:45"}
+{"level":"info","message":"Image LID1918jAHE2tLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:45"}
+{"level":"info","message":"Image LID191680oFz9LID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:46"}
+{"level":"info","message":"Image LID1918vTLZ9HLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:46"}
+{"level":"info","message":"Image LID1916NpbENwLID saved (109KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:47"}
+{"level":"info","message":"Image LID1918ATHvroLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:47"}
+{"level":"info","message":"Image LID1916HeoQLzLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:49"}
+{"level":"info","message":"Image LID191832N7lQLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:49"}
+{"level":"info","message":"Image LID1916udz0v1LID saved (107KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:50"}
+{"level":"info","message":"Image LID19184xwuMyLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:50"}
+{"level":"info","message":"Image LID1916d1xj7JLID saved (108KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:51"}
+{"level":"info","message":"Image LID1918CzC3LuLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:51"}
+{"level":"info","message":"Image LID1916PzEbt9LID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:51"}
+{"level":"info","message":"Image LID1918YkmmtNLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:30:51"}
+{"level":"info","message":"Image LID19161src9kLID saved (156KB)","service":"typescript-server","timestamp":"2025-11-09 21:31:22"}
+{"level":"info","message":"Image LID1918QQyT1mLID saved (283KB)","service":"typescript-server","timestamp":"2025-11-09 21:31:23"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:31:23"}
+{"level":"info","message":"Image LID1916nlnA0KLID saved (109KB)","service":"typescript-server","timestamp":"2025-11-09 21:31:23"}
+{"level":"info","message":"Image LID1918aHqq49LID saved (24KB)","service":"typescript-server","timestamp":"2025-11-09 21:31:23"}
+{"level":"info","message":"Image LID1916S0RyXVLID saved (110KB)","service":"typescript-server","timestamp":"2025-11-09 21:31:24"}
+{"level":"info","message":"Image LID1918bW3n2cLID saved (24KB)","service":"typescript-server","timestamp":"2025-11-09 21:31:24"}
+{"level":"info","message":"Image LID1916TXB4hXLID saved (129KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:19"}
+{"level":"info","message":"Image LID1918iuWAKELID saved (78KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:19"}
+{"level":"info","message":"Image LID1916WFLT2TLID saved (157KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:19"}
+{"level":"info","message":"Image LID1918g1kppqLID saved (114KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:19"}
+{"level":"info","message":"Image LID1916IfFppkLID saved (153KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:39"}
+{"level":"info","message":"Image LID19184wydrILID saved (41KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:40"}
+{"level":"info","message":"Image LID19169NcnRvLID saved (149KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:46"}
+{"level":"info","message":"Image LID1918l4WjXgLID saved (73KB)","service":"typescript-server","timestamp":"2025-11-09 21:32:46"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:33:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:33:06","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916h7wyHzLID saved (173KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"level":"info","message":"Image color_LID1918hYKeGxLID saved (169KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:33:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:33:06"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:33:06","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916r62HW5LID saved (169KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"level":"info","message":"Image color_LID1918FIru3PLID saved (175KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:33:07 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:33:07","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916ZL4YtuLID saved (176KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"level":"info","message":"Image color_LID1918gV56IKLID saved (172KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:07"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:33:44"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:33:44 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:33:44"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:33:44","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID19163CATwdLID saved (176KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:44"}
+{"level":"info","message":"Image color_LID19189ZnkyyLID saved (185KB)","service":"typescript-server","timestamp":"2025-11-09 21:33:45"}
+{"level":"info","message":"Image LID1916WdWAgwLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:35:40"}
+{"level":"info","message":"Image LID1918prZ4OWLID saved (56KB)","service":"typescript-server","timestamp":"2025-11-09 21:35:40"}
+{"level":"info","message":"Image LID19162oshAeLID saved (72KB)","service":"typescript-server","timestamp":"2025-11-09 21:35:42"}
+{"level":"info","message":"Image LID1918U9BRgGLID saved (122KB)","service":"typescript-server","timestamp":"2025-11-09 21:35:42"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:36:10"}
+{"level":"info","message":"Image LID1916hhkIYSLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:10"}
+{"level":"info","message":"Image LID191896vlZNLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:10"}
+{"level":"info","message":"Image LID1916eH14LOLID saved (102KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:10"}
+{"level":"info","message":"Image LID1918Bwn2gBLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:10"}
+{"level":"info","message":"Image LID1916Sdbg00LID saved (112KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:11"}
+{"level":"info","message":"Image LID1918cvlibCLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:11"}
+{"level":"info","message":"Image LID1916It87YCLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:11"}
+{"level":"info","message":"Image LID1918ey4sW7LID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:11"}
+{"level":"info","message":"Image LID1916SAkwkgLID saved (117KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:11"}
+{"level":"info","message":"Image LID1918q3Oc0mLID saved (34KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:11"}
+{"level":"info","message":"Image LID19160K4bqfLID saved (86KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:12"}
+{"level":"info","message":"Image LID1918xrXNQULID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:12"}
+{"level":"info","message":"Image LID1916bXobVnLID saved (76KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:13"}
+{"level":"info","message":"Image LID1918ICjwlXLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:13"}
+{"level":"info","message":"Image LID1916pSCyvYLID saved (77KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:14"}
+{"level":"info","message":"Image LID1918Voh5DOLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:14"}
+{"level":"info","message":"Image LID1916SKpbQvLID saved (86KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:14"}
+{"level":"info","message":"Image LID1918JhlgSnLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:14"}
+{"level":"info","message":"Image LID1916uvjgMvLID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:15"}
+{"level":"info","message":"Image LID19185HvUnoLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:15"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:36:15"}
+{"level":"info","message":"Image LID1916m0DGmPLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:15"}
+{"level":"info","message":"Image LID1918RfyvRaLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:15"}
+{"level":"info","message":"Image LID1916B7J3yWLID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:16"}
+{"level":"info","message":"Image LID1918W3lA83LID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:16"}
+{"level":"info","message":"Image LID19167RUXQWLID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:17"}
+{"level":"info","message":"Image LID1918Yu5AjLLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:17"}
+{"level":"info","message":"Image LID19167OnJ8tLID saved (116KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:21"}
+{"level":"info","message":"Image LID19186wBOuQLID saved (34KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:21"}
+{"level":"info","message":"Image LID1916G0AlGJLID saved (111KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:21"}
+{"level":"info","message":"Image LID1918LuNmQmLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:21"}
+{"level":"info","message":"Image LID1916gHmGbLLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:21"}
+{"level":"info","message":"Image LID1918rSzimcLID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:21"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1916aG9QXnLID saved (112KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1918q14DSyLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1916EiBF6xLID saved (118KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1918BBn6BULID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1916AoeaDjLID saved (118KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1918DUpYrqLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1916rGFfLyLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1918hPFO88LID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:25"}
+{"level":"info","message":"Image LID1916rKmtzMLID saved (128KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:26"}
+{"level":"info","message":"Image LID1918Rg7nDkLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:26"}
+{"level":"info","message":"Image LID1916jeLp4ALID saved (133KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:26"}
+{"level":"info","message":"Image LID1918AoeaDjLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:26"}
+{"level":"info","message":"Image LID1916slm9U6LID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:28"}
+{"level":"info","message":"Image LID1918Lg9SBdLID saved (34KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:28"}
+{"level":"info","message":"Image LID1916LYnOAKLID saved (128KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:28"}
+{"level":"info","message":"Image LID1918GzYyM0LID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:28"}
+{"level":"info","message":"Image LID19168hADT4LID saved (129KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:29"}
+{"level":"info","message":"Image LID1918hTd9bmLID saved (39KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:29"}
+{"level":"info","message":"Image LID1916rBtDPwLID saved (117KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:31"}
+{"level":"info","message":"Image LID1918EwmTbkLID saved (34KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:31"}
+{"level":"info","message":"Image LID1916cnA0YHLID saved (113KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:32"}
+{"level":"info","message":"Image LID1918kn81buLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:32"}
+{"level":"info","message":"Image LID1916BJboFsLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:32"}
+{"level":"info","message":"Image LID1918Gu0Ni0LID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:32"}
+{"level":"info","message":"Image LID1916obyyJPLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:33"}
+{"level":"info","message":"Image LID1918qln7UNLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:33"}
+{"level":"info","message":"Image LID1916hQm7wOLID saved (130KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:33"}
+{"level":"info","message":"Image LID1918aw22AeLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:33"}
+{"level":"info","message":"Image LID1916KurCRKLID saved (108KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:38"}
+{"level":"info","message":"Image LID1918I3aw4lLID saved (27KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:38"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:36:38"}
+{"level":"info","message":"Image LID1916XgsIuBLID saved (110KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:38"}
+{"level":"info","message":"Image LID1918o2lf2LLID saved (27KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:38"}
+{"level":"info","message":"Image LID1916shLWx8LID saved (140KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:39"}
+{"level":"info","message":"Image LID1918025fk8LID saved (63KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:39"}
+{"level":"info","message":"Image LID1916xcyRmdLID saved (199KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:39"}
+{"level":"info","message":"Image LID1918NiIJR1LID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:39"}
+{"level":"info","message":"Image LID1916V0VOPKLID saved (194KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:39"}
+{"level":"info","message":"Image LID1918eZ4U9ELID saved (74KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:39"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:36:46"}
+{"level":"info","message":"Image LID1916lJmL88LID saved (115KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:46"}
+{"level":"info","message":"Image LID19182XRHD3LID saved (24KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:46"}
+{"level":"info","message":"Image LID1916aICTjYLID saved (122KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:47"}
+{"level":"info","message":"Image LID1918Yd9gMeLID saved (24KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:47"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:36:52"}
+{"level":"info","message":"Image LID1916K8JO21LID saved (293KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:52"}
+{"level":"info","message":"Image LID1918HxWKDBLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:52"}
+{"level":"info","message":"Image LID1916jbf8mkLID saved (283KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:52"}
+{"level":"info","message":"Image LID1918eLow4GLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:52"}
+{"level":"info","message":"Image LID1916mcvjnbLID saved (269KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:53"}
+{"level":"info","message":"Image LID1918l7EVr1LID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:36:53"}
+{"level":"info","message":"Image LID19169ny8eGLID saved (152KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:05"}
+{"level":"info","message":"Image LID1918AAfl6OLID saved (40KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:05"}
+{"level":"info","message":"Image LID19162RZxcXLID saved (166KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:05"}
+{"level":"info","message":"Image LID19186J0BYnLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:05"}
+{"level":"info","message":"Image LID1916XlizrJLID saved (117KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:26"}
+{"level":"info","message":"Image LID1918cAniZ6LID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:26"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:37:28"}
+{"level":"info","message":"Image LID1916DpnQ98LID saved (124KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:28"}
+{"level":"info","message":"Image LID1918K5CaU1LID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:28"}
+{"level":"info","message":"Image LID1916aZBpz4LID saved (133KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:29"}
+{"level":"info","message":"Image LID1918QJUN6rLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:29"}
+{"level":"info","message":"Image LID1916HhdVPELID saved (111KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:32"}
+{"level":"info","message":"Image LID191832PcweLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:32"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:37:45"}
+{"level":"info","message":"Image LID1916FQWU34LID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:45"}
+{"level":"info","message":"Image LID1918Wb00X2LID saved (38KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:45"}
+{"level":"info","message":"Image LID1916JebaxJLID saved (128KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:47"}
+{"level":"info","message":"Image LID1918VgFkQuLID saved (74KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:47"}
+{"level":"info","message":"Image LID1916Y8x3cPLID saved (148KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:47"}
+{"level":"info","message":"Image LID1918816swOLID saved (60KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:48"}
+{"level":"info","message":"Image LID1916IXkPYdLID saved (163KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:59"}
+{"level":"info","message":"Image LID1918Gn2ut8LID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:37:59"}
+{"level":"info","message":"Image LID1916Yq1jeXLID saved (155KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:02"}
+{"level":"info","message":"Image LID1918Rzcl6RLID saved (61KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:02"}
+{"level":"info","message":"Image LID1916A7q3NXLID saved (158KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:02"}
+{"level":"info","message":"Image LID1918P8lufHLID saved (71KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:02"}
+{"level":"info","message":"Image LID1916Z0u2PCLID saved (155KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:03"}
+{"level":"info","message":"Image LID1918ujmUZcLID saved (69KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:03"}
+{"level":"info","message":"Image LID1916DVb6M5LID saved (159KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:03"}
+{"level":"info","message":"Image LID1918wTlltFLID saved (48KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:03"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:38:04"}
+{"level":"info","message":"Image LID1916Qg9bVJLID saved (157KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:04"}
+{"level":"info","message":"Image LID1918hBehLtLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:04"}
+{"level":"info","message":"Image LID1916kEzsAoLID saved (144KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:05"}
+{"level":"info","message":"Image LID1918ij7GD1LID saved (45KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:05"}
+{"level":"info","message":"Image LID1916KObnDnLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:08"}
+{"level":"info","message":"Image LID1918ejW2EOLID saved (53KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:08"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:38:32"}
+{"level":"info","message":"Image LID1916xIjGvvLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:32"}
+{"level":"info","message":"Image LID1918udZuryLID saved (48KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:32"}
+{"level":"info","message":"Image LID19161FxpWrLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:33"}
+{"level":"info","message":"Image LID1918qVnh3zLID saved (46KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:33"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:38:40"}
+{"level":"info","message":"Image LID1916jjwWr0LID saved (94KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:40"}
+{"level":"info","message":"Image LID1918YapyufLID saved (48KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:40"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:38:47"}
+{"level":"info","message":"Image LID1916eKrbxGLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:47"}
+{"level":"info","message":"Image LID1918GG874dLID saved (49KB)","service":"typescript-server","timestamp":"2025-11-09 21:38:47"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:39:01"}
+{"level":"info","message":"Image LID1916JdtaXDLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:39:01"}
+{"level":"info","message":"Image LID1918zoeimfLID saved (48KB)","service":"typescript-server","timestamp":"2025-11-09 21:39:01"}
+{"level":"info","message":"Image LID1916wsmCn0LID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:39:18"}
+{"level":"info","message":"Image LID1918dIHCLqLID saved (47KB)","service":"typescript-server","timestamp":"2025-11-09 21:39:18"}
+{"level":"info","message":"Image LID1916o7p8mwLID saved (99KB)","service":"typescript-server","timestamp":"2025-11-09 21:39:41"}
+{"level":"info","message":"Image LID1918aTzmY5LID saved (45KB)","service":"typescript-server","timestamp":"2025-11-09 21:39:41"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:40:00"}
+{"level":"info","message":"Image LID1916juXvwfLID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:00"}
+{"level":"info","message":"Image LID19187JxhY5LID saved (47KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:00"}
+{"level":"info","message":"Image LID19162uADY1LID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:06"}
+{"level":"info","message":"Image LID1918LSBFnnLID saved (45KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:06"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:40:16"}
+{"level":"info","message":"Image LID1916xzkcMeLID saved (99KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:16"}
+{"level":"info","message":"Image LID1918gobZrgLID saved (45KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:16"}
+{"level":"info","message":"Image LID1916PuFPZwLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:19"}
+{"level":"info","message":"Image LID1918KnrmNPLID saved (46KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:19"}
+{"level":"info","message":"Image LID19165FRQRdLID saved (99KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:19"}
+{"level":"info","message":"Image LID19187yTv0YLID saved (44KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:19"}
+{"level":"info","message":"Image LID1916vOa5TQLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:25"}
+{"level":"info","message":"Image LID1918585mKjLID saved (45KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:25"}
+{"level":"info","message":"Image LID1916Ov8crOLID saved (152KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:30"}
+{"level":"info","message":"Image LID1918lXWx1hLID saved (142KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:31"}
+{"level":"info","message":"Image LID19166qlMPTLID saved (156KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:31"}
+{"level":"info","message":"Image LID1918omPcHwLID saved (147KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:31"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:40:37"}
+{"level":"info","message":"Image LID1916rdaQPmLID saved (221KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:37"}
+{"level":"info","message":"Image LID1918VKaUVqLID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:37"}
+{"level":"info","message":"Image LID1916neur0KLID saved (213KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:38"}
+{"level":"info","message":"Image LID1918VftnfSLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:38"}
+{"level":"info","message":"Image LID1916xiDFfHLID saved (175KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:45"}
+{"level":"info","message":"Image LID191878mc1aLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:45"}
+{"level":"info","message":"Image LID191678U1lgLID saved (183KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:45"}
+{"level":"info","message":"Image LID19188TgXCqLID saved (113KB)","service":"typescript-server","timestamp":"2025-11-09 21:40:46"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:42:56"}
+{"level":"info","message":"Image LID1916oqThE6LID saved (124KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:56"}
+{"level":"info","message":"Image LID1918MzKNZVLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:56"}
+{"level":"info","message":"Image LID1916MZUkRkLID saved (102KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:56"}
+{"level":"info","message":"Image LID1918XKgDDTLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:56"}
+{"level":"info","message":"Image LID1916VMkigfLID saved (126KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:57"}
+{"level":"info","message":"Image LID1918zYsKgQLID saved (34KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:57"}
+{"level":"info","message":"Image LID19167cPdISLID saved (136KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:57"}
+{"level":"info","message":"Image LID1918m4D3qTLID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:57"}
+{"level":"info","message":"Image LID19161SNtoHLID saved (128KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:57"}
+{"level":"info","message":"Image LID1916fgLGrnLID saved (127KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:57"}
+{"level":"info","message":"Image LID19189fzylILID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:58"}
+{"level":"info","message":"Image LID1916oOx08uLID saved (126KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:58"}
+{"level":"info","message":"Image LID1918ZmriD0LID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:42:58"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1916nFXZrfLID saved (71KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1918IDkNhHLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1916gtrZydLID saved (79KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1918iz2oFGLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1916j0I7BELID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1918OWrvfYLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1916sIjJAeLID saved (86KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1918IPQYUULID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:29"}
+{"level":"info","message":"Image LID1916R1qyYELID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:53"}
+{"level":"info","message":"Image LID1918HjVJwXLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:43:54"}
+{"level":"info","message":"Image LID1916DS8UKKLID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:29"}
+{"level":"info","message":"Image LID1918cK3xq8LID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:29"}
+{"level":"info","message":"Image LID1916AqYXZzLID saved (156KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:30"}
+{"level":"info","message":"Image LID191881VZJNLID saved (87KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:30"}
+{"level":"info","message":"Image LID1916KIZ9YtLID saved (157KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:31"}
+{"level":"info","message":"Image LID1918lO47QcLID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:31"}
+{"level":"info","message":"Image LID1916zRFvSWLID saved (153KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:31"}
+{"level":"info","message":"Image LID19185TCnk9LID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:31"}
+{"level":"info","message":"Image LID1916c0oa9wLID saved (151KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:34"}
+{"level":"info","message":"Image LID1918zQqW3pLID saved (93KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:34"}
+{"level":"info","message":"Image LID1916VBXojNLID saved (152KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:34"}
+{"level":"info","message":"Image LID1918MlFmO7LID saved (92KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:34"}
+{"level":"info","message":"Image LID19164FAAJaLID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:34"}
+{"level":"info","message":"Image LID19188CpzpkLID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:34"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1916oU2jSKLID saved (71KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1918RLuHmXLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1916IayMfcLID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1918GA0NIPLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1916aw5gb2LID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1918SU9FVDLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:39"}
+{"level":"info","message":"Image LID1916lnOtH9LID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1918gctJpPLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1916ryXUnBLID saved (99KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1918IayMfcLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1916g6SLkNLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1918cEBrqyLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1916kvtkhNLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID1918bb5cikLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:40"}
+{"level":"info","message":"Image LID19163On2MOLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1918ryXUnBLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1916mbYUfVLID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1918Mn9mHJLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1916isUfduLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1918kvtkhNLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1916DAsgmeLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1918WaiAuaLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:44:41"}
+{"level":"info","message":"Image LID1916s1RNDPLID saved (79KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:02"}
+{"level":"info","message":"Image LID1918kIlPhNLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:02"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:45:03"}
+{"level":"info","message":"Image LID1916KzLvv8LID saved (71KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:03"}
+{"level":"info","message":"Image LID1918x4fADALID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:03"}
+{"level":"info","message":"Image LID19166cvqGJLID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:03"}
+{"level":"info","message":"Image LID1918xkZFHILID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:03"}
+{"level":"info","message":"Image LID19167DZmFkLID saved (67KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1918V8U8yPLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1916tdEou8LID saved (80KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1918CWbZ9ALID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1916umKzzLLID saved (81KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1918VXIrGuLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1916i7yFZuLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID1918cMARkOLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:06"}
+{"level":"info","message":"Image LID19163HCaRALID saved (109KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:19"}
+{"level":"info","message":"Image LID1918l9EWetLID saved (116KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:20"}
+{"level":"info","message":"Image LID1916v0h1OfLID saved (81KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:20"}
+{"level":"info","message":"Image LID1918OHDzbzLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:20"}
+{"level":"info","message":"Image LID1916A3HprgLID saved (86KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Image LID1918U66ibpLID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Image LID1916tykJg5LID saved (78KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Image LID1918zdxKyZLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Image LID19169Kre92LID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Image LID1918dfcVnfLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:28"}
+{"level":"info","message":"Image LID1916XaSm2gLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:30"}
+{"level":"info","message":"Image LID1918RKtx8wLID saved (116KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:30"}
+{"level":"info","message":"Image LID1916BEyDo4LID saved (90KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:30"}
+{"level":"info","message":"Image LID1918Lp8757LID saved (46KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:30"}
+{"level":"info","message":"Image LID1916tPmMaOLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:36"}
+{"level":"info","message":"Image LID1918JmAexMLID saved (90KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:36"}
+{"level":"info","message":"Image LID1916KImevJLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:36"}
+{"level":"info","message":"Image LID1918Vbw07pLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:36"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:45:41"}
+{"level":"info","message":"Image LID19165ccIO6LID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:41"}
+{"level":"info","message":"Image LID1918qq3TtsLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:41"}
+{"level":"info","message":"Image LID1916K38rLvLID saved (111KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:47"}
+{"level":"info","message":"Image LID1918A0rdBCLID saved (69KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:47"}
+{"level":"info","message":"Image LID19167l5SZfLID saved (114KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:48"}
+{"level":"info","message":"Image LID1918M61HymLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:48"}
+{"level":"info","message":"Image LID1916eMHAaCLID saved (141KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Image LID1918yV36EDLID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Image LID1916LGKB7aLID saved (108KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Image LID1918vWP1taLID saved (56KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Image LID1916lvf3WDLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Image LID1918GqfoNjLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:45:51"}
+{"level":"info","message":"Image LID1916UgR2KOLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:17"}
+{"level":"info","message":"Image LID19181aizIULID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:17"}
+{"level":"info","message":"Image LID1916A87oKrLID saved (80KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:17"}
+{"level":"info","message":"Image LID1918S0FJbcLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:17"}
+{"level":"info","message":"Image LID191679SRJaLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:23"}
+{"level":"info","message":"Image LID1918TJGIidLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:23"}
+{"level":"info","message":"Image LID1916xHV066LID saved (149KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:29"}
+{"level":"info","message":"Image LID1918UXZVRVLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:30"}
+{"level":"info","message":"Image LID1916OX2WSmLID saved (59KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:37"}
+{"level":"info","message":"Image LID1918bThOBsLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:38"}
+{"level":"info","message":"Image LID1916fUhRS1LID saved (64KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:38"}
+{"level":"info","message":"Image LID1918hpdWUnLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:38"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID1916lgK8B1LID saved (76KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID1918WvDL6ZLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID19169KrMfwLID saved (66KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID1918oQMqvWLID saved (27KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID1916GttBNWLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID1918uEk0U0LID saved (27KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:56"}
+{"level":"info","message":"Image LID1916Sr7stQLID saved (117KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:59"}
+{"level":"info","message":"Image LID1918DMlwX7LID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:46:59"}
+{"level":"info","message":"Image LID1916jFgg2sLID saved (87KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:49"}
+{"level":"info","message":"Image LID19187URgqcLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:49"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:47:49"}
+{"level":"info","message":"Image LID1916bqmHxLLID saved (125KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:49"}
+{"level":"info","message":"Image LID1918M1xl3PLID saved (37KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:49"}
+{"level":"info","message":"Image LID1916UOli6lLID saved (113KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:50"}
+{"level":"info","message":"Image LID1918Xw7wj3LID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:50"}
+{"level":"info","message":"Image LID1916yjqHovLID saved (112KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:50"}
+{"level":"info","message":"Image LID1918R6kDICLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:47:50"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:48:30"}
+{"level":"info","message":"Image LID1916Peo13QLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:30"}
+{"level":"info","message":"Image LID19186qxGeQLID saved (95KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:30"}
+{"level":"info","message":"Image LID1916mmWmlMLID saved (137KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:31"}
+{"level":"info","message":"Image LID1918yspF54LID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:31"}
+{"level":"info","message":"Image LID1916gL80qKLID saved (139KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:31"}
+{"level":"info","message":"Image LID1918hdTmQoLID saved (138KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:31"}
+{"level":"info","message":"Image LID19163LQ0AqLID saved (108KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:33"}
+{"level":"info","message":"Image LID1918uUPb84LID saved (194KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:33"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:48:38"}
+{"level":"info","message":"Image LID1916Zjw5iGLID saved (58KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:38"}
+{"level":"info","message":"Image LID1918OCDTjaLID saved (168KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:38"}
+{"level":"info","message":"Image LID1916TSoRRZLID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:40"}
+{"level":"info","message":"Image LID1918W8IHUSLID saved (174KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:40"}
+{"level":"info","message":"Image LID1916zRY4DbLID saved (107KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:40"}
+{"level":"info","message":"Image LID1918iaHgIBLID saved (145KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:40"}
+{"level":"info","message":"Image LID1916kzOnBVLID saved (118KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:40"}
+{"level":"info","message":"Image LID1918yFCc9HLID saved (163KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:40"}
+{"level":"info","message":"Image LID1916xb3fflLID saved (130KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:43"}
+{"level":"info","message":"Image LID1918qt9tKgLID saved (26KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:43"}
+{"level":"info","message":"Image LID1916iMzxzyLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:43"}
+{"level":"info","message":"Image LID1918O3kap9LID saved (188KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:43"}
+{"level":"info","message":"Image LID19169mjxSHLID saved (93KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:43"}
+{"level":"info","message":"Image LID19189zWHbtLID saved (157KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:43"}
+{"level":"info","message":"Image LID1916BhRY7qLID saved (110KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:44"}
+{"level":"info","message":"Image LID1918ljCR4xLID saved (182KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:44"}
+{"level":"info","message":"Image LID1916LtnMNgLID saved (66KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:47"}
+{"level":"info","message":"Image LID1918jLg3anLID saved (200KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:47"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:48:47"}
+{"level":"info","message":"Image LID1916fmENCeLID saved (126KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:47"}
+{"level":"info","message":"Image LID1918LveIcqLID saved (178KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:47"}
+{"level":"info","message":"Image LID1916AIuHI8LID saved (116KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:48"}
+{"level":"info","message":"Image LID1918OCk2L6LID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:48"}
+{"level":"info","message":"Image LID19161EMKJVLID saved (81KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:48"}
+{"level":"info","message":"Image LID19186nf1NoLID saved (108KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:48"}
+{"level":"info","message":"Image LID1916ofiYciLID saved (90KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:48"}
+{"level":"info","message":"Image LID1918p1NChELID saved (80KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:48"}
+{"level":"info","message":"Image LID1916WdjOTuLID saved (75KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:50"}
+{"level":"info","message":"Image LID1918I2tdblLID saved (190KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID1916Pw8WxMLID saved (72KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID1918LYt6qZLID saved (83KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID1916ja3JlNLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID19181pcEuuLID saved (69KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID19161lgBL7LID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID1918N9YTibLID saved (70KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:51"}
+{"level":"info","message":"Image LID1916jpq7EKLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:53"}
+{"level":"info","message":"Image LID1918dFvsdnLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:53"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:48:53"}
+{"level":"info","message":"Image LID1916ZCW4oaLID saved (77KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:53"}
+{"level":"info","message":"Image LID1918EvayLULID saved (38KB)","service":"typescript-server","timestamp":"2025-11-09 21:48:53"}
+{"level":"info","message":"Image LID1916abzyCnLID saved (148KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:04"}
+{"level":"info","message":"Image LID1918FVaIfuLID saved (69KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:04"}
+{"level":"info","message":"Image LID1916k4jD3tLID saved (147KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:05"}
+{"level":"info","message":"Image LID1918cy3LiGLID saved (89KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:05"}
+{"level":"info","message":"Image LID1916EY0S95LID saved (148KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:05"}
+{"level":"info","message":"Image LID1918DRI1T1LID saved (87KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:05"}
+{"level":"info","message":"Image LID19166y0po0LID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1918VUYgpQLID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1916znybv5LID saved (145KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1918dl2viALID saved (87KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1916BwIKjyLID saved (153KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1918884K0SLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1916yNiynLLID saved (160KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1918EY0S95LID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:06"}
+{"level":"info","message":"Image LID1916o5wDc2LID saved (151KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1918oCkubiLID saved (86KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1916JM4e9iLID saved (150KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1918BwIKjyLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1916RZNSBSLID saved (153KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1918sHFoPgLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1916ELoD7pLID saved (156KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID19182qFv9zLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1916vMUkG9LID saved (150KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1918vc4X5HLID saved (81KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID19167y1NznLID saved (155KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:07"}
+{"level":"info","message":"Image LID1918UFcFhvLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1916QJoEW2LID saved (150KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1918l8V5k5LID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1916OyS97LLID saved (146KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1918k6DeqTLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1916487wznLID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1918XcNN3vLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1916ND0bkRLID saved (152KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:08"}
+{"level":"info","message":"Image LID1918rQtWngLID saved (83KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:09"}
+{"level":"info","message":"Image LID1916tzyTgULID saved (149KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:09"}
+{"level":"info","message":"Image LID1918QFXMEhLID saved (82KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:09"}
+{"level":"info","message":"Image LID19168Vv6knLID saved (75KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:15"}
+{"level":"info","message":"Image LID1918buj0v3LID saved (110KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:15"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:49:22"}
+{"level":"info","message":"Image LID19160CFUQdLID saved (182KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:22"}
+{"level":"info","message":"Image LID1918TYeKNdLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:22"}
+{"level":"info","message":"Image LID19168oGJl2LID saved (166KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:27"}
+{"level":"info","message":"Image LID1918kiiamDLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:27"}
+{"level":"info","message":"Image LID1916yTtrOGLID saved (136KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:34"}
+{"level":"info","message":"Image LID1918LX5KMhLID saved (77KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:35"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:49:39"}
+{"level":"info","message":"Image LID19161CMEOcLID saved (110KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:39"}
+{"level":"info","message":"Image LID19186QOXotLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:39"}
+{"level":"info","message":"Image LID1916vb2mErLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:44"}
+{"level":"info","message":"Image LID1918cafYNULID saved (117KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:45"}
+{"level":"info","message":"Image LID1916eFALXZLID saved (69KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Image LID1918ixBIVGLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Image LID1916BWdLAULID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Image LID1918iCq7t1LID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Image LID1916VSHyiPLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Image LID1918ju1h0pLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:49:59"}
+{"level":"info","message":"Image LID1916lUdSfALID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:00"}
+{"level":"info","message":"Image LID1918FbrHMuLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:00"}
+{"level":"info","message":"Image LID1916eqh50iLID saved (86KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:00"}
+{"level":"info","message":"Image LID1918jEN0GSLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:00"}
+{"level":"info","message":"Image LID19164QUuBJLID saved (80KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:00"}
+{"level":"info","message":"Image LID1918DZ1IcFLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:00"}
+{"level":"info","message":"Image LID1916kAdgxyLID saved (137KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:02"}
+{"level":"info","message":"Image LID1918kTEyv5LID saved (78KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:02"}
+{"level":"info","message":"Image LID1916qTp9dcLID saved (121KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:02"}
+{"level":"info","message":"Image LID1918KrQYayLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:02"}
+{"level":"info","message":"Image LID1916SesCXqLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:02"}
+{"level":"info","message":"Image LID1918YqMcjQLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:02"}
+{"level":"info","message":"Image LID1916rkOFvDLID saved (78KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:03"}
+{"level":"info","message":"Image LID1918GI8iwbLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:03"}
+{"level":"info","message":"Image LID1916XoN5KELID saved (154KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:06"}
+{"level":"info","message":"Image LID1918GW0HT9LID saved (104KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:07"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:50:07"}
+{"level":"info","message":"Image LID1916xRkSF3LID saved (113KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:07"}
+{"level":"info","message":"Image LID1918p693OiLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:07"}
+{"level":"info","message":"Image LID1916sZwJQRLID saved (78KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:07"}
+{"level":"info","message":"Image LID1918kXWgazLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:07"}
+{"level":"info","message":"Image LID1916EJAk1dLID saved (168KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:10"}
+{"level":"info","message":"Image LID1918E1gYyILID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:10"}
+{"level":"info","message":"Image LID1916xFfqWjLID saved (75KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:11"}
+{"level":"info","message":"Image LID1918WjW1YNLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:11"}
+{"level":"info","message":"Image LID191697B3i1LID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:11"}
+{"level":"info","message":"Image LID1918hiaxvXLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:11"}
+{"level":"info","message":"Image LID1916o0DqrjLID saved (109KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:14"}
+{"level":"info","message":"Image LID1918iDO9sCLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:14"}
+{"level":"info","message":"Image LID1916JuDtZZLID saved (142KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:15"}
+{"level":"info","message":"Image LID1918npUy25LID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:15"}
+{"level":"info","message":"Image LID19166HMgT8LID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Image LID1918D7wAFlLID saved (78KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Image LID1916WifVsLLID saved (131KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Image LID19187NJKdCLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Image LID19163slTZNLID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Image LID1918KIoRnILID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:19"}
+{"level":"info","message":"Image LID1916BwOtXyLID saved (169KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:24"}
+{"level":"info","message":"Image LID19184lWsEzLID saved (99KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:24"}
+{"level":"info","message":"Image LID1916THfGemLID saved (127KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:24"}
+{"level":"info","message":"Image LID1918igfBuOLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:24"}
+{"level":"info","message":"Image LID1916JDHdWcLID saved (120KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:24"}
+{"level":"info","message":"Image LID1918AVRnxBLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:24"}
+{"level":"info","message":"Image LID1916O3uLcELID saved (115KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:27"}
+{"level":"info","message":"Image LID1918cgquIILID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:27"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:50:27"}
+{"level":"info","message":"Image LID1916xF4dDhLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:27"}
+{"level":"info","message":"Image LID1918IVhHKcLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:27"}
+{"level":"info","message":"Image LID1916uhfG7lLID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:31"}
+{"level":"info","message":"Image LID1918lQPbKJLID saved (33KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:31"}
+{"level":"info","message":"Image LID19162wXuKxLID saved (98KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:52"}
+{"level":"info","message":"Image LID1918CaHpnJLID saved (40KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:52"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:50:53"}
+{"level":"info","message":"Image LID19162kFXEPLID saved (122KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:53"}
+{"level":"info","message":"Image LID1918ymuuzMLID saved (103KB)","service":"typescript-server","timestamp":"2025-11-09 21:50:53"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-09 21:51:49"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-09 21:51:49"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:51:49 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:51:49"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:51:49","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916MlZc1wLID saved (186KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:49"}
+{"level":"info","message":"Image color_LID19182ZnJ2mLID saved (177KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:49"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:51:51"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:51:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:51:51"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:51:51","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID19166lqcJMLID saved (217KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:52"}
+{"level":"info","message":"Image color_LID1918CTVy4nLID saved (224KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:52"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:51:53"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:51:53 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:51:53"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:51:53","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID19168tYnHJLID saved (276KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:53"}
+{"level":"info","message":"Image color_LID19184zmCTKLID saved (190KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:54"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:51:59"}
+{"level":"info","message":"Image LID1916O438PtLID saved (143KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:59"}
+{"level":"info","message":"Image LID1918CDZxBWLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:51:59"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:52:00"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:52:00 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:52:00"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:52:00","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916b2EtCzLID saved (183KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:01"}
+{"level":"info","message":"Image color_LID1918ZjKb61LID saved (176KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:01"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-09 21:52:05"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-09 21:52:05"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:52:05 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:52:05"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:52:05","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916l6D3gMLID saved (173KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:05"}
+{"level":"info","message":"Image color_LID191836BehKLID saved (178KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:06"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5,7]","service":"typescript-server","timestamp":"2025-11-09 21:52:06"}
+{"level":"warn","message":"Tag ID not found: 7","service":"typescript-server","timestamp":"2025-11-09 21:52:06"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:52:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:52:06"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:52:06","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID1916oJ4tOrLID saved (175KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:07"}
+{"level":"info","message":"Image color_LID1918JPBcvYLID saved (162KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:07"}
+{"level":"info","message":"Image LID1916KFdNmFLID saved (111KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:46"}
+{"level":"info","message":"Image LID1918veR2QALID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:47"}
+{"level":"info","message":"Image LID1916VjIfXSLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:47"}
+{"level":"info","message":"Image LID1918bD9v61LID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:47"}
+{"level":"info","message":"Image LID19165cqO38LID saved (73KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:49"}
+{"level":"info","message":"Image LID1918aEMtJSLID saved (249KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:50"}
+{"level":"info","message":"Image LID1916m9chRtLID saved (71KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:50"}
+{"level":"info","message":"Image LID1918sOX7QtLID saved (229KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:51"}
+{"level":"info","message":"Image LID1916J5j6TTLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:53"}
+{"level":"info","message":"Image LID1918fae4g2LID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:53"}
+{"level":"info","message":"Image LID1916cIYsSwLID saved (107KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:53"}
+{"level":"info","message":"Image LID1918AjqofrLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:52:53"}
+{"level":"info","message":"Image LID1916PjsKUzLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID19182qzYGmLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID1916MfwuWoLID saved (136KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID1918Jibk05LID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID1916jFsCkdLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID1918kC5E1ZLID saved (31KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID1916YcsrxiLID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Image LID1918Wb27udLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:03"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID1916Cw7RjVLID saved (124KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID1918LJiNJXLID saved (34KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID1916DxERb3LID saved (76KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID19187JlZGCLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID1916hPSXoaLID saved (94KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID1918f4q38dLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:20"}
+{"level":"info","message":"Image LID1916CYWt1mLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID1918dm5QIsLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID1916h3kzOrLID saved (134KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID1918H8qdWNLID saved (35KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID1916yy83GHLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID19186jKhViLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID1916GxNrbFLID saved (83KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID1918lPKTrgLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:22"}
+{"level":"info","message":"Image LID19160Bn4cnLID saved (130KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:31"}
+{"level":"info","message":"Image LID1918IeYkZALID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:31"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:53:31"}
+{"level":"info","message":"Image LID1916eM8h9pLID saved (106KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:31"}
+{"level":"info","message":"Image LID1918wyr9CpLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:31"}
+{"level":"info","message":"Image LID1916D1uYkLLID saved (70KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1918AN87wFLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1916uzIrVBLID saved (74KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1918vPJCqxLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1916Cn5IfsLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1918eM8h9pLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1916kqg6i8LID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID1918U8CCFyLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:32"}
+{"level":"info","message":"Image LID19160jJbwwLID saved (83KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:33"}
+{"level":"info","message":"Image LID19181i7URoLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:33"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:53:41"}
+{"level":"info","message":"Image LID1916qiS0QXLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:41"}
+{"level":"info","message":"Image LID1918ghgbOyLID saved (36KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:41"}
+{"level":"info","message":"Image LID1916MpvgRKLID saved (107KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:42"}
+{"level":"info","message":"Image LID1918DVTbalLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:42"}
+{"level":"info","message":"Image LID19169livAeLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:42"}
+{"level":"info","message":"Image LID1918bbZV1ULID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:42"}
+{"level":"info","message":"Image LID1916M7fCyULID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:42"}
+{"level":"info","message":"Image LID1918przE0lLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:42"}
+{"level":"info","message":"Image LID1916RBDGdULID saved (72KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:46"}
+{"level":"info","message":"Image LID1918QqjtQxLID saved (105KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:46"}
+{"level":"info","message":"Image LID1916pguoF4LID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:46"}
+{"level":"info","message":"Image LID1918LFdt7PLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:46"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Image LID1916lDr0A6LID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Image LID1918WYdz9fLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Image LID1916l6lxfqLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Image LID1918aCcuy1LID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Image LID19161K6TNtLID saved (80KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Image LID1918vDZ6GwLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:47"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:53:58"}
+{"level":"info","message":"Image LID19168J5fGFLID saved (107KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:58"}
+{"level":"info","message":"Image LID1918b62rZbLID saved (52KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:58"}
+{"level":"info","message":"Image LID1916PH6iLDLID saved (135KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:58"}
+{"level":"info","message":"Image LID1918v2tJdmLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:58"}
+{"level":"info","message":"Image LID1916NZ96zBLID saved (126KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:59"}
+{"level":"info","message":"Image LID1918azrf1HLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:59"}
+{"level":"info","message":"Image LID1916iONA7aLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:59"}
+{"level":"info","message":"Image LID1918XNTNf0LID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:53:59"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:54:03"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:54:03 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:54:03"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:54:03","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID19168MnhVGLID saved (161KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:04"}
+{"level":"info","message":"Image color_LID1918YcgoPzLID saved (265KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:04"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:54:05"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:54:05 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:54:05"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:54:05","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image color_LID19169ovXfxLID saved (170KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:05"}
+{"level":"info","message":"Image color_LID1918pLyCIDLID saved (161KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:06"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:54:29"}
+{"level":"info","message":"Image LID1916Jr7XOGLID saved (76KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:29"}
+{"level":"info","message":"Image LID1918J0uN9YLID saved (72KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:29"}
+{"level":"info","message":"Image LID1916mLx0bELID saved (102KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:30"}
+{"level":"info","message":"Image LID1918w0nRhqLID saved (100KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:30"}
+{"level":"info","message":"Image LID19162b07CcLID saved (111KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:30"}
+{"level":"info","message":"Image LID1918AvKCiuLID saved (40KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:30"}
+{"level":"info","message":"Image LID1916tGgURkLID saved (95KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:30"}
+{"level":"info","message":"Image LID1918HSYQFTLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:30"}
+{"level":"info","message":"Image LID1916guO9MjLID saved (77KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Image LID19184tOVbsLID saved (96KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Image LID1916pmrPQXLID saved (101KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Image LID1918BhE9KjLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Image LID1916uXBbbALID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Image LID1918PRyiyWLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:54:55"}
+{"level":"info","message":"Image LID1916F80MMSLID saved (73KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:08"}
+{"level":"info","message":"Image LID1918lITrS1LID saved (74KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:08"}
+{"level":"info","message":"Image LID19161d0XCxLID saved (88KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Image LID1918bZzQCxLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Image LID1916NNAKrCLID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Image LID19182uTjVkLID saved (28KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Image LID1916CJSXlMLID saved (102KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Image LID1918HuePqBLID saved (27KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:09"}
+{"level":"info","message":"Image LID1916HwbbNqLID saved (85KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:17"}
+{"level":"info","message":"Image LID1918sy3oE6LID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:17"}
+{"level":"info","message":"Image LID19165F3tZWLID saved (97KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:17"}
+{"level":"info","message":"Image LID1918kVWh6kLID saved (32KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:17"}
+{"level":"info","message":"Image LID1916Wpah42LID saved (115KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:17"}
+{"level":"info","message":"Image LID1918DSNwsoLID saved (29KB)","service":"typescript-server","timestamp":"2025-11-09 21:55:17"}
+{"level":"info","message":"Image LID1916zwK4L0LID saved (132KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:07"}
+{"level":"info","message":"Image LID19187V0FwLLID saved (45KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:08"}
+{"level":"info","message":"Image LID1916ohakCeLID saved (84KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:08"}
+{"level":"info","message":"Image LID1918ra2jffLID saved (30KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:08"}
+{"level":"info","message":"Image LID1916tRbenYLID saved (95KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:08"}
+{"level":"info","message":"Image LID1918LFJ2QRLID saved (133KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:09"}
+{"level":"info","message":"Image LID19161oQHh1LID saved (91KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:09"}
+{"level":"info","message":"Image LID19188wfNJSLID saved (56KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:09"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 21:56:09"}
+{"level":"info","message":"Image LID1916L4wDDVLID saved (93KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:09"}
+{"level":"info","message":"Image LID1918rDSFUGLID saved (40KB)","service":"typescript-server","timestamp":"2025-11-09 21:56:09"}
+{"level":"info","message":"TAGGED - device:54e5b53659 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 21:56:14"}
+{"level":"info","message":"192.168.1.185 - - [09/Nov/2025:21:56:14 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-11-09 21:56:14"}
+{"duration":"1ms","ip":"192.168.1.185","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:56:14","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"[21:56:45.326] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"level":"info","message":"🧹 Cleaning up 692 image files from uploads directory","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"level":"info","message":"Created new player: 54e5b53659 with display_name: Timmy","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"level":"info","message":"✅ Cleanup complete: 692 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"level":"info","message":"[21:56:45.326] ✅ RESET COMPLETE - Cleared 1 players, 692 images","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"level":"info","message":"127.0.0.1 - - [09/Nov/2025:21:56:45 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 163 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0\"","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"duration":"189ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 21:56:45","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36 Edg/142.0.0.0"}
+{"level":"warn","message":"Slow request: POST /reset took 189.43ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-11-09 21:56:45"}
+{"level":"info","message":"Created new player: abc12345 with display_name: PretendFriend","service":"typescript-server","timestamp":"2025-11-09 22:18:57"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:18:59 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:18:59"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:01 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:01"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 22:19:06","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"level":"warn","message":"Tag ID not found: 13","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 22:19:06","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"level":"warn","message":"Tag ID not found: 13","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:06"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 22:19:06","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[13]","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"warn","message":"Tag ID not found: 13","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:07 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"duration":"0ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 22:19:07","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Queue status: 2 images pending, processing: true","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"Image LID42641HorxHLID saved (19KB)","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"Image LID2332YLfORjLID saved (24KB)","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"Image color_LID4264alxraaLID saved (128KB)","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"TAGGED - device:abc12345 tags:[5]","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"level":"info","message":"192.168.56.1 - - [09/Nov/2025:22:19:07 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
+{"duration":"1ms","ip":"192.168.56.1","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-11-09 22:19:07","userAgent":"python-requests/2.32.4"}
+{"level":"info","message":"Image color_LID2332vyn0ypLID saved (134KB)","service":"typescript-server","timestamp":"2025-11-09 22:19:07"}
