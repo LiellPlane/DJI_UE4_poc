@@ -1,5 +1,6 @@
 import time
-
+import cv2
+from abc import ABC
 
 def num_to_range(num, inMin, inMax, outMin, outMax):
       return outMin + (float(num - inMin) / float(inMax - inMin) * (outMax- outMin))
@@ -20,23 +21,33 @@ class TimeDiffObject:
     def reset(self):
         self._start_time = time.perf_counter()
 
-class Hamster():
-    def __init__(self):
-        self.hamsterName="scambi"
+class SpeedElement():
+    def __init__(self, name, response_sec_per_m_per_sec):
+        self.name=name
         self.current_speed_m = 0
         self.target_speed_m = 0
         self.last_steadystate = 0
-        self.response_sec_per_m_per_sec = 0.1 # it will take N seconds to reach N m/sec
+        self.response_sec_per_m_per_sec = response_sec_per_m_per_sec # it will take N seconds to reach N m/sec
         self.position_m = 0 # position along conveyor
         self.timer = TimeDiffObject()
         self.timer.reset()
+        self.set_insta_speed(0)
 
-    def start_running(self, target_speed_m_sec:int) -> None:
+    def set_insta_speed(self, target_speed_m_sec: int) -> bool:
+        self.current_speed_m = target_speed_m_sec
+        self.current_speed_m = target_speed_m_sec
+        self.last_steadystate = target_speed_m_sec
+        return True
+
+    def set_speed(self, target_speed_m_sec:int) -> bool:
         if target_speed_m_sec == self.target_speed_m:
-            return
+            return False
+        if abs(self.current_speed_m - self.target_speed_m) > 0.01:
+            return False # not completed last state
         self.last_steadystate = self.current_speed_m # this might be a bit weird and break the lerping potentially
         self.timer.reset()
         self.target_speed_m = target_speed_m_sec
+        return True
 
     def update_state(self):
         delta = self.timer.get_dt()
@@ -80,19 +91,18 @@ class Conveyor():
 
 
 def main():
-    scambi = Hamster()
-    conveyor_belt = Conveyor()
+    scambi = SpeedElement("scambi", 0.1)
 
-    scambi.start_running(15)
+    scambi.set_scampering(15)
     print(scambi.current_speed_m)
     while True:
         scambi.update_state()
         print(scambi.current_speed_m)
         time.sleep(0.1)
         if scambi.current_speed_m > 10:
-            scambi.start_running(-20)
+            scambi.set_scampering(-20)
         if scambi.current_speed_m < -10:
-            scambi.start_running(0)
+            scambi.set_scampering(0)
 
 if __name__ == "__main__":
     main()
