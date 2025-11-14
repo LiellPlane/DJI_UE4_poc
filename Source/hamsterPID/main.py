@@ -2,9 +2,9 @@ import time
 import cv2
 import numpy as np
 from abc import ABC
+import random
 
-def num_to_range(num, inMin, inMax, outMin, outMax):
-      return outMin + (float(num - inMin) / float(inMax - inMin) * (outMax- outMin))
+
 
 
 class TimeDiffObject:
@@ -35,6 +35,9 @@ class SpeedElement():
         self.timer_speed.reset()
         self.timer_pos.reset()
         self.set_insta_speed(0)
+    
+    def _num_to_range(self, num, inMin, inMax, outMin, outMax):
+        return outMin + (float(num - inMin) / float(inMax - inMin) * (outMax- outMin))
 
     def set_insta_speed(self, target_speed_m_sec: int) -> bool:
         self.current_speed_m = target_speed_m_sec
@@ -64,7 +67,7 @@ class SpeedElement():
         lerp_position = round(lerp_position ** 3,3) # <<<--- lerp formula here
         # map speed
         if lerp_position < 0:
-            self.current_speed_m = num_to_range(
+            self.current_speed_m = self._num_to_range(
                 num=lerp_position,
                 outMin=self.last_steadystate,
                 outMax=self.target_speed_m,
@@ -73,7 +76,7 @@ class SpeedElement():
 
         else:
 
-            self.current_speed_m = num_to_range(
+            self.current_speed_m = self._num_to_range(
                 num=lerp_position,
                 outMin=self.last_steadystate,
                 outMax=self.target_speed_m,
@@ -83,24 +86,30 @@ class SpeedElement():
         self.position_m += ((self.current_speed_m + outsideforce_m_s) * delta_postime)
         self.timer_pos.reset()
     
-class Conveyor():
-    def __init__(self):
-        self.responsetime = None #not sure what to do with this yet
-        self.timer = TimeDiffObject()
-        self.current_speed_m = 0
-        self.target_speed_m = 0
-
-    def setSpeed(target_speed_m_sec:int, responsetime_ms: int):
-        pass
 
 class HUD():
     def __init__(self):
         self.background_img = np.full((500, 1000, 3), 255, dtype=np.uint8)
+        for i in range(0, self.background_img.shape[1], 20):
+            print(i)
+            if (i // 20) % 2 == 0:
+                if i+20 < self.background_img.shape[1]:
+                    self.background_img[:, i:i+20 ,:] = 200
+
         self.hamster_img = np.full((50, 50, 3), 0, dtype=np.uint8)
+        self.scroll_position = 0
+        self.timer = TimeDiffObject()
+        self.timer.reset()
     
-    def update(self, hamster_position):
-        img = self.background_img.copy()
+    def _scroll_background(self, conveyor_speed_m_s):
+        delta_time = self.timer.get_dt() * 10
+        self.scroll_position += conveyor_speed_m_s * delta_time
+        self.timer.reset()
+        return np.roll(self.background_img.copy(), int(self.scroll_position), axis=1)
+    
+    def update(self, hamster_position, conveyor_speed_m_s):
         x, y = (int(round(coord)) for coord in hamster_position)
+        img = self._scroll_background(conveyor_speed_m_s)
         hamster_h, hamster_w = self.hamster_img.shape[:2]
         bg_h, bg_w = img.shape[:2]
         if (
@@ -115,20 +124,26 @@ class HUD():
 
 def main():
     scambi = SpeedElement("scambi", 0.1)
+    conveyor =  SpeedElement("scambi", 0.01)
     hud = HUD()
 
     scambi.set_speed(15)
+    conveyor.set_speed(5)
     while True:
-        scambi.update_state(outsideforce_m_s=5)
-        frame = hud.update(hamster_position=(scambi.position_m,40))
+        scambi.update_state(outsideforce_m_s=conveyor.current_speed_m)
+        conveyor.update_state(outsideforce_m_s=0)
+        print(f"conveyor.current_speed_m {conveyor.current_speed_m}")
+        frame = hud.update(hamster_position=(scambi.position_m, 40), conveyor_speed_m_s=conveyor.current_speed_m)
         cv2.imshow("Hamster HUD", frame)
         cv2.waitKey(1)
         print(f"current speed {scambi.current_speed_m}")
         time.sleep(0.1)
         if scambi.current_speed_m > 10:
             scambi.set_speed(-20)
+            conveyor.set_speed(-5)
         if scambi.current_speed_m < -10:
             scambi.set_speed(0)
+            conveyor.set_speed(10)
 
 if __name__ == "__main__":
     main()
