@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from abc import ABC
 import random
+import os
 
 
 
@@ -172,7 +173,61 @@ class SpeedElement():
         delta_position = ((self.current_speed_m + outsideforce_m_s) * delta_postime)
         self.timer_pos.reset()
         return delta_position
+
+
+class HamsterSpeedController:
+    """Generates realistic hamster speed changes with varying durations."""
     
+    def __init__(self):
+        self.current_speed = 0
+        self.current_duration = 0
+        self.timer = TimeDiffObject()
+        self.timer.reset()
+    
+    def get_speed(self):
+        """Returns current speed. Changes to new speed when duration expires."""
+        elapsed = self.timer.get_dt()
+        
+        if elapsed >= self.current_duration:
+            # Generate new speed and duration
+            behavior = random.choices(
+                ['dead_stop', 'high_speed', 'direction_change', 'moderate', 'slow'],
+                weights=[0.15, 0.25, 0.20, 0.25, 0.15]
+            )[0]
+            
+            if behavior == 'dead_stop':
+                self.current_speed = 0
+                self.current_duration = random.uniform(1.0, 4.0)
+            
+            elif behavior == 'high_speed':
+                direction = random.choice([-1, 1])
+                self.current_speed = random.randint(15, 20) * direction
+                self.current_duration = random.uniform(0.5, 3.0)
+            
+            elif behavior == 'direction_change':
+                # Quick change to opposite direction
+                if self.current_speed > 0:
+                    self.current_speed = random.randint(-20, -10)
+                elif self.current_speed < 0:
+                    self.current_speed = random.randint(10, 20)
+                else:
+                    self.current_speed = random.choice([-20, 20])
+                self.current_duration = random.uniform(0.3, 1.0)
+            
+            elif behavior == 'moderate':
+                direction = random.choice([-1, 1])
+                self.current_speed = random.randint(5, 14) * direction
+                self.current_duration = random.uniform(0.8, 2.5)
+            
+            else:  # slow
+                direction = random.choice([-1, 1])
+                self.current_speed = random.randint(1, 4) * direction
+                self.current_duration = random.uniform(1.0, 3.0)
+            
+            self.timer.reset()
+        
+        return int(self.current_speed)
+
 
 class HUD():
     def __init__(self):
@@ -184,7 +239,39 @@ class HUD():
                 if i+20 < self.background_img.shape[1]:
                     self.background_img[:, i:i+20 ,:] = 200
 
-        self.hamster_img = np.full((50, 50, 3), 0, dtype=np.uint8)
+        # Load PNG image with alpha channel
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        png_path = os.path.join(script_dir, "hammie.png")
+        
+        if not os.path.exists(png_path):
+            raise FileNotFoundError(f"hammie.png not found at {png_path}")
+        
+        hamster_img_with_alpha = cv2.imread(png_path, cv2.IMREAD_UNCHANGED)
+        
+        if hamster_img_with_alpha is None:
+            raise ValueError(f"Failed to load hammie.png from {png_path}")
+        
+        # Extract alpha channel if present, otherwise create opaque mask
+        if hamster_img_with_alpha.shape[2] == 4:
+            self.hamster_img = hamster_img_with_alpha[:, :, :3]
+            self.hamster_mask = hamster_img_with_alpha[:, :, 3] / 255.0
+        else:
+            self.hamster_img = hamster_img_with_alpha
+            self.hamster_mask = np.ones((hamster_img_with_alpha.shape[0], hamster_img_with_alpha.shape[1]), dtype=np.float32)
+        
+        # Resize so longest dimension is 70 pixels, maintaining aspect ratio
+        h, w = self.hamster_img.shape[:2]
+        longest_dim = max(h, w)
+        scale = 250.0 / longest_dim
+        new_w = int(w * scale)
+        new_h = int(h * scale)
+        
+        self.hamster_img = cv2.resize(self.hamster_img, (new_w, new_h), interpolation=cv2.INTER_AREA)
+        self.hamster_mask = cv2.resize(self.hamster_mask, (new_w, new_h), interpolation=cv2.INTER_AREA)
+        
+        # Convert mask back to 0-255 range for easier blending
+        self.hamster_mask = self.hamster_mask.astype(np.float32)
+        
         self.scroll_position = 0
         self.hamster_position = 200
         self.timer = TimeDiffObject()
@@ -222,10 +309,16 @@ class HUD():
         self.timer.reset()
         return np.roll(self.background_img.copy(), int(self.scroll_position), axis=1)
     
-    def update(self, hamster_delta, conveyor_speed_m_s):
+    def update(self, hamster_delta, conveyor_speed_m_s, hamster_speed=0):
         self.hamster_position += hamster_delta
-        x = int(self.hamster_position)
-        y = 250
+        base_x = int(self.hamster_position)
+        base_y = 250
+        
+        # Add wobble based on hamster speed (speed/2 gives +/- range)
+        jiggle_range = abs(hamster_speed) / 2.0
+        x = int(base_x + random.uniform(-jiggle_range, jiggle_range))
+        y = int(base_y + random.uniform(-jiggle_range, jiggle_range))
+        
         img = self._scroll_background(conveyor_speed_m_s)
         img[:, 1000//2, :] = (0,0,255)
         
@@ -246,7 +339,14 @@ class HUD():
             or y + hamster_h > bg_h
         ):
             raise ValueError("hamster_position would place hamster_img outside the background image")
-        img[y:y + hamster_h, x:x + hamster_w] = self.hamster_img
+        
+        # Composite with alpha mask
+        mask_3d = self.hamster_mask[:, :, np.newaxis]
+        img[y:y + hamster_h, x:x + hamster_w] = (
+            img[y:y + hamster_h, x:x + hamster_w] * (1 - mask_3d) + 
+            self.hamster_img * mask_3d
+        ).astype(np.uint8)
+        
         return img
     def get_hamster_offset(self):
         return self.hamster_position - (self.background_img.shape[1] //2 )
@@ -257,10 +357,11 @@ class HUD():
         cv2.waitKey(1)
 
 def main():
-    scambi = SpeedElement("scambi", 0.1)
-    conveyor =  SpeedElement("scambi", 0.01)
+    scambi = SpeedElement("scambi", 0.01)
+    conveyor =  SpeedElement("scambi", 0.05)
     pid = PIDController(Kp=1.0, Ki=0.1, Kd=0.0, setpoint=0.0, max_integral=20.0, integral_error_threshold=1.0)
     hud = HUD()
+    hamster_controller = HamsterSpeedController()
 
     scambi.set_speed(15)
     conveyor.set_speed(5)
@@ -272,17 +373,11 @@ def main():
         conveyor.set_speed(target_speed)
         hud.set_overlay_text(f"correction: {round(correction,2)} | target_speed: {round(target_speed,2)}")
         conveyor.updateAndGetDeltaPos(outsideforce_m_s=0)
-        frame = hud.update(scambiPosDelta, conveyor_speed_m_s=conveyor.current_speed_m)
+        frame = hud.update(scambiPosDelta, conveyor_speed_m_s=conveyor.current_speed_m, hamster_speed=scambi.current_speed_m)
         hud.display(frame)
         # print(f"current speed {scambi.current_speed_m}")
         time.sleep(0.1)
-        # if scambi.current_speed_m > 10:
-        #     scambi.set_speed(-20)
-        #     conveyor.set_speed(-5)
-        # if scambi.current_speed_m < -10:
-        #     scambi.set_speed(0)
-        #     conveyor.set_speed(10)
-        scambi.set_speed(random.randint(-20,20))
+        scambi.set_speed(hamster_controller.get_speed())
 
 if __name__ == "__main__":
     main()
