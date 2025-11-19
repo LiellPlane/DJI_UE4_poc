@@ -331,6 +331,9 @@ def main():
     cnt = 0
     TEMP_DEBUG_trigger_cnt = 0
     TEMP_fake_light = False
+    is_torch_reqd = False
+    last_torch_req = time.perf_counter()
+    deactivate_lser = False
     # analysis_last_frame: dict[tuple[int, int], list[ShapeItem | None]] = {}
     while True:
         imageIDs = []
@@ -365,7 +368,16 @@ def main():
                 # accelerometer.update_vel()
                 results_trig_positions = triggers.test_states()
 
+                # logic to allow user to toggle on and off the laser using the torch control twice quickly 
+                if (is_torch_reqd != results_trig_positions[GUN_CONFIGURATION.button_torch] and is_torch_reqd is False):
+                    # rising edge - set timer_energy_recover
+                    if time.perf_counter() - last_torch_req < 0.3: # seconds
+                        deactivate_lser = not deactivate_lser
+                    last_torch_req = time.perf_counter()
+
                 is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.button_torch]
+
+
                 is_trigger_reqd = results_trig_positions[
                     GUN_CONFIGURATION.button_trigger
                 ]
