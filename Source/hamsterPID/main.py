@@ -239,8 +239,21 @@ class HUD():
                 if i+20 < self.background_img.shape[1]:
                     self.background_img[:, i:i+20 ,:] = 200
 
-        # Load PNG image with alpha channel
+        # Load plasma tile background (alternative background - swap with self.background_img to use)
         script_dir = os.path.dirname(os.path.abspath(__file__))
+        plasma_path = os.path.join(script_dir, "plasma_tile.png")
+        
+        if os.path.exists(plasma_path):
+            plasma_tile = cv2.imread(plasma_path)
+            if plasma_tile is not None:
+                plasma_double = np.hstack([plasma_tile, plasma_tile])
+                self.background_img_plasma = cv2.resize(plasma_double, (1000, 500), interpolation=cv2.INTER_LINEAR)
+            else:
+                self.background_img_plasma = None
+        else:
+            self.background_img_plasma = None
+        self.background_img = self.background_img_plasma
+        # Load PNG image with alpha channel
         png_path = os.path.join(script_dir, "hammie.png")
         
         if not os.path.exists(png_path):
@@ -358,7 +371,7 @@ class HUD():
 
 def main():
     scambi = SpeedElement("scambi", 0.01)
-    conveyor =  SpeedElement("scambi", 0.05)
+    conveyor =  SpeedElement("scambi", 0.01)
     pid = PIDController(Kp=1.0, Ki=0.1, Kd=0.0, setpoint=0.0, max_integral=20.0, integral_error_threshold=1.0)
     hud = HUD()
     hamster_controller = HamsterSpeedController()
