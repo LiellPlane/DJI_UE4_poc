@@ -369,13 +369,15 @@ def main():
                 results_trig_positions = triggers.test_states()
 
                 # logic to allow user to toggle on and off the laser using the torch control twice quickly 
-                if (is_torch_reqd != results_trig_positions[GUN_CONFIGURATION.button_torch] and is_torch_reqd is False):
-                    # rising edge - set timer_energy_recover
+                new_torch_state = results_trig_positions[GUN_CONFIGURATION.button_torch]
+                if new_torch_state != is_torch_reqd and new_torch_state is True:
+                    # rising edge - check if double press
                     if time.perf_counter() - last_torch_req < 0.3: # seconds
                         deactivate_lser = not deactivate_lser
+                        log_overlay.add_event(f"deactivate_lser: {deactivate_lser}")
                     last_torch_req = time.perf_counter()
-
-                is_torch_reqd = results_trig_positions[GUN_CONFIGURATION.button_torch]
+                
+                is_torch_reqd = new_torch_state
 
 
                 is_trigger_reqd = results_trig_positions[
