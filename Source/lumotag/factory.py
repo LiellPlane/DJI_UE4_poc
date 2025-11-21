@@ -932,7 +932,11 @@ class Camera_async_flipflop(Camera):
                 break
         
         # Send request token (Main → Subprocess)
-        self.raw_frame_request_queue.put("REQUEST_RAW", block=True, timeout=1.0)
+        try:
+            self.raw_frame_request_queue.put("REQUEST_RAW", block=True, timeout=1.0)
+        except queue.Full:
+            print("possible race hazard in  raw_frame = self.raw_frame_response_queue.get - put token for request raw")
+            return False
 
         # unblock the camera queue
         self.handshake_queue2.put("please rename this", block=True, timeout=None)
