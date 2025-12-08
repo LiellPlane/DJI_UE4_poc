@@ -785,7 +785,7 @@ class Camera(ABC):
     # this is the class which negotiates with an image acquisition class, and handles 
     # shared memory etc if we want async behaviour 
     def __init__(self, video_modes) -> None:
-        self.res_select = 0
+        self.res_select = 0 # This is how video modes are selected - but we always select the first one - I know its horrible
         self.last_img = None
         self.cam_res = video_modes
         self._is_reversed = None

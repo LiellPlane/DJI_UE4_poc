@@ -1,12 +1,19 @@
-install raspberry pi bookworm 64 bit desktop (full thing I think)
+install raspberry pi bookworm 64 bit desktop (full thing I think) - use raspbery pi installer thing
 
 hostname : lumotag.local
 
 username: lumotag
 rest is the same
 
-SSID:  TP-LINK_509487 
+SSID:  lumotag
+get password from router
 
+put in card and wait for the machine to boot up. make sure you are connected to Lumotag wifi
+find the device using angry ip scanner, or just try to ssh in using putty 
+now touch NEW_UNIT_SETUP_SCRIPT.sh (create this empty file)
+nano this file and paste in the contents of NEW_UNIT_SETUP_SCRIPT
+run chmod +x NEW_UNIT_SETUP_SCRIPT.sh (give permissions to run file as linux is up its own arse)
+run it as ./NEW_UNIT_SETUP_SCRIPT
 
 
 run NEW_UNIT_SETUP_SCRIPT

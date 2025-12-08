@@ -25,7 +25,7 @@ import json
 import img_processing
 import utils
 import video_recorder
-from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv2Noir_Cam_vidmodes
+from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv3Noir_Cam_vidmodes
 #import imutils
 
 
@@ -385,8 +385,66 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         
         return yuv_lores_image[0: lores_x, 0: lores_y]
 
-
 class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
+    
+    def __init__(self, res) -> None:
+        self.cam_res = tuple(reversed(res))
+        self.picam2 = Picamera2(1)
+        _config = self.picam2.create_video_configuration(
+                    main={"size": res,  "format": "YUV420"}, controls={'FrameRate': 40})#, controls={"FrameDurationLimits": (233333, 233333)})
+                #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
+        self.picam2.configure(_config)
+        #  set_controls must come after config!!
+        #self.picam2.set_controls({"AwbEnable": 0})
+        self.picam2.set_controls({
+            "AwbEnable": 0, 
+            "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+            "AeExposureMode": controls.AeExposureModeEnum.Short,
+            "ExposureValue": -2.5,      # Stronger underexposure bias for flashlight
+            "AnalogueGain": 1.2,        # Lower gain to reduce sensitivity
+            "AeConstraintMode": controls.AeConstraintModeEnum.Highlight,  # Prioritise highlights
+            "Contrast": 1.4,            # Boost contrast for better bright/dark balance
+            "FrameDurationLimits": (100, 15000)  # Min 0.1ms, Max 15ms exposure
+            })
+        self.picam2.start()
+        time.sleep(0.2)
+
+    def _get_image(self):
+        x = self.cam_res[0]
+        y = self.cam_res[1]
+
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
+        # return self.picam2.capture_array("main")[0: x, 0: y] VVVV MUST BE THE SAME!!
+        # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
+        # Save raw YUV420 as monochrome image for debugging
+        yuv_img = self.picam2.capture_array("main")
+        # timestamp = int(time.time())
+        # import random
+        # if random.randint(0,10) < 2:
+        #     cv2.imwrite(f"yuv420_longrange_cnt2104cnt{timestamp}.jpg", yuv_img)
+        return yuv_img[0: x, 0: y] # DO not change!!
+        # IF YOU CHANGE THIS YOUR MOTHER WILL DIE IN HER SLEEP
+        # comes in at shape = (1080, 2020)
+        # return self.picam2.capture_array("main")[0: x, 0: y] ^^^ MUST BE THE SAME
+        #  THIS IS CORRECT WAY AROUND!! SIGNED LIELL 4TH OCTOBER!!
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+        #   DO NOT MODIFY
+    
+    def get_raw_image(self):
+        """Get full uncropped frame from camera in BGR format - called by async subprocess"""
+        yuv_image = self.picam2.capture_array("main")
+        bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
+        return bgr_image
+
+class CsiCameraImageGenRCAMv3NOIR(factory.ImageGenerator):
     
     def __init__(self, res) -> None:
         self.cam_res = tuple(reversed(res))
@@ -499,8 +557,8 @@ class CSI_Camera_Async(factory.Camera_async):
             super().__init__(video_modes, factory.ImageLibrary)#CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, factory.ImageLibrary)#CsiCameraImageGen_GS)
-        elif video_modes == RPICAMv2Noir_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
+        elif video_modes == RPICAMv3Noir_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGenRCAMv3NOIR)
         else:
             raise Exception("no match for video mode input")
 
@@ -511,8 +569,8 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS)
-        elif video_modes == RPICAMv2Noir_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
+        elif video_modes == RPICAMv3Noir_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGenRCAMv3NOIR)
         else:
             raise Exception("no match for video mode input")
 
@@ -523,8 +581,8 @@ class CSI_Camera_Synchro(factory.Camera_synchronous):
             super().__init__(video_modes, CsiCameraImageGen_HQ)
         elif video_modes == HQ_GS_Cam_vidmodes:
             super().__init__(video_modes, CsiCameraImageGen_GS)
-        elif video_modes == RPICAMv2Noir_Cam_vidmodes:
-            super().__init__(video_modes, CsiCameraImageGenRCAMv2NOIR)
+        elif video_modes == RPICAMv3Noir_Cam_vidmodes:
+            super().__init__(video_modes, CsiCameraImageGenRCAMv3NOIR)
         else:
             raise Exception("no match for video mode input")
 

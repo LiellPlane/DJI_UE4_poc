@@ -1,3 +1,8 @@
 test cameraS;
 
 libcamera-hello --list-cameras
+
+or if that breaks before raspbain is a retarded mess:
+
+rpicam-hello --list-cameras
+Available cameras
