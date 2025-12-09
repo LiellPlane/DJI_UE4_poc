@@ -395,10 +395,15 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
-        self.picam2.set_controls({"AwbEnable": 0})
+        self.picam2.set_controls({
+            "AwbEnable": 0,
+            "AeMeteringMode": controls.AeMeteringModeEnum.CentreWeighted,
+            "AeExposureMode": controls.AeExposureModeEnum.Short,
+
+            })
         # self.picam2.set_controls({
         #     "AwbEnable": 0, 
-        #     "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+        #     "AeMeteringMode": controls.AeMeteringModeEnum.CentreWeighted,
         #     "AeExposureMode": controls.AeExposureModeEnum.Short,
         #     "ExposureValue": -2.5,      # Stronger underexposure bias for flashlight
         #     "AnalogueGain": 1.2,        # Lower gain to reduce sensitivity
