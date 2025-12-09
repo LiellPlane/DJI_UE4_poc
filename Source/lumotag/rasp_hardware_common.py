@@ -25,7 +25,7 @@ import json
 import img_processing
 import utils
 import video_recorder
-from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv2Noir_Cam_vidmodes
+from configs import HQ_Cam_vidmodes, HQ_GS_Cam_vidmodes, RPICAMv2Noir_Cam_vidmodes, RPICAMv3Noir_Cam_vidmodes
 #import imutils
 
 
