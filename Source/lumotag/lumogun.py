@@ -537,8 +537,11 @@ def main():
 
                         while not img_analyser.analysis_output_q.empty():
                             result: analyse_lumotag.AnalysisOutput = (
-                                img_analyser.analysis_output_q.get(block=False, timeout=0)
+                                img_analyser.get_analysis_result(block=False, timeout=0)
                             )
+                            # result: analyse_lumotag.AnalysisOutput = (
+                            #     img_analyser.analysis_output_q.get(block=False, timeout=0)
+                            # )
                             if isinstance(result, Exception):
                                 raise result  # this is really shit but better than nothing or dying downstream in a confusing way
                             perfmonitor.manual_measure(

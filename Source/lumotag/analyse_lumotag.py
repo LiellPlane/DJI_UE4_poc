@@ -15,6 +15,7 @@ from collections import OrderedDict
 import configs
 import time
 import cv2
+import queue
 
 
 def debuffer_image(img_buff: memoryview, res: tuple[int, int]) -> np.ndarray:
@@ -56,7 +57,8 @@ class ImageAnalyser_shared_mem():
         self.img_crop = slice_details
         self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
-        self.last_analysis_time = None
+        self.current_analysis_time: float | None = None 
+        self.last_analysis_time: float = 0.0
         # self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
         self.currentimg: np.ndarray | None = None
         func_args = (
@@ -69,27 +71,48 @@ class ImageAnalyser_shared_mem():
             daemon=True)
 
         process.start()
+
+    def set_idle(self):
+        # you can probably do this better looking at the queue
+        self.current_analysis_time = None
+    
     def check_if_timed_out(self):
-        if self.last_analysis_time is None:
+        # you can probably do this better looking at the queue
+        if self.current_analysis_time is None:
             # we can't time out if we have never been triggered 
             return False
-        if time.perf_counter() - self.last_analysis_time > 10: # wait in seconds
+        if time.perf_counter() - self.current_analysis_time > 10: # wait in seconds
             return True
         return False
     def get_analysis_time_ms(self):
         return (time.perf_counter() - self.last_analysis_time) * 1000
+    
+    def get_analysis_result(self, block=False, timeout=0):
+        """Get analysis result from queue and reset timeout timer.
+        
+        Returns:
+            AnalysisOutput | Exception | None: Result from queue, or None if empty
+        """
+        # deactivate timer - we arent processing anymore
+        self.current_analysis_time = None
+        try:
+            result = self.analysis_output_q.get(block=block, timeout=timeout)
+            return result
+        except queue.Empty:
+            return None
+    
     def trigger_analysis(self):
         
         #print("putting record for analyis", mapped_details)
         # if self.input_shared_mem_index_q.empty():# skip if procesing something already
-        #     self.last_analysis_time = time.perf_counter() # reset time out
+        #     self.current_analysis_time = time.perf_counter() # reset time out
         #     self.input_shared_mem_index_q.put(
         #         self.safe_mem_details_func(),
         #         block=True,
         #         timeout=None)
         #print("putting record for analyis", mapped_details)
         if not self.input_shared_mem_index_q.full():# skip if procesing something already
-            self.last_analysis_time = time.perf_counter() # reset time out
+            self.current_analysis_time = time.perf_counter() # reset time out
             self.input_shared_mem_index_q.put(
                 self.safe_mem_details_func(),
                 block=True,
