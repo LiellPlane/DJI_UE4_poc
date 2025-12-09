@@ -8,6 +8,7 @@ import datetime
 import time
 import random
 import git_info
+import numpy as np
 from comms_http import HTTPComms, LogEvent
 from copy import deepcopy
 # import decode_clothID_v2 as decode_clothID
@@ -263,12 +264,16 @@ def main():
     # display.display_output(img)
     # while True:
     # display.display_output(next(image_capture2))
+    long_range_cam_shape = next(image_capture_longrange).shape
     longrangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape=next(image_capture_longrange).shape
+        cam_image_shape=long_range_cam_shape
     )
+
+    short_range_cam_shape = next(image_capture_shortrange).shape
     closerangedetails = img_processing.CamDisplayTransform(
-        cam_image_shape=next(image_capture_shortrange).shape
+        cam_image_shape=short_range_cam_shape
     )
+
     transform_details = img_processing.TransformsDetails(
         longrange_to_shortrange_perwarp=file_system.get_closerange_to_longrange_transform(),
         closerange_to_display=closerangedetails,
@@ -341,24 +346,8 @@ def main():
         # print(TEMP_DEBUG_trigger_cnt)
         with time_it("TOTAL TIME FOR EVERYTHING", debug=PRINT_DEBUG):
             cnt += 1
-            with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure(
-                "get next image"
-            ):
-                cap_img = next(image_capture_longrange)
-                cap_img_closerange = next(image_capture_shortrange)
-                if "game_client" in locals():
-                    # use these for uploading images of interest to the server
-                    # IDs that don't match will be ignored, so just grab all valid ones for now
-                    imageIDs.append(factory.decode_image_id(cap_img))
-                    imageIDs.append(factory.decode_image_id(cap_img_closerange))
-                # this is bad code - should come as package with the image -
-                # but in easy of modularity have to do it like this for now
-            with time_it("start analysis", debug=PRINT_DEBUG):
-                for img_analyser in image_analysis:
-                    img_analyser.trigger_analysis()
-                if "game_client" in locals():
-                    game_client.trigger_capture_close_range()
-                    game_client.trigger_capture_long_range()
+
+
 
             GUN_CONFIGURATION.loop_wait()
 
@@ -445,6 +434,48 @@ def main():
                     # file_system.save_image(cap_img_closerange,message=f"_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 set_trigger(
                     state=trigger_debounce.get_heldstate())  # click noise from relay only
+
+
+
+
+
+
+            # experimental - only process images when we use torch - will this save battery?
+            if is_torch_reqd is True:
+                with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure(
+                    "get next image"
+                ):
+                    cap_img = next(image_capture_longrange)
+                    cap_img_closerange = next(image_capture_shortrange)
+                    if "game_client" in locals():
+                        # use these for uploading images of interest to the server
+                        # IDs that don't match will be ignored, so just grab all valid ones for now
+                        imageIDs.append(factory.decode_image_id(cap_img))
+                        imageIDs.append(factory.decode_image_id(cap_img_closerange))
+                    # this is bad code - should come as package with the image -
+                    # but in easy of modularity have to do it like this for now
+                with time_it("start analysis", debug=PRINT_DEBUG):
+                    for img_analyser in image_analysis:
+                        img_analyser.trigger_analysis()
+                    if "game_client" in locals():
+                        game_client.trigger_capture_close_range()
+                        game_client.trigger_capture_long_range()
+            else:
+                time.sleep(0.015)
+                cap_img = np.zeros(short_range_cam_shape, dtype=np.uint8)
+                cap_img_closerange = np.zeros(long_range_cam_shape, dtype=np.uint8)
+
+
+
+
+
+
+
+
+
+
+
+
 
             with time_it("gun image stuff", debug=PRINT_DEBUG), perfmonitor.measure(
                 "gun_image"
@@ -774,12 +805,15 @@ def main():
                     if is_trigger_pressed is True:
                         if len(analysis) > 0:
                             for img_id in imageIDs: # PUT BACK 
-                                # game_client.upload_image_by_id(img_id)
+                                game_client.upload_image_by_id(img_id)
 
-                                # lets also try capturing a colour image - experimental so careful with this
-                                if (img := image_capture_longrange.get_raw_image_sync()) is not False:
-                                    file_path = file_system.save_image(img, message="raw_color_img_")
-                                    game_client.upload_image_from_disk(file_path, image_id=f"color_{img_id}")
+                                # # lets also try capturing a colour image - experimental so careful with this
+                                # # this seems to be causing a lot of problems with power :(
+                                # if (img := image_capture_longrange.get_raw_image_sync()) is not False:
+                                #     file_path = file_system.save_image(img, message="raw_color_img_")
+                                #     game_client.upload_image_from_disk(file_path, image_id=f"color_{img_id}")
+
+
                         # memed this out - not sure why I am uploading images every time I pull the trigger -maybe for load testing 
                         # else:
                         #     for img_id in imageIDs:

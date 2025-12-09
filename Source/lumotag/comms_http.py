@@ -560,8 +560,9 @@ class HTTPComms(AbstractHTTPComms):
                     if not isinstance(img_data, np.ndarray):
                         raise RuntimeError(f"Expected numpy array for image {image_id}, got {type(img_data)}")
                     
-                    # Encode raw image to JPEG
-                    ok, jpeg_buffer = cv2.imencode(".jpg", img_data)
+                    # Encode raw image to JPEG with reduced quality to save CPU/WiFi power (85% quality vs default 95%)
+                    encode_params = [cv2.IMWRITE_JPEG_QUALITY, 85]
+                    ok, jpeg_buffer = cv2.imencode(".jpg", img_data, encode_params)
                     if not ok:
                         raise RuntimeError(f"JPEG encode failed for {image_id} - corrupt image data")
                     

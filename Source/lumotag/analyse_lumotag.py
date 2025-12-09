@@ -56,7 +56,7 @@ class ImageAnalyser_shared_mem():
         self.img_crop = slice_details
         self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
-        self.last_analysis_time = time.perf_counter()
+        self.last_analysis_time = None
         # self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
         self.currentimg: np.ndarray | None = None
         func_args = (
@@ -70,6 +70,9 @@ class ImageAnalyser_shared_mem():
 
         process.start()
     def check_if_timed_out(self):
+        if self.last_analysis_time is None:
+            # we can't time out if we have never been triggered 
+            return False
         if time.perf_counter() - self.last_analysis_time > 10: # wait in seconds
             return True
         return False
