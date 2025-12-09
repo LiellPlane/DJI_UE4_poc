@@ -16,3 +16,11 @@ Look at the switches, it has two circuits. you need to put them off neutral to o
 
 put ONE switch ONLY in the INNER position so it the battery can charge. You may be able to put both on depending on if the power has been upgraded
 
+
+
+setting up cameras
+
+there should be a file for the camera transition, but if you need to make it again
+start the server
+then fire the device at a tag - this should upload both images to the server somewhere
+find them, then use the get_perp_warp helper file (in setup at time of writing)
