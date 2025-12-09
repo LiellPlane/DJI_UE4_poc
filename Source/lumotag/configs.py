@@ -245,7 +245,7 @@ class TZAR_config(gun_config):
 
     @property
     def video_modes_closerange(self):
-        return RPICAMv3Noir_Cam_vidmodes
+        return RPICAMv2Noir_Cam_vidmodes
     
 
 
