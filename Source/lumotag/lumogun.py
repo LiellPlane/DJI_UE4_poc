@@ -410,12 +410,12 @@ def main():
                 #    is_torch_reqd = False
 
                 
-                set_torch(state=is_torch_reqd)
+                set_laser(state=is_torch_reqd)
       
                 if deactivate_lser is True:
-                    set_laser(state=is_torch_reqd)
+                    set_torch(state=is_torch_reqd)
                 else:
-                    set_laser(state=False)
+                    set_torch(state=False)
 
                 result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)
 

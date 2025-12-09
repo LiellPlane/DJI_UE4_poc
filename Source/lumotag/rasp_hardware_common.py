@@ -395,17 +395,17 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
                 #self.picam2.set_controls({"ExposureTime": 1000}) # for blurring - but can get over exposed at night
         self.picam2.configure(_config)
         #  set_controls must come after config!!
-        #self.picam2.set_controls({"AwbEnable": 0})
-        self.picam2.set_controls({
-            "AwbEnable": 0, 
-            "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
-            "AeExposureMode": controls.AeExposureModeEnum.Short,
-            "ExposureValue": -2.5,      # Stronger underexposure bias for flashlight
-            "AnalogueGain": 1.2,        # Lower gain to reduce sensitivity
-            "AeConstraintMode": controls.AeConstraintModeEnum.Highlight,  # Prioritise highlights
-            "Contrast": 1.4,            # Boost contrast for better bright/dark balance
-            "FrameDurationLimits": (100, 15000)  # Min 0.1ms, Max 15ms exposure
-            })
+        self.picam2.set_controls({"AwbEnable": 0})
+        # self.picam2.set_controls({
+        #     "AwbEnable": 0, 
+        #     "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+        #     "AeExposureMode": controls.AeExposureModeEnum.Short,
+        #     "ExposureValue": -2.5,      # Stronger underexposure bias for flashlight
+        #     "AnalogueGain": 1.2,        # Lower gain to reduce sensitivity
+        #     "AeConstraintMode": controls.AeConstraintModeEnum.Highlight,  # Prioritise highlights
+        #     "Contrast": 1.4,            # Boost contrast for better bright/dark balance
+        #     "FrameDurationLimits": (100, 15000)  # Min 0.1ms, Max 15ms exposure
+        #     })
         self.picam2.start()
         time.sleep(0.2)
 
