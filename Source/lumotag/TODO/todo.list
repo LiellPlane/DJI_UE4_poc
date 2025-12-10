@@ -1,8 +1,12 @@
+fix get latest time for analysis - looks broken
+
+fix failure to analyse completely obvious tags again using new M12 lense :(
+
+you have two different tags on the headband!!!
+
 get COLOUR image when pulling trigger and you have a player targetted - save these images to harddrive
 its ok to lag here because we show white on the screen for the gun fire
 that means we can get a much nicer killscreen
-
-need to add targetted user stats
 
 how do we handle AMMO - its still client side
 
