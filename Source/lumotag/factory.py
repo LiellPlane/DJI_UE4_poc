@@ -1116,6 +1116,197 @@ class Camera_async_flipflop(Camera):
             
 
 
+class FrameGrabber(Camera):
+    """
+    Triple-buffered async camera. Producer never blocks.
+    
+    Architecture:
+        [Camera Subprocess]              [Main Process]           [Analysis Processes]
+              |                               |                          |
+         capture()                            |                          |
+              |                               |                          |
+         write to buf[write_idx]              |                          |
+              |                               |                          |
+         atomic: ready_idx = write_idx        |                          |
+         write_idx = next free buffer         |                          |
+              |                          next() called                    |
+              |                               |                          |
+              |                          read ready_idx                   |
+              |                          copy from buf[ready_idx]         |
+              |                          return frame                     |
+              |                               |                   trigger_analysis()
+              |                               |                          |
+              |                               |                   read ready_idx
+              |                               |                   copy from buf[ready_idx]
+              
+    Why triple buffer:
+        - Producer writes to buffer A
+        - Marks A as ready, starts writing to B  
+        - Consumer copies from A
+        - Producer finishes B, marks ready, writes to C
+        - Even if consumer is slow, producer has C to write to
+        - Producer never waits, consumer always gets complete frame
+    """
+    
+    NUM_BUFFERS = 3
+    
+    def __init__(self, video_modes, imagegen_cls: ImageGenerator) -> None:
+        super().__init__(video_modes)
+        
+        # Resolve resolution
+        if self.get_is_reversed():
+            self._store_res = tuple(reversed(self.get_res()))
+        else:
+            self._store_res = self.get_res()
+        
+        self.imagegen_cls = imagegen_cls
+        self.frame_size = self._store_res[0] * self._store_res[1]
+        
+        # Create triple buffer in shared memory
+        self._buf_names = ["{}_buf{}".format(self._id, i) for i in range(self.NUM_BUFFERS)]
+        self._cleanup_stale_shm()
+        self.buffers = [
+            shared_memory.SharedMemory(create=True, size=self.frame_size, name=name)
+            for name in self._buf_names
+        ]
+        
+        # Shared atomic index: which buffer has the latest complete frame
+        self._ready_idx_name = "{}_ready".format(self._id)
+        try:
+            stale = shared_memory.SharedMemory(name=self._ready_idx_name, create=False)
+            stale.close()
+            stale.unlink()
+        except FileNotFoundError:
+            pass
+        self._ready_idx_shm = shared_memory.SharedMemory(
+            create=True, size=4, name=self._ready_idx_name
+        )
+        # Initialize to -1 (no frame ready yet)
+        self._ready_idx_view = np.ndarray((1,), dtype=np.int32, buffer=self._ready_idx_shm.buf)
+        self._ready_idx_view[0] = -1
+        
+        # Frame counter for unique IDs
+        self._frame_counter_name = "{}_fcnt".format(self._id)
+        try:
+            stale = shared_memory.SharedMemory(name=self._frame_counter_name, create=False)
+            stale.close()
+            stale.unlink()
+        except FileNotFoundError:
+            pass
+        self._frame_counter_shm = shared_memory.SharedMemory(
+            create=True, size=4, name=self._frame_counter_name
+        )
+        self._frame_counter_view = np.ndarray((1,), dtype=np.int32, buffer=self._frame_counter_shm.buf)
+        self._frame_counter_view[0] = 0
+        
+        # Track what we gave out last (for analysis processes)
+        self._current_ticket = None  # type: Optional[SharedMem_ImgTicket]
+        
+        self._start_producer()
+    
+    def _cleanup_stale_shm(self):
+        for name in self._buf_names:
+            try:
+                stale = shared_memory.SharedMemory(name=name, create=False)
+                stale.close()
+                stale.unlink()
+            except FileNotFoundError:
+                pass
+    
+    def _start_producer(self):
+        Process(
+            target=self._producer_loop,
+            args=(
+                self.imagegen_cls,
+                self._store_res,
+                self._buf_names,
+                self._ready_idx_name,
+                self._frame_counter_name,
+            ),
+            daemon=True
+        ).start()
+    
+    @staticmethod
+    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name):
+        """Subprocess: captures continuously, never blocks"""
+        img_gen = img_gen_cls(resolution)
+        num_buffers = len(buf_names)
+        
+        # Attach to shared memory
+        buffers = []
+        for name in buf_names:
+            shm = shared_memory.SharedMemory(name=name)
+            arr = np.ndarray(resolution, dtype=np.uint8, buffer=shm.buf)
+            buffers.append(arr)
+        
+        ready_shm = shared_memory.SharedMemory(name=ready_idx_name)
+        ready_idx = np.ndarray((1,), dtype=np.int32, buffer=ready_shm.buf)
+        
+        counter_shm = shared_memory.SharedMemory(name=frame_counter_name)
+        frame_counter = np.ndarray((1,), dtype=np.int32, buffer=counter_shm.buf)
+        
+        # Triple buffer indices: write, ready, free
+        write_idx = 0
+        free_idx = 1  # Will become write target after first frame
+        
+        while True:
+            # Capture frame
+            img = img_gen.get_image()
+            
+            # Write to current buffer
+            buffers[write_idx][:] = img
+            frame_counter[0] += 1
+            
+            # Swap: written buffer becomes ready, old ready becomes free, free becomes write
+            old_ready = ready_idx[0]
+            ready_idx[0] = write_idx
+            write_idx = free_idx
+            free_idx = old_ready if old_ready >= 0 else (write_idx + 1) % num_buffers
+    
+    def gen_image(self) -> np.ndarray:
+        """Get latest complete frame. Returns VIEW into shared memory (zero-copy)."""
+        # Spin until we have at least one frame
+        while self._ready_idx_view[0] < 0:
+            time.sleep(0.001)
+        
+        idx = int(self._ready_idx_view[0])
+        frame_id = int(self._frame_counter_view[0])
+        
+        # Return view - safe because producer won't touch "ready" buffer
+        img = np.ndarray(self._store_res, dtype=np.uint8, buffer=self.buffers[idx].buf)
+        
+        # Store ticket for analysis processes
+        self._current_ticket = SharedMem_ImgTicket(
+            index=idx,
+            res=self._store_res,
+            buf_size=self.frame_size,
+            id=frame_id
+        )
+        
+        self.last_img = img
+        return img
+    
+    def __next__(self) -> np.ndarray:
+        return self.gen_image()
+    
+    # === Interface for analysis processes ===
+    
+    def get_mem_buffers(self) -> dict:
+        """Returns {index: SharedMemory} for all buffers"""
+        return {i: self.buffers[i] for i in range(self.NUM_BUFFERS)}
+    
+    def get_safe_mem_details(self) -> Optional[SharedMem_ImgTicket]:
+        """Returns ticket pointing to current ready buffer"""
+        if self._ready_idx_view[0] < 0:
+            return None
+        return SharedMem_ImgTicket(
+            index=int(self._ready_idx_view[0]),
+            res=self._store_res,
+            buf_size=self.frame_size,
+            id=int(self._frame_counter_view[0])
+        )
+
+
 class Camera_async(Camera):
     
     def __init__(self, video_modes, imagegen_cls:ImageGenerator) -> None:
