@@ -440,30 +440,56 @@ def main():
 
 
 
+
+
             # experimental - only process images when we use torch - will this save battery?
-            if is_torch_reqd is True:
+            
                 with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure(
                     "get next image"
                 ):
                     cap_img = next(image_capture_longrange)
                     cap_img_closerange = next(image_capture_shortrange)
-                    if "game_client" in locals():
-                        # use these for uploading images of interest to the server
-                        # IDs that don't match will be ignored, so just grab all valid ones for now
-                        imageIDs.append(factory.decode_image_id(cap_img))
-                        imageIDs.append(factory.decode_image_id(cap_img_closerange))
-                    # this is bad code - should come as package with the image -
-                    # but in easy of modularity have to do it like this for now
-                with time_it("start analysis", debug=PRINT_DEBUG):
-                    for img_analyser in image_analysis:
-                        img_analyser.trigger_analysis()
-                    if "game_client" in locals():
-                        game_client.trigger_capture_close_range()
-                        game_client.trigger_capture_long_range()
-            else:
-                time.sleep(0.015)
-                cap_img = np.zeros(short_range_cam_shape, dtype=np.uint8)
-                cap_img_closerange = np.zeros(long_range_cam_shape, dtype=np.uint8)
+                if is_torch_reqd is True:
+                        if "game_client" in locals():
+                            # use these for uploading images of interest to the server
+                            # IDs that don't match will be ignored, so just grab all valid ones for now
+                            imageIDs.append(factory.decode_image_id(cap_img))
+                            imageIDs.append(factory.decode_image_id(cap_img_closerange))
+                        # this is bad code - should come as package with the image -
+                        # but in easy of modularity have to do it like this for now
+                    with time_it("start analysis", debug=PRINT_DEBUG):
+                        for img_analyser in image_analysis:
+                            img_analyser.trigger_analysis()
+                        if "game_client" in locals():
+                            game_client.trigger_capture_close_range()
+                            game_client.trigger_capture_long_range()
+
+
+
+            # # experimental - only process images when we use torch - will this save battery?
+            # if is_torch_reqd is True:
+            #     with time_it("get next image", debug=PRINT_DEBUG), perfmonitor.measure(
+            #         "get next image"
+            #     ):
+            #         cap_img = next(image_capture_longrange)
+            #         cap_img_closerange = next(image_capture_shortrange)
+            #         if "game_client" in locals():
+            #             # use these for uploading images of interest to the server
+            #             # IDs that don't match will be ignored, so just grab all valid ones for now
+            #             imageIDs.append(factory.decode_image_id(cap_img))
+            #             imageIDs.append(factory.decode_image_id(cap_img_closerange))
+            #         # this is bad code - should come as package with the image -
+            #         # but in easy of modularity have to do it like this for now
+            #     with time_it("start analysis", debug=PRINT_DEBUG):
+            #         for img_analyser in image_analysis:
+            #             img_analyser.trigger_analysis()
+            #         if "game_client" in locals():
+            #             game_client.trigger_capture_close_range()
+            #             game_client.trigger_capture_long_range()
+            # else:
+            #     time.sleep(0.015)
+            #     cap_img = np.zeros(short_range_cam_shape, dtype=np.uint8)
+            #     cap_img_closerange = np.zeros(long_range_cam_shape, dtype=np.uint8)
 
 
 
