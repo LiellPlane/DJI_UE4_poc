@@ -102,21 +102,28 @@ class ImageAnalyser_shared_mem():
             return None
     
     def trigger_analysis(self):
+        """Trigger analysis on current frame. Replaces any stale queued frame."""
+        # Discard stale ticket if one is waiting (check first to avoid exception)
+        if not self.input_shared_mem_index_q.empty():
+            try:
+                self.input_shared_mem_index_q.get_nowait()
+            except queue.Empty:
+                pass  # Rare race: analysis grabbed it between check and get
         
-        #print("putting record for analyis", mapped_details)
-        # if self.input_shared_mem_index_q.empty():# skip if procesing something already
-        #     self.current_analysis_time = time.perf_counter() # reset time out
+        # Queue fresh ticket
+        self.current_analysis_time = time.perf_counter()
+        self.input_shared_mem_index_q.put(
+            self.safe_mem_details_func(),
+            block=False
+        )
+
+        # # ORIGINAL: skip if queue full (drops new frame if busy)
+        # if not self.input_shared_mem_index_q.full():
+        #     self.current_analysis_time = time.perf_counter()
         #     self.input_shared_mem_index_q.put(
         #         self.safe_mem_details_func(),
         #         block=True,
         #         timeout=None)
-        #print("putting record for analyis", mapped_details)
-        if not self.input_shared_mem_index_q.full():# skip if procesing something already
-            self.current_analysis_time = time.perf_counter() # reset time out
-            self.input_shared_mem_index_q.put(
-                self.safe_mem_details_func(),
-                block=True,
-                timeout=None)
 
 
     def async_imganalysis_loop(

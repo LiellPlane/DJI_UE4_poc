@@ -1172,12 +1172,7 @@ class FrameGrabber(Camera):
         
         # Shared atomic index: which buffer has the latest complete frame
         self._ready_idx_name = "{}_ready".format(self._id)
-        try:
-            stale = shared_memory.SharedMemory(name=self._ready_idx_name, create=False)
-            stale.close()
-            stale.unlink()
-        except FileNotFoundError:
-            pass
+        self._unlink_shm_if_exists(self._ready_idx_name)
         self._ready_idx_shm = shared_memory.SharedMemory(
             create=True, size=4, name=self._ready_idx_name
         )
@@ -1187,31 +1182,40 @@ class FrameGrabber(Camera):
         
         # Frame counter for unique IDs
         self._frame_counter_name = "{}_fcnt".format(self._id)
-        try:
-            stale = shared_memory.SharedMemory(name=self._frame_counter_name, create=False)
-            stale.close()
-            stale.unlink()
-        except FileNotFoundError:
-            pass
+        self._unlink_shm_if_exists(self._frame_counter_name)
         self._frame_counter_shm = shared_memory.SharedMemory(
             create=True, size=4, name=self._frame_counter_name
         )
         self._frame_counter_view = np.ndarray((1,), dtype=np.int32, buffer=self._frame_counter_shm.buf)
         self._frame_counter_view[0] = 0
         
+        # Actual image shape (set by producer after first capture)
+        self._actual_res_name = "{}_res".format(self._id)
+        self._unlink_shm_if_exists(self._actual_res_name)
+        self._actual_res_shm = shared_memory.SharedMemory(
+            create=True, size=8, name=self._actual_res_name  # 2 x int32
+        )
+        self._actual_res_view = np.ndarray((2,), dtype=np.int32, buffer=self._actual_res_shm.buf)
+        self._actual_res_view[:] = [0, 0]  # Will be set by producer
+        
         # Track what we gave out last (for analysis processes)
         self._current_ticket = None  # type: Optional[SharedMem_ImgTicket]
         
         self._start_producer()
     
+    @staticmethod
+    def _unlink_shm_if_exists(name):
+        """Remove shared memory by name if it exists (cleanup from previous runs)"""
+        try:
+            shm = shared_memory.SharedMemory(name=name, create=False)
+            shm.close()
+            shm.unlink()
+        except FileNotFoundError:
+            pass
+    
     def _cleanup_stale_shm(self):
         for name in self._buf_names:
-            try:
-                stale = shared_memory.SharedMemory(name=name, create=False)
-                stale.close()
-                stale.unlink()
-            except FileNotFoundError:
-                pass
+            self._unlink_shm_if_exists(name)
     
     def _start_producer(self):
         Process(
@@ -1222,28 +1226,29 @@ class FrameGrabber(Camera):
                 self._buf_names,
                 self._ready_idx_name,
                 self._frame_counter_name,
+                self._actual_res_name,
             ),
             daemon=True
         ).start()
     
     @staticmethod
-    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name):
+    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name, actual_res_name):
         """Subprocess: captures continuously, never blocks"""
         img_gen = img_gen_cls(resolution)
         num_buffers = len(buf_names)
         
-        # Attach to shared memory
-        buffers = []
-        for name in buf_names:
-            shm = shared_memory.SharedMemory(name=name)
-            arr = np.ndarray(resolution, dtype=np.uint8, buffer=shm.buf)
-            buffers.append(arr)
+        # Attach to shared memory (buffer views created after first capture)
+        shm_objects = [shared_memory.SharedMemory(name=name) for name in buf_names]
+        buffers = None  # Will be initialized with actual image shape
         
         ready_shm = shared_memory.SharedMemory(name=ready_idx_name)
         ready_idx = np.ndarray((1,), dtype=np.int32, buffer=ready_shm.buf)
         
         counter_shm = shared_memory.SharedMemory(name=frame_counter_name)
         frame_counter = np.ndarray((1,), dtype=np.int32, buffer=counter_shm.buf)
+        
+        actual_res_shm = shared_memory.SharedMemory(name=actual_res_name)
+        actual_res = np.ndarray((2,), dtype=np.int32, buffer=actual_res_shm.buf)
         
         # Triple buffer indices: write, ready, free
         write_idx = 0
@@ -1252,6 +1257,14 @@ class FrameGrabber(Camera):
         while True:
             # Capture frame
             img = img_gen.get_image()
+            
+            # First frame: create buffer views and store actual shape
+            if buffers is None:
+                buffers = [
+                    np.ndarray(img.shape, dtype=img.dtype, buffer=shm.buf)
+                    for shm in shm_objects
+                ]
+                actual_res[:] = img.shape  # Tell main process the actual shape
             
             # Write to current buffer
             buffers[write_idx][:] = img
@@ -1265,20 +1278,21 @@ class FrameGrabber(Camera):
     
     def gen_image(self) -> np.ndarray:
         """Get latest complete frame. Returns VIEW into shared memory (zero-copy)."""
-        # Spin until we have at least one frame
-        while self._ready_idx_view[0] < 0:
+        # Spin until we have at least one frame (producer sets shape after first capture)
+        while self._ready_idx_view[0] < 0 or self._actual_res_view[0] == 0:
             time.sleep(0.001)
         
         idx = int(self._ready_idx_view[0])
         frame_id = int(self._frame_counter_view[0])
+        actual_shape = tuple(self._actual_res_view)
         
         # Return view - safe because producer won't touch "ready" buffer
-        img = np.ndarray(self._store_res, dtype=np.uint8, buffer=self.buffers[idx].buf)
+        img = np.ndarray(actual_shape, dtype=np.uint8, buffer=self.buffers[idx].buf)
         
         # Store ticket for analysis processes
         self._current_ticket = SharedMem_ImgTicket(
             index=idx,
-            res=self._store_res,
+            res=actual_shape,
             buf_size=self.frame_size,
             id=frame_id
         )
@@ -1295,16 +1309,14 @@ class FrameGrabber(Camera):
         """Returns {index: SharedMemory} for all buffers"""
         return {i: self.buffers[i] for i in range(self.NUM_BUFFERS)}
     
-    def get_safe_mem_details(self) -> Optional[SharedMem_ImgTicket]:
-        """Returns ticket pointing to current ready buffer"""
-        if self._ready_idx_view[0] < 0:
-            return None
-        return SharedMem_ImgTicket(
-            index=int(self._ready_idx_view[0]),
-            res=self._store_res,
-            buf_size=self.frame_size,
-            id=int(self._frame_counter_view[0])
-        )
+    def get_safe_mem_details(self) -> SharedMem_ImgTicket:
+        """Returns ticket for the frame last returned by next().
+        
+        Must call next() at least once before calling this.
+        """
+        if self._current_ticket is None:
+            raise RuntimeError("No frame captured yet - call next() first")
+        return self._current_ticket
 
 
 class Camera_async(Camera):

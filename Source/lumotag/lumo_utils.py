@@ -13,7 +13,7 @@ def get_targeted_player_details(analysis: dict[tuple, ShapeItem], gamestatus: Ga
     if gamestatus and len(gamestatus.players) < 1:
         return None
     # now lets find the tag closest to the middle for all image sizes
-    shortest_distance = 9999999
+    shortest_distance = math.inf
     shortest_tag_shape: ShapeItem | None = None
     for resolution in analysis:
         img_centre_xy = [resolution[0] //2, resolution[1] //2]
@@ -23,6 +23,7 @@ def get_targeted_player_details(analysis: dict[tuple, ShapeItem], gamestatus: Ga
                 tag_info.centre_x_y[1] - img_centre_xy[1]
             )
             if distance_from_center < shortest_distance:
+                shortest_distance = distance_from_center
                 shortest_tag_shape = tag_info
 
     if not shortest_tag_shape:

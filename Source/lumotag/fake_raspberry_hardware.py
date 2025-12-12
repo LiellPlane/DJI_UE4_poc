@@ -272,6 +272,16 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
         else:
             raise Exception("no match for video mode input")
 
+class CSI_Camera_tribuffer(factory.FrameGrabber):
+        
+    def __init__(self, video_modes) -> None:
+        if video_modes == Fake_Cam_vidmodes_longrangeFILES:
+            super().__init__(video_modes, factory.ImageLibrary_longrange)
+        elif video_modes == Fake_Cam_vidmodes_closerangeFILES:
+            super().__init__(video_modes, factory.ImageLibrary_closerange)
+        else:
+            raise Exception("no match for video mode input")
+
 
 class display(factory.display):
 
