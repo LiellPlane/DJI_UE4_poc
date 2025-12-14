@@ -60,7 +60,7 @@ class ImageAnalyser_shared_mem():
         self.current_analysis_time: float | None = None 
         self.last_analysis_time: float = 0.0
         # self.ImageMem: OrderedDict[str, np.ndarray] = OrderedDict()
-        self.currentimg: np.ndarray | None = None
+        
         func_args = (
             self.input_shared_mem_index_q,
             self.analysis_output_q)
@@ -85,7 +85,7 @@ class ImageAnalyser_shared_mem():
             return True
         return False
     def get_analysis_time_ms(self):
-        return (time.perf_counter() - self.last_analysis_time) * 1000
+        return self.last_analysis_time * 1000
     
     def get_analysis_result(self, block=False, timeout=0):
         """Get analysis result from queue and reset timeout timer.
@@ -94,9 +94,12 @@ class ImageAnalyser_shared_mem():
             AnalysisOutput | Exception | None: Result from queue, or None if empty
         """
         # deactivate timer - we arent processing anymore
-        self.current_analysis_time = None
+
         try:
             result = self.analysis_output_q.get(block=block, timeout=timeout)
+            if self.current_analysis_time is not None:
+                self.last_analysis_time = time.perf_counter() - self.current_analysis_time
+            self.current_analysis_time = None
             return result
         except queue.Empty:
             return None
@@ -133,7 +136,7 @@ class ImageAnalyser_shared_mem():
         workingdata = decode_clothID.WorkingData(
             OS_friendly_name=self.OS_friendly_name,
             debugdetails=self.debug_config)
-
+        currentimg: np.ndarray | None = None
         while True:
 
 
@@ -170,14 +173,14 @@ class ImageAnalyser_shared_mem():
                     img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)  # type: ignore
 
                 if img_buff.flags.owndata:
-                    self.currentimg = img_buff
+                    currentimg = img_buff
                 else:
-                    self.currentimg = img_buff.copy()
+                    currentimg = img_buff.copy()
 
            # with time_it("analyse lumotag: find lumotag"):
                 try:
                     contour_data: list[ShapeItem | None] = self.lumotag_func(
-                        self.currentimg, workingdata)
+                        currentimg, workingdata)
                 except Exception as e:
                     print(f"Error finding lumotag: {e}")
                     # this will explode but at least we get something back
