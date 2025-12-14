@@ -103,19 +103,18 @@ class ImageAnalyser_shared_mem():
     
     def trigger_analysis(self):
         """Trigger analysis on current frame. Replaces any stale queued frame."""
-        # Discard stale ticket if one is waiting (check first to avoid exception)
-        if not self.input_shared_mem_index_q.empty():
-            try:
-                self.input_shared_mem_index_q.get_nowait()
-            except queue.Empty:
-                pass  # Rare race: analysis grabbed it between check and get
+        # Always try to discard stale ticket (empty() is unreliable in multiprocessing)
+        try:
+            self.input_shared_mem_index_q.get_nowait()
+        except queue.Empty:
+            pass
         
-        # Queue fresh ticket
+        # Queue fresh ticket (should always succeed after clearing, but handle edge case)
         self.current_analysis_time = time.perf_counter()
-        self.input_shared_mem_index_q.put(
-            self.safe_mem_details_func(),
-            block=False
-        )
+        try:
+            self.input_shared_mem_index_q.put_nowait(self.safe_mem_details_func())
+        except queue.Full:
+            pass  # Rare race: just skip this frame
 
         # # ORIGINAL: skip if queue full (drops new frame if busy)
         # if not self.input_shared_mem_index_q.full():

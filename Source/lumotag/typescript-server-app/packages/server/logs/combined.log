@@ -17788,3 +17788,178 @@
 {"duration":"1ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-10 15:43:42","userAgent":"python-requests/2.32.5"}
 {"level":"info","message":"Image LID1904y7PpJXLID saved (57KB)","service":"typescript-server","timestamp":"2025-12-10 15:43:42"}
 {"level":"info","message":"Image LID1906y7PpJXLID saved (71KB)","service":"typescript-server","timestamp":"2025-12-10 15:43:42"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"level":"info","message":"🧹 Cleaning up 64 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"level":"info","message":"✅ Cleanup complete: 64 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"level":"info","message":"🧹 Startup cleanup: Removed 64 old image files","service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:16"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:17"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:17"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:17"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:18"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:18"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:18"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:19"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:19"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:19"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:20"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:20"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:20"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:21"}
+{"level":"info","message":"127.0.0.1 - - [14/Dec/2025:17:10:21 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 200 239 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-14 17:10:21"}
+{"duration":"1ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":200,"timestamp":"2025-12-14 17:10:21","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:21"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:21"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:22"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:22"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:22"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:22"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:23"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:23"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:23"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:24"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:24"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:24"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:25"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:25"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:25"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:26"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:26"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:26"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:27"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:27"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:27"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:27"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:28"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:28"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:28"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:29"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:29"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:29"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:30"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:30"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:30"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:31"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:31"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:31"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:32"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:32"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:32"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:32"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:33"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:33"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:33"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:34"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:34"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:34"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:35"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:35"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:35"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:36"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:36"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:36"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:37"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:37"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:37"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:37"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:38"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:38"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:38"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:39"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:39"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:39"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:40"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:40"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:40"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:41"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:41"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:41"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:42"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:42"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:42"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:42"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:43"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:43"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:43"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:44"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:44"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:44"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:45"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:45"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:45"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:46"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:46"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:46"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:47"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:47"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:47"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:47"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:48"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:48"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:48"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:49"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:49"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:49"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:50"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:50"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:50"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:51"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:51"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:51"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:52"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:52"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:52"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:52"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:53"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:53"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:53"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:54"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:54"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:54"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:55"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:55"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:55"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:56"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:56"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:56"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:57"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:57"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:57"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:58"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:58"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:58"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:58"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:59"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:59"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:10:59"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:00"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:00"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:00"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:01"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:01"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:01"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:02"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:02"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:02"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:03"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:03"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:03"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:03"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:04"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:04"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:04"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:05"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:05"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:05"}
+{"level":"error","message":"Unknown device_id: 30caa23243","service":"typescript-server","timestamp":"2025-12-14 17:11:06"}
+{"level":"info","message":"Background thread stopped","service":"typescript-server","timestamp":"2025-12-14 17:11:31"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-12-14 17:12:58"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-12-14 17:12:58"}
+{"level":"info","message":"🧹 Cleaning up 0 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-14 17:12:58"}
+{"level":"info","message":"✅ Cleanup complete: 0 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-14 17:12:58"}
+{"level":"info","message":"127.0.0.1 - - [14/Dec/2025:17:13:11 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 200 239 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-14 17:13:11"}
+{"duration":"3ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":200,"timestamp":"2025-12-14 17:13:11","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"127.0.0.1 - - [14/Dec/2025:17:13:42 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 304 - \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-14 17:13:42"}
+{"duration":"2ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":304,"timestamp":"2025-12-14 17:13:42","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
