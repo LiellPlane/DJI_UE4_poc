@@ -496,13 +496,6 @@ def main():
 
 
 
-
-
-
-
-
-
-
             with time_it("gun image stuff", debug=PRINT_DEBUG), perfmonitor.measure(
                 "gun_image"
             ):
