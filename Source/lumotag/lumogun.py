@@ -399,7 +399,7 @@ def main():
                 #    is_torch_reqd = False
 
                 set_torch(state=is_torch_reqd)
-
+                # if this is backwards - you have to change the relay wiring! 
                 if deactivate_lser is True:
                     set_laser(state=is_torch_reqd)
                 else:
