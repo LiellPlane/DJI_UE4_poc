@@ -17975,3 +17975,7 @@
 {"level":"info","message":"192.168.8.217 - - [14/Dec/2025:17:40:07 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-14 17:40:07"}
 {"level":"info","message":"192.168.56.1 - - [14/Dec/2025:17:40:09 +0000] \"GET /avatars/Timmy.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-12-14 17:40:09"}
 {"level":"info","message":"192.168.56.1 - - [14/Dec/2025:17:40:11 +0000] \"GET /avatars/PretendFriend.jpg HTTP/1.1\" 200 60877 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-12-14 17:40:11"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-12-15 20:22:55"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-12-15 20:22:55"}
+{"level":"info","message":"🧹 Cleaning up 0 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-15 20:22:55"}
+{"level":"info","message":"✅ Cleanup complete: 0 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-15 20:22:55"}

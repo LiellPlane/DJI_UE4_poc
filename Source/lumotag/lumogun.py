@@ -398,13 +398,12 @@ def main():
                 # if players["me"].get_torch_energy() < 5:
                 #    is_torch_reqd = False
 
-                
-                set_laser(state=is_torch_reqd)
-      
+                set_torch(state=is_torch_reqd)
+
                 if deactivate_lser is True:
-                    set_torch(state=is_torch_reqd)
+                    set_laser(state=is_torch_reqd)
                 else:
-                    set_torch(state=False)
+                    set_laser(state=False)
 
                 result_zoom = zoom_debounce.trigger_1shot_simple_High(is_zoom_reqd)
 
