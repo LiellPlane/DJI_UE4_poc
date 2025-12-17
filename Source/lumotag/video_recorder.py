@@ -18,7 +18,7 @@ class VideoRecorder:
         self.frame_interval = 1.0 / fps  # Time between frames
         self.process = None
         self.is_recording = False
-        self.chunk_duration = 60 * 3     # seconds
+        self.chunk_duration = 60 * 1     # seconds
         self.overlap_duration = 1     # 1 second overlap between chunks
         self.last_chunk_time = None
         self.frame_buffer = []        # buffer for overlap frames
