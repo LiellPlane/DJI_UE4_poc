@@ -39,7 +39,7 @@ def get_lumofind_config(platform):
             SAVE_IMAGES_DEBUG=False,
             SAVE_IMAGES_PATH=r"dunno",
             PRINT_DEBUG=False,
-            SAVE_STREAM=True
+            SAVE_STREAM=False
             )
     elif platform == _OS.WINDOWS:
         return base_find_lumotag_config(
