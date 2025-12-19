@@ -18,6 +18,13 @@ sudo hostnamectl set-hostname "$NEW_HOSTNAME"
 sudo sed -i "s/127.0.1.1.*/127.0.1.1\t$NEW_HOSTNAME/" /etc/hosts
 echo "Hostname set to: $NEW_HOSTNAME"
 
+# Disable WiFi power management to prevent random disconnections
+sudo iw wlan0 set power_save off 2>/dev/null || true
+# Make it persistent across reboots
+echo -e '#!/bin/bash\n/sbin/iw wlan0 set power_save off' | sudo tee /etc/network/if-up.d/disable-wifi-power-save
+sudo chmod +x /etc/network/if-up.d/disable-wifi-power-save
+echo "WiFi power management disabled"
+
 # Configure dpkg to automatically use new config files from packages 
 # otherwise the installation will need human intervention to continue
 export DEBIAN_FRONTEND=noninteractive

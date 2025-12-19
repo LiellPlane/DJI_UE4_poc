@@ -1,4 +1,4 @@
-ADMIN PASS lumotagIR
+ADMIN PASS lumotagIT
 SSID lumotag
 PASS 25EJRRJP56
 20mhz mode

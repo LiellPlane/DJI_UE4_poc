@@ -777,10 +777,13 @@ def main():
                                 starttime = time.time()
                                 while True:
                                     # states can be stuck in this loop - probably should be handled with threads
+                                    alternate: bool = True
                                     while time.time() < starttime + 2:
+                                        relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], alternate)
                                         output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                         display.display(output_image)
                                         time.sleep(0.05)
+                                        alternate = not alternate
                                     relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
                                     # keep getting latest gamestate so we can break out of killscreen
                                     gamestate = game_client.get_latest_gamestate()
@@ -813,7 +816,11 @@ def main():
                                     #     voice.speak_blocking(compelled_speech[index])
                                     #     time.sleep(0.1)
                                     #     index += 1
-                                        
+                                
+                                # flush image analysis queues here or can get a time out error next iteration 
+                                for img_analyser in image_analysis
+                                    # why are these in brackets? 
+                                    _ = (img_analyser.get_analysis_result(block=False, timeout=0))
 
                     if event := game_client.pop_oldest_event():  # type: LogEvent | None
                         log_overlay.add_event(event.text, event.level)
