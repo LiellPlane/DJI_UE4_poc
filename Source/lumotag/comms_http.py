@@ -716,7 +716,7 @@ class HTTPComms(AbstractHTTPComms):
                     # Fast HTTP GET with minimal timeout for LAN
                     response = session.get(
                         self.gamestate_url,
-                        timeout=0.1  # 100ms timeout for LAN - fail fast
+                        timeout=0.25  # 100ms timeout for LAN - fail fast
                     )
                     
                     # Check response - only accept 200 OK
