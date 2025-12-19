@@ -410,19 +410,23 @@ class display(ABC):
 
     def add_target_tags(self, output, graphics: dict[tuple[int,int], list[ShapeItem]], tags__Vs__healthpoints: Optional[dict[str, int]] = None):
         """ we are using IMAGE SHAPE to find the camera source and corresponding transform"""
+        dedupe = set()
         for _shape, result_package in graphics.items():
             for result in result_package:
-                result.transform_points(self._affine_transform[_shape])
+                if result.instance_id in dedupe:
+                    continue
+                dedupe.add(result.instance_id)
+                transformed = result.transform_points(self._affine_transform[_shape])
 
                 # get colour we want tag to show as depending on the players healthpoint (player corresponding to tag id )
-                if tags__Vs__healthpoints and (hp := tags__Vs__healthpoints.get(str(result.decoded_id))) is not None:
+                if tags__Vs__healthpoints and (hp := tags__Vs__healthpoints.get(str(transformed.decoded_id))) is not None:
                     colour = img_processing.health_to_color(hp)
                 else:
                     colour = img_processing.GRAY  # default color
 
                 img_processing.draw_pattern_output(
                     image=output,
-                    patterndetails=result,
+                    patterndetails=transformed,
                     color=colour)
 
 

@@ -1,6 +1,8 @@
 
 from enum import Enum, auto
 from dataclasses import dataclass, field
+from copy import deepcopy
+import random
 import numpy as np
 from typing import ClassVar, Union, Callable
 from functools import lru_cache
@@ -219,6 +221,7 @@ class ShapeItem:
     _2d_samples: list[list]
     notes_for_debug_file: str
     decoded_id: int = -1
+    instance_id: int = field(default_factory=lambda: random.randint(0, 9999))  # 0-9999, ~1/10000 collision chance
     
 
     def add_offset_for_graphics(self, offset: list[int, int]):
@@ -243,8 +246,8 @@ class ShapeItem:
             self.centre_x_y[0] *= offset
             self.centre_x_y[1] *= offset
 
-    def transform_points(self, affine_transform):
-        """Transform points to fit transformed video feedback
+    def transform_points(self, affine_transform) -> 'ShapeItem':
+        """Transform points to fit transformed video feedback. Returns NEW ShapeItem (non-mutating).
         https://stackoverflow.com/questions/53569897/affine-transformation-in-image-processing
 
         expects a 2* 3 affine matrix
@@ -253,37 +256,40 @@ class ShapeItem:
         [[  0.27389706   0.         251.        ]
         [  0.           0.27472527   0.        ]]
         """
-
+        result = deepcopy(self)
+        
         concat_affine = np.eye(3)
         concat_affine[0:2, :] = affine_transform
 
-        if self.approx_contour is not None:
-            extra_element = np.ones((self.approx_contour.shape[0], 1, 1), dtype=int)
+        if result.approx_contour is not None:
+            extra_element = np.ones((result.approx_contour.shape[0], 1, 1), dtype=int)
             concat_toaffine = (
                 np.concatenate(
-                (self.approx_contour, extra_element), axis=-1)).transpose().reshape(3, self.approx_contour.shape[0])
+                (result.approx_contour, extra_element), axis=-1)).transpose().reshape(3, result.approx_contour.shape[0])
             res = np.matmul(concat_affine, concat_toaffine)
-            self.approx_contour = res.transpose()[:,0:2].reshape(self.approx_contour.shape[0],1,2).astype(int)
+            result.approx_contour = res.transpose()[:,0:2].reshape(result.approx_contour.shape[0],1,2).astype(int)
 
-        if self.boundingbox_min is not None:
-            extra_element = np.ones((self.boundingbox_min.shape[0], 1), dtype=int)
+        if result.boundingbox_min is not None:
+            extra_element = np.ones((result.boundingbox_min.shape[0], 1), dtype=int)
             concat_toaffine = (
                 np.concatenate(
-                (self.boundingbox_min, extra_element), axis=-1)).transpose().reshape(3, self.boundingbox_min.shape[0])
+                (result.boundingbox_min, extra_element), axis=-1)).transpose().reshape(3, result.boundingbox_min.shape[0])
             res = np.matmul(concat_affine, concat_toaffine)
-            self.boundingbox_min = res.transpose()[:,0:2].reshape(self.boundingbox_min.shape[0],2).astype(np.int64)
+            result.boundingbox_min = res.transpose()[:,0:2].reshape(result.boundingbox_min.shape[0],2).astype(np.int64)
 
-        if self.centre_x_y is not None:
-            extra_element = np.array(self.centre_x_y + [1])
+        if result.centre_x_y is not None:
+            extra_element = np.array(result.centre_x_y + [1])
             np.matmul(concat_affine, extra_element)
-            self.centre_x_y = list(np.matmul(concat_affine, extra_element)[0:2].astype(np.int64))
+            result.centre_x_y = list(np.matmul(concat_affine, extra_element)[0:2].astype(np.int64))
 
-        if self.closest_corners is not None:
-            output = np.array(self.closest_corners)
+        if result.closest_corners is not None:
+            output = np.array(result.closest_corners)
             # add column of 1s
             output = np.hstack((output, np.ones((4,1))))
             output = np.matmul(concat_affine, output.transpose())[0:2]
-            self.closest_corners = list(output[0:2].transpose().astype(np.int64))
+            result.closest_corners = list(output[0:2].transpose().astype(np.int64))
+        
+        return result
 
 @dataclass
 class ImagingMode():
