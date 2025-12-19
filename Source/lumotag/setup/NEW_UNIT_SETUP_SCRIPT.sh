@@ -14,6 +14,8 @@ fi
 RANDOM_SUFFIX=$(shuf -i 100000-999999 -n 1)
 NEW_HOSTNAME="lumotag-${RANDOM_SUFFIX}"
 sudo hostnamectl set-hostname "$NEW_HOSTNAME"
+# Update /etc/hosts so sudo doesn't complain about unresolved hostname
+sudo sed -i "s/127.0.1.1.*/127.0.1.1\t$NEW_HOSTNAME/" /etc/hosts
 echo "Hostname set to: $NEW_HOSTNAME"
 
 # Configure dpkg to automatically use new config files from packages 
