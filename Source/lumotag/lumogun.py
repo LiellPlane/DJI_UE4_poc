@@ -778,7 +778,6 @@ def main():
                                 while True:
                                     # states can be stuck in this loop - probably should be handled with threads
                                     while time.time() < starttime + 2:
-                                        relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], alternate)
                                         output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                         display.display(output_image)
                                         time.sleep(0.05)
