@@ -23787,3 +23787,5 @@
 {"level":"info","message":"127.0.0.1 - - [19/Dec/2025:22:10:14 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 161 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 22:10:14"}
 {"duration":"2ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 22:10:14","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
 {"level":"info","message":"Created new player: edee70eb80 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 22:10:14"}
+{"level":"info","message":"Created new player: abc12345 with display_name: PretendFriend","service":"typescript-server","timestamp":"2025-12-19 22:22:09"}
+{"level":"info","message":"192.168.56.1 - - [19/Dec/2025:22:22:11 +0000] \"GET /avatars/PurpleBatts.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.4\"","service":"typescript-server","timestamp":"2025-12-19 22:22:11"}

@@ -777,13 +777,11 @@ def main():
                                 starttime = time.time()
                                 while True:
                                     # states can be stuck in this loop - probably should be handled with threads
-                                    alternate: bool = True
                                     while time.time() < starttime + 2:
                                         relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], alternate)
                                         output_image[:] = img_processing.generate_red_tv_static(output_image.shape)
                                         display.display(output_image)
                                         time.sleep(0.05)
-                                        alternate = not alternate
                                     relay.force_set_relay(GUN_CONFIGURATION.relay_map["clicker"], False)
                                     # keep getting latest gamestate so we can break out of killscreen
                                     gamestate = game_client.get_latest_gamestate()
