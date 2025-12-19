@@ -1,3 +1,12 @@
+# when changing lenses you have to fix the transition with a perspective transform
+
+# get two images (start the server, fire at a tag and the client should upload 2 images to the server)
+
+# then run this file - move the two images into the corresponding photos
+
+# remember that short range means the object is smaller! 
+
+
 import cv2
 import json
 import sys
@@ -78,14 +87,43 @@ def show_image_until_keypress(image, window_name='Image'):
             break
     
     #cv2.destroyWindow(window_name)
-# load long range then close range
-images = [
-    
-    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\uploads\LID19028hXtsvLID.jpg",
-    r"C:\Working\GIT\DJI_UE4_poc\Source\lumotag\typescript-server-app\packages\server\uploads\LID19048hXtsvLID.jpg"
-    ]
 
-images = [cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2GRAY) for image in images]
+def get_image_paths(long_range_override=None, short_range_override=None):
+    """
+    Returns [long_range_image_path, short_range_image_path].
+    If overrides are provided, uses those. Otherwise auto-discovers from folders.
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    valid_extensions = ('.jpg', '.jpeg', '.bmp', '.gif')
+    
+    def find_first_image(folder_path):
+        if not os.path.isdir(folder_path):
+            raise FileNotFoundError(f"Folder does not exist: {folder_path}")
+        for f in os.listdir(folder_path):
+            if f.lower().endswith(valid_extensions):
+                return os.path.join(folder_path, f)
+        raise FileNotFoundError(f"No image files found in: {folder_path}")
+    
+    if long_range_override:
+        long_range = long_range_override
+    else:
+        long_range = find_first_image(os.path.join(script_dir, "long_range_image"))
+    
+    if short_range_override:
+        short_range = short_range_override
+    else:
+        short_range = find_first_image(os.path.join(script_dir, "short_range_image"))
+    
+    return [long_range, short_range]
+
+# load long range then close range
+# Override with your own paths, or set to None to auto-discover from folders
+image_paths = get_image_paths(
+    long_range_override=None,  # e.g. r"C:\path\to\long_range.jpg"
+    short_range_override=None  # e.g. r"C:\path\to\short_range.jpg"
+)
+
+images = [cv2.cvtColor(cv2.imread(img), cv2.COLOR_BGR2GRAY) for img in image_paths]
 
 clicked_positions = []
 for _image in images:
