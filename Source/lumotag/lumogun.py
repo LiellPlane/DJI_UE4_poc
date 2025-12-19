@@ -9,6 +9,7 @@ import time
 import random
 import git_info
 import numpy as np
+from collections import deque, defaultdict
 from comms_http import HTTPComms, LogEvent
 from copy import deepcopy
 # import decode_clothID_v2 as decode_clothID
@@ -97,7 +98,10 @@ def extract_discovered_tags(analysis: dict[tuple[int, int], list[ShapeItem | Non
 
 def main():
     print("TEMP TESTING - SERVER IS PRUNING IMAGES, WE HAVE A FAKE TRIGGER HERE, AND SENDING EVERY SINGLE TRIGGERED IMAGE")
-    time.sleep(1) # REMOVE
+    # time.sleep(1) # REMOVE
+    # default dict creates the format automatically (without having to check if key is there first)
+    analysis_history: defaultdict[tuple[int, int], deque] = defaultdict(lambda: deque(maxlen=2))
+
     # from fake_raspberry_hardware import Triggers as test_triggers # REMOVE
     log_overlay = img_processing.EventLogOverlay()
     MY_ID = lumogun.GetID().get_persistant_device_id()
@@ -127,10 +131,10 @@ def main():
     # accelerometer = lumogun.Accelerometer()
     # image_capture_longrange = lumogun.CSI_Camera(GUN_CONFIGURATION.video_modes)
     # image_capture_longrange = lumogun.CSI_Camera_async_flipflop(GUN_CONFIGURATION.video_modes)
-    image_capture_longrange = lumogun.CSI_Camera_async_flipflop(
+    image_capture_longrange = lumogun.CSI_Camera_tribuffer( # CSI_Camera_async_flipflop
         GUN_CONFIGURATION.video_modes
     )
-    image_capture_shortrange = lumogun.CSI_Camera_async_flipflop(
+    image_capture_shortrange = lumogun.CSI_Camera_tribuffer( # CSI_Camera_async_flipflop
         GUN_CONFIGURATION.video_modes_closerange
     )
     slice_details_close_range = img_processing.get_internal_section(
@@ -570,32 +574,34 @@ def main():
                             )
 
                             if result.Results:
+                                # res_for_affine_transform_lookup is used as as way to keep results per camera (for HUD display)
                                 # file_system.save_barcodepair(result, message="falsepos")
                                 # save_analysis(result)
 
-                                # this looks like we are adding results according to what camera is active 
-                                if res_for_affine_transform_lookup not in analysis:
-                                    analysis[res_for_affine_transform_lookup] = []
-                                analysis[res_for_affine_transform_lookup].extend(
-                                    result.Results
-                                )
-
+                                # # this looks like we are adding results according to what camera is active 
+                                # if res_for_affine_transform_lookup not in analysis:
+                                #     analysis[res_for_affine_transform_lookup]: list[ShapeItem] = []
+                                # analysis[res_for_affine_transform_lookup].extend(
+                                #     result.Results
+                                # )
+                                # push results onto the deque so we keep last N frames (smooth flickering)
+                                analysis_history[res_for_affine_transform_lookup].append(result.Results)
+                            else:
+                                # no results - push empties into FIFO so the results expire (just want to keep last frames)
+                                analysis_history[res_for_affine_transform_lookup].append([])
+                                # 
                             # # EXPERIMENTAL SEEING IF WE CAN STOP FLICKERING - USE LAST FRAME RESULTS 
                             # img_analyser.analysis_output_q.put(result, block=False, timeout=None)
                     except queue.Empty:
                         # raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
                         # print(f"waiting for analysis {img_analyser.OS_friendly_name}")
                         pass  # test asynchronous analysis
-                
 
 
-                    # # TARGET FLICKER SMOOTHING 
-                    # if len(analysis) > 0:
-                    #     # here we will try and smooth the results (targets), due to async results coming back causing flicker
-                    #     analysis_last_frame = deepcopy(analysis)
-
-
-
+            # flatten all the deque results so we have last N frames
+            analysis: dict[tuple[int, int], list[ShapeItem | None]] = {}
+            for res_key, history_deque in analysis_history.items():
+                analysis[res_key] = [shape for frame_shapes in history_deque for shape in frame_shapes]
 
                 # save_images_if_barcode(analysis,file_system,cap_img,cap_img_closerange)
             with perfmonitor.measure("graphics"):

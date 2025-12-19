@@ -1222,7 +1222,7 @@ class FrameGrabber(Camera):
             target=self._producer_loop,
             args=(
                 self.imagegen_cls,
-                self._store_res,
+                self.get_res(),  # Pass original res, not _store_res - let image generator decide shape
                 self._buf_names,
                 self._ready_idx_name,
                 self._frame_counter_name,
