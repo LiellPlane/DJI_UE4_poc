@@ -9,6 +9,13 @@ if [[ $EUID -eq 0 ]] || [[ -n "$SUDO_USER" ]]; then
 fi
 
 # expect a fresh bookworm 
+
+# Set unique hostname to avoid network conflicts with multiple units
+RANDOM_SUFFIX=$(shuf -i 100000-999999 -n 1)
+NEW_HOSTNAME="lumotag-${RANDOM_SUFFIX}"
+sudo hostnamectl set-hostname "$NEW_HOSTNAME"
+echo "Hostname set to: $NEW_HOSTNAME"
+
 # Configure dpkg to automatically use new config files from packages 
 # otherwise the installation will need human intervention to continue
 export DEBIAN_FRONTEND=noninteractive

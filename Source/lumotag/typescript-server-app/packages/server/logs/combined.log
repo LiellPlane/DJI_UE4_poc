@@ -21666,3 +21666,463 @@
 {"level":"info","message":"192.168.8.239 - - [17/Dec/2025:19:10:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-17 19:10:37"}
 {"duration":"173ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-17 19:10:37","userAgent":"python-requests/2.32.5"}
 {"level":"warn","message":"Slow request: POST /events took 173.43ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-17 19:10:37"}
+{"level":"info","message":"Background thread started (100ms interval - high throughput mode)","service":"typescript-server","timestamp":"2025-12-19 18:06:19"}
+{"environment":"development","host":"0.0.0.0","level":"info","message":"Server running on 0.0.0.0:8080","port":8080,"service":"typescript-server","timestamp":"2025-12-19 18:06:19"}
+{"level":"info","message":"🧹 Cleaning up 12 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:06:19"}
+{"level":"info","message":"✅ Cleanup complete: 12 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:06:19"}
+{"level":"info","message":"🧹 Startup cleanup: Removed 12 old image files","service":"typescript-server","timestamp":"2025-12-19 18:06:19"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:09:02"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:09:02 +0000] \"GET /avatars/VacBatts.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:02"}
+{"level":"info","message":"Created new player: 65b0b6f572 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 18:09:04"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:09:04 +0000] \"GET /avatars/VacBatts.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:04"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:09:04 +0000] \"GET /avatars/PurpleBatts.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:04"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:09:04 +0000] \"GET /avatars/PurpleBatts.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:04"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:09:13"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:09:13 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:13"}
+{"duration":"2ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:13","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID18935HIoPILID saved (40KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:13"}
+{"level":"info","message":"Image LID1894AL6N7ZLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:13"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:09:16"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:09:16 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:16"}
+{"duration":"3ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:16","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893fEXh2QLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:17"}
+{"level":"info","message":"Image LID1894waqutdLID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:17"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:09:18"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:09:18 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:18"}
+{"duration":"2ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:18","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893Eb0wTvLID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:18"}
+{"level":"info","message":"Image LID1894OZ3PXpLID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:18"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"PurpleBatts eliminated by 30caa23243 (2 images)","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:09:20 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"duration":"2ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:20","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"Image LID1893SGBWrULID saved (40KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"Image LID1894XH0iDHLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:09:20 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:09:20"}
+{"duration":"40ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:20","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:09:43 +0000] \"GET /api/v1/device-mapping HTTP/1.1\" 200 247 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:09:43"}
+{"duration":"1ms","ip":"127.0.0.1","level":"info","message":"GET /api/v1/device-mapping","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:43","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"[18:09:51.521] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"level":"info","message":"🧹 Cleaning up 8 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"level":"info","message":"✅ Cleanup complete: 8 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"level":"info","message":"[18:09:51.521] ✅ RESET COMPLETE - Cleared 0 players, 8 images","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:09:51 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 161 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"duration":"7ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:09:51","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"level":"info","message":"Created new player: 65b0b6f572 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 18:09:51"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:06"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:06 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:06"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:06","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893l89SmXLID saved (43KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:07"}
+{"level":"info","message":"Image LID1894v1nGbkLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:07"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:11"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:11 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:11"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:11","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893SOcXO6LID saved (53KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:11"}
+{"level":"info","message":"Image LID1894V1AMhXLID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:11"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:12"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:12 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:12"}
+{"duration":"0ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:12","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:10:12"}
+{"level":"info","message":"Image LID1893CwpXkTLID saved (43KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:12"}
+{"level":"info","message":"Image LID1894TUTZz5LID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:12"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"level":"info","message":"PurpleBatts eliminated by 30caa23243 (2 images)","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:16 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:16","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"level":"warn","message":"[18:10:16.756] Image LID1893FfhkqpLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"level":"error","message":"[18:10:16.756] KillShot processing error: Killshot image LID1893FfhkqpLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1893FfhkqpLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:10:16"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:10:16 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:10:16","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893FfhkqpLID saved (51KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"level":"info","message":"Image LID1894hHceUILID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:16"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:10:18"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:10:18"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:10:18 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:18"}
+{"duration":"94ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:18","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 94.59ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:10:18"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:10:27"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:27 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:27"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:27","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID18939XnBr5LID saved (46KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:27"}
+{"level":"info","message":"Image LID1894jkhqwvLID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:27"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:28 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:28","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"level":"info","message":"Image LID1893MUVkeaLID saved (44KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"level":"info","message":"Image LID1894ESgNGTLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:28 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:28","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893DjwnoqLID saved (43KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:28"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:29"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:29 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:29"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:29","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893Q6qYETLID saved (45KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:29"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:30"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:30 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:30"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:30","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893wV0KgwLID saved (45KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:30"}
+{"level":"info","message":"Image LID1894wMvAGWLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:30"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:32"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:32"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:32","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893D9bYeMLID saved (48KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:32"}
+{"level":"info","message":"Image LID1894hCd3mNLID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:32"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:33"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:33 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:33"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:33","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:10:33"}
+{"level":"info","message":"Image LID1893AvP0fGLID saved (47KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:33"}
+{"level":"info","message":"Image LID1894G6KxKeLID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:33"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:34"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:34 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:34"}
+{"duration":"2ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:34","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893jdVy4zLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:34"}
+{"level":"info","message":"Image LID1894T2SPt2LID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:34"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:35","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893W5mstuLID saved (47KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"Image LID18945DUm6pLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:35","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893ZJCVkjLID saved (49KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"Image LID1894RTMg1WLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:35 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"duration":"2ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:35","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893JiVQUMLID saved (49KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"Image LID1894SxlOUJLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:35"}
+{"level":"info","message":"[18:10:48.687] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"level":"info","message":"🧹 Cleaning up 28 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"level":"info","message":"✅ Cleanup complete: 28 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"level":"info","message":"[18:10:48.687] ✅ RESET COMPLETE - Cleared 0 players, 28 images","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:10:48 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 162 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"duration":"13ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:48","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"level":"info","message":"Created new player: 65b0b6f572 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 18:10:48"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:10:55"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:55 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:55"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:55","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893OOGwcELID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:55"}
+{"level":"info","message":"Image LID1894BHeJ55LID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:55"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:10:57"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:10:57 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:10:57"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:10:57","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893SR8lbGLID saved (44KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:57"}
+{"level":"info","message":"Image LID1894JtnsKMLID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:10:57"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:00"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:00 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:00"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:00","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893jpCZzrLID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:00"}
+{"level":"info","message":"Image LID18940ViXmbLID saved (58KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:00"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:03"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:03 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:03"}
+{"duration":"0ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:03","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893KWSc38LID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:03"}
+{"level":"info","message":"[18:11:08.700] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"level":"info","message":"🧹 Cleaning up 7 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"level":"info","message":"✅ Cleanup complete: 7 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"level":"info","message":"[18:11:08.700] ✅ RESET COMPLETE - Cleared 0 players, 7 images","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:11:08 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 161 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"duration":"4ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:08","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 65b0b6f572 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:11:08"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:14"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:14 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:14"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:14","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893ZgTaz1LID saved (39KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:14"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:17"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:17 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:17"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:17","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893UmVUoTLID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:17"}
+{"level":"info","message":"Image LID1894tkzeO1LID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:17"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:20"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:20 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:20"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:20","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893HfrMmlLID saved (47KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:20"}
+{"level":"info","message":"Image LID1894HcjgadLID saved (57KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:20"}
+{"level":"info","message":"[18:11:25.270] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"level":"info","message":"🧹 Cleaning up 5 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"level":"info","message":"✅ Cleanup complete: 5 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"level":"info","message":"[18:11:25.270] ✅ RESET COMPLETE - Cleared 0 players, 5 images","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:11:25 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 161 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"duration":"3ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:25","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 65b0b6f572 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:11:25"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:32"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:32 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:32"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:32","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893MYn70wLID saved (42KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:32"}
+{"level":"info","message":"Image LID1894HHhp9WLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:32"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:36"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:36"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:36","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893Myxk4sLID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:36"}
+{"level":"info","message":"Image LID18940mEAETLID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:36"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:11:46"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:11:46 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:11:46"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:11:46","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:11:46"}
+{"level":"info","message":"Image LID18935kODUULID saved (40KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:46"}
+{"level":"info","message":"Image LID1894IKbNQDLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:11:46"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:13:24"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:13:24 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:24"}
+{"duration":"2ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:24","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"PurpleBatts eliminated by 30caa23243 (2 images)","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:13:25 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:25","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:13:25 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:25","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"Image LID18939cNhC3LID saved (51KB)","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"Image LID18947F8F3ELID saved (56KB)","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"Image LID1893mHVNbHLID saved (43KB)","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"Image LID18947wLlKbLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:13:25"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:36"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:36"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:13:36 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:36"}
+{"duration":"221ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:36","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 221.42ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:13:36"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:36"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:36"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:13:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"duration":"68ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:37","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 68.50ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:13:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"duration":"63ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:37","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 63.11ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:13:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"duration":"66ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:37","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 65.57ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:13:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"duration":"67ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:37","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 66.70ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"Killscreen sent: 2 images to 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:13:37 +0000] \"POST /api/v1/events HTTP/1.1\" 200 - \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"duration":"53ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:37","userAgent":"python-requests/2.32.5"}
+{"level":"warn","message":"Slow request: POST /events took 52.52ms (threshold: 50ms)","service":"typescript-server","timestamp":"2025-12-19 18:13:37"}
+{"level":"info","message":"[18:13:41.005] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"level":"info","message":"🧹 Cleaning up 10 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"level":"info","message":"✅ Cleanup complete: 10 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"level":"info","message":"[18:13:41.005] ✅ RESET COMPLETE - Cleared 0 players, 10 images","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:13:41 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 162 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"duration":"4ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:13:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"level":"info","message":"Created new player: 65b0b6f572 with display_name: PurpleBatts","service":"typescript-server","timestamp":"2025-12-19 18:13:41"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:15:50"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:15:50 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:50"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:15:50","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893BW7dnmLID saved (48KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:50"}
+{"level":"info","message":"Image LID1894xf07cgLID saved (53KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:50"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:15:51"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:15:51 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:51"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:15:51","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:15:51"}
+{"level":"info","message":"Image LID1893HXGXlHLID saved (43KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:51"}
+{"level":"info","message":"Image LID18949qhAp3LID saved (53KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:51"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:15:53"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:15:53 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:53"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:15:53","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893mJAJFrLID saved (41KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:53"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:15:54"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:15:54 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:54"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:15:54","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893tG80e3LID saved (42KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:54"}
+{"level":"info","message":"Image LID1894BhZchhLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:54"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:15:55"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:15:55 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:55"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:15:55","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893DK10zXLID saved (39KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:55"}
+{"level":"info","message":"Image LID1894gHYJGQLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:55"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"level":"info","message":"PurpleBatts eliminated by 30caa23243 (2 images)","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:15:56 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:15:56","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"level":"warn","message":"[18:15:56.475] Image LID1893uBzFBCLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"level":"error","message":"[18:15:56.475] KillShot processing error: Killshot image LID1893uBzFBCLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1893uBzFBCLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:15:56"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:15:56 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"duration":"1ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:15:56","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893uBzFBCLID saved (40KB)","service":"typescript-server","timestamp":"2025-12-19 18:15:56"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:15:58"}
+{"level":"warn","message":"[18:15:58.531] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:15:58"}
+{"level":"error","message":"[18:15:58.531] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:15:58"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:15:58 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:58"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:15:58","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:15:59"}
+{"level":"warn","message":"[18:15:59.047] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:15:59"}
+{"level":"error","message":"[18:15:59.047] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:15:59"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:15:59 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:59"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:15:59","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:15:59"}
+{"level":"warn","message":"[18:15:59.564] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:15:59"}
+{"level":"error","message":"[18:15:59.564] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:15:59"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:15:59 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:15:59"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:15:59","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:00"}
+{"level":"warn","message":"[18:16:00.098] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:00"}
+{"level":"error","message":"[18:16:00.098] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:00"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:00 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:00"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:00","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:00"}
+{"level":"warn","message":"[18:16:00.616] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:00"}
+{"level":"error","message":"[18:16:00.616] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:00"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:00 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:00"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:00","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"level":"warn","message":"[18:16:01.129] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"level":"error","message":"[18:16:01.129] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:01"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:01 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:01","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"level":"warn","message":"[18:16:01.348] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"level":"error","message":"[18:16:01.348] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:01"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:01 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:01","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"level":"warn","message":"[18:16:01.868] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"level":"error","message":"[18:16:01.868] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:01"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:01 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:01"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:01","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:02"}
+{"level":"warn","message":"[18:16:02.406] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:02"}
+{"level":"error","message":"[18:16:02.406] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:02"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:02 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:02"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:02","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:02"}
+{"level":"warn","message":"[18:16:02.929] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:02"}
+{"level":"error","message":"[18:16:02.929] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:02"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:02 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:02"}
+{"duration":"1ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:02","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:03"}
+{"level":"warn","message":"[18:16:03.454] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:03"}
+{"level":"error","message":"[18:16:03.454] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:03"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:03 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:03"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:03","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:03"}
+{"level":"warn","message":"[18:16:03.969] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:03"}
+{"level":"error","message":"[18:16:03.969] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:03"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:03 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:03"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:03","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:04"}
+{"level":"warn","message":"[18:16:04.482] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:04"}
+{"level":"error","message":"[18:16:04.482] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:04"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:04 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:04"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:04","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:04"}
+{"level":"warn","message":"[18:16:04.998] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:04"}
+{"level":"error","message":"[18:16:04.998] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:04"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:05 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:05","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"level":"warn","message":"[18:16:05.233] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"level":"error","message":"[18:16:05.233] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:05"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:05 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:05","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"level":"warn","message":"[18:16:05.748] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"level":"error","message":"[18:16:05.748] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:05"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:05 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:05"}
+{"duration":"4ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:05","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:06"}
+{"level":"warn","message":"[18:16:06.331] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:06"}
+{"level":"error","message":"[18:16:06.331] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:06"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:06 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:06"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:06","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:06"}
+{"level":"warn","message":"[18:16:06.847] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:06"}
+{"level":"error","message":"[18:16:06.847] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:06"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:06 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:06"}
+{"duration":"1ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:06","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:07"}
+{"level":"warn","message":"[18:16:07.499] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:07"}
+{"level":"error","message":"[18:16:07.499] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:07"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:07 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:07"}
+{"duration":"2ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:07","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"level":"warn","message":"[18:16:08.130] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"level":"error","message":"[18:16:08.130] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:08"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:08 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:08","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"level":"warn","message":"[18:16:08.329] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"level":"error","message":"[18:16:08.329] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:08"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:08 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:08","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Killshot request from 65b0b6f572","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"level":"warn","message":"[18:16:08.845] Image LID1894mEMSXqLID not found - aborting killscreen request","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"level":"error","message":"[18:16:08.845] KillShot processing error: Killshot image LID1894mEMSXqLID not found (may have been deleted)","service":"typescript-server","stack":"Error: Killshot image LID1894mEMSXqLID not found (may have been deleted)\n    at processKillScreenRequest (C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:470:19)\n    at async C:\\Working\\GIT\\DJI_UE4_poc\\Source\\lumotag\\typescript-server-app\\packages\\server\\dist\\routes\\game.js:381:48","timestamp":"2025-12-19 18:16:08"}
+{"level":"info","message":"192.168.8.239 - - [19/Dec/2025:18:16:08 +0000] \"POST /api/v1/events HTTP/1.1\" 404 124 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:16:08"}
+{"duration":"3ms","ip":"192.168.8.239","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":404,"timestamp":"2025-12-19 18:16:08","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:27:01 +0000] \"GET /avatars/VacBatts.jpg HTTP/1.1\" 200 47367 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:27:01"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:27:01 +0000] \"GET /avatars/PurpleBatts.jpg HTTP/1.1\" 200 75752 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:27:01"}
+{"level":"info","message":"[18:27:41.535] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:27:41"}
+{"level":"info","message":"🧹 Cleaning up 10 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:27:41"}
+{"level":"info","message":"✅ Cleanup complete: 10 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:27:41"}
+{"level":"info","message":"[18:27:41.535] ✅ RESET COMPLETE - Cleared 0 players, 10 images","service":"typescript-server","timestamp":"2025-12-19 18:27:41"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:27:41 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 162 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:27:41"}
+{"duration":"5ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:27:41","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:27:41"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:27:47"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-12-19 18:27:47"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:27:47 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:27:47"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:27:47","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893HxGTFKLID saved (47KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:47"}
+{"level":"info","message":"Image LID1894apDOEHLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:47"}
+{"level":"info","message":"[18:27:53.612] 🔄 RESET REQUEST - Clearing all game state and images","service":"typescript-server","timestamp":"2025-12-19 18:27:53"}
+{"level":"info","message":"🧹 Cleaning up 2 image files from uploads directory","service":"typescript-server","timestamp":"2025-12-19 18:27:53"}
+{"level":"info","message":"✅ Cleanup complete: 2 files deleted, 0 errors","service":"typescript-server","timestamp":"2025-12-19 18:27:53"}
+{"level":"info","message":"[18:27:53.612] ✅ RESET COMPLETE - Cleared 0 players, 2 images","service":"typescript-server","timestamp":"2025-12-19 18:27:53"}
+{"level":"info","message":"127.0.0.1 - - [19/Dec/2025:18:27:53 +0000] \"POST /api/v1/reset HTTP/1.1\" 200 161 \"http://localhost:3001/\" \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0\"","service":"typescript-server","timestamp":"2025-12-19 18:27:53"}
+{"duration":"2ms","ip":"127.0.0.1","level":"info","message":"POST /api/v1/reset","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:27:53","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36 Edg/143.0.0.0"}
+{"level":"info","message":"Created new player: 30caa23243 with display_name: VacBatts","service":"typescript-server","timestamp":"2025-12-19 18:27:53"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:27:59 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:27:59","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893xiZRq9LID saved (49KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:27:59 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:27:59","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID18942hcmAFLID saved (55KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"Queue status: 1 images pending, processing: true","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"Image LID1893SmaivULID saved (49KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"Image LID1894Rw0BlVLID saved (50KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[5]","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"warn","message":"Tag ID not found: 5","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:27:59 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:27:59","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893b6TssJLID saved (48KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"Image LID1894xgwaXkLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:27:59"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:29:04 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:29:04","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893Km03XeLID saved (38KB)","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:29:04 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"duration":"0ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:29:04","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1894ijHjmHLID saved (58KB)","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"Image LID1893b2XoNzLID saved (42KB)","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"TAGGED - device:30caa23243 tags:[]","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"192.168.8.217 - - [19/Dec/2025:18:29:04 +0000] \"POST /api/v1/events HTTP/1.1\" 200 118 \"-\" \"python-requests/2.32.5\"","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"duration":"1ms","ip":"192.168.8.217","level":"info","message":"POST /api/v1/events","service":"typescript-server","statusCode":200,"timestamp":"2025-12-19 18:29:04","userAgent":"python-requests/2.32.5"}
+{"level":"info","message":"Image LID1893cjvk0VLID saved (39KB)","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
+{"level":"info","message":"Image LID1894rcpznXLID saved (54KB)","service":"typescript-server","timestamp":"2025-12-19 18:29:04"}
