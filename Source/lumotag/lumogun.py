@@ -818,7 +818,7 @@ def main():
                                     #     index += 1
                                 
                                 # flush image analysis queues here or can get a time out error next iteration 
-                                for img_analyser in image_analysis
+                                for img_analyser in image_analysis:
                                     # why are these in brackets? 
                                     _ = (img_analyser.get_analysis_result(block=False, timeout=0))
 
