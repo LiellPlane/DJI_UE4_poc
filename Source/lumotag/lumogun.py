@@ -100,7 +100,7 @@ def main():
     print("TEMP TESTING - SERVER IS PRUNING IMAGES, WE HAVE A FAKE TRIGGER HERE, AND SENDING EVERY SINGLE TRIGGERED IMAGE")
     # time.sleep(1) # REMOVE
     # default dict creates the format automatically (without having to check if key is there first)
-    analysis_history: defaultdict[tuple[int, int], deque] = defaultdict(lambda: deque(maxlen=2))
+    analysis_history: defaultdict[tuple[int, int], deque] = defaultdict(lambda: deque(maxlen=3))
 
     # from fake_raspberry_hardware import Triggers as test_triggers # REMOVE
     log_overlay = img_processing.EventLogOverlay()
@@ -468,7 +468,9 @@ def main():
                     if "game_client" in locals():
                         game_client.trigger_capture_close_range()
                         game_client.trigger_capture_long_range()
-
+            else:
+                # Clear detection history when torch is off
+                analysis_history.clear()
 
 
             # # experimental - only process images when we use torch - will this save battery?
