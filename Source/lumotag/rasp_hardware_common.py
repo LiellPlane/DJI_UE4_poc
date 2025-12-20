@@ -398,7 +398,7 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         self.picam2.set_controls({
             "AwbEnable": 0,
             "AeEnable": False,
-            "ExposureTime": 5000,  # microseconds
+            "ExposureTime": 6000,  # microseconds
             "AnalogueGain": 1.0,
             })
         # self.picam2.set_controls({
