@@ -398,7 +398,7 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         self.picam2.set_controls({
             "AwbEnable": 0,
             "AeEnable": False,
-            "ExposureTime": 6000,  # fix exposure for cheaper close range camera - struggles with flashlight
+            "ExposureTime": 6500,  # fix exposure for cheaper close range camera - struggles with flashlight
             "AnalogueGain": 1.0,
             })
         # self.picam2.set_controls({
