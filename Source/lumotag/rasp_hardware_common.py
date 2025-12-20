@@ -397,9 +397,9 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         #  set_controls must come after config!!
         self.picam2.set_controls({
             "AwbEnable": 0,
-            "AeMeteringMode": controls.AeMeteringModeEnum.CentreWeighted,
-            "AeExposureMode": controls.AeExposureModeEnum.Short,
-
+            "AeEnable": False,
+            "ExposureTime": 5000,  # microseconds
+            "AnalogueGain": 1.0,
             })
         # self.picam2.set_controls({
         #     "AwbEnable": 0, 
