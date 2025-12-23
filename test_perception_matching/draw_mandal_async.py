@@ -601,7 +601,7 @@ def draw_concentric_circles_multithreaded(client, collection_name, read_only_col
 
 def create_mandala_from_similarity_matrix(
     similarity_matrix: dict[tuple[int, int], EmbeddedPoint],
-    tile_size: int = 100
+    tile_size: int = 30
 ) -> np.ndarray:
     """Create a mandala from a similarity matrix"""
     # Find boundaries of the grid
@@ -709,7 +709,7 @@ def create_mandala_from_similarity_matrix(
 
     
 async def async_main():
-    read_only_collection_name = "everything"
+    read_only_collection_name = "everything_s_liellvector"
     clone_collection_name = f"{read_only_collection_name}_clone"
     client = get_qdrant_client()
     # Detect operating system and set appropriate paths
@@ -730,9 +730,9 @@ async def async_main():
 
     clone_collection(client, collection_name=read_only_collection_name, new_collection_name=clone_collection_name)
     wait_for_collection_ready(client, clone_collection_name)
-    
+
     # img, similarity_matrix = draw_concentric_circles_multithreaded(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name)
-    
+    1/0
     # 1/0
     # Create the image with concentric circles
     img, similarity_matrix = await draw_concentric_circles(client, collection_name=clone_collection_name, read_only_collection_name=read_only_collection_name, num_circles=14, seeds=seed_embedding)

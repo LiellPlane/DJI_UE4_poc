@@ -95,7 +95,7 @@ def clone_collection(client, collection_name: str, new_collection_name: str, bat
         vectors_config=models.VectorParams(size=vector_size, distance=vector_distance),
             init_from=models.InitFrom(collection=collection_name),
         )
-
+    # breakpoint()
     return 
     # Create new collection with the same vector configuration
     print(f"Creating new collection '{new_collection_name}' with same configuration as '{collection_name}'")

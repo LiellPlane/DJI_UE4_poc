@@ -231,7 +231,7 @@ def main():
     client = QdrantClient(url="http://localhost:6333", timeout=3)  # Increased client timeout
     
     embedding_len = get_embedding_size_from_first_pickle()
-    collection_name = "food"
+    collection_name = "everything_s_liellvector"
     confirmation = input(f"Are you sure you want to load the embeddings into the collection {collection_name}? Press Y to continue or any other key to exit: ")
     if confirmation.lower() != 'y':
         print("Operation cancelled by user.")

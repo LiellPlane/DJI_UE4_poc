@@ -15,7 +15,7 @@ import uuid  # Added UUID library
 from pathlib import Path
 import random
 
-USE_DINO = True
+USE_DINO = False
 
 if USE_DINO is True:
     import dinvo2_embeddings as dino_embeddings
@@ -303,12 +303,11 @@ def process_batch(image_paths):
     while completed_workers < num_processes:
         try:
             result = queue_out.get(timeout=0.1)
-            
             if result is None:
                 completed_workers += 1
             elif isinstance(result, Exception):
                 # Log exceptions but continue processing
-                print(f"\nError: {type(result).__name__}: {str(result)}")
+                print(f"\n process_batch Error: {type(result).__name__}: {str(result)}")
             elif isinstance(result, HSEmbeddingResult):
                 results.append(result)
             
@@ -712,7 +711,7 @@ def main():
     try:
         # # Get all image filepaths
         
-        image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs"])
+        image_paths = get_image_filepaths_from_folders([r"D:\temp_match_imgs\ToScan"])
         # image_paths = get_image_filepaths_from_folders(
         #     [
         #         r"D:\temp_match_imgs\matchable",
@@ -736,13 +735,23 @@ def main():
         total_images = len(image_paths)
         print(f"creating test dataset with {total_images} image paths")
         
-        # Process all images in batches of 50,000
-        batch_results = process_in_batches_threaded(
-            image_paths,
-            batch_size=5000,
-            output_path="embeddings_output"
-        )
-        
+
+        if USE_DINO is True:
+                
+            # Process all images in batches of 50,000
+            batch_results = process_in_batches_threaded(
+                image_paths,
+                batch_size=5000,
+                output_path="embeddings_output"
+            )
+        else:
+            # Process all images in batches of 50,000
+            batch_results = process_in_batches(
+                image_paths,
+                batch_size=5000,
+                output_path="embeddings_output"
+            )
+
         print(f"\nProcessed {len(batch_results)} batches successfully")
         
     except Exception as e:
