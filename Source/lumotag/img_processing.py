@@ -345,9 +345,13 @@ def ease_in_out_sine(t):
 def ease_in_out_cubic(t):
     return np.where(t < 0.5, 4 * t**3, 1 - (-2 * t + 2)**3 / 2)
 
+def ease_in_out_quint(t):
+    """Pronounced slow-fast-slow, good for short animations (e.g. 300ms)"""
+    return np.where(t < 0.5, 16 * t**5, 1 - (-2 * t + 2)**5 / 2)
+
 def interpolate_points_eased(start, end, steps):
     t = np.linspace(0, 1, steps)
-    eased_t = ease_in_out_cubic(t)
+    eased_t = ease_in_out_quint(t)
     return start + eased_t[:, np.newaxis] * (end - start)
 
 @dataclass

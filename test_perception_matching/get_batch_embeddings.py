@@ -15,7 +15,7 @@ import uuid  # Added UUID library
 from pathlib import Path
 import random
 
-USE_DINO = False
+USE_DINO = True
 
 if USE_DINO is True:
     import dinvo2_embeddings as dino_embeddings

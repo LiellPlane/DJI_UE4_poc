@@ -583,7 +583,7 @@ class CSI_Camera_async_flipflop(factory.Camera_async_flipflop):
         else:
             raise Exception("no match for video mode input")
 
-class CSI_Camera_tribuffer(factory.FrameGrabber):
+class CSI_Camera_tribuffer(factory.RingBufferCamera):
     
     def __init__(self, video_modes) -> None:
         if video_modes == HQ_Cam_vidmodes:

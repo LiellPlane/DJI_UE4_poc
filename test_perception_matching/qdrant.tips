@@ -1,10 +1,10 @@
 MAC
 
-docker pull qdrant/qdrant
+docker pull qdrant/qdrant:v1.13.6
 
 docker run -p 6333:6333 -p 6334:6334 \
     -v "$(pwd)/qdrant_storage:/qdrant/storage:z" \
-    qdrant/qdrant
+    qdrant/qdrant:v1.13.6
 
 
 WINDOWS
@@ -16,7 +16,12 @@ might need docker desktop and WSL working if you get issues
 
 
 # Run the Qdrant container
-   docker run -p 6333:6333 -p 6334:6334 -v qdrant_volume:/qdrant/storage qdrant/qdrant
+working version maybe??
+
+docker pull qdrant/qdrant:v1.13.6
+
+
+   docker run -p 6333:6333 -p 6334:6334 -v qdrant_volume:/qdrant/storage qdrant/qdrant:v1.13.6
 
 UI http://localhost:6333/dashboard
 

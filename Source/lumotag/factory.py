@@ -1319,7 +1319,174 @@ class FrameGrabber(Camera):
         Must call next() at least once before calling this.
         """
         if self._current_ticket is None:
-            raise RuntimeError("No frame captured yet - call next() first")
+            self.gen_image()
+        return self._current_ticket
+
+
+class RingBufferCamera(Camera):
+    """
+    Ring buffer async camera with configurable buffer count.
+    
+    Simpler than FrameGrabber - producer just cycles through buffers sequentially.
+    More buffers = more time before overwrite = safer for slow consumers.
+    
+    Buffer lifecycle (example with 4 buffers):
+        Producer writes: 0 → 1 → 2 → 3 → 0 → 1 → ...
+        Consumer reads from latest complete buffer.
+        Buffer N is safe until producer completes N-1 more captures.
+        
+    Default 4 buffers = 3 capture cycles before overwrite (~30-100ms at typical FPS).
+    """
+    
+    def __init__(self, video_modes, imagegen_cls: ImageGenerator, num_buffers: int = 4) -> None:
+        super().__init__(video_modes)
+        
+        self.num_buffers = num_buffers
+        
+        # Resolve resolution
+        if self.get_is_reversed():
+            self._store_res = tuple(reversed(self.get_res()))
+        else:
+            self._store_res = self.get_res()
+        
+        self.imagegen_cls = imagegen_cls
+        self.frame_size = self._store_res[0] * self._store_res[1]
+        
+        # Create ring buffer in shared memory
+        self._buf_names = ["{}_ring{}".format(self._id, i) for i in range(self.num_buffers)]
+        self._cleanup_stale_shm()
+        self.buffers = [
+            shared_memory.SharedMemory(create=True, size=self.frame_size, name=name)
+            for name in self._buf_names
+        ]
+        
+        # Shared atomic index: which buffer has the latest complete frame
+        self._ready_idx_name = "{}_rready".format(self._id)
+        self._unlink_shm_if_exists(self._ready_idx_name)
+        self._ready_idx_shm = shared_memory.SharedMemory(
+            create=True, size=4, name=self._ready_idx_name
+        )
+        self._ready_idx_view = np.ndarray((1,), dtype=np.int32, buffer=self._ready_idx_shm.buf)
+        self._ready_idx_view[0] = -1
+        
+        # Frame counter for unique IDs
+        self._frame_counter_name = "{}_rfcnt".format(self._id)
+        self._unlink_shm_if_exists(self._frame_counter_name)
+        self._frame_counter_shm = shared_memory.SharedMemory(
+            create=True, size=4, name=self._frame_counter_name
+        )
+        self._frame_counter_view = np.ndarray((1,), dtype=np.int32, buffer=self._frame_counter_shm.buf)
+        self._frame_counter_view[0] = 0
+        
+        # Actual image shape (set by producer after first capture)
+        self._actual_res_name = "{}_rres".format(self._id)
+        self._unlink_shm_if_exists(self._actual_res_name)
+        self._actual_res_shm = shared_memory.SharedMemory(
+            create=True, size=8, name=self._actual_res_name
+        )
+        self._actual_res_view = np.ndarray((2,), dtype=np.int32, buffer=self._actual_res_shm.buf)
+        self._actual_res_view[:] = [0, 0]
+        
+        self._current_ticket = None  # type: Optional[SharedMem_ImgTicket]
+        
+        self._start_producer()
+    
+    @staticmethod
+    def _unlink_shm_if_exists(name):
+        try:
+            shm = shared_memory.SharedMemory(name=name, create=False)
+            shm.close()
+            shm.unlink()
+        except FileNotFoundError:
+            pass
+    
+    def _cleanup_stale_shm(self):
+        for name in self._buf_names:
+            self._unlink_shm_if_exists(name)
+    
+    def _start_producer(self):
+        Process(
+            target=self._producer_loop,
+            args=(
+                self.imagegen_cls,
+                self.get_res(),
+                self._buf_names,
+                self._ready_idx_name,
+                self._frame_counter_name,
+                self._actual_res_name,
+                self.num_buffers,
+            ),
+            daemon=True
+        ).start()
+    
+    @staticmethod
+    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name, actual_res_name, num_buffers):
+        """Subprocess: captures continuously, cycles through ring buffer"""
+        img_gen = img_gen_cls(resolution)
+        
+        shm_objects = [shared_memory.SharedMemory(name=name) for name in buf_names]
+        buffers = None
+        
+        ready_shm = shared_memory.SharedMemory(name=ready_idx_name)
+        ready_idx = np.ndarray((1,), dtype=np.int32, buffer=ready_shm.buf)
+        
+        counter_shm = shared_memory.SharedMemory(name=frame_counter_name)
+        frame_counter = np.ndarray((1,), dtype=np.int32, buffer=counter_shm.buf)
+        
+        actual_res_shm = shared_memory.SharedMemory(name=actual_res_name)
+        actual_res = np.ndarray((2,), dtype=np.int32, buffer=actual_res_shm.buf)
+        
+        write_idx = 0
+        
+        while True:
+            img = img_gen.get_image()
+            
+            if buffers is None:
+                buffers = [
+                    np.ndarray(img.shape, dtype=img.dtype, buffer=shm.buf)
+                    for shm in shm_objects
+                ]
+                actual_res[:] = img.shape
+            
+            # Write to current buffer
+            buffers[write_idx][:] = img
+            frame_counter[0] += 1
+            
+            # Mark as ready, move to next buffer (simple ring)
+            ready_idx[0] = write_idx
+            write_idx = (write_idx + 1) % num_buffers
+    
+    def gen_image(self) -> np.ndarray:
+        """Get latest complete frame. Returns VIEW into shared memory."""
+        # if not a valid index - need to wait for the producer to initialise 
+        while self._ready_idx_view[0] < 0 or self._actual_res_view[0] == 0:
+            time.sleep(0.001)
+        
+        idx = int(self._ready_idx_view[0])
+        frame_id = int(self._frame_counter_view[0])
+        actual_shape = tuple(self._actual_res_view)
+        
+        img = np.ndarray(actual_shape, dtype=np.uint8, buffer=self.buffers[idx].buf)
+        
+        self._current_ticket = SharedMem_ImgTicket(
+            index=idx,
+            res=actual_shape,
+            buf_size=self.frame_size,
+            id=frame_id
+        )
+        
+        self.last_img = img
+        return img
+    
+    def __next__(self) -> np.ndarray:
+        return self.gen_image()
+    
+    def get_mem_buffers(self) -> dict:
+        return {i: self.buffers[i] for i in range(self.num_buffers)}
+    
+    def get_safe_mem_details(self) -> SharedMem_ImgTicket:
+        if self._current_ticket is None:
+            self.gen_image()
         return self._current_ticket
 
 

@@ -12,7 +12,7 @@ from pathlib import Path
 import time
 import random
 from qdrant_utils import wait_for_collection_ready, delete_point, get_closest_match, clone_collection, get_random_item_with_closest_match, get_qdrant_client
-COLLECTION_NAME = "starwars"
+COLLECTION_NAME = "everything_s_dinovector"
 
 
 def get_sequence_of_closest_matches(
@@ -155,7 +155,7 @@ def main():
     wait_for_collection_ready(client, f"{COLLECTION_NAME}_clone")
     sequence, scores = get_sequence_of_closest_matches(
         client,
-        limit=10000,
+        limit=1000,
         collection_name=f"{COLLECTION_NAME}_clone",
         vector=vector,
     )
