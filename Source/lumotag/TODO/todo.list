@@ -1,6 +1,6 @@
 fix get latest time for analysis - looks broken
 
-try new RingBufferCamera camera class made by opus, do not lose the chat!!
+try new framegrabber camera class made by opus, do not lose the chat!!
 
 3D:::modify close-range camera mount. reduce z, add posts so don't need to use the spacers?
 3D:::have a look at the M12 converter - can we add a small angle there for the sensor? or can we even hold it in more firmly as right now it just flops about and is subject to glue accuracy

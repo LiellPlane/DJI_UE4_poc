@@ -181,17 +181,17 @@ class ImageAnalyser_shared_mem():
                 try:
                     contour_data: list[ShapeItem | None] = self.lumotag_func(
                         currentimg, workingdata)
+
+                #with time_it("analyse lumotag: prepare graphics"):
+                    for contour in contour_data:
+                        if self.img_shrink_factor is not None:
+                            contour.add_resize_offset(self.img_shrink_factor)
+                        if self.img_crop is not None:
+                            contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
                 except Exception as e:
-                    print(f"Error finding lumotag: {e}")
+                    print(f"Error analysing iaage: {e}")
                     # this will explode but at least we get something back
                     analysis_output_q.put(e, block=True, timeout=None)
-            #with time_it("analyse lumotag: prepare graphics"):
-                for contour in contour_data:
-                    if self.img_shrink_factor is not None:
-                        contour.add_resize_offset(self.img_shrink_factor)
-                    if self.img_crop is not None:
-                        contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
-
                 # correct contour data here? not sure if correct place
                 # if len(contour_data) == 0:
                 #     # no results - not interesting to us (yet)
@@ -205,4 +205,4 @@ class ImageAnalyser_shared_mem():
             # randimtew = random.randint(10,50)
             # time.sleep(randimtew/1000)
 
-            analysis_output_q.put(AnalysisOutput(embedded_id, contour_data), block=True, timeout=None)
+            analysis_output_q.put(AnalysisOutput(embedded_id, contour_data), block=False, timeout=None)
