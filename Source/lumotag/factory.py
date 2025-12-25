@@ -1389,6 +1389,13 @@ class RingBufferCamera(Camera):
         
         self._current_ticket = None  # type: Optional[SharedMem_ImgTicket]
         
+        # Error queue for subprocess crash propagation
+        self._error_queue = Queue(maxsize=1)
+        
+        # Queues for synchronous raw/color image capture
+        self._raw_request_queue = Queue(maxsize=1)
+        self._raw_response_queue = Queue(maxsize=1)
+        
         self._start_producer()
     
     @staticmethod
@@ -1415,49 +1422,70 @@ class RingBufferCamera(Camera):
                 self._frame_counter_name,
                 self._actual_res_name,
                 self.num_buffers,
+                self._error_queue,
+                self._raw_request_queue,
+                self._raw_response_queue,
             ),
             daemon=True
         ).start()
     
     @staticmethod
-    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name, actual_res_name, num_buffers):
+    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name, actual_res_name, num_buffers, error_queue, raw_request_queue, raw_response_queue):
         """Subprocess: captures continuously, cycles through ring buffer"""
-        img_gen = img_gen_cls(resolution)
-        
-        shm_objects = [shared_memory.SharedMemory(name=name) for name in buf_names]
-        buffers = None
-        
-        ready_shm = shared_memory.SharedMemory(name=ready_idx_name)
-        ready_idx = np.ndarray((1,), dtype=np.int32, buffer=ready_shm.buf)
-        
-        counter_shm = shared_memory.SharedMemory(name=frame_counter_name)
-        frame_counter = np.ndarray((1,), dtype=np.int32, buffer=counter_shm.buf)
-        
-        actual_res_shm = shared_memory.SharedMemory(name=actual_res_name)
-        actual_res = np.ndarray((2,), dtype=np.int32, buffer=actual_res_shm.buf)
-        
-        write_idx = 0
-        
-        while True:
-            img = img_gen.get_image()
+        try:
+            img_gen = img_gen_cls(resolution)
             
-            if buffers is None:
-                buffers = [
-                    np.ndarray(img.shape, dtype=img.dtype, buffer=shm.buf)
-                    for shm in shm_objects
-                ]
-                actual_res[:] = img.shape
+            shm_objects = [shared_memory.SharedMemory(name=name) for name in buf_names]
+            buffers = None
             
-            # Write to current buffer
-            buffers[write_idx][:] = img
-            frame_counter[0] += 1
+            ready_shm = shared_memory.SharedMemory(name=ready_idx_name)
+            ready_idx = np.ndarray((1,), dtype=np.int32, buffer=ready_shm.buf)
             
-            # Mark as ready, move to next buffer (simple ring)
-            ready_idx[0] = write_idx
-            write_idx = (write_idx + 1) % num_buffers
+            counter_shm = shared_memory.SharedMemory(name=frame_counter_name)
+            frame_counter = np.ndarray((1,), dtype=np.int32, buffer=counter_shm.buf)
+            
+            actual_res_shm = shared_memory.SharedMemory(name=actual_res_name)
+            actual_res = np.ndarray((2,), dtype=np.int32, buffer=actual_res_shm.buf)
+            
+            write_idx = 0
+            
+            while True:
+                # Check for raw image request (non-blocking)
+                if not raw_request_queue.empty():
+                    try:
+                        raw_request_queue.get_nowait()
+                    except:
+                        pass  # race condition - request already consumed
+                    else:
+                        raw_img = img_gen.get_raw_image()
+                        raw_response_queue.put(raw_img)
+                
+                img = img_gen.get_image()
+                
+                if buffers is None:
+                    buffers = [
+                        np.ndarray(img.shape, dtype=img.dtype, buffer=shm.buf)
+                        for shm in shm_objects
+                    ]
+                    actual_res[:] = img.shape
+                
+                # Write to current buffer
+                buffers[write_idx][:] = img
+                frame_counter[0] += 1
+                
+                # Mark as ready, move to next buffer (simple ring)
+                ready_idx[0] = write_idx
+                write_idx = (write_idx + 1) % num_buffers
+        except Exception as e:
+            error_queue.put(str(e))
+            raise
     
     def gen_image(self) -> np.ndarray:
         """Get latest complete frame. Returns VIEW into shared memory."""
+        # Check for subprocess crash
+        if not self._error_queue.empty():
+            raise RuntimeError(f"Camera subprocess crashed: {self._error_queue.get_nowait()}")
+        
         # if not a valid index - need to wait for the producer to initialise 
         while self._ready_idx_view[0] < 0 or self._actual_res_view[0] == 0:
             time.sleep(0.001)
@@ -1488,6 +1516,30 @@ class RingBufferCamera(Camera):
         if self._current_ticket is None:
             self.gen_image()
         return self._current_ticket
+    
+    def get_raw_image_sync(self, timeout: float = 2.0) -> np.ndarray:
+        """Synchronously request and retrieve full color BGR image from subprocess.
+        
+        Blocks until subprocess responds with the image.
+        """
+        # Clear any stale response
+        while not self._raw_response_queue.empty():
+            self._raw_response_queue.get_nowait()
+        
+        # Send request
+        self._raw_request_queue.put(True)
+        
+        # Poll for response, checking error queue each iteration
+        start = time.perf_counter()
+        while time.perf_counter() - start < timeout:
+            # Check for subprocess crash
+            if not self._error_queue.empty():
+                raise RuntimeError(f"Camera subprocess crashed: {self._error_queue.get_nowait()}")
+            try:
+                return self._raw_response_queue.get(block=True, timeout=0.05)
+            except:
+                pass
+        raise TimeoutError(f"Raw image capture timed out after {timeout}s")
 
 
 class Camera_async(Camera):
