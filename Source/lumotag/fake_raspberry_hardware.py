@@ -249,6 +249,7 @@ class SynthImgGen(factory.ImageGenerator):
         return color_img
     
     def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        print("plop")
         pass  # no-op for fake hardware
 
 
