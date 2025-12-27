@@ -216,13 +216,26 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
         self.cam_res = res
         self.picam2 = Picamera2()
         res_xy = tuple(reversed(res[0:2]))
-        self.picam2.video_configuration.controls.FrameRate = 30.0
-        self.picam2.video_configuration.controls.AnalogueGain = 10.0
-        self.picam2.video_configuration.controls.AwbEnable = False
-        self.picam2.video_configuration.controls.AeMeteringMode = controls.AeMeteringModeEnum.Spot
-        self.picam2.video_configuration.size = res_xy
-        self.picam2.video_configuration.format = "RGB888"
-        self.picam2.start("video")
+        # OLD CONFIG METHOD:
+        # self.picam2.video_configuration.controls.FrameRate = 30.0
+        # self.picam2.video_configuration.controls.AnalogueGain = 10.0
+        # self.picam2.video_configuration.controls.AwbEnable = False
+        # self.picam2.video_configuration.controls.AeMeteringMode = controls.AeMeteringModeEnum.Spot
+        # self.picam2.video_configuration.queue = False
+        # self.picam2.video_configuration.size = res_xy
+        # self.picam2.video_configuration.format = "RGB888"
+        _config = self.picam2.create_video_configuration(
+                    main={"size": res_xy, "format": "RGB888"},
+                    controls={'FrameRate': 30},
+                    queue=False)
+        self.picam2.configure(_config)
+        #  set_controls must come after config!!
+        self.picam2.set_controls({
+            "AwbEnable": 0,
+            "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+            "AnalogueGain": 10.0
+        })
+        self.picam2.start()
         time.sleep(0.2)
 
     def _get_image(self):
