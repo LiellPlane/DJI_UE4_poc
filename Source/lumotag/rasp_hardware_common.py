@@ -337,7 +337,7 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
             self.picam2.set_controls({
                 "AwbEnable": 0,
                 "AeMeteringMode": controls.AeMeteringModeEnum.Matrix,
-                "AnalogueGain": 15.0
+                "AnalogueGain": 100.0
             })
 
 
@@ -498,7 +498,8 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
             self.picam2.set_controls({
                 "AwbEnable": 1,
                 "AeEnable": True,
-                "AnalogueGain": 10.0,
+                "AeExposureMode": controls.AeExposureModeEnum.Long,
+                "AnalogueGain": 100.0,
             })
 
 class CsiCameraImageGenRCAMv3NOIR(factory.ImageGenerator):
