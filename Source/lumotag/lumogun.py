@@ -345,6 +345,7 @@ def main():
     deactivate_lser = False
     # analysis_last_frame: dict[tuple[int, int], list[ShapeItem | None]] = {}
     while True:
+        loop_start_time = time.perf_counter()
         imageIDs = []
         TEMP_DEBUG_trigger_cnt += 1
         # print(TEMP_DEBUG_trigger_cnt)
@@ -894,7 +895,14 @@ def main():
                 # if is_trigger_pressed is True:
                 #     file_system.save_image(cap_img,message=f"falsep_longrange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
                 #     file_system.save_image(cap_img_closerange,message=f"falsep_closerange_cnt{TEMP_DEBUG_trigger_cnt}cnt")
-
+        
+        # if the user isn't analysing images (not use torch) this can loop round very fast and redline the CPU 
+        if is_torch_reqd is False:
+            elapsed = time.perf_counter() - loop_start_time
+            time_to_wait = 0.040 - elapsed  # 30ms minimum loop time
+            if time_to_wait > 0:
+                time.sleep(time_to_wait)
+        
 
 if __name__ == "__main__":
     main()
