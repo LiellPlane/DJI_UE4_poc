@@ -120,8 +120,7 @@ def create_test_setup():
         return SharedMem_ImgTicket(
             index=0, 
             res=(480, 640),
-            buf_size=len(img.tobytes()),
-            id=1
+            buf_size=len(img.tobytes())
         )
     
     return sharedmem_buffs, safe_mem_details_func, embedded_id

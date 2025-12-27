@@ -71,7 +71,7 @@ class EventLogOverlay:
     
     def __init__(
         self,
-        position: Optional[tuple[int, int]] = None,  # None = auto top-right
+        position: Optional[tuple[int, int]] = (290,10),  # None = auto top-right
         box_size: tuple[int, int] = (600, 150),  # Before rotation (width, height)
         rotation: Literal[0, 90, -90, 180, 270] = 90,
         max_events: int = 5,

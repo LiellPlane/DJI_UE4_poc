@@ -119,7 +119,7 @@ class Triggers(factory.Triggers):
         self.blink_timer = factory.TimeDiffObject()
         self.flipflop = False
     def test_states(self):
-        if self.blink_timer.get_dt() > 0.2:
+        if self.blink_timer.get_dt() > 2.2:
             self.flipflop = not self.flipflop
             self.blink_timer.reset()
         outputs = {pos:gpio for pos, gpio

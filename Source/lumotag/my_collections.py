@@ -206,7 +206,6 @@ class ShapeInfo_BulkProcess:
 
 @dataclass
 class ShapeItem:
-    id: str
     approx_contour: np.array
     default_contour: np.array
     filtered_contour: np.array
@@ -221,7 +220,7 @@ class ShapeItem:
     _2d_samples: list[list]
     notes_for_debug_file: str
     decoded_id: int = -1
-    instance_id: int = field(default_factory=lambda: random.randint(0, 9999))  # 0-9999, ~1/10000 collision chance
+    id: int = field(default_factory=lambda: random.getrandbits(32))
     
 
     def add_offset_for_graphics(self, offset: list[int, int]):
@@ -304,7 +303,7 @@ class SharedMem_ImgTicket:
     index: int
     res: dict
     buf_size: any
-    id: int
+    frame_id: int = -1  # For detecting same-frame, skip redundant processing
 
 @dataclass
 class CropSlicing:

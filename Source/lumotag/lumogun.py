@@ -363,6 +363,8 @@ def main():
 
                 # logic to allow user to toggle on and off the laser using the torch control twice quickly 
                 new_torch_state = results_trig_positions[GUN_CONFIGURATION.button_torch]
+                if new_torch_state != is_torch_reqd:
+                    log_overlay.add_event(f"is_torch_reqd: {is_torch_reqd}")
                 if new_torch_state != is_torch_reqd and new_torch_state is True:
                     # rising edge - check if double press
                     if time.perf_counter() - last_torch_req < 0.3: # seconds
@@ -559,45 +561,77 @@ def main():
                     res_for_affine_transform_lookup = (
                         img_analyser.camera_source_class_ref._store_res
                     )  # BAD LIELL!!!
-                    try:
 
-                        while not img_analyser.analysis_output_q.empty():
-                            result: analyse_lumotag.AnalysisOutput = (
-                                img_analyser.get_analysis_result(block=False, timeout=0)
-                            )
-                            # result: analyse_lumotag.AnalysisOutput = (
-                            #     img_analyser.analysis_output_q.get(block=False, timeout=0)
+                    # get last/freshest result only 
+                    result: analyse_lumotag.AnalysisOutput | Exception | None = img_analyser.get_analysis_result(
+                        block=False,
+                        timeout=0,
+                        drain=True
+                        )
+                    if isinstance(result, Exception):
+                        raise result
+                    perfmonitor.manual_measure(
+                        f"{img_analyser.OS_friendly_name}",
+                        img_analyser.get_analysis_time_ms(),
+                    )
+                    if result is not None: # None is valid - results not ready. Not negative result
+                        if len(result.Results)> 0:
+                            # res_for_affine_transform_lookup is used as as way to keep results per camera (for HUD display)
+                            # file_system.save_barcodepair(result, message="falsepos")
+                            # save_analysis(result)
+
+                            # # this looks like we are adding results according to what camera is active 
+                            # if res_for_affine_transform_lookup not in analysis:
+                            #     analysis[res_for_affine_transform_lookup]: list[ShapeItem] = []
+                            # analysis[res_for_affine_transform_lookup].extend(
+                            #     result.Results
                             # )
-                            if isinstance(result, Exception):
-                                raise result  # this is really shit but better than nothing or dying downstream in a confusing way
-                            perfmonitor.manual_measure(
-                                f"{img_analyser.OS_friendly_name}",
-                                img_analyser.get_analysis_time_ms(),
-                            )
+                            # push results onto the deque so we keep last N frames (smooth flickering)
+                            analysis_history[res_for_affine_transform_lookup].append(result.Results)
+                        else:
+                            # no results - push empties into FIFO so the results expire (just want to keep last frames)
+                            analysis_history[res_for_affine_transform_lookup].append([])
 
-                            if result.Results:
-                                # res_for_affine_transform_lookup is used as as way to keep results per camera (for HUD display)
-                                # file_system.save_barcodepair(result, message="falsepos")
-                                # save_analysis(result)
 
-                                # # this looks like we are adding results according to what camera is active 
-                                # if res_for_affine_transform_lookup not in analysis:
-                                #     analysis[res_for_affine_transform_lookup]: list[ShapeItem] = []
-                                # analysis[res_for_affine_transform_lookup].extend(
-                                #     result.Results
-                                # )
-                                # push results onto the deque so we keep last N frames (smooth flickering)
-                                analysis_history[res_for_affine_transform_lookup].append(result.Results)
-                            else:
-                                # no results - push empties into FIFO so the results expire (just want to keep last frames)
-                                analysis_history[res_for_affine_transform_lookup].append([])
-                                # 
-                            # # EXPERIMENTAL SEEING IF WE CAN STOP FLICKERING - USE LAST FRAME RESULTS 
-                            # img_analyser.analysis_output_q.put(result, block=False, timeout=None)
-                    except queue.Empty:
-                        # raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
-                        # print(f"waiting for analysis {img_analyser.OS_friendly_name}")
-                        pass  # test asynchronous analysis
+
+                    # try:
+                    #     while not img_analyser.analysis_output_q.empty():
+                    #         result: analyse_lumotag.AnalysisOutput = (
+                    #             img_analyser.get_analysis_result(block=False, timeout=0)
+                    #         )
+                    #         # result: analyse_lumotag.AnalysisOutput = (
+                    #         #     img_analyser.analysis_output_q.get(block=False, timeout=0)
+                    #         # )
+                    #         if isinstance(result, Exception):
+                    #             raise result  # this is really shit but better than nothing or dying downstream in a confusing way
+                    #         perfmonitor.manual_measure(
+                    #             f"{img_analyser.OS_friendly_name}",
+                    #             img_analyser.get_analysis_time_ms(),
+                    #         )
+
+                    #         if result.Results:
+                    #             # res_for_affine_transform_lookup is used as as way to keep results per camera (for HUD display)
+                    #             # file_system.save_barcodepair(result, message="falsepos")
+                    #             # save_analysis(result)
+
+                    #             # # this looks like we are adding results according to what camera is active 
+                    #             # if res_for_affine_transform_lookup not in analysis:
+                    #             #     analysis[res_for_affine_transform_lookup]: list[ShapeItem] = []
+                    #             # analysis[res_for_affine_transform_lookup].extend(
+                    #             #     result.Results
+                    #             # )
+                    #             # push results onto the deque so we keep last N frames (smooth flickering)
+                    #             analysis_history[res_for_affine_transform_lookup].append(result.Results)
+                    #         else:
+                    #             # no results - push empties into FIFO so the results expire (just want to keep last frames)
+                    #             analysis_history[res_for_affine_transform_lookup].append([])
+                    #             # 
+                    #         # # EXPERIMENTAL SEEING IF WE CAN STOP FLICKERING - USE LAST FRAME RESULTS 
+                    #         # img_analyser.analysis_output_q.put(result, block=False, timeout=None)
+                    # except queue.Empty:
+                    #     # raise AnalysisTimeoutException("Timeout occurred while waiting for image analysis.")
+                    #     # print(f"waiting for analysis {img_analyser.OS_friendly_name}")
+                    #     pass  # test asynchronous analysis
 
 
             # flatten all the deque results so we have last N frames

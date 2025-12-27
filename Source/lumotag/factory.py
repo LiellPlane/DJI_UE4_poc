@@ -413,9 +413,9 @@ class display(ABC):
         dedupe = set()
         for _shape, result_package in graphics.items():
             for result in result_package:
-                if result.instance_id in dedupe:
+                if result.id in dedupe:
                     continue
-                dedupe.add(result.instance_id)
+                dedupe.add(result.id)
                 transformed = result.transform_points(self._affine_transform[_shape])
 
                 # get colour we want tag to show as depending on the players healthpoint (player corresponding to tag id )
@@ -1033,8 +1033,7 @@ class Camera_async_flipflop(Camera):
         self.safe_mem_details = SharedMem_ImgTicket(
             index=mem_details.index,
             res=mem_details.res,
-            buf_size=mem_details.buf_size,
-            id = mem_details.id)
+            buf_size=mem_details.buf_size)
         #print("FLIPFLOP saving record for analyis", self.safe_mem_details)
         return img_buff
 
@@ -1080,8 +1079,7 @@ class Camera_async_flipflop(Camera):
             output = SharedMem_ImgTicket(
                 index=shared_curr_id_quick[0],
                 res=self._store_res,
-                buf_size=[memblock_1.buf.shape, memblock_1.buf.shape],
-                id=random.randint(1111,9999))
+                buf_size=[memblock_1.buf.shape, memblock_1.buf.shape])
 
             if shared_curr_id_quick == [1]:
                 #print("FLIPFLOP WRITING ASYNC image to 1")
@@ -1297,8 +1295,7 @@ class FrameGrabber(Camera):
         self._current_ticket = SharedMem_ImgTicket(
             index=idx,
             res=actual_shape,
-            buf_size=self.frame_size,
-            id=frame_id
+            buf_size=self.frame_size
         )
         
         self.last_img = img
@@ -1314,13 +1311,26 @@ class FrameGrabber(Camera):
         return {i: self.buffers[i] for i in range(self.NUM_BUFFERS)}
     
     def get_safe_mem_details(self) -> SharedMem_ImgTicket:
-        """Returns ticket for the frame last returned by next().
-        
-        Must call next() at least once before calling this.
-        """
-        if self._current_ticket is None:
-            self.gen_image()
-        return self._current_ticket
+        """Always returns ticket for freshest available frame from shared memory."""
+        idx = int(self._ready_idx_view[0])
+        actual_shape = tuple(self._actual_res_view)
+        frame_id = int(self._frame_counter_view[0])
+        return SharedMem_ImgTicket(
+            index=idx,
+            res=actual_shape,
+            buf_size=self.frame_size,
+            frame_id=frame_id
+        )
+    
+    # # ORIGINAL: returns ticket from last next() call
+    # def get_safe_mem_details(self) -> SharedMem_ImgTicket:
+    #     """Returns ticket for the frame last returned by next().
+    #     
+    #     Must call next() at least once before calling this.
+    #     """
+    #     if self._current_ticket is None:
+    #         self.gen_image()
+    #     return self._current_ticket
 
 
 class RingBufferCamera(Camera):
@@ -1338,7 +1348,7 @@ class RingBufferCamera(Camera):
     Default 4 buffers = 3 capture cycles before overwrite (~30-100ms at typical FPS).
     """
     
-    def __init__(self, video_modes, imagegen_cls: ImageGenerator, num_buffers: int = 4) -> None:
+    def __init__(self, video_modes, imagegen_cls: ImageGenerator, num_buffers: int = 10) -> None:
         super().__init__(video_modes)
         
         self.num_buffers = num_buffers
@@ -1388,6 +1398,7 @@ class RingBufferCamera(Camera):
         self._actual_res_view[:] = [0, 0]
         
         self._current_ticket = None  # type: Optional[SharedMem_ImgTicket]
+        self._last_frame_id = -1  # Track last returned frame to skip redundant debuffering
         
         # Error queue for subprocess crash propagation
         self._error_queue = Queue(maxsize=1)
@@ -1490,8 +1501,13 @@ class RingBufferCamera(Camera):
         while self._ready_idx_view[0] < 0 or self._actual_res_view[0] == 0:
             time.sleep(0.001)
         
-        idx = int(self._ready_idx_view[0])
         frame_id = int(self._frame_counter_view[0])
+        
+        # Skip debuffering if same frame as last call
+        if frame_id == self._last_frame_id and self.last_img is not None:
+            return self.last_img
+        
+        idx = int(self._ready_idx_view[0])
         actual_shape = tuple(self._actual_res_view)
         
         img = np.ndarray(actual_shape, dtype=np.uint8, buffer=self.buffers[idx].buf)
@@ -1499,10 +1515,10 @@ class RingBufferCamera(Camera):
         self._current_ticket = SharedMem_ImgTicket(
             index=idx,
             res=actual_shape,
-            buf_size=self.frame_size,
-            id=frame_id
+            buf_size=self.frame_size
         )
         
+        self._last_frame_id = frame_id
         self.last_img = img
         return img
     
@@ -1513,9 +1529,22 @@ class RingBufferCamera(Camera):
         return {i: self.buffers[i] for i in range(self.num_buffers)}
     
     def get_safe_mem_details(self) -> SharedMem_ImgTicket:
-        if self._current_ticket is None:
-            self.gen_image()
-        return self._current_ticket
+        """Always returns ticket for freshest available frame from shared memory."""
+        idx = int(self._ready_idx_view[0])
+        actual_shape = tuple(self._actual_res_view)
+        frame_id = int(self._frame_counter_view[0])
+        return SharedMem_ImgTicket(
+            index=idx,
+            res=actual_shape,
+            buf_size=self.frame_size,
+            frame_id=frame_id
+        )
+    
+    # # ORIGINAL: returns ticket from last next() call
+    # def get_safe_mem_details(self) -> SharedMem_ImgTicket:
+    #     if self._current_ticket is None:
+    #         self.gen_image()
+    #     return self._current_ticket
     
     def get_raw_image_sync(self, timeout: float = 2.0) -> np.ndarray:
         """Synchronously request and retrieve full color BGR image from subprocess.

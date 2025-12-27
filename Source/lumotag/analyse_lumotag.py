@@ -53,7 +53,7 @@ class ImageAnalyser_shared_mem():
         self.OS_friendly_name = OS_friendly_name
         self.safe_mem_details_func = safe_mem_details_func
         self.input_shared_mem_index_q = Queue(maxsize=1)
-        self.analysis_output_q = Queue(maxsize=1)
+        self.analysis_output_q = Queue(maxsize=10)  # main loop drains with while-not-empty
         self.img_crop = slice_details
         self.img_shrink_factor = img_shrink_factor
         self.debug_config = config
@@ -87,22 +87,38 @@ class ImageAnalyser_shared_mem():
     def get_analysis_time_ms(self):
         return self.last_analysis_time * 1000
     
-    def get_analysis_result(self, block=False, timeout=0):
+    def get_analysis_result(self, block=False, timeout=0, drain=False) -> AnalysisOutput | None:
         """Get analysis result from queue and reset timeout timer.
         
         Returns:
             AnalysisOutput | Exception | None: Result from queue, or None if empty
+            if its empty its either just started or not had time to process the image - so is not a 
+            negative response
         """
         # deactivate timer - we arent processing anymore
-
-        try:
-            result = self.analysis_output_q.get(block=block, timeout=timeout)
-            if self.current_analysis_time is not None:
-                self.last_analysis_time = time.perf_counter() - self.current_analysis_time
-            self.current_analysis_time = None
-            return result
-        except queue.Empty:
-            return None
+        if drain is True:
+            try:
+                result = self.analysis_output_q.get(block=block, timeout=timeout)
+                if self.current_analysis_time is not None:
+                    self.last_analysis_time = time.perf_counter() - self.current_analysis_time
+                self.current_analysis_time = None
+                return result
+            except queue.Empty:
+                return None
+        else:
+            result = None
+            try:
+                # drain queue - get freshest analysis
+                while True:
+                    result = (
+                        self.analysis_output_q.get(block=block, timeout=timeout)
+                    )
+            except queue.Empty:
+                if result is not None:
+                    if self.current_analysis_time is not None:
+                        self.last_analysis_time = time.perf_counter() - self.current_analysis_time
+                    self.current_analysis_time = None
+                return result
     
     def trigger_analysis(self):
         """Trigger analysis on current frame. Replaces any stale queued frame."""
@@ -132,77 +148,65 @@ class ImageAnalyser_shared_mem():
             self,
             input_shared_mem_index_q,
             analysis_output_q):
-
-        workingdata = decode_clothID.WorkingData(
-            OS_friendly_name=self.OS_friendly_name,
-            debugdetails=self.debug_config)
-        currentimg: np.ndarray | None = None
-        while True:
-
-
-            # get index of last image buffer - this will be safe
-            # until two conditions are met:
-            # 1: a new asynchronous image has been generated
-            # 2: we have called _next_ to get it
-            #print("ANALOL waiting in analysis loop for record")
-            shared_details = input_shared_mem_index_q.get(
-                block=True,
-                timeout=None
-                )
-            # print(f"ANALOL received analysis details {self.OS_friendly_name}")
-            #print("ANALOL received analysis details", shared_details)
-            with time_it(f"analyse lumotag{self.OS_friendly_name}: total", workingdata.debug_details.PRINT_DEBUG):
+        try:
+            workingdata = decode_clothID.WorkingData(
+                OS_friendly_name=self.OS_friendly_name,
+                debugdetails=self.debug_config)
+            currentimg: np.ndarray | None = None
+            last_frame_id = -1
+            last_result: AnalysisOutput | None = None
+            
+            while True:
+                # Wait for ticket from trigger_analysis()
+                shared_details = input_shared_mem_index_q.get(block=True, timeout=None)
                 
-                img_buff = debuffer_image(
-                    self.sharedmem_bufs[shared_details.index].buf,
-                    shared_details.res
-                    )
-                embedded_id = decode_image_id(img_buff)
-                # add any cropping
-                if self.img_crop is not None:
-                    img_buff = img_buff[
-                            self.img_crop.top:self.img_crop.lower,
-                            self.img_crop.left:self.img_crop.right]
+                # Return cached result if same frame (prevents flickering)
+                if shared_details.frame_id == last_frame_id and last_result is not None:
+                    analysis_output_q.put_nowait(last_result)
+                    continue
+                
+                last_frame_id = shared_details.frame_id
+                
+                with time_it(f"analyse lumotag{self.OS_friendly_name}: total", workingdata.debug_details.PRINT_DEBUG):
+                    
+                    img_buff = debuffer_image(
+                        self.sharedmem_bufs[shared_details.index].buf,
+                        shared_details.res
+                        )
+                    embedded_id = decode_image_id(img_buff)
+                    # add any cropping
+                    if self.img_crop is not None:
+                        img_buff = img_buff[
+                                self.img_crop.top:self.img_crop.lower,
+                                self.img_crop.left:self.img_crop.right]
 
-                if self.img_shrink_factor is not None:
-                    # was using step sampling before - this is way slower than resize
-                    target_size = (
-                        int(img_buff.shape[1] // self.img_shrink_factor),
-                        int(img_buff.shape[0] // self.img_shrink_factor)
-                    )
-                    img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)  # type: ignore
+                    if self.img_shrink_factor is not None:
+                        # was using step sampling before - this is way slower than resize
+                        target_size = (
+                            int(img_buff.shape[1] // self.img_shrink_factor),
+                            int(img_buff.shape[0] // self.img_shrink_factor)
+                        )
+                        img_buff = cv2.resize(img_buff, target_size, interpolation=cv2.INTER_NEAREST)  # type: ignore
 
-                if img_buff.flags.owndata:
-                    currentimg = img_buff
-                else:
-                    currentimg = img_buff.copy()
+                    if img_buff.flags.owndata:
+                        currentimg = img_buff
+                    else:
+                        currentimg = img_buff.copy()
 
-           # with time_it("analyse lumotag: find lumotag"):
-                try:
                     contour_data: list[ShapeItem | None] = self.lumotag_func(
                         currentimg, workingdata)
 
-                #with time_it("analyse lumotag: prepare graphics"):
                     for contour in contour_data:
                         if self.img_shrink_factor is not None:
                             contour.add_resize_offset(self.img_shrink_factor)
                         if self.img_crop is not None:
                             contour.add_offset_for_graphics([self.img_crop.left,self.img_crop.top])
-                except Exception as e:
-                    print(f"Error analysing iaage: {e}")
-                    # this will explode but at least we get something back
-                    analysis_output_q.put(e, block=True, timeout=None)
-                # correct contour data here? not sure if correct place
-                # if len(contour_data) == 0:
-                #     # no results - not interesting to us (yet)
-                #     del self.ImageMem[embedded_id]
-                
-                # if len(self.ImageMem)> 100:
-                #     _, _ = self.ImageMem.popitem(last=False)
-            #print("ANALOL waiting to put response")
-            # import time
-            # import random
-            # randimtew = random.randint(10,50)
-            # time.sleep(randimtew/1000)
 
-            analysis_output_q.put(AnalysisOutput(embedded_id, contour_data), block=False, timeout=None)
+                #print("ANALOL waiting to put response")
+                last_result = AnalysisOutput(embedded_id, contour_data)
+                analysis_output_q.put_nowait(last_result)
+                
+        except Exception as e:
+            # Put exception on queue so main process can detect failure
+            analysis_output_q.put(e, block=True, timeout=None)
+            raise  # Re-raise to kill subprocess - main will see via queue

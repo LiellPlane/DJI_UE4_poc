@@ -494,7 +494,6 @@ def get_approx_shape_and_bbox2(
             if dist < min_distance:
                 if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
                     return ShapeItem(
-                        id=index,
                         approx_contour=approx,
                         default_contour=contour,
                         filtered_contour=None,
@@ -522,7 +521,6 @@ def get_approx_shape_and_bbox2(
         #     #dataobject.img_view_or_save_if_debug(img_debug, "not_enough_pixels_for_sqr")
         if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
             return ShapeItem(
-                    id=index,
                     approx_contour=None,
                     default_contour=contour,
                     filtered_contour=None,
@@ -543,7 +541,6 @@ def get_approx_shape_and_bbox2(
     if len(approx) not in [4, 5, 6, 7, 8]:
         if dataobject.debug_details.SAVE_IMAGES_DEBUG is True:
             return ShapeItem(
-                id=index,
                 approx_contour=approx,
                 default_contour=contour,
                 filtered_contour=None,
@@ -584,7 +581,6 @@ def get_approx_shape_and_bbox2(
             #dataobject.img_view_or_save_if_debug(img_debug, f"bad_ratio{ratio}")
             
             return ShapeItem(
-                    id=index,
                     approx_contour=None,
                     default_contour=contour,
                     filtered_contour=None,
@@ -651,7 +647,6 @@ def get_approx_shape_and_bbox2(
     pxl_err = 0.70
     if contour_pxl_cnt <= (min_bbox_pxl_cnt * pxl_err):
         return ShapeItem(
-            id=index,
             approx_contour=approx,
             default_contour=contour,
             filtered_contour=None,
@@ -728,7 +723,6 @@ def get_approx_shape_and_bbox2(
  
 
         output = ShapeItem(
-            id=index,
             approx_contour=approx,
             default_contour=None,
             filtered_contour=None,

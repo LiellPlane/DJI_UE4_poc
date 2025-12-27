@@ -296,8 +296,7 @@ def safe_mem_details_func():
     return SharedMem_ImgTicket(
         index=0,
         res=(240, 320),  # height, width
-        buf_size=len(img_bytes),
-        id=1
+        buf_size=len(img_bytes)
     )
 
 try:
