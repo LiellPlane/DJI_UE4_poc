@@ -899,7 +899,7 @@ def main():
         # if the user isn't analysing images (not use torch) this can loop round very fast and redline the CPU 
         if is_torch_reqd is False:
             elapsed = time.perf_counter() - loop_start_time
-            time_to_wait = 0.040 - elapsed  # 30ms minimum loop time
+            time_to_wait = 0.050 - elapsed  # 50ms minimum loop time
             if time_to_wait > 0:
                 time.sleep(time_to_wait)
         
