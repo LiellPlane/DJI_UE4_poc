@@ -335,8 +335,8 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
             })
         else:
             self.picam2.set_controls({
-                "AwbEnable": 1,
-                "AeMeteringMode": controls.AeMeteringModeEnum.Normal,
+                "AwbEnable": 0,
+                "AeMeteringMode": controls.AeMeteringModeEnum.Matrix,
                 "AnalogueGain": 15.0
             })
 
