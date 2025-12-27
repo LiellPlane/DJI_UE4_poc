@@ -776,6 +776,10 @@ class ImageGenerator(ABC):
         """Get full uncropped raw image from source. Must be implemented by subclasses."""
         pass
     
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        """Set camera controls based on torch state. Override in hardware implementations."""
+        pass  # no-op default for non-hardware cameras
+    
     def get_image(self):
         img = self._get_image()
         img_id = create_image_id()
@@ -1407,6 +1411,9 @@ class RingBufferCamera(Camera):
         self._raw_request_queue = Queue(maxsize=1)
         self._raw_response_queue = Queue(maxsize=1)
         
+        # Queue for dynamic camera control updates
+        self._controls_queue = Queue(maxsize=1)
+        
         self._start_producer()
     
     @staticmethod
@@ -1436,12 +1443,22 @@ class RingBufferCamera(Camera):
                 self._error_queue,
                 self._raw_request_queue,
                 self._raw_response_queue,
+                self._controls_queue,
             ),
             daemon=True
         ).start()
     
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        """Send control update to camera subprocess."""
+        # Drain any pending control update (only latest matters)
+        try:
+            self._controls_queue.get_nowait()
+        except queue.Empty:
+            pass
+        self._controls_queue.put((torch_on, controls_override))
+    
     @staticmethod
-    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name, actual_res_name, num_buffers, error_queue, raw_request_queue, raw_response_queue):
+    def _producer_loop(img_gen_cls, resolution, buf_names, ready_idx_name, frame_counter_name, actual_res_name, num_buffers, error_queue, raw_request_queue, raw_response_queue, controls_queue):
         """Subprocess: captures continuously, cycles through ring buffer"""
         try:
             img_gen = img_gen_cls(resolution)
@@ -1470,6 +1487,14 @@ class RingBufferCamera(Camera):
                     else:
                         raw_img = img_gen.get_raw_image()
                         raw_response_queue.put(raw_img)
+                
+                # Check for camera control updates (non-blocking)
+                if not controls_queue.empty():
+                    try:
+                        torch_on, controls_override = controls_queue.get_nowait()
+                        img_gen.set_controls(torch_on, controls_override)
+                    except queue.Empty:
+                        pass
                 
                 img = img_gen.get_image()
                 

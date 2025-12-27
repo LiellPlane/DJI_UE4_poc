@@ -1,5 +1,6 @@
 import time
 import random
+from typing import Optional
 import cv2
 import numpy as np
 import time
@@ -247,6 +248,9 @@ class SynthImgGen(factory.ImageGenerator):
         
         return color_img
     
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        pass  # no-op for fake hardware
+
 
 class CSI_Camera_Async(factory.Camera_async):
 

@@ -228,6 +228,7 @@ class ScambilightCamImageGen_fps_test(ImageGenerator):
     def _get_image(self):
         output = self.picam2.capture_array("main")
         return output
+
     def get_raw_image(self):
         """Get full uncropped raw image from source. Must be implemented by subclasses."""
         raise Exception("raw image not implemented!")

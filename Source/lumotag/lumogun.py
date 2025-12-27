@@ -366,6 +366,9 @@ def main():
                 new_torch_state = results_trig_positions[GUN_CONFIGURATION.button_torch]
                 if new_torch_state != is_torch_reqd:
                     log_overlay.add_event(f"is_torch_reqd: {is_torch_reqd}")
+                    # Update camera exposure settings based on torch state
+                    image_capture_shortrange.set_controls(new_torch_state)
+                    image_capture_longrange.set_controls(new_torch_state)
                 if new_torch_state != is_torch_reqd and new_torch_state is True:
                     # rising edge - check if double press
                     if time.perf_counter() - last_torch_req < 0.3: # seconds

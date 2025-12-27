@@ -3,6 +3,7 @@ import re
 from subprocess import Popen, PIPE
 import os
 from signal import SIGKILL
+from typing import Optional
 import cv2
 import numpy as np
 import enum
@@ -322,6 +323,18 @@ class CsiCameraImageGen_GS(factory.ImageGenerator):
         yuv_image = self.picam2.capture_array("main")
         bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
+    
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        if controls_override is not None:
+            self.picam2.set_controls(controls_override)
+        elif torch_on:
+            self.picam2.set_controls({
+                "AwbEnable": 0,
+                "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+                "AnalogueGain": 5.0
+            })
+        else:
+            self.picam2.set_controls({})  # reset to defaults
 
 
 class CsiCameraImageGen_GS_test(factory.ImageGenerator):
@@ -387,6 +400,18 @@ class CsiCameraImageGen_GS_test(factory.ImageGenerator):
         yuv_lores_image = self.picam2.capture_array("lores")
         
         return yuv_lores_image[0: lores_x, 0: lores_y]
+    
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        if controls_override is not None:
+            self.picam2.set_controls(controls_override)
+        elif torch_on:
+            self.picam2.set_controls({
+                "AwbEnable": 0,
+                "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+                "AnalogueGain": 5.0
+            })
+        else:
+            self.picam2.set_controls({})
 
 class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
     
@@ -454,6 +479,19 @@ class CsiCameraImageGenRCAMv2NOIR(factory.ImageGenerator):
         yuv_image = self.picam2.capture_array("main")
         bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
+    
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        if controls_override is not None:
+            self.picam2.set_controls(controls_override)
+        elif torch_on:
+            self.picam2.set_controls({
+                "AwbEnable": 0,
+                "AeEnable": False,
+                "ExposureTime": 7500,
+                "AnalogueGain": 1.0,
+            })
+        else:
+            self.picam2.set_controls({})
 
 class CsiCameraImageGenRCAMv3NOIR(factory.ImageGenerator):
     
@@ -513,6 +551,23 @@ class CsiCameraImageGenRCAMv3NOIR(factory.ImageGenerator):
         yuv_image = self.picam2.capture_array("main")
         bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
+    
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        if controls_override is not None:
+            self.picam2.set_controls(controls_override)
+        elif torch_on:
+            self.picam2.set_controls({
+                "AwbEnable": 0, 
+                "AeMeteringMode": controls.AeMeteringModeEnum.Spot,
+                "AeExposureMode": controls.AeExposureModeEnum.Short,
+                "ExposureValue": -2.5,
+                "AnalogueGain": 1.2,
+                "AeConstraintMode": controls.AeConstraintModeEnum.Highlight,
+                "Contrast": 1.4,
+                "FrameDurationLimits": (100, 15000)
+            })
+        else:
+            self.picam2.set_controls({})
 
 
 class CsiCameraImageGen_HQ(factory.ImageGenerator):
@@ -558,7 +613,17 @@ class CsiCameraImageGen_HQ(factory.ImageGenerator):
         yuv_image = self.picam2.capture_array("main")
         bgr_image = cv2.cvtColor(yuv_image, cv2.COLOR_YUV420p2BGR)
         return bgr_image
-
+    
+    def set_controls(self, torch_on: bool, controls_override: Optional[dict] = None):
+        if controls_override is not None:
+            self.picam2.set_controls(controls_override)
+        elif torch_on:
+            self.picam2.set_controls({
+                "AwbEnable": 0,
+                "AnalogueGain": 5.0
+            })
+        else:
+            self.picam2.set_controls({})
 
 
 class CSI_Camera_Async(factory.Camera_async):
